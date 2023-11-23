@@ -10,7 +10,6 @@ import {
   NOTIFICATIONHEADER,
   ThemeType,
   DarkIcon,
-  CalendarIcon,
   LightIcon,
 } from '@loopring-web/common-resources'
 import { WithTranslation } from 'react-i18next'
@@ -67,32 +66,6 @@ export const BtnDownload = ({
     </Box>
   )
 }
-// export const BtnNetworkSwitch = ({
-//   onTestOpen,
-//   isShow = false,
-// }: {
-//   isShow: boolean;
-//   onTestOpen: (boolean: boolean) => void;
-// } & WithTranslation) => {
-//   // const [open, setOpen] = React.useState(isTaikoTest);
-//   return isShow ? (
-//     <Box>
-//       Debug:
-//       <Switch
-//         checked={isTaikoTest}
-//         color="default"
-//         onChange={(e: any) => {
-//           // setOpen(e?.target?.checked ? true : false);
-//           setIsTaikoTest(e?.target?.checked ? true : false);
-//           onTestOpen(e?.target?.checked ? true : false);
-//         }}
-//       />
-//     </Box>
-//   ) : (
-//     <></>
-//   );
-// };
-
 export const BtnNotification = <N = sdk.UserNotification,>({
   notification, //:{notifyMap,myNotifyMap},
   account,

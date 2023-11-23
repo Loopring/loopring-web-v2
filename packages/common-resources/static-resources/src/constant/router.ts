@@ -160,7 +160,7 @@ export const GuardianToolBarAvailableItem: ButtonComponentsMap[] = [
   ButtonComponentsMap.WalletConnect,
 ]
 export let headerGuardianToolBarData: {
-  [key in ButtonComponentsMap]: {
+  [key in ButtonComponentsMap]?: {
     buttonComponent: ButtonComponentsMap
     handleClick?: (props: any) => void
     [key: string]: any
@@ -179,7 +179,7 @@ export let headerGuardianToolBarData: {
   },
 }
 export let headerToolBarData: {
-  [key in ButtonComponentsMap]: {
+  [key in ButtonComponentsMap]?: {
     buttonComponent: ButtonComponentsMap
     handleClick?: (props: any) => void
     [key: string]: any

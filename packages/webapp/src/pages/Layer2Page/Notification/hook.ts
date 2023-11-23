@@ -13,16 +13,12 @@ import { useTranslation } from 'react-i18next'
 
 export const useNotification = <R extends sdk.UserNotification>({
   setToastOpen,
-  page,
-  pageSize,
 }: {
   setToastOpen: (state: any) => void
   page: number
   pageSize: number
-  // pageSize: number
 }) => {
   const { t } = useTranslation()
-
   const { myNotifyMap, getUserNotify } = useNotify()
   const [rawData, setRawData] = React.useState<R[]>([])
   const [total, setTotal] = React.useState<number>(0)
