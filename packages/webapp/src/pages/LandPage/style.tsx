@@ -48,6 +48,9 @@ export const ContainerStyle = styled(Box)`
   --header-height: 64px;
   --header-submenu-item-height: 52px;
   --header-submenu-item-width: 250px;
+  && .MuiButton-endIcon {
+    color: inherit;
+  }
   ${({ theme }) => {
     let result = `
        --img-banner-url: url("${SoursURL}landPage/img_home_banner_${theme.mode}@2x.png");
@@ -133,6 +136,17 @@ export const ContainerStyle = styled(Box)`
       position: absolute;
       height: 100%;
       z-index: 99;
+      svg {
+        height: 32px;
+        width: 32px;
+        color: var(--color-text-primary);
+        outline: 2px solid var(--color-text-primary);
+        //background: var(--color-primary);
+        border-radius: 50%;
+        //opacity: 0.6;
+      }
+
+      //background: var(--color-field);
     }
     .MuiTab-root {
       display: flex;
@@ -279,14 +293,13 @@ export const ContainerStyle = styled(Box)`
       }
     }
   }
+
   .box2 {
     margin-bottom: 80px;
     h4 {
       margin-bottom: ${({ theme }) => theme.unit * 3}px;
     }
-    .MuiButton-endIcon {
-      color: inherit;
-    }
+
     .MuiButton-root {
       margin-top: ${({ theme }) => theme.unit * 3}px;
     }

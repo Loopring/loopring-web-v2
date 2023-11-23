@@ -136,8 +136,13 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 alignItems={'stretch'}
                 flexDirection={'row'}
               >
-                <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-                  <div aria-label="Ethereum's First zkRollup Layer2">
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'space-between'}
+                  marginRight={isMobile ? 0 : 4}
+                >
+                  <Box aria-label="Ethereum's First zkRollup Layer2">
                     <Typography
                       component='h4'
                       variant={'h2'}
@@ -157,10 +162,12 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       id='labelLoopringSmartWalletDes'
                     >
                       <Trans i18nKey={'labelLoopringSmartWalletDes'} ns={['landPage']}>
-                        Your Gateway to Ethereum, DeFi, NFTs, and \n Financial Freedom
+                        Ethereum's most secure wallet, fully integrated with advanced trading
+                        functionality and innovative Earn products, unlocking the true potential of
+                        Layer 2.
                       </Trans>
                     </Typography>
-                  </div>
+                  </Box>
                   <Button
                     rel='noopener'
                     title={WalletSite}

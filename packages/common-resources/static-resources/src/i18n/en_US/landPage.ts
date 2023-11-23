@@ -107,7 +107,7 @@ export default {
   labelBlockTrade: 'Block Trade',
   labelFiatDes: 'On & Off Ramp Solutions',
   labelFiat: 'Fiat',
-  labelNFTCollections: 'Manage and Display Your NFT Collections',
+  labelNFTCollections: 'Collaborate on a strategic plan to integrate \n NFTs into your ecosystem',
   labelNFTCollectionsDes:
     'In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.',
   labelRedPackets: 'Red Packets',

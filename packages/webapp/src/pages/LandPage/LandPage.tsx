@@ -52,10 +52,7 @@ const BgStyle = styled(Box)`
     right: 0;
     bottom: 0;
     height: 528px;
-    //background: url('./bg-2.webp') center center no-repeat;
     background-size: 528px 528px;
-
-    //background-size: 50% 50%;
   }
 `
 const ButtonStyled = styled(Button)`
