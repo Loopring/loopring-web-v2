@@ -1,15 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  CardContent,
-  Container,
-  Tabs,
-  Tab,
-  Typography,
-  Grid,
-  Card,
-} from '@mui/material'
+import { Avatar, Box, Button, Container, Tabs, Tab, Typography, Grid } from '@mui/material'
 import React from 'react'
 import styled from '@emotion/styled'
 import {
@@ -489,9 +478,10 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             flex: 1,
           }}
         >
-          <Grid container spacing={3}>
+          <Grid container spacing={3} alignItems={'stretch'}>
             <Grid item xs={12} md={6}>
               <CardBox
+                height={'100%'}
                 padding={6}
                 display={'flex'}
                 flexDirection={'column'}
@@ -532,6 +522,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             <Grid item xs={12} md={6}>
               <CardBox
                 padding={6}
+                height={'100%'}
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'space-between'}

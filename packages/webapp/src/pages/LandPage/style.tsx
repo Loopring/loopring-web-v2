@@ -123,13 +123,6 @@ export const ContainerStyle = styled(Box)`
       }
     }
   }
-  .MuiButton-root.light {
-    background: var(--color-field);
-    --color-text: var(--color-primary);
-    &:hover {
-      --color-text: var(--color-text-button);
-    }
-  }
   .product {
     position: relative;
 
@@ -146,10 +139,10 @@ export const ContainerStyle = styled(Box)`
       align-items: stretch;
     }
 
-    .MuiTab-root:first-child {
+    .MuiTab-root:first-of-type {
       padding-left: 0;
     }
-    .MuiTabs-scrollButtons:first-child {
+    .MuiTabs-scrollButtons:first-of-type {
       left: 0;
     }
     .MuiTabs-scrollButtons:last-child {
@@ -300,12 +293,16 @@ export const ContainerStyle = styled(Box)`
     > .MuiGrid-root div {
       border-radius: ${({ theme }) => theme.unit}px;
     }
-    > .MuiGrid-root:first-child div {
-      //margin-left: -48px;
-      //color: var(--color-text-button);
+    > .MuiGrid-root:first-of-type div {
       .MuiButton-root {
         background: white;
         color: var(--color-primary);
+        &:hover {
+          svg {
+            fill: var(--color-primary);
+          }
+          opacity: 0.6;
+        }
       }
       .MuiTypography-root {
         color: var(--color-text-button);
@@ -315,10 +312,6 @@ export const ContainerStyle = styled(Box)`
     }
     > .MuiGrid-root:last-child div {
       background: var(--light1000);
-      .MuiButton-root {
-        background: var(--color-primary);
-        color: var(--color-text-button);
-      }
       .MuiTypography-root {
         color: var(--dark);
       }
@@ -353,7 +346,7 @@ export const ContainerStyle = styled(Box)`
       align-items: center;
       margin-bottom: 24px;
       > .flexBox {
-        &:first-child {
+        &:first-of-type {
           margin-left: 0px;
         }
         flex-direction: column;
