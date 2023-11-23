@@ -49,14 +49,6 @@ const BgStyle = styled(Box)`
     //background-size: 50% 50%;
   }
 `
-const ButtonStyled = styled(Button)`
-  display: flex;
-  justify-content: space-around;
-  background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
-  padding-left: 4rem;
-  height: 6.4rem;
-  fontsize: 1.4rem;
-`
 
 export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => {
   const { search, pathname } = useLocation()
@@ -110,7 +102,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   component='span'
                   color={'primary'}
                 >
-                  Layer2
+                  Layer 2
                 </Typography>
               </Trans>
             </Typography>
@@ -502,7 +494,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     </Typography>
                     <Typography
                       component='p'
-                      variant={'h4'}
+                      variant={'h5'}
                       color={'textSecondary'}
                       marginTop={3}
                       id='labelHighThroughputDes'

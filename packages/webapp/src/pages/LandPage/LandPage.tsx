@@ -402,7 +402,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       sx={{ marginTop: 5 }}
                       title={item.router}
                       rel='noopener'
-                      href={item.router}
+                      href={`#${item.router}`}
                       endIcon={<GoIcon color='inherit' />}
                     >
                       <Trans i18nKey={'labelGo'} ns={['landPage']}>

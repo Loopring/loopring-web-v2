@@ -65,7 +65,7 @@ export default {
   labelNavLanuch: 'View Dapps',
   labelLoopringSmartWallet: 'Loopring Smart Wallet',
   labelLoopringSmartWalletDes: 'Your Gateway to Ethereum, DeFi, NFTs, and <br/>Financial Freedom',
-  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer2</1>",
+  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer 2</1>",
   labelGatewayToEthereum:
     'Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom.\n Fast, Low-cost, & Secure',
   labelTitleLite: 'Loopring Earn',
