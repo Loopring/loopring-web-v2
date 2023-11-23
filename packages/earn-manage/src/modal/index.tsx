@@ -17,9 +17,6 @@ export const ModalGroup = withTranslation('common')(
     onWalletConnectPanelClose?: (event: MouseEvent) => void
   }) => {
     const { etherscanBaseUrl } = useSystem()
-    const {
-      modals: {},
-    } = useOpenModals()
     useAccountModal()
 
     const {
@@ -36,7 +33,6 @@ export const ModalGroup = withTranslation('common')(
             setShowSupport({ isShow: false })
           }}
         />
-        {/*<ModalRedPacketPanel etherscanBaseUrl={etherscanBaseUrl} />*/}
         <ModalWalletConnectPanel
           {...{
             ...rest,

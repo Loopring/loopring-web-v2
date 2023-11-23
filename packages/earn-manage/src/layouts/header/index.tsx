@@ -1,4 +1,8 @@
-import { headerRoot } from '@loopring-web/common-resources'
+import {
+  ButtonComponentsMap,
+  GuardianToolBarAvailableItem,
+  headerRoot,
+} from '@loopring-web/common-resources'
 
 import { Toolbar } from '@mui/material'
 
@@ -12,12 +16,12 @@ import {
   HideOnScroll,
   useSettings,
 } from '@loopring-web/component-lib'
-import { useLocation, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { RouteComponentProps } from 'react-router'
 import React from 'react'
 
 const Header = withTranslation('common')(
-  withRouter(({ t, location, ...rest }: any & RouteComponentProps) => {
+  withRouter(({ t, location, isLandPage = false, ...rest }: any & RouteComponentProps) => {
     const { headerToolBarData, notifyMap, headerMenuLandingData } = useHeader()
     const { isMobile } = useSettings()
     const { confirmWrapper } = confirmation.useConfirmation()
@@ -25,22 +29,30 @@ const Header = withTranslation('common')(
     const { account } = useAccount()
     return (
       <>
-        <HideOnScroll window={undefined}>
+        <HideOnScroll window={undefined} onkeypress={onkeypress}>
           <HeaderUI
-            account={account}
-            isWrap={false}
             {...rest}
-            chainId={chainId}
-            isMobile={isMobile}
+            account={account}
             allowTrade={allowTrade}
-            headerToolBarData={headerToolBarData}
+            isMobile={isMobile}
+            chainId={chainId}
+            // isLandPage={true}
+            // isWrap={false}
+            toolBarMap={ButtonComponentsMap}
             headerMenuData={headerMenuLandingData}
+            headerToolBarData={headerToolBarData}
             notification={notifyMap}
             selected={location.pathname === '/' ? headerRoot : location.pathname}
           />
         </HideOnScroll>
         <Toolbar id='back-to-top-anchor' />
         {/* <BottomRule isShow={!confirmation?.confirmed} */}
+        <BottomRule
+          isShow={false}
+          content={t('labelAgreeLoopringTxt')}
+          btnTxt={t('labelCookiesAgree')}
+          clickToConfirm={() => confirmWrapper()}
+        />
       </>
     )
   }),

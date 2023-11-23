@@ -1,11 +1,6 @@
 import React from 'react'
 
-import {
-  ButtonComponentsMap,
-  fnType,
-  headerToolBarData as _initHeaderToolBarData,
-  myLog,
-} from '@loopring-web/common-resources'
+import { ButtonComponentsMap, fnType, myLog } from '@loopring-web/common-resources'
 
 import {
   accountReducer,
@@ -31,19 +26,7 @@ export const useHeader = () => {
   const { account, setShouldShow, status: accountStatus } = accountTotal
   const { setShowAccount } = useOpenModals()
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof _initHeaderToolBarData>([
-    {},
-    {},
-    {},
-    {},
-    {
-      buttonComponent: ButtonComponentsMap.WalletConnect,
-      label: 'labelConnectWallet',
-      accountState: undefined,
-      handleClick: undefined,
-      isLayer1Only: true,
-    },
-  ])
+
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [
       function () {
@@ -63,14 +46,21 @@ export const useHeader = () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`)
     accountStaticCallBack(_btnClickMap, [])
   }, [account, setShouldShow, _btnClickMap])
-
+  const [headerToolBarData, setHeaderToolBarData] = React.useState({
+    [ButtonComponentsMap.WalletConnect as string]: {
+      buttonComponent: ButtonComponentsMap.WalletConnect,
+      label: 'labelConnectWallet',
+      handleClick: onWalletBtnConnect,
+      accountState: undefined,
+      isLayer1Only: true,
+    },
+  })
   React.useEffect(() => {
     if (accountStatus && accountStatus === 'UNSET') {
       const account = store.getState().account
       setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
+        headerToolBarData[ButtonComponentsMap.WalletConnect as string] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-          handleClick: onWalletBtnConnect,
           NetWorkItems,
           isLayer1Only: true,
           accountState: { account },

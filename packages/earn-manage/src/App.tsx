@@ -1,5 +1,4 @@
 // import { ModalProvider } from 'styled-react-modal'
-import RouterView from './routers'
 import { GlobalStyles } from '@mui/material'
 import { css, Theme, useTheme } from '@emotion/react'
 import { globalCss, SagaStatus } from '@loopring-web/common-resources'
@@ -9,6 +8,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { HashRouter as Router, useLocation } from 'react-router-dom'
 import { store } from '@loopring-web/core'
+import RouterView from './routers'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -24,23 +24,12 @@ const App = () => {
   const {
     i18n: { language },
   } = useTranslation()
-  const storeLan = store.getState().settings.language
-
-  React.useEffect(() => {
-    if (storeLan !== language) {
-      store.dispatch(setLanguage(language))
-    }
-  }, [storeLan, language])
-
-  React.useEffect(() => {
-    if (window.location.protocol !== 'https:') {
-      console.log('Current PROTOCOL::', window.location.protocol)
-      window.location.replace(
-        `https:${window.location.href.substring(window.location.protocol.length)}`,
-      )
-    }
-  }, [])
-
+  // const storeLan = store.getState().settings.language
+  // React.useEffect(() => {
+  //   if (storeLan !== language) {
+  //     store.dispatch(setLanguage(language))
+  //   }
+  // }, [storeLan, language])
   const { state } = useInit()
 
   return (
@@ -82,4 +71,3 @@ const App = () => {
 }
 
 export default App
-

@@ -1,47 +1,49 @@
 import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
-import { Box, Container } from '@mui/material'
 import { LoadingPage } from '../pages/LoadingPage'
 import { SagaStatus, setMyLog, ThemeType } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'
 import { useSettings } from '@loopring-web/component-lib'
 import { Footer } from '../layouts/footer'
-import { ModalGroup } from '.././modal'
-import { AssetPage } from '../pages/AssetPage'
 import Header from 'layouts/header'
+import { AssetPage } from '../pages/AssetPage'
+import { ModalGroup } from '../modal'
 import { RecordPage } from '../pages/HistoryPage'
+
 const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation()
   const { setTheme } = useSettings()
+  const query = new URLSearchParams(location.search)
   const searchParams = new URLSearchParams(location.search)
   React.useEffect(() => {
-    if (searchParams.has('theme')) {
-      searchParams.get('theme') === ThemeType.dark ? setTheme('dark') : setTheme('light')
+    if (query.has('theme')) {
+      query.get('theme') === ThemeType.dark ? setTheme('dark') : setTheme('light')
     }
   }, [location.search])
+
   React.useEffect(() => {
     if (state === SagaStatus.ERROR) {
       window.location.replace(`${window.location.origin}/error`)
     }
   }, [state])
-  if (searchParams.has('___OhTrustDebugger___')) {
+  if (query.has('___OhTrustDebugger___')) {
     // @ts-ignore
     setMyLog(true)
   }
   return (
     <>
+      {searchParams && searchParams.has('noheader') ? <></> : <Header />}
       <Switch>
         <Route exact path='/loading'>
           <LoadingPage />
         </Route>
-        <Route exact path={['/']}>
-          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
-          <AssetPage />
-        </Route>
-        <Route exact path={['/record']}>
-          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
+        <Route path='/record'>
           <RecordPage />
         </Route>
+        <Route path={['/', '/*']}>
+          <AssetPage />
+        </Route>
+
         <Route
           component={() => (
             <>
@@ -50,8 +52,8 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
           )}
         />
       </Switch>
-      {<ModalGroup assetsRawData={[]} isLayer1Only={true} />}
-      {searchParams && searchParams.has('nofooter') ? <></> : <Footer />}
+      <ModalGroup assetsRawData={[]} isLayer1Only={true} onWalletConnectPanelClose />
+      {query && query.has('nofooter') ? <></> : <Footer />}
     </>
   )
 }

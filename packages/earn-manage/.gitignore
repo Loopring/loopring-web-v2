@@ -95,7 +95,6 @@ typings/
 # misc
 .DS_Store
 .env.local
-.env.development
 .env.development.local
 # .env.prod_for_dev
 
