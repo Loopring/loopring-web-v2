@@ -29,13 +29,15 @@ const Header = withTranslation('common')(
     const { account } = useAccount()
     return (
       <>
-        <HideOnScroll window={undefined} onkeypress={onkeypress}>
+        <HideOnScroll window={undefined}>
           <HeaderUI
             {...rest}
+            isWrap={false}
             account={account}
             allowTrade={allowTrade}
             isMobile={isMobile}
             chainId={chainId}
+            className={'scrollable'}
             // isLandPage={true}
             // isWrap={false}
             toolBarMap={ButtonComponentsMap}
