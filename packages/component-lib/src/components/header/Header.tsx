@@ -13,14 +13,7 @@ import {
 } from '@mui/material'
 import { Link as RouterLink, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import {
-  Button,
-  HeaderMenuSub,
-  HeadMenuItem,
-  Layer2Item,
-  PopoverPure,
-  TabItemPlus,
-} from '../basic-lib'
+import { HeaderMenuSub, HeadMenuItem, Layer2Item, PopoverPure, TabItemPlus } from '../basic-lib'
 import { HeaderProps, HeaderToolBarInterface } from './Interface'
 import {
   ButtonComponentsMap,
@@ -34,12 +27,12 @@ import {
   RouterMainKey,
   SoursURL,
   subMenuLayer2,
-  toolBarAvailableItem as _toolBarAvailableItem,
 } from '@loopring-web/common-resources'
 import {
   BtnDownload,
   BtnNotification,
   BtnSetting,
+  ColorSwitch,
   ProfileMenu,
   WalletConnectBtn,
   WalletConnectL1Btn,
@@ -51,12 +44,6 @@ import { useTheme } from '@emotion/react'
 import _ from 'lodash'
 import { useSettings } from '../../stores'
 
-const ButtonStyled = styled(Button)`
-  background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
-  padding-left: ${({ theme }) => 3 * theme.unit}px;
-  padding-right: ${({ theme }) => 3 * theme.unit}px;
-`
-
 const logoSVG = SoursURL + 'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
@@ -67,7 +54,7 @@ const ToolBarStyled = styled(Toolbar)`
   }
 `
 const HeaderStyled = styled(AppBar)`
-  && {
+  & {
     z-index: 400;
     box-shadow: none;
     height: var(--header-height);
@@ -77,9 +64,12 @@ const HeaderStyled = styled(AppBar)`
     box-sizing: border-box;
     ${({ theme }) => theme.border.borderConfig({ d_W: 1, c_key: 'blur' })};
     border-radius: 0;
-    border:0;
+    border: 0;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
     }
+  }
+  &.scrollable {
+    background-color: initial;
   }
 `
 
@@ -150,7 +140,6 @@ const ToolBarItem = ({
   account,
   chainId,
   isLayer1Only = false,
-  ButtonComponentsMap,
   ...props
 }: any) => {
   const match = useRouteMatch('/:l1/:l2?')
@@ -172,14 +161,15 @@ const ToolBarItem = ({
         return <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />
-
+      case ButtonComponentsMap.ColorSwitch:
+        return <ColorSwitch {...props} />
       case ButtonComponentsMap.WalletConnect:
         return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
       default:
         return undefined
     }
   }, [buttonComponent, match?.params, props, notification, account])
-  return <TabItemPlus>{render}</TabItemPlus>
+  return <TabItemPlus sx={{ display: props.hidden ? 'none' : '' }}>{render}</TabItemPlus>
 }
 
 export const HideOnScroll = React.forwardRef(({ children, window, ...rest }: any, ref) => {
@@ -224,7 +214,7 @@ export const LAYERMAP = {
   '2': 'l2',
 }
 
-export const Header = withTranslation(['layout', 'common'], { withRef: true })(
+export const Header = withTranslation(['layout', 'landPage', 'common'], { withRef: true })(
   React.forwardRef(
     <R extends HeaderToolBarInterface>(
       {
@@ -236,12 +226,13 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
         account,
         chainId,
         isWrap = true,
+        landBtn,
         isLandPage = false,
         isMobile = false,
-        toolBarAvailableItem = _toolBarAvailableItem,
         toolBarMap = ButtonComponentsMap,
         i18n,
         t,
+        transparent,
         ...rest
       }: HeaderProps<R> & WithTranslation,
       ref: React.ForwardedRef<any>,
@@ -250,40 +241,25 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       const theme = useTheme()
       const location = useLocation()
       const match = useRouteMatch('/:l1/:l2?/:pair?')
-
-      const _headerToolBarData = isLandPage
-        ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
-            if ((key as unknown as ButtonComponentsMap) !== ButtonComponentsMap.WalletConnect) {
-              return (prev[key] = headerToolBarData[key])
-            }
-            return prev
-          }, {} as { [key: number]: R })
-        : headerToolBarData
-      const getMenuButtons = React.useCallback(
-        ({
-          toolbarList,
-          ...rest
-        }: {
-          toolbarList: { [key: number]: R }
-        } & WithTranslation) => {
-          return toolBarAvailableItem.map((index: number) => {
-            return (
-              <ToolBarItem
-                {...{
-                  ...toolbarList[index],
-                  account,
-                  chainId,
-                  notification,
-                  ButtonComponentsMap: toolBarMap,
-                  ...rest,
-                }}
-                key={index}
-              />
-            )
-          })
-        },
-        [account, isMobile, notification],
-      )
+      const getMenuButtons = React.useMemo(() => {
+        return Reflect.ownKeys(headerToolBarData ?? {}).map((item, index) => {
+          return (
+            <ToolBarItem
+              {...{
+                ...headerToolBarData[item],
+                account,
+                chainId,
+                notification,
+                ButtonComponentsMap: toolBarMap,
+                t,
+                i18n,
+                ...rest,
+              }}
+              key={index}
+            />
+          )
+        })
+      }, [account, isMobile, notification, headerToolBarData])
 
       const getDrawerChoices: any = React.useCallback(
         ({
@@ -337,6 +313,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
+
                         return [
                           ...prev,
                           <HeadMenuItem
@@ -466,22 +443,8 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
               justifyContent={'flex-end'}
               color={'textColorSecondary'}
             >
-              {getMenuButtons({
-                toolbarList: _headerToolBarData,
-                i18n,
-                t,
-                ...rest,
-              })}
-              {!!isLandPage && (
-                <ButtonStyled
-                  size={'small'}
-                  disabled={isMaintaining}
-                  variant={'contained'}
-                  onClick={() => history.push('/trade/lite/LRC-ETH')}
-                >
-                  {t('labelLaunchApp')}
-                </ButtonStyled>
-              )}
+              {getMenuButtons}
+              {!!isLandPage && landBtn ? landBtn : <></>}
             </Box>
           </ToolBarStyled>
         )
@@ -493,7 +456,6 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
         t,
         rest,
         getMenuButtons,
-        _headerToolBarData,
         isMaintaining,
         history,
       ])
@@ -534,29 +496,60 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
             <Box display={'flex'} alignItems={'center'}>
               {isLandPage && headerMenuLandingData[0] ? (
                 <>
-                  {
-                    <NodeMenuItem
-                      {...{ ...headerMenuLandingData[0], ...rest, t }}
-                      handleListKeyDown={() => {
-                        window.location.href = headerMenuLandingData[0].router!.path
-                      }}
-                    />
-                  }
-
-                  {getMenuButtons({
-                    toolbarList: _headerToolBarData,
-                    i18n,
-                    t,
-                    ...rest,
-                  })}
-                  <ButtonStyled
-                    size={'small'}
-                    disabled={isMaintaining}
-                    variant={'contained'}
-                    onClick={() => history.push('/trade/lite/LRC-ETH')}
+                  {getMenuButtons}
+                  {landBtn ? landBtn : <></>}
+                  <ClickAwayListener
+                    onClickAway={() => {
+                      popupState.close()
+                    }}
                   >
-                    {t('labelLaunchMobileApp', '')}
-                  </ButtonStyled>
+                    <Box
+                      display='flex'
+                      alignContent='center'
+                      justifyContent={'flex-start'}
+                      alignItems={'stretch'}
+                      flexDirection={'row'} //!isMobile ? "row" : "column"}
+                    >
+                      <Typography
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                        {...bindTrigger(popupState)}
+                      >
+                        <MenuIcon
+                          // fontSize={"large"}
+                          style={{ height: 28, width: 28 }}
+                          // color={"primary"}
+                        />
+                      </Typography>
+
+                      <PopoverPure
+                        {...bindPopper(popupState)}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'center',
+                        }}
+                      >
+                        <Box
+                          className={'mobile'}
+                          display={'flex'}
+                          alignItems={'stretch'}
+                          flexDirection={'column'}
+                        >
+                          {getDrawerChoices({
+                            menuList: headerMenuLandingData, // _headerMenuData,
+                            i18n,
+                            t,
+                            handleListKeyDown: popupState.close,
+                            ...rest,
+                          })}
+                        </Box>
+                      </PopoverPure>
+                    </Box>
+                  </ClickAwayListener>
                 </>
               ) : (
                 <>
@@ -568,12 +561,7 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
                     color={'textColorSecondary'}
                     marginRight={1}
                   >
-                    {getMenuButtons({
-                      toolbarList: headerToolBarData,
-                      i18n,
-                      t,
-                      ...rest,
-                    })}
+                    {getMenuButtons}
                   </Box>
                   <ClickAwayListener
                     onClickAway={() => {
@@ -656,7 +644,12 @@ export const Header = withTranslation(['layout', 'common'], { withRef: true })(
       }
 
       return (
-        <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
+        <HeaderStyled
+          sx={{ '&&&': { background: transparent ? 'transparent' : '' } }}
+          elevation={4}
+          ref={ref}
+          className={`${rest?.className}`}
+        >
           {isWrap ? (
             <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
               {isMobile ? displayMobile : displayDesktop}

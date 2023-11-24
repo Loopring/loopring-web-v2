@@ -162,6 +162,10 @@ export const IWrap = styled(Box)<
     .MuiButton-label {
       justify-content: flex-start;
     }
+    &.icon-wrap-left,
+    &.btn-wrap-left {
+      justify-content: flex-end;
+    }
   }
 
   ${({ size, theme, isMobile }) => {
@@ -240,7 +244,7 @@ export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
 
   &.icon-wrap-left > div {
     justify-content: flex-end;
-    padding-right: ${({ theme }) => (theme.unit / 2) * 3}px;
+    padding-right: ${({ theme }) => theme.unit}px;
     align-items: center;
   }
 ` as (props: BoxProps & { logoColor?: any }) => JSX.Element
@@ -277,7 +281,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-placeholder);;
+    color: var(--color-placeholder);
   }
 
   :disabled {

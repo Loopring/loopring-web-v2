@@ -197,6 +197,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
         if (isToken) {
           return {
             total:
+              tokenMap[tradeData?.belong as string] &&
               getValuePrecisionThousand(
                 total,
                 tokenMap[tradeData?.belong as string].precision,
@@ -208,6 +209,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
               ' ' +
               tradeData.belong,
             splitValue:
+              tokenMap[tradeData?.belong as string] && 
               getValuePrecisionThousand(
                 splitValue,
                 tokenMap[tradeData?.belong as string].precision,
@@ -2192,6 +2194,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                     setShowChangeTips({
                       ...showChangeTips,
                       contactImportCaches: undefined,
+                      previousInputType: undefined,
+                      confirmCallBack: undefined
                     })
                     onClickSend()
                   }}
@@ -2462,6 +2466,8 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       setShowChangeTips({
                         ...showChangeTips,
                         contactImportCaches: undefined,
+                        previousInputType: undefined,
+                        confirmCallBack: undefined
                       })
                       onClickSend()
                     }

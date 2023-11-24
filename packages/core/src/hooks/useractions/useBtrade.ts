@@ -43,6 +43,8 @@ import {
   TradeBtnStatus,
   UIERROR_CODE,
   WalletMap,
+  RouterPath,
+  globalSetup,
 } from '@loopring-web/common-resources'
 import {
   AccountStep,
@@ -59,21 +61,56 @@ import { useHistory } from 'react-router-dom'
 
 import { useTradeBtrade } from '../../stores/router/tradeBtrade'
 import BigNumber from 'bignumber.js'
+import { merge } from 'rxjs'
+import { btradeOrderbookService } from '../../services'
+import _ from 'lodash'
 
-const useBtradeSocket = () => {
+const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
   const { sendSocketTopic, socketEnd } = useSocket()
-  const { account } = useAccount()
-  const { tradeBtrade } = useTradeBtrade()
+  const { tradeBtrade, updateTradeBtrade } = useTradeBtrade()
+  const { marketMap } = useBtradeMap()
+
+  const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
+  const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && tradeBtrade?.depth?.symbol) {
+    if (tradeBtrade?.depth?.symbol) {
       sendSocketTopic({
-        [sdk.WsTopicType.account]: true,
+        [sdk.WsTopicType.btradedepth]: {
+          showOverlap: false,
+          markets: [tradeBtrade?.depth?.symbol],
+          level: 0,
+          count: 50,
+          snapshot: false,
+        },
       })
+    } else {
+      socketEnd()
     }
     return () => {
       socketEnd()
     }
-  }, [account.readyState, tradeBtrade?.depth?.symbol])
+  }, [
+    // account.readyState,
+    tradeBtrade?.depth?.symbol,
+  ])
+  React.useEffect(() => {
+    const { tradeBtrade } = store.getState()._router_tradeBtrade
+    const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
+      // const { market } = store.getState()._router_tradeBtrade.tradeBtrade
+      const item = marketMap[tradeBtrade.market]
+      if (btradeOrderbookMap && item.btradeMarket && btradeOrderbookMap[item?.btradeMarket]) {
+        updateTradeBtrade({
+          // @ts-ignore
+          market: item.market,
+          depth: btradeOrderbookMap[item?.btradeMarket],
+          ...item,
+        })
+        myLog('useBtradeSwap: depth', btradeOrderbookMap[item?.btradeMarket])
+        // debonceCall()
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [tradeBtrade.market])
 }
 
 export const useBtradeSwap = <
@@ -99,7 +136,7 @@ export const useBtradeSwap = <
   const refreshRef = React.createRef()
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { isMobile } = useSettings()
-  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals()
+  const { setShowSupport, setShowTradeIsFrozen, setShowAccount } = useOpenModals()
   const { account } = useAccount()
   const {
     toggle: { BTradeInvest },
@@ -108,12 +145,6 @@ export const useBtradeSwap = <
   /** loaded from loading **/
   const { exchangeInfo, allowTrade } = useSystem()
   const { coinMap, tokenMap } = useTokenMap()
-  const { setShowAccount } = useOpenModals()
-
-  // let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
-  // setMarket(market);
-  //
-
   /** init Ticker ready from ui-backend load**/
   /** get store value **/
   /** after unlock **/
@@ -230,7 +261,7 @@ export const useBtradeSwap = <
           ...tradeDataTmp,
         }
       })
-      history.push('/trade/btrade/' + _market)
+      history.push(`${RouterPath.btrade}/${_market}`)
       updateTradeBtrade({
         market,
         tradePair,
@@ -664,7 +695,35 @@ export const useBtradeSwap = <
       })
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState])
-  useBtradeSocket()
+  const callPairDetailInfoAPIs = React.useCallback(async () => {
+    if (market && LoopringAPI.defiAPI && marketMap && marketMap[market]) {
+      try {
+        const { depth } = await dexSwapDependAsync({
+          // @ts-ignore
+          market: marketMap[market]?.btradeMarket,
+          tokenMap,
+        })
+        updateTradeBtrade({
+          // @ts-ignore
+          market,
+          depth,
+          ...marketMap[market],
+        })
+        myLog('useBtradeSwap: depth', depth)
+      } catch (error: any) {
+        myLog('useBtradeSwap:', error, 'go to LRC-ETH')
+        setToastOpen({
+          open: true,
+          content: 'error: resetMarket',
+          type: ToastType.error,
+        })
+        // myLog("useBtradeSwap:", error, "go to LRC-USDT");
+        resetMarket(market, 'sell')
+      }
+    }
+  }, [market, marketMap])
+
+  useBtradeSocket({ upateAPICall: callPairDetailInfoAPIs })
   useWalletLayer2Socket({ walletLayer2Callback })
 
   /*** user Action function ***/
@@ -783,53 +842,6 @@ export const useBtradeSwap = <
     }
   }, [market])
 
-  // const resetTradeCalcData = React.useCallback(
-  //   (_tradeData, _market?, type?: "sell" | "buy") => {
-  //     myLog("useBtradeSwap: resetTradeCalcData", type, _tradeData);
-  //
-  //     // const { marketArray, tradeMap } = store.getState().invest.btradeMap;
-  //   },
-  //   [
-  //     tradeCalcData,
-  //     tradeData,
-  //     coinMap,
-  //     tokenMap,
-  //     tradeMap,
-  //     marketMap,
-  //     marketArray,
-  //     setTradeCalcData,
-  //     setTradeData,
-  //     realMarket,
-  //   ]
-  // );
-
-  const callPairDetailInfoAPIs = React.useCallback(async () => {
-    if (market && LoopringAPI.defiAPI && marketMap && marketMap[market]) {
-      try {
-        const { depth } = await dexSwapDependAsync({
-          // @ts-ignore
-          market: marketMap[market]?.btradeMarket,
-          tokenMap,
-        })
-        updateTradeBtrade({
-          // @ts-ignore
-          market,
-          depth,
-          ...marketMap[market],
-        })
-        myLog('useBtradeSwap:', market, depth?.symbol)
-      } catch (error: any) {
-        myLog('useBtradeSwap:', error, 'go to LRC-ETH')
-        setToastOpen({
-          open: true,
-          content: 'error: resetMarket',
-          type: ToastType.error,
-        })
-        // myLog("useBtradeSwap:", error, "go to LRC-USDT");
-        resetMarket(market, 'sell')
-      }
-    }
-  }, [market, marketMap])
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const {

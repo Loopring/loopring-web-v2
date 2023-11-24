@@ -17,6 +17,8 @@ import {
   modalContentBaseStyle,
   ModalPanelProps,
   NFTDeployProps,
+  RedPacketViewStep,
+  ResetAccountConfirmationPanel,
   ResetPanel,
   ResetProps,
   TransferPanel,
@@ -40,6 +42,7 @@ import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
+import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -180,6 +183,8 @@ export const ModalPanel = <
     setShowClaimWithdraw,
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
+    setShowTargetRedpacketPop,
+    setShowRedPacket
     // setShowDual,
   } = useOpenModals()
 
@@ -199,6 +204,7 @@ export const ModalPanel = <
     isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
+    isShowTargetRedpacketPop
   } = modals
   const theme = useTheme()
   return (
@@ -381,29 +387,53 @@ export const ModalPanel = <
         open={isShowResetAccount.isShow}
         onClose={() => setShowResetAccount({ ...isShowResetAccount, isShow: false })}
         content={
-          <ResetPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: `auto`,
-              ...resetProps,
-              assetsData,
-            }}
-          />
+          isShowResetAccount.info?.confirmationType ? (
+            <ResetAccountConfirmationPanel
+              onConfirmation={() =>
+                setShowResetAccount({
+                  ...isShowResetAccount,
+                  info: { ...isShowResetAccount.info, confirmationType: undefined },
+                })
+              }
+              type={isShowResetAccount?.info?.confirmationType}
+            />
+          ) : (
+            <ResetPanel<any, any>
+              {...{
+                ...rest,
+                _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+                _height: `auto`,
+                ...resetProps,
+                assetsData,
+              }}
+            />
+          )
         }
       />
       <Modal
         open={isShowActiveAccount.isShow}
         onClose={() => setShowActiveAccount({ ...isShowActiveAccount, isShow: false })}
         content={
-          <ActiveAccountPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: `auto`,
-              ...activeAccountProps,
-            }}
-          />
+          isShowActiveAccount?.info?.confirmationType ? (
+            <ResetAccountConfirmationPanel
+              onConfirmation={() =>
+                setShowActiveAccount({
+                  ...isShowActiveAccount,
+                  info: { ...isShowActiveAccount.info, confirmationType: undefined },
+                })
+              }
+              type={isShowActiveAccount?.info?.confirmationType}
+            />
+          ) : (
+            <ActiveAccountPanel<any, any>
+              {...{
+                ...rest,
+                _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+                _height: `auto`,
+                ...activeAccountProps,
+              }}
+            />
+          )
         }
       />
       <Modal
@@ -467,6 +497,28 @@ export const ModalPanel = <
           >
             <DeFiStackRedeemWrap isJoin={false} {...(sideStackRedeemProps as any)} />
           </Box>
+        }
+      />
+      <Modal
+        // maxWidth={'md'}
+        open={isShowTargetRedpacketPop.isShow}
+        onClose={() => {
+          setShowTargetRedpacketPop({isShow: false, info: {}})
+        }}
+        content={
+          <TargetRedpacketWrap
+            exclusiveRedPackets={isShowTargetRedpacketPop.info.exclusiveRedPackets}
+            onClickOpenExclusive={(redpacket) => {
+              setShowTargetRedpacketPop({isShow: false, info: {}})
+              setShowRedPacket({
+                isShow: true,
+                info: {
+                  ...redpacket,
+                },
+                step: RedPacketViewStep.OpenPanel,
+              })
+            }}
+          />
         }
       />
     </>

@@ -8,6 +8,7 @@ import {
   SUBMIT_PANEL_AUTO_CLOSE,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
+import BigNumber from 'bignumber.js'
 
 import {
   DAYS,
@@ -20,7 +21,7 @@ import {
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { LoopringAPI, store, useAccount, useSystem } from '../../index'
+import { LoopringAPI, store, useSystem } from '../../index'
 import { useTranslation } from 'react-i18next'
 
 export const useDualEdit = <
@@ -33,13 +34,11 @@ export const useDualEdit = <
 >({
   refresh,
 }: {
-  refresh?: (item: R) => void
+  refresh?: (item: R, dontCloseModal: boolean) => void
 }) => {
   const { exchangeInfo } = useSystem()
-  // const { dualViewInfo } = detail ?? {}
   const { setShowAccount } = useOpenModals()
   const { t } = useTranslation()
-  const { account } = useAccount()
   const { setShowDual } = useOpenModals()
   const {
     editDual: { dualViewInfo },
@@ -66,7 +65,7 @@ export const useDualEdit = <
     })
   }, [dualViewInfo?.__raw__?.order?.hash])
 
-  const handleOnchange = ({ tradeData }: { tradeData: T }) => {
+  const handleOnchange = ({ tradeData }: { tradeData: T }, ) => {
     setTradeData(tradeData)
     const editDual = store.getState()._router_tradeDual.editDual
     updateEditDual({
@@ -85,7 +84,7 @@ export const useDualEdit = <
       if (!tradeData.isRenew) {
         return {
           tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          label: 'labelTurnOffDualAutoInvest',
+          label: 'labelConfirm',
         }
       } else if (
         tradeData.isRenew &&
@@ -104,11 +103,11 @@ export const useDualEdit = <
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
   }, [dualViewInfo, tradeData.isRenew, tradeData.renewDuration, tradeData.renewTargetPrice])
-
-  const onSubmitBtnClick = React.useCallback(async () => {
+  const onSubmitBtnClick = React.useCallback(async (props?: any) => {
     const editDual = store.getState()._router_tradeDual.editDual
+    const account = store.getState().account
     let { tradeData: _tradeData } = editDual
-    _tradeData = { ..._tradeData, ...tradeData }
+    _tradeData = { ...tradeData, ..._tradeData }
     const tradeDual = editDual?.dualViewInfo?.__raw__?.order
     const dualViewInfo = editDual?.dualViewInfo
     try {
@@ -143,35 +142,50 @@ export const useDualEdit = <
             }
             const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
             request.newStrike = _tradeData.renewTargetPrice
-            const buyToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
+            const [, , base, quote] =
+              (tradeDual.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
+            const buyToken =
+              tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE ? tokenMap[quote] : tokenMap[base] //tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenOut]]
             const sellToken = tokenMap[idIndex[tradeDual.tokenInfoOrigin.tokenIn]]
 
             request.newOrder = {
               exchange: exchangeInfo.exchangeAddress,
-              storageId: tradeDual.tokenInfoOrigin.storageId,
+              storageId: storageId.orderId,
               accountId: account.accountId,
               sellToken: {
-                tokenId: storageId.orderId, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
+                tokenId: tradeDual.tokenInfoOrigin.tokenIn, //tradeDual.tokenInfoOrigin.tokenIn ?? 0,
                 volume: tradeDual.tokenInfoOrigin.amountIn,
               },
               buyToken: {
-                tokenId: tradeDual.tokenInfoOrigin.tokenOut ?? 0,
+                tokenId: buyToken.tokenId,
+                //tradeDual.tokenInfoOrigin.tokenOut ?? 0,
                 ...(tradeDual.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .times(tradeDual.dualReinvestInfo.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                            .div('1e' + sellToken.decimals)
+                            .times(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
                         .toString(),
                     }
                   : {
                       volume: sdk
-                        .toBig(tradeDual.tokenInfoOrigin.amountIn)
-                        .div('1e' + sellToken.decimals)
-                        .div(tradeDual.dualReinvestInfo.newStrike)
+                        .toBig(
+                          sdk
+                            .toBig(
+                              sdk
+                                .toBig(tradeDual.tokenInfoOrigin.amountIn)
+                                .div('1e' + sellToken.decimals),
+                            )
+                            .div(request.newStrike)
+                            .toFixed(buyToken.precision, BigNumber.ROUND_CEIL),
+                        )
                         .times('1e' + buyToken.decimals)
-                        .toString(),
+                        .toFixed(0, BigNumber.ROUND_FLOOR),
                     }),
               },
               validUntil: getTimestampDaysLater(DAYS * 12),
@@ -209,12 +223,6 @@ export const useDualEdit = <
             content: t('labelDualEditSuccess'),
           })
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-          // if (
-          //   store.getState().modals.isShowAccount.isShow &&
-          //   store.getState().modals.isShowAccount.step == AccountStep.Dual_Success
-          // ) {
-          //   setShowAccount({ isShow: false })
-          // }
         }
         refresh &&
           refresh({
@@ -230,7 +238,7 @@ export const useDualEdit = <
                 },
               },
             },
-          } as any)
+          } as any, props && props.dontCloseModal)
       } else {
         throw new Error('api not ready')
       }
@@ -246,9 +254,6 @@ export const useDualEdit = <
     }
     setIsLoading(false)
   }, [
-    account.accountId,
-    account.apiKey,
-    account.eddsaKey.sk,
     exchangeInfo,
     setShowAccount,
     setShowDual,

@@ -46,6 +46,7 @@ import {
   TabOrderIndex,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useDualAsset } from './useDualAsset'
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -198,11 +199,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-        <Box
-          marginTop={2}
-          display={'flex'}
-          sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}
-        >
+        <Box marginTop={2} display={'flex'} sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}>
           <Tabs
             value={currentTab}
             onChange={(_event, value) => handleTabChange(value)}
@@ -464,4 +461,4 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   )
 })
 
-export default HistoryPanel
+export { HistoryPanel, useDualAsset }

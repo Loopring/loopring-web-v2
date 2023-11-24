@@ -1,4 +1,10 @@
-import { AccountStatus, CollectionMeta, SagaStatus } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  CollectionMeta,
+  NFTSubRouter,
+  RouterPath,
+  SagaStatus,
+} from '@loopring-web/common-resources'
 import {
   collectionService,
   useAccount,
@@ -17,7 +23,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
 }: {
   type: 'addCollection' | 'editCollection' | 'addLegacyCollection'
 }) => {
-  const match: any = useRouteMatch('/NFT/:item?/:id?')
+  const match: any = useRouteMatch('/nft/:item?/:id?')
   const { t } = useTranslation('common')
   const isEdit = match?.params?.item === 'editCollection'
   const history = useHistory()
@@ -51,9 +57,9 @@ export const useCollectionPanel = <T extends CollectionMeta>({
     if (match?.params.item === 'addCollection') {
       history.goBack()
     } else if (match?.params.item === 'editCollection') {
-      history.push('/nft/myCollection')
+      history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)
     } else if (match?.params?.item === 'addLegacyCollection') {
-      history.push(`/nft/importLegacyCollection/${match?.params?.id}`)
+      history.push(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${match?.params?.id}`)
     }
   }, [account.readyState, accountStatus, history, match.params.id, match.params.item])
   React.useEffect(() => {
@@ -67,13 +73,13 @@ export const useCollectionPanel = <T extends CollectionMeta>({
       const loopringId = match?.params?.id.split('--')[1]
       if (collectionValue?.id?.toString() === loopringId.toString()) {
       } else {
-        history.push('/nft/myCollection')
+        history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)
       }
     } else if (match?.params?.item === 'addLegacyCollection' && match?.params?.id) {
       const contract = match?.params?.id
       if (contract.startsWith('0x')) {
       } else {
-        history.push('/nft/importLegacyCollection')
+        history.push(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}`)
       }
     }
   }, [accountStatus, account.readyState, match?.params?.item])

@@ -528,7 +528,8 @@ export default {
   labelBuyToken: 'Buy {{token}}',
   labelCurrentlyLevel: 'Currently {{value}} {{token}}',
   labelLRCBalance: 'LRC Balance',
-  labelNoticeForForAccountFrozen: 'Please wait while {{ type }} is updating.',
+  labelNoticeForForAccountFrozen:
+    'Your wallet’s L2 account is locked. While locked, you can’t perform any L2 operations. If you require further assistance, please send an email to support@loopring.io.',
   labelAction: 'action',
   labelGoExplore: 'View transactions on the <1>Loopring Block Explorer</1>.',
   labelNOETH: 'Need ETH for gas',
@@ -614,7 +615,6 @@ export default {
   labelGuid: 'Go to Guide',
   labelOK: 'Ok',
   labelL2toL2InvalidAddr: 'Invalid address or ENS',
-  labelL2toL2IsNotLoopringContract: 'Is not Loopring Contract wallet address',
   labelL2toL2AddressNotLoopring:
     '<0></0> This address does not have an activated {{loopringL2}}. Please ensure  the recipient can access {{loopringL2}} before sending.',
   labelL2toL2AddressType: 'Address Type',
@@ -773,11 +773,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm Block Trade Support',
+  labelConfirmBtrade: 'Confirm CEX Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -808,7 +808,7 @@ export default {
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a CEX address using {{loopringL2}}. Since the CEX does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     'This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address',
   labelForceWithdrawConfirm1:
@@ -994,8 +994,11 @@ export default {
   labelDualInvestBaseTitle: 'Invest {{symbolA}} (Sell High for {{symbolB}})',
   labelDualInvestQuoteTitle: 'Invest {{symbolA}} (Buy {{symbolB}} Low)',
   labelDualInvestDes: 'Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}',
-  labelDualCurrentPriceTip: 'Current Price is based on USDT derived from some leading exchanges.',
+  labelDualCurrentPriceTip:
+    'Current Price is based on {{symbol}} derived from some leading exchanges.',
   labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1> {{baseSymbol}}',
+  labelDualCurrentPrice2: 'Current Price:\n <1>{{price}}</1> {{baseSymbol}}',
+
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
   labelDualProcessing: 'Waiting for completion',
   labelDualProcessingDes:
@@ -1007,8 +1010,8 @@ export default {
   labelDualNoEnough: 'Insufficient balance',
   labelDualSettleDate: 'Settlement Date',
   labelDualSubDate: 'Subscription Date',
-  labelDualCurrentPrice2: 'Current {{symbol}} Price',
-  labelDualCurrentPrice3: 'Current  Price',
+  // labelDualCurrentPrice2: '{{symbol}} Current Price',
+  // labelDualCurrentPrice3: '{{symbol}} current Price',
   labelDualCurrentAPR: 'APR <1>\u2139</1>',
   labelDualCurrentAPRDes:
     'APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.',
@@ -1062,8 +1065,9 @@ export default {
   labelDualBeginnerStep2Title: 'Step 2: Choose to sell or buy at desired price in the future',
   labelDualBeginnerSellHigh: 'Sell {{token}} High',
   labelDualBeginnerBuyLow: 'Buy {{token}} Low',
-  labelDualBeginnerReceiveStable: 'You will receive USDC or USDT',
-  labelDualBeginnerInvestStable: 'You can invest USDC or USDT',
+  labelDualBeginnerReceiveStable: 'You will receive {{list}} {{last}}',
+  labelDualBeginnerInvestStable: 'You can invest {{list}} {{last}}',
+  labelDualBeginnerLast: 'or {{last}}',
   labelDualBeginnerStep3Title: 'Step 3: Choose Target Price and Settlement Date',
   labelDualBeginnerSellHighFor: 'Sell high for {{token}}',
   labelDualBeginnerBuyLowWith: 'Buy low with {{token}}',
@@ -1089,7 +1093,7 @@ export default {
   labelEditRestCollectionBtn: 'Reset',
   labelEditCollectionERC1155: 'Edit My Collection',
   labelDualSettlementCalculator: 'Settlement Calculator',
-  labelDualSettleDateDur: 'Days Till Settlement',
+  labelDualSettleDateDur: 'Subscription Length (days)',
   labelNoInvestContent:
     'You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments',
   labelImportCollection: 'Import Collection for Legacy NFT',
@@ -1626,7 +1630,6 @@ export default {
   labelStopLimitFromDropsDown: 'drops down',
   labelStopLimitBehaviorAbove: 'above',
   labelStopLimitBehaviorBelow: 'below',
-
   labelStopLimitType: 'Stop-Limit / {{tradeType}}',
   labelStopLimitStopPrice: 'Stop Price',
   labelStopLimitPriceLimitPrice: 'Limit Price',
@@ -1688,7 +1691,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',
@@ -1912,7 +1915,6 @@ export default {
   labelRedPacketExclusiveTag: 'Exclusive',
   labelRedPacketClaiming: 'Claiming',
   labelRedPacketReceiptsList: 'Red Packet Receipt >',
-  labelTxGuardian_upgrade_contract: 'upgrade contract',
   labelEOA: 'EOA',
   labelLoopringWallet: 'Loopring',
   labelOtherSmart: 'Other Smart',
@@ -1976,6 +1978,7 @@ export default {
   labelDefiRate: 'Rate',
   labelDefiLido: 'Lido',
   labelDefiRocketPool: 'Rocket Pool',
+
   labelDualIsHigh: 'is significantly higher',
   labelDualIsLow: 'is significantly lower',
   labelDualAutoAlert:
@@ -2012,7 +2015,13 @@ export default {
     '<h5>Auto Reinvest</h5>' +
     '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
     '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell crypto.</p>' +
     "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelAssetDualInvests: 'Dual Investment',
+  labelTxGuardian_upgrade_contract: 'upgrade contract',
+  labelTxGuardian_approve_token: 'approve token',
+  labelContactNameExisted: 'Name already exists',
+  labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
   labelTargetRedpacketOption1: 'Option 1',
@@ -2024,4 +2033,77 @@ export default {
   labelTargetRedpacketNoRedpacket: 'You do not have an existing wallet yet',
   labelTargetRedpacketNoRedpacketDes: 'If your prepared but unaddressed Red Packets will be displayed here !',
   labelTargetRedpacketOption2: 'Option 2:',
+  labelEarnVaultTitle: 'Total Vault',
+  labelDualBTC: 'ETH - WBTC Dual Investment',
+  labelDualBTCDes: 'Select based on Token and Settlement Date',
+  labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',
+  labelDualNewPriceLessThan: 'if {{base}} < {{value}} {{quote}}',
+  labelDualNewPriceLessOrEqualThan: 'if {{base}} ≤ {{value}} {{quote}}',
+  labelDualNewPriceGreaterThan: 'if {{base}} > {{value}} {{quote}}',
+  labelDualNewPriceGreaterThanOrEqual: 'if {{base}} ≥ {{value}} {{quote}}',
+  labelInputMax: 'Max',
+  labelTokenEnterDualToken: 'Amount',
+  labelTokenMaxBalance: 'Available Balance',
+  labelInvestMiniDual: 'Min {{value}}',
+  labelDualAutoSearchingDes: 'Auto reinvesting. Searching for the product...',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess:
+    'Auto reinvested successful. A new order has been generated for you.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualRetryPending: 'Pending',
+  labelDualRetryTerminated: 'Terminated',
+  labelDualRetryFailed: 'Failed',
+  labelDualRetrySuccess: 'Successful',
+  labelDualRetryStatusTerminated:
+    'Auto Reinvest terminated. You successfully purchased the target token.',
+  labelInvestmentStatusSettled: 'Settled',
+  labelInvestmentStatusDelivering: 'Delivering',
+  labelInvestmentStatusSubscribe: 'Earning',
+  labelDualTxsSettlement: 'Settlement',
+  labelDualAuto: 'Auto Reinvest',
+  labelDualAssetReInvestEnable: 'Enabled',
+  labelDualDeliver: 'Settlement Price',
+  labelDualAssetReInvestDisable: 'Disabled',
+  labelUnlockErrorLine1:
+    'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
+  labelUnlockErrorLine2Part1: 'As a last resort, you can ',
+  labelUnlockErrorLine2Part2: 'Reset Loopring L2 keypair',
+  labelUnlockErrorLine2Part3:
+    '. This can be especially helpful if all other retry attempts fail, particularly when using hardware wallets.',
+  labelResetLoopringL2: 'Reset Loopring L2 keypair',
+  labelResetlockedReset1:
+    "Please note that if you have pending Dual Investment subscriptions, the L2 keypair reset won't take immediate effect. Your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
+  labelResetlockedReset2:
+    'Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.',
+  labelResetunlockedWithDual1:
+    "We’ve detected that you have an active Dual Investment subscription. As a result, the L2 keypair reset won't take effect immediately. Instead, your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
+  labelResetunlockedWithDual2:
+    'Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.',
+  labelResetunlockedWithoutDual:
+    'Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.',
+  labelDualAutoReinvest: 'Auto Reinvest',
+  labelInvestDualTutorialContent2:
+    '<h6>Auto Reinvest</h6>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelNoticeTitle: 'Notifications',
+  labelNotificationTime: '{{time}}',
+  labelNotificationClear: 'Clear all',
+  labelNotificationReadAll: 'Mark all as read',
+  labelNotificationLabel: 'Notification',
+  labelActiveL1successfulNote: 'Active {{ethereumL1}} successful',
+  labelActiveL2successfulNote: 'Active {{loopringL2}} successful',
+  labelActivatingL1AccountNote: 'Activating {{ethereumL1}} successful',
+  labelL1ReceiveNote: 'Receive token in {{ethereumL1}}',
+  labelL1SendNote: ' Send token from {{ethereumL1}}',
+  labelL2ReceiveNote: 'Receive token in {{loopringL2}}',
+  labelL2SendNote: 'Send token from {{loopringL2}} successful',
+  labelL2DepositNote: 'Receive token in {{loopringL2}}',
+  labelL2WithdrawNote: 'Send token in {{loopringL2}}',
+  labelTotalUnRead: '{{total}} unread(s)',
+  labelReadAll: 'Read all',
 }

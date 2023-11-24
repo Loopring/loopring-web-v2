@@ -20,6 +20,7 @@ export const ModalAccount = withTranslation('common', { withRef: true })(
     etherscanBaseUrl,
     onQRClick,
     panelList,
+    isWebEarn,
     ...rest
   }: ModalAccountProps & WithTranslation) => {
     // const { w, h } = style ? style : { w: undefined, h: undefined };

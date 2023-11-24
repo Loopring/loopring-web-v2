@@ -2,7 +2,7 @@ import {
   Account,
   ButtonComponentsMap,
   HeaderMenuItemInterface,
-  Notify,
+  NOTIFICATIONHEADER,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -11,10 +11,10 @@ export interface HeaderToolBarInterface {
   args?: any
 }
 
-export interface HeaderProps<R> {
+export interface HeaderProps<R, N = sdk.UserNotification> {
   headerToolBarData: { [key: number]: R }
   headerMenuData: HeaderMenuItemInterface[]
-  notification?: Notify
+  notification?: NOTIFICATIONHEADER<N>
   account?: Account
   chainId: sdk.ChainId
   allowTrade: {
@@ -29,6 +29,7 @@ export interface HeaderProps<R> {
   selected: string
   className?: string
   isLandPage?: boolean
-  toolBarAvailableItem?: number[]
   toolBarMap?: typeof ButtonComponentsMap
+  transparent?: boolean
+  landBtn?: JSX.Element
 }

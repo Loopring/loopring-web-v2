@@ -1,8 +1,17 @@
-import { Trans } from 'react-i18next'
-import { ACTIVITY, NOTIFICATION, NOTIFICATION_ITEM, SoursURL } from '@loopring-web/common-resources'
-import { Box, Divider, Typography } from '@mui/material'
+import { Trans, useTranslation } from 'react-i18next'
+import {
+  ACTIVITY,
+  Layer2RouterID,
+  NOTIFICATION_ITEM,
+  NOTIFICATIONHEADER,
+  RouterPath,
+  SoursURL,
+} from '@loopring-web/common-resources'
+import { Box, Divider, Grid, Link, Typography } from '@mui/material'
 import { EmptyDefault, ListItemActivity, NotificationListItem } from '../basic-lib'
 import styled from '@emotion/styled'
+import { NotificationItem } from '@loopring-web/core'
+import { useHistory } from 'react-router-dom'
 
 const BoxStyle = styled(Box)`
   background: var(--color-pop-bg);
@@ -13,52 +22,101 @@ const BoxStyle = styled(Box)`
   }
 ` as typeof Box
 export const NotificationPanel = ({
-  notification,
+  notification: { myNotifyMap, notifyMap, chainId, account },
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
-  exclusiveRedpacketCount
+  exclusiveRedpacketCount,
 }: {
-  notification: NOTIFICATION,
+  notification: NOTIFICATIONHEADER<any> & { chainId: number; account }
   onClickExclusiveredPacket: () => void
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
 }) => {
-  // myLog("notifications", notification.notifications);
-  notification.notifications = notification.notifications?.reduce((prev, item) => {
+  const { t } = useTranslation()
+  const history = useHistory()
+  const notifications = notifyMap?.notifications?.reduce((prev, item) => {
     if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
       prev.push(item)
     }
     return prev
   }, [] as NOTIFICATION_ITEM[])
-  notification.activities = notification.activities?.reduce((prev, item) => {
+  let activities = notifyMap?.activities?.reduce((prev, item) => {
     if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
       prev.push(item)
     }
     return prev
   }, [] as ACTIVITY[])
 
-  notification.activities = notification?.activitiesInvest?.reduce((prev, item) => {
+  activities = notifyMap?.activitiesInvest?.reduce((prev, item) => {
     if (item.endShow >= Date.now() && item.startShow <= Date.now() && item.webFlag) {
       prev.push(item)
     }
     return prev
-  }, notification.activities as ACTIVITY[])
+  }, activities)
 
-  const hasActivities = notification.activities && notification.activities?.length
-
-  const hasNotifications = notification.notifications && notification.notifications?.length
+  const hasActivities = activities && activities?.length
+  const hasNotifications = notifications && notifications?.length
 
   return (
     <BoxStyle
       display={'flex'}
       flexDirection={'column'}
       maxHeight={600}
-      // minHeight={100}
-      // minWidth={100}
       sx={{ overflowY: 'scroll' }}
+      alignItems={'center'}
       // paddingBottom={1}
-      paddingTop={hasActivities ? 1 : 0}
     >
+      {/*//TODO: after Notification Socket*/}
+      {/*{myNotifyMap?.total !== undefined && (*/}
+      {/*  <>*/}
+      {/*    <Typography*/}
+      {/*      alignSelf={'stretch'}*/}
+      {/*      sx={{ background: 'var(--field-opacity)' }}*/}
+      {/*      borderRadius={1 / 2}*/}
+      {/*      padding={1}*/}
+      {/*      display={'inline-flex'}*/}
+      {/*      alignItems={'center'}*/}
+      {/*      justifyContent={'space-between'}*/}
+      {/*    >*/}
+      {/*      <Typography component={'span'}>*/}
+      {/*        {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}*/}
+      {/*      </Typography>*/}
+      {/*      <Link href={`/#${RouterPath.layer2}/${Layer2RouterID.notification}`} color={'primary'}>*/}
+      {/*        {t('labelReadAll')}*/}
+      {/*      </Link>*/}
+      {/*    </Typography>*/}
+      {/*    {myNotifyMap?.total ? (*/}
+      {/*      <Box paddingX={1} display={'flex'} width={330} alignItems={'center'}>*/}
+      {/*        <Grid container spacing={1 / 2} margin={0}>*/}
+      {/*          {myNotifyMap?.items?.reduce((prev, ele, index) => {*/}
+      {/*            if (index < 3) {*/}
+      {/*              prev.push(*/}
+      {/*                <Grid item key={ele?.id} xs={12}>*/}
+      {/*                  <NotificationItem*/}
+      {/*                    {...ele}*/}
+      {/*                    size={'small'}*/}
+      {/*                    className={'headerItem'}*/}
+      {/*                    index={index}*/}
+      {/*                    onReadClick={() => {*/}
+      {/*                      history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)*/}
+      {/*                    }}*/}
+      {/*                  />*/}
+      {/*                  <Divider sx={{ marginY: 1 }} />*/}
+      {/*                </Grid>,*/}
+      {/*              )*/}
+      {/*            }*/}
+      {/*            return prev*/}
+      {/*          }, [])}*/}
+      {/*        </Grid>*/}
+      {/*      </Box>*/}
+      {/*    ) : (*/}
+      {/*      <Divider*/}
+      {/*        sx={{ paddingY: showExclusiveRedpacket || hasActivities || hasNotifications ? 1 : 0 }}*/}
+      {/*      />*/}
+      {/*    )}*/}
+      {/*  </>*/}
+      {/*)}*/}
+
       {showExclusiveRedpacket || hasActivities || hasNotifications ? (
         <>
           <Box
@@ -81,7 +139,7 @@ export const NotificationPanel = ({
                   paddingTop: 2.5,
                   cursor: 'pointer',
                   marginTop: 1,
-                  marginBottom: !!hasActivities ? 1 : 0
+                  marginBottom: !!hasActivities ? 1 : 0,
                 }}
               >
                 <Typography color={'black'}>Congratulations!</Typography>
@@ -91,12 +149,12 @@ export const NotificationPanel = ({
               </Box>
             )}
             {!!hasActivities &&
-              notification.activities.map((activity, index) => (
+              activities.map((activity, index) => (
                 <ListItemActivity
                   key={activity.type + index}
                   {...activity}
-                  chainId={notification.chainId}
-                  account={notification.account}
+                  chainId={chainId}
+                  account={account}
                 />
               ))}
           </Box>
@@ -104,12 +162,12 @@ export const NotificationPanel = ({
             <>
               {!!hasActivities && <Divider />}
               <Box component={'section'} display={'flex'} flexDirection={'column'}>
-                {notification.notifications.map((notify, index) => (
+                {notifications?.map((notify, index) => (
                   <NotificationListItem
                     key={notify.name.toString() + index}
                     {...notify}
-                    chainId={notification.chainId}
-                    account={notification.account}
+                    chainId={chainId}
+                    account={account}
                   />
                 ))}
               </Box>

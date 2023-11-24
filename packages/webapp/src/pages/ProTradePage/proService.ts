@@ -64,7 +64,6 @@ export const useSocketProService = ({
   const subjectAmmpool = React.useMemo(() => ammPoolService.onSocket(), [])
   const subjectMixorder = React.useMemo(() => mixorderService.onSocket(), [])
   const subjectTicker = React.useMemo(() => tickerService.onSocket(), [])
-  // const subjectTrade = React.useMemo(() => tradeService.onSocket(), []);
   const subjectMixtrade = React.useMemo(() => mixtradeService.onSocket(), [])
 
   const _accountUpdate = _.throttle(({ walletLayer1Status, walletLayer2Status }) => {
@@ -293,7 +292,7 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
       if (account.readyState === AccountStatus.ACTIVATED) {
         sendSocketTopic({
           ...dataSocket,
-          [sdk.WsTopicType.account]: true,
+          // [sdk.WsTopicType.account]: true,
           [sdk.WsTopicType.order]: marketArray, // user order
         })
       } else {

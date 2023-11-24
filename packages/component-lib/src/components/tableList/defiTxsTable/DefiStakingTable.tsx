@@ -29,7 +29,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 14% auto 16% 16% 11% 10% 160px !important;`
+        ? `--template-columns: 14% auto 16% 16% 11% 11% 160px !important;`
         : `--template-columns: 24% auto auto 8% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -467,16 +467,15 @@ export const DefiStakingTable = withTranslation(['tables', 'common'])(
     }
 
     return (
-      <TableWrapperStyled isMobile={isMobile} >
+      <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
           currentheight={
-            rawData.length > 0 
+            rawData.length > 0
               ? RowInvestConfig.rowHeaderHeight + rawData.length * RowInvestConfig.rowHeight
               : 350
           }
           rowHeight={RowInvestConfig.rowHeight}
           headerRowHeight={RowInvestConfig.rowHeaderHeight}
-          
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,

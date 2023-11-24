@@ -8,6 +8,7 @@ import {
   ToastType,
   useSettings,
   useToggle,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import { Box, Typography } from '@mui/material'
 import React from 'react'
@@ -15,16 +16,16 @@ import {
   BackIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
-  SatkingLogo,
-  SoursURL,
   TOAST_TIME,
-  UpIcon,
   hexToRGB,
+  RouterPath,
+  InvestRouter,
+  InvestType,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel/'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { ErrorPage } from '../../ErrorPage'
@@ -85,6 +86,7 @@ export const StackTradePanel = ({
             background={containerColors[0]}
             alignItems={'center'}
             flexDirection={'column'}
+            paddingY={2}
             containerProps={{
               borderBottom: `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
             }}
@@ -96,7 +98,6 @@ export const StackTradePanel = ({
               justifyItems={'center'}
               flexDirection={'row'}
               justifyContent={'space-between'}
-              height={6 * theme.unit}
             >
               <Button
                 startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
@@ -104,11 +105,18 @@ export const StackTradePanel = ({
                 size={'medium'}
                 sx={{ color: 'var(--color-text-primary)' }}
                 color={'inherit'}
-                onClick={() => history.push(`/invest/overview`)}
+                onClick={() =>
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+                }
               >
                 {t('labelBack')}
               </Button>
-              <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
+              <Button
+                onClick={() =>
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                }
+                variant={'text'}
+              >
                 {t('labelMyInvestLRCStaking')}{' '}
                 {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
               </Button>

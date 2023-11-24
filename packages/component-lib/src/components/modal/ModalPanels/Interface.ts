@@ -20,6 +20,7 @@ export type AccountBaseProps = {
   onSwitch?: any
   onCopy?: any
   onViewQRCode?: any
+  hideVIPlevel?: boolean
 } & Account
 
 export enum AccountStep {

@@ -24,12 +24,12 @@ import { getNotify } from '../notify/reducer'
 import { getTokenPrices } from '../tokenPrices/reducer'
 import { getInvestTokenTypeMap } from '../invest/InvestTokenTypeMap/reducer'
 import { getStakingMap } from '../invest/StakingMap/reducer'
+import { clearAll as clearWalletInfoAll } from '../localStore/walletInfo'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
 import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
-import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 import { updateDualSyncMap } from '../invest/DualMap/reducer'
 import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
@@ -93,6 +93,8 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     ammpoolsRaw,
     disableWithdrawTokenListRaw,
     marketRaw
+  // const { checkHWAddr, updateHW } = useWalletInfo()
+  store.dispatch(clearWalletInfoAll(undefined))
   if (_tokenMap && _ammpools && _markets && _disableWithdrawTokenList) {
     myLog('tokenConfig, ammpoolConfig, markets, disableWithdrawTokenList from local storge')
     const resultTokenMap = sdk.makeMarket(_tokenMap)
@@ -365,8 +367,11 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl
       if (extendsChain.includes(chainId.toString())) {
+        const socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
         baseURL = `https://${process.env['REACT_APP_API_URL_' + chainId.toString()]}`
-        socketURL = `wss://ws.${process.env['REACT_APP_API_URL_' + chainId.toString()]}/v3/ws`
+        socketURL = `wss://${socketPrefix}${
+          process.env['REACT_APP_API_URL_' + chainId.toString()]
+        }/v3/ws`
         etherscanBaseUrl = chainId == 5 ? `https://goerli.etherscan.io/` : `https://etherscan.io/`
       } else {
         if (sdk.ChainId.MAINNET === chainId) {
@@ -374,15 +379,20 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           socketURL = `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
         } else {
           const isDevToggle = store.getState().settings.isDevToggle
+          let socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
           if (isDevToggle === true && process.env?.REACT_APP_TEST_ENV) {
+            socketPrefix = ''
             baseURL = `https://${process.env.REACT_APP_API_URL_5}`.replace('uat2', 'dev')
-            socketURL = `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`.replace('uat2', 'dev')
+            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_5}/v3/ws`.replace(
+              'uat2',
+              'dev',
+            )
             // @ts-ignore
             sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
               process.env.REACT_APP_GOERLI_DEV_NFT_FACTORY_COLLECTION
           } else {
             baseURL = `https://${process.env.REACT_APP_API_URL_5}`
-            socketURL = `wss://ws.${process.env.REACT_APP_API_URL_5}/v3/ws`
+            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_5}/v3/ws`
             // @ts-ignore
             sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
               process.env[

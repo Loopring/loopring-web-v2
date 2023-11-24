@@ -1,6 +1,6 @@
 import React from 'react'
 import { Avatar, Box, BoxProps, styled, Typography } from '@mui/material'
-import { CoinInfo, SoursURL, TokenType } from '@loopring-web/common-resources'
+import { CoinInfo, SoursURL, TokenType, CoinSource } from '@loopring-web/common-resources'
 import { AvatarCoin } from '../../../basic-lib'
 import { useSettings } from '../../../../stores'
 
@@ -17,13 +17,30 @@ const BoxStyle = styled(Box)<BoxProps & { size: number }>`
 export const CoinIcons = React.memo(
   ({
     tokenIcon,
-    size = 24,
+    size: _size,
     type = TokenType.single,
   }: {
-    tokenIcon: [any, any?]
-    size?: number
+    tokenIcon: [CoinSource, CoinSource?]
+    size?: number | 'middle' | 'small' | 'large'
     type?: TokenType
   }) => {
+    const size = React.useMemo(() => {
+      if (!_size) {
+        return 24
+      } else if (typeof _size === 'string') {
+        switch (_size) {
+          case 'middle':
+            return 24
+          case 'small':
+            return 20
+          case 'large':
+            return 36
+        }
+      } else {
+        return _size
+      }
+    }, [_size])
+
     const [coinAInfo, coinBInfo] = tokenIcon
     return (
       <BoxStyle display={'flex'} justifyContent={'center'} size={size}>

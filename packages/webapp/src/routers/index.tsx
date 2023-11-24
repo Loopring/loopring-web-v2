@@ -13,13 +13,16 @@ import {
   ModalRedPacketPanel,
   store,
   useDeposit,
+  useNotificationSocket,
+  useNotify,
   useOffFaitModal,
   useSystem,
   useTicker,
   useTokenMap,
+  NoticePop,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
-import { LandPage } from '../pages/LandPage'
+import { LandPage, HomePage, LandBtn } from '../pages/LandPage'
 import {
   ErrorMap,
   GUARDIAN_URL,
@@ -35,7 +38,6 @@ import {
 } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'
 import {
-  ComingSoonPanel,
   LoadingBlock,
   NoticePanelSnackBar,
   NoticeSnack,
@@ -104,9 +106,19 @@ const WrapModal = () => {
   const location = useLocation()
   const { etherscanBaseUrl } = useSystem()
   const { t } = useTranslation()
-  const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
+  const { getUserNotify } = useNotify()
 
+  const { depositProps } = useDeposit(false, { owner: store.getState()?.account?.accAddress })
+  const [notificationPush, setNotificationPush] = React.useState({ isShow: false, item: {} })
   const { open, actionEle, handleClose } = useOffFaitModal()
+
+  const notificationCallback = React.useCallback((notification) => {
+    if (notification) {
+      setNotificationPush({ isShow: true, item: { ...notification } })
+      getUserNotify()
+    }
+  }, [])
+  useNotificationSocket({ notificationCallback })
 
   const noticeSnacksElEs = React.useMemo(() => {
     return [
@@ -120,8 +132,9 @@ const WrapModal = () => {
           message: t('labelOrderBanxaIsReadyToPay'),
         }}
       />,
+      ,
     ] as any
-  }, [open, actionEle])
+  }, [open, actionEle, notificationPush])
   return (
     <>
       <ModalCoinPairPanel />
@@ -131,7 +144,20 @@ const WrapModal = () => {
         depositProps={depositProps}
         isLayer1Only={/(guardian)|(depositto)/gi.test(location.pathname ?? '')}
       />
-      <NoticePanelSnackBar noticeSnacksElEs={noticeSnacksElEs} />
+      <NoticePanelSnackBar
+        noticeSnacksElEs={[
+          ...noticeSnacksElEs,
+          ...(notificationPush.isShow && notificationPush?.item
+            ? [
+                <NoticePop
+                  {...notificationPush?.item}
+                  isShow={notificationPush.isShow}
+                  setNotificationPush={setNotificationPush}
+                />,
+              ]
+            : []),
+        ]}
+      />
     </>
   )
 }
@@ -190,8 +216,13 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           {searchParams && searchParams.has('noheader') ? (
             <></>
           ) : (
-            <Header isHideOnScroll={true} isLandPage />
+            <Header isHideOnScroll={true} isLandPage landBtn={<LandBtn />} />
+            // <Header isHideOnScroll={true} isLandPage />
           )}
+          <HomePage />
+        </Route>
+        <Route exact path='/pro'>
+          {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <LandPage />
         </Route>
         <Route path='/document'>
@@ -276,11 +307,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <ErrorPage {...ErrorMap.TRADE_404} />
           )}
         </Route>
-        <Route path={RouterPath.lite}>
-          <ContentWrap state={state} value={RouterMainKey.lite}>
-            <SwapPage />
-          </ContentWrap>
-        </Route>
         <Route path={RouterPath.btrade}>
           <ContentWrap state={state} value={RouterMainKey.btrade}>
             <BtradeSwapPage />
@@ -289,6 +315,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.fiat, RouterPath.fiat + '/*']}>
           <ContentWrap state={state} value={RouterMainKey.fiat}>
             <FiatPage />
+          </ContentWrap>
+        </Route>
+        <Route path={[RouterPath.lite, RouterPath.trade]}>
+          <ContentWrap state={state} value={RouterMainKey.lite}>
+            <SwapPage />
           </ContentWrap>
         </Route>
         <Route exact path={RouterPath.markets}>

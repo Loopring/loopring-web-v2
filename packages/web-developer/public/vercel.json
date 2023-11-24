@@ -1,0 +1,5 @@
+{
+  "redirects": [
+    { "source": "/en", "destination": "https://docs.loopring.io", "permanent": false }
+  ]
+}

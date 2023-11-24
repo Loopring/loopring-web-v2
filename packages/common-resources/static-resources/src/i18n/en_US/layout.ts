@@ -85,7 +85,7 @@ export default {
   labelkeyAPIs: 'APIs',
   labelkeyReportIssue: 'Report Issue',
   labelMyNFT: 'My NFTs',
-  labelLaunchApp: 'Launch App',
+  labelLaunchApp: 'View Dapps',
   labelLaunchMobileApp: 'Exchange',
   labelLandingHeaderLayer2: 'zkRollup Layer 2',
   labelLandingHeaderWallet: 'Smart Wallet',
@@ -131,4 +131,9 @@ export default {
   // labelDepositNFTDes:"Receive NFT"
   labelInvestLeverageETH: 'Leveraged ETH Staking',
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
+  labelDualInvest: 'Dual Investment',
+  labelVault: 'Vault',
+  labelNavPro: 'Loopring pro',
+  labelNavEarn: 'Loopring Earn',
+  labelNavWallet: 'Wallet',
 }

@@ -18,7 +18,7 @@ export const TransactionTradeTypes = {
     `${sdk.UserTxTypes.FORCE_WITHDRAWAL},` +
     `${sdk.UserTxTypes.WITHDRAW_LUCKY_TOKEN},${sdk.UserTxTypes.SEND_LUCKY_TOKEN},${sdk.UserTxTypes.SEND_BACK_LUCKY_TOKEN},` +
     `${sdk.UserTxTypes.UNIFIED_CLAIM},${sdk.UserTxTypes.L2_STAKING},` +
-    `${sdk.UserTxTypes.DUAL_INVESTMENT}`,
+    `${sdk.UserTxTypes.DUAL_INVESTMENT},${'change_password'}`,
   receive: `${sdk.UserTxTypes.DEPOSIT}`,
   send: `${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL}`,
   forceWithdraw: `${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW}`,

@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Modal, Tab, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
@@ -17,6 +17,8 @@ import {
   useOpenModals,
   useSettings,
   Tabs,
+  CoinIcons,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -29,8 +31,7 @@ import {
   HiddenTag,
   INVEST_TABS,
   InvestAssetRouter,
-  // InvestTab,
-  // investTabs,
+  AmmPanelType,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -41,10 +42,13 @@ import {
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
-  AmmPanelType,
+  RouterPath,
+  RecordTabIndex,
+  InvestRouter,
+  InvestType,
+  RowConfig,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
 import {
   TableWrapStyled,
@@ -60,10 +64,10 @@ import {
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
-import { useDualAsset } from '../../AssetPage/HistoryPanel/useDualAsset'
 import React from 'react'
-import { containerColors, MaxWidthContainer } from '..'
+import { containerColors } from '..'
 import _ from 'lodash'
+import { useDualAsset } from '../../AssetPage/HistoryPanel'
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -72,15 +76,17 @@ const MyLiquidity: any = withTranslation('common')(
     hideAssets,
     className,
     noHeader,
+    path = `${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`,
     /* ammActivityMap, */ ...rest
   }: WithTranslation & {
     isHideTotal?: boolean
     className?: string
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
+    ammActivityMap: sdk.LoopringMap<sdk.LoopringMap<sdk.AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
     noHeader?: boolean
+    path?: string
   }) => {
-    let match: any = useRouteMatch('/invest/balance/:type')
+    let match: any = useRouteMatch(path + '/:type')
 
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
@@ -101,7 +107,7 @@ const MyLiquidity: any = withTranslation('common')(
       useGetAssets()
     const { account } = useAccount()
     const history = useHistory()
-    const { currency, hideSmallBalances, defaultNetwork } = useSettings()
+    const { currency, hideSmallBalances, defaultNetwork, coinJson } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { setShowAmm } = useOpenModals()
     const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
@@ -238,12 +244,7 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
-      setTab(
-        InvestAssetRouter[
-          // @ts-ignore
-          match?.params?.type?.toUpperCase() ?? InvestAssetRouter.DUAL
-        ] ?? InvestAssetRouter.DUAL,
-      )
+      setTab(match?.params?.type ?? InvestAssetRouter.DUAL)
       if (searchParams?.get('refreshStake')) {
         getStakingList({})
       }
@@ -301,6 +302,7 @@ const MyLiquidity: any = withTranslation('common')(
               justifyContent={'space-between'}
               flexDirection={isMobile ? 'column' : 'row'}
               alignItems={isMobile ? 'start' : 'center'}
+              alignSelf={'stretch'}
             >
               <Box paddingY={7}>
                 <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
@@ -308,7 +310,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Typography>
                 <Button
                   onClick={() => {
-                    history.push('/invest/overview')
+                    history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2 }}
                   variant={'contained'}
@@ -317,7 +319,7 @@ const MyLiquidity: any = withTranslation('common')(
                 </Button>
                 <Button
                   onClick={() => {
-                    history.push('/l2assets/history/Transactions')
+                    history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
@@ -389,14 +391,19 @@ const MyLiquidity: any = withTranslation('common')(
             borderRadius: noHeader ? `${theme.unit}px` : 0,
             marginTop: noHeader ? 1 : 0,
           }}
+          // sx={{ flexDirection: 'column' }}
         >
           {
             <>
               <Box width={'100%'} display={'flex'}>
                 <Tabs
+                  variant='scrollable'
                   className={'btnTab'}
                   value={tab}
-                  onChange={(_event: any, newValue: any) => setTab(newValue)}
+                  onChange={(_event: any, newValue: any) => {
+                    myLog('newValue', newValue)
+                    history.push(`${path}/${newValue}`)
+                  }}
                   aria-label='InvestmentsTab'
                 >
                   {visibaleTabs.map((tab) => (
@@ -575,7 +582,9 @@ const MyLiquidity: any = withTranslation('common')(
                               variant={'contained'}
                               size={'small'}
                               onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                                history.push(
+                                  `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
+                                )
                               }}
                             >
                               {t('labelClaimBtn')}
@@ -713,6 +722,7 @@ const MyLiquidity: any = withTranslation('common')(
                       hideAssets={hideAssets}
                       cancelReInvest={_cancelReInvest as any}
                       getProduct={getProduct}
+                      rowConfig={RowConfig}
                     />
                     <Modal
                       open={dualOpen}
@@ -722,6 +732,44 @@ const MyLiquidity: any = withTranslation('common')(
                     >
                       <SwitchPanelStyled width={'var(--modal-width)'}>
                         <ModalCloseButton onClose={(_e: any) => setDualOpen(false)} t={t} />
+                        <Box
+                          display={'flex'}
+                          flexDirection={'column'}
+                          alignItems={'flex-start'}
+                          alignSelf={'stretch'}
+                          marginTop={-4}
+                          justifyContent={'stretch'}
+                        >
+                          <Typography
+                            display={'flex'}
+                            flexDirection={'row'}
+                            component={'header'}
+                            alignItems={'center'}
+                            height={'var(--toolbar-row-height)'}
+                            paddingX={3}
+                          >
+                            <Typography component={'span'} display={'inline-flex'}>
+                              {/* eslint-disable-next-line react/jsx-no-undef */}
+                              <CoinIcons
+                                type={TokenType.dual}
+                                size={32}
+                                tokenIcon={[
+                                  coinJson[dualDetail?.dualViewInfo?.sellSymbol ?? ''],
+                                  coinJson[dualDetail?.dualViewInfo?.buySymbol ?? ''],
+                                ]}
+                              />
+                            </Typography>
+                            <Typography
+                              component={'span'}
+                              display={'inline-flex'}
+                              color={'textPrimary'}
+                            >
+                              {`${dualDetail?.dualViewInfo?.sellSymbol} / ${dualDetail?.dualViewInfo?.buySymbol}`}
+                            </Typography>
+                          </Typography>
+                          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                        </Box>
+
                         {dualDetail && dualDetail.dualViewInfo && (
                           <Box
                             flex={1}
@@ -729,9 +777,18 @@ const MyLiquidity: any = withTranslation('common')(
                             width={'100%'}
                             display={'flex'}
                             flexDirection={'column'}
+                            sx={
+                              isMobile
+                                ? {
+                                    maxHeight: 'initial',
+                                    overflowY: 'initial',
+                                  }
+                                : { maxHeight: 'var(--lage-modal-height)', overflowY: 'scroll' }
+                            }
                           >
                             <DualDetail
                               isOrder={true}
+                              order={dualDetail?.__raw__?.order}
                               btnConfirm={
                                 dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
                                   <ButtonStyle
@@ -756,6 +813,13 @@ const MyLiquidity: any = withTranslation('common')(
                                   </ButtonStyle>
                                 )
                               }
+                              showClock={
+                                dualDetail?.__raw__?.order?.dualReinvestInfo?.isRecursive &&
+                                dualDetail?.__raw__?.order?.settlementStatus?.toUpperCase() ==
+                                  sdk.SETTLEMENT_STATUS.PAID &&
+                                dualDetail?.__raw__?.order?.dualReinvestInfo?.retryStatus?.toUpperCase() ===
+                                  sdk.DUAL_RETRY_STATUS.RETRYING
+                              }
                               dualProducts={dualProducts}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
@@ -768,6 +832,27 @@ const MyLiquidity: any = withTranslation('common')(
                               greaterEarnView={dualDetail.greaterEarnView}
                               onChange={(item) => {
                                 handleOnchange({ tradeData: item })
+                              }}
+                              onChangeOrderReinvest={(info, item) => {
+                                if (info.on) {
+                                  handleOnchange({
+                                    tradeData: {
+                                      ...item,
+                                      isRenew: info.on,
+                                      renewTargetPrice: info.renewTargetPrice,
+                                      renewDuration: info.renewDuration,
+                                    } as any,
+                                  })
+                                  onEditDualClick({dontCloseModal: true})
+                                } else {
+                                  handleOnchange({
+                                    tradeData: {
+                                      ...item,
+                                      isRenew: false,
+                                    } as any,
+                                  })
+                                  onEditDualClick({dontCloseModal: true})
+                                }
                               }}
                               coinSell={{
                                 ...editDualTrade,
@@ -888,4 +973,4 @@ const MyLiquidity: any = withTranslation('common')(
   },
 )
 
-export default MyLiquidity
+export { MyLiquidity }

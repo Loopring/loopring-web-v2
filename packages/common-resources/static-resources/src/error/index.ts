@@ -3,6 +3,7 @@ export * from './errorMap'
 export type ErrorType = {
   id: string
   messageKey: string
+  message?: string
   options?: any
 }
 export type ErrorWithCodeType = {
@@ -24,7 +25,7 @@ export class CustomError extends Error {
     }
 
     this.name = error.id
-    this.message = error.id
+    this.message = error?.message ?? error.id
     this._date = Date.now()
     this._messageKey = error.messageKey
     this._options = error.options

@@ -1,79 +1,22 @@
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
-import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
+import { Box, BoxProps, Container, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
-import {
-  ComingSoonPanel,
-  ConfirmInvestDualAutoRisk,
-  ConfirmInvestDualRisk,
-  ConfirmInvestLRCStakeRisk,
-  useToggle,
-} from '@loopring-web/component-lib'
+import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
-import MyLiquidityPanel from './MyLiquidityPanel'
+import { MyLiquidity } from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
 import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
-import styled from '@emotion/styled'
+import { InvestRouter, InvestType } from '@loopring-web/common-resources'
 
-export enum InvestType {
-  MyBalance = 0,
-  AmmPool = 1,
-  DeFi = 2,
-  Overview = 3,
-  Dual = 4,
-  Stack = 5,
-  LeverageETH = 6,
-}
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
-const BoxStyled = styled(Box)`
-  display: flex;
-  justify-content: center;
-  @media only screen and (max-width: 1200px) {
-    .inner-box {
-      width: 100%;
-    }
-  }
-`
-export const MaxWidthContainer = (
-  props: {
-    children: React.ReactNode
-    background?: string
-    containerProps?: BoxProps
-  } & BoxProps,
-) => {
-  const { containerProps, children, background, sx, ...otherProps } = props
-  return (
-    <BoxStyled sx={{ background, ...containerProps?.sx }} {...containerProps}>
-      <Box
-        sx={{
-          width: '1200px',
-          maxWidth: '100%',
-          ...sx,
-        }}
-        className={'inner-box'}
-        paddingX={3}
-        {...otherProps}
-      >
-        {children}
-      </Box>
-    </BoxStyled>
-  )
-}
-export const InvestRouter = [
-  'balance',
-  'ammpool',
-  'defi',
-  'overview',
-  'dual',
-  'stakelrc',
-  'leverageETH',
-]
+
 export const BalanceTitle = () => {
   const { t } = useTranslation()
   return (
@@ -205,7 +148,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Dual && <DualListPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
-            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
+            <ViewAccountTemplate activeViewTemplate={<MyLiquidity />} />
           </Box>
         )}
         {tabIndex === InvestType.Stack && (

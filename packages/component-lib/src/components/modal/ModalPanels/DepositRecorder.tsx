@@ -128,11 +128,11 @@ export const DepositRecorder = ({
                   </Link>
                   <Typography fontSize={'inherit'} component={'span'}>
                     {txInfo.status === 'pending' ? (
-                      <WaitingIcon fontSize={'large'} />
+                      <WaitingIcon fontSize={'large'} color={'warning'} />
                     ) : txInfo.status === 'success' ? (
-                      <CompleteIcon fontSize={'large'} />
+                      <CompleteIcon fontSize={'large'} color={'success'} />
                     ) : (
-                      <WarningIcon fontSize={'large'} />
+                      <WarningIcon fontSize={'large'} color={'error'} />
                     )}
                   </Typography>
                 </Typography>

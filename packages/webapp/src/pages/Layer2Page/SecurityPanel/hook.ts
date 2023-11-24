@@ -11,10 +11,44 @@ import Web3 from 'web3'
 
 export function useResetAccount() {
   const { setShowResetAccount } = useOpenModals()
-
+  const {
+    account: { accountId, apiKey },
+  } = useAccount()
+  const [hasDualInvest, setHasDualInvest] = React.useState<boolean | undefined>(undefined)
+  React.useEffect(() => {
+    ;(async () => {
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const response = await LoopringAPI.defiAPI.getDualTransactions(
+          {
+            accountId,
+            settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
+            investmentStatuses: [
+              sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
+              sdk.LABEL_INVESTMENT_STATUS.SUCCESS,
+              sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
+              sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
+            ].join(','),
+            retryStatuses: [sdk.DUAL_RETRY_STATUS.RETRYING],
+          } as any,
+          apiKey,
+        )
+        setHasDualInvest(response.totalNum && response.totalNum > 0)
+      }
+    })()
+  }, [apiKey])
   const resetKeypair = React.useCallback(() => {
-    setShowResetAccount({ isShow: true })
-  }, [setShowResetAccount])
+    setShowResetAccount({
+      isShow: true,
+      info: {
+        confirmationType:
+          hasDualInvest === undefined
+            ? 'lockedReset'
+            : hasDualInvest === true
+            ? 'unlockedWithDual'
+            : 'unlockedWithoutDual',
+      },
+    })
+  }, [setShowResetAccount, hasDualInvest])
 
   return {
     resetKeypair,

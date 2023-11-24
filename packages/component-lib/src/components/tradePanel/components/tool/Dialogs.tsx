@@ -1108,17 +1108,12 @@ export const InformationForAccountFrozen = withTranslation('common', {
         open={open}
         onClose={() => setShowTradeIsFrozen({ isShow: false })}
         aria-describedby='alert-dialog-slide-description'
+        maxWidth={'xs'}
       >
-        <DialogTitle> {t('labelInformation')}</DialogTitle>
+        <DialogTitle> Account Locked - Unable to Operate</DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
-            {messageKey === 'labelNoticeForForAccountFrozen' ? (
-              <Trans i18nKey={messageKey} tOptions={{ type: t('label' + type?.toLowerCase()) }}>
-                please waiting a while, {{ type }} is on updating.
-              </Trans>
-            ) : (
-              t(messageKey, { type })
-            )}
+            {t(messageKey, { type })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -2428,6 +2423,7 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
         >
           <CloseIcon />
         </IconButton>
+
         {USDCOnly ? (
           <DialogContent>
             <DialogContentText id='alert-dialog-slide-description'>
@@ -2457,6 +2453,40 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
                   trade your cryptocurrency at a less favorable rate of exchange than the market
                   rate on Settlement Date. Cryptocurrency trading is subject to high market risk.
                   Please make your trades cautiously. There may be no recourse for any losses.
+                </Typography>
+              </Trans>
+            </DialogContentText>
+            <DialogContentText>
+              <Trans
+                i18nKey={'labelInvestDualTutorialContent2'}
+                tOptions={{
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
+                components={{
+                  p: <Typography color={'textSecondary'} paddingY={1 / 2} />,
+                  h6: <Typography color={'textPrimary'} paddingY={1} />,
+                }}
+              >
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body1'}
+                  display={'block'}
+                  color={'textPrimary'}
+                >
+                  When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest
+                  your funds into a new product with the same target price when the previous product
+                  expires, continuing until you successfully buy crypto at your desired price. If
+                  there isn’t an available product within 2 hours after the previous settlement, the
+                  order will be automatically closed. Buy Price: the Target Price at which you want
+                  to buy crypto. Longest Settlement Date: your acceptable investment period. If no
+                  suitable products are available within this range, “Auto Reinvest” will not
+                  subscribe to any products for you, even if it's enabled.
                 </Typography>
               </Trans>
             </DialogContentText>
@@ -2506,6 +2536,41 @@ export const ConfirmInvestDualRisk = withTranslation('common')(
                   trade your cryptocurrency at a less favorable rate of exchange than the market
                   rate on Settlement Date. Cryptocurrency trading is subject to high market risk.
                   Please make your trades cautiously. There may be no recourse for any losses.
+                </Typography>
+              </Trans>
+            </DialogContentText>
+            {/* <DialogContentText marginTop={1/2} color={'var(--color-text-primary)'} variant={'h6'}> {t('labelDualAutoReinvest')}</DialogContentText> */}
+            <DialogContentText>
+              <Trans
+                i18nKey={'labelInvestDualTutorialContent2'}
+                tOptions={{
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
+                components={{
+                  p: <Typography color={'textSecondary'} paddingY={1 / 2} />,
+                  h6: <Typography color={'textPrimary'} paddingY={1 / 2} />,
+                }}
+              >
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body1'}
+                  display={'block'}
+                  color={'textPrimary'}
+                >
+                  When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest
+                  your funds into a new product with the same target price when the previous product
+                  expires, continuing until you successfully buy crypto at your desired price. If
+                  there isn’t an available product within 2 hours after the previous settlement, the
+                  order will be automatically closed. Buy Price: the Target Price at which you want
+                  to buy crypto. Longest Settlement Date: your acceptable investment period. If no
+                  suitable products are available within this range, “Auto Reinvest” will not
+                  subscribe to any products for you, even if it's enabled.
                 </Typography>
               </Trans>
             </DialogContentText>

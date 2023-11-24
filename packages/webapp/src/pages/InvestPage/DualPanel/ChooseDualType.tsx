@@ -1,75 +1,44 @@
 import { Box, Grid, Typography } from '@mui/material'
 import {
-  DualDownIcon,
-  DualConvertIcon,
-  DualUpIcon,
   DualViewType,
   LOOPRING_DOCUMENT,
   DualInvestmentLogo,
+  RouterPath,
+  InvestRouter,
+  InvestType,
 } from '@loopring-web/common-resources'
-import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
+import { Button, MenuBtnStyled, useSettings, MaxWidthContainer } from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { containerColors, MaxWidthContainer } from '../index'
+import { containerColors } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
+import { useDualMap } from '@loopring-web/core'
+import { ChooseDualTypeContentType } from './hook'
 
-export const ChooseDualTypeContent = [
-  {
-    icon: (
-      <DualUpIcon
-        style={{
-          width: 156,
-          height: 156,
-        }}
-      />
-    ),
-    type: DualViewType.DualGain,
-    titleKey: 'labelCoverGain',
-    desKey: 'labelCoverGainDes',
-  },
-  {
-    icon: (
-      <DualDownIcon
-        style={{
-          width: 156,
-          height: 156,
-        }}
-      />
-    ),
-    type: DualViewType.DualDip,
-    titleKey: 'labelDip',
-    desKey: 'labelDipDes',
-  },
-
-  {
-    icon: (
-      <DualConvertIcon
-        style={{
-          width: 156,
-          height: 156,
-        }}
-      />
-    ),
-    type: DualViewType.All,
-    titleKey: 'labelDualMerge',
-    desKey: 'labelDualMergeDes',
-  },
-]
 export const TypographyStyle = styled(Typography)`
   svg {
     fill: ${({ theme }) => theme.colorBase.textSecondary};
   }
 ` as typeof Typography
-export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) => void }) => {
+export const ChooseDualType = ({
+  onSelect,
+  chooseDualTypeContent,
+}: {
+  chooseDualTypeContent: ChooseDualTypeContentType[]
+  onSelect: (props: DualViewType) => void
+}) => {
   const { isMobile } = useSettings()
   const theme = useTheme()
   const history = useHistory()
   const { t } = useTranslation()
+  const { marketArray, status: dualStatus, getDualMap } = useDualMap()
+
   return (
     <>
       <MaxWidthContainer
+        sx={{ flexDirection: 'row' }}
         display={'flex'}
         justifyContent={'space-between'}
         background={containerColors[0]}
@@ -82,7 +51,9 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => history.push('/invest/balance')}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
@@ -112,9 +83,16 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
           spacing={2}
           flexDirection={isMobile ? 'column' : 'row'}
         >
-          {ChooseDualTypeContent.map((item) => {
+          {chooseDualTypeContent?.map((item) => {
             return (
-              <Grid item xs={6} md={4} key={item.type} display={'flex'} justifyContent={'center'}>
+              <Grid
+                item
+                xs={6}
+                md={12 / chooseDualTypeContent.length}
+                key={item.type}
+                display={'flex'}
+                justifyContent={'center'}
+              >
                 <MenuBtnStyled
                   variant={'outlined'}
                   sx={{

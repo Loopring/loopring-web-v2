@@ -11,7 +11,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
-import { WalletSite } from './setting'
+import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -28,151 +28,9 @@ export const BANXA_URLS = {
   5: 'https://loopring.banxa-sandbox.com',
 }
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
-export const LOOPRING_DOC = 'https://docs.loopring.io'
-
-//
-//
-export enum Layer2RouterID {
-  security = 'security',
-  vip = 'vip',
-  contact = 'contact',
-  referralrewards = 'referralrewards',
-  forcewithdraw = 'forcewithdraw',
-}
-
-export const Profile = {
-  security: [
-    {
-      icon: SecurityIcon,
-      router: { path: '/layer2/security' },
-      label: {
-        id: 'security',
-        i18nKey: 'labelSecurity',
-      },
-    },
-  ],
-  vip: [
-    {
-      icon: VipIcon,
-      router: { path: '/layer2/vip' },
-      label: {
-        id: 'vip',
-        i18nKey: 'labelVipPanel',
-      },
-    },
-  ],
-  contact: [
-    {
-      icon: ContactIcon,
-      router: { path: '/layer2/contact' },
-      label: {
-        id: 'contact',
-        i18nKey: 'labelContactsPanel',
-      },
-    },
-  ],
-  referralrewards: [
-    {
-      icon: RewardIcon,
-      router: { path: '/layer2/referralrewards' },
-      label: {
-        id: 'referralrewards',
-        i18nKey: 'labelReferralReward',
-      },
-    },
-  ],
-}
-
-export enum ProfileKey {
-  security = 'security',
-  vip = 'vip',
-  contact = 'contact',
-  referralrewards = 'referralrewards',
-  forcewithdraw = 'forcewithdraw',
-}
-
-export enum ButtonComponentsMap {
-  Download,
-  Notification,
-  Setting,
-  ProfileMenu,
-  WalletConnect,
-  TestNet,
-}
-
-export const toolBarAvailableItem: number[] = [
-  ButtonComponentsMap.Download,
-  ButtonComponentsMap.Notification,
-  ButtonComponentsMap.Setting,
-  ButtonComponentsMap.ProfileMenu,
-  ButtonComponentsMap.WalletConnect,
-  ButtonComponentsMap.TestNet,
-]
-
-export enum GuardianToolBarComponentsMap {
-  Notification,
-  TestNet,
-  WalletConnect,
-}
-
-export const GuardianToolBarAvailableItem = [
-  GuardianToolBarComponentsMap.Notification,
-  GuardianToolBarComponentsMap.TestNet,
-  GuardianToolBarComponentsMap.WalletConnect,
-]
-export let headerGuardianToolBarData: Array<{
-  buttonComponent: number
-  handleClick?: (props: any) => void
-  [key: string]: any
-}> = [
-  {
-    buttonComponent: GuardianToolBarComponentsMap.Notification,
-    label: 'labelNotification',
-  },
-  { buttonComponent: GuardianToolBarComponentsMap.TestNet },
-  {
-    buttonComponent: GuardianToolBarComponentsMap.WalletConnect,
-    label: 'labelConnectWallet',
-    accountState: undefined,
-    handleClick: undefined,
-  },
-]
-
-export let headerToolBarData: Array<{
-  buttonComponent: number
-  handleClick?: (props: any) => void
-  [key: string]: any
-}> = [
-  {
-    buttonComponent: ButtonComponentsMap.Download,
-    url: WalletSite,
-  },
-  {
-    buttonComponent: ButtonComponentsMap.Notification,
-    label: 'labelNotification',
-  },
-  { buttonComponent: ButtonComponentsMap.Setting, label: 'labelSetting' },
-  {
-    buttonComponent: ButtonComponentsMap.ProfileMenu,
-    i18nDescription: 'labelProfile',
-    readyState: undefined,
-  },
-  {
-    buttonComponent: ButtonComponentsMap.WalletConnect,
-    label: 'labelConnectWallet',
-    accountState: undefined,
-    handleClick: undefined,
-  },
-]
-
-export const toolBarMobileAvailableItem = [
-  ButtonComponentsMap.Download,
-  ButtonComponentsMap.Notification,
-  ButtonComponentsMap.Setting,
-  ButtonComponentsMap.WalletConnect,
-]
 
 export enum RouterPath {
+  trade = '/trade',
   lite = '/trade/lite',
   pro = '/trade/pro',
   stoplimit = '/trade/stoplimit',
@@ -182,10 +40,182 @@ export enum RouterPath {
   mining = '/mining',
   redPacket = '/redPacket',
   l2assets = '/l2assets',
+  l2records = '/l2assets/history',
+  l2assetsDetail = '/l2assets/assets',
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  investBalance = '/invest/balance',
+  vault = '/vault',
 }
+
+export enum InvestType {
+  MyBalance = 0,
+  AmmPool = 1,
+  DeFi = 2,
+  Overview = 3,
+  Dual = 4,
+  Stack = 5,
+  LeverageETH = 6,
+}
+export const InvestRouter = [
+  'balance',
+  'ammpool',
+  'defi',
+  'overview',
+  'dual',
+  'stakelrc',
+  'leverageETH',
+]
+//
+//
+export enum Layer2RouterID {
+  security = 'security',
+  vip = 'vip',
+  contact = 'contact',
+  referralrewards = 'referralrewards',
+  forcewithdraw = 'forcewithdraw',
+  notification = 'notification',
+}
+// export enum ProfileKey {
+//   security = 'security',
+//   vip = 'vip',
+//   contact = 'contact',
+//   referralrewards = 'referralrewards',
+//   forcewithdraw = 'forcewithdraw',
+//   notification = 'notification',
+// }
+
+export const Profile = {
+  security: [
+    {
+      icon: SecurityIcon,
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.security}` },
+      label: {
+        id: 'security',
+        i18nKey: 'labelSecurity',
+      },
+    },
+  ],
+  vip: [
+    {
+      icon: VipIcon,
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.vip}` },
+      label: {
+        id: 'vip',
+        i18nKey: 'labelVipPanel',
+      },
+    },
+  ],
+  contact: [
+    {
+      icon: ContactIcon,
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.contact}` },
+      label: {
+        id: 'contact',
+        i18nKey: 'labelContactsPanel',
+      },
+    },
+  ],
+  referralrewards: [
+    {
+      icon: RewardIcon,
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.referralrewards}` },
+      label: {
+        id: 'referralrewards',
+        i18nKey: 'labelReferralReward',
+      },
+    },
+  ],
+}
+
+export enum ButtonComponentsMap {
+  Download = 'Download',
+  Notification = 'Notification',
+  Setting = 'Setting',
+  ProfileMenu = 'ProfileMenu',
+  WalletConnect = 'WalletConnect',
+  TestNet = 'TestNet',
+  ColorSwitch = 'ColorSwitch',
+}
+
+export const toolBarAvailableItem: ButtonComponentsMap[] = [
+  ButtonComponentsMap.Download,
+  ButtonComponentsMap.Notification,
+  ButtonComponentsMap.Setting,
+  ButtonComponentsMap.ProfileMenu,
+  ButtonComponentsMap.WalletConnect,
+  ButtonComponentsMap.TestNet,
+]
+
+// export enum GuardianToolBarComponentsMap {
+//   Notification,
+//   TestNet,
+//   WalletConnect,
+// }
+
+export const GuardianToolBarAvailableItem: ButtonComponentsMap[] = [
+  ButtonComponentsMap.Notification,
+  ButtonComponentsMap.TestNet,
+  ButtonComponentsMap.WalletConnect,
+]
+export let headerGuardianToolBarData: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  [ButtonComponentsMap.Notification]: {
+    buttonComponent: ButtonComponentsMap.Notification,
+    label: 'labelNotification',
+  },
+  [ButtonComponentsMap.TestNet]: { buttonComponent: ButtonComponentsMap.TestNet },
+  [ButtonComponentsMap.WalletConnect]: {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+}
+export let headerToolBarData: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  [ButtonComponentsMap.Download]: {
+    buttonComponent: ButtonComponentsMap.Download,
+    url: WalletSite,
+  },
+  [ButtonComponentsMap.Notification]: {
+    buttonComponent: ButtonComponentsMap.Notification,
+    label: 'labelNotification',
+  },
+  [ButtonComponentsMap.Setting]: {
+    buttonComponent: ButtonComponentsMap.Setting,
+    label: 'labelSetting',
+  },
+  [ButtonComponentsMap.ProfileMenu]: {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: 'labelProfile',
+    readyState: undefined,
+  },
+  [ButtonComponentsMap.WalletConnect]: {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+}
+
+// export const toolBarMobileAvailableItem = [
+//   ButtonComponentsMap.Download,
+//   ButtonComponentsMap.Notification,
+//   ButtonComponentsMap.Setting,
+//   ButtonComponentsMap.WalletConnect,
+// ]
 
 export enum RouterMainKey {
   lite = 'lite',
@@ -200,6 +230,22 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   nft = 'nft',
   invest = 'invest',
+  earn = 'earn',
+  vault = 'vault',
+}
+
+export enum NFTSubRouter {
+  transactionNFT = 'transactionNFT',
+  mintNFTLanding = 'mintNFTLanding',
+  mintNFT = 'mintNFT',
+  mintNFTAdvance = 'mintNFTAdvance',
+  depositNFT = 'depositNFT',
+  myCollection = 'myCollection',
+  addCollection = 'addCollection',
+  editCollection = 'editCollection',
+  addLegacyCollection = 'addLegacyCollection',
+  importLegacyCollection = 'importLegacyCollection',
+  assetsNFT = 'assetsNFT',
 }
 
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
@@ -252,8 +298,22 @@ export const ammDisableList = ['Liquidity']
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
+      id: 'loopringPro',
+      i18nKey: 'labelNavPro',
+    },
+    router: { path: ExchangePro },
+  },
+  {
+    label: {
+      id: 'loopringLite',
+      i18nKey: 'labelNavEarn',
+    },
+    router: { path: Earnlite },
+  },
+  {
+    label: {
       id: 'wallet',
-      i18nKey: 'labelWallet',
+      i18nKey: 'labelNavWallet',
     },
     router: { path: WalletSite },
   },
@@ -262,7 +322,7 @@ export const subMenuLayer2 = {
   assetsGroup: [
     {
       icon: AssetsIcon,
-      router: { path: '/l2assets/assets' },
+      router: { path: RouterPath.l2assetsDetail },
       label: {
         id: 'assets',
         i18nKey: 'labelAssets',
@@ -282,7 +342,7 @@ export const subMenuLayer2 = {
   profileGroup: [
     {
       icon: ProfileIcon,
-      router: { path: '/layer2/security' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.security}` },
       label: {
         id: 'security',
         i18nKey: 'labelSecurity',
@@ -290,7 +350,7 @@ export const subMenuLayer2 = {
     },
     {
       icon: VipIcon,
-      router: { path: '/layer2/vip' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.vip}` },
       label: {
         id: 'vip',
         i18nKey: 'labelVipPanel',
@@ -302,7 +362,7 @@ export const subMenuLayer2 = {
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/overview' },
+    router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
     label: {
       id: 'overview',
       i18nKey: 'labelInvestOverview',
@@ -311,7 +371,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/dual' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
     label: {
       id: 'dual',
       i18nKey: 'labelInvestDual',
@@ -320,7 +380,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/defi' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.STAKE}` },
     label: {
       id: 'defi',
       i18nKey: 'labelInvestDefi',
@@ -329,7 +389,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/leverageETH' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}` },
     label: {
       id: 'leverageeth',
       i18nKey: 'labelInvestLeverageETH',
@@ -338,7 +398,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/ammpool' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.AMM}` },
     label: {
       id: 'ammpool',
       i18nKey: 'labelInvestAmm',
@@ -347,7 +407,7 @@ export const subMenuInvest = [
   },
   {
     icon: L2MyLiquidityIcon,
-    router: { path: '/invest/stakelrc' },
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.STAKELRC}` },
     label: {
       id: 'stackonesided',
       i18nKey: 'labelInvestStakeLRC',
@@ -376,11 +436,13 @@ export const DEFI_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['LIDO', 'ROCKETPOOL'],
     GOERLI: ['ROCKETPOOL'],
+    ARBGOERLI: ['ROCKETPOOL'],
   },
   MARKETS: {
     TAIKO: [] as string[],
     ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
     GOERLI: ['RETH-ETH'],
+    ARBGOERLI: ['RETH-ETH'],
   },
 }
 
@@ -389,6 +451,7 @@ export const DUAL_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['PIONEX'],
     GOERLI: ['PIONEX'],
+    ARBGOERLI: ['PIONEX'],
   },
 }
 export const LEVERAGE_ETH_CONFIG = {
@@ -396,16 +459,19 @@ export const LEVERAGE_ETH_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
+    ARBGOERLI: ['WSTETH'],
   },
   types: {
     TAIKO: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
+    ARBGOERLI: ['lido'],
   },
   products: {
     TAIKO: [] as string[],
     ETHEREUM: ['CIAN'],
     GOERLI: ['LIDO'],
+    ARBGOERLI: ['LIDO'],
   },
   // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
 }
@@ -414,7 +480,7 @@ export const subMenuNFT = {
   NFTGroup: [
     {
       icon: AssetsIcon,
-      router: { path: '/nft/assetsNFT' },
+      router: { path: `${RouterPath.nft}/${NFTSubRouter.assetsNFT}` },
       label: {
         id: 'assetsNFT',
         i18nKey: 'labelMyAssetsNFT',
@@ -423,7 +489,7 @@ export const subMenuNFT = {
     },
     {
       icon: MintIcon,
-      router: { path: '/nft/mintNFTLanding' },
+      router: { path: `${RouterPath.nft}/${NFTSubRouter.mintNFTLanding}` },
       label: {
         id: 'mintNFT',
         i18nKey: 'labelMintNFT',
@@ -432,7 +498,7 @@ export const subMenuNFT = {
     },
     {
       icon: ImageIcon,
-      router: { path: '/nft/myCollection' },
+      router: { path: `${RouterPath.nft}/${NFTSubRouter.myCollection}` },
       label: {
         id: 'collection',
         i18nKey: 'labelMyCollection',
@@ -505,7 +571,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer
-      linkHref: 'https://explorer.loopring.io',
+      linkHref: `${Explorer}`,
     },
     {
       linkName: 'BugBounty', //BugBounty
@@ -544,7 +610,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'L2Assets',
       i18nKey: 'labelAssets',
     },
-    router: { path: '/l2assets' },
+    router: { path: `${RouterPath.l2assets}` },
     status: HeaderMenuTabStatus.default,
   },
   {
@@ -552,7 +618,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'Markets',
       i18nKey: 'labelMarkets',
     },
-    router: { path: '/markets' },
+    router: { path: `${RouterPath.markets}` },
     status: HeaderMenuTabStatus.default,
   },
   {
@@ -568,7 +634,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'Invest',
       i18nKey: 'labelInvest',
     },
-    router: { path: '/invest/overview' },
+    router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
     status: HeaderMenuTabStatus.default,
     child: subMenuInvest,
   },
@@ -577,7 +643,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: 'NFT',
       i18nKey: 'labelNFT',
     },
-    router: { path: '/nft' },
+    router: { path: `${RouterPath.nft}` },
     status: HeaderMenuTabStatus.default,
     child: subMenuNFT,
   },
@@ -585,7 +651,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
 
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
-  router: '/invest/ammpool',
+  router: `${RouterPath.invest}/${InvestAssetRouter.AMM}`,
   banner: SoursURL + 'images/icon-amm.svg',
   titleI18n: 'labelInvestAmm',
   desI18n: 'labelInvestAmmDes',
@@ -594,7 +660,7 @@ export const ammAdvice: InvestAdvice = {
 }
 export const defiAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: '/invest/defi',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKE}`,
   notification: '',
   banner: SoursURL + 'images/icon-lido.svg',
   titleI18n: 'labelInvestDefi',
@@ -603,7 +669,7 @@ export const defiAdvice: InvestAdvice = {
 }
 export const defiWSTETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: '/invest/defi/WSTETH',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKE}/WSTETH`,
   notification: '',
   banner: SoursURL + 'images/icon-lido2.svg',
   titleI18n: 'labelInvestWSTETH',
@@ -614,7 +680,7 @@ export const defiWSTETHAdvice: InvestAdvice = {
 }
 export const defiRETHAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
-  router: '/invest/defi/RETH',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKE}/RETH`,
   notification: '',
   banner: SoursURL + 'images/icon-pocket.svg',
   titleI18n: 'labelInvestRETH',
@@ -630,7 +696,7 @@ export const DEFI_ADVICE_MAP = {
 }
 export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,
-  router: '/invest/dual',
+  router: `${RouterPath.invest}/${InvestAssetRouter.DUAL}`,
   notification: '',
   banner: SoursURL + 'images/icon-dual.svg',
   titleI18n: 'labelInvestDual',
@@ -639,7 +705,7 @@ export const dualAdvice: InvestAdvice = {
 }
 export const stakeAdvice: InvestAdvice = {
   type: InvestMapType.STAKELRC,
-  router: '/invest/stakelrc',
+  router: `${RouterPath.invest}/${InvestAssetRouter.STAKELRC}`,
   notification: '',
   banner: SoursURL + 'images/icon-stake-lrc.svg',
   titleI18n: 'labelInvestStakeLRC',
@@ -648,7 +714,7 @@ export const stakeAdvice: InvestAdvice = {
 }
 export const leverageETHAdvice: InvestAdvice = {
   type: InvestMapType.LEVERAGEETH,
-  router: '/invest/leverageETH',
+  router: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`,
   notification: '',
   banner: SoursURL + 'images/icon-leverage-ETH.svg',
   titleI18n: 'labelInvestLeverageETH',
@@ -682,6 +748,22 @@ export enum AssetTabIndex {
   Rewards = 'Rewards',
 }
 
+export enum RedPacketRouterIndex {
+  create = 'create',
+  records = 'records',
+  markets = 'markets',
+}
+export enum RedPacketRecordsTabIndex {
+  Received = 'Received',
+  Send = 'Send',
+  NFTReceived = 'NFTReceived',
+  NFTSend = 'NFTSend',
+  BlindBoxReceived = 'BlindBoxReceived',
+  BlindBoxSend = 'BlindBoxSend',
+  NFTsUnClaimed = 'NFTsUnClaimed',
+  BlindBoxUnClaimed = 'BlindBoxUnClaimed',
+}
+
 export enum TabOrderIndex {
   orderOpenTable = 'orderOpenTable',
   orderHistoryTable = 'orderHistoryTable',
@@ -694,7 +776,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
         id: 'L2Assets',
         i18nKey: 'labelAssets',
       },
-      router: { path: '/l2assets' },
+      router: { path: `${RouterPath.l2assets}` },
       status: HeaderMenuTabStatus.default,
     },
     {
@@ -702,7 +784,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
         id: 'Markets',
         i18nKey: 'labelMarkets',
       },
-      router: { path: '/markets' },
+      router: { path: `${RouterPath.markets}` },
       status: HeaderMenuTabStatus.default,
     },
     {
@@ -733,12 +815,14 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
   ],
   ETHEREUM: headerMenuData,
   GOERLI: headerMenuData,
+  ARBGOERLI: headerMenuData,
 }
 
 export const TokenPriceBase = {
   TAIKO: '0x0000000000000000000000000000000000000000',
   ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
+  ARBGOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
 }
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
   TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
@@ -755,6 +839,18 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.leverageETHRecords,
   ],
   GOERLI: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
+  ],
+  ARBGOERLI: [
     RecordTabIndex.Transactions,
     RecordTabIndex.Trades,
     RecordTabIndex.Orders,
@@ -790,6 +886,14 @@ export const AddAssetListMap = {
     AddAssetList.FromExchange.key,
     AddAssetList.FromAnotherNet.key,
   ],
+  ARBGOERLI: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+  ],
 }
 export const SendAssetListMap = {
   TAIKO: [
@@ -809,6 +913,12 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToOtherL1.key,
     SendAssetList.SendAssetToAnotherNet.key,
   ],
+  ARBGOERLI: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+    SendAssetList.SendAssetToAnotherNet.key,
+  ],
 }
 export const AssetL2TabIndex = {
   TAIKO: [AssetTabIndex.Tokens],
@@ -819,6 +929,12 @@ export const AssetL2TabIndex = {
     AssetTabIndex.Rewards,
   ],
   GOERLI: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+    AssetTabIndex.Rewards,
+  ],
+  ARBGOERLI: [
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
     AssetTabIndex.RedPacket,
@@ -861,23 +977,46 @@ export const RouterAllowIndex = {
     RouterMainKey.nft,
     RouterMainKey.invest,
   ],
+  ARBGOERLI: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+  ],
 }
 
 export const ProfileIndex = {
-  TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
+  TAIKO: [Layer2RouterID.security, Layer2RouterID.referralrewards],
   ETHEREUM: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
   ],
   GOERLI: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
+  ],
+  ARBGOERLI: [
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
   ],
 }
 
@@ -901,6 +1040,15 @@ export const L1L2_NAME_DEFINED = {
     loopringLayer2: 'Loopring Layer 2',
   },
   GOERLI: {
+    layer2: 'Layer 2',
+    l1ChainName: 'Ethereum',
+    loopringL2: 'Loopring L2',
+    l2Symbol: 'L2',
+    l1Symbol: 'L1',
+    ethereumL1: 'Ethereum L1',
+    loopringLayer2: 'Loopring Layer 2',
+  },
+  ARBGOERLI: {
     layer2: 'Layer 2',
     l1ChainName: 'Ethereum',
     loopringL2: 'Loopring L2',

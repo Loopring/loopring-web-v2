@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Box, Link } from '@mui/material'
+import { Box, Divider } from '@mui/material'
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import {
@@ -7,11 +7,12 @@ import {
   ForceWithdrawPanel,
   TransactionTradeViews,
   useSettings,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import { useForceWithdraw } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useHistory } from 'react-router-dom'
-import { BackIcon, RecordTabIndex } from '@loopring-web/common-resources'
+import { BackIcon, RecordTabIndex, RouterPath } from '@loopring-web/common-resources'
 
 const StylePaper = styled(Box)`
   background: var(--color-box);
@@ -37,56 +38,70 @@ export const ForcewithdrawPanel = withTranslation(['common', 'layout'])(
     const theme = useTheme()
     const extendsProps = isMobile ? { _width: 420 } : { _width: 'auto' }
     return (
-      <Box flex={1} display={'flex'} flexDirection={'column'}>
-        <Box marginBottom={2}>
+      <>
+        <MaxWidthContainer
+          background={'var(--color-global-bg)'}
+          display={'flex'}
+          justifyContent={'space-between'}
+          flexDirection={'row'}
+          paddingY={2}
+        >
           <Button
             startIcon={<BackIcon fontSize={'small'} />}
             variant={'text'}
             size={'medium'}
-            sx={{ color: 'var(--color-text-secondary)' }}
+            sx={{ color: 'var(--color-text-primary)' }}
             color={'inherit'}
             onClick={history.goBack}
           >
             {t('labelForceWithdrawTitle')}
           </Button>
-        </Box>
-        <StylePaper
-          flex={1}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          className={isMobile ? 'isMobile' : 'MuiPaper-elevation2'}
-          marginBottom={2}
-          position={'relative'}
-        >
-          <Link
-            position={'absolute'}
-            variant={'body1'}
-            sx={{
-              right: 2 * theme.unit,
-              top: 2 * theme.unit,
-              zIndex: 999,
-            }}
-            target='_self'
-            rel='noopener noreferrer'
+          <Button
+            variant={'text'}
+            sx={{ color: 'var(--color-text-primary)' }}
+            color={'inherit'}
+            endIcon={<BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} />}
             onClick={() =>
               history.push(
-                `/l2assets/history/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.forceWithdraw}`,
+                `${RouterPath.l2records}/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.forceWithdraw}`,
               )
             }
           >
             {t('labelTransactionsLink')}
-          </Link>
-          <Box
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            className={'content'}
-          >
-            <ForceWithdrawPanel {...{ ...forceWithdrawProps, ...extendsProps }} />
+          </Button>
+        </MaxWidthContainer>
+        <Divider />
+        <MaxWidthContainer
+          maxWidth='lg'
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+          }}
+        >
+          <Box flex={1} display={'flex'} flexDirection={'column'}>
+            <Box marginBottom={2}></Box>
+            <StylePaper
+              flex={1}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              className={isMobile ? 'isMobile' : 'MuiPaper-elevation2'}
+              marginBottom={2}
+              position={'relative'}
+            >
+              <Box
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                className={'content'}
+              >
+                <ForceWithdrawPanel {...{ ...forceWithdrawProps, ...extendsProps }} />
+              </Box>
+            </StylePaper>
           </Box>
-        </StylePaper>
-      </Box>
+        </MaxWidthContainer>
+      </>
     )
   },
 )

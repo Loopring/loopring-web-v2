@@ -1,6 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
 import { getRedPacketConfigs, getRedPacketConfigsStatus } from './reducer'
-import { myLog } from '@loopring-web/common-resources'
 
 import { store, LoopringAPI } from '../../index'
 

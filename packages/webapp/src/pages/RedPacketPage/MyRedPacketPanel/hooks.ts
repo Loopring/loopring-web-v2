@@ -153,7 +153,8 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
     if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       if (
         resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING &&
-        (resposne?.raw_data as any).blindBoxStatus === ''
+        (resposne?.raw_data as any).blindBoxStatus === '' && 
+        resposne?.detail.luckyToken.type.scope !== sdk.LuckyTokenViewType.TARGET
       ) {
         setShowRedPacket({
           isShow: true,
@@ -176,7 +177,8 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
     } else {
       if (
         resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING &&
-        !resposne?.detail.claimStatus
+        !resposne?.detail.claimStatus &&
+        resposne?.detail.luckyToken.type.scope !== sdk.LuckyTokenViewType.TARGET
       ) {
         setShowRedPacket({
           isShow: true,

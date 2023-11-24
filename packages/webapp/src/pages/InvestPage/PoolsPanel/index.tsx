@@ -5,14 +5,19 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useAmmMapUI } from './hook'
 
-import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
+import { Button, PoolsTable, useSettings, MaxWidthContainer } from '@loopring-web/component-lib'
 
 import { useNotify, useSystem } from '@loopring-web/core'
-import { AmmLogo, BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import {
+  AmmLogo,
+  InvestRouter,
+  InvestType,
+  RouterPath,
+  RowInvestConfig,
+} from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
-import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -47,6 +52,7 @@ export const PoolsPanel = withTranslation('common')(
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1}>
         <MaxWidthContainer
+          sx={{ flexDirection: 'row' }}
           display={'flex'}
           justifyContent={'space-between'}
           background={containerColors[0]}
@@ -55,10 +61,16 @@ export const PoolsPanel = withTranslation('common')(
         >
           <Box paddingY={7}>
             <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
-              {t("labelLiquidityPageTitle")}
+              {t('labelLiquidityPageTitle')}
             </Typography>
-            <Button onClick={() => history.push('/invest/balance')} sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }} variant={'contained'}>
-              {t("labelInvestMyAmm")}
+            <Button
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
+              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+              variant={'contained'}
+            >
+              {t('labelInvestMyAmm')}
             </Button>
           </Box>
           {!isMobile && <AmmLogo />}

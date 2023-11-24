@@ -5,7 +5,13 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useOverview } from './hook'
 
-import { Button, useSettings, InvestOverviewTable, useToggle } from '@loopring-web/component-lib'
+import {
+  Button,
+  useSettings,
+  InvestOverviewTable,
+  useToggle,
+  MaxWidthContainer,
+} from '@loopring-web/component-lib'
 import { useHistory } from 'react-router-dom'
 import {
   BackIcon,
@@ -18,6 +24,9 @@ import {
   Overview,
   getValuePrecisionThousand,
   EmptyValueTag,
+  RouterPath,
+  InvestRouter,
+  InvestType,
 } from '@loopring-web/common-resources'
 import {
   useAccount,
@@ -28,7 +37,7 @@ import {
   useStakingMap,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
-import { MaxWidthContainer, containerColors } from '..'
+import { containerColors } from '..'
 import _ from 'lodash'
 
 const WrapperStyled = styled(Box)`
@@ -158,6 +167,7 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
       <WrapperStyled>
         <MaxWidthContainer
           display={'flex'}
+          sx={{ flexDirection: 'row' }}
           justifyContent={'space-between'}
           background={containerColors[0]}
           height={isMobile ? 60 * theme.unit : 30 * theme.unit}
@@ -176,7 +186,9 @@ export const OverviewPanel = withTranslation('common')(({ t }: WithTranslation &
               {t('labelInvestLoopringEarnDes')}
             </Typography>
             <Button
-              onClick={() => history.push('/invest/balance')}
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
