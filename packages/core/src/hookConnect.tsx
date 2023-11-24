@@ -213,7 +213,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   const {
     account: { connectName },
   } = useAccount()
-  const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>()
+  const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>(_defaultNetwork)
 
   const handleOnNetworkSwitch = React.useCallback(
     async (value: sdk.ChainId) => {
