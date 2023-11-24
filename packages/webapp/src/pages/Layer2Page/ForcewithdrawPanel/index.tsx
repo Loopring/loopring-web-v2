@@ -43,6 +43,7 @@ export const ForcewithdrawPanel = withTranslation(['common', 'layout'])(
           background={'var(--color-global-bg)'}
           display={'flex'}
           justifyContent={'space-between'}
+          flexDirection={'row'}
           paddingY={2}
         >
           <Button

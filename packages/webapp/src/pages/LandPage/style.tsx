@@ -131,9 +131,9 @@ export const ContainerStyle = styled(Box)`
       svg {
         height: 32px;
         width: 32px;
-        color: var(--color-text-primary);
-        outline: 2px solid var(--color-text-primary);
-
+        background: #4a505c;
+        color: var(--color-text-button);
+        outline: 2px solid #4a505c;
         border-radius: 50%;
       }
     }

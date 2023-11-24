@@ -1,6 +1,12 @@
 import React from 'react'
-import { Box } from '@mui/material'
-import { Button, Toast, ToastType, TransactionTable } from '@loopring-web/component-lib'
+import { Box, Divider } from '@mui/material'
+import {
+  Button,
+  MaxWidthContainer,
+  Toast,
+  ToastType,
+  TransactionTable,
+} from '@loopring-web/component-lib'
 import { StylePaper, useAccount, useSystem, useToast, useTokenMap } from '@loopring-web/core'
 import { useContractRecord } from './hooks'
 import { BackIcon, RowConfig, TOAST_TIME } from '@loopring-web/common-resources'
@@ -40,7 +46,13 @@ export const ContactTransactionsPage = withTranslation('common')(
 
     return (
       <Box flex={1} display={'flex'} flexDirection={'column'}>
-        <Box marginBottom={2}>
+        <MaxWidthContainer
+          sx={{ flexDirection: 'row' }}
+          background={'var(--color-global-bg)'}
+          display={'flex'}
+          justifyContent={'space-between'}
+          padding={2}
+        >
           <Button
             startIcon={<BackIcon fontSize={'small'} />}
             variant={'text'}
@@ -51,8 +63,15 @@ export const ContactTransactionsPage = withTranslation('common')(
           >
             {rest.t('labelContacts')}
           </Button>
-        </Box>
-        <StylePaper ref={container} flex={1}>
+        </MaxWidthContainer>
+        <Divider />
+        <MaxWidthContainer
+          background={'var(--color-pop-bg)'}
+          display={'flex'}
+          justifyContent={'space-between'}
+          paddingY={2}
+          flexDirection={'column'}
+        >
           <Toast
             alertText={toastOpen?.content ?? ''}
             severity={toastOpen?.type ?? ToastType.success}
@@ -84,7 +103,7 @@ export const ContactTransactionsPage = withTranslation('common')(
               }}
             />
           </Box>
-        </StylePaper>
+        </MaxWidthContainer>
       </Box>
     )
   },
