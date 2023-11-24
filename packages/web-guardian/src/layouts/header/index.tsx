@@ -1,6 +1,6 @@
 import {
+  ButtonComponentsMap,
   GuardianToolBarAvailableItem,
-  GuardianToolBarComponentsMap,
   headerRoot,
 } from '@loopring-web/common-resources'
 
@@ -38,8 +38,7 @@ const Header = withTranslation('common')(
             chainId={chainId}
             // isLandPage={true}
             // isWrap={false}
-            toolBarMap={GuardianToolBarComponentsMap}
-            toolBarAvailableItem={GuardianToolBarAvailableItem}
+            toolBarMap={ButtonComponentsMap}
             headerMenuData={headerMenuLandingData}
             headerToolBarData={headerToolBarData}
             notification={notifyMap}

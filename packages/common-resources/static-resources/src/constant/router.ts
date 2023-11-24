@@ -11,7 +11,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
-import { WalletSite } from './setting'
+import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -28,9 +28,9 @@ export const BANXA_URLS = {
   5: 'https://loopring.banxa-sandbox.com',
 }
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
-export const LOOPRING_DOC = 'https://docs.loopring.io'
 
 export enum RouterPath {
+  trade = '/trade',
   lite = '/trade/lite',
   pro = '/trade/pro',
   stoplimit = '/trade/stoplimit',
@@ -45,6 +45,7 @@ export enum RouterPath {
   layer2 = '/layer2',
   nft = '/nft',
   invest = '/invest',
+  investBalance = '/invest/balance',
   vault = '/vault',
 }
 
@@ -74,14 +75,16 @@ export enum Layer2RouterID {
   contact = 'contact',
   referralrewards = 'referralrewards',
   forcewithdraw = 'forcewithdraw',
+  notification = 'notification',
 }
-export enum ProfileKey {
-  security = 'security',
-  vip = 'vip',
-  contact = 'contact',
-  referralrewards = 'referralrewards',
-  forcewithdraw = 'forcewithdraw',
-}
+// export enum ProfileKey {
+//   security = 'security',
+//   vip = 'vip',
+//   contact = 'contact',
+//   referralrewards = 'referralrewards',
+//   forcewithdraw = 'forcewithdraw',
+//   notification = 'notification',
+// }
 
 export const Profile = {
   security: [
@@ -127,15 +130,16 @@ export const Profile = {
 }
 
 export enum ButtonComponentsMap {
-  Download,
-  Notification,
-  Setting,
-  ProfileMenu,
-  WalletConnect,
-  TestNet,
+  Download = 'Download',
+  Notification = 'Notification',
+  Setting = 'Setting',
+  ProfileMenu = 'ProfileMenu',
+  WalletConnect = 'WalletConnect',
+  TestNet = 'TestNet',
+  ColorSwitch = 'ColorSwitch',
 }
 
-export const toolBarAvailableItem: number[] = [
+export const toolBarAvailableItem: ButtonComponentsMap[] = [
   ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
@@ -144,68 +148,74 @@ export const toolBarAvailableItem: number[] = [
   ButtonComponentsMap.TestNet,
 ]
 
-export enum GuardianToolBarComponentsMap {
-  Notification,
-  TestNet,
-  WalletConnect,
-}
+// export enum GuardianToolBarComponentsMap {
+//   Notification,
+//   TestNet,
+//   WalletConnect,
+// }
 
-export const GuardianToolBarAvailableItem = [
-  GuardianToolBarComponentsMap.Notification,
-  GuardianToolBarComponentsMap.TestNet,
-  GuardianToolBarComponentsMap.WalletConnect,
+export const GuardianToolBarAvailableItem: ButtonComponentsMap[] = [
+  ButtonComponentsMap.Notification,
+  ButtonComponentsMap.TestNet,
+  ButtonComponentsMap.WalletConnect,
 ]
-export let headerGuardianToolBarData: Array<{
-  buttonComponent: number
-  handleClick?: (props: any) => void
-  [key: string]: any
-}> = [
-  {
-    buttonComponent: GuardianToolBarComponentsMap.Notification,
-    label: 'labelNotification',
-  },
-  { buttonComponent: GuardianToolBarComponentsMap.TestNet },
-  {
-    buttonComponent: GuardianToolBarComponentsMap.WalletConnect,
-    label: 'labelConnectWallet',
-    accountState: undefined,
-    handleClick: undefined,
-  },
-]
-
-export let headerToolBarData: Array<{
-  buttonComponent: number
-  handleClick?: (props: any) => void
-  [key: string]: any
-}> = [
-  {
-    buttonComponent: ButtonComponentsMap.Download,
-    url: WalletSite,
-  },
-  {
+export let headerGuardianToolBarData: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  [ButtonComponentsMap.Notification]: {
     buttonComponent: ButtonComponentsMap.Notification,
     label: 'labelNotification',
   },
-  { buttonComponent: ButtonComponentsMap.Setting, label: 'labelSetting' },
-  {
-    buttonComponent: ButtonComponentsMap.ProfileMenu,
-    i18nDescription: 'labelProfile',
-    readyState: undefined,
-  },
-  {
+  [ButtonComponentsMap.TestNet]: { buttonComponent: ButtonComponentsMap.TestNet },
+  [ButtonComponentsMap.WalletConnect]: {
     buttonComponent: ButtonComponentsMap.WalletConnect,
     label: 'labelConnectWallet',
     accountState: undefined,
     handleClick: undefined,
   },
-]
+}
+export let headerToolBarData: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  [ButtonComponentsMap.Download]: {
+    buttonComponent: ButtonComponentsMap.Download,
+    url: WalletSite,
+  },
+  [ButtonComponentsMap.Notification]: {
+    buttonComponent: ButtonComponentsMap.Notification,
+    label: 'labelNotification',
+  },
+  [ButtonComponentsMap.Setting]: {
+    buttonComponent: ButtonComponentsMap.Setting,
+    label: 'labelSetting',
+  },
+  [ButtonComponentsMap.ProfileMenu]: {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: 'labelProfile',
+    readyState: undefined,
+  },
+  [ButtonComponentsMap.WalletConnect]: {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+}
 
-export const toolBarMobileAvailableItem = [
-  ButtonComponentsMap.Download,
-  ButtonComponentsMap.Notification,
-  ButtonComponentsMap.Setting,
-  ButtonComponentsMap.WalletConnect,
-]
+// export const toolBarMobileAvailableItem = [
+//   ButtonComponentsMap.Download,
+//   ButtonComponentsMap.Notification,
+//   ButtonComponentsMap.Setting,
+//   ButtonComponentsMap.WalletConnect,
+// ]
 
 export enum RouterMainKey {
   lite = 'lite',
@@ -288,8 +298,22 @@ export const ammDisableList = ['Liquidity']
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
+      id: 'loopringPro',
+      i18nKey: 'labelNavPro',
+    },
+    router: { path: ExchangePro },
+  },
+  {
+    label: {
+      id: 'loopringLite',
+      i18nKey: 'labelNavEarn',
+    },
+    router: { path: Earnlite },
+  },
+  {
+    label: {
       id: 'wallet',
-      i18nKey: 'labelWallet',
+      i18nKey: 'labelNavWallet',
     },
     router: { path: WalletSite },
   },
@@ -326,7 +350,7 @@ export const subMenuLayer2 = {
     },
     {
       icon: VipIcon,
-      router: { path: '/layer2/vip' },
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.vip}` },
       label: {
         id: 'vip',
         i18nKey: 'labelVipPanel',
@@ -547,7 +571,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'L2Explorer', //Layer2 Explorer
-      linkHref: 'https://explorer.loopring.io',
+      linkHref: `${Explorer}`,
     },
     {
       linkName: 'BugBounty', //BugBounty
@@ -970,27 +994,29 @@ export const RouterAllowIndex = {
 }
 
 export const ProfileIndex = {
-  TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
+  TAIKO: [Layer2RouterID.security, Layer2RouterID.referralrewards],
   ETHEREUM: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
   ],
   GOERLI: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
   ],
   ARBGOERLI: [
-    ProfileKey.security,
-    ProfileKey.forcewithdraw,
-    ProfileKey.vip,
-    ProfileKey.contact,
-    ProfileKey.referralrewards,
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
   ],
 }
 

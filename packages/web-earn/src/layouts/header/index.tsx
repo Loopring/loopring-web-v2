@@ -3,8 +3,6 @@ import {
   CloseIcon,
   headerRoot,
   hexToRGB,
-  toolBarAvailableItem,
-  toolBarMobileAvailableItem,
 } from '@loopring-web/common-resources'
 
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
@@ -42,8 +40,10 @@ const Header = withTranslation('common')(
       const { allowTrade, chainId } = useSystem()
       const { account } = useAccount()
       const [view, setView] = React.useState(false)
-      const { redPackets, setShowRedPacketsPopup} = useTargetRedPackets()
-      const popUpRedpackets = redPackets ? redPackets.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") : []
+      const { redPackets, setShowRedPacketsPopup } = useTargetRedPackets()
+      const popUpRedpackets = redPackets
+        ? redPackets.filter((redpacket) => (redpacket as any).notifyType === 'NOTIFY_WINDOW')
+        : []
       const showExclusiveRedpacket = popUpRedpackets.length > 0
       const exclusiveRedpacketCount = popUpRedpackets.length
       const { setShowRedPacket } = useOpenModals()
@@ -59,7 +59,7 @@ const Header = withTranslation('common')(
             step: RedPacketViewStep.OpenPanel,
           })
         }
-      } 
+      }
 
       return (
         <>
@@ -76,9 +76,12 @@ const Header = withTranslation('common')(
                 headerMenuData={
                   /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
                 }
-                toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
                 toolBarMap={ButtonComponentsMap}
-                headerToolBarData={headerToolBarData}
+                headerToolBarData={
+                  isLandPage
+                    ? { buttonComponent: ButtonComponentsMap.ColorSwitch, label: 'labelColors' }
+                    : headerToolBarData
+                }
                 notification={notifyMap}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}
                 onClickExclusiveredPacket={onClickExclusiveredPacket}
@@ -96,7 +99,6 @@ const Header = withTranslation('common')(
               headerMenuData={
                 /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
               }
-              toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
               toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
               notification={notifyMap}

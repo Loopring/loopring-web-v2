@@ -175,9 +175,9 @@ export const AssetL2TabIndex = {
 
 ```ts
 export const ProfileIndex = {
-  TAIKO: [ProfileKey.security, ProfileKey.referralrewards],
-  ETHEREUM: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
-  GOERLI: [ProfileKey.security, ProfileKey.vip, ProfileKey.contact, ProfileKey.referralrewards],
+  TAIKO: [Layer2RouterID.security, Layer2RouterID.referralrewards],
+  ETHEREUM: [Layer2RouterID.security, Layer2RouterID.vip, Layer2RouterID.contact, Layer2RouterID.referralrewards],
+  GOERLI: [Layer2RouterID.security, Layer2RouterID.vip, Layer2RouterID.contact, Layer2RouterID.referralrewards],
 }
 ```
 

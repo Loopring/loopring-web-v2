@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {
-  GuardianToolBarComponentsMap,
+  ButtonComponentsMap,
   headerGuardianToolBarData,
   headerMenuLandingData,
   myLog,
@@ -40,8 +40,8 @@ export const useHeader = () => {
   const [headerToolBarData, setHeaderToolBarData] = React.useState<
     typeof headerGuardianToolBarData
   >(() => {
-    headerGuardianToolBarData[GuardianToolBarComponentsMap.Notification] = {
-      ...headerGuardianToolBarData[GuardianToolBarComponentsMap.Notification],
+    headerGuardianToolBarData[ButtonComponentsMap.Notification] = {
+      ...headerGuardianToolBarData[ButtonComponentsMap.Notification],
     }
     // headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
     //   ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
@@ -51,8 +51,8 @@ export const useHeader = () => {
     //   },
     //   isShow: (chainId as any) === ChainIdExtends["TAIKO"],
     // };
-    headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
-      ...headerGuardianToolBarData[GuardianToolBarComponentsMap.WalletConnect],
+    headerGuardianToolBarData[ButtonComponentsMap.WalletConnect] = {
+      ...headerGuardianToolBarData[ButtonComponentsMap.WalletConnect],
       accountState,
       isLayer1Only: true,
       NetWorkItems,
@@ -74,8 +74,8 @@ export const useHeader = () => {
   React.useEffect(() => {
     if (accountStatus && accountStatus === 'UNSET') {
       setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[GuardianToolBarComponentsMap.WalletConnect] = {
-          ...headerToolBarData[GuardianToolBarComponentsMap.WalletConnect],
+        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
+          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           isLayer1Only: true,
           accountState,
           NetWorkItems,

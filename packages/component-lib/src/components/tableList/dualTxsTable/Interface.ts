@@ -1,4 +1,9 @@
-import { DualCurrentPrice, DualViewOrder } from '@loopring-web/common-resources'
+import {
+  DualCurrentPrice,
+  DualViewOrder,
+  RowConfig,
+  RowConfigType,
+} from '@loopring-web/common-resources'
 import { DualDetailType } from '../../tradePanel'
 
 export type RawDataDualTxsItem = DualViewOrder & {
@@ -27,6 +32,7 @@ export interface DualAssetTableProps<R> {
     total: number
   }
   getProduct: (item: R) => void
+  rowConfig?: typeof RowConfig
 }
 
 export interface DualTxsTableProps<R = RawDataDualTxsItem> {

@@ -33,6 +33,7 @@ import {
   myLog,
   PriceTag,
   RecordTabIndex,
+  RouterPath,
   SagaStatus,
   TabOrderIndex,
   TokenType,
@@ -66,8 +67,7 @@ export const useGetAssets = (): AssetPanelProps & {
   // const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({})
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
-  const { status: accountStatus, account } = useAccount()
-  const { sendSocketTopic, socketEnd } = useSocket()
+  const { account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
@@ -108,7 +108,7 @@ export const useGetAssets = (): AssetPanelProps & {
         }))
       : []
     const { walletMap } = makeWalletLayer2({ needFilterZero: false })
-    const tokenMap = omitBy(tokenMapRaw, token => token.isLpToken)
+    const tokenMap = omitBy(tokenMapRaw, (token) => token.isLpToken)
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&
@@ -229,17 +229,6 @@ export const useGetAssets = (): AssetPanelProps & {
     }
   }
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
-  React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      sendSocketTopic({ [WsTopicType.account]: true })
-      myLog('setLoadingBtn setLoadingBtn', assetBtnStatus)
-      setLoadingBtn()
-    }
-    return () => {
-      socketEnd()
-      startWorker.cancel()
-    }
-  }, [account.readyState])
 
   React.useEffect(() => {
     if (
@@ -292,7 +281,7 @@ export const useGetAssets = (): AssetPanelProps & {
       setShowWithdraw({
         isShow: true,
         symbol: token,
-        info: { isToMyself: true }
+        info: { isToMyself: true },
       })
     },
     [setShowAccount],
@@ -378,27 +367,24 @@ export const useAssetAction = () => {
                 .toString()
               prev[0] = {
                 ...prev[0],
-                value: sdk
-                  .toBig(prev[0].value?.replaceAll(sdk.SEP, ''))
-                  .minus(amount)
-                  .toString(),
+                value: sdk.toBig(prev[0].value?.replaceAll(sdk.SEP, '')).minus(amount).toString(),
               }
               let link = ''
               switch (record.lockTag) {
                 case sdk.LOCK_TYPE.DUAL_CURRENCY:
-                  link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
+                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.DUAL}`
                   break
                 case sdk.LOCK_TYPE.DUAL_BASE:
-                  link = `/#/invest/balance/${InvestAssetRouter.DUAL}`
+                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.DUAL}`
                   break
                 case sdk.LOCK_TYPE.L2STAKING:
-                  link = `/#/invest/balance/${InvestAssetRouter.STAKELRC}`
+                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.STAKELRC}`
                   break
                 case sdk.LOCK_TYPE.BTRADE:
-                  link = `/#/l2assets/history/${RecordTabIndex.BtradeSwapRecords}`
+                  link = `/#${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}`
                   break
                 case sdk.LOCK_TYPE.STOP_LIMIT:
-                  link = `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
+                  link = `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
                   break
               }
               prev.push({
@@ -421,14 +407,14 @@ export const useAssetAction = () => {
                   .minus(_item?.withdrawAmount ?? 0)
                   .minus(_item?.depositAmount ?? 0)
                   .toString(),
-                link: `/#/l2assets/history/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
+                link: `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`,
               },
               ...(sdk.toBig(_item?.depositAmount ?? 0).gt(0)
                 ? [
                     {
                       key: `labelDepositPending`,
                       value: sdk.toBig(_item?.depositAmount ?? '0').toString(),
-                      link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
+                      link: `/#${RouterPath.l2records}/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.receive}&searchValue=${_item.name}`,
                     },
                   ]
                 : []),
@@ -437,7 +423,7 @@ export const useAssetAction = () => {
                     {
                       key: `labelWithDrawPending`,
                       value: sdk.toBig(_item?.withdrawAmount ?? '0').toString(),
-                      link: `/#/l2assets/history/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
+                      link: `/#${RouterPath.l2records}/${RecordTabIndex.Transactions}/?types=${TransactionTradeViews.send}&searchValue=${_item.name}`,
                     },
                   ]
                 : []),
