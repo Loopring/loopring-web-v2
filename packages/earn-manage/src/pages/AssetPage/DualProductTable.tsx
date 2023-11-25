@@ -142,7 +142,7 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
             break
           case 'currentPrice':
             key = props.isDelivering ? 'deliveryPrice' : 'currentPrice'
-            _rawData = rawData.sort((a, b) => a[key].localeCompare(b[key]))
+            _rawData = rawData.sort((a, b) => a[key].toString().localeCompare(b[key]))
             break
           case 'investAmount':
             _rawData = rawData.sort((a, b) => a.supplliedAmount.localeCompare(b.supplliedAmount))

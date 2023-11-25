@@ -139,7 +139,7 @@ const useGetProduct = ({ filter, limit = 50 }: any) => {
           return {
             ...item,
             product: (item.investedBase ? `Sell High ` : `Buy Low `) + `${item.base}/${item.quote}`,
-            targetPrice: item.strike,
+            targetPrice: item.strike?.toString(),
             currentPrice: index?.index,
             investAmountStr: getValuePrecisionThousand(
               sdk.toBig(item.investAmount).div('1e' + tokenMap[item.investToken]?.decimals),
