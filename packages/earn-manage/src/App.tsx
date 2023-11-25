@@ -24,12 +24,8 @@ const App = () => {
   const {
     i18n: { language },
   } = useTranslation()
-  // const storeLan = store.getState().settings.language
-  // React.useEffect(() => {
-  //   if (storeLan !== language) {
-  //     store.dispatch(setLanguage(language))
-  //   }
-  // }, [storeLan, language])
+  const storeLan = store.getState().settings.language
+
   const { state } = useInit()
 
   return (

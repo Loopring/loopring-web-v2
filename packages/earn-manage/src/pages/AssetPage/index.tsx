@@ -1,13 +1,24 @@
-import { useTokenMap } from '@loopring-web/core'
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material'
+import { useAccount, useTokenMap } from '@loopring-web/core'
+import { Box, Grid, Tab, Tabs, Typography, Divider } from '@mui/material'
 import { useData, ProductsIndex } from './hook'
-import { Button, CoinIcon, useSettings } from '@loopring-web/component-lib'
+import {
+  Button,
+  CoinIcon,
+  useSettings,
+  Modal,
+  DepositPanel,
+  WithdrawPanel,
+} from '@loopring-web/component-lib'
 import React from 'react'
-import { getValuePrecisionThousand, TokenType } from '@loopring-web/common-resources'
+import { EmptyValueTag, getValuePrecisionThousand, TokenType } from '@loopring-web/common-resources'
 import { DualProductTable } from './DualProductTable'
+import { useDeposit, useWithdraw } from '../../hooks'
+import { useSettle } from '../../hooks/useractions/useSettle'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const AssetPage = () => {
   // dualManageConfig.tokenList
+  const { account } = useAccount()
   const { tokenMap } = useTokenMap()
   const [value, setValue] = React.useState(ProductsIndex.delivering)
   const {
@@ -17,13 +28,22 @@ export const AssetPage = () => {
     protocolTotal,
     delivering,
     progress,
+    getProduct,
     deposit,
     withdraw,
     settle,
     products,
+    setShowDeposit,
+    setShowSettle,
+    setShowWithdraw,
+    modal: { isShowDeposit, isShowSettle, isShowWithdraw },
   } = useData()
+  const depositProps = useDeposit({ setShowDeposit, isShowDeposit })
+  const withdrawProps = useWithdraw({ setShowWithdraw, isShowWithdraw })
+  const settleProps = useSettle({ isShowSettle, setShowSettle })
+
   const { coinJson } = useSettings()
-  const [item, setItem] = React.useState(products[value as any])
+  // const [item, setItem] = React.useState(products[value as any])
   return (
     <Box padding={3}>
       <Grid paddingX={3} marginBottom={2} container spacing={4}>
@@ -71,12 +91,20 @@ export const AssetPage = () => {
                     </Grid>
                     <Grid item xs={7}>
                       <Typography display={'inline-flex'} alignItems={'center'}>
-                        {`${getValuePrecisionThousand(
-                          item.amount,
-                          tokenMap[item.symbol].decimals,
-                          tokenMap[item.symbol].decimals,
-                          undefined,
-                        )}/$${getValuePrecisionThousand(item.value, 2, 2)}`}
+                        {`${
+                          item.amount == '0'
+                            ? EmptyValueTag
+                            : getValuePrecisionThousand(
+                                item.amount,
+                                tokenMap[item.symbol].precision,
+                                tokenMap[item.symbol].precision,
+                                undefined,
+                              )
+                        }/$${
+                          item.value == '0'
+                            ? EmptyValueTag
+                            : getValuePrecisionThousand(item.value, 2, 2)
+                        }`}
                       </Typography>
                     </Grid>
                   </React.Fragment>
@@ -105,7 +133,7 @@ export const AssetPage = () => {
                     Assets
                   </Typography>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={5}>
                   <Typography
                     marginBottom={2}
                     display={'flex'}
@@ -115,9 +143,10 @@ export const AssetPage = () => {
                     Your Supply
                   </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                   <Typography
                     marginBottom={2}
+                    paddingLeft={2}
                     display={'flex'}
                     variant={'body1'}
                     color={'var(--color-text-third)'}
@@ -137,17 +166,25 @@ export const AssetPage = () => {
                         </Typography>
                       </Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={5}>
                       <Typography display={'inline-flex'} alignItems={'center'}>
-                        {`${getValuePrecisionThousand(
-                          item.amount,
-                          tokenMap[item.symbol].decimals,
-                          tokenMap[item.symbol].decimals,
-                          undefined,
-                        )}/$${getValuePrecisionThousand(item.value, 2, 2)}`}
+                        {`${
+                          item.amount == '0'
+                            ? EmptyValueTag
+                            : getValuePrecisionThousand(
+                                item.amount,
+                                tokenMap[item.symbol].precision,
+                                tokenMap[item.symbol].precision,
+                                undefined,
+                              )
+                        }/$${
+                          item.value == '0'
+                            ? EmptyValueTag
+                            : getValuePrecisionThousand(item.value, 2, 2)
+                        }`}
                       </Typography>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
                       <Typography display={'inline-flex'} alignItems={'center'}>
                         <Button variant={'text'} onClick={() => deposit(item.symbol)}>
                           deposit
@@ -240,32 +277,42 @@ export const AssetPage = () => {
                 </Grid>
                 <Grid item xs={2} display={'flex'}>
                   <Typography display={'inline-flex'} alignItems={'center'}>
-                    {`${getValuePrecisionThousand(
-                      item.amount,
-                      tokenMap[item.symbol].decimals,
-                      tokenMap[item.symbol].decimals,
-                      undefined,
-                    )}`}
+                    {`${
+                      item.amount == '0'
+                        ? EmptyValueTag
+                        : getValuePrecisionThousand(
+                            item.amount,
+                            tokenMap[item.symbol].precision,
+                            tokenMap[item.symbol].precision,
+                            undefined,
+                          )
+                    }`}
                   </Typography>
                 </Grid>
                 <Grid item xs={2} display={'flex'}>
                   <Typography display={'inline-flex'} alignItems={'center'}>
-                    {`${getValuePrecisionThousand(
-                      item.amount,
-                      tokenMap[item.symbol].decimals,
-                      tokenMap[item.symbol].decimals,
-                      undefined,
-                    )}`}
+                    {`item.amount == '0'
+                      ? EmptyValueTag
+                      :${getValuePrecisionThousand(
+                        item.amount,
+                        tokenMap[item.symbol].precision,
+                        tokenMap[item.symbol].precision,
+                        undefined,
+                      )}`}
                   </Typography>
                 </Grid>
                 <Grid item xs={2} display={'flex'}>
                   <Typography display={'inline-flex'} alignItems={'center'}>
-                    {`${getValuePrecisionThousand(
-                      item.amount,
-                      tokenMap[item.symbol].decimals,
-                      tokenMap[item.symbol].decimals,
-                      undefined,
-                    )}`}
+                    {`${
+                      item.amount == '0'
+                        ? EmptyValueTag
+                        : getValuePrecisionThousand(
+                            item.amount,
+                            tokenMap[item.symbol].precision,
+                            tokenMap[item.symbol].precision,
+                            undefined,
+                          )
+                    }`}
                   </Typography>
                 </Grid>
                 <Grid item xs={3} display={'flex'}>
@@ -354,8 +401,8 @@ export const AssetPage = () => {
                   <Typography display={'inline-flex'} alignItems={'center'}>
                     {`${getValuePrecisionThousand(
                       item.amount,
-                      tokenMap[item.symbol].decimals,
-                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].precision,
+                      tokenMap[item.symbol].precision,
                       undefined,
                     )}`}
                   </Typography>
@@ -364,8 +411,8 @@ export const AssetPage = () => {
                   <Typography display={'inline-flex'} alignItems={'center'}>
                     {`${getValuePrecisionThousand(
                       item.amount,
-                      tokenMap[item.symbol].decimals,
-                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].precision,
+                      tokenMap[item.symbol].precision,
                       undefined,
                     )}`}
                   </Typography>
@@ -374,8 +421,8 @@ export const AssetPage = () => {
                   <Typography display={'inline-flex'} alignItems={'center'}>
                     {`${getValuePrecisionThousand(
                       item.amount,
-                      tokenMap[item.symbol].decimals,
-                      tokenMap[item.symbol].decimals,
+                      tokenMap[item.symbol].precision,
+                      tokenMap[item.symbol].precision,
                       undefined,
                     )}`}
                   </Typography>
@@ -391,24 +438,83 @@ export const AssetPage = () => {
         </Grid>
       </Box>
 
-      <Box margin={3} border={'1px solid var(--color-border)'} borderRadius={1} padding={2}>
+      <Box margin={3} border={'1px solid var(--color-border)'} borderRadius={1}>
         <Tabs
           value={value}
           onChange={(_, value) => {
             setValue(value)
-            setItem(products[value])
+            getProduct({
+              page: 1,
+              investmentStatuses:
+                value == ProductsIndex.delivering
+                  ? [sdk.Layer1DualInvestmentStatus.DUAL_SETTLED]
+                  : [
+                      sdk.Layer1DualInvestmentStatus.DUAL_CONFIRMED,
+                      sdk.Layer1DualInvestmentStatus.DUAL_RECEIVED,
+                    ],
+            })
+            // setItem(products[value])
           }}
         >
           <Tab value={ProductsIndex.delivering} label={'Products in delivering'} />
           <Tab value={ProductsIndex.progress} label={'Products in progress'} />
         </Tabs>
-        <Box flex={1}>
+        <Divider />
+        <Box flex={1} padding={2}>
           <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-            Total Investment ${getValuePrecisionThousand(item.total, 2, 2)}
+            Total Investment ${getValuePrecisionThousand(products.total, 2, 2)}
           </Typography>
-          <DualProductTable rawData={item.list ?? []} showloading={true} />
+          <DualProductTable
+            rawData={products.list ?? []}
+            showloading={products.productLoading}
+            isDelivering={value === ProductsIndex.delivering}
+          />
         </Box>
       </Box>
+      <Modal
+        open={isShowDeposit.isShow}
+        contentClassName={'trade-wrap'}
+        onClose={() => {
+          setShowDeposit({ isShow: false })
+        }}
+        content={
+          <DepositPanel
+            title={'deposit'}
+            accountReady={account?.readyState as any}
+            {...depositProps}
+            // btnInfo={_depositBtnI18nKey}
+            // depositBtnStatus={_depositBtnStatus}
+            // onDepositClick={_onDepositClick}
+            // isNewAccount={false}
+          />
+        }
+      />
+      <Modal
+        open={isShowDeposit.isShow}
+        contentClassName={'trade-wrap'}
+        onClose={() => {
+          setShowWithdraw({ isShow: false })
+        }}
+        content={
+          <WithdrawPanel
+            title={'deposit'}
+            accountReady={account?.readyState as any}
+            {...withdrawProps}
+            // btnInfo={_depositBtnI18nKey}
+            // depositBtnStatus={_depositBtnStatus}
+            // onDepositClick={_onDepositClick}
+            // isNewAccount={false}
+          />
+        }
+      />
+      <Modal
+        open={isShowSettle.isShow}
+        contentClassName={'trade-wrap'}
+        onClose={() => {
+          setShowSettle({ isShow: false })
+        }}
+        content={<Box>{settleProps.btnStatus}</Box>}
+      />
     </Box>
   )
 }

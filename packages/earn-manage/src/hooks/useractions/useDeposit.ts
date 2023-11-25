@@ -34,7 +34,10 @@ import { AccountStepExtends } from '../../modal/AccountL1Modal/interface'
 import _ from 'lodash'
 
 type DepositProps<T> = {}
-export const useDeposit = <T extends any>(): {
+export const useDeposit = <T extends any>({
+  setShowDeposit,
+  isShowDeposit,
+}: any): {
   depositProps: DepositProps<T>
 } => {
   const { tokenMap, totalCoinMap } = useTokenMap()

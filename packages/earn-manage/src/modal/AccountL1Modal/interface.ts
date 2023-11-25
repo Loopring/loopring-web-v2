@@ -8,4 +8,7 @@ export enum AccountStepExtends {
   withdraw_Processing,
   withdraw_sign,
   withdraw_failed,
+  settle_Processing,
+  settle_sign,
+  settle_failed,
 }

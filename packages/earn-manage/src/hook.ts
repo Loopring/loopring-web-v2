@@ -173,6 +173,11 @@ export function useInit() {
     }
   }, [tokenPricesStatus])
   React.useEffect(() => {
+    if (tokenMapStatus === SagaStatus.UNSET && tokenPricesStatus === SagaStatus.UNSET) {
+      setState('DONE')
+    }
+  }, [tokenMapStatus, tokenPricesStatus])
+  React.useEffect(() => {
     switch (socketStatus) {
       case 'ERROR':
         socketUnset()

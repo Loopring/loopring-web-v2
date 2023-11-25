@@ -35,7 +35,6 @@ import {
   IBData,
   TRADE_TYPE,
   TradeNFT,
-  myLog,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
@@ -184,7 +183,7 @@ export const ModalPanel = <
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
     setShowTargetRedpacketPop,
-    setShowRedPacket
+    setShowRedPacket,
     // setShowDual,
   } = useOpenModals()
 
@@ -204,7 +203,7 @@ export const ModalPanel = <
     isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
-    isShowTargetRedpacketPop
+    isShowTargetRedpacketPop,
   } = modals
   const theme = useTheme()
   return (
@@ -503,13 +502,13 @@ export const ModalPanel = <
         // maxWidth={'md'}
         open={isShowTargetRedpacketPop.isShow}
         onClose={() => {
-          setShowTargetRedpacketPop({isShow: false, info: {}})
+          setShowTargetRedpacketPop({ isShow: false, info: {} })
         }}
         content={
           <TargetRedpacketWrap
             exclusiveRedPackets={isShowTargetRedpacketPop.info.exclusiveRedPackets}
             onClickOpenExclusive={(redpacket) => {
-              setShowTargetRedpacketPop({isShow: false, info: {}})
+              setShowTargetRedpacketPop({ isShow: false, info: {} })
               setShowRedPacket({
                 isShow: true,
                 info: {

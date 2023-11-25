@@ -1,15 +1,16 @@
 import styled from '@emotion/styled'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { Table } from '@loopring-web/component-lib'
-import { RowDualInvestConfig } from '@loopring-web/common-resources'
+import { CoinIcons, Table, useSettings } from '@loopring-web/component-lib'
+import { EmptyValueTag, TokenType, RowConfig } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { Column } from 'react-data-grid'
+import { Typography } from '@mui/material'
 
 const TableStyled = styled(Table)<{ isMobile: boolean }>`
   &.rdg {
-    --template-columns: '18% auto 18% 18% 20% !important';
+    --template-columns: auto 10% 10% 16% 16% 14% 14% !important;
 
     height: ${(props: any) => {
       if (props.ispro === 'pro') {
@@ -37,22 +38,42 @@ const TableStyled = styled(Table)<{ isMobile: boolean }>`
 export interface DualsTableProps<R, C = sdk.Currency> {
   rawData: R[]
   showloading: boolean
+  isDelivering: boolean
 }
 
 export const DualProductTable = withTranslation(['tables', 'common'])(
   <R extends any>(props: DualsTableProps<R> & WithTranslation) => {
     const { rawData, showloading, t } = props
     const history = useHistory()
+    const { coinJson } = useSettings()
 
     const defaultArgs: any = {
       columnMode: [
         {
           key: 'product',
-          sortable: true,
+          sortable: false,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           name: 'Product',
-          formatter: ({ row }) => row.product,
+          formatter: ({ row }) => (
+            <Typography
+              component={'span'}
+              flexDirection={'row'}
+              display={'flex'}
+              height={'100%'}
+              alignItems={'center'}
+            >
+              <Typography component={'span'} display={'inline-flex'}>
+                <CoinIcons
+                  tokenIcon={[coinJson[row.base], coinJson[row.quote]]}
+                  type={TokenType.dual}
+                />
+              </Typography>
+              <Typography component={'span'} display={'inline-flex'}>
+                {row.product}
+              </Typography>
+            </Typography>
+          ),
         },
         {
           key: 'targetPrice',
@@ -67,8 +88,8 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
           sortable: true,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
-          name: 'Current Price',
-          formatter: ({ row }) => row.currentPrice,
+          name: props.isDelivering ? 'Expire Price' : 'Current Price',
+          formatter: ({ row }) => (props.isDelivering ? row.deliveryPrice : row.currentPrice),
         },
         {
           key: 'investAmount',
@@ -76,7 +97,7 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           name: 'InvestAmount',
-          formatter: ({ row }) => row.investAmount,
+          formatter: ({ row }) => <>{row.investAmountStr + ' ' + row.investToken}</>,
         },
         {
           key: 'settledAmount',
@@ -84,7 +105,7 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           name: 'Amount to be settled',
-          formatter: ({ row }) => row.settledAmount,
+          formatter: ({ row }) => row.toBeSettledAmount + ' ' + row.toBeSettledToken,
         },
         {
           key: 'received',
@@ -92,15 +113,16 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           name: 'To be received',
-          formatter: ({ row }) => row.recieved,
+          formatter: ({ row }) =>
+            row.receivedAmount == 0 ? EmptyValueTag : row.receivedAmount + ' ' + row.receivedToken,
         },
         {
           key: 'supplied',
           sortable: true,
           cellClass: 'textAlignRight',
           headerCellClass: 'textAlignRight',
-          name: 'To be supplied',
-          formatter: ({ row }) => row.supplied,
+          name: 'To be Supplied',
+          formatter: ({ row }) => row.supplliedAmount + ' ' + row.supplliedToken,
         },
       ],
       generateRows: (rawData: any) => rawData,
@@ -110,13 +132,31 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
     const sortMethod = React.useCallback(
       (_sortedRows, sortColumn) => {
         let _rawData: R[] = []
+        let key = ''
         switch (sortColumn) {
           case 'product':
+            _rawData = rawData.sort((a, b) => a.base.localeCompare(b.base))
+            break
           case 'targetPrice':
+            _rawData = rawData.sort((a, b) => a['targetPrice'].localeCompare(b['targetPrice']))
+            break
           case 'currentPrice':
+            key = props.isDelivering ? 'deliveryPrice' : 'currentPrice'
+            _rawData = rawData.sort((a, b) => a[key].localeCompare(b[key]))
+            break
           case 'investAmount':
+            _rawData = rawData.sort((a, b) => a.supplliedAmount.localeCompare(b.supplliedAmount))
+            break
           case 'settledAmount':
+            _rawData = rawData.sort((a, b) =>
+              a.toBeSettledAmount.localeCompare(b.toBeSettledAmount),
+            )
+            break
           case 'received':
+            _rawData = rawData.sort((a, b) => a.receivedAmount.localeCompare(b.receivedAmount))
+            break
+          case 'supplied':
+            break
           default:
             _rawData = rawData
         }
@@ -131,11 +171,11 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
       <TableStyled
         currentheight={
           rawData.length > 0
-            ? RowDualInvestConfig.rowHeaderHeight + rawData.length * RowDualInvestConfig.rowHeight
-            : RowDualInvestConfig.minHeight
+            ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+            : RowConfig.minHeight
         }
-        rowHeight={RowDualInvestConfig.rowHeight}
-        headerRowHeight={RowDualInvestConfig.rowHeaderHeight}
+        rowHeight={RowConfig.rowHeight}
+        headerRowHeight={RowConfig.rowHeaderHeight}
         sortMethod={sortMethod}
         {...{
           ...defaultArgs,

@@ -32,27 +32,32 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
   }
   return (
     <>
+      state ==
       {searchParams && searchParams.has('noheader') ? <></> : <Header />}
-      <Switch>
-        <Route exact path='/loading'>
-          <LoadingPage />
-        </Route>
-        <Route path='/record'>
-          <RecordPage />
-        </Route>
-        <Route path={['/', '/*']}>
-          <AssetPage />
-        </Route>
+      {state === SagaStatus.DONE && (
+        <Switch>
+          <Route exact path='/loading'>
+            <LoadingPage />
+          </Route>
+          <Route path='/record'>
+            <RecordPage />
+          </Route>
+          <Route path={['/', '/*']}>
+            <AssetPage />
+          </Route>
 
-        <Route
-          component={() => (
-            <>
-              <ErrorPage messageKey={'error404'} />
-            </>
-          )}
-        />
-      </Switch>
-      <ModalGroup assetsRawData={[]} isLayer1Only={true} onWalletConnectPanelClose />
+          <Route
+            component={() => (
+              <>
+                <ErrorPage messageKey={'error404'} />
+              </>
+            )}
+          />
+        </Switch>
+      )}
+      {state === SagaStatus.DONE && (
+        <ModalGroup assetsRawData={[]} isLayer1Only={true} onWalletConnectPanelClose />
+      )}
       {query && query.has('nofooter') ? <></> : <Footer />}
     </>
   )

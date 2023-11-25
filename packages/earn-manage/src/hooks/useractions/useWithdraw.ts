@@ -50,20 +50,20 @@ import _ from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { AccountStepExtends } from '../../modal/AccountL1Modal/interface'
 
-export const useWithdraw = <R extends IBData<T>, T>() => {
+export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWithdraw }) => {
+  const { symbol, isShow, info } = isShowWithdraw
   const {
-    modals: {
-      isShowWithdraw: {
-        symbol,
-        isShow,
-        info,
-        address: contactAddress,
-        name: contactName,
-        addressType: contactAddressType,
-      },
-    },
+    // modals: {
+    //   isShowWithdraw: {
+    //     symbol,
+    //     isShow,
+    //     info,
+    //     address: contactAddress,
+    //     name: contactName,
+    //     addressType: contactAddressType,
+    //   },
+    // },
     setShowAccount,
-    setShowWithdraw,
   } = useOpenModals()
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
@@ -364,8 +364,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
     if (info?.isToMyself) {
       setAddress(account.accAddress)
-    } else if (contactAddress) {
-      setAddress(contactAddress)
     } else {
       setAddress('')
     }
@@ -380,7 +378,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     feeInfo,
     withdrawValue.belong,
     info?.isRetry,
-    contactAddress,
   ])
 
   React.useEffect(() => {
@@ -772,14 +769,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handleOnAddressChange: (value: any) => {
       setAddress(value)
     },
-    isFromContact: contactAddress ? true : false,
-    contact: contactAddress
-      ? ({
-          address: contactAddress,
-          name: contactName!,
-          addressType: contactAddressType!,
-        } as any)
-      : undefined,
     loopringSmartWalletVersion,
     contacts,
   }

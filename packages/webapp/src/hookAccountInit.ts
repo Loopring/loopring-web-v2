@@ -130,7 +130,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [walletLayer2Status])
-
   React.useEffect(() => {
     switch (walletL2CollectionStatus) {
       case SagaStatus.ERROR:
