@@ -630,6 +630,124 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   },
 ]
 
+export const LuckyRedPacketList2: LuckyRedPacketItem[] = [
+  {
+    labelKey: 'labelLuckyRandomToken',
+    desKey: 'labelRedPacketsSplitLuckyDetail',
+    tags: [
+      // 'showInNFTS',
+      // 'showInERC20',
+      'showInNormal', 
+      'enableInNFTS',
+      'enableInERC20',
+      'defaultForERC20',
+      'defaultForNFT',
+      'enableInBlindBox',
+      
+      // 'showInBlindBoxToken',
+    ],
+    // showInNFTS: true,
+    // showInERC20: true,
+    // defaultForERC20: true,
+    // defaultForNFT: true,
+    value: {
+      value: 1,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+  {
+    labelKey: 'labelLuckyRandomToken',
+    desKey: 'labelRedPacketsSplitLuckyDetail',
+    tags: [
+      'defaultForBlindBox',
+      'enableInBlindBox',
+      'showInBlindBox',
+      'defaultForFromNFT'
+    ],
+    // showInNFTS: true,
+    // showInERC20: true,
+    // defaultForERC20: true,
+    // defaultForNFT: true,
+    value: {
+      value: 4,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
+    labelKey: 'labelLuckyCommonToken',
+    desKey: 'labelLuckyCommonTokenDes',
+    tags: [
+      // 'showInNFTS', 
+      // 'showInERC20', 
+      'showInNormal', 
+      'showInBlindBox',
+      'enableInNFTS', 
+      'enableInERC20'
+    ],
+    // showInNFTS: true,
+    // showInERC20: true,
+    value: {
+      value: 2,
+      partition: sdk.LuckyTokenAmountType.AVERAGE,
+      mode: sdk.LuckyTokenClaimType.COMMON,
+    },
+  },
+  {
+    labelKey: 'labelLuckyRelayToken',
+    desKey: 'labelLuckyRelayTokenDes',
+    tags: [
+      // 'showInNFTS', 
+      'showInNormal', 
+      'showInBlindBox',
+      'enableInERC20', 
+      'hideForExclusive'
+    ],
+    // showInERC20: true,
+    // hideForExclusive: true,
+    value: {
+      value: 0,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.RELAY,
+    },
+  },
+  
+  // {
+  //   labelKey: 'labelRedpacketBlindBox',
+  //   desKey: 'labelLuckyBlindBoxDes',
+  //   tags: ['defaultForFromNFT', 'showInFromNFT'],
+  //   // defaultForFromNFT: true,
+  //   // showInFromNFT: true,
+  //   value: {
+  //     value: 3,
+  //     partition: sdk.LuckyTokenAmountType.RANDOM,
+  //     mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+  //   },
+  // },
+  // {
+  //   labelKey: 'labelLuckyRandomToken',
+  //   desKey: 'labelLuckyRandomTokenDes',
+  //   tags: ['showInFromNFT'],
+  //   // showInFromNFT: true,
+  //   value: {
+  //     value: 4,
+  //     partition: sdk.LuckyTokenAmountType.RANDOM,
+  //     mode: sdk.LuckyTokenClaimType.COMMON,
+  //   },
+  // },
+  // {
+  //   labelKey: 'labelLuckyCommonToken',
+  //   desKey: 'labelLuckyCommonTokenDes',
+  //   showInFromNFT: true,
+  //   value: {
+  //     value: 5,
+  //     partition: sdk.LuckyTokenAmountType.AVERAGE,
+  //     mode: sdk.LuckyTokenClaimType.COMMON,
+  //   },
+  // },
+]
+
 export const QRCODE_REGION_ID = 'qrcodeRegionId'
 
 export type ACCOUNT_ADDRESS = string

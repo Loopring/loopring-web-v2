@@ -4,6 +4,7 @@ import { CreateRedPacketProps, RedPacketStep, TargetRedPacketStep } from '../../
 import {
   FeeInfo,
   LuckyRedPacketList,
+  LuckyRedPacketList2,
   NFTWholeINFO,
   RedPacketOrderData,
   RedPacketOrderType,
@@ -277,17 +278,20 @@ export const CreateRedPacketPanel = <
     return clonedWalletMap
   }, [walletMap])
   const [selectedType, setSelectType] = React.useState(
+    // LuckyRedPacketList2fin
+    
     tradeData.tradeType === RedPacketOrderType.NFT
-      ? LuckyRedPacketList.find((config) => config.defaultForNFT)
+      ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForNFT'))
       : tradeData.tradeType === RedPacketOrderType.BlindBox
-      ? LuckyRedPacketList.find((config) =>
-          redPacketConfig.showERC20Blindbox
-            ? config.defaultForBlindbox
-            : config.defaultForBlindboxNotShowERC20Blindbox,
+      ? LuckyRedPacketList2.find((config) =>
+          config.tags?.includes('defaultForBlindBox')
+          // redPacketConfig.showERC20Blindbox
+          //   ? config.defaultForBlindbox
+          //   : config.defaultForBlindboxNotShowERC20Blindbox,
         )
       : tradeData.tradeType === RedPacketOrderType.FromNFT
-      ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
-      : LuckyRedPacketList.find((config) => config.defaultForERC20),
+      ? LuckyRedPacketList2.find((config) => config.tags?.includes('defaultForFromNFT'))
+      : LuckyRedPacketList.find((config) => config.tags?.includes('defaultForERC20')),
   )
 
   const [privateChecked, setPrivateChecked] = React.useState(false)
