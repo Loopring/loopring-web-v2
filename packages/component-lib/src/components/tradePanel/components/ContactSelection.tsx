@@ -1,4 +1,4 @@
-import { Avatar, Box, BoxProps, InputAdornment, OutlinedInput, Typography } from '@mui/material'
+import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@mui/material'
 import { SearchIcon, CloseIcon, SoursURL, hexToRGB } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
@@ -7,7 +7,6 @@ import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AddressTypeTag } from '../../basic-lib'
-import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 type SingleContactProps = {
   editing: boolean

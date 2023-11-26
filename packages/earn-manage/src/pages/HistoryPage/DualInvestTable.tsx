@@ -1,15 +1,16 @@
 import styled from '@emotion/styled'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { Table } from '@loopring-web/component-lib'
-import { RowDualInvestConfig } from '@loopring-web/common-resources'
+import { RowDualInvestConfig, YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { Column } from 'react-data-grid'
+import moment from 'moment/moment'
 
 const TableStyled = styled(Table)<{ isMobile: boolean }>`
   &.rdg {
-    --template-columns: '18% auto 18% 18% 20% !important';
+    --template-columns: '18% auto auto 18% 18% 20% !important';
 
     height: ${(props: any) => {
       if (props.ispro === 'pro') {
@@ -55,6 +56,15 @@ export const DualInvestTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }) => row.product,
         },
         {
+          key: 'Settlement Date',
+          sortable: true,
+          cellClass: 'textAlignLeft',
+          headerCellClass: 'textAlignLeft',
+          name: 'Settlement Date',
+          formatter: ({ row }) =>
+            moment(row?.timeOrigin?.settlementTime).format(YEAR_DAY_MINUTE_FORMAT),
+        },
+        {
           key: 'targetPrice',
           sortable: true,
           cellClass: 'textAlignLeft',
@@ -63,12 +73,12 @@ export const DualInvestTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }) => row.targetPrice,
         },
         {
-          key: 'currentPrice',
+          key: 'expirePrice',
           sortable: true,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
-          name: 'Current Price',
-          formatter: ({ row }) => row.currentPrice,
+          name: 'Expire Price',
+          formatter: ({ row }) => row.deliveryPrice,
         },
         {
           key: 'investAmount',

@@ -145,15 +145,19 @@ export const DualProductTable = withTranslation(['tables', 'common'])(
             _rawData = rawData.sort((a, b) => a[key].toString().localeCompare(b[key]))
             break
           case 'investAmount':
-            _rawData = rawData.sort((a, b) => a.supplliedAmount.localeCompare(b.supplliedAmount))
+            _rawData = rawData.sort((a, b) =>
+              a.supplliedAmount?.toString().localeCompare(b.supplliedAmount),
+            )
             break
           case 'settledAmount':
             _rawData = rawData.sort((a, b) =>
-              a.toBeSettledAmount.localeCompare(b.toBeSettledAmount),
+              a.toBeSettledAmount?.toString().localeCompare(b.toBeSettledAmount),
             )
             break
           case 'received':
-            _rawData = rawData.sort((a, b) => a.receivedAmount.localeCompare(b.receivedAmount))
+            _rawData = rawData.sort((a, b) =>
+              a.receivedAmount?.toString().localeCompare(b.receivedAmount),
+            )
             break
           case 'supplied':
             break

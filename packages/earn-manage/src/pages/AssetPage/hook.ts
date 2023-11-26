@@ -10,11 +10,19 @@ import React from 'react'
 import {
   AccountStatus,
   getValuePrecisionThousand,
+  MapChainId,
   SagaStatus,
 } from '@loopring-web/common-resources'
 import * as configDefault from '../../config/dualConfig.json'
 import { makeWalletInContract, makeWalletL1 } from '../../hooks'
 import * as sdk from '@loopring-web/loopring-sdk'
+import {
+  AccountStep,
+  setShowConnect,
+  useOpenModals,
+  useSettings,
+  WalletConnectStep,
+} from '@loopring-web/component-lib'
 
 export enum ProductsIndex {
   delivering = 'delivering',
@@ -67,7 +75,7 @@ export const useShowModal = () => {
     setShow((state) => {
       return {
         ...init,
-        isShowWithdraw: { isShow, info },
+        isShowSettle: { isShow, info },
         lastStep: TxAction.settle,
       }
     })
@@ -92,7 +100,7 @@ const useContactProd = ({ filter }: any) => {
     setRowData(() => {
       //TODO
       return list?.map((item) => {
-        const tokenInfo = tokenMap[addressIndex[item.tokenAddress]]
+        const tokenInfo = tokenMap[addressIndex[item?.tokenAddress?.toLowerCase()]]
         return {
           symbol: tokenInfo.symbol,
           amount: sdk
@@ -108,31 +116,37 @@ const useContactProd = ({ filter }: any) => {
   return { rowData, getList, isLoading }
 }
 
-const useGetProduct = ({ filter, limit = 50 }: any) => {
+export const useGetProduct = ({ filter, limit = 50 }: any) => {
   const [rowData, setRowData] = React.useState([])
   const [total, setTotals] = React.useState(0)
+  const [page, setPage] = React.useState(1)
   const [isLoading, setLoading] = React.useState(false)
   const { tokenMap } = useTokenMap()
   const getList = async ({
     page = 1,
     investmentStatuses = [sdk.Layer1DualInvestmentStatus.DUAL_SETTLED],
+    filter = {},
+    limit = 50,
   }: {
     investmentStatuses?: sdk.Layer1DualInvestmentStatus[]
     page?: number
+    filter?: any
+    limit?: number
   }) => {
     setLoading(true)
     const response = await LoopringAPI.coworkerAPI?.getProducts({
-      limit: 50,
+      limit,
       offset: page - 1,
       investmentStatuses,
     })
+    setPage(page - 1)
     if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
     } else {
-      setTotals(response.totalNum)
+      setTotals((response as any).totalNum)
 
       setRowData(() => {
-        const indexes = response.indexes
-        return response.products.map((item) => {
+        const indexes = (response as any).indexes
+        return (response as any).products.map((item) => {
           const index = indexes?.find(
             (_item) => item.base === _item.base && item.quote == _item.quote,
           )
@@ -183,16 +197,18 @@ const useGetProduct = ({ filter, limit = 50 }: any) => {
       setLoading(false)
     }
   }
-  return { rowData, total, getList, isLoading }
+  return { rowData, total, getList, isLoading, page }
 }
 
 export const useData = () => {
   const { account, status: accountStatus } = useAccount()
   const { tokenMap, addressIndex } = useTokenMap()
   const { forexMap } = useSystem()
-  const { walletLayer1 } = useWalletLayer1()
+  const { setShowConnect } = useOpenModals()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [{ assetData, assetTotal }, setAsset] = React.useState({
-    assetData: configDefault?.tokenList?.reduce((prev, item) => {
+    assetData: configDefault[network]?.tokenList?.reduce((prev, item) => {
       prev.push({
         symbol: tokenMap[item?.toUpperCase()?.toString()].symbol,
         amount: '0',
@@ -204,7 +220,7 @@ export const useData = () => {
   })
 
   const [{ protocolData, protocolTotal }, setProtocolData] = React.useState({
-    protocolData: configDefault?.tokenList?.reduce((prev, item) => {
+    protocolData: configDefault[network]?.tokenList?.reduce((prev, item) => {
       prev.push({
         symbol: tokenMap[item?.toUpperCase()?.toString()].symbol,
         amount: '0',
@@ -220,6 +236,7 @@ export const useData = () => {
     total: productTotal,
     getList: getProduct,
     isLoading: productLoading,
+    page: productPage,
   } = useGetProduct({})
   const { getList: getDeliver, rowData: delivering } = useContactProd({})
   const { getList: getProgress, rowData: progress } = useContactProd({})
@@ -230,13 +247,31 @@ export const useData = () => {
 
   const { setShowDeposit, setShowSettle, setShowWithdraw, modal } = useShowModal()
   // dualManageConfig.tokenList
-  const deposit = (symbol) => {}
-  const withdraw = (symbol) => {}
-  const settle = (symbol) => {}
+  const deposit = (symbol) => {
+    if (account.readyState === AccountStatus.UN_CONNECT) {
+      setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+    } else {
+      setShowDeposit({ isShow: true, info: { symbol } })
+    }
+  }
+  const withdraw = (symbol) => {
+    if (account.readyState === AccountStatus.UN_CONNECT) {
+      setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+    } else {
+      setShowWithdraw({ isShow: true, info: { symbol } })
+    }
+  }
+  const settle = (symbol) => {
+    if (account.readyState === AccountStatus.UN_CONNECT) {
+      setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+    } else {
+      setShowSettle({ isShow: true, info: { symbol } })
+    }
+  }
   const getL1Balance = async () => {
     const walletL1 = makeWalletL1()
     setAsset((_) => {
-      const assetData = configDefault?.tokenList?.reduce((prev, item) => {
+      const assetData = configDefault[network]?.tokenList?.reduce((prev, item) => {
         let assetTotal = sdk.toBig(0)
         const walletItem = walletL1[item?.toUpperCase()]
         if (walletItem) {
@@ -266,7 +301,7 @@ export const useData = () => {
     //TODO
     const walletContract = makeWalletInContract()
     setProtocolData((_) => {
-      const protocolData = configDefault?.tokenList?.reduce((prev, item) => {
+      const protocolData = configDefault[network]?.tokenList?.reduce((prev, item) => {
         let protocolTotal = sdk.toBig(0)
         const walletItem = walletContract[item?.toUpperCase()]
         if (walletItem) {
@@ -310,8 +345,8 @@ export const useData = () => {
     protocolTotal,
     assetData,
     assetTotal,
-    delivering,
-    progress,
+    delivering: [] as any[],
+    progress: [] as any[],
     setShowDeposit,
     setShowSettle,
     setShowWithdraw,
@@ -324,6 +359,7 @@ export const useData = () => {
       list: product,
       total: productTotal,
       productLoading,
+      page: productPage,
       // [ProductsIndex.progress]: {
       //   list: [] as any,
       //   total: 10000,

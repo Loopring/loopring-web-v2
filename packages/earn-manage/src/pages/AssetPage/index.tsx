@@ -1,20 +1,14 @@
 import { useAccount, useTokenMap } from '@loopring-web/core'
 import { Box, Grid, Tab, Tabs, Typography, Divider } from '@mui/material'
 import { useData, ProductsIndex } from './hook'
-import {
-  Button,
-  CoinIcon,
-  useSettings,
-  Modal,
-  DepositPanel,
-  WithdrawPanel,
-} from '@loopring-web/component-lib'
+import { Button, CoinIcon, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { EmptyValueTag, getValuePrecisionThousand, TokenType } from '@loopring-web/common-resources'
 import { DualProductTable } from './DualProductTable'
 import { useDeposit, useWithdraw } from '../../hooks'
 import { useSettle } from '../../hooks/useractions/useSettle'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { ActionModal } from '../../modal'
 
 export const AssetPage = () => {
   // dualManageConfig.tokenList
@@ -471,49 +465,20 @@ export const AssetPage = () => {
           />
         </Box>
       </Box>
-      <Modal
-        open={isShowDeposit.isShow}
-        contentClassName={'trade-wrap'}
-        onClose={() => {
-          setShowDeposit({ isShow: false })
+      <ActionModal
+        {...{
+          isShowDeposit,
+          setShowDeposit,
+          depositProps,
+
+          isShowWithdraw,
+          setShowWithdraw,
+          withdrawProps,
+
+          isShowSettle,
+          setShowSettle,
+          settleProps,
         }}
-        content={
-          <DepositPanel
-            title={'deposit'}
-            accountReady={account?.readyState as any}
-            {...depositProps}
-            // btnInfo={_depositBtnI18nKey}
-            // depositBtnStatus={_depositBtnStatus}
-            // onDepositClick={_onDepositClick}
-            // isNewAccount={false}
-          />
-        }
-      />
-      <Modal
-        open={isShowDeposit.isShow}
-        contentClassName={'trade-wrap'}
-        onClose={() => {
-          setShowWithdraw({ isShow: false })
-        }}
-        content={
-          <WithdrawPanel
-            title={'deposit'}
-            accountReady={account?.readyState as any}
-            {...withdrawProps}
-            // btnInfo={_depositBtnI18nKey}
-            // depositBtnStatus={_depositBtnStatus}
-            // onDepositClick={_onDepositClick}
-            // isNewAccount={false}
-          />
-        }
-      />
-      <Modal
-        open={isShowSettle.isShow}
-        contentClassName={'trade-wrap'}
-        onClose={() => {
-          setShowSettle({ isShow: false })
-        }}
-        content={<Box>{settleProps.btnStatus}</Box>}
       />
     </Box>
   )

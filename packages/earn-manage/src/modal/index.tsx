@@ -54,3 +54,5 @@ export const ModalGroup = withTranslation('common')(
     )
   },
 )
+
+export { ActionModal } from './ActionModal'

@@ -14,14 +14,13 @@ import {
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { useOpenModals } from '@loopring-web/component-lib'
+import { SwitchData, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { connectProvides } from '@loopring-web/web3-provider'
 import Web3 from 'web3'
 import {
   AccountStatus,
-  globalSetup,
   SUBMIT_PANEL_AUTO_CLOSE,
   myLog,
   UIERROR_CODE,
@@ -29,25 +28,28 @@ import {
   WalletMap,
   CoinMap,
   ErrorType,
+  IBData,
+  MapChainId,
 } from '@loopring-web/common-resources'
 import { AccountStepExtends } from '../../modal/AccountL1Modal/interface'
 import _ from 'lodash'
+import * as configDefault from '../../config/dualConfig.json'
+import { makeWalletL1 } from '../common'
 
 type DepositProps<T> = {}
-export const useDeposit = <T extends any>({
-  setShowDeposit,
-  isShowDeposit,
-}: any): {
-  depositProps: DepositProps<T>
-} => {
+export const useDeposit = <T extends IBData<string>>({ setShowDeposit, isShowDeposit }: any) => {
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account } = useAccount()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
   const { exchangeInfo, chainId, gasPrice, baseURL } = useSystem()
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false)
   const { depositValue, updateDepositData, resetDepositData } = useModalData()
   const { walletLayer1, updateWalletLayer1 } = useWalletLayer1()
   const { chainInfos, updateDepositHash } = onchainHashInfo.useOnChainInfo()
   const history = useHistory()
+  // const walletMap = walletLayer1 as WalletMap<any>,
 
   const {
     btnStatus,
@@ -58,31 +60,36 @@ export const useDeposit = <T extends any>({
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus()
-
   const { setShowAccount } = useOpenModals()
   const { allowanceInfo } = useAllowances({
     owner: account.accAddress,
     symbol: depositValue.belong as string,
   })
-  const debounceCheck = _.debounce(
-    async (data) => {
-      //TODO
+  const handlePanelEvent = React.useCallback(
+    (data: SwitchData<Partial<T>>, _switchType: 'Tomenu' | 'Tobutton') => {
+      const oldValue = store.getState()._router_modalData.depositValue
+      let newValue = {
+        ...oldValue,
+      }
+      if (data.to === 'button') {
+        if (walletLayer1 && data?.tradeData?.belong) {
+          const walletInfo = walletLayer1[data.tradeData.belong]
+          const tradeData = {
+            ...data.tradeData,
+            balance: walletInfo?.count,
+          }
+          newValue = {
+            ...newValue,
+            ...tradeData,
+            tradeData,
+          }
+        }
+      }
+      updateDepositData({ ...newValue })
+      return Promise.resolve()
     },
-    globalSetup.wait,
-    { trailing: true },
+    [updateDepositData, walletLayer1],
   )
-  const handleOnDataChange = async (data: T) => {
-    const web3 = connectProvides.usedWeb3
-    const depositValue = store.getState()._router_modalData.depositValue
-    const shouldUpdate = {}
-    //TODO
-    myLog('depositValue', depositValue)
-    updateDepositData({
-      ...depositValue,
-      ...shouldUpdate,
-    })
-  }
-
   const onDepositClick = React.useCallback(async () => {
     const web3 = connectProvides.usedWeb3
     const depositValue = store.getState()._router_modalData.depositValue
@@ -93,22 +100,20 @@ export const useDeposit = <T extends any>({
         account.readyState !== AccountStatus.UN_CONNECT &&
         depositValue.tradeValue &&
         depositValue &&
-        tokenMap &&
-        exchangeInfo?.exchangeAddress &&
-        connectProvides.usedWeb3
+        tokenMap
       ) {
         const tokenInfo = tokenMap[depositValue.belong ?? '']
         const web3 = connectProvides.usedWeb3 as unknown as Web3
         const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
         const realGasPrice = gasPrice ?? 30
-        enableBtn()
+
         setShowAccount({
           isShow: true,
           step: AccountStepExtends.Deposit_sign,
         })
 
         const _chainId = await connectProvides?.usedWeb3?.eth?.getChainId()
-        await callSwitchChain(_chainId)
+        await callSwitchChain(_chainId as any)
 
         let nonce = 0
 
@@ -137,7 +142,9 @@ export const useDeposit = <T extends any>({
                 connectProvides.usedWeb3,
                 account.accAddress,
                 tokenInfo.address,
-                exchangeInfo?.depositAddress,
+                //TODO
+                '0x', //contact address
+                // exchangeInfo?.depositAddress,
                 realGasPrice,
                 gasLimit,
                 _chainId,
@@ -274,9 +281,9 @@ export const useDeposit = <T extends any>({
 
   const depositProps: DepositProps<T> = {
     type: TRADE_TYPE.TOKEN,
-    handleOnDataChange,
+    handlePanelEvent,
     onDepositClick,
-    walletMap: walletLayer1 as WalletMap<any>,
+    walletMap: makeWalletL1(),
     coinMap: totalCoinMap as CoinMap<any>,
     tradeData: depositValue as T,
     btnStatus: btnStatus,
@@ -294,12 +301,13 @@ export const useDeposit = <T extends any>({
         depositValue &&
         depositValue.balance &&
         depositValue.tradeValue &&
-        sdk.toBig(walletLayer1?.ETH?.count ?? 0).gt(BIGO) &&
+        configDefault[network].GasSymbol &&
+        walletLayer1 &&
+        sdk.toBig(walletLayer1[configDefault[network].GasSymbol]?.count ?? 0).gt(BIGO) &&
         sdk.toBig(depositValue.tradeValue).gt(sdk.toBig(0)) &&
         sdk.toBig(depositValue.tradeValue).lte(sdk.toBig(depositValue?.balance ?? ''))
       ) {
-        //TODO
-        myLog('try to enable deposit btn!', walletLayer1?.ETH?.count)
+        myLog('try to enable deposit btn!', walletLayer1[configDefault[network].GasSymbol]?.count)
         enableBtn()
       } else {
         if (sdk.toBig(walletLayer1?.ETH?.count ?? 0).eq(BIGO)) {
@@ -312,10 +320,29 @@ export const useDeposit = <T extends any>({
     [resetBtnInfo, depositValue, walletLayer1, enableBtn, setLabelAndParams, disableBtn],
   )
   React.useEffect(() => {
+    const initSymbol = configDefault[network].GasSymbol ?? 'ETH'
+    if (isShowDeposit?.isShow) {
+      handlePanelEvent(
+        {
+          to: 'button',
+          tradeData: {
+            belong: (isShowDeposit?.info?.symbol ?? initSymbol) as any,
+            tradeValue: undefined,
+            balance: 0,
+            // count:
+          },
+        },
+        'Tobutton',
+      )
+    } else {
+      resetDepositData()
+    }
+  }, [isShowDeposit?.isShow])
+  React.useEffect(() => {
     updateBtnStatus()
-  }, [walletLayer1?.ETH?.count])
+  }, [depositValue.belong, depositValue.tradeValue, network, configDefault[network]?.GasSymbol])
 
   return {
-    depositProps,
+    ...depositProps,
   }
 }

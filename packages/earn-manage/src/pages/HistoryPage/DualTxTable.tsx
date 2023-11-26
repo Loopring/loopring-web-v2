@@ -1,15 +1,21 @@
 import styled from '@emotion/styled'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { Table } from '@loopring-web/component-lib'
-import { RowDualInvestConfig } from '@loopring-web/common-resources'
+import { CoinIcons, Table, useSettings } from '@loopring-web/component-lib'
+import {
+  RowDualInvestConfig,
+  TokenType,
+  YEAR_DAY_MINUTE_FORMAT,
+} from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { Column } from 'react-data-grid'
+import { Typography } from '@mui/material'
+import moment from 'moment'
 
 const TableStyled = styled(Table)<{ isMobile: boolean }>`
   &.rdg {
-    --template-columns: '18% auto 18% 18% 20% !important';
+    --template-columns: '30% 20% 20% 30% !important';
 
     height: ${(props: any) => {
       if (props.ispro === 'pro') {
@@ -22,6 +28,7 @@ const TableStyled = styled(Table)<{ isMobile: boolean }>`
       }
     }};
   }
+
   .textAlignRight {
     text-align: right;
 
@@ -29,78 +36,71 @@ const TableStyled = styled(Table)<{ isMobile: boolean }>`
       justify-content: flex-end;
     }
   }
+
   .textAlignCenter {
     text-align: center;
   }
 ` as any
 
-export interface DualsTableProps<R, C = sdk.Currency> {
+export interface DualsTxProps<R, C = sdk.Currency> {
   rawData: R[]
   showloading: boolean
 }
 
 export const DualTxTable = withTranslation(['tables', 'common'])(
-  <R extends any>(props: DualsTableProps<R> & WithTranslation) => {
+  <R extends any>(props: DualsTxProps<R> & WithTranslation) => {
     const { rawData, showloading, t } = props
-    const history = useHistory()
+    const { coinJson } = useSettings()
 
     const defaultArgs: any = {
       columnMode: [
         {
-          key: 'product',
+          key: 'token',
           sortable: true,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
-          name: 'Product',
-          formatter: ({ row }) => row.product,
+          name: 'Token',
+          formatter: ({ row }) => (
+            <Typography
+              component={'span'}
+              flexDirection={'row'}
+              display={'flex'}
+              height={'100%'}
+              alignItems={'center'}
+            >
+              <Typography component={'span'} display={'inline-flex'}>
+                <CoinIcons tokenIcon={[coinJson[row.symbol]]} type={TokenType.symbol} />
+              </Typography>
+              <Typography component={'span'} display={'inline-flex'}>
+                {row.symbol}
+              </Typography>
+            </Typography>
+          ),
         },
         {
-          key: 'targetPrice',
+          key: 'type',
           sortable: true,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
-          name: 'Target Price',
-          formatter: ({ row }) => row.targetPrice,
+          name: 'Type',
+          formatter: ({ row }) => row.txType,
         },
+
         {
-          key: 'currentPrice',
+          key: 'amount',
           sortable: true,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
-          name: 'Current Price',
-          formatter: ({ row }) => row.currentPrice,
+          name: 'amount',
+          formatter: ({ row }) => row.amount,
         },
         {
-          key: 'investAmount',
+          key: 'time',
           sortable: true,
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
-          name: 'InvestAmount',
-          formatter: ({ row }) => row.investAmount,
-        },
-        {
-          key: 'settledAmount',
-          sortable: true,
-          cellClass: 'textAlignLeft',
-          headerCellClass: 'textAlignLeft',
-          name: 'Amount to be settled',
-          formatter: ({ row }) => row.settledAmount,
-        },
-        {
-          key: 'received',
-          sortable: true,
-          cellClass: 'textAlignLeft',
-          headerCellClass: 'textAlignLeft',
-          name: 'To be received',
-          formatter: ({ row }) => row.recieved,
-        },
-        {
-          key: 'supplied',
-          sortable: true,
-          cellClass: 'textAlignRight',
-          headerCellClass: 'textAlignRight',
-          name: 'To be supplied',
-          formatter: ({ row }) => row.supplied,
+          name: 'Time',
+          formatter: ({ row }) => moment(row.updatedAt).format(YEAR_DAY_MINUTE_FORMAT),
         },
       ],
       generateRows: (rawData: any) => rawData,

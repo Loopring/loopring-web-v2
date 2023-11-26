@@ -417,7 +417,7 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
     { leading: true, trailing: true },
   )
 
-  useWalletLayer2Socket({ walletLayer2Callback })
+  // useWalletLayer2Socket({ walletLayer2Callback })
 
   const processRequest = React.useCallback(
     async (request: sdk.OffChainWithdrawalRequestV3, isNotHardwareWallet: boolean) => {
@@ -774,7 +774,6 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
   }
 
   return {
-    withdrawProps,
-    retryBtn,
+    ...withdrawProps,
   }
 }

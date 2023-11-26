@@ -1,11 +1,18 @@
 import { Provider } from 'react-redux'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import { firebaseProps, persistor, store, TimeoutCheckProvider } from '@loopring-web/core'
 import { getTheme, i18n } from '@loopring-web/common-resources'
 import { ThemeProvider as MuThemeProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/lab'
 import MomentUtils from '@mui/lab/AdapterMoment'
+import { contactMapSlice } from './stores/index'
+import {
+  persistor,
+  TimeoutCheckProvider,
+  firebaseProps,
+  initReduce,
+  store,
+} from '@loopring-web/core'
 
 import { ThemeProvider } from '@emotion/react'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -15,13 +22,22 @@ import { provider, ProviderComposer, useSettings } from '@loopring-web/component
 import React, { Provider as TProvider } from 'react'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 import { createRoot } from 'react-dom/client'
+import { combineReducers } from '@reduxjs/toolkit'
+import { Reducer } from 'redux'
 
 if (process.env.REACT_APP_VER) {
   console.log('VER:', process.env.REACT_APP_VER)
 }
 // @ts-ignore
-window.global = window;
+window.global = window
 const ProviderApp = React.memo(({ children }: { children: JSX.Element }) => {
+  // createReducer
+  store.replaceReducer(
+    combineReducers({
+      ...initReduce,
+      contact: contactMapSlice.reducer,
+    }) as Reducer,
+  )
   const providers: Array<[TProvider<any>, any]> = [
     provider(Provider as any, { store }),
     provider(LocalizationProvider as any, { dateAdapter: MomentUtils }),

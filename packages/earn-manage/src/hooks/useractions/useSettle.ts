@@ -7,12 +7,7 @@ import { SagaStatus, TradeBtnStatus, AccountStatus } from '@loopring-web/common-
 import { AccountStepExtends } from '../../modal/AccountL1Modal/interface'
 
 type SettleProps<T> = any
-export const useSettle = <T extends any>({
-  setShowSettle,
-  isShowSettle,
-}: any): {
-  settleProps: SettleProps<T>
-} => {
+export const useSettle = <T extends any>({ setShowSettle, isShowSettle }: any): SettleProps<T> => {
   const { account } = useAccount()
   const [isLoading, setIsLoading] = React.useState(false)
   const { setShowAccount } = useOpenModals()
@@ -109,7 +104,7 @@ export const useSettle = <T extends any>({
     onClose: () => {
       setShowSettle({ isShow: false })
     },
-    confirmLabel: btnLabel,
+    btnLabel,
     onSubmitClick: () => onBtnClick(),
   }
 }
