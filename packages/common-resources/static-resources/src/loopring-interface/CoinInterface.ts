@@ -488,19 +488,20 @@ export type RedPacketSend = {
 export type LuckyRedPacketItem = {
   labelKey: string
   desKey: string
-  showInNFTS?: boolean
-  showInERC20?: boolean
-  showInBlindbox?: boolean
-  defaultForERC20?: boolean
-  defaultForNFT?: boolean
-  defaultForBlindbox?: boolean
-  defaultForBlindboxNotShowERC20Blindbox?: boolean
-  isBlindboxNFT?: boolean
-  defaultForFromNFT?: boolean
-  showInFromNFT?: boolean
-  toolgleWithShowERC20Blindbox?: boolean
-  hideForExclusive?: boolean
-  icon?: string
+  // showInNFTS?: boolean
+  // showInERC20?: boolean
+  // showInBlindbox?: boolean
+  // defaultForERC20?: boolean
+  // defaultForNFT?: boolean
+  // defaultForBlindbox?: boolean
+  // defaultForBlindboxNotShowERC20Blindbox?: boolean
+  // isBlindboxNFT?: boolean
+  // defaultForFromNFT?: boolean
+  // showInFromNFT?: boolean
+  // toolgleWithShowERC20Blindbox?: boolean
+  // hideForExclusive?: boolean
+  // icon?: string
+  tags?: string[],
   value: {
     value: number
     partition: sdk.LuckyTokenAmountType

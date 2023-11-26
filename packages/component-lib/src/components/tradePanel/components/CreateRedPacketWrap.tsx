@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   CardContent,
   Checkbox,
@@ -32,7 +31,6 @@ import {
   getValuePrecisionThousand,
   IBData,
   LuckyRedPacketItem,
-  LuckyRedPacketList,
   REDPACKET_ORDER_LIMIT,
   RedPacketOrderData,
   SoursURL,
@@ -50,7 +48,7 @@ import {
   ScopeTarget,
   isAddress,
   BiArrow,
-  LuckyRedPacketList2,
+  LuckyRedPacketList,
   myLog,
   BlindBoxIcon,
   NormalRedpacketIcon,
@@ -885,14 +883,9 @@ export const CreateRedPacketStepType = withTranslation()(
     }, [disabled])
     const showERC20Blindbox = redPacketConfig.showERC20Blindbox
     
-    // todo: debugging
-    // tradeType = RedPacketOrderType.BlindBox
-    
     const isTokens =
       (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT) ||
       tradeType === RedPacketOrderType.TOKEN
-
-    // const [isTokens, setIsTokens] = React.useState(false)
     
     const setIsTokens = React.useCallback((isTokens: boolean) => {
       myLog('isTokens', tradeData)
@@ -908,77 +901,30 @@ export const CreateRedPacketStepType = withTranslation()(
           tradeType: isTokens ? RedPacketOrderType.TOKEN : RedPacketOrderType.NFT
         })
       }
-      
-      
-      
-      
-      // (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT) ||
-      // tradeType === RedPacketOrderType.TOKEN
-
-
     }, [tradeData])
 
-    // const filteredList = LuckyRedPacketList.filter(
-    //   (item) =>
-    //     (tradeType == RedPacketOrderType.NFT
-    //       ? item.showInNFTS
-    //       : tradeType == RedPacketOrderType.BlindBox
-    //       ? item.showInBlindbox
-    //       : tradeType == RedPacketOrderType.FromNFT
-    //       ? item.showInFromNFT
-    //       : item.showInERC20) &&
-    //     (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true) &&
-    //     (item.isBlindboxNFT ? showNFT : true) &&
-    //     (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET ? !item.hideForExclusive : true),
-    // )
 
 
-    const showList = LuckyRedPacketList2
-    .filter(
-      (item) =>
-      tradeType === RedPacketOrderType.FromNFT 
-        ?tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-        ? item.tags?.includes('showInBlindBox')
-        : item.tags?.includes('showInNormal')
-
-        : tradeType === RedPacketOrderType.BlindBox
+    const showList = LuckyRedPacketList.filter((item) =>
+      tradeType === RedPacketOrderType.FromNFT
+        ? tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
           ? item.tags?.includes('showInBlindBox')
           : item.tags?.includes('showInNormal')
-
-      // (tradeType == RedPacketOrderType.NFT
-      //   ? item.showInNFTS
-      //   : tradeType == RedPacketOrderType.BlindBox
-      //   ? item.showInBlindbox
-      //   : tradeType == RedPacketOrderType.FromNFT
-      //   ? item.showInFromNFT
-      //   : item.showInERC20) &&
-      // (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true) &&
-      // (item.isBlindboxNFT ? showNFT : true) &&
-      // (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET ? !item.hideForExclusive : true),
+        : tradeType === RedPacketOrderType.BlindBox
+        ? item.tags?.includes('showInBlindBox')
+        : item.tags?.includes('showInNormal'),
     )
 
-    const enabledList = LuckyRedPacketList2.filter(
-      (item) =>
-        tradeType === RedPacketOrderType.FromNFT
-          ? tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-            ? item.tags?.includes('enableInBlindBox')
-            : item.tags?.includes('enableInNFTS')
-          : tradeType === RedPacketOrderType.BlindBox
+    const enabledList = LuckyRedPacketList.filter((item) =>
+      tradeType === RedPacketOrderType.FromNFT
+        ? tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
           ? item.tags?.includes('enableInBlindBox')
-          : tradeType === RedPacketOrderType.TOKEN
-          ? item.tags?.includes('enableInERC20')
-          : item.tags?.includes('enableInNFTS'),
-
-      // (tradeType == RedPacketOrderType.NFT
-      //   ? item.showInNFTS
-      //   : tradeType == RedPacketOrderType.BlindBox
-      //   ? item.showInBlindbox
-      //   : tradeType == RedPacketOrderType.FromNFT
-      //   ? item.showInFromNFT
-      //   : item.showInERC20) &&
-      // (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true) &&
-      // (item.isBlindboxNFT ? showNFT : true) &&
-      // (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET ? !item.hideForExclusive : true),
+          : item.tags?.includes('enableInNFTS')
+        : tradeType === RedPacketOrderType.BlindBox
+        ? item.tags?.includes('enableInBlindBox')
+        : tradeType === RedPacketOrderType.TOKEN
+        ? item.tags?.includes('enableInERC20')
+        : item.tags?.includes('enableInNFTS'),
     )
 
 
@@ -1034,9 +980,6 @@ export const CreateRedPacketStepType = withTranslation()(
                 tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX ? 'BlindBox' : 'Normal'
               }
               onChange={(_event, value) => {
-                // if (value === 'Normal') {
-                  console.log('valuevaluevalue', tradeData.type?.mode)
-                  console.log('valuevaluevalue', value === 'Normal' ? sdk.LuckyTokenClaimType.COMMON : sdk.LuckyTokenClaimType.BLIND_BOX)
                 handleOnDataChange({
                   ...tradeData,
                   type: {
@@ -1044,15 +987,6 @@ export const CreateRedPacketStepType = withTranslation()(
                     mode: value === 'Normal' ? sdk.LuckyTokenClaimType.COMMON : sdk.LuckyTokenClaimType.BLIND_BOX
                   }
                 })
-                // } else {
-
-                // }
-                
-                
-                // setIsTokens(value === 'Tokens')
-                // if (tradeType === RedPacketOrderType.BlindBox) {
-                // } else {
-                // }
               }}
               aria-label='l2-history-tabs'
               variant='scrollable'
@@ -1065,11 +999,6 @@ export const CreateRedPacketStepType = withTranslation()(
               value={isTokens ? 'Tokens' : 'NFT'}
               onChange={(_event, value) => {
                 setIsTokens(value === 'Tokens')
-                // if (tradeType === RedPacketOrderType.BlindBox) {
-
-                // } else {
-
-                // }
               }}
               aria-label='l2-history-tabs'
               variant='scrollable'
@@ -1083,11 +1012,6 @@ export const CreateRedPacketStepType = withTranslation()(
               const enabled = enabledList.find((enableItem) => enableItem.value === item.value)
               return (
                 <Box width={'31%'} key={index}>
-                  {/* {tradeType == RedPacketOrderType.FromNFT && index === 1 && (
-                    <Typography marginTop={1} variant={'h5'} color={'var(--color-text-secondary)'}>
-                      {t('labelRedpacketStandard')}
-                    </Typography>
-                  )} */}
                   <Box key={item.value.value} marginBottom={1}>
                     <MenuBtnStyled
                       variant={'outlined'}
@@ -1097,11 +1021,11 @@ export const CreateRedPacketStepType = withTranslation()(
                           ? 'selected redPacketType '
                           : 'redPacketType'
                       }`}
+                      disabled={!enabled}
                       fullWidth
                       onClick={(_e) => {
                         onSelecteValue && onSelecteValue(item)
                       }}
-                      sx={{ opacity: enabled ? 1 : 0.5 }}
                     >
                       <Typography
                         variant={'h5'}
