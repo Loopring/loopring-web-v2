@@ -2106,4 +2106,5 @@ export default {
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
   labelReadAll: 'Read all',
+  labelLuckyTokenNormal: 'Normal',
 }

@@ -903,8 +903,6 @@ export const CreateRedPacketStepType = withTranslation()(
       }
     }, [tradeData])
 
-
-
     const showList = LuckyRedPacketList.filter((item) =>
       tradeType === RedPacketOrderType.FromNFT
         ? tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
@@ -926,8 +924,6 @@ export const CreateRedPacketStepType = withTranslation()(
         ? item.tags?.includes('enableInERC20')
         : item.tags?.includes('enableInNFTS'),
     )
-
-
     return (
       <RedPacketBoxStyle
         className={isMobile ? 'mobile redPacket' : ''}
@@ -1150,7 +1146,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                   <NormalRedpacketIcon color1='var(--color-box)' color2={'var(--color-text-primary)'} style={{width: 64, height: 64}} />
                 </Typography>
                 <Typography component={'span'} variant={'h5'} marginTop={2}>
-                  Normal
+                  {t("labelLuckyTokenNormal")}
                 </Typography>
               </CardContent>
             </CardStyleItem>
