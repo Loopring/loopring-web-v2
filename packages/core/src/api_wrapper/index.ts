@@ -11,6 +11,7 @@ import {
   WalletAPI,
   WsAPI,
   ContactAPI,
+  CoworkerAPI,
 } from '@loopring-web/loopring-sdk'
 
 export class LoopringAPI {
@@ -25,6 +26,8 @@ export class LoopringAPI {
   public static defiAPI: DefiAPI | undefined = undefined
   public static luckTokenAPI: LuckTokenAPI | undefined = undefined
   public static contactAPI: ContactAPI | undefined = undefined
+  public static coworkerAPI: CoworkerAPI | undefined = undefined
+
   public static __chainId__: ChainId | undefined = undefined
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 6000)
@@ -38,6 +41,7 @@ export class LoopringAPI {
     LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000)
     LoopringAPI.defiAPI = new DefiAPI({ chainId }, 30000)
     LoopringAPI.contactAPI = new ContactAPI({ chainId }, 6000)
+    LoopringAPI.coworkerAPI = new CoworkerAPI({ chainId }, 6000)
     LoopringAPI.__chainId__ = chainId
   }
 }

@@ -10,7 +10,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   LoopringAPI,
   useTokenMap,
-  useAccount,
   useSocket,
   useToast,
   usePageAmmPool,
@@ -68,7 +67,7 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
     let ammCalcData: any = {
       coinInfoMap: coinMap,
     }
-    const lpToken = tokenMap['LP-' + ammInfo.market]
+    const lpToken = tokenMap[coinLp]
     const { totalLPToken, totalA, totalB } = ammInfo
 
     const {
@@ -93,7 +92,7 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
             },
           ], //[ammInfo., TokenVolumeV3];
           lp: {
-            tokenId: lpToken.tokenId,
+            tokenId: lpToken?.tokenId,
             volume: ammInfo.tokens.lp,
           },
           risky: false,

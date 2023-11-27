@@ -136,4 +136,7 @@ export default {
   labelNavPro: 'Loopring pro',
   labelNavEarn: 'Loopring Earn',
   labelNavWallet: 'Wallet',
+
+  labelDashBoard: 'Dashboard',
+  labelRecord: 'Records',
 }

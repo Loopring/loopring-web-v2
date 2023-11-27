@@ -84,12 +84,12 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
       ),
     }
     const tradePanel = {
-      key: 'trade',
+      key: 'withdraw',
       element: React.useMemo(
         () => (
           // @ts-ignore
           <WithdrawWrap
-            key={'transfer'}
+            key={'withdraw'}
             {...{
               ...rest,
               type,

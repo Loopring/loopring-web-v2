@@ -6,7 +6,7 @@ const initialState: NotifyStates = {
   notifyMap: undefined,
   myNotifyMap: {
     items: [],
-    totals: 0,
+    total: 0,
     unReads: 0,
   },
   status: SagaStatus.PENDING,
