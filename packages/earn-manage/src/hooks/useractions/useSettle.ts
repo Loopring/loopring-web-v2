@@ -39,10 +39,6 @@ export const useSettle = <T extends any>({ setShowSettle, isShowSettle }: any): 
 
   const submitCallback = async () => {
     try {
-      const { accountId } = store.getState().account
-      const {
-        account: { apiKey, eddsaKey, accountId },
-      } = store.getState()
       //TODO settle Contract
       setShowAccount({
         isShow: true,
