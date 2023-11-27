@@ -309,7 +309,7 @@ export const MuiPaper = ({
         borderRadius: pxToRem(8),
         backgroundImage: 'none',
         backgroundColor: colorBase.popBg,
-        border:`.5px solid ${colorBase.border}`,
+        border: `.5px solid ${colorBase.border}`,
         '&.MuiPopover-paper': {
           backgroundImage: 'none',
           boxShadow: colorBase.shadowHover,
@@ -387,7 +387,6 @@ export const MuiInputBase = ({
   themeMode,
   ...rest
 }: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
-  myLog('size', rest)
   return {
     styleOverrides: {
       root: {
@@ -951,8 +950,8 @@ export const MuiLinearProgress = ({ colorBase }: any) => {
 
 export const MuiTooltip = ({
   colorBase,
-}: any): { 
-  styleOverrides: ComponentsOverrides['MuiTooltip'] 
+}: any): {
+  styleOverrides: ComponentsOverrides['MuiTooltip']
   defaultProps?: Partial<TooltipProps>
 } => {
   return {
@@ -973,9 +972,9 @@ export const MuiTooltip = ({
       },
       arrow: {
         color: colorBase.popBg,
-        "&:before":{
+        '&:before': {
           border: `0.5px solid ${colorBase.border}`,
-        }
+        },
       },
       // root: {
       //   fontSize: fontDefault.body1,
