@@ -52,9 +52,8 @@ export const useAmmExit = ({
     ammExit: { fees, request, ammCalcData, ammData },
     updatePageAmmExit,
   } = usePageAmmPool()
-  const { getUserRewards } = useUserRewards()
   const { t } = useTranslation(['common', ToastType.error])
-
+  const { getUserRewards } = useUserRewards()
   const [isLoading, setIsLoading] = React.useState(false)
   const { idIndex, tokenMap } = useTokenMap()
   const { ammMap } = useAmmMap()
@@ -418,7 +417,6 @@ export const useAmmExit = ({
     })
 
     walletLayer2Service.sendUserUpdate()
-    getUserRewards()
     // @ts-ignore
     refreshRef?.current?.firstElementChild.click()
     await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
@@ -428,6 +426,7 @@ export const useAmmExit = ({
 
   const walletLayer2Callback = React.useCallback(async () => {
     updateExitFee()
+    // getUserRewards()
   }, [])
 
   useWalletLayer2Socket({ walletLayer2Callback })

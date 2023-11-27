@@ -275,7 +275,6 @@ export const useAmmJoin = ({
         } finally {
           setIsLoading(false)
           walletLayer2Service.sendUserUpdate()
-          getUserRewards()
           // @ts-ignore
           refreshRef?.current?.firstElementChild.click()
         }
@@ -418,6 +417,7 @@ export const useAmmJoin = ({
 
   const walletLayer2Callback = React.useCallback(async () => {
     updateJoinFee()
+    // getUserRewards()
     const account = store.getState().account
     if (ammInfo?.market && account.readyState === AccountStatus.ACTIVATED) {
       const baseT = tokenMap[ammInfo.coinA]
