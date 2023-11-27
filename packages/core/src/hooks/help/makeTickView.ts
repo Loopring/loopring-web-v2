@@ -113,7 +113,7 @@ export const makeTokenTickerView = ({
     change,
     type: isVault ? TokenType.vault : TokenType.single,
     erc20Symbol: tokenInfo.symbol,
-    symbol: isVault ? idIndex[erc20Map[tokenInfo.symbol].baseTokenId] : tokenInfo.symbol,
+    symbol: isVault ? idIndex[erc20Map[tokenInfo.symbol].vaultTokenId] : tokenInfo.symbol,
     __rawTicker__: item,
     rawData: item,
   } as unknown as TickerNew

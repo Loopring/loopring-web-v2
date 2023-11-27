@@ -1313,7 +1313,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     erc20Token = tokenMap[idIndex[tokenS ?? '']]
                     precision = erc20Token?.precision
                     //@ts-ignore
-                    vToken = vaultTokenMap[vaultIdIndex[erc20Map[erc20Token.symbol].baseTokenId]]
+                    vToken = vaultTokenMap[vaultIdIndex[erc20Map[erc20Token.symbol]?.vaultTokenId]]
                     vSymbol = vToken.symbol
                     erc20Symbol = erc20Token.symbol
                     amount = sdk.toBig(amountS ?? 0).div('1e' + erc20Token.decimals)

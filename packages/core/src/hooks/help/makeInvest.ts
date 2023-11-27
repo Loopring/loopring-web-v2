@@ -111,6 +111,7 @@ export const makeVault = (
     let { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
     let erc20Array = [],
       erc20Map = {}
+
     const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
       if (/-/gi.test(ele.market) && ele.enabled) {
         const item = {
@@ -122,13 +123,8 @@ export const makeVault = (
           originalQuoteSymbol: erc20IdIndex[tokensMap[idIndex[ele.quoteTokenId]].tokenId],
         }
         prev.push(item)
-        const erc20Symbol = erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]]?.tokenId]
+        // const erc20Symbol = erc20IdIndex[tokensMap[idIndex[ele.baseTokenId]]?.tokenId]
         // @ts-ignore
-        erc20Array.push(erc20Symbol)
-        erc20Map[erc20Symbol] = {
-          ...item,
-          tokenInfo: tokensMap[idIndex[ele.baseTokenId]],
-        }
         return prev
       } else {
         return prev as VaultMarketExtends[]
@@ -143,6 +139,12 @@ export const makeVault = (
           ...prev,
           [key]: tokensMap[key.toString()] as sdk.VaultToken,
         }
+      }
+      const erc20Symbol = erc20IdIndex[tokensMap[key.toString()]?.tokenId]
+      // @ts-ignore
+      erc20Array.push(erc20Symbol)
+      erc20Map[erc20Symbol] = {
+        ...tokensMap[key.toString()],
       }
       return prev
     }, {} as { [key: string]: sdk.VaultToken & sdk.TokenInfo })

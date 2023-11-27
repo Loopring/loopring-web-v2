@@ -591,7 +591,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ? sdk
             .toBig(data.tradeData?.tradeValue)
             .toFixed(
-              erc20Map[data.tradeData.belong]?.tokenInfo?.vaultTokenAmounts?.qtyStepScale,
+              erc20Map[data.tradeData.belong]?.vaultTokenAmounts?.qtyStepScale,
               BigNumber.ROUND_DOWN,
             )
         : data.tradeData?.tradeValue,
@@ -632,10 +632,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultJoinData,
     coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
     tokenProps: {
-      decimalsLimit:
-        erc20Map[vaultJoinData?.tradeData?.belong]?.tokenInfo?.vaultTokenAmounts?.qtyStepScale,
-      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.tokenInfo?.vaultTokenAmounts
-        ?.qtyStepScale
+      decimalsLimit: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale
         ? true
         : false,
     },
