@@ -21,6 +21,7 @@ import {
   useSubmitBtn,
   useSystem,
   useTokenMap,
+  useUserRewards,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from '../../index'
@@ -52,7 +53,6 @@ export const useAmmJoin = ({
     updatePageAmmJoin,
   } = usePageAmmPool()
   const [[maxCoinA, maxCoinB], setMaxLp] = React.useState<[any, any]>([Infinity, Infinity])
-
   const { t } = useTranslation(['common', 'error'])
   const [isLoading, setIsLoading] = React.useState(false)
   const { tokenMap, idIndex, marketMap } = useTokenMap()
