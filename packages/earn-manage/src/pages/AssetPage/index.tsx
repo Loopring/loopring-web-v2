@@ -55,7 +55,7 @@ export const AssetPage = () => {
             </Typography>
             <Grid container display={'flex'} flex={1}>
               <>
-                <Grid item xs={5}>
+                <Grid item xs={4}>
                   <Typography
                     marginBottom={2}
                     display={'flex'}
@@ -65,7 +65,7 @@ export const AssetPage = () => {
                     Assets
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={8}>
                   <Typography
                     marginBottom={2}
                     display={'flex'}
@@ -79,7 +79,7 @@ export const AssetPage = () => {
               {assetData.map((item, index) => {
                 return (
                   <React.Fragment key={index}>
-                    <Grid item xs={5} display={'flex'} flexDirection={'row'}>
+                    <Grid item xs={4} display={'flex'} flexDirection={'row'}>
                       <Typography display={'inline-flex'} alignItems={'center'}>
                         <CoinIcon symbol={item.symbol} type={TokenType.single} size={'middle'} />
                         <Typography component={'span'} variant={'h5'} paddingLeft={1}>
@@ -87,18 +87,26 @@ export const AssetPage = () => {
                         </Typography>
                       </Typography>
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={8}>
                       <Typography display={'inline-flex'} alignItems={'center'}>
-                        {`${
-                          item.amount == '0'
-                            ? EmptyValueTag
-                            : getValuePrecisionThousand(
-                                item.amount,
-                                tokenMap[item.symbol].precision,
-                                tokenMap[item.symbol].precision,
-                                undefined,
-                              )
-                        }/$${
+                        <Typography
+                          component={'span'}
+                          color={'textSecondary'}
+                          display={'inline-flex'}
+                          alignItems={'center'}
+                        >
+                          {`${
+                            item.amount == '0'
+                              ? EmptyValueTag
+                              : getValuePrecisionThousand(
+                                  item.amount,
+                                  tokenMap[item.symbol].precision,
+                                  tokenMap[item.symbol].precision,
+                                  undefined,
+                                )
+                          }`}
+                        </Typography>
+                        {`/$${
                           item.value == '0'
                             ? EmptyValueTag
                             : getValuePrecisionThousand(item.value, 2, 2)
@@ -166,16 +174,24 @@ export const AssetPage = () => {
                     </Grid>
                     <Grid item xs={5}>
                       <Typography display={'inline-flex'} alignItems={'center'}>
-                        {`${
-                          item.amount == '0'
-                            ? EmptyValueTag
-                            : getValuePrecisionThousand(
-                                item.amount,
-                                tokenMap[item.symbol].precision,
-                                tokenMap[item.symbol].precision,
-                                undefined,
-                              )
-                        }/$${
+                        <Typography
+                          component={'span'}
+                          color={'textSecondary'}
+                          display={'inline-flex'}
+                          alignItems={'center'}
+                        >
+                          {`${
+                            item.amount == '0'
+                              ? EmptyValueTag
+                              : getValuePrecisionThousand(
+                                  item.amount,
+                                  tokenMap[item.symbol].precision,
+                                  tokenMap[item.symbol].precision,
+                                  undefined,
+                                )
+                          }`}
+                        </Typography>
+                        {`/$${
                           item.value == '0'
                             ? EmptyValueTag
                             : getValuePrecisionThousand(item.value, 2, 2)

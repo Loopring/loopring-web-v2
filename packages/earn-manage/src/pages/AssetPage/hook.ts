@@ -1,18 +1,6 @@
-import {
-  LoopringAPI,
-  store,
-  useAccount,
-  useSystem,
-  useTokenMap,
-  useWalletLayer1,
-} from '@loopring-web/core'
+import { store, useAccount, useTokenMap, useTokenPrices } from '@loopring-web/core'
 import React from 'react'
-import {
-  AccountStatus,
-  getValuePrecisionThousand,
-  MapChainId,
-  SagaStatus,
-} from '@loopring-web/common-resources'
+import { AccountStatus, MapChainId, SagaStatus } from '@loopring-web/common-resources'
 import * as configDefault from '../../config/dualConfig.json'
 import { makeWalletInContract, makeWalletL1 } from '../../hooks'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -85,7 +73,6 @@ export const useShowModal = () => {
 
 const useContactProd = ({ filter }: any) => {
   const { tokenMap, addressIndex } = useTokenMap()
-
   const [rowData, setRowData] = React.useState([])
   const [isLoading, setLoading] = React.useState(false)
   const getList = async ({}) => {
@@ -114,7 +101,7 @@ const useContactProd = ({ filter }: any) => {
 export const useData = () => {
   const { account, status: accountStatus } = useAccount()
   const { tokenMap, addressIndex } = useTokenMap()
-  const { forexMap } = useSystem()
+  const { tokenPrices } = useTokenPrices()
   const { setShowConnect } = useOpenModals()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -184,7 +171,10 @@ export const useData = () => {
         let assetTotal = sdk.toBig(0)
         const walletItem = walletL1[item?.toUpperCase()]
         if (walletItem) {
-          const value = sdk.toBig(walletItem.count).times(forexMap[item?.toUpperCase()]).toString()
+          const value = sdk
+            .toBig(walletItem.count)
+            .times(tokenPrices[item?.toUpperCase()])
+            .toString()
           prev.push({
             symbol: tokenMap[item?.toUpperCase()?.toString()].symbol,
             amount: walletItem.count.toString(),
@@ -214,7 +204,10 @@ export const useData = () => {
         let protocolTotal = sdk.toBig(0)
         const walletItem = walletContract[item?.toUpperCase()]
         if (walletItem) {
-          const value = sdk.toBig(walletItem.count).times(forexMap[item?.toUpperCase()]).toString()
+          const value = sdk
+            .toBig(walletItem.count)
+            .times(tokenPrices[item?.toUpperCase()])
+            .toString()
           prev.push({
             symbol: tokenMap[item?.toUpperCase()?.toString()].symbol,
             amount: walletItem.count.toString(),
@@ -245,7 +238,7 @@ export const useData = () => {
       getDeliver({})
       getProgress({})
     }
-  }, [accountStatus])
+  }, [accountStatus, account.readyState])
   return {
     protocolData,
     protocolTotal,
