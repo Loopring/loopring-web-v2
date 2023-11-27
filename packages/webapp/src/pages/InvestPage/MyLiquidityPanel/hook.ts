@@ -62,7 +62,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
 
   const { status: ammMapStatus, ammMap } = useAmmMap()
-  const { tokenPrices } = useTokenPrices()
+  const { status: tokenPricesStatus, tokenPrices } = useTokenPrices()
   const { marketMap: stakingMap } = useStakingMap()
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
@@ -199,10 +199,14 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   }, [ammMap, tokenPrices, userRewardsMap, summaryDefiReward])
 
   React.useEffect(() => {
-    if (ammMapStatus === SagaStatus.UNSET && accountStatus === SagaStatus.UNSET) {
+    if (
+      ammMapStatus === SagaStatus.UNSET &&
+      accountStatus === SagaStatus.UNSET &&
+      tokenPricesStatus === SagaStatus.UNSET
+    ) {
       walletLayer2Service.sendUserUpdate()
     }
-  }, [ammMapStatus, accountStatus])
+  }, [ammMapStatus, accountStatus,tokenPricesStatus])
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {

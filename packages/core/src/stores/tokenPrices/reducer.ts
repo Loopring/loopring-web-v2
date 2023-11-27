@@ -26,20 +26,22 @@ const tokenPricesSlice: Slice = createSlice({
     },
     getTokenPricesStatus(state, action: PayloadAction<TokenPricesStates<any>>) {
       // @ts-ignore
-      if (action.error) {
+      if (action.payload.error) {
         state.status = SagaStatus.ERROR
         // @ts-ignore
-        state.errorMessage = action.error
+        state.errorMessage = action.payload.error
+        return
+      } else {
+        const { tokenPrices, __timer__, __rawConfig__ } = action.payload
+        if (tokenPrices) {
+          state.tokenPrices = tokenPrices
+          state.__rawConfig__ = __rawConfig__
+        }
+        if (__timer__) {
+          state.__timer__ = __timer__
+        }
+        state.status = SagaStatus.DONE
       }
-      const { tokenPrices, __timer__, __rawConfig__ } = action.payload
-      if (tokenPrices) {
-        state.tokenPrices = tokenPrices
-        state.__rawConfig__ = __rawConfig__
-      }
-      if (__timer__) {
-        state.__timer__ = __timer__
-      }
-      state.status = SagaStatus.DONE
     },
 
     statusUnset: (state) => {
