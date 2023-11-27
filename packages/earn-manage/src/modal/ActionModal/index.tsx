@@ -75,9 +75,20 @@ export const SettlePanel = ({
   }, [t, btnLabel])
 
   return (
-    <Box flex={1} widht={'var(--swap-box-width)'}>
+    <Box
+      flex={1}
+      width={'var(--swap-box-width)'}
+      minHeight={'100px'}
+      display={'flex'}
+      justifyContent={'space-between'}
+      flexDirection={'column'}
+      padding={3}
+    >
       <Typography variant={'h3'} component={'h3'}>
         Settle
+      </Typography>
+      <Typography variant={'body1'} component={'p'}>
+        Settle des.........
       </Typography>
       <Button
         fullWidth
