@@ -1,9 +1,7 @@
-import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import { getExclusiveRedpacket, getExclusiveRedpacketStatus } from './reducer'
-import { myLog } from '@loopring-web/common-resources'
 
 import { store, LoopringAPI } from '../../index'
-import { account } from '@loopring-web/component-lib'
 import { LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 import { TargetRedPacketStates } from './interface'
 
@@ -22,8 +20,7 @@ const getExclusiveRedPacketAPI = async (): Promise<{
       }, 1000 * 60 * 30)
     })(__timer__)
     const account = store.getState().account
-    const response = await LoopringAPI.luckTokenAPI
-    ?.getLuckTokenUserLuckyTokenTargets(
+    const response = await LoopringAPI.luckTokenAPI?.getLuckTokenUserLuckyTokenTargets(
       {
         statuses: [0],
         offset: 0,
@@ -56,10 +53,7 @@ function* getPostsSaga() {
 }
 
 function* exclusiveRedPacketInitSaga() {
-  
   yield all([takeEvery(getExclusiveRedpacket, getPostsSaga)])
 }
 
-export const exclusiveRedPacketSaga = [
-  fork(exclusiveRedPacketInitSaga),
-]
+export const exclusiveRedPacketSaga = [fork(exclusiveRedPacketInitSaga)]

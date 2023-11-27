@@ -95,7 +95,6 @@ export const ContainerStyle = styled(Box)`
     }
     return result
   }};
-  //background: var(--main-page-bg);
 
   .MuiButton-root {
     min-height: 48px;
@@ -106,26 +105,18 @@ export const ContainerStyle = styled(Box)`
     box-sizing: border-box;
     background: var(--color-primary);
     color: var(--color-text);
-    //padding: 4px 8px;
     width: fit-content;
     display: flex;
     align-items: center;
     font-size: var(--h5);
-
+    & .MuiButton-endIcon {
+      color: inherit;
+    }
     &:hover {
-      //--color-text: var(--color-text);
       background: var(--color-primary-pressed);
-      //border: 1px solid var(--color-border-hover);
       svg {
         fill: var(--color-text);
       }
-    }
-  }
-  .MuiButton-root.light {
-    background: var(--color-field);
-    --color-text: var(--color-primary);
-    &:hover {
-      --color-text: var(--color-text-button);
     }
   }
   .product {
@@ -138,22 +129,29 @@ export const ContainerStyle = styled(Box)`
       position: absolute;
       height: 100%;
       z-index: 99;
+      svg {
+        height: 32px;
+        width: 32px;
+        background: #4a505c;
+        color: var(--color-text-button);
+        outline: 2px solid #4a505c;
+        border-radius: 50%;
+      }
     }
     .MuiTab-root {
       display: flex;
       align-items: stretch;
     }
 
-    .MuiTab-root:first-child {
+    .MuiTab-root:first-of-type {
       padding-left: 0;
     }
-    .MuiTabs-scrollButtons:first-child {
+    .MuiTabs-scrollButtons:first-of-type {
       left: 0;
     }
     .MuiTabs-scrollButtons:last-child {
       right: 0;
     }
-    //margin-left: -32px;
   }
   .MuiButton-root.walletConnectL2Btn {
     width: 100%;
@@ -162,7 +160,7 @@ export const ContainerStyle = styled(Box)`
   .MuiButton-root.menuItem {
     display: flex;
     justify-content: flex-start;
-    //background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
+
     padding-left: 2rem;
     height: 80px;
     min-width: 320px;
@@ -203,13 +201,6 @@ export const ContainerStyle = styled(Box)`
     > div {
       flex: 1;
       justify-content: space-between;
-      // .MuiButton-root {
-      //   margin-top: ${({ theme }) => theme.unit}px;
-      //   padding-left: ${({ theme }) => 2 * theme.unit}px;
-      //   .MuiBox-root {
-      //     align-items: flex-start;
-      //   }
-      // }
     }
   }
   .box1 {
@@ -284,26 +275,29 @@ export const ContainerStyle = styled(Box)`
       }
     }
   }
+
   .box2 {
     margin-bottom: 80px;
     h4 {
       margin-bottom: ${({ theme }) => theme.unit * 3}px;
     }
-    .MuiButton-endIcon {
-      color: inherit;
-    }
+
     .MuiButton-root {
       margin-top: ${({ theme }) => theme.unit * 3}px;
     }
     > .MuiGrid-root div {
       border-radius: ${({ theme }) => theme.unit}px;
     }
-    > .MuiGrid-root:first-child div {
-      //margin-left: -48px;
-      //color: var(--color-text-button);
+    > .MuiGrid-root:first-of-type div {
       .MuiButton-root {
         background: white;
         color: var(--color-primary);
+        &:hover {
+          svg {
+            fill: var(--color-primary);
+          }
+          opacity: 0.6;
+        }
       }
       .MuiTypography-root {
         color: var(--color-text-button);
@@ -313,10 +307,6 @@ export const ContainerStyle = styled(Box)`
     }
     > .MuiGrid-root:last-child div {
       background: var(--light1000);
-      .MuiButton-root {
-        background: var(--color-primary);
-        color: var(--color-text-button);
-      }
       .MuiTypography-root {
         color: var(--dark);
       }
@@ -351,14 +341,13 @@ export const ContainerStyle = styled(Box)`
       align-items: center;
       margin-bottom: 24px;
       > .flexBox {
-        &:first-child {
+        &:first-of-type {
           margin-left: 0px;
         }
         flex-direction: column;
         margin-left: 0px;
         > div {
           margin-bottom: 24px;
-          //margin-left: 0px;
         }
         margin-bottom: 24px;
       }
@@ -414,8 +403,7 @@ export const TitleTypography = styled(Typography)<TypographyProps & { isMobile?:
   &:before {
     margin-top: 24px;
     content: '';
-    // top: ${({ isMobile }) => (isMobile ? '-16px' : '-30px')};
-    // left: 0;
+
     height: 6px;
     width: 96px;
     display: block;

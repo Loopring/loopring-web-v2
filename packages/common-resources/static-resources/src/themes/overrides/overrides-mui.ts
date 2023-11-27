@@ -387,7 +387,6 @@ export const MuiInputBase = ({
   themeMode,
   ...rest
 }: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
-  myLog('size', rest)
   return {
     styleOverrides: {
       root: {

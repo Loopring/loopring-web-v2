@@ -64,8 +64,9 @@ export default {
   labelNavWallet: 'Wallet',
   labelNavLanuch: 'View Dapps',
   labelLoopringSmartWallet: 'Loopring Smart Wallet',
-  labelLoopringSmartWalletDes: 'Your Gateway to Ethereum, DeFi, NFTs, and <br/>Financial Freedom',
-  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer2</1>",
+  labelLoopringSmartWalletDes:
+    "Ethereum's most secure wallet, fully integrated with advanced trading functionality and innovative Earn products, unlocking the true potential of Layer 2.",
+  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer 2</1>",
   labelGatewayToEthereum:
     'Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom.\n Fast, Low-cost, & Secure',
   labelTitleLite: 'Loopring Earn',
@@ -93,7 +94,7 @@ export default {
   labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield.',
   labelInvestLeverageETHDes:
     "Boost your earnings with CIAN protocol's leveraged ETH staking strategy.",
-  labelInvestDefiDes: 'Earn steady income while HODLing! Stake ETH to accumulate daily rewards.',
+  labelInvestDefiDes: 'Earn steady income while holding! Stake ETH to accumulate daily rewards.',
   labelInvestAmmDes:
     'Participate in farming pools; earn additional protocol fee incentives for HOT pools.',
   labelProductsTitleDes: 'A wide variety of trading tools to choose from',
@@ -108,7 +109,7 @@ export default {
   labelFiat: 'Fiat',
   labelNFTCollections: 'Manage and Display Your NFT Collections',
   labelNFTCollectionsDes:
-    'In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.',
+    'Collaborate on a strategic plan to integrate \n NFTs into your ecosystem',
   labelRedPackets: 'Red Packets',
   labelRedPacketsDes:
     'Explore the various use cases of our revolutionary Red Packets! Send token or NFT gifts directly or gamify the experience with blind boxes.',

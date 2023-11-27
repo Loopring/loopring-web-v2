@@ -1,15 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  CardContent,
-  Container,
-  Tabs,
-  Tab,
-  Typography,
-  Grid,
-  Card,
-} from '@mui/material'
+import { Avatar, Box, Button, Container, Tabs, Tab, Typography, Grid } from '@mui/material'
 import React from 'react'
 import styled from '@emotion/styled'
 import {
@@ -26,6 +15,7 @@ import {
   RouterPath,
   stakeAdvice,
   TokenType,
+  NFTSubRouter,
 } from '@loopring-web/common-resources'
 import { Trans, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -62,10 +52,7 @@ const BgStyle = styled(Box)`
     right: 0;
     bottom: 0;
     height: 528px;
-    //background: url('./bg-2.webp') center center no-repeat;
     background-size: 528px 528px;
-
-    //background-size: 50% 50%;
   }
 `
 const ButtonStyled = styled(Button)`
@@ -401,7 +388,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       sx={{ marginTop: 5 }}
                       title={item.router}
                       rel='noopener'
-                      href={item.router}
+                      href={`#${item.router}`}
                       endIcon={<GoIcon color='inherit' />}
                     >
                       <Trans i18nKey={'labelGo'} ns={['landPage']}>
@@ -459,7 +446,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                             sx={{ marginTop: 5 }}
                             title={item.router}
                             rel='noopener'
-                            href={item.router}
+                            href={`#${item.router}`}
                             endIcon={<GoIcon color='inherit' />}
                           >
                             <Trans i18nKey={'labelGo'} ns={['landPage']}>
@@ -488,16 +475,17 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             flex: 1,
           }}
         >
-          <Grid container spacing={3}>
+          <Grid container spacing={3} alignItems={'stretch'}>
             <Grid item xs={12} md={6}>
               <CardBox
+                height={'100%'}
                 padding={6}
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 className={'hasHover'}
-                onClick={() => history.push(`${RouterPath.nft}`)}
+                onClick={() => history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)}
               >
                 <img width='248' src={`./NFT.webp`} />
 
@@ -531,6 +519,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             <Grid item xs={12} md={6}>
               <CardBox
                 padding={6}
+                height={'100%'}
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'space-between'}

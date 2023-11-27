@@ -138,7 +138,7 @@ export const useAccountInfo = () => {
         case sdk.VaultAccountStatus.IN_STAKING:
           setShowVaultSwap({
             isShow: true,
-            symbol: symbol ?? erc20Map[vaultAccountInfoSymbol]?.tokenInfo?.symbol ?? undefined,
+            symbol: symbol ?? erc20Map[vaultAccountInfoSymbol]?.symbol ?? undefined,
           })
           break
       }
