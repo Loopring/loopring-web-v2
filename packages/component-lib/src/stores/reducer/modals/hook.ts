@@ -302,7 +302,10 @@ export const useOpenModals = () => {
       (state: {
         isShow: boolean
         info: {
-          exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
+          exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {
+            tokenIcon: CoinSource
+            tokenName: string
+          })[]
         }
       }) => dispatch(setShowTargetRedpacketPop(state)),
       [dispatch],
@@ -327,7 +330,7 @@ export const useOpenModals = () => {
     setShowNoVaultAccount: React.useCallback(
       (
         state: ModalStatePlayLoad &
-          Transaction & { whichBtn: VaultAction | undefined; des: string },
+          Transaction & { whichBtn?: VaultAction | undefined; des?: string; title?: string },
       ) => dispatch(setShowNoVaultAccount(state)),
       [dispatch],
     ),

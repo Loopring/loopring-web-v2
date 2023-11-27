@@ -14,6 +14,7 @@ import {
 } from '@loopring-web/core'
 import {
   Button,
+  VaultDataAssetsItem,
   setShowWrongNetworkGuide,
   useOpenModals,
   useSettings,
@@ -21,7 +22,6 @@ import {
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
-  AssetsRawDataItem,
   EmptyValueTag,
   fnType,
   globalSetup,
@@ -47,7 +47,7 @@ import { useHistory } from 'react-router-dom'
 
 const VaultPath = `${RouterPath.vault}/:item`
 
-export const useGetVaultAssets = <R = AssetsRawDataItem,>({
+export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
