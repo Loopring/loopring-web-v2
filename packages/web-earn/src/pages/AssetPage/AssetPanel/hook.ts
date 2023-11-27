@@ -93,7 +93,6 @@ export const useGetAssets = (): AssetPanelProps & {
   const { marketArray } = useTokenMap()
   const { marketCoins: defiCoinArray } = useDefiMap()
   const getAssetsRawData = () => {
-    myLog('assetsRawData', 'getAssetsRawData')
     const {
       tokenPrices: { tokenPrices },
       tokenMap: { tokenMap: tokenMapRaw },

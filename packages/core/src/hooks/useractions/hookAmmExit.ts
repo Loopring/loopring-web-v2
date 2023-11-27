@@ -22,6 +22,7 @@ import {
   usePageAmmPool,
   useSubmitBtn,
   useTokenMap,
+  useUserRewards,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from '../../index'
@@ -51,7 +52,7 @@ export const useAmmExit = ({
     ammExit: { fees, request, ammCalcData, ammData },
     updatePageAmmExit,
   } = usePageAmmPool()
-
+  const { getUserRewards } = useUserRewards()
   const { t } = useTranslation(['common', ToastType.error])
 
   const [isLoading, setIsLoading] = React.useState(false)
@@ -417,6 +418,7 @@ export const useAmmExit = ({
     })
 
     walletLayer2Service.sendUserUpdate()
+    getUserRewards()
     // @ts-ignore
     refreshRef?.current?.firstElementChild.click()
     await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
