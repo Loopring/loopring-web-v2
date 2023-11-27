@@ -16,13 +16,8 @@ import {
 import * as configDefault from '../../config/dualConfig.json'
 import { makeWalletInContract, makeWalletL1 } from '../../hooks'
 import * as sdk from '@loopring-web/loopring-sdk'
-import {
-  AccountStep,
-  setShowConnect,
-  useOpenModals,
-  useSettings,
-  WalletConnectStep,
-} from '@loopring-web/component-lib'
+import { useOpenModals, useSettings, WalletConnectStep } from '@loopring-web/component-lib'
+import { useGetProduct } from '../HistoryPage/hook'
 
 export enum ProductsIndex {
   delivering = 'delivering',
@@ -116,90 +111,6 @@ const useContactProd = ({ filter }: any) => {
   return { rowData, getList, isLoading }
 }
 
-export const useGetProduct = ({ filter, limit = 50 }: any) => {
-  const [rowData, setRowData] = React.useState([])
-  const [total, setTotals] = React.useState(0)
-  const [page, setPage] = React.useState(1)
-  const [isLoading, setLoading] = React.useState(false)
-  const { tokenMap } = useTokenMap()
-  const getList = async ({
-    page = 1,
-    investmentStatuses = [sdk.Layer1DualInvestmentStatus.DUAL_SETTLED],
-    filter = {},
-    limit = 50,
-  }: {
-    investmentStatuses?: sdk.Layer1DualInvestmentStatus[]
-    page?: number
-    filter?: any
-    limit?: number
-  }) => {
-    setLoading(true)
-    const response = await LoopringAPI.coworkerAPI?.getProducts({
-      limit,
-      offset: page - 1,
-      investmentStatuses,
-    })
-    setPage(page - 1)
-    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-    } else {
-      setTotals((response as any).totalNum)
-
-      setRowData(() => {
-        const indexes = (response as any).indexes
-        return (response as any).products.map((item) => {
-          const index = indexes?.find(
-            (_item) => item.base === _item.base && item.quote == _item.quote,
-          )
-          return {
-            ...item,
-            product: (item.investedBase ? `Sell High ` : `Buy Low `) + `${item.base}/${item.quote}`,
-            targetPrice: item.strike?.toString(),
-            currentPrice: index?.index,
-            investAmountStr: getValuePrecisionThousand(
-              sdk.toBig(item.investAmount).div('1e' + tokenMap[item.investToken]?.decimals),
-              tokenMap[item.investToken]?.precision,
-              tokenMap[item.investToken]?.precision,
-            ),
-            toBeSettledAmount: getValuePrecisionThousand(
-              sdk
-                .toBig(item.toBeSettledAmount)
-                .div('1e' + tokenMap[item.toBeSettledToken]?.decimals),
-              tokenMap[item.toBeSettledToken]?.precision,
-              tokenMap[item.toBeSettledToken]?.precision,
-            ),
-            supplliedAmount: item.isSwap
-              ? getValuePrecisionThousand(
-                  sdk.toBig(item.investAmount).div('1e' + tokenMap[item.investToken]?.decimals),
-                  tokenMap[item.investToken]?.precision,
-                  tokenMap[item.investToken]?.precision,
-                )
-              : getValuePrecisionThousand(
-                  sdk
-                    .toBig(item.toBeSettledAmount)
-                    .minus(item.investAmount)
-                    .div('1e' + tokenMap[item.toBeSettledToken]?.decimals),
-                  tokenMap[item.toBeSettledToken]?.precision,
-                  tokenMap[item.toBeSettledToken]?.precision,
-                ),
-            supplliedToken: item.toBeSettledToken,
-            receivedAmount: item.isSwap
-              ? getValuePrecisionThousand(
-                  sdk.toBig(item.investAmount).div('1e' + tokenMap[item.investToken]?.decimals),
-                  tokenMap[item.investToken]?.precision,
-                  tokenMap[item.investToken]?.precision,
-                )
-              : 0,
-            receivedToken: item.investToken,
-            // settlementTime:
-          }
-        })
-      })
-      setLoading(false)
-    }
-  }
-  return { rowData, total, getList, isLoading, page }
-}
-
 export const useData = () => {
   const { account, status: accountStatus } = useAccount()
   const { tokenMap, addressIndex } = useTokenMap()
@@ -240,8 +151,6 @@ export const useData = () => {
   } = useGetProduct({})
   const { getList: getDeliver, rowData: delivering } = useContactProd({})
   const { getList: getProgress, rowData: progress } = useContactProd({})
-
-  // const { rowData: product, total: productTotal, getList: getProduct } = useGetProduct({})
 
   // const =dualManageConfig
 
@@ -327,10 +236,7 @@ export const useData = () => {
       }
     })
   }
-  React.useEffect(() => {
-    // getProgress({ txTypes: [sdk.TransactionType.DEPOSIT] })
-    getProduct({ page: 1, investmentStatuses: [sdk.Layer1DualInvestmentStatus.DUAL_SETTLED] })
-  }, [])
+
   React.useEffect(() => {
     const account = store.getState().account
     if (accountStatus === SagaStatus.UNSET && account.readyState !== AccountStatus.UN_CONNECT) {

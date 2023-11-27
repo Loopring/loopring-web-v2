@@ -4,7 +4,7 @@ import { useData, ProductsIndex } from './hook'
 import { Button, CoinIcon, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { EmptyValueTag, getValuePrecisionThousand, TokenType } from '@loopring-web/common-resources'
-import { DualProductTable } from './DualProductTable'
+import { DualProductTable } from '../../compontent'
 import { useDeposit, useWithdraw } from '../../hooks'
 import { useSettle } from '../../hooks/useractions/useSettle'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -37,6 +37,10 @@ export const AssetPage = () => {
   const settleProps = useSettle({ isShowSettle, setShowSettle })
 
   const { coinJson } = useSettings()
+  React.useEffect(() => {
+    // getProgress({ txTypes: [sdk.TransactionType.DEPOSIT] })
+    getProduct({ page: 1, investmentStatuses: [sdk.Layer1DualInvestmentStatus.DUAL_CONFIRMED] })
+  }, [])
   // const [item, setItem] = React.useState(products[value as any])
   return (
     <Box padding={3}>
@@ -441,11 +445,8 @@ export const AssetPage = () => {
               page: 1,
               investmentStatuses:
                 value == ProductsIndex.delivering
-                  ? [sdk.Layer1DualInvestmentStatus.DUAL_SETTLED]
-                  : [
-                      sdk.Layer1DualInvestmentStatus.DUAL_CONFIRMED,
-                      sdk.Layer1DualInvestmentStatus.DUAL_RECEIVED,
-                    ],
+                  ? [sdk.Layer1DualInvestmentStatus.DUAL_CONFIRMED]
+                  : [sdk.Layer1DualInvestmentStatus.DUAL_RECEIVED],
             })
             // setItem(products[value])
           }}

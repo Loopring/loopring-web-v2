@@ -7,7 +7,6 @@ import {
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { Column } from 'react-data-grid'
 import { Typography } from '@mui/material'

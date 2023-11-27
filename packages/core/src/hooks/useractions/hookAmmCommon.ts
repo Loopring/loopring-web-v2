@@ -10,7 +10,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   LoopringAPI,
   useTokenMap,
-  useAccount,
   useSocket,
   useToast,
   usePageAmmPool,

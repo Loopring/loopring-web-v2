@@ -35,14 +35,14 @@ const TableStyled = styled(Table)<{ isMobile: boolean }>`
   }
 ` as any
 
-export interface DualsTableProps<R, C = sdk.Currency> {
+export interface DualProductTableProps<R, C = sdk.Currency> {
   rawData: R[]
   showloading: boolean
   isDelivering: boolean
 }
 
 export const DualProductTable = withTranslation(['tables', 'common'])(
-  <R extends any>(props: DualsTableProps<R> & WithTranslation) => {
+  <R extends any>(props: DualProductTableProps<R> & WithTranslation) => {
     const { rawData, showloading, t } = props
     const history = useHistory()
     const { coinJson } = useSettings()
