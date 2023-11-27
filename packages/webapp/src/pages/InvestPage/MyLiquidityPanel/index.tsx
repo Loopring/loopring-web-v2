@@ -332,6 +332,7 @@ const MyLiquidity: any = withTranslation('common')(
                         break
                       case InvestAssetRouter.STAKELRC:
                         item = RecordTabIndex.SideStakingRecords
+                        break
                       case InvestAssetRouter.LEVERAGEETH:
                         item = RecordTabIndex.leverageETHRecords
                         break
