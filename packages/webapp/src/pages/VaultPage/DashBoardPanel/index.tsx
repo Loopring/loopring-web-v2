@@ -115,7 +115,6 @@ export const VaultDashBoardPanel = ({
       </>
     )
   }, [hideAssets, vaultAccountInfo?.totalEquityOfUsd, vaultAccountInfo?.accountStatus])
-
   const marginUI = React.useMemo(() => {
     const colorIs = sdk.toBig('1.2').gte(vaultAccountInfo?.marginLevel ?? 0) ? 0 : 1
     return (
@@ -186,7 +185,6 @@ export const VaultDashBoardPanel = ({
                     </Typography>
                     <Typography
                       whiteSpace={'pre-line'}
-                      marginBottom={2}
                       component={'span'}
                       variant={'body1'}
                       color={'textSecondary'}

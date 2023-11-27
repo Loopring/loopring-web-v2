@@ -65,7 +65,7 @@ export type TradePairItem = {
   last: string
 }
 
-export type RawDataAssetsItem = {
+export type VaultDataAssetsItem = {
   token: {
     type: TokenType
     value: string
