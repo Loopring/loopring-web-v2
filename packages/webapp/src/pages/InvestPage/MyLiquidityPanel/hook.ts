@@ -26,7 +26,6 @@ import {
   STAKING_INVEST_LIMIT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { pickBy, toArray } from 'lodash'
 // import { walletServices } from "@loopring-web/web3-provider";
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
@@ -57,7 +56,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   stakedSymbol: string
 } => {
   const { account, status: accountStatus } = useAccount()
-  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
+  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap, getUserRewards } = useUserRewards()
   const { tokenMap } = useTokenMap()
   const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
 
@@ -106,7 +105,11 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const resetTableData = React.useCallback(
     (viewData) => {
       setMyPoolRow(viewData)
-      setTableHeight(viewData.length > 0 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight : 350)
+      setTableHeight(
+        viewData.length > 0
+          ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
+          : 350,
+      )
     },
     [rowConfig.rowHeaderHeight, rowConfig.rowHeight],
   )
@@ -201,15 +204,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   React.useEffect(() => {
     if (ammMapStatus === SagaStatus.UNSET && accountStatus === SagaStatus.UNSET) {
       walletLayer2Service.sendUserUpdate()
-      const account = store.getState().account
-      if (account.readyState == AccountStatus.ACTIVATED) {
-        getStakingList({})
-        makeDefiInvestReward().then((summaryDefiReward) => {
-          if (mountedRef.current) {
-            setSummaryDefiReward(summaryDefiReward.toString())
-          }
-        })
-      }
     }
   }, [ammMapStatus, accountStatus])
 
@@ -217,8 +211,23 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     if (userRewardsStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
     }
-  }, [userRewardsStatus, summaryDefiReward])
-  useWalletLayer2Socket({ walletLayer2Callback })
+  }, [userRewardsStatus])
+  useWalletLayer2Socket({
+    walletLayer2Callback: async () => {
+      const account = store.getState().account
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getStakingList({})
+        await makeDefiInvestReward().then((summaryDefiReward) => {
+          if (mountedRef.current) {
+            setSummaryDefiReward(summaryDefiReward.toString())
+          }
+        })
+        getUserRewards()
+      } else {
+        walletLayer2Callback()
+      }
+    },
+  })
 
   React.useEffect(() => {
     mountedRef.current = true
