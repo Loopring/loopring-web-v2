@@ -175,11 +175,8 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
             isAccActivated() &&
             withdrawValue?.fee?.belong
           ) {
-            //TODO wrire contract
+            //TODO write contract
 
-            // if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-            //   throw response
-            // }
             setShowWithdraw({ isShow: false })
             setShowAccount({
               isShow: true,
