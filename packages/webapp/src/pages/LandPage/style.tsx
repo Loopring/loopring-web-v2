@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import { Box, Container, Typography, TypographyProps } from '@mui/material'
 import { SoursURL, ThemeType } from '@loopring-web/common-resources'
 import { ContainerProps } from '@mui/material/Container/Container'
-import { LAYOUT } from '@loopring-web/core'
 import { Button } from '@loopring-web/component-lib'
 import { withTranslation } from 'react-i18next'
 
