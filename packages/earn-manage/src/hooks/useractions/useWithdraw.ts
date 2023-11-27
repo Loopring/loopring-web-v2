@@ -63,52 +63,12 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
   const { isShow, info } = isShowWithdraw
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
   const { setShowAccount } = useOpenModals()
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo } = useSystem()
   const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
-
   const [walletMap2] = React.useState(makeWalletInContract())
-
-  const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] = React.useState<boolean>(false)
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-    resetIntervalTime,
-  } = useChargeFees({
-    requestType: withdrawValue.withdrawType,
-    amount: withdrawValue.tradeValue,
-    needAmountRefresh:
-      withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-    tokenSymbol: store.getState()._router_modalData.withdrawValue?.belong,
-    updateData: ({ fee, amount, tokenSymbol }) => {
-      const _withdrawValue = store.getState()._router_modalData.withdrawValue
-      myLog(
-        withdrawValue.withdrawType,
-        _withdrawValue.withdrawType,
-        withdrawValue.belong,
-        _withdrawValue.belong,
-        amount,
-        _withdrawValue.tradeValue,
-        tokenSymbol,
-      )
-      if (
-        withdrawValue.withdrawType == _withdrawValue.withdrawType &&
-        _withdrawValue.belong === tokenSymbol &&
-        ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
-          amount == _withdrawValue.tradeValue) ||
-          withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-      ) {
-        updateWithdrawData({ ..._withdrawValue, fee })
-      }
-    },
-  })
-
   const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>()
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
@@ -131,13 +91,11 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
       if (
         tradeValue &&
         !exceedPoolLimit &&
-        chargeFeeTokenList.length &&
         tradeValue.gt(BIGO) &&
         withdrawValue.tradeValue &&
         isEnough
       ) {
         enableBtn()
-        setIsFastWithdrawAmountLimit(false)
         return
       }
       if (exceedPoolLimit) {
@@ -151,13 +109,8 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
         ).toString()
 
         setWithdrawI18nKey(`labelL2toL1BtnExceed|${amt}`)
-        setIsFastWithdrawAmountLimit(true)
         return
       }
-      // else if (isFeeSame && !withFeeEnough) {
-      //   setWithdrawI18nKey(`labelL2toL1BtnExceedWithFee`);
-      // }
-      setIsFastWithdrawAmountLimit(false)
     }
     disableBtn()
   }, [tokenMap, withdrawValue.belong, withdrawValue.tradeValue, disableBtn, enableBtn])
@@ -167,27 +120,6 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
     checkBtnStatus()
   }, [withdrawValue?.belong, withdrawValue?.tradeValue])
 
-  const _checkFeeIsEnough = _.debounce(
-    () => {
-      const {
-        tradeValue: amount,
-        withdrawType,
-        belong,
-      } = store.getState()._router_modalData.withdrawValue
-      checkFeeIsEnough({
-        isRequiredAPI: true,
-        intervalTime: LIVE_FEE_TIMES,
-        amount,
-        tokenSymbol: belong,
-        requestType: withdrawType,
-        needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-      })
-    },
-    globalSetup.wait,
-    { leading: true, trailing: true },
-  )
-
-  // useWalletLayer2Socket({ walletLayer2Callback })
   const handlePanelEvent = async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
     if (data.to === 'button') {
       if (walletMap2 && data?.tradeData?.belong) {
@@ -198,8 +130,6 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
           tradeValue: data.tradeData?.tradeValue,
           balance: walletInfo?.count,
         })
-        // _checkFeeIsEnough.cancel()
-        _checkFeeIsEnough()
       } else {
         updateWithdrawData({
           fee: undefined,
@@ -320,7 +250,6 @@ export const useWithdraw = <R extends IBData<T>, T>({ setShowWithdraw, isShowWit
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.withdraw,
     onWithdrawClick: handleWithdraw,
     handlePanelEvent,
-    feeInfo,
     title: 'withdraw',
   }
 
