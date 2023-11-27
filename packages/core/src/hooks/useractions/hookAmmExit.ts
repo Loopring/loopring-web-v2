@@ -53,7 +53,6 @@ export const useAmmExit = ({
     updatePageAmmExit,
   } = usePageAmmPool()
   const { t } = useTranslation(['common', ToastType.error])
-  const { getUserRewards } = useUserRewards()
   const [isLoading, setIsLoading] = React.useState(false)
   const { idIndex, tokenMap } = useTokenMap()
   const { ammMap } = useAmmMap()
@@ -426,7 +425,6 @@ export const useAmmExit = ({
 
   const walletLayer2Callback = React.useCallback(async () => {
     updateExitFee()
-    // getUserRewards()
   }, [])
 
   useWalletLayer2Socket({ walletLayer2Callback })
