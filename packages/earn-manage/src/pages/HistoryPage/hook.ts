@@ -3,6 +3,7 @@ import React from 'react'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { account } from '@loopring-web/component-lib'
 export enum RecordIndex {
   Transactions = 'Transactions',
   DualInvestment = 'DualInvestment',
@@ -230,13 +231,8 @@ export const useData = () => {
     isLoading: txLoading,
     page: pageTxPage,
   } = useGetTransaction({})
-  // const {
-  //   rowData: product,
-  //   total: productTotal,
-  //   getList: getProduct,
-  //   isLoading: productLoading,
-  //   page: productPage,
-  // } = useGetUseTransaction({})
+  const { account } = useAccount()
+
   const {
     rowData: product,
     total: productTotal,
@@ -244,6 +240,56 @@ export const useData = () => {
     isLoading: productLoading,
     page: productPage,
   } = useGetProduct({})
+  // const {getList:getGetUseTransaction}= useGetUseTransaction()
+
+  const onExport = async () => {
+    if (LoopringAPI.coworkerAPI && account.accAddress) {
+      const list: any[] = []
+      const response = await LoopringAPI.coworkerAPI.getUserTransactions({
+        user: account.accAddress,
+        investmentStatuses: [
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_CANCELLED,
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_SUBMITTED,
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_CONFIRMED,
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_FILLED,
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_PARTIAL_FILLED,
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_CANCELLED,
+          sdk.Layer1DualOrderStatus.DUAL_ORDER_REJECTED,
+        ].join(','),
+        // settlementStatuses?: string;
+        // fromId?: number;
+        limit: 50,
+      })
+      const index = Math.floor(response.totalNum / 50)
+      let promise: any[] = []
+      let from = 1
+      list.concat(response.transactions)
+      while (index >= from) {
+        promise = [
+          await LoopringAPI.coworkerAPI.getUserTransactions({
+            user: account.accAddress,
+            investmentStatuses: [
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_CANCELLED,
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_SUBMITTED,
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_CONFIRMED,
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_FILLED,
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_PARTIAL_FILLED,
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_CANCELLED,
+              sdk.Layer1DualOrderStatus.DUAL_ORDER_REJECTED,
+            ].join(','),
+            offset: 50 * from,
+            limit: 50,
+          }),
+        ].concat(promise)
+        from++
+      }
+      Promise.all(promise).then((arg) => {
+        arg.map(({ transactions }) => {
+          list.concat(transactions)
+        })
+      })
+    }
+  }
 
   return {
     product,
@@ -256,6 +302,7 @@ export const useData = () => {
     txLoading,
     pageTxPage,
     txTotal,
+    onExport,
     // txRowData,
     // getTxRowData,
   }

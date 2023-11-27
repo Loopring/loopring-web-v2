@@ -24,6 +24,7 @@ export const RecordPage = () => {
     txRowData,
     txLoading,
     pageTxPage,
+    onExport,
     txTotal,
   } = useData()
 
@@ -155,6 +156,17 @@ export const RecordPage = () => {
                 }}
               />
             )}
+            <Box display={'flex'} justifyContent={'flex-end'}>
+              <Button
+                variant={'text'}
+                size={'medium'}
+                color={'primary'}
+                sx={{ marginLeft: 1 }}
+                onClick={onExport}
+              >
+                Export order details
+              </Button>
+            </Box>
           </>
         )}
       </Box>
