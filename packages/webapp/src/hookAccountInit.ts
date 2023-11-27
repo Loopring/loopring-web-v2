@@ -17,11 +17,18 @@ import {
   useNotify,
   useSocket,
   useVaultTicker,
+  useTargetRedPackets,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state })
   const { sendSocketTopic, socketUserEnd } = useSocket()
+  const {
+    getExclusiveRedpacket,
+    status: targetRedPacketStatus,
+    statusUnset: targetRedPacketUnset,
+  } = useTargetRedPackets()
+
   const {
     updateWalletLayer1,
     status: walletLayer1Status,
@@ -109,6 +116,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2Collection({ page: 1 })
           }
           sendSocketTopic({})
+          getExclusiveRedpacket()
           updateLegacyContracts()
           updateContacts()
           getUserNotify()
@@ -140,6 +148,18 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [walletLayer2Status])
+  React.useEffect(() => {
+    switch (targetRedPacketStatus) {
+      case SagaStatus.ERROR:
+        targetRedPacketUnset()
+        break
+      case SagaStatus.DONE:
+        wallet2statusUnset()
+        break
+      default:
+        break
+    }
+  }, [targetRedPacketStatus])
 
   React.useEffect(() => {
     switch (vaultLayer2Status) {

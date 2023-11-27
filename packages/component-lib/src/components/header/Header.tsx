@@ -27,12 +27,12 @@ import {
   RouterMainKey,
   SoursURL,
   subMenuLayer2,
-  toolBarAvailableItem as _toolBarAvailableItem,
 } from '@loopring-web/common-resources'
 import {
   BtnDownload,
   BtnNotification,
   BtnSetting,
+  ColorSwitch,
   ProfileMenu,
   WalletConnectBtn,
   WalletConnectL1Btn,
@@ -140,7 +140,6 @@ const ToolBarItem = ({
   account,
   chainId,
   isLayer1Only = false,
-  ButtonComponentsMap,
   ...props
 }: any) => {
   const match = useRouteMatch('/:l1/:l2?')
@@ -162,7 +161,8 @@ const ToolBarItem = ({
         return <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />
-
+      case ButtonComponentsMap.ColorSwitch:
+        return <ColorSwitch {...props} />
       case ButtonComponentsMap.WalletConnect:
         return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
       default:
@@ -229,7 +229,6 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         landBtn,
         isLandPage = false,
         isMobile = false,
-        toolBarAvailableItem = _toolBarAvailableItem,
         toolBarMap = ButtonComponentsMap,
         i18n,
         t,
@@ -242,40 +241,25 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
       const theme = useTheme()
       const location = useLocation()
       const match = useRouteMatch('/:l1/:l2?/:pair?')
-
-      const _headerToolBarData = isLandPage
-        ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
-            if ((key as unknown as ButtonComponentsMap) !== ButtonComponentsMap.WalletConnect) {
-              return (prev[key] = headerToolBarData[key])
-            }
-            return prev
-          }, {} as { [key: number]: R })
-        : headerToolBarData
-      const getMenuButtons = React.useCallback(
-        ({
-          toolbarList,
-          ...rest
-        }: {
-          toolbarList: { [key: number]: R }
-        } & WithTranslation) => {
-          return toolBarAvailableItem.map((index: number) => {
-            return (
-              <ToolBarItem
-                {...{
-                  ...toolbarList[index],
-                  account,
-                  chainId,
-                  notification,
-                  ButtonComponentsMap: toolBarMap,
-                  ...rest,
-                }}
-                key={index}
-              />
-            )
-          })
-        },
-        [account, isMobile, notification],
-      )
+      const getMenuButtons = React.useMemo(() => {
+        return Reflect.ownKeys(headerToolBarData ?? {}).map((item, index) => {
+          return (
+            <ToolBarItem
+              {...{
+                ...headerToolBarData[item],
+                account,
+                chainId,
+                notification,
+                ButtonComponentsMap: toolBarMap,
+                t,
+                i18n,
+                ...rest,
+              }}
+              key={index}
+            />
+          )
+        })
+      }, [account, isMobile, notification, headerToolBarData])
 
       const getDrawerChoices: any = React.useCallback(
         ({
@@ -459,25 +443,8 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
               justifyContent={'flex-end'}
               color={'textColorSecondary'}
             >
-              {getMenuButtons({
-                toolbarList: _headerToolBarData,
-                i18n,
-                t,
-                ...rest,
-              })}
+              {getMenuButtons}
               {!!isLandPage && landBtn ? landBtn : <></>}
-
-              {/*{!!isLandPage && (*/}
-              {/*  <ButtonStyled*/}
-              {/*    size={'small'}*/}
-              {/*    disabled={isMaintaining}*/}
-              {/*    variant={'contained'}*/}
-              {/*    // history.push(`${RouterPath.l2records}`)}*/}
-              {/*    onClick={() => history.push(`${RouterPath.lite}/LRC-ETH`)}*/}
-              {/*  >*/}
-              {/*    {t('labelLaunchApp')}*/}
-              {/*  </ButtonStyled>*/}
-              {/*)}*/}
             </Box>
           </ToolBarStyled>
         )
@@ -489,7 +456,6 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         t,
         rest,
         getMenuButtons,
-        _headerToolBarData,
         isMaintaining,
         history,
       ])
@@ -530,12 +496,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
             <Box display={'flex'} alignItems={'center'}>
               {isLandPage && headerMenuLandingData[0] ? (
                 <>
-                  {getMenuButtons({
-                    toolbarList: _headerToolBarData,
-                    i18n,
-                    t,
-                    ...rest,
-                  })}
+                  {getMenuButtons}
                   {landBtn ? landBtn : <></>}
                   <ClickAwayListener
                     onClickAway={() => {
@@ -600,12 +561,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                     color={'textColorSecondary'}
                     marginRight={1}
                   >
-                    {getMenuButtons({
-                      toolbarList: headerToolBarData,
-                      i18n,
-                      t,
-                      ...rest,
-                    })}
+                    {getMenuButtons}
                   </Box>
                   <ClickAwayListener
                     onClickAway={() => {

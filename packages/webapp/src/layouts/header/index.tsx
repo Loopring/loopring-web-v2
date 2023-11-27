@@ -3,7 +3,6 @@ import {
   CloseIcon,
   headerRoot,
   hexToRGB,
-  toolBarAvailableItem,
   toolBarMobileAvailableItem,
 } from '@loopring-web/common-resources'
 
@@ -103,9 +102,17 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
                   /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
                 }
                 className={isHideOnScroll ? 'scrollable' : ''}
-                toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
                 toolBarMap={ButtonComponentsMap}
-                headerToolBarData={headerToolBarData}
+                headerToolBarData={
+                  isLandPage
+                    ? [
+                        {
+                          buttonComponent: ButtonComponentsMap.ColorSwitch,
+                          label: 'labelColors',
+                        },
+                      ]
+                    : headerToolBarData
+                }
                 notification={{ notifyMap, myNotifyMap }}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}
                 onClickExclusiveredPacket={onClickExclusiveredPacket}
@@ -123,7 +130,6 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
               headerMenuData={
                 /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
               }
-              toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
               toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
               notification={{ notifyMap, myNotifyMap }}

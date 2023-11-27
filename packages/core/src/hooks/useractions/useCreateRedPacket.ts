@@ -981,7 +981,6 @@ export const useCreateRedPacket = <
     [processRequest, setShowAccount],
   )
   const location = useLocation()
-  // myLog('redPacketOrder', redPacketOrder)
   React.useEffect(() => {
     ;(async () => {
       const nftDatas = new URLSearchParams(location.search).get('nftDatas')
