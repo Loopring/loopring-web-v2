@@ -16,7 +16,20 @@ import {
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
-const WrapStyle = styled(Box)``
+const WrapStyle = styled(Box)`
+  .withdraw-wrap {
+    > .react-swipeable-view-container {
+      > div:first-of-type {
+        height: 0;
+      }
+    }
+    .address-wrap,
+    .fee-wrap,
+    .address-type-wrap {
+      display: none;
+    }
+  }
+`
 
 export type SettleProps = {
   btnStatus: TradeBtnStatus
@@ -62,7 +75,7 @@ export const SettlePanel = ({
   }, [t, btnLabel])
 
   return (
-    <Box flex={1}>
+    <Box flex={1} widht={'var(--swap-box-width)'}>
       <Typography variant={'h3'} component={'h3'}>
         Settle
       </Typography>
@@ -133,7 +146,7 @@ export const ActionModal = ({
         content={
           <WrapStyle>
             <WithdrawPanel
-              title={'withdraw'}
+              className={'withdraw-wrap'}
               _height={'auto'}
               accountReady={account?.readyState as any}
               {...withdrawProps}

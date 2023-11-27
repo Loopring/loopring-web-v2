@@ -42,14 +42,11 @@ export const useDeposit = <T extends IBData<string>>({ setShowDeposit, isShowDep
   const { account } = useAccount()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
   const { exchangeInfo, chainId, gasPrice, baseURL } = useSystem()
-  const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false)
   const { depositValue, updateDepositData, resetDepositData } = useModalData()
   const { walletLayer1, updateWalletLayer1 } = useWalletLayer1()
-  const { chainInfos, updateDepositHash } = onchainHashInfo.useOnChainInfo()
+  const { updateDepositHash } = onchainHashInfo.useOnChainInfo()
   const history = useHistory()
-  // const walletMap = walletLayer1 as WalletMap<any>,
 
   const {
     btnStatus,

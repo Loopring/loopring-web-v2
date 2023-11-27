@@ -2,13 +2,7 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import { bindHover } from 'material-ui-popup-state/es'
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
-import {
-  Box,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Typography,
-} from '@mui/material'
+import { Box, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
 import {
   AddressError,
   AssetsRawDataItem,
@@ -44,6 +38,7 @@ export const WithdrawWrap = <
   C extends FeeInfo,
 >({
   t,
+  title,
   disabled,
   walletMap,
   tradeData,
@@ -184,8 +179,7 @@ export const WithdrawWrap = <
     : WALLET_TYPE.EOA
 
   return (
-      <GridWrapStyle
-          className={'withdraw-wrap'}
+    <GridWrapStyle
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -211,8 +205,10 @@ export const WithdrawWrap = <
             whiteSpace={'pre'}
             marginRight={1}
           >
-            {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
-            (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
+            {title
+              ? title
+              : (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
+                (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
               ? t('labelL2ToL1DeployTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
               : isToMyself
               ? t('labelL2ToMyL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
@@ -286,7 +282,7 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={'stretch'} position={'relative'}>
+      <Grid item alignSelf={'stretch'} position={'relative'} className={'address-wrap'}>
         {!isToMyself ? (
           <>
             <TextField
@@ -402,7 +398,7 @@ export const WithdrawWrap = <
         </Box>
       </Grid>
       {!isToMyself && (
-        <Grid item alignSelf={'stretch'} position={'relative'}>
+        <Grid item alignSelf={'stretch'} position={'relative'} className={'address-type-wrap'}>
           <FullAddressType
             detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
@@ -412,7 +408,7 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      <Grid item alignSelf={'stretch'} position={'relative'}>
+      <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
@@ -477,6 +473,6 @@ export const WithdrawWrap = <
         }}
         severity={ToastType.success}
       />
-      </GridWrapStyle>
+    </GridWrapStyle>
   )
 }
