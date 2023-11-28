@@ -190,6 +190,7 @@ iframe {
 
 html {
     --dark: #000000;
+    --dark1000: #31353D;
     --dark900: #141414;
     --dark800: #1f1f1f;
     --dark700: #262626;
@@ -202,6 +203,7 @@ html {
     --light700: #f0f0f0;
     --light800: #f5f5f5;
     --light900: #fafafa;
+    --light1000: #ffffff;
     --light: #ffffff;
     --color-success: #00bba8;
     --color-warning: #fba95c;

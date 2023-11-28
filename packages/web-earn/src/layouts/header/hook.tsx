@@ -5,6 +5,7 @@ import {
   fnType,
   headerMenuLandingData,
   MapChainId,
+  Profile,
   ProfileIndex,
   SagaStatus,
 } from '@loopring-web/common-resources'
@@ -79,7 +80,7 @@ export const useHeader = () => {
   })
 
   React.useEffect(() => {
-    if ([SagaStatus.UNSET,SagaStatus.DONE].includes(accountStatus)) {
+    if ([SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)) {
       const account = store.getState().account
       setHeaderToolBarData((headerToolBarData) => {
         headerToolBarData[ButtonComponentsMap.WalletConnect] = {
@@ -90,7 +91,7 @@ export const useHeader = () => {
         }
         headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
           ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
-          subMenu: profile.map((item: string) => EarnProfile[item]),
+          subMenu: profile.map((item: string) => Profile[item]),
           readyState: account.readyState,
         }
         return headerToolBarData
@@ -98,7 +99,7 @@ export const useHeader = () => {
     }
   }, [accountStatus, account?.readyState])
   const { notifyMap } = useNotify()
-  
+
   return {
     headerToolBarData,
     headerMenuData: headerMenuDataEarnMap[network],

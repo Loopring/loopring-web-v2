@@ -63,7 +63,11 @@ export function useInit() {
   } = useAccount()
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } = useTokenMap()
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap()
-  const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } = useTokenPrices()
+  const {
+    status: tokenPricesStatus,
+    getTokenPrices,
+    statusUnset: tokenPricesUnset,
+  } = useTokenPrices()
   const { status: defiMapStatus, statusUnset: defiMapStatusUnset } = useDefiMap()
   const { status: dualMapStatus, statusUnset: dualMapStatusUnset } = useDualMap()
   const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } = useStakingMap()
@@ -208,6 +212,7 @@ export function useInit() {
       case SagaStatus.ERROR:
         tokenPricesUnset()
         setState('ERROR')
+        getTokenPrices()
         break
       case SagaStatus.DONE:
         tokenPricesUnset()

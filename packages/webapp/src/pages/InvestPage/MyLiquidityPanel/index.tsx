@@ -18,6 +18,7 @@ import {
   useSettings,
   Tabs,
   CoinIcons,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -30,8 +31,7 @@ import {
   HiddenTag,
   INVEST_TABS,
   InvestAssetRouter,
-  // InvestTab,
-  // investTabs,
+  AmmPanelType,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -42,17 +42,13 @@ import {
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
-  AmmPanelType,
   RouterPath,
   RecordTabIndex,
   InvestRouter,
   InvestType,
-  WarningIcon2,
-  DAY_MINUTE_FORMAT,
-  RowConfig
+  RowConfig,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
 import {
   TableWrapStyled,
@@ -68,11 +64,10 @@ import {
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
-import { useDualAsset } from '../../AssetPage/HistoryPanel'
 import React from 'react'
-import { containerColors, MaxWidthContainer } from '..'
+import { containerColors } from '..'
 import _ from 'lodash'
-import moment from 'moment/moment'
+import { useDualAsset } from '../../AssetPage/HistoryPanel'
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -86,7 +81,7 @@ const MyLiquidity: any = withTranslation('common')(
   }: WithTranslation & {
     isHideTotal?: boolean
     className?: string
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
+    ammActivityMap: sdk.LoopringMap<sdk.LoopringMap<sdk.AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
     noHeader?: boolean
     path?: string
@@ -307,6 +302,7 @@ const MyLiquidity: any = withTranslation('common')(
               justifyContent={'space-between'}
               flexDirection={isMobile ? 'column' : 'row'}
               alignItems={isMobile ? 'start' : 'center'}
+              alignSelf={'stretch'}
             >
               <Box paddingY={7}>
                 <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
@@ -323,7 +319,27 @@ const MyLiquidity: any = withTranslation('common')(
                 </Button>
                 <Button
                   onClick={() => {
-                    history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
+                    let item = RecordTabIndex.Transactions
+                    switch (tab) {
+                      case InvestAssetRouter.DUAL:
+                        item = RecordTabIndex.DualRecords
+                        break
+                      case InvestAssetRouter.AMM:
+                        item = RecordTabIndex.AmmRecords
+                        break
+                      case InvestAssetRouter.STAKE:
+                        item = RecordTabIndex.DefiRecords
+                        break
+                      case InvestAssetRouter.STAKELRC:
+                        item = RecordTabIndex.SideStakingRecords
+                        break
+                      case InvestAssetRouter.LEVERAGEETH:
+                        item = RecordTabIndex.leverageETHRecords
+                        break
+                      default:
+                        break
+                    }
+                    history.push(`${RouterPath.l2records}/${item}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
@@ -395,11 +411,13 @@ const MyLiquidity: any = withTranslation('common')(
             borderRadius: noHeader ? `${theme.unit}px` : 0,
             marginTop: noHeader ? 1 : 0,
           }}
+          // sx={{ flexDirection: 'column' }}
         >
           {
             <>
               <Box width={'100%'} display={'flex'}>
                 <Tabs
+                  variant='scrollable'
                   className={'btnTab'}
                   value={tab}
                   onChange={(_event: any, newValue: any) => {
@@ -497,7 +515,9 @@ const MyLiquidity: any = withTranslation('common')(
                               ? HiddenTag
                               : nanToEmptyTag(
                                   getValuePrecisionThousand(
-                                    sdk.toBig(NaN).times(forexMap[currency] ?? 0),
+                                    sdk
+                                      .toBig(summaryMyInvest?.stakeLRCDollar)
+                                      .times(forexMap[currency] ?? 0),
                                     undefined,
                                     undefined,
                                     2,
@@ -845,7 +865,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       renewDuration: info.renewDuration,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 } else {
                                   handleOnchange({
                                     tradeData: {
@@ -853,7 +873,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       isRenew: false,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 }
                               }}
                               coinSell={{
@@ -975,4 +995,4 @@ const MyLiquidity: any = withTranslation('common')(
   },
 )
 
-export default MyLiquidity
+export { MyLiquidity }

@@ -3,14 +3,18 @@ import {
   CloseIcon,
   headerRoot,
   hexToRGB,
-  toolBarAvailableItem,
-  toolBarMobileAvailableItem,
 } from '@loopring-web/common-resources'
 
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'
 
 import { useHeader } from './hook'
-import { confirmation, useSystem, useAccount, useTargetRedPackets, useTokenMap } from '@loopring-web/core'
+import {
+  confirmation,
+  useSystem,
+  useAccount,
+  useTargetRedPackets,
+  useTokenMap,
+} from '@loopring-web/core'
 import { withTranslation } from 'react-i18next'
 
 import {
@@ -25,7 +29,7 @@ import { withRouter, useLocation } from 'react-router-dom'
 import { RouteComponentProps } from 'react-router'
 import React from 'react'
 
-const Header = withTranslation('common')(
+const Header = withTranslation(['common', 'layout', 'landPage'])(
   withRouter(
     ({
       t,
@@ -33,17 +37,21 @@ const Header = withTranslation('common')(
       isHideOnScroll = false,
       isLandPage = false,
       isWrap = false,
+      landBtn,
       ...rest
     }: any & RouteComponentProps) => {
-      const { headerToolBarData, headerMenuData, notifyMap, headerMenuLandingData } = useHeader()
+      const { headerToolBarData, headerMenuData, notifyMap, myNotifyMap, headerMenuLandingData } =
+        useHeader()
       const { isMobile, coinJson } = useSettings()
       const { pathname } = useLocation()
       const { confirmWrapper } = confirmation.useConfirmation()
       const { allowTrade, chainId } = useSystem()
       const { account } = useAccount()
       const [view, setView] = React.useState(false)
-      const { redPackets, setShowRedPacketsPopup} = useTargetRedPackets()
-      const popUpRedpackets = redPackets ? redPackets.filter(redpacket => (redpacket as any).notifyType === "NOTIFY_WINDOW") : []
+      const { redPackets, setShowRedPacketsPopup } = useTargetRedPackets()
+      const popUpRedpackets = redPackets
+        ? redPackets.filter((redpacket) => (redpacket as any).notifyType === 'NOTIFY_WINDOW')
+        : []
       const showExclusiveRedpacket = popUpRedpackets.length > 0
       const exclusiveRedpacketCount = popUpRedpackets.length
       const { setShowRedPacket, setShowTargetRedpacketPop } = useOpenModals()
@@ -53,17 +61,16 @@ const Header = withTranslation('common')(
           setShowTargetRedpacketPop({
             isShow: true,
             info: {
-              exclusiveRedPackets: popUpRedpackets.map(redpacket => {
+              exclusiveRedPackets: popUpRedpackets.map((redpacket) => {
                 return {
                   ...redpacket,
-                  tokenName: 
-                    redpacket.isNft
-                    ? (redpacket.nftTokenInfo?.metadata?.base.name ?? '')
+                  tokenName: redpacket.isNft
+                    ? redpacket.nftTokenInfo?.metadata?.base.name ?? ''
                     : idIndex[redpacket.tokenId],
-                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]] 
+                  tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]],
                 }
-              })
-            }
+              }),
+            },
           })
         } else {
           setShowRedPacket({
@@ -74,7 +81,7 @@ const Header = withTranslation('common')(
             step: RedPacketViewStep.OpenPanel,
           })
         }
-      } 
+      }
 
       return (
         <>
@@ -83,6 +90,7 @@ const Header = withTranslation('common')(
               <HeaderUI
                 account={account}
                 isWrap={isLandPage || isWrap}
+                landBtn={landBtn}
                 chainId={chainId}
                 {...rest}
                 isLandPage={isLandPage}
@@ -91,10 +99,19 @@ const Header = withTranslation('common')(
                 headerMenuData={
                   /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
                 }
-                toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
+                className={isHideOnScroll ? 'scrollable' : ''}
                 toolBarMap={ButtonComponentsMap}
-                headerToolBarData={headerToolBarData}
-                notification={notifyMap}
+                headerToolBarData={
+                  isLandPage
+                    ? [
+                        {
+                          buttonComponent: ButtonComponentsMap.ColorSwitch,
+                          label: 'labelColors',
+                        },
+                      ]
+                    : headerToolBarData
+                }
+                notification={{ notifyMap, myNotifyMap }}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}
                 onClickExclusiveredPacket={onClickExclusiveredPacket}
                 showExclusiveRedpacket={showExclusiveRedpacket}
@@ -111,10 +128,9 @@ const Header = withTranslation('common')(
               headerMenuData={
                 /(guardian)|(depositto)/gi.test(pathname) ? headerMenuLandingData : headerMenuData
               }
-              toolBarAvailableItem={isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem}
               toolBarMap={ButtonComponentsMap}
               headerToolBarData={headerToolBarData}
-              notification={notifyMap}
+              notification={{ notifyMap, myNotifyMap }}
               selected={location.pathname === '/' ? headerRoot : location.pathname}
               onClickExclusiveredPacket={onClickExclusiveredPacket}
               showExclusiveRedpacket={showExclusiveRedpacket}

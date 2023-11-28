@@ -1,15 +1,17 @@
 import { Badge, Box, IconButton } from '@mui/material'
 import {
-  ACTIVITY,
   Account,
   AccountStatus,
   CircleIcon,
   DownloadIcon,
-  NOTIFICATION_ITEM,
   NotificationIcon,
-  Notify,
   ProfileIcon,
   SettingIcon,
+  NOTIFICATIONHEADER,
+  ThemeType,
+  DarkIcon,
+  CalendarIcon,
+  LightIcon,
 } from '@loopring-web/common-resources'
 import { WithTranslation } from 'react-i18next'
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks'
@@ -20,6 +22,7 @@ import { NotificationPanel } from '../../block/NotificationPanel'
 import React from 'react'
 import { DownloadPanel } from '../../block/DownloadPanel'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useSettings } from '../../../stores'
 
 export const BtnDownload = ({
   t,
@@ -90,15 +93,15 @@ export const BtnDownload = ({
 //   );
 // };
 
-export const BtnNotification = ({
-  notification,
+export const BtnNotification = <N = sdk.UserNotification,>({
+  notification, //:{notifyMap,myNotifyMap},
   account,
   chainId,
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
   exclusiveRedpacketCount,
 }: {
-  notification: Notify
+  notification: NOTIFICATIONHEADER<N>
   account: Account
   chainId: sdk.ChainId
   onClickExclusiveredPacket: () => void
@@ -118,8 +121,7 @@ export const BtnNotification = ({
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {((notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 ||
-        showExclusiveRedpacket) && (
+      {notification?.myNotifyMap?.total && (
         <CircleIcon
           sx={{
             position: 'absolute',
@@ -211,6 +213,22 @@ export const ProfileMenu = ({ t, label, readyState, router, subMenu }: any) => {
     </Box>
   ) : (
     <></>
+  )
+}
+
+export const ColorSwitch = ({ t, label }: any) => {
+  const { setTheme, themeMode } = useSettings()
+
+  const handleThemeClick = React.useCallback(
+    (e: any) => {
+      setTheme(themeMode === ThemeType.dark ? ThemeType.light : ThemeType.dark)
+    },
+    [themeMode],
+  )
+  return (
+    <IconButton size={'large'} edge={'end'} onClick={handleThemeClick}>
+      {themeMode === ThemeType.dark ? <DarkIcon /> : <LightIcon />}
+    </IconButton>
   )
 }
 

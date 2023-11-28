@@ -10,7 +10,7 @@ const mediaList = _.cloneDeep(MEDIA_LIST)
 export const Footer = () => {
   const location = useLocation()
   const { t } = useTranslation()
-  const isLandingPage = location.pathname === '/' || location.pathname === '/wallet'
+  const isLandingPage = location.pathname === '/' || location.pathname === '/pro'
   const [showBeta, setShowBeta] = React.useState(
     process.env?.REACT_APP_TEST_ENV == 'true' ? true : false,
   )

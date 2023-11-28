@@ -108,6 +108,14 @@ export type NOTIFICATION = {
 }
 
 export type Notify = Omit<NOTIFICATION, 'prev'>
+export type NOTIFICATIONHEADER<N> = {
+  notifyMap: Notify
+  myNotifyMap: {
+    items: N[]
+    total: number
+    unReads: number
+  }
+}
 
 // export enum SCENARIO {
 //   orderbook = "orderbook",
