@@ -191,16 +191,24 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           } else if (
-            response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+            [
+              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+              // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+            ].includes(response2?.raw_data?.operation?.status)
           ) {
-            status = 'labelPending'
-          } else {
             status = 'labelFinished'
+          } else {
+            status = 'labelPending'
           }
 
           setShowAccount({
             isShow: true,
-            step: AccountStep.VaultJoin_Success,
+            step: [
+              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+              // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+            ].includes(response2?.raw_data?.operation?.status)
+              ? AccountStep.VaultJoin_Success
+              : AccountStep.VaultJoin_In_Progress,
             info: {
               title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
               status: t(status),
