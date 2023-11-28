@@ -10,7 +10,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   LoopringAPI,
   useTokenMap,
-  useAccount,
   useSocket,
   useToast,
   usePageAmmPool,
@@ -29,18 +28,9 @@ import { useTranslation } from 'react-i18next'
 
 const useAmmSocket = ({ market }: { market: string }) => {
   const { sendSocketTopic, socketEnd } = useSocket()
-  // const { account } = useAccount()
   const { ammMap } = useAmmMap()
   React.useEffect(() => {
-    // const { ammMap } = store.getState().amm.ammMap
     const ammInfo: AmmDetail<any> = ammMap['AMM-' + market]
-    // if (account.readyState === AccountStatus.ACTIVATED && ammInfo?.address) {
-    //   sendSocketTopic({
-    //     [sdk.WsTopicType.account]: true,
-    //     [sdk.WsTopicType.ammpool]: ammInfo?.address ? [ammInfo.address] : [],
-    //     [sdk.WsTopicType.ticker]: [`${ammInfo.market}`],
-    //   })
-    // } else
     if (ammInfo?.address) {
       sendSocketTopic({
         [sdk.WsTopicType.ammpool]: ammInfo?.address ? [ammInfo.address] : [],

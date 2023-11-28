@@ -319,7 +319,27 @@ const MyLiquidity: any = withTranslation('common')(
                 </Button>
                 <Button
                   onClick={() => {
-                    history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
+                    let item = RecordTabIndex.Transactions
+                    switch (tab) {
+                      case InvestAssetRouter.DUAL:
+                        item = RecordTabIndex.DualRecords
+                        break
+                      case InvestAssetRouter.AMM:
+                        item = RecordTabIndex.AmmRecords
+                        break
+                      case InvestAssetRouter.STAKE:
+                        item = RecordTabIndex.DefiRecords
+                        break
+                      case InvestAssetRouter.STAKELRC:
+                        item = RecordTabIndex.SideStakingRecords
+                        break
+                      case InvestAssetRouter.LEVERAGEETH:
+                        item = RecordTabIndex.leverageETHRecords
+                        break
+                      default:
+                        break
+                    }
+                    history.push(`${RouterPath.l2records}/${item}`)
                   }}
                   sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
                   variant={'contained'}
@@ -495,7 +515,9 @@ const MyLiquidity: any = withTranslation('common')(
                               ? HiddenTag
                               : nanToEmptyTag(
                                   getValuePrecisionThousand(
-                                    sdk.toBig(NaN).times(forexMap[currency] ?? 0),
+                                    sdk
+                                      .toBig(summaryMyInvest?.stakeLRCDollar)
+                                      .times(forexMap[currency] ?? 0),
                                     undefined,
                                     undefined,
                                     2,
@@ -843,7 +865,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       renewDuration: info.renewDuration,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 } else {
                                   handleOnchange({
                                     tradeData: {
@@ -851,7 +873,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       isRenew: false,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 }
                               }}
                               coinSell={{
