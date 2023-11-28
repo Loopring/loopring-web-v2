@@ -114,8 +114,11 @@ export const ContainerStyle = styled(Box)`
     &:hover {
       color: inherit;
       background: var(--color-primary-pressed);
+      .MuiButton-endIcon {
+        color: inherit;
+      }
       svg {
-        fill: var(--color-text);
+        color: inherit;
       }
     }
   }
