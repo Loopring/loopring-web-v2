@@ -2154,8 +2154,10 @@ export default {
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultBorrow: 'Borrow',
   labelVaultRepay: 'Repay',
-  labelVaultTotalQuoteDes: 'Total Quote',
-  labelVaultTokenQuoteDes: '',
+  labelVaultTotalQuoteDes:
+    'Total Quota is the maximum amount available  for you to be used as collateral.',
+  labelVaultTokenQuoteDes:
+    'When provide the token as collateral, you will receive an equivalent amount of Vault Token.',
   labelTitleVaultDes:
     'Use third-party funds to trade assets. Traders can access additional capital to leverage their positions and amplify trading results. ',
   labelTitleVault: 'Vault',
