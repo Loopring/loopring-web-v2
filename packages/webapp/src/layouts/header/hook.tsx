@@ -84,13 +84,13 @@ export const useHeader = () => {
     if ([SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)) {
       const account = store.getState().account
       setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
+        headerToolBarData[ButtonComponentsMap.WalletConnect as any] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           handleClick: onWalletBtnConnect,
           NetWorkItems,
           accountState: { account },
         }
-        headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
+        headerToolBarData[ButtonComponentsMap.ProfileMenu as any] = {
           ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
           subMenu: profile.map((item: string) => Profile[item]),
           readyState: account.readyState,

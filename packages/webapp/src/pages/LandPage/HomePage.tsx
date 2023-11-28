@@ -43,7 +43,7 @@ const BgStyle = styled(Box)`
     right: 0;
     bottom: 0;
     height: 528px;
-    background: url('./ bg-2.webp') center center no-repeat;
+    background: url('./bg-2.webp') center center no-repeat;
     background-size: 528px 528px;
 
     //background-size: 50% 50%;
@@ -187,7 +187,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               </CardBox>
             </Box>
           </Box>
-          <Box component='section' ref={boxRef}>
+          <Box component='section' ref={boxRef} marginBottom={10}>
             <Box
               style={{
                 display: 'flex',
@@ -195,7 +195,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 flex: 1,
               }}
             >
-              <Grid container spacing={3} className='box2'>
+              <Grid container spacing={5} className='box2'>
                 <Grid item xs={12} md={6}>
                   <Box
                     flex={1}

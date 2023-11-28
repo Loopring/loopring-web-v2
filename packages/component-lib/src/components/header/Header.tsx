@@ -118,7 +118,7 @@ const LogoStyle = styled(Typography)`
 
 export const LoopringLogo = React.memo(() => {
   return (
-    <LogoStyle variant='h6' component='h1' marginRight={4}>
+    <LogoStyle variant='h6' component='h1'>
       <IconButton
         edge='start'
         aria-label='menu'

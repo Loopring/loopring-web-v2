@@ -57,12 +57,12 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   stakedSymbol: string
 } => {
   const { account, status: accountStatus } = useAccount()
-  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
+  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap, getUserRewards } = useUserRewards()
   const { tokenMap } = useTokenMap()
   const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
 
   const { status: ammMapStatus, ammMap } = useAmmMap()
-  const { tokenPrices } = useTokenPrices()
+  const { status: tokenPricesStatus, tokenPrices } = useTokenPrices()
   const { marketMap: stakingMap } = useStakingMap()
 
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
@@ -106,7 +106,11 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const resetTableData = React.useCallback(
     (viewData) => {
       setMyPoolRow(viewData)
-      setTableHeight(viewData.length > 0 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight : 350)
+      setTableHeight(
+        viewData.length > 0
+          ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
+          : 350,
+      )
     },
     [rowConfig.rowHeaderHeight, rowConfig.rowHeight],
   )
@@ -199,26 +203,36 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   }, [ammMap, tokenPrices, userRewardsMap, summaryDefiReward])
 
   React.useEffect(() => {
-    if (ammMapStatus === SagaStatus.UNSET && accountStatus === SagaStatus.UNSET) {
+    if (
+      ammMapStatus === SagaStatus.UNSET &&
+      accountStatus === SagaStatus.UNSET &&
+      tokenPricesStatus === SagaStatus.UNSET
+    ) {
       walletLayer2Service.sendUserUpdate()
-      const account = store.getState().account
-      if (account.readyState == AccountStatus.ACTIVATED) {
-        getStakingList({})
-        makeDefiInvestReward().then((summaryDefiReward) => {
-          if (mountedRef.current) {
-            setSummaryDefiReward(summaryDefiReward.toString())
-          }
-        })
-      }
     }
-  }, [ammMapStatus, accountStatus])
+  }, [ammMapStatus, accountStatus, tokenPricesStatus])
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
     }
-  }, [userRewardsStatus, summaryDefiReward])
-  useWalletLayer2Socket({ walletLayer2Callback })
+  }, [userRewardsStatus])
+  useWalletLayer2Socket({
+    walletLayer2Callback: async () => {
+      const account = store.getState().account
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getStakingList({})
+        await makeDefiInvestReward().then((summaryDefiReward) => {
+          if (mountedRef.current) {
+            setSummaryDefiReward(summaryDefiReward.toString())
+          }
+        })
+        getUserRewards()
+      } else {
+        walletLayer2Callback()
+      }
+    },
+  })
 
   React.useEffect(() => {
     mountedRef.current = true
