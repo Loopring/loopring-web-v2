@@ -54,6 +54,8 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         history?.raw_data?.operation?.status &&
         [
           sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+          //TODO add later when Bc decided name
+          sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
           sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
         ].includes(history?.operation?.status?.toUpperCase() ?? '')
       ) {
