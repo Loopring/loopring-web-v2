@@ -1,13 +1,14 @@
 import { IBData, SoursURL, TRADE_TYPE, VaultJoinData } from '@loopring-web/common-resources'
 import { SwitchPanel, SwitchPanelProps, VaultJoinProps } from '@loopring-web/component-lib'
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box, Typography, Divider } from '@mui/material'
 import { TradeMenuList, useBasicTrade, VaultJoinWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
 
 export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, I>({
   onSubmitClick,
   btnStatus,
+  isActiveAccount,
   walletMap = {},
   coinMap = {},
   _width,
@@ -40,6 +41,7 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
               key={'trade'}
               {...{
                 ...rest,
+                isActiveAccount,
                 tradeData: switchData.tradeData,
                 onChangeEvent,
                 disabled: !!rest.disabled,
@@ -62,7 +64,19 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
             coinMap,
           ],
         ),
-        toolBarItem: React.useMemo(() => <></>, []),
+        toolBarItem: React.useMemo(
+          () => (
+            <>
+              <Box className={'toolbarTitle'}>
+                <Typography marginBottom={1.5} variant={'h5'} component={'span'} paddingX={3}>
+                  {t(isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'))}
+                </Typography>
+                <Divider />
+              </Box>
+            </>
+          ),
+          [],
+        ),
       },
       {
         key: 'tradeMenuList',
