@@ -208,7 +208,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   flexDirection={'column'}
                   flex={1}
                   alignItems={'stretch'}
-                  paddingRight={1}
+                  paddingRight={isMobile ? 0 : 3}
                 >
                   <Typography
                     component={'h4'}
