@@ -136,6 +136,10 @@ export default {
   labelNavPro: 'Loopring pro',
   labelNavEarn: 'Loopring Earn',
   labelNavWallet: 'Wallet',
+
+  labelDashBoard: 'Dashboard',
+  labelRecord: 'Records',
+  labelHome: 'Loopring Pro',
   labelVaultDes: '',
   labelVaultHome: 'Home',
   labelVaultHomeDes: 'Third-party funds to trade',

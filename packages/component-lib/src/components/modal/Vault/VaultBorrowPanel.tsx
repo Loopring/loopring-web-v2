@@ -3,34 +3,30 @@ import {
   SoursURL,
   TokenType,
   TRADE_TYPE,
-  VaultJoinData,
+  VaultBorrowData,
 } from '@loopring-web/common-resources'
-import { SwitchPanel, SwitchPanelProps, VaultJoinProps } from '@loopring-web/component-lib'
+import { SwitchPanel, SwitchPanelProps, VaultBorrowProps } from '@loopring-web/component-lib'
 import React from 'react'
 import { Box } from '@mui/material'
-import { TradeMenuList, useBasicTrade } from '../components'
-import { VaultJoinWrap } from '../components/VaultWrap'
+import { TradeMenuList, useBasicTrade, VaultBorrowWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
 
-export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, I>({
-  onSubmitClick,
-  btnStatus,
+export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<T>, I>({
+  // onVaultBorrowClick,
   walletMap = {},
   coinMap = {},
   _width,
+  type = TRADE_TYPE.TOKEN,
   ...rest
-}: VaultJoinProps<T, I, V>) => {
+}: VaultBorrowProps<T, I, V>) => {
   const { t, i18n } = useTranslation()
   const { onChangeEvent, index, switchData } = useBasicTrade({
     ...rest,
-    type: TRADE_TYPE.TOKEN,
+    type,
     walletMap,
     coinMap,
   } as any)
   const [panelIndex, setPanelIndex] = React.useState(index)
-  const handleConfirm = (index: number) => {
-    setPanelIndex(index)
-  }
   React.useEffect(() => {
     setPanelIndex(index)
   }, [index])
@@ -40,34 +36,22 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
     panelList: [
       {
         key: 'trade',
-        // onBack,
         element: React.useMemo(
           () => (
-            <VaultJoinWrap
+            <VaultBorrowWrap
               key={'trade'}
               {...{
                 ...rest,
+                type,
                 tradeData: switchData.tradeData,
                 onChangeEvent,
                 disabled: !!rest.disabled,
-                handleConfirm,
-                onSubmitClick,
-                btnStatus,
                 walletMap,
                 coinMap,
               }}
             />
           ),
-          [
-            rest,
-            switchData.tradeData,
-            onChangeEvent,
-            onSubmitClick,
-            // onDepositClick,
-            btnStatus,
-            walletMap,
-            coinMap,
-          ],
+          [rest, switchData.tradeData, onChangeEvent, walletMap, coinMap],
         ),
         toolBarItem: React.useMemo(() => <></>, []),
       },
@@ -88,6 +72,7 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
                 tradeData: switchData.tradeData,
                 walletMap,
                 coinMap,
+                tokenType: TokenType.vault,
                 //oinMap
               }}
             />
@@ -101,7 +86,6 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
   return !switchData.tradeData?.belong ? (
     <Box
       height={'var(--min-height)'}
-      width={'var(--modal-width)'}
       display={'flex'}
       justifyContent={'center'}
       flexDirection={'column'}

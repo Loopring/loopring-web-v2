@@ -51,9 +51,7 @@ export const useAmmExit = ({
     ammExit: { fees, request, ammCalcData, ammData },
     updatePageAmmExit,
   } = usePageAmmPool()
-
   const { t } = useTranslation(['common', ToastType.error])
-
   const [isLoading, setIsLoading] = React.useState(false)
   const { idIndex, tokenMap } = useTokenMap()
   const { ammMap } = useAmmMap()

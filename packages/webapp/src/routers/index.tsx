@@ -188,11 +188,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     }
   }, [location.search])
 
-  React.useEffect(() => {
-    if (state === SagaStatus.ERROR) {
-      window.location.replace(`${window.location.origin}/error`)
-    }
-  }, [state])
+  // React.useEffect(() => {
+  //   if (state === SagaStatus.ERROR) {
+  //     window.location.replace(`${window.location.origin}/#/error`)
+  //   }
+  // }, [state])
   if (searchParams.has('___OhTrustDebugger___')) {
     // @ts-ignore
     setMyLog(true)

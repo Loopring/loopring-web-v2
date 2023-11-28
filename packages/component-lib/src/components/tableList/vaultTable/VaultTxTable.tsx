@@ -121,9 +121,13 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           name: t('labelVaultTxStatus'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const color =
-              row.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+              //TODO add later when Bc decided name
+              [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(row.status)
                 ? 'var(--color-success)'
-                : row.status === sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+                : [
+                    sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+                    sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING,
+                  ].includes(row.status)
                 ? 'var(--color-primary)'
                 : row.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
                 ? 'var(--color-error)'

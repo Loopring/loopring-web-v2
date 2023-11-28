@@ -41,7 +41,7 @@ export const ModalVaultWrap = () => {
     setShowVaultSwap,
     setShowNoVaultAccount,
   } = useOpenModals()
-  const { vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
+  const { vaultAccountInfo } = useVaultLayer2()
 
   const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
@@ -80,7 +80,12 @@ export const ModalVaultWrap = () => {
           if (
             ![sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)
           ) {
-            setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
+            setShowNoVaultAccount({
+              isShow: true,
+              whichBtn: VaultAction.VaultJoin,
+              des: 'labelJoinDesMessage',
+              title: 'labelJoinTitle',
+            })
           }
         }}
         content={

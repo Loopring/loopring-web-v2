@@ -1,14 +1,13 @@
 import { Box, BoxProps, Divider, Tab, Tabs, Toolbar } from '@mui/material'
-import { VaultRepayWrapProps } from '../components/VaultWrap'
 import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
 import { useTranslation, WithTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import { IBData, VaultBorrowData, VaultLoanType } from '@loopring-web/common-resources'
 import { VaultBorrowPanel } from './VaultBorrowPanel'
-import { VaultBorrowProps } from '../Interface'
 import { VaultRepayPanel } from './VaultRepayPanel'
 import { useSystem } from '@loopring-web/core'
+import { VaultBorrowProps, VaultRepayWrapProps } from '../../tradePanel'
 
 export type VaultLoanProps<T, B, I> = {
   vaultLoanType: VaultLoanType

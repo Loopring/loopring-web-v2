@@ -32,9 +32,11 @@ const getVaultTickersApi = async (): Promise<{
         store.dispatch(getVaultTickers({}))
       }, 1000 * 60 * 5)
     })(__timer__)
-
+    const tokenConfig = await LoopringAPI.exchangeAPI.getCmcTokenRelations({
+      tokenAddresses: tokens,
+    })
     const vaultTickers = await LoopringAPI.exchangeAPI.getSupportTokens({
-      tokens,
+      cmcTokenIds: tokenConfig?.list?.map((item) => item.cmcTokenId),
       currency: 'USD',
     })
     //@ts-ignore

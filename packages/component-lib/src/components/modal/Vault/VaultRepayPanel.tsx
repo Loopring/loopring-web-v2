@@ -18,10 +18,8 @@ import {
 } from '@loopring-web/component-lib'
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import { TradeMenuList, useBasicTrade } from '../components'
-import { VaultRepayWrap } from '../components'
+import { TradeMenuList, useBasicTrade, VaultRepayWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
-
 export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>, I>({
   walletMap = {},
   coinMap = {},
