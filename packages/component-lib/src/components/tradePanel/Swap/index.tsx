@@ -197,7 +197,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   </Typography>
                 </Typography>
 
-                <Box alignSelf={'flex-end'} display={'flex'}>
+                <Box alignSelf={'flex-end'} display={'flex'} className={'toolButton'}>
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <IconButtonStyled
                       onClick={(e) => {
@@ -305,7 +305,12 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
                   </Typography>
-                  <Typography display={'inline-block'} marginLeft={2} component={'span'}>
+                  <Typography
+                    display={'inline-block'}
+                    marginLeft={2}
+                    component={'span'}
+                    className={'record'}
+                  >
                     <IconButtonStyled
                       onClick={() => {
                         // @ts-ignore

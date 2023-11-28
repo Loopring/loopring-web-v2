@@ -73,7 +73,7 @@ export const ModalVaultWrap = () => {
         severity={toastOpen.type}
       />
       <Modal
-        contentClassName={'trade-wrap'}
+        contentClassName={'vault-wrap'}
         open={isShowVaultJoin.isShow}
         onClose={() => {
           setShowVaultJoin({ isShow: false })
@@ -91,7 +91,7 @@ export const ModalVaultWrap = () => {
         content={
           <VaultJoinPanel
             {...{
-              ...joinVaultProps,
+              ...(joinVaultProps as any),
               type: TRADE_TYPE.TOKEN,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               _height: `auto`,
@@ -100,6 +100,7 @@ export const ModalVaultWrap = () => {
         }
       />
       <Modal
+        contentClassName={'vault-wrap'}
         open={isShowVaultSwap.isShow}
         onClose={() => {
           setShowVaultSwap({ isShow: false })
@@ -149,6 +150,7 @@ export const ModalVaultWrap = () => {
         }
       />
       <Modal
+        contentClassName={'vault-wrap'}
         open={isShowVaultExit.isShow}
         onClose={() => {
           setShowVaultExit({ isShow: false })
