@@ -134,8 +134,8 @@ export function useInit() {
         if (account.accAddress === '' || account.connectName === ConnectProviders.Unknown) {
           resetAccount()
         }
-        const chainId =
-          account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
+        const chainId = defaultNetwork
+        // account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
         if (!isNoServer) {
           updateSystem({ chainId })
         }

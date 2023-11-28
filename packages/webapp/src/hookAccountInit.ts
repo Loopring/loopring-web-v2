@@ -19,7 +19,6 @@ import {
   useVaultTicker,
   useTargetRedPackets,
   useWalletLayer2Socket,
-  makeDefiInvestReward,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {

@@ -16,7 +16,11 @@ import { ButtonStyle } from '../../../index'
 import { useSettings } from '../../../../stores'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 
-export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayData<T>>({
+export const VaultRepayWrap = <
+  T extends IBData<any> & { borrowed: string; max: string },
+  I,
+  VR extends VaultRepayData<T>,
+>({
   disabled,
   vaultRepayBtnStatus,
   onVaultRepayClick,
@@ -28,11 +32,13 @@ export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayDa
   onChangeEvent,
   walletMap,
   tokenInfo,
+  handleError,
   ...rest
 }: VaultRepayWrapProps<T, I, VR>) => {
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const coinRef = React.useRef()
+
   const { t, i18n } = useTranslation()
   const getDisabled = () => {
     return (
@@ -109,6 +115,7 @@ export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayDa
       >
         <BasicACoinTrade
           isMaxBtn={true}
+          inputBtnRef={coinRef}
           {...{
             ...rest,
             t,
@@ -121,7 +128,6 @@ export const VaultRepayWrap = <T extends IBData<any>, I, VR extends VaultRepayDa
             coinMap: vaultRepayData?.coinInfoMap as any,
             inputButtonDefaultProps,
             ...tokenProps,
-            coinRef,
           }}
         />
         <Typography
