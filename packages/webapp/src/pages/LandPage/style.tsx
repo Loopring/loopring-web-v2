@@ -112,6 +112,7 @@ export const ContainerStyle = styled(Box)`
       color: inherit;
     }
     &:hover {
+      color: inherit;
       background: var(--color-primary-pressed);
       svg {
         fill: var(--color-text);
@@ -214,20 +215,31 @@ export const ContainerStyle = styled(Box)`
       flex-basis: auto;
       width: calc(66% - 48px);
       max-width: inherit;
+      position: relative;
+      svg {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+      }
     }
     & .MuiGrid-grid-md-2 {
       flex-basis: auto;
       width: 22%;
       max-width: inherit;
       position: relative;
+      overflow: hidden;
       svg {
-        position: relative;
+        position: absolute;
         right: -72px;
+        bottom: 20px;
       }
     }
 
     > .MuiGrid-root {
       transition: all 0.5s ease;
+      svg: {
+        transition: all 0.5s ease;
+      }
     }
     .boxDetail {
       overflow: hidden;

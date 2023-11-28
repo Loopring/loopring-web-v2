@@ -106,7 +106,11 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const resetTableData = React.useCallback(
     (viewData) => {
       setMyPoolRow(viewData)
-      setTableHeight(viewData.length > 0 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight : 350)
+      setTableHeight(
+        viewData.length > 0
+          ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
+          : 350,
+      )
     },
     [rowConfig.rowHeaderHeight, rowConfig.rowHeight],
   )
@@ -206,7 +210,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     ) {
       walletLayer2Service.sendUserUpdate()
     }
-  }, [ammMapStatus, accountStatus,tokenPricesStatus])
+  }, [ammMapStatus, accountStatus, tokenPricesStatus])
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
