@@ -185,7 +185,7 @@ export const ContainerStyle = styled(Box)`
   .box5,
   .box6,
   .box3 {
-    margin-bottom: 80px;
+    margin-bottom: 40px;
     > div {
       background: var(--color-box);
       border-radius: 12px;

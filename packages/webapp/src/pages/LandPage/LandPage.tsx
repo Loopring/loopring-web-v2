@@ -316,7 +316,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
         </Container>
       </ContainerStyle>
 
-      <ContainerStyle sx={{ zIndex: 10, marginBottom: 3 }}>
+      <ContainerStyle sx={{ zIndex: 10, marginBottom: 10 }}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <Typography
             component={'h4'}
@@ -466,7 +466,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           )}
         </Container>
       </ContainerStyle>
-      <ContainerStyle sx={{ zIndex: 10, marginBottom: 3 }}>
+      <ContainerStyle sx={{ zIndex: 10, marginBottom: 8 }}>
         <Container
           maxWidth='lg'
           style={{
