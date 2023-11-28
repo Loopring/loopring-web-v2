@@ -1,6 +1,4 @@
-import React, { useCallback } from 'react'
-
-import { QuoteTableRawDataItem } from '@loopring-web/component-lib'
+import React from 'react'
 
 import {
   myLog,
@@ -13,16 +11,7 @@ import {
   VAULT_MAKET_REFRESH,
   VaultKey,
 } from '@loopring-web/common-resources'
-import {
-  favoriteVaultMarket as favoriteMarketReducer,
-  LAYOUT,
-  LoopringAPI,
-  useAccount,
-  useSystem,
-  useTokenMap,
-  useVaultMap,
-  useVaultTicker,
-} from '@loopring-web/core'
+import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'

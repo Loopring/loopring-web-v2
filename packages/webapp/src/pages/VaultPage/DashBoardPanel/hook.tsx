@@ -254,11 +254,6 @@ export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
                 width='60'
                 src={`${SoursURL}images/loading-line.gif`}
               />
-              {/*<Typography marginY={3} variant={'body1'} textAlign={'center'}>*/}
-              {/*  {t('labelVaultInRedeemWaiting', {*/}
-              {/*    l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,*/}
-              {/*  })}*/}
-              {/*</Typography>*/}
             </Box>
           )
         } else if (
