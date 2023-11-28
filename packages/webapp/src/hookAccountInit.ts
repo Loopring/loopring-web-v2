@@ -16,6 +16,8 @@ import {
   useNotify,
   useSocket,
   useTargetRedPackets,
+  useWalletLayer2Socket,
+  makeDefiInvestReward,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -94,7 +96,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           socketUserEnd()
           break
         case AccountStatus.ACTIVATED:
-          getUserRewards()
           clearRedPacketHash()
           offFaitService.backendCheckStart()
           if (walletLayer1Status !== SagaStatus.PENDING) {
@@ -114,6 +115,14 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       }
     }
   }, [accountStatus, state, account.readyState])
+  useWalletLayer2Socket({
+    walletLayer2Callback: () => {
+      const account = store.getState().account
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getUserRewards()
+      }
+    },
+  })
   React.useEffect(() => {
     switch (walletLayer1Status) {
       case SagaStatus.ERROR:
