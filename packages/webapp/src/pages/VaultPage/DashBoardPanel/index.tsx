@@ -96,7 +96,7 @@ export const VaultDashBoardPanel = ({
               color={colors[colorIs]}
             >
               {getValuePrecisionThousand(
-                profit.div(vaultAccountInfo?.totalCollateralOfUsd ?? 1),
+                profit.div(vaultAccountInfo?.totalCollateralOfUsd ?? 1).times(100),
                 4,
                 4,
                 4,

@@ -2,6 +2,7 @@ import React from 'react'
 import {
   useNotify,
   useVaultJoin,
+  useVaultLayer2,
   useVaultLoan,
   useVaultMap,
   useVaultRedeem,
@@ -17,8 +18,15 @@ import {
   VaultLoanPanel,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { TOAST_TIME, TokenType, TRADE_TYPE, VaultLoanType } from '@loopring-web/common-resources'
+import {
+  TOAST_TIME,
+  TokenType,
+  TRADE_TYPE,
+  VaultAction,
+  VaultLoanType,
+} from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const ModalVaultWrap = () => {
   const { t } = useTranslation()
@@ -31,7 +39,9 @@ export const ModalVaultWrap = () => {
     setShowVaultExit,
     setShowVaultLoan,
     setShowVaultSwap,
+    setShowNoVaultAccount,
   } = useOpenModals()
+  const { vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
 
   const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
@@ -67,6 +77,11 @@ export const ModalVaultWrap = () => {
         open={isShowVaultJoin.isShow}
         onClose={() => {
           setShowVaultJoin({ isShow: false })
+          if (
+            ![sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)
+          ) {
+            setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
+          }
         }}
         content={
           <VaultJoinPanel
