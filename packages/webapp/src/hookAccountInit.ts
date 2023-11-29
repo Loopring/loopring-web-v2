@@ -1,5 +1,10 @@
 import React from 'react'
-import { AccountStatus, SagaStatus } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  SagaStatus,
+  SDK_ERROR_MAP_TO_UI,
+  UIERROR_CODE,
+} from '@loopring-web/common-resources'
 import {
   useWalletLayer1,
   useWalletLayer2,
@@ -19,8 +24,8 @@ import {
   useVaultTicker,
   useTargetRedPackets,
   useWalletLayer2Socket,
-	makeDefiInvestReward,
 } from '@loopring-web/core'
+import { ToastType, useOpenModals } from '@loopring-web/component-lib'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state })
@@ -78,7 +83,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   } = useWalletL2NFTCollection()
   const { clearRedPacketHash } = redPacketHistory.useRedPacketHistory()
   const { account, status: accountStatus } = useAccount()
-
+  const { setShowGlobalToast } = useOpenModals()
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
       offFaitService.banxaEnd()
@@ -173,6 +178,13 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   React.useEffect(() => {
     switch (vaultLayer2Status) {
       case SagaStatus.ERROR:
+        setShowGlobalToast({
+          isShow: true,
+          info: {
+            type: ToastType.error,
+            messageKey: 'update Vault Account Failed',
+          },
+        })
         vaultsLayer2Unset()
         break
       case SagaStatus.DONE:
