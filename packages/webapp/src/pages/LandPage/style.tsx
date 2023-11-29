@@ -163,10 +163,12 @@ export const ContainerStyle = styled(Box)`
   .MuiButton-root.menuItem {
     display: flex;
     justify-content: flex-start;
-
     padding-left: 2rem;
     height: 80px;
-    min-width: 320px;
+    min-width: 248px;
+    @media only screen and (max-width: 768px) {
+      padding-left: 0rem;
+    }
     width: 100%;
     fontsize: 1.4rem;
     padding-right: ${({ theme }) => theme.unit * 3}px;

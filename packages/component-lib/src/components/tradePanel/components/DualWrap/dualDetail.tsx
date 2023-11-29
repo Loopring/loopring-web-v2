@@ -7,6 +7,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   Info2Icon,
+  MoreIcon,
   myLog,
   SoursURL,
   UpColor,
@@ -24,6 +25,7 @@ import {
   Tooltip,
   Typography,
   Tab,
+  IconButton,
 } from '@mui/material'
 import { ModalCloseButton, Tabs } from '../../../basic-lib'
 import { ModifyParameter } from './ModifyParameter'
@@ -598,7 +600,9 @@ export const DualDetail = ({
                     control={<Switch color={'primary'} checked={coinSell.isRenew} />}
                     label={''}
                   />
-                  <ViewMoreIcon onClick={() => setShowAutoDefault(true)} />
+                  <IconButton onClick={() => setShowAutoDefault(true)}>
+                    <MoreIcon />
+                  </IconButton>
                 </Typography>
               </Box>
 

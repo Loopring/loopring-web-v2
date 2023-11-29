@@ -1,7 +1,6 @@
 import {
   BtnPercentage,
   ButtonStyle,
-  DualDetailProps,
   OutlineSelect,
   OutlineSelectItem,
   useSettings,
@@ -36,11 +35,11 @@ export const ModifySetting = ({
       </Typography>
       <Divider />
       <Grid item xs={12}>
-        <Box display={'flex'} justifyContent={'space-between'}>
+        <Box paddingX={3} display={'flex'} justifyContent={'space-between'}>
           <Typography
             component={'span'}
             variant={'body1'}
-            color={'textSecondary'}
+            color={'textPrimary'}
             display={'inline-flex'}
             alignItems={'center'}
           >
@@ -65,14 +64,13 @@ export const ModifySetting = ({
         </Box>
       </Grid>
       <Grid item xs={12}>
-        <Box display={'flex'} justifyContent={'space-between'}>
+        <Box paddingX={3} display={'flex'} justifyContent={'space-between'}>
           <Typography
             component={'span'}
             variant={'body1'}
             color={'textPrimary'}
             display={'inline-flex'}
             alignItems={'center'}
-            paddingX={2}
             marginY={1}
           >
             <Trans i18nKey={'labelDualLongestSettlementDuration'}>
@@ -84,12 +82,12 @@ export const ModifySetting = ({
             aria-label={t('Dual Longest Settlement')}
             IconComponent={DropDownIcon}
             id='DualLongestSettlement'
-            value={dualAuto.day}
+            value={dualAuto.day !== 'auto' ? 7 : dualAuto.day}
             autoWidth
             onChange={(e) => {
               setDualDefault({
                 ...dualAuto,
-                day: e.target.value,
+                day: e.target.value as unknown as any,
               })
             }}
           >
@@ -99,8 +97,7 @@ export const ModifySetting = ({
             </OutlineSelectItem>
           </OutlineSelect>
         </Box>
-
-        <Box padding={4}>
+        <Box paddingX={5} marginTop={1}>
           {dualAuto?.day !== 'auto' && (
             <BtnPercentage
               selected={Number(dualAuto?.day ?? 7)}
@@ -129,7 +126,7 @@ export const ModifySetting = ({
         </Box>
       </Grid>
       <Grid item xs={12}>
-        <Box paddingX={2} marginY={2}>
+        <Box paddingX={3} marginY={2}>
           <ButtonStyle
             fullWidth
             variant={'contained'}

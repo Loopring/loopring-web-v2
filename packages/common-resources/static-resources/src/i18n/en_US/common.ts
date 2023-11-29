@@ -2105,4 +2105,5 @@ export default {
   labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
+  labelDualSettingConfirm: 'Confirm',
 }
