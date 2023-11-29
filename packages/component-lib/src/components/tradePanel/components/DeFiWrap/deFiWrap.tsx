@@ -68,8 +68,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxBuyVol,
   market,
   title,
-  setShowRETHStakignPopup,
-  setShowWSTETHStakignPopup,
+  setShowRETHStakePopup,
+  setShowWSTETHStakePopup,
   setShowLeverageETHPopup,
   isLeverageETH,
   extraWithdrawFee,
@@ -291,11 +291,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 setShowLeverageETHPopup &&
                   setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
               } else if (market === 'RETH-ETH') {
-                setShowRETHStakignPopup &&
-                  setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowRETHStakePopup &&
+                  setShowRETHStakePopup({ show: true, confirmationNeeded: false })
               } else if (market === 'WSTETH-ETH') {
-                setShowWSTETHStakignPopup &&
-                  setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowWSTETHStakePopup &&
+                  setShowWSTETHStakePopup({ show: true, confirmationNeeded: false })
               }
             }}
           />

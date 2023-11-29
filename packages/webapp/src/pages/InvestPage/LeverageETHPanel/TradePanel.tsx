@@ -44,12 +44,8 @@ export const TradePanel = ({
   const styles = isMobile
     ? { flex: 1, background: 'var(--color-box-third)' }
     : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
-  // leverageETHAdvice
-  // console.log('leverageETHAdvice', leverageETHAdvice)
-  // setShowRETHStakignPopup={setShowRETHStakignPopup}
-  // setShowWSTETHStakignPopup={setShowWSTETHStakignPopup}
-  const { setShowLeverageETHPopup } = confirmation.useConfirmation()
 
+  const { setShowLeverageETHPopup } = confirmation.useConfirmation()
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (

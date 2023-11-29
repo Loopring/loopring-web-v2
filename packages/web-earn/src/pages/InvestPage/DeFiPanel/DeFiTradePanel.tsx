@@ -1,5 +1,5 @@
-import { useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
-import { DEFI_ADVICE_MAP, MarketType, myLog } from '@loopring-web/common-resources'
+import { useDefiMap, useDefiTrade, confirmation } from '@loopring-web/core'
+import { DEFI_ADVICE_MAP, MarketType } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
   DeFiWrap,
@@ -21,8 +21,7 @@ export const DeFiTradePanel = ({
   setServerUpdate: (state: any) => void
   setToastOpen: (state: any) => void
 }) => {
-  const { marketArray, marketMap } = useDefiMap()
-  myLog('isJoin', isJoin, 'market', market)
+  const { marketArray } = useDefiMap()
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] = React.useState<boolean>(false)
   const [confirmShowNoBalance, setConfirmShowNoBalance] = React.useState<boolean>(false)
   const { deFiWrapProps } = useDefiTrade({
@@ -34,16 +33,13 @@ export const DeFiTradePanel = ({
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
   })
-
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
-
   const styles = isMobile
     ? { flex: 1, background: 'var(--color-box-third)' }
     : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   const { t } = useTranslation()
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
-
+  const { setShowRETHStakePopup, setShowWSTETHStakePopup } = confirmation.useConfirmation()
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (
@@ -58,8 +54,8 @@ export const DeFiTradePanel = ({
           <DeFiWrap
             market={market}
             isJoin={isJoin}
-            setShowRETHStakignPopup={setShowRETHStakignPopup}
-            setShowWSTETHStakignPopup={setShowWSTETHStakignPopup}
+            setShowRETHStakePopup={setShowRETHStakePopup}
+            setShowWSTETHStakePopup={setShowWSTETHStakePopup}
             // setShowLeverageETHPopup={setShowLeverageETHPopup}
             type={DEFI_ADVICE_MAP[tokenBase].project}
             title={market === 'WSTETH-ETH' ? t('labelDefiLido') : t('labelDefiRocketPool')}

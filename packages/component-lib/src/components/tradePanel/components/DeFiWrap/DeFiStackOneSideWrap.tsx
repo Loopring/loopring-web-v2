@@ -324,7 +324,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   tokenSellProps,
   minSellAmount,
   maxSellAmount,
-  setShowLRCStakingPopup,
+  setShowLRCStakePopup,
   ...rest
 }: DeFiSideWrapProps<T, I, ACD>) => {
   // @ts-ignore
@@ -492,7 +492,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
             color={'inherit'}
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
-              setShowLRCStakingPopup({ show: true, confirmationNeeded: false })
+              setShowLRCStakePopup({ show: true, confirmationNeeded: false })
             }}
           />
         </Typography>

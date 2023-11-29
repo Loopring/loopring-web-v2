@@ -14,13 +14,15 @@ const initialState: Confirmation = {
   confirmedLRCStakeInvest: false,
   confirmedBtradeSwap: false,
   confirmedLeverageETHInvest: false,
-  confirmedVault: false,
   showDualBeginnerHelp: false,
-  showRETHStakignPopup: false,
-  showWSTETHStakignPopup: false,
-  showLRCStakignPopup: false,
+  showRETHStakePopup: false,
+  showWSTETHStakePopup: false,
+  showLRCStakePopup: false,
   showLeverageETHPopup: false,
   confirmationNeeded: true,
+  showAutoDefault: false,
+    confirmedVault: false,
+
 }
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -70,28 +72,25 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmedLeverageETHInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedLeverageETHInvest = true
     },
-    confirmedVault(state: Confirmation, _action: PayloadAction<string>) {
-      state.confirmedVault = true
-    },
-    setShowRETHStakignPopup(
+    setShowRETHStakePopup(
       state: Confirmation,
       action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showRETHStakignPopup = action.payload.show
+      state.showRETHStakePopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
-    setShowWSTETHStakignPopup(
+    setShowWSTETHStakePopup(
       state: Confirmation,
       action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showWSTETHStakignPopup = action.payload.show
+      state.showWSTETHStakePopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
-    setShowLRCStakingPopup(
+    setShowLRCStakePopup(
       state: Confirmation,
       action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showLRCStakignPopup = action.payload.show
+      state.showLRCStakePopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
     setShowLeverageETHPopup(
@@ -101,6 +100,12 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
       state.showLeverageETHPopup = action.payload.show
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
+    setShowAutoDefault(state: Confirmation, action: PayloadAction<{ show: boolean }>) {
+      state.showAutoDefault = action.payload.show
+    },
+      confirmedVault(state: Confirmation, _action: PayloadAction<string>) {
+          state.confirmedVault = true
+      },
   },
 })
 
@@ -118,9 +123,11 @@ export const {
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
   confirmedLeverageETHInvest,
-  confirmedVault,
-  setShowRETHStakignPopup,
-  setShowWSTETHStakignPopup,
-  setShowLRCStakingPopup,
+  setShowRETHStakePopup,
+  setShowWSTETHStakePopup,
+  setShowLRCStakePopup,
   setShowLeverageETHPopup,
+  setShowAutoDefault,
+    confirmedVault,
+
 } = confirmationSlice.actions

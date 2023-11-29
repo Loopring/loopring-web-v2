@@ -105,12 +105,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
+    setShowLeverageETHPopup,
     confirmation: {
       confirmedLeverageETHInvest: confirmed,
       confirmationNeeded,
       showLeverageETHPopup,
     },
-    setShowLeverageETHPopup,
   } = confirmation.useConfirmation()
   const {
     toggle: {
@@ -167,10 +167,6 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           >
             {t('labelBack')}
           </Button>
-
-          {/* <Typography variant={'h4'}>
-            {t('labelLeverageETHStaking')}
-          </Typography> */}
           <Button
             onClick={() =>
               history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)

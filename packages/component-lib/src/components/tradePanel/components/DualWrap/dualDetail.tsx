@@ -7,9 +7,11 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   Info2Icon,
+  MoreIcon,
   myLog,
   SoursURL,
   UpColor,
+  ViewMoreIcon,
   WarningIcon2,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -23,6 +25,7 @@ import {
   Tooltip,
   Typography,
   Tab,
+  IconButton,
 } from '@mui/material'
 import { ModalCloseButton, Tabs } from '../../../basic-lib'
 import { ModifyParameter } from './ModifyParameter'
@@ -32,7 +35,7 @@ import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
 import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
 import { CancelDualAlert } from '../tool'
-
+import { confirmation } from '@loopring-web/core'
 
 const BoxChartStyle = styled(Box)`
   background-clip: content-box;
@@ -112,12 +115,21 @@ export const DualDetail = ({
   showClock = false,
   ...rest
 }: DualDetailProps) => {
-  const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange, onChangeOrderReinvest } = rest
+  const {
+    dualViewInfo,
+    currentPrice,
+    tokenMap,
+    lessEarnView,
+    greaterEarnView,
+    onChange,
+    onChangeOrderReinvest,
+  } = rest
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation(['common', 'tables'])
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice, quoteUnit } = currentPrice
   const [tab, setTab] = React.useState<DualDetailTab>(DualDetailTab.less)
+  const { setShowAutoDefault } = confirmation.useConfirmation()
   const currentView = React.useMemo(
     () =>
       base
@@ -145,12 +157,7 @@ export const DualDetail = ({
           { floor: true },
         )
       : EmptyValueTag
-  }, [
-    // Number(dualViewInfo?.strike).toLocaleString('en-US')
-    //   ? Number(dualViewInfo?.strike).toLocaleString('en-US')
-    //   : EmptyValueTag,
-    coinSell?.renewTargetPrice,
-  ])
+  }, [coinSell?.renewTargetPrice])
   const targetView = React.useMemo(() => {
     return dualViewInfo?.strike
       ? getValuePrecisionThousand(
@@ -163,10 +170,13 @@ export const DualDetail = ({
         )
       : EmptyValueTag
   }, [dualViewInfo?.strike])
-  myLog('dualViewInfo?.__raw__?.order?.investmentStatus', dualViewInfo?.__raw__?.order?.investmentStatus)
+  myLog(
+    'dualViewInfo?.__raw__?.order?.investmentStatus',
+    dualViewInfo?.__raw__?.order?.investmentStatus,
+  )
   const [showCancelOneAlert, setShowCancelOneAlert] = React.useState({
     open: false,
-    row: undefined as any
+    row: undefined as any,
   })
   return (
     <>
@@ -191,7 +201,6 @@ export const DualDetail = ({
           </Box>
         </SwitchPanelStyled>
       </Modal>
-
       <CancelDualAlert
         open={showCancelOneAlert.open}
         row={showCancelOneAlert.row}
@@ -200,8 +209,6 @@ export const DualDetail = ({
         }}
         handleClose={() => setShowCancelOneAlert({ open: false, row: undefined })}
       />
-
-
 
       <Box display={'flex'} flexDirection={'column'}>
         {isOrder && showClock && (
@@ -593,6 +600,9 @@ export const DualDetail = ({
                     control={<Switch color={'primary'} checked={coinSell.isRenew} />}
                     label={''}
                   />
+                  <IconButton onClick={() => setShowAutoDefault(true)}>
+                    <MoreIcon />
+                  </IconButton>
                 </Typography>
               </Box>
 
