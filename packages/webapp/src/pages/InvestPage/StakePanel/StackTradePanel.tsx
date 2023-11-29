@@ -1,4 +1,4 @@
-import { confirmation, usePopup, useStakeTradeJOIN, useToast } from '@loopring-web/core'
+import { confirmation, useStakeTradeJOIN, useToast } from '@loopring-web/core'
 
 import {
   Button,
@@ -69,7 +69,7 @@ export const StackTradePanel = ({
   const theme = useTheme()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const { setShowLRCStakignPopup } = usePopup()
+  const { setShowLRCStakePopup } = confirmation.useConfirmation()
   return (
     <>
       <Toast
@@ -166,7 +166,7 @@ export const StackTradePanel = ({
                   borderRadius={2}
                 >
                   <DeFiSideWrap
-                    setShowLRCStakignPopup={setShowLRCStakignPopup}
+                    setShowLRCStakePopup={setShowLRCStakePopup}
                     isJoin={isJoin}
                     symbol={'LRC'}
                     {...(stakeWrapProps as any)}
