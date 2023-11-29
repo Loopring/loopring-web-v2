@@ -2032,7 +2032,7 @@ export default {
   labelTargetRedpacketCreateStep4: '4. Notification display for red packet recipients',
   labelTargetRedpacketNoRedpacket: 'You do not have an existing wallet yet',
   labelTargetRedpacketNoRedpacketDes: 'If your prepared but unaddressed Red Packets will be displayed here !',
-  labelTargetRedpacketOption2: 'Option 2:',
+  labelTargetRedpacketOption2: 'Option 2',
   labelEarnVaultTitle: 'Total Vault',
   labelDualBTC: 'ETH - WBTC Dual Investment',
   labelDualBTCDes: 'Select based on Token and Settlement Date',

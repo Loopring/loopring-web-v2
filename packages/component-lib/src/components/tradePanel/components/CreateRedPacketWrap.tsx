@@ -931,39 +931,40 @@ export const CreateRedPacketStepType = withTranslation()(
         flexDirection={'column'}
         alignItems={'center'}
         width={'100%'}
-        maxWidth={720}
+        maxWidth={850}
       >
         <Box
           display={'flex'}
           flexDirection={'column'}
           alignItems={'stretch'}
           alignSelf={'stretch'}
-          marginY={2}
           minHeight={300}
           paddingY={2}
+          marginTop={2}
+          marginBottom={5}
         >
           <Typography
-              component={'h4'}
-              variant={isMobile ? 'body1' : 'h5'}
-              whiteSpace={'pre'}
-              marginRight={1}
-              marginBottom={2}
-            >
-              {t(
-                selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
-                  ? 'labelLuckyBlindBox'
-                  : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
-                  ? 'labelRelayRedPacket'
-                  : selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                  ? 'labelRedPacketSendCommonTitle'
-                  : 'labelRedPacketSenRandomTitle',
-              ) +
-                ' — ' +
-                t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
-            </Typography>
+            component={'h4'}
+            variant={isMobile ? 'body1' : 'h4'}
+            whiteSpace={'pre'}
+            marginRight={1}
+            marginBottom={tradeType === RedPacketOrderType.BlindBox ? 4 : 2}
+          >
+            {t(
+              selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
+                ? 'labelLuckyBlindBox'
+                : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
+                ? 'labelRelayRedPacket'
+                : selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                ? 'labelRedPacketSendCommonTitle'
+                : 'labelRedPacketSenRandomTitle',
+            ) +
+              ' — ' +
+              t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
+          </Typography>
 
           {tradeType === RedPacketOrderType.BlindBox && (
-            <Typography marginBottom={2} color={'var(--color-text-secondary)'}>
+            <Typography marginBottom={0} color={'var(--color-text-secondary)'}>
               Each recipient will receive a sealed Red Packet which cannot be opened until the
               expiration date. While some recipients will receive an NFT, others will need to try
               their luck next time.
@@ -980,14 +981,17 @@ export const CreateRedPacketStepType = withTranslation()(
                   ...tradeData,
                   type: {
                     ...tradeData.type,
-                    mode: value === 'Normal' ? sdk.LuckyTokenClaimType.COMMON : sdk.LuckyTokenClaimType.BLIND_BOX
-                  }
+                    mode:
+                      value === 'Normal'
+                        ? sdk.LuckyTokenClaimType.COMMON
+                        : sdk.LuckyTokenClaimType.BLIND_BOX,
+                  },
                 })
               }}
               aria-label='l2-history-tabs'
               variant='scrollable'
             >
-              <Tab value={'Normal'} label='Normal' />
+              <Tab sx={{ marginLeft: -2 }} value={'Normal'} label='Normal' />
               <Tab value={'BlindBox'} label='Blind Box' />
             </Tabs>
           ) : (
@@ -999,7 +1003,7 @@ export const CreateRedPacketStepType = withTranslation()(
               aria-label='l2-history-tabs'
               variant='scrollable'
             >
-              <Tab value={'Tokens'} label='Tokens' />
+              <Tab sx={{ marginLeft: -2 }} value={'Tokens'} label='Tokens' />
               <Tab value={'NFT'} label='NFT' />
             </Tabs>
           )}
@@ -1007,7 +1011,7 @@ export const CreateRedPacketStepType = withTranslation()(
             {showList.map((item: LuckyRedPacketItem, index) => {
               const enabled = enabledList.find((enableItem) => enableItem.value === item.value)
               return (
-                <Box width={'31%'} key={index}>
+                <Box width={'31.5%'} key={index}>
                   <Box key={item.value.value} marginBottom={1}>
                     <MenuBtnStyled
                       variant={'outlined'}
@@ -1022,13 +1026,24 @@ export const CreateRedPacketStepType = withTranslation()(
                       onClick={(_e) => {
                         onSelecteValue && onSelecteValue(item)
                       }}
+                      sx={{
+                        '&&&&': {
+                          borderRadius: 2,
+                        },
+                        '&&&&.Mui-disabled': {
+                          backgroundColor: 'transparent',
+                          borderStyle: 'solid',
+                          opacity: 0.25,
+                        },
+                      }}
                     >
                       <Typography
-                        variant={'h5'}
+                        variant={'body1'}
                         display={'inline-flex'}
                         marginBottom={1 / 2}
                         alignItems={'flex-start'}
                         component={'span'}
+                        color={'var(--color-text-primary)'}
                       >
                         {t(item.labelKey)}
                       </Typography>
@@ -1055,9 +1070,9 @@ export const CreateRedPacketStepType = withTranslation()(
           paddingBottom={1}
           display={'flex'}
           flexDirection={'row'}
-          justifyContent={'space-between'}
+          justifyContent={'center'}
         >
-          <Box width={'48%'}>
+          <Box width={'33%'} marginRight={'2%'}>
             <Button
               variant={'outlined'}
               size={'medium'}
@@ -1081,7 +1096,7 @@ export const CreateRedPacketStepType = withTranslation()(
               {t(`labelMintBack`)}
             </Button>
           </Box>
-          <Box width={'48%'}>
+          <Box width={'33%'}>
             <BtnMain
               {...{
                 defaultLabel: 'labelContinue',
@@ -1516,35 +1531,13 @@ export const TargetRedpacktSelectStep = withTranslation()(
             flexDirection={'column'}
             marginX={9}
             marginTop={2}
-            bgcolor={'var(--color-global-bg)'}
             padding={2.5}
-            border={'1px solid var(--color-border)'}
-            borderRadius={2}
-            height={'316px'}
+            borderBottom={'1px solid var(--color-border)'}
+            height={'216px'}
           >
-            <Typography width={'100%'}>{t("labelTargetRedpacketOption1")}</Typography>
-            <img
-              height={100}
-              width={100}
-              src={SoursURL + '/images/exclusive_redpacket_empty.png'}
-            />
-            <Box>
-              <Typography marginTop={-3} color={'var(--color-text-secondary)'}>
-                {t("labelTargetRedpacketCreateTitle")}
-              </Typography>
-              <Typography color={'var(--color-text-secondary)'}>
-                {t("labelTargetRedpacketCreateStep1")}
-              </Typography>
-              <Typography color={'var(--color-text-secondary)'}>
-                {t("labelTargetRedpacketCreateStep2")}
-              </Typography>
-              <Typography color={'var(--color-text-secondary)'}>
-                {t("labelTargetRedpacketCreateStep3")}
-              </Typography>
-              <Typography marginBottom={3} color={'var(--color-text-secondary)'}>
-                {t("labelTargetRedpacketCreateStep4")}
-              </Typography>
-            </Box>
+            <Typography variant={'h4'} width={'100%'} marginBottom={7}>
+              {t('labelTargetRedpacketOption1')}
+            </Typography>
 
             <BtnMain
               {...{
@@ -1561,18 +1554,25 @@ export const TargetRedpacktSelectStep = withTranslation()(
           height={enlarged ? '590px' : '290px'}
           marginX={9}
           marginTop={enlarged ? 2 : 3}
-          bgcolor={'var(--color-global-bg)'}
+          // bgcolor={'var(--color-global-bg)'}
           padding={2.5}
-          border={'1px solid var(--color-border)'}
+          // border={'1px solid var(--color-border)'}
           borderRadius={2}
           position={'relative'}
         >
-          <Typography marginBottom={3} width={'100%'}>
-            {t("labelTargetRedpacketOption2")}{' '}
+          <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+          <Typography variant={'h4'} marginBottom={3} >
+            {t('labelTargetRedpacketOption2')}{' '}
+          </Typography>
+          <Typography fontSize={'13px'} marginBottom={3} >
             {targetRedPackets?.length === 0
               ? t('labelRedpacketExclusiveEmpty')
               : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
           </Typography>
+
+          </Box>
+          
+
           {targetRedPackets?.length > 0 ? (
             <Box width={'100%'}>
               <Box
@@ -1686,15 +1686,15 @@ export const TargetRedpacktSelectStep = withTranslation()(
               width={'100%'}
             >
               <img
-                height={100}
-                width={100}
+                height={160}
+                width={160}
                 src={SoursURL + '/images/exclusive_redpacket_empty.png'}
               />
-              <Typography marginTop={-3} variant={'body2'} textAlign={'center'}>
-                {t("labelTargetRedpacketNoRedpacket")}
+              <Typography marginTop={-2.5} variant={'body2'} textAlign={'center'}>
+                {t('labelTargetRedpacketNoRedpacket')}
               </Typography>
-              <Typography width={'300px'} marginTop={2} variant={'body2'} textAlign={'center'}>
-                {t("labelTargetRedpacketNoRedpacketDes")}
+              <Typography width={'300px'} marginTop={1} variant={'body2'} textAlign={'center'}>
+                {t('labelTargetRedpacketNoRedpacketDes')}
               </Typography>
             </Box>
           )}

@@ -399,7 +399,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: ${({ theme }) => theme.unit * 20}px;
+    height: ${({ theme }) => theme.unit * 18}px;
     text-indent: 0em;
     text-align: left;
     padding: ${({ theme }) => theme.unit * 1.5}px ${({ theme }) => theme.unit * 2}px;
