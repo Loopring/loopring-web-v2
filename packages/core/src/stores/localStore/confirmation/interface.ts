@@ -13,10 +13,11 @@ export interface Confirmation {
   confirmedLeverageETHInvest: boolean
   confirmDualDipInvest: boolean
   confirmDualGainInvest: boolean
-  confirmedVault: boolean
-  showWSTETHStakignPopup: boolean
-  showRETHStakignPopup: boolean
-  showLRCStakignPopup: boolean
+  showWSTETHStakePopup: boolean
+  showRETHStakePopup: boolean
+  showLRCStakePopup: boolean
   showLeverageETHPopup: boolean
+  showAutoDefault: boolean
   confirmationNeeded: boolean
+    confirmedVault: boolean
 }

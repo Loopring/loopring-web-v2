@@ -16,15 +16,34 @@ import {
   confirmedLeverageETHInvest,
   confirmDualDipInvest,
   confirmDualGainInvest,
-  confirmedVault,
-  setShowRETHStakignPopup,
-  setShowWSTETHStakignPopup,
-  setShowLRCStakingPopup,
+    confirmedVault,
+    setShowRETHStakePopup,
+  setShowWSTETHStakePopup,
+  setShowLRCStakePopup,
   setShowLeverageETHPopup,
+  setShowAutoDefault,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
-export const useConfirmation = () => {
+export const useConfirmation = (): {
+  confirmation: Confirmation
+  confirmWrapper: () => void
+  confirmedRETHDefiInvest: () => void
+  confirmedWSETHDefiInvest: () => void
+  confirmedLRCStakeInvest: () => void
+  confirmDualInvest: (level: DualInvestConfirmType | undefined) => void
+  confirmDualAutoInvest: () => void
+  confirmedBtradeSwap: () => void
+  confirmedLeverageETHInvest: () => void
+  confirmDualDipInvest: () => void
+  confirmDualGainInvest: () => void
+    confirmedVault: () => void
+  setShowRETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowWSTETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowLRCStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowLeverageETHPopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowAutoDefault: (show: boolean) => void
+} => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation,
   )
@@ -69,24 +88,32 @@ export const useConfirmation = () => {
     confirmDualGainInvest: React.useCallback(() => {
       dispatch(confirmDualGainInvest(undefined))
     }, [dispatch]),
-    confirmedVault() {
-      dispatch(confirmedVault(undefined))
-    },
-    setShowRETHStakignPopup: React.useCallback(
-      (v) => dispatch(setShowRETHStakignPopup(v)),
+    setShowRETHStakePopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowRETHStakePopup(data)),
       [dispatch],
     ),
-    setShowWSTETHStakignPopup: React.useCallback(
-      (v) => dispatch(setShowWSTETHStakignPopup(v)),
+    setShowWSTETHStakePopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowWSTETHStakePopup(data)),
       [dispatch],
     ),
-    setShowLRCStakingPopup: React.useCallback(
-      (v) => dispatch(setShowLRCStakingPopup(v)),
+    setShowLRCStakePopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowLRCStakePopup(data)),
       [dispatch],
     ),
     setShowLeverageETHPopup: React.useCallback(
-      (v) => dispatch(setShowLeverageETHPopup(v)),
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowLeverageETHPopup(data)),
       [dispatch],
     ),
+    setShowAutoDefault: React.useCallback(
+      (show: boolean) => dispatch(setShowAutoDefault({ show })),
+      [dispatch],
+    ),
+      confirmedVault() {
+          dispatch(confirmedVault(undefined))
+      },
   }
 }

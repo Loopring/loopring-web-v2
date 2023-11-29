@@ -68,7 +68,7 @@ export const StackTradePanel = ({
   const theme = useTheme()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const { setShowLRCStakingPopup } = confirmation.useConfirmation()
+  const { setShowLRCStakePopup } = confirmation.useConfirmation()
   return (
     <>
       <Toast
@@ -165,7 +165,7 @@ export const StackTradePanel = ({
                   borderRadius={2}
                 >
                   <DeFiSideWrap
-                    setShowLRCStakingPopup={setShowLRCStakingPopup}
+                    setShowLRCStakePopup={setShowLRCStakePopup}
                     isJoin={isJoin}
                     symbol={'LRC'}
                     {...(stakeWrapProps as any)}

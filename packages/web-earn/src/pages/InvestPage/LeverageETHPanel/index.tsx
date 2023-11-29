@@ -14,7 +14,7 @@ import {
   useToggle,
   useSettings,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
 import { MaxWidthContainer, containerColors } from '..'
@@ -79,12 +79,12 @@ export const StyleCardContent = styled(CardContent)`
   }
 ` as typeof CardContent
 
-const ButtonStyled = styled(Button)`  
+const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
   :hover {
     background-color: var(--color-button-outlined);
-    ::before{
+    ::before {
       border-radius: 4px;
     }
   }
@@ -94,7 +94,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
-    confirmation: { confirmedLeverageETHInvest: confirmed },
+    showLeverageETHPopup,
+    setShowLeverageETHPopup,
+    confirmation: { confirmedLeverageETHInvest: confirmed, confirmationNeeded },
   } = confirmation.useConfirmation()
   const {
     toggle: {
@@ -102,7 +104,6 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     },
   } = useToggle()
 
-  const { confirmationNeeded, showLeverageETHPopup, setShowLeverageETHPopup } = usePopup()
   const _confirmedDefiInvest = {
     isShow: showLeverageETHPopup,
     type: 'CiETH',
@@ -136,7 +137,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         height={6 * theme.unit}
         alignItems={'center'}
         containerProps={{
-          borderBottom: '1px solid var(--color-border)'
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
         <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
@@ -148,7 +149,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             color={'inherit'}
             onClick={() => history.push(`/invest/overview`)}
           >
-            {t("labelBack")}
+            {t('labelBack')}
           </Button>
 
           {/* <Typography variant={'h4'}>

@@ -14,7 +14,7 @@ import {
   ToastType,
   MaxWidthContainer,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, useNotify, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useNotify, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
@@ -274,6 +274,9 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketArray } = useDefiMap()
 
   const {
+    confirmation: { confirmationNeeded, showRETHStakePopup, showWSTETHStakePopup },
+    setShowRETHStakePopup,
+    setShowWSTETHStakePopup,
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
     confirmation: {
@@ -286,8 +289,8 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   } = confirmation.useConfirmation()
 
   const _confirmedDefiInvest = {
-    isShow: showRETHStakignPopup || showWSTETHStakignPopup,
-    type: showRETHStakignPopup ? 'RETH' : showWSTETHStakignPopup ? 'WSETH' : undefined,
+    isShow: showRETHStakePopup || showWSTETHStakePopup,
+    type: showRETHStakePopup ? 'RETH' : showWSTETHStakePopup ? 'WSETH' : undefined,
     confirmationNeeded,
   }
   const setConfirmedDefiInvest = ({
@@ -299,13 +302,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) => {
     if (isShow) {
       if (type === 'RETH') {
-        setShowRETHStakignPopup({ show: true, confirmationNeeded: true })
+        setShowRETHStakePopup({ show: true, confirmationNeeded: true })
       } else {
-        setShowWSTETHStakignPopup({ show: true, confirmationNeeded: true })
+        setShowWSTETHStakePopup({ show: true, confirmationNeeded: true })
       }
     } else {
-      setShowRETHStakignPopup({ show: false, confirmationNeeded: true })
-      setShowWSTETHStakignPopup({ show: false, confirmationNeeded: true })
+      setShowRETHStakePopup({ show: false, confirmationNeeded: true })
+      setShowWSTETHStakePopup({ show: false, confirmationNeeded: true })
     }
   }
 

@@ -44,8 +44,8 @@ export type DeFiWrapProps<T, I, ACD> = {
   isLeverageETH?: boolean
   extraWithdrawFee?: string
   apr?: string
-  setShowRETHStakignPopup?: (props: { isShow: boolean; [key: string]: any }) => void
-  setShowWSTETHStakignPopup?: (props: { isShow: boolean; [key: string]: any }) => void
+  setShowRETHStakePopup?: (props: { isShow: boolean; [key: string]: any }) => void
+  setShowWSTETHStakePopup?: (props: { isShow: boolean; [key: string]: any }) => void
   setShowLeverageETHPopup?: (props: { isShow: boolean; [key: string]: any }) => void
 }
 
@@ -70,7 +70,7 @@ export type DeFiSideWrapProps<T, I, ACD> = {
   tokenSell: sdk.TokenInfo
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
-  setShowLRCStakingPopup: { isShow: boolean; [key: string]: any }
+  setShowLRCStakePopup: { isShow: boolean; [key: string]: any }
 }
 
 export type DeFiStakeRedeemWrapProps<T, _I, ACD> = {
