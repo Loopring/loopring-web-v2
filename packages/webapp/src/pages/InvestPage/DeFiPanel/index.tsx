@@ -279,13 +279,6 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     setShowWSTETHStakePopup,
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
-    confirmation: {
-      confirmationNeeded,
-      showRETHStakignPopup,
-      showWSTETHStakignPopup,
-      setShowRETHStakignPopup,
-      setShowWSTETHStakignPopup,
-    },
   } = confirmation.useConfirmation()
 
   const _confirmedDefiInvest = {

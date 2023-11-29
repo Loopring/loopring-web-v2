@@ -17,7 +17,6 @@ import {
   YEAR_DAY_MINUTE_FORMAT,
   VaultAction,
   L1L2_NAME_DEFINED,
-  UpColor,
   MapChainId,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -45,7 +44,7 @@ export const VaultDashBoardPanel = ({
   const history = useHistory()
 
   const { forexMap } = useSystem()
-  const { isMobile, currency, hideL2Assets: hideAssets, defaultNetwork, upColor } = useSettings()
+  const { isMobile, currency, hideL2Assets: hideAssets, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const priceTag = PriceTag[CurrencyToTag[currency]]
@@ -147,7 +146,7 @@ export const VaultDashBoardPanel = ({
         )}
       </>
     )
-  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsd, vaultAccountInfo?.accountStatus])
+  }, [hideAssets, vaultAccountInfo?.marginLevel, vaultAccountInfo?.accountStatus])
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
