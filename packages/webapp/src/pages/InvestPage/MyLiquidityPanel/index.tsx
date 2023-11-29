@@ -515,7 +515,9 @@ const MyLiquidity: any = withTranslation('common')(
                               ? HiddenTag
                               : nanToEmptyTag(
                                   getValuePrecisionThousand(
-                                    sdk.toBig(NaN).times(forexMap[currency] ?? 0),
+                                    sdk
+                                      .toBig(summaryMyInvest?.stakeLRCDollar)
+                                      .times(forexMap[currency] ?? 0),
                                     undefined,
                                     undefined,
                                     2,
