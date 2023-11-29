@@ -11,7 +11,7 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
+import { confirmation, useConfirmation, ViewAccountTemplate } from '@loopring-web/core'
 import MyLiquidityPanel from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
@@ -143,16 +143,17 @@ export const DefiTitle = () => {
 
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
   let match: any = useRouteMatch('/invest/:item?')
-  const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
+  const {
+    confirmation: {
+      confirmedLRCStakeInvest: confirmedLRCInvestFun,
+      confirmationNeeded,
+      showLRCStakePopup: confirmedLRCStakeInvest,
+    },
+    setShowLRCStakePopup: setConfirmedLRCStakeInvestInvest,
+  } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
-
-  const {
-    showLRCStakignPopup: confirmedLRCStakeInvest,
-    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
-    confirmationNeeded,
-  } = usePopup()
 
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)

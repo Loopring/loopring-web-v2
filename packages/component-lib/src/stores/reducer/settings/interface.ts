@@ -32,4 +32,5 @@ export interface SettingsState {
   defaultNetwork: sdk.ChainId
   referralCode: string
   isDevToggle: boolean
+  dualAuto: { auto: boolean; day: number | 'auto' }
 }
