@@ -1970,7 +1970,6 @@ export default {
   labelDefiRate: 'Rate',
   labelDefiLido: 'Lido',
   labelDefiRocketPool: 'Rocket Pool',
-
   labelDualIsHigh: 'is significantly higher',
   labelDualIsLow: 'is significantly lower',
   labelDualAutoAlert:

@@ -145,6 +145,4 @@ export default {
   labelVaultHomeDes: 'Third-party funds to trade',
   labelVaultDashboard: 'Dashboard',
   labelVaultDashboardDes: 'Loan & trade freely',
-  labelDashBoard: 'Dashboard',
-  labelRecord: 'Records',
 }

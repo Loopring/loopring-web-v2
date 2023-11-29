@@ -80,7 +80,7 @@ export default {
   labelkeyAPIs: 'APIs',
   labelkeyReportIssue: 'Report Issue',
   labelMyNFT: 'My NFTs',
-  labelLaunchApp: 'Launch App',
+  labelLaunchApp: 'View Dapps',
   labelLaunchMobileApp: 'Exchange',
   labelLandingHeaderLayer2: 'zkRollup Layer 2',
   labelLandingHeaderWallet: 'Smart Wallet',

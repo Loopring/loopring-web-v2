@@ -133,8 +133,8 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           flex={1}
           ref={container}
         >
-          {rawData.length ? (
-            <Grid container paddingBottom={2} display={'flex'} flex={1}>
+            {!!rawData.length ? (
+                <Grid container paddingBottom={2} display={'flex'} flex={1}>
               {rawData.map((ele, index) => {
                 return (
                   <Grid item xs={12} key={ele.id}>
