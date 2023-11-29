@@ -439,13 +439,13 @@ export const CreateRedPacketPanel = <
             showNFT,
             onChangeTradeType: (tradeType) => {
               const found =
-                tradeData.tradeType === RedPacketOrderType.NFT
+                tradeType === RedPacketOrderType.NFT
                   ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForNFT'))
-                  : tradeData.tradeType === RedPacketOrderType.BlindBox
+                  : tradeType === RedPacketOrderType.BlindBox
                   ? LuckyRedPacketList.find((config) =>
                       config.tags?.includes('defaultForBlindBox'),
                     )
-                  : tradeData.tradeType === RedPacketOrderType.FromNFT
+                  : tradeType === RedPacketOrderType.FromNFT
                   ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForFromNFT'))
                   : LuckyRedPacketList.find((config) => config.tags?.includes('defaultForERC20'))
 
