@@ -81,7 +81,7 @@ export const ChooseDualType = ({
               onClick={(e) => {
                 setShowAutoDefault(true)
               }}
-              sx={{ backgroundColor: 'var(--field-opacity)' }}
+              sx={{ marginLeft: 1.5, height: 40 }}
               className={'switch outlined'}
               aria-label='to set dual auto switch'
               size={'large'}
