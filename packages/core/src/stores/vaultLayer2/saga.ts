@@ -23,7 +23,8 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
   let _activeInfo: any = undefined,
     vaultLayer2,
     vaultAccountInfo,
-    history
+    history,
+    wait
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
     let promise: any[] = []
 
@@ -50,17 +51,17 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         throw vaultAccountInfo
       }
       if (
-        history &&
-        history?.raw_data?.operation?.status &&
-        ['VAULT_STATUS_EARNING', sdk.VaultOperationStatus.VAULT_STATUS_FAILED].includes(
-          history?.operation?.status?.toUpperCase() ?? '',
+        (history &&
+          history?.raw_data?.operation?.status &&
+          ['VAULT_STATUS_EARNING', sdk.VaultOperationStatus.VAULT_STATUS_FAILED].includes(
+            history?.operation?.status?.toUpperCase() ?? '',
+          )) ||
+        [sdk.VaultAccountStatus.IN_STAKING, sdk.VaultAccountStatus.IN_REDEEM].includes(
+          vaultAccountInfo.accountStatus,
         )
       ) {
         _activeInfo = undefined
-        if (__timer__ && __timer__ !== -1) {
-          clearTimeout(__timer__)
-          __timer__ = -1
-        }
+        wait = 1000 * 60
       } else if (
         activeInfo &&
         [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED, ''].includes(
@@ -68,15 +69,22 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         )
       ) {
         _activeInfo = activeInfo
-        __timer__ = ((__timer__) => {
-          if (__timer__ && __timer__ !== -1) {
-            clearTimeout(__timer__)
-          }
+        wait = 1000 * 15
+      } else {
+        wait = Infinity
+      }
+      __timer__ = ((__timer__) => {
+        if (__timer__ && __timer__ !== -1) {
+          clearTimeout(__timer__)
+        }
+        if (wait !== Infinity) {
           return setTimeout(() => {
             store.dispatch(updateVaultLayer2({ activeInfo }))
-          }, 1000 * 3)
-        })(__timer__)
-      }
+          }, wait)
+        } else {
+          return -1
+        }
+      })(__timer__)
 
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {

@@ -32,10 +32,11 @@ const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
     },
     getVaultLayer2Status(state, action: PayloadAction<VaultLayer2States>) {
       // @ts-ignore
-      if (action.error) {
+      if (action.payload.error) {
         state.status = SagaStatus.ERROR
         // @ts-ignore
-        state.errorMessage = action.error
+        state.errorMessage = action.payload.error
+        return
       }
 
       state.__timer__ = action.payload?.__timer__ ?? -1
