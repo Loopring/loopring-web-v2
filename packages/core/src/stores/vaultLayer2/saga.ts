@@ -52,12 +52,9 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       if (
         history &&
         history?.raw_data?.operation?.status &&
-        [
-          sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-          //TODO add later when Bc decided name
-          sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-          sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
-        ].includes(history?.operation?.status?.toUpperCase() ?? '')
+        ['VAULT_STATUS_EARNING', sdk.VaultOperationStatus.VAULT_STATUS_FAILED].includes(
+          history?.operation?.status?.toUpperCase() ?? '',
+        )
       ) {
         _activeInfo = undefined
         if (__timer__ && __timer__ !== -1) {
