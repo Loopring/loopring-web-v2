@@ -113,10 +113,10 @@ export const VaultDashBoardPanel = ({
   }, [hideAssets, vaultAccountInfo?.totalEquityOfUsd, vaultAccountInfo?.accountStatus])
   const marginUI = React.useMemo(() => {
     const colorIs = sdk.toBig('1.5').gte(vaultAccountInfo?.marginLevel ?? 0)
-      ? 0
+      ? 1
       : sdk.toBig('1.3').gte(vaultAccountInfo?.marginLevel ?? 0)
       ? 3
-      : 1
+      : 0
     return (
       <>
         {vaultAccountInfo?.marginLevel ? (
