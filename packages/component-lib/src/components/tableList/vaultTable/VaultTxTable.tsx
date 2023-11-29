@@ -120,18 +120,19 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           key: 'status',
           name: t('labelVaultTxStatus'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const color =
-              //TODO add later when Bc decided name
-              [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(row.status)
-                ? 'var(--color-success)'
-                : [
-                    sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-                    sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING,
-                  ].includes(row.status)
-                ? 'var(--color-primary)'
-                : row.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-                ? 'var(--color-error)'
-                : 'var(--color-text-primary)'
+            const color = [
+              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+              'VAULT_STATUS_EARNING',
+            ].includes(row.status)
+              ? 'var(--color-success)'
+              : [
+                  sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+                  sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING,
+                ].includes(row.status)
+              ? 'var(--color-primary)'
+              : row.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+              ? 'var(--color-error)'
+              : 'var(--color-text-primary)'
             return (
               <Typography
                 variant={'body1'}

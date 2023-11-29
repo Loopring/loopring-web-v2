@@ -257,7 +257,7 @@ export const useVaultBorrow = <
         setIsLoading(false)
         updateVaultLayer2({})
         await sdk.sleep(SUBMIT_PANEL_CHECK)
-        const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
+        const response2 = await LoopringAPI?.vaultAPI.getVaultGetOperationByHash(
           {
             accountId: accountId?.toString(),
             hash: (response as any).hash,
@@ -279,7 +279,12 @@ export const useVaultBorrow = <
 
         setShowAccount({
           isShow: true,
-          step: AccountStep.VaultBorrow_Success,
+          step: [
+            sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+            // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+          ].includes(response2?.raw_data?.operation?.status)
+            ? AccountStep.VaultBorrow_Success
+            : AccountStep.VaultBorrow_In_Progress,
           info: {
             amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? vaultBorrowData.repayAmtStr : 0,
             sum: vaultBorrowData.borrowAmtStr,
@@ -294,7 +299,9 @@ export const useVaultBorrow = <
         updateVaultLayer2({})
         if (
           store.getState().modals.isShowAccount.isShow &&
-          store.getState().modals.isShowAccount.step == AccountStep.VaultBorrow_Success
+          [AccountStep.VaultBorrow_Success, AccountStep.VaultBorrow_In_Progress].includes(
+            store.getState().modals.isShowAccount.step,
+          )
         ) {
           setShowAccount({ isShow: false })
         }

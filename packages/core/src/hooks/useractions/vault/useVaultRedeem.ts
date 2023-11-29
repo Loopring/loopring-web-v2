@@ -133,7 +133,12 @@ export const useVaultRedeem = () => {
         }
         setShowAccount({
           isShow: true,
-          step: AccountStep.VaultRedeem_Success,
+          step: [
+            sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+            // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+          ].includes(response2?.raw_data?.operation?.status)
+            ? AccountStep.VaultRedeem_Success
+            : AccountStep.VaultRedeem_In_Progress,
           info: {
             ...info,
             status: t(status),
@@ -145,7 +150,9 @@ export const useVaultRedeem = () => {
         updateVaultLayer2({})
         if (
           store.getState().modals.isShowAccount.isShow &&
-          store.getState().modals.isShowAccount.step == AccountStep.VaultRedeem_Success
+          [AccountStep.VaultRedeem_Success, AccountStep.VaultRedeem_In_Progress].includes(
+            store.getState().modals.isShowAccount.step,
+          )
         ) {
           setShowAccount({ isShow: false })
         }

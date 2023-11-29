@@ -275,15 +275,20 @@ export const useVaultRepay = <
             status = 'labelFinished'
           }
 
-          const amount = getValuePrecisionThousand(
-            sdk.toBig(response2?.raw_data?.operation?.amountIn).div('1e' + vaultToken.decimals),
-            vaultToken?.vaultTokenAmounts?.qtyStepScale,
-            vaultToken?.vaultTokenAmounts?.qtyStepScale,
-            undefined,
-          )
+          // const amount = getValuePrecisionThousand(
+          //   sdk.toBig(response2?.raw_data?.operation?.amountIn).div('1e' + vaultToken.decimals),
+          //   vaultToken?.vaultTokenAmounts?.qtyStepScale,
+          //   vaultToken?.vaultTokenAmounts?.qtyStepScale,
+          //   undefined,
+          // )
           setShowAccount({
             isShow: true,
-            step: AccountStep.VaultRepay_Success,
+            step: [
+              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+              // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+            ].includes(response2?.raw_data?.operation?.status)
+              ? AccountStep.VaultRepay_Success
+              : AccountStep.VaultRepay_In_Progress,
             info: {
               status: t(status),
               amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
@@ -298,7 +303,9 @@ export const useVaultRepay = <
           updateVaultLayer2({})
           if (
             store.getState().modals.isShowAccount.isShow &&
-            store.getState().modals.isShowAccount.step == AccountStep.VaultRepay_Success
+            [AccountStep.VaultRepay_Success, AccountStep.VaultRepay_In_Progress].includes(
+              store.getState().modals.isShowAccount.step,
+            )
           ) {
             setShowAccount({ isShow: false })
           }

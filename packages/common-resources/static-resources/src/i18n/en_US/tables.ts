@@ -385,6 +385,7 @@ export default {
   labelVaultTxFilled: 'Filled Amount',
   labelVaultTxStatus: 'Status',
   labelVaultTxTime: 'Time',
+  labelVaultVAULT_STATUS_EARNING: 'Succeed (current vault)',
   labelVaultVAULT_STATUS_RECEIVED: 'Received',
   labelVaultVAULT_STATUS_PROCESSING: 'Delivering',
   labelVaultVAULT_STATUS_SUCCEED: 'Succeed',

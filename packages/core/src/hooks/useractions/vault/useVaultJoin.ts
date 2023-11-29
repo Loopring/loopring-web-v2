@@ -190,12 +190,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-          } else if (
-            [
-              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-              // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-            ].includes(response2?.raw_data?.operation?.status)
-          ) {
+          } else if (['VAULT_STATUS_EARNING'].includes(response2?.raw_data?.operation?.status)) {
             status = 'labelFinished'
           } else {
             status = 'labelPending'
@@ -204,7 +199,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           setShowAccount({
             isShow: true,
             step: [
-              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+              'VAULT_STATUS_EARNING',
               // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
             ].includes(response2?.raw_data?.operation?.status)
               ? AccountStep.VaultJoin_Success
@@ -238,7 +233,9 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         updateVaultLayer2({})
         if (
           store.getState().modals.isShowAccount.isShow &&
-          store.getState().modals.isShowAccount.step == AccountStep.VaultJoin_Success
+          [AccountStep.VaultJoin_Success, AccountStep.VaultJoin_In_Progress].includes(
+            store.getState().modals.isShowAccount.step,
+          )
         ) {
           setShowAccount({ isShow: false })
         }
@@ -490,6 +487,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       isShowVaultJoin: { isShow, symbol },
       // isShowAccount: { info },
     },
+    setShowVaultJoin,
     setShowAccount,
   } = useOpenModals()
 
