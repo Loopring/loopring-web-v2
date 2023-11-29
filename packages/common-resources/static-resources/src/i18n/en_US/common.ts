@@ -1878,7 +1878,7 @@ export default {
   labelRedpacketRecipients: 'Red Packet Recipients >',
   labelRedpacketRecipientList: 'Recipient List',
   labelExclusiveWhitelistDes:
-    "For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
+    "For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
   labelRedpacketTextimport: 'Text import',
   labelRedpacketContactImport: 'Contact import',
   labelRedpacketNotificationDisplay: 'Notification Display',
