@@ -164,6 +164,15 @@ export const MuiSwitch = (): {
   return { styleOverrides: {} }
 }
 
+export const MuiBadge = (): {
+  styleOverrides: ComponentsOverrides['MuiBadge']
+} => {
+  return {
+    styleOverrides: {
+      fontSize: '1rem',
+    },
+  }
+}
 export const MuiButton = ({
   colorBase,
 }: any): { styleOverrides: ComponentsOverrides['MuiButton'] } => {
