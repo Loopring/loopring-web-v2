@@ -85,16 +85,25 @@ export const BtnNotification = <N = sdk.UserNotification,>({
     variant: 'popover',
     popupId: 'notificationPop',
   })
-  const [content] = React.useState(0)
+  // const [content] = React.useState(0)
 
   return (
     <Box position={'relative'}>
       <IconButton aria-label={'notification'} {...bindHover(popupState)}>
-        <Badge badgeContent={content}>
+        <Badge
+          sx={{ color: 'var(--color-error)' }}
+          badgeContent={
+            notification?.myNotifyMap?.total
+              ? notification.myNotifyMap.total < 999
+                ? notification.myNotifyMap.total
+                : '99+'
+              : ''
+          }
+        >
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {notification?.myNotifyMap?.total && (
+      {!notification?.myNotifyMap?.total && notification?.notifyMap?.notifications?.length ? (
         <CircleIcon
           sx={{
             position: 'absolute',
@@ -106,6 +115,8 @@ export const BtnNotification = <N = sdk.UserNotification,>({
           fontSize={'large'}
           htmlColor={'var(--color-error)'}
         />
+      ) : (
+        <></>
       )}
       <PopoverPure
         {...bindPopper(popupState)}
@@ -189,11 +200,11 @@ export const ProfileMenu = ({ t, label, readyState, router, subMenu }: any) => {
   )
 }
 
-export const ColorSwitch = ({ t, label }: any) => {
+export const ColorSwitch = () => {
   const { setTheme, themeMode } = useSettings()
 
   const handleThemeClick = React.useCallback(
-    (e: any) => {
+    (_e: any) => {
       setTheme(themeMode === ThemeType.dark ? ThemeType.light : ThemeType.dark)
     },
     [themeMode],
