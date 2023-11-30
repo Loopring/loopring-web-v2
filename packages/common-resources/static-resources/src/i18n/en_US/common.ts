@@ -2101,4 +2101,11 @@ export default {
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
   labelReadAll: 'Read all',
+  labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
+  labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
+  labelDualLongestSettlementFixed: 'Fixed',
+  labelDualLongestSettlementAutomatic: 'Automatic',
+  labelDualSettingConfirm: 'Confirm',
+  labelL2DualNote: 'Dual Investment Notification',
+  labelQuickInvest: 'Quick Invest',
 }

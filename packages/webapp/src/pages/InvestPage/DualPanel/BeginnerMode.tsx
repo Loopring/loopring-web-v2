@@ -25,6 +25,7 @@ import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import React from 'react'
 import _ from 'lodash'
+import { useRouteMatch } from 'react-router-dom'
 
 const WrapperStyled = styled(Box)`
   flex: 1;

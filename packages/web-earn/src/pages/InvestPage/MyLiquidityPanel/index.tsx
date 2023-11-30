@@ -392,7 +392,7 @@ const MyLiquidity: any = withTranslation('common')(
         >
           {
             <>
-              {(
+              {
                 <TableWrapStyled
                   ref={dualRef}
                   className={`min-height`}
@@ -402,7 +402,6 @@ const MyLiquidity: any = withTranslation('common')(
                   flex={1}
                   marginLeft={-3}
                 >
-                  
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
                     {/* {dualStakeDollar !== undefined ? (
                       <Typography component={'h4'} variant={'h3'} marginX={3}>
@@ -482,7 +481,6 @@ const MyLiquidity: any = withTranslation('common')(
                               dualProducts={dualProducts}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
-                              tokenMap={tokenMap}
                               isPriceEditable={true}
                               toggle={{ enable: true }}
                               lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
@@ -502,7 +500,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       renewDuration: info.renewDuration,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 } else {
                                   handleOnchange({
                                     tradeData: {
@@ -510,7 +508,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       isRenew: false,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 }
                               }}
                               coinSell={{
@@ -523,7 +521,7 @@ const MyLiquidity: any = withTranslation('common')(
                     </Modal>
                   </Grid>
                 </TableWrapStyled>
-              )}
+              }
             </>
           }
         </MaxWidthContainer>

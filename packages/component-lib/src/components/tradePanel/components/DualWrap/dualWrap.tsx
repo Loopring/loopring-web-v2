@@ -282,7 +282,6 @@ export const DualWrap = <
                 renewTargetPrice: dualCalcData?.dualViewInfo?.__raw__?.info?.strike,
               }}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}
-              tokenMap={tokenMap}
               lessEarnTokenSymbol={dualCalcData.lessEarnTokenSymbol}
               greaterEarnTokenSymbol={dualCalcData.greaterEarnTokenSymbol}
               lessEarnView={lessEarnView}
