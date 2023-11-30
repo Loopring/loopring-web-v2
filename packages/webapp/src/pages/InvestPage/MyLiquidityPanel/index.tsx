@@ -61,6 +61,7 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
+  confirmation,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
@@ -91,7 +92,7 @@ const MyLiquidity: any = withTranslation('common')(
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
-
+    const { setShowAutoDefault } = confirmation.useConfirmation()
     const ammPoolRef = React.useRef(null)
     const stakingRef = React.useRef(null)
     const leverageETHRef = React.useRef(null)
@@ -815,6 +816,7 @@ const MyLiquidity: any = withTranslation('common')(
                             }
                           >
                             <DualDetail
+                              setShowAutoDefault={setShowAutoDefault}
                               isOrder={true}
                               order={dualDetail?.__raw__?.order}
                               btnConfirm={

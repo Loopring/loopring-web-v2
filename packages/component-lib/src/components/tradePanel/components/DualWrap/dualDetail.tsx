@@ -36,7 +36,6 @@ import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
 import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
 import { CancelDualAlert } from '../tool'
-import { confirmation } from '@loopring-web/core'
 
 const BoxChartStyle = styled(Box)`
   background-clip: content-box;
@@ -425,6 +424,7 @@ export const DualDes = ({
     </Box>
   )
 }
+
 export const DualDetail = ({
   isOrder = false,
   displayMode = DualDisplayMode.nonBeginnerMode,
@@ -434,6 +434,7 @@ export const DualDetail = ({
   btnConfirm,
   inputPart,
   showClock = false,
+  setShowAutoDefault,
   ...rest
 }: DualDetailProps) => {
   const {
@@ -449,7 +450,6 @@ export const DualDetail = ({
   const { upColor, isMobile } = useSettings()
   const { base, quote, precisionForPrice, quoteUnit } = currentPrice
   const [tab, setTab] = React.useState<DualDetailTab>(DualDetailTab.less)
-  const { setShowAutoDefault } = confirmation.useConfirmation()
   const currentView = React.useMemo(
     () =>
       base

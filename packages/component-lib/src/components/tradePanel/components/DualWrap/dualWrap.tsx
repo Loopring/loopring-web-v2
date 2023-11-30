@@ -43,6 +43,7 @@ export const DualWrap = <
   isBeginnerMode,
   dualProducts,
   toggle,
+  setShowAutoDefault,
   ...rest
 }: DualWrapProps<T, I, DUAL> & {
   isBeginnerMode: boolean
@@ -277,6 +278,7 @@ export const DualWrap = <
                 ...dualCalcData.coinSell,
                 renewTargetPrice: dualCalcData?.dualViewInfo?.__raw__?.info?.strike,
               }}
+              setShowAutoDefault={setShowAutoDefault}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}
               lessEarnTokenSymbol={dualCalcData.lessEarnTokenSymbol}
               greaterEarnTokenSymbol={dualCalcData.greaterEarnTokenSymbol}
