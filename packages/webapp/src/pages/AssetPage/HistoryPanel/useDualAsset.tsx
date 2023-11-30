@@ -31,9 +31,8 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE, LABEL_INVESTMENT_STATUS } from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
-import { Tooltip, Typography } from '@mui/material'
 
-export const Limit = 15
+export const Limit = 50
 
 export const useDualAsset = <R extends RawDataDualAssetItem>(
   setToastOpen?: (props: any) => void,
@@ -195,7 +194,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         if (dualReinvestInfo?.isRecursive) {
           content = 'labelDualAssetReInvestEnable'
         } else if (
-          dualReinvestInfo.onceRecursive && settlementStatus === sdk.SETTLEMENT_STATUS.PAID && tokenIn !== tokenOut
+          dualReinvestInfo.onceRecursive &&
+          settlementStatus === sdk.SETTLEMENT_STATUS.PAID &&
+          tokenIn !== tokenOut
         ) {
           icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
           status = 'labelDualRetryStatusTerminated'
@@ -255,10 +256,52 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       __raw__: item.__raw__,
     } as DualDetailType
   }
+  const {
+    editDualTrade,
+    editDualBtnInfo,
+    editDualBtnStatus,
+    dualToastOpen,
+    closeDualToast,
+    // setDualTradeData,
+    handleOnchange,
+    onEditDualClick,
+  } = useDualEdit({
+    refresh: (item, dontCloseModal: boolean) => {
+      refresh(item as any)
+      !dontCloseModal && setOpen(false)
+    },
+  })
 
-  const refresh = async (item: R) => {
-    const hash = item.__raw__.order.hash
-    const currentPrice = item.currentPrice
+  const showDetail = async (item: R) => {
+    const {
+      __raw__: { index },
+    } = item
+    if (index) {
+      const _item = getDetail(item, index?.index)
+      setDetail(_item)
+      const tradeData = {
+        isRenew: _item?.__raw__?.order?.dualReinvestInfo?.isRecursive,
+        renewDuration: _item?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
+        renewTargetPrice: _item?.__raw__?.order.dualReinvestInfo.newStrike,
+      }
+      updateEditDual({
+        ...(_item as any),
+        tradeData,
+      })
+      if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
+        getProduct(_item)
+      }
+      handleOnchange({
+        tradeData,
+      })
+
+      setOpen(true)
+    }
+  }
+
+  const refresh = async (hash: string, _showDetail: boolean = false) => {
+    // const hash =
+    // const currentPrice = _item.currentPrice
     setShowLoading(true)
     const { marketArray, marketMap: dualMarketMap } = store.getState().invest.dualMap
     if (LoopringAPI.defiAPI && accountId && apiKey && marketArray?.length) {
@@ -299,30 +342,46 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         }
       } else {
         // @ts-ignore
-        let item = (response as any)?.userDualTxs[0] as sdk.UserDualTxsHistory
+        let _item = (response as any)?.userDualTxs[0] as sdk.UserDualTxsHistory
         const [, , coinA, coinB] =
-          (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
+          (_item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
         let [sellTokenSymbol, buyTokenSymbol] =
-          item.dualType === DUAL_TYPE.DUAL_BASE
+          _item.dualType === DUAL_TYPE.DUAL_BASE
             ? [
-                coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
-                coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                coinA ?? idIndex[_item.tokenInfoOrigin.tokenIn],
+                coinB ?? idIndex[_item.tokenInfoOrigin.tokenOut],
               ]
             : [
-                coinB ?? idIndex[item.tokenInfoOrigin.tokenIn],
-                coinA ?? idIndex[item.tokenInfoOrigin.tokenOut],
+                coinB ?? idIndex[_item.tokenInfoOrigin.tokenIn],
+                coinA ?? idIndex[_item.tokenInfoOrigin.tokenOut],
               ]
+        const indexes = response.indexes
+        const findIndex = indexes?.find((indexP) => {
+          return (
+            indexP.base === _item.tokenInfoOrigin.base &&
+            indexP.quote === _item.tokenInfoOrigin.quote
+          )
+        })
+        const currentPrice = {
+          base: _item.tokenInfoOrigin.base,
+          quote: _item.tokenInfoOrigin.quote,
+          currentPrice: findIndex?.index,
+          precisionForPrice:
+            dualMarketMap[_item.tokenInfoOrigin.market]?.precisionForPrice ??
+            tokenMap[_item.tokenInfoOrigin.quote]?.precisionForPrice,
+          quoteUnit: _item.tokenInfoOrigin.quote,
+        }
         const format = makeDualOrderedItem(
-          item,
+          _item,
           sellTokenSymbol,
           buyTokenSymbol,
           currentPrice?.currentPrice ?? 0,
-          dualMarketMap[item.tokenInfoOrigin.market],
+          dualMarketMap[_item.tokenInfoOrigin.market],
         )
 
         const amount = getValuePrecisionThousand(
-          sdk.toBig(item.tokenInfoOrigin.amountIn).div('1e' + tokenMap[sellTokenSymbol].decimals),
+          sdk.toBig(_item.tokenInfoOrigin.amountIn).div('1e' + tokenMap[sellTokenSymbol].decimals),
           tokenMap[sellTokenSymbol].precision,
           tokenMap[sellTokenSymbol].precision,
           tokenMap[sellTokenSymbol].precision,
@@ -332,8 +391,18 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           ...format,
           amount,
         } as R
-        if (refreshedRecord.__raw__.order.id === detail?.__raw__.order.id) {
-          setDetail(getDetail(refreshedRecord))
+        if (refreshedRecord.__raw__.order.id === detail?.__raw__.order.id || _showDetail) {
+          if (_showDetail && open == false) {
+            showDetail({
+              ...refreshedRecord,
+              __raw__: {
+                ...refreshedRecord.__raw__,
+                index: findIndex?.index,
+              },
+            })
+          } else {
+            setDetail(getDetail(refreshedRecord))
+          }
         }
         if (
           refreshedRecord.__raw__.order.investmentStatus === sdk.LABEL_INVESTMENT_STATUS.CANCELLED
@@ -375,48 +444,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
       }
     }
     setShowLoading(false)
-  }
-
-  const {
-    editDualTrade,
-    editDualBtnInfo,
-    editDualBtnStatus,
-    dualToastOpen,
-    closeDualToast,
-    // setDualTradeData,
-    handleOnchange,
-    onEditDualClick,
-  } = useDualEdit({
-    refresh: (item, dontCloseModal: boolean) => {
-      refresh(item as any)
-      !dontCloseModal && setOpen(false)
-    },
-  })
-  const showDetail = async (item: R) => {
-    const {
-      __raw__: { index },
-    } = item
-    if (index) {
-      const _item = getDetail(item, index?.index)
-      setDetail(_item)
-      const tradeData = {
-        isRenew: _item?.__raw__?.order?.dualReinvestInfo?.isRecursive,
-        renewDuration: _item?.__raw__?.order?.dualReinvestInfo?.maxDuration / 86400000,
-        renewTargetPrice: _item?.__raw__?.order.dualReinvestInfo.newStrike,
-      }
-      updateEditDual({
-        ...(_item as any),
-        tradeData,
-      })
-      if (_item?.__raw__?.order?.dualReinvestInfo?.isRecursive) {
-        getProduct(_item)
-      }
-      handleOnchange({
-        tradeData,
-      })
-      
-      setOpen(true)
-    }
   }
 
   const getDualTxList = React.useCallback(
@@ -516,7 +543,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 base: item.tokenInfoOrigin.base,
                 quote: item.tokenInfoOrigin.quote,
                 currentPrice: findIndex?.index,
-                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice,
+                precisionForPrice:
+                  dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice ??
+                  tokenMap[item.tokenInfoOrigin.quote]?.precisionForPrice,
                 quoteUnit: item.tokenInfoOrigin.quote,
               }
               prev.push({

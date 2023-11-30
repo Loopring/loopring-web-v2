@@ -80,4 +80,4 @@ npm run storybook
 
 ## Release Process
 
-alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.
+loopring.io, wallet.loopring.io, docs.loopring.io, earn.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.

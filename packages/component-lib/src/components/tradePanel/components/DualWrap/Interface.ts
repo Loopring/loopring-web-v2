@@ -64,7 +64,6 @@ export type DualDetailProps<
   dualProducts: DualViewInfo[]
   getProduct?: () => void
   displayMode?: DualDisplayMode
-  tokenMap: any
   toggle: { enable: boolean; reason?: string }
   inputPart?: JSX.Element | undefined
   showClock?: boolean
