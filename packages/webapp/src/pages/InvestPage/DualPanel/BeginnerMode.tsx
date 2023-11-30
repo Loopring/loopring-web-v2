@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Avatar, Box, CardContent, Typography } from '@mui/material'
+import { Avatar, Box, CardContent, Tab, Tabs, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import {
   CoinIcon,
@@ -28,11 +28,19 @@ import _ from 'lodash'
 import { useRouteMatch } from 'react-router-dom'
 
 const WrapperStyled = styled(Box)`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
+  .MuiTab-root.Mui-selected,
+  .MuiTab-root:hover {
+    &:after {
+      visibility: hidden;
+    }
+  }
+  .mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-box);
+    border-radius: ${({ theme }) => theme.unit}px;
+  }
 `
 export const ViewStepType = {
   [DualViewType.DualGain]: DualGain,
@@ -103,82 +111,85 @@ export const BeginnerMode: any = withTranslation('common')(
       }, 100)
     }
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+      <WrapperStyled display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
           <Typography marginBottom={2} display={'flex'} variant={'h4'}>
             {t(viewStepType[0].labelKey)}
           </Typography>
-          <Box display={'flex'} flexDirection={'row'}>
+          <Tabs
+            value={step1SelectedToken}
+            onChange={(_event, value) => onSelectStep1Token(value)}
+            aria-label='l2-history-tabs'
+            variant='scrollable'
+            sx={{
+              display: 'flex',
+              flexWrap: 'nowrap',
+            }}
+          >
             {tokenList?.map(({ tokenName, minAPY, maxAPY }: any) => {
-              const selected = step1SelectedToken === tokenName
               return (
-                <Box marginRight={2} key={tokenName.toString()}>
-                  <TickCardStyleItem
-                    className={
-                      selected ? 'btnCard dualInvestCard selected' : 'btnCard dualInvestCard '
-                    }
-                    selected={selected}
-                    onClick={() => onSelectStep1Token(tokenName.toString())}
-                    width={'280px'}
-                  >
-                    <CardContent
-                    // sx={{
-                    //   alignItems: 'center',
-                    //   // paddingX: 3,
-                    //   // paddingY: 2,
-                    //   '&:last-child': { paddingY: 2 },
-                    // }}
+                <Tab
+                  value={tokenName}
+                  key={tokenName}
+                  label={
+                    <TickCardStyleItem
+                      selected={tokenName == step1SelectedToken}
+                      className={'dualInvestCard btnCard'}
+                      sx={{
+                        minWidth: isMobile ? '180px' : '280px',
+                      }}
                     >
-                      <Typography component={'span'} display={'inline-flex'}>
-                        <CoinIcon
-                          size={32}
-                          symbol={typeof tokenName === 'string' ? tokenName : ''}
-                        />
-                      </Typography>
-                      <Typography paddingLeft={1}>
-                        <Typography
-                          color={
-                            selected ? theme.colorBase.textPrimary : theme.colorBase.textPrimary
-                          }
-                          variant={'subtitle1'}
-                        >
-                          {tokenName?.toString()}
+                      <CardContent>
+                        <Typography component={'span'} display={'inline-flex'}>
+                          <CoinIcon
+                            size={32}
+                            symbol={typeof tokenName === 'string' ? tokenName : ''}
+                          />
                         </Typography>
-                        <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
-                          {t('labelDualBeginnerAPR', {
-                            APR:
-                              !minAPY && !maxAPY
-                                ? '--'
-                                : minAPY === maxAPY || !minAPY || !maxAPY
-                                ? `${getValuePrecisionThousand(
-                                    Number(minAPY) * 100,
-                                    2,
-                                    2,
-                                    2,
-                                    true,
-                                  )}%`
-                                : `${getValuePrecisionThousand(
-                                    Number(minAPY) * 100,
-                                    2,
-                                    2,
-                                    2,
-                                    true,
-                                  )}% - ${getValuePrecisionThousand(
-                                    Number(maxAPY) * 100,
-                                    2,
-                                    2,
-                                    2,
-                                    true,
-                                  )}%`,
-                          })}
+                        <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                          <Typography component={'span'} textAlign={'left'} variant={'subtitle1'}>
+                            {tokenName?.toString()}
+                          </Typography>
+                          <Typography
+                            component={'span'}
+                            variant={'body2'}
+                            color={theme.colorBase.textSecondary}
+                          >
+                            {t('labelDualBeginnerAPR', {
+                              APR:
+                                !minAPY && !maxAPY
+                                  ? '--'
+                                  : minAPY === maxAPY || !minAPY || !maxAPY
+                                  ? `${getValuePrecisionThousand(
+                                      Number(minAPY) * 100,
+                                      2,
+                                      2,
+                                      2,
+                                      true,
+                                    )}%`
+                                  : `${getValuePrecisionThousand(
+                                      Number(minAPY) * 100,
+                                      2,
+                                      2,
+                                      2,
+                                      true,
+                                    )}% - ${getValuePrecisionThousand(
+                                      Number(maxAPY) * 100,
+                                      2,
+                                      2,
+                                      2,
+                                      true,
+                                    )}%`,
+                            })}
+                          </Typography>
                         </Typography>
-                      </Typography>
-                    </CardContent>
-                  </TickCardStyleItem>
-                </Box>
+                      </CardContent>
+                    </TickCardStyleItem>
+                  }
+                />
               )
             })}
-          </Box>
+          </Tabs>
         </Box>
 
         {step1SelectedToken !== undefined && viewType === DualViewType.DualBegin && (
@@ -296,56 +307,73 @@ export const BeginnerMode: any = withTranslation('common')(
             <Typography marginBottom={2} display={'flex'} variant={'h4'}>
               {t(viewStepType[2].labelKey)}
             </Typography>
-            <Box display={'flex'} flexDirection={'row'}>
+
+            <Tabs
+              value={step3Token}
+              onChange={(_event, value) => {
+                if (isLoading) return
+                onSelectStep3Token(value)
+                scroolTableToMiddle()
+              }}
+              aria-label='l2-history-tabs'
+              variant='scrollable'
+              sx={{
+                display: 'flex',
+                flexWrap: 'nowrap',
+              }}
+            >
               {tradeMap[step1SelectedToken ?? '']?.quoteList?.map((token) => {
                 return (
-                  <Box marginRight={2} key={token}>
-                    <TickCardStyleItem
-                      className={
-                        step3Token === token
-                          ? 'btnCard dualInvestCard selected'
-                          : 'btnCard dualInvestCard '
-                      }
-                      selected={step3Token === token}
-                      onClick={() => {
-                        if (isLoading) return
-                        onSelectStep3Token(token)
-                        scroolTableToMiddle()
-                      }}
-                      width={'280px'}
-                    >
-                      <CardContent
+                  <Tab
+                    value={token}
+                    key={token}
+                    label={
+                      <TickCardStyleItem
+                        selected={step3Token == token}
+                        className={'dualInvestCard btnCard'}
                         sx={{
-                          alignItems: 'center',
-                          paddingX: 3,
-                          paddingY: 2,
-                          '&:last-child': { paddingY: 2 },
+                          minWidth: isMobile ? '180px' : '280px',
                         }}
                       >
-                        <Typography component={'span'} display={'inline-flex'}>
-                          <CoinIcon size={32} symbol={token} />
-                        </Typography>
-                        <Typography
-                          color={theme.colorBase.textPrimary}
-                          variant={'subtitle1'}
-                          paddingLeft={1}
+                        <CardContent
+                          sx={{
+                            alignItems: 'center',
+                            paddingX: 3,
+                            paddingY: 2,
+                            '&:last-child': { paddingY: 2 },
+                          }}
                         >
-                          {step2BuyOrSell === 'Buy'
-                            ? t('labelDualBeginnerBuyLowWith', { token: token })
-                            : t('labelDualBeginnerSellHighFor', {
-                                token: token,
-                              })}
-                        </Typography>
-                      </CardContent>
-                    </TickCardStyleItem>
-                  </Box>
+                          <Typography component={'span'} display={'inline-flex'}>
+                            <CoinIcon size={32} symbol={token} />
+                          </Typography>
+                          <Typography
+                            color={theme.colorBase.textPrimary}
+                            variant={'subtitle1'}
+                            paddingLeft={1}
+                          >
+                            {step2BuyOrSell === 'Buy'
+                              ? t('labelDualBeginnerBuyLowWith', { token: token })
+                              : t('labelDualBeginnerSellHighFor', {
+                                  token: token,
+                                })}
+                          </Typography>
+                        </CardContent>
+                      </TickCardStyleItem>
+                    }
+                  />
                 )
               })}
-            </Box>
+            </Tabs>
           </Box>
         )}
         {step3Token !== undefined && step1SelectedToken !== undefined && (
-          <WrapperStyled ref={tableRef} marginTop={1} flex={1} flexDirection={'column'}>
+          <Box
+            className={'mainContent'}
+            ref={tableRef}
+            marginTop={1}
+            flex={1}
+            flexDirection={'column'}
+          >
             {pairASymbol && pairBSymbol && market && (
               <Box
                 display={'flex'}
@@ -512,9 +540,9 @@ export const BeginnerMode: any = withTranslation('common')(
                 }}
               />
             </Box>
-          </WrapperStyled>
+          </Box>
         )}
-      </Box>
+      </WrapperStyled>
     )
   },
 )

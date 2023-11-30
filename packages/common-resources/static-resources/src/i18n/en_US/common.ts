@@ -2106,6 +2106,6 @@ export default {
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
   labelDualSettingConfirm: 'Confirm',
-  labelL2DualNote: 'Dual Investment Notification',
-  labelQuickInvest: 'Quick Invest',
+    labelL2DualNote: 'Dual Investment Notification',
+    labelQuickInvest: 'Quick Invest',
 }

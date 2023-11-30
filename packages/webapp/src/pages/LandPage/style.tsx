@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import { Box, Container, Typography, TypographyProps } from '@mui/material'
 import { SoursURL, ThemeType } from '@loopring-web/common-resources'
 import { ContainerProps } from '@mui/material/Container/Container'
-import { LAYOUT } from '@loopring-web/core'
 import { Button } from '@loopring-web/component-lib'
 import { withTranslation } from 'react-i18next'
 
@@ -113,9 +112,13 @@ export const ContainerStyle = styled(Box)`
       color: inherit;
     }
     &:hover {
+      color: inherit;
       background: var(--color-primary-pressed);
+      .MuiButton-endIcon {
+        color: inherit;
+      }
       svg {
-        fill: var(--color-text);
+        color: inherit;
       }
     }
   }
@@ -160,10 +163,12 @@ export const ContainerStyle = styled(Box)`
   .MuiButton-root.menuItem {
     display: flex;
     justify-content: flex-start;
-
     padding-left: 2rem;
     height: 80px;
-    min-width: 320px;
+    min-width: 248px;
+    @media only screen and (max-width: 768px) {
+      padding-left: 0rem;
+    }
     width: 100%;
     fontsize: 1.4rem;
     padding-right: ${({ theme }) => theme.unit * 3}px;
@@ -182,7 +187,7 @@ export const ContainerStyle = styled(Box)`
   .box5,
   .box6,
   .box3 {
-    margin-bottom: 80px;
+    margin-bottom: 40px;
     > div {
       background: var(--color-box);
       border-radius: 12px;
@@ -215,20 +220,31 @@ export const ContainerStyle = styled(Box)`
       flex-basis: auto;
       width: calc(66% - 48px);
       max-width: inherit;
+      position: relative;
+      svg {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+      }
     }
     & .MuiGrid-grid-md-2 {
       flex-basis: auto;
       width: 22%;
       max-width: inherit;
       position: relative;
+      overflow: hidden;
       svg {
-        position: relative;
+        position: absolute;
         right: -72px;
+        bottom: 20px;
       }
     }
 
     > .MuiGrid-root {
       transition: all 0.5s ease;
+      svg: {
+        transition: all 0.5s ease;
+      }
     }
     .boxDetail {
       overflow: hidden;

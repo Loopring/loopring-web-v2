@@ -9,6 +9,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   Info2Icon,
+  MoreIcon,
   myLog,
   SoursURL,
   UpColor,
@@ -25,6 +26,7 @@ import {
   Tooltip,
   Typography,
   Tab,
+  IconButton,
 } from '@mui/material'
 import { ModalCloseButton, Tabs } from '../../../basic-lib'
 import { ModifyParameter } from './ModifyParameter'

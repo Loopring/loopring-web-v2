@@ -3,7 +3,6 @@ import {
   CloseIcon,
   headerRoot,
   hexToRGB,
-  toolBarMobileAvailableItem,
 } from '@loopring-web/common-resources'
 
 import { Box, IconButton, Toolbar, Typography } from '@mui/material'

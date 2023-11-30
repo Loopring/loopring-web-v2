@@ -139,4 +139,5 @@ export default {
 
   labelDashBoard: 'Dashboard',
   labelRecord: 'Records',
+  labelHome: 'Loopring Pro',
 }

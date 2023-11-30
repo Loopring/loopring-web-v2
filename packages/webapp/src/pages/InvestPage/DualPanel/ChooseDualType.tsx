@@ -6,15 +6,22 @@ import {
   RouterPath,
   InvestRouter,
   InvestType,
+  SwapSettingIcon,
 } from '@loopring-web/common-resources'
-import { Button, MenuBtnStyled, useSettings, MaxWidthContainer } from '@loopring-web/component-lib'
+import {
+  Button,
+  MenuBtnStyled,
+  useSettings,
+  MaxWidthContainer,
+  IconButtonStyled,
+} from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { containerColors } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
-import { useDualMap } from '@loopring-web/core'
+import { confirmation, useDualMap } from '@loopring-web/core'
 import { ChooseDualTypeContentType } from './hook'
 
 export const TypographyStyle = styled(Typography)`
@@ -33,8 +40,7 @@ export const ChooseDualType = ({
   const theme = useTheme()
   const history = useHistory()
   const { t } = useTranslation()
-  const { marketArray, status: dualStatus, getDualMap } = useDualMap()
-
+  const { setShowAutoDefault } = confirmation.useConfirmation()
   return (
     <>
       <MaxWidthContainer
@@ -71,6 +77,28 @@ export const ChooseDualType = ({
             >
               {t('labelInvestDualTutorial')}
             </Button>
+            <IconButtonStyled
+              onClick={(e) => {
+                setShowAutoDefault(true)
+              }}
+              sx={{ marginLeft: 1.5, height: 40 }}
+              className={'switch outlined'}
+              aria-label='to set dual auto switch'
+              size={'large'}
+            >
+              <SwapSettingIcon htmlColor={'var(--color-text-primary)'} />
+            </IconButtonStyled>
+            {/* <Button*/}
+            {/*   onClick={() => {*/}
+            {/*   window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')*/}
+            {/*   window.opener = null*/}
+            {/* }}*/}
+            {/*   sx={{ marginLeft: 1.5, height: 40 }}*/}
+            {/*   variant={'outlined'}*/}
+            {/*   color={'inherit'}*/}
+            {/*   >*/}
+            {/*     {t('labelInvestDualTutorial')}*/}
+            {/*</Button>*/}
           </Box>
         </Box>
         {!isMobile && <DualInvestmentLogo />}
