@@ -424,6 +424,7 @@ export const DualDes = ({
     </Box>
   )
 }
+
 export const DualDetail = ({
   isOrder = false,
   displayMode = DualDisplayMode.nonBeginnerMode,
@@ -433,7 +434,7 @@ export const DualDetail = ({
   btnConfirm,
   inputPart,
   showClock = false,
-                               setShowAutoDefault,
+  setShowAutoDefault,
   ...rest
 }: DualDetailProps) => {
   const {

@@ -52,6 +52,7 @@ export type DualWrapProps<T, I, DUAL> = {
   dualProducts?: DualViewInfo[]
   toggle: { enable: boolean; reason?: string | undefined }
   viewType?: DualViewType
+  setShowAutoDefault: (show: boolean) => void
 }
 
 export type DualDetailProps<
@@ -67,6 +68,7 @@ export type DualDetailProps<
   toggle: { enable: boolean; reason?: string }
   inputPart?: JSX.Element | undefined
   showClock?: boolean
+  setShowAutoDefault: (show: boolean) => void
   onChangeOrderReinvest: (
     info: { on: boolean; renewTargetPrice?: string; renewDuration?: number },
     item: R,
