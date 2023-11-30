@@ -1297,7 +1297,7 @@ export default {
     'If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.',
   labelLuckyRandomToken: 'Lucky Red Packet',
   labelLuckyRandomTokenDes: 'Each recipient will get a random amount of.',
-  labelLuckyCommonToken: 'Normal Red Packet',
+  labelLuckyCommonToken: 'Average Red Packet',
   labelLuckyCommonTokenDes:
     'Each recipient will receive a pre-set split of the total Red Packet shared.',
   labelL1toL2NFTAmount: 'NFT Amount',
@@ -1386,8 +1386,8 @@ export default {
   labelLpAmount: 'LP Amount: {{value}}',
   labelRedPacketMarketsBtn: 'Red Packet Plaza',
   labelRedPacketBtn: 'Shared',
-  labelRedPacketViewType0: 'Public',
-  labelRedPacketViewType1: 'Public',
+  labelRedPacketViewType0: 'Public Palaza',
+  labelRedPacketViewType1: 'Public QR',
   labelRedPacketViewTypeDetail0: 'public Red Packet',
   labelRedPacketViewTypeDetail1: 'public Red Packet',
   labelRedPacketStatusSUBMITTING: 'Submitting', // SUBMITTING = 0,
@@ -1890,12 +1890,20 @@ export default {
   labelRedpacketPopPpDes:
     'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
   labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
-  labelRedPacketChooseTarget: 'Create Red Packet',
+  labelRedPacketChooseTarget: 'Select existing red packet or create a new one',
   labelRedPacketRecipientList: 'Recipient List',
   labelRedPacketPublicTooltip:
     'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip:
-    'Your Red Packet is private, and only the addresses you specify can claim it.',
+  labelRedPacketPrivateTooltip:`
+    <p>Your Red Packet is private, and only the addresses you specify can claim it.</p>
+    <p>To create a new Exclusive Red Packet, please follow these steps:</p>
+    <li>1. Select the type of Red Packet</li>
+    <li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>
+    <li>3. Designate the recipients</li>
+    <li>4. Set the Notification Display</li>
+    <p>For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>
+    <p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>
+  `,
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
@@ -2028,6 +2036,15 @@ export default {
   labelContactAddressExisted: 'Address already exists',
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelTargetRedpacketOption1: 'Option 1',
+  labelTargetRedpacketCreateTitle: 'The following steps are required to create a new Exclusive Red Packet',
+  labelTargetRedpacketCreateStep1: '1. Select the type of red packet to be sent.',
+  labelTargetRedpacketCreateStep2: '2. Number of red packets to be sent/transmission time',
+  labelTargetRedpacketCreateStep3: '3. Designated Red Packet Recipients',
+  labelTargetRedpacketCreateStep4: '4. Notification display for red packet recipients',
+  labelTargetRedpacketNoRedpacket: 'You do not have an existing wallet yet',
+  labelTargetRedpacketNoRedpacketDes: 'If your prepared but unaddressed Red Packets will be displayed here !',
+  labelTargetRedpacketOption2: 'Option 2',
   labelEarnVaultTitle: 'Total Vault',
   labelDualBTC: 'ETH - WBTC Dual Investment',
   labelDualBTCDes: 'Select based on Token and Settlement Date',
@@ -2101,4 +2118,5 @@ export default {
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
   labelReadAll: 'Read all',
+  labelLuckyTokenNormal: 'Normal',
 }

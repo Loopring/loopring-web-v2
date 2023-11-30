@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   CardContent,
   Checkbox,
@@ -7,6 +6,7 @@ import {
   FormLabel,
   Grid,
   IconButton,
+  Tab,
   Tooltip,
   Typography,
   // TextField as MuiTextField,
@@ -19,9 +19,10 @@ import {
   InputCoin,
   InputSearch,
   NftImageStyle,
+  Tabs,
   TextField,
 } from '../../basic-lib'
-import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
+import { useTranslation, WithTranslation, withTranslation, Trans } from 'react-i18next'
 import {
   BackIcon,
   CoinInfo,
@@ -30,7 +31,6 @@ import {
   getValuePrecisionThousand,
   IBData,
   LuckyRedPacketItem,
-  LuckyRedPacketList,
   REDPACKET_ORDER_LIMIT,
   RedPacketOrderData,
   SoursURL,
@@ -47,6 +47,11 @@ import {
   ScopeQR,
   ScopeTarget,
   isAddress,
+  BiArrow,
+  LuckyRedPacketList,
+  myLog,
+  BlindBoxIcon,
+  NormalRedpacketIcon,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import {
@@ -866,6 +871,7 @@ export const CreateRedPacketStepType = withTranslation()(
     showNFT,
     onSelecteValue,
     redPacketConfig,
+    handleOnDataChange,
     t,
   }: Omit<CreateRedPacketViewProps<T, I, C>, 'tokenMap'> & {
     selectedType: LuckyRedPacketItem
@@ -876,18 +882,47 @@ export const CreateRedPacketStepType = withTranslation()(
       return disabled
     }, [disabled])
     const showERC20Blindbox = redPacketConfig.showERC20Blindbox
-    const filteredList = LuckyRedPacketList.filter(
-      (item) =>
-        (tradeType == RedPacketOrderType.NFT
-          ? item.showInNFTS
-          : tradeType == RedPacketOrderType.BlindBox
-          ? item.showInBlindbox
-          : tradeType == RedPacketOrderType.FromNFT
-          ? item.showInFromNFT
-          : item.showInERC20) &&
-        (showERC20Blindbox ? true : item.toolgleWithShowERC20Blindbox ? false : true) &&
-        (item.isBlindboxNFT ? showNFT : true) &&
-        (tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET ? !item.hideForExclusive : true),
+    
+    const isTokens =
+      (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT) ||
+      tradeType === RedPacketOrderType.TOKEN
+    
+    const setIsTokens = React.useCallback((isTokens: boolean) => {
+      myLog('isTokens', tradeData)
+      myLog('isTokens', isTokens)
+      if (tradeType === RedPacketOrderType.BlindBox) {
+        handleOnDataChange({
+          ...tradeData,
+          isNFT: !isTokens
+        })
+      } else {
+        handleOnDataChange({
+          ...tradeData,
+          tradeType: isTokens ? RedPacketOrderType.TOKEN : RedPacketOrderType.NFT
+        })
+      }
+    }, [tradeData])
+
+    const showList = LuckyRedPacketList.filter((item) =>
+      tradeType === RedPacketOrderType.FromNFT
+        ? tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+          ? item.tags?.includes('showInBlindBox')
+          : item.tags?.includes('showInNormal')
+        : tradeType === RedPacketOrderType.BlindBox
+        ? item.tags?.includes('showInBlindBox')
+        : item.tags?.includes('showInNormal'),
+    )
+
+    const enabledList = LuckyRedPacketList.filter((item) =>
+      tradeType === RedPacketOrderType.FromNFT
+        ? tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+          ? item.tags?.includes('enableInBlindBox')
+          : item.tags?.includes('enableInNFTS')
+        : tradeType === RedPacketOrderType.BlindBox
+        ? item.tags?.includes('enableInBlindBox')
+        : tradeType === RedPacketOrderType.TOKEN
+        ? item.tags?.includes('enableInERC20')
+        : item.tags?.includes('enableInNFTS'),
     )
     return (
       <RedPacketBoxStyle
@@ -896,87 +931,137 @@ export const CreateRedPacketStepType = withTranslation()(
         flexDirection={'column'}
         alignItems={'center'}
         width={'100%'}
-        maxWidth={720}
+        maxWidth={850}
       >
         <Box
           display={'flex'}
           flexDirection={'column'}
           alignItems={'stretch'}
           alignSelf={'stretch'}
-          marginY={2}
           minHeight={300}
           paddingY={2}
+          marginTop={2}
+          marginBottom={5}
         >
+          <Typography
+            component={'h4'}
+            variant={isMobile ? 'body1' : 'h4'}
+            whiteSpace={'pre'}
+            marginRight={1}
+            marginBottom={tradeType === RedPacketOrderType.BlindBox ? 4 : 2}
+          >
+            {t(
+              selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
+                ? 'labelLuckyBlindBox'
+                : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
+                ? 'labelRelayRedPacket'
+                : selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
+                ? 'labelRedPacketSendCommonTitle'
+                : 'labelRedPacketSenRandomTitle',
+            ) +
+              ' — ' +
+              t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
+          </Typography>
+
           {tradeType === RedPacketOrderType.BlindBox && (
-            <Typography marginBottom={4} color={'var(--color-text-secondary)'}>
+            <Typography marginBottom={0} color={'var(--color-text-secondary)'}>
               Each recipient will receive a sealed Red Packet which cannot be opened until the
               expiration date. While some recipients will receive an NFT, others will need to try
               their luck next time.
             </Typography>
           )}
 
-          {filteredList.map((item: LuckyRedPacketItem, index) => {
-            return (
-              <React.Fragment key={index}>
-                {tradeType == RedPacketOrderType.FromNFT && index === 1 && (
-                  <Typography marginTop={1} variant={'h5'} color={'var(--color-text-secondary)'}>
-                    {t('labelRedpacketStandard')}
-                  </Typography>
-                )}
-                <Box key={item.value.value} marginBottom={1}>
-                  <MenuBtnStyled
-                    variant={'outlined'}
-                    size={'large'}
-                    className={`${isMobile ? 'isMobile' : ''} ${
-                      selectedType.value.value === item.value.value
-                        ? 'selected redPacketType '
-                        : 'redPacketType'
-                    }`}
-                    fullWidth
-                    onClick={(_e) => {
-                      onSelecteValue && onSelecteValue(item)
-                    }}
-                  >
-                    {item.icon ? (
-                      <Box display={'flex'} alignItems={'center'}>
-                        <img width={'32px'} src={item.icon} />
-                        <Typography
-                          variant={'h5'}
-                          display={'inline-flex'}
-                          marginLeft={2}
-                          alignItems={'flex-start'}
-                          component={'span'}
-                        >
-                          {t(item.labelKey)}
-                        </Typography>
-                      </Box>
-                    ) : (
-                      <>
-                        <Typography
-                          variant={'h5'}
-                          display={'inline-flex'}
-                          marginBottom={1 / 2}
-                          alignItems={'flex-start'}
-                          component={'span'}
-                        >
-                          {t(item.labelKey)}
-                        </Typography>
-                        <Typography
-                          variant={'body1'}
-                          display={'inline-flex'}
-                          justifyContent={'flex-start'}
-                          component={'span'}
-                          color={'var(--color-text-secondary)'}
-                        >
-                          {t(item.desKey)}
-                        </Typography>
-                      </>
-                    )}
-                  </MenuBtnStyled>
+          {tradeType === RedPacketOrderType.FromNFT ? (
+            <Tabs
+              value={
+                tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX ? 'BlindBox' : 'Normal'
+              }
+              onChange={(_event, value) => {
+                handleOnDataChange({
+                  ...tradeData,
+                  type: {
+                    ...tradeData.type,
+                    mode:
+                      value === 'Normal'
+                        ? sdk.LuckyTokenClaimType.COMMON
+                        : sdk.LuckyTokenClaimType.BLIND_BOX,
+                  },
+                })
+              }}
+              aria-label='l2-history-tabs'
+              variant='scrollable'
+            >
+              <Tab sx={{ marginLeft: -2 }} value={'Normal'} label='Normal' />
+              <Tab value={'BlindBox'} label='Blind Box' />
+            </Tabs>
+          ) : (
+            <Tabs
+              value={isTokens ? 'Tokens' : 'NFT'}
+              onChange={(_event, value) => {
+                setIsTokens(value === 'Tokens')
+              }}
+              aria-label='l2-history-tabs'
+              variant='scrollable'
+            >
+              <Tab sx={{ marginLeft: -2 }} value={'Tokens'} label='Tokens' />
+              <Tab value={'NFT'} label='NFT' />
+            </Tabs>
+          )}
+          <Box display={'flex'} justifyContent={'space-between'} marginTop={2}>
+            {showList.map((item: LuckyRedPacketItem, index) => {
+              const enabled = enabledList.find((enableItem) => enableItem.value === item.value)
+              return (
+                <Box width={'31.5%'} key={index}>
+                  <Box key={item.value.value} marginBottom={1}>
+                    <MenuBtnStyled
+                      variant={'outlined'}
+                      size={'large'}
+                      className={`${isMobile ? 'isMobile' : ''} ${
+                        selectedType.value.value === item.value.value
+                          ? 'selected redPacketType '
+                          : 'redPacketType'
+                      }`}
+                      disabled={!enabled}
+                      fullWidth
+                      onClick={(_e) => {
+                        onSelecteValue && onSelecteValue(item)
+                      }}
+                      sx={{
+                        '&&&&': {
+                          borderRadius: 2,
+                        },
+                        '&&&&.Mui-disabled': {
+                          backgroundColor: 'transparent',
+                          borderStyle: 'solid',
+                          opacity: 0.25,
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant={'body1'}
+                        display={'inline-flex'}
+                        marginBottom={1 / 2}
+                        alignItems={'flex-start'}
+                        component={'span'}
+                        color={'var(--color-text-primary)'}
+                      >
+                        {t(item.labelKey)}
+                      </Typography>
+                      <Typography
+                        variant={'body1'}
+                        display={'inline-flex'}
+                        justifyContent={'flex-start'}
+                        component={'span'}
+                        color={'var(--color-text-secondary)'}
+                      >
+                        {t(item.desKey)}
+                      </Typography>
+                    </MenuBtnStyled>
+                  </Box>
                 </Box>
-              </React.Fragment>
-            )
-          })}
+              )
+            })}
+          </Box>
         </Box>
 
         <Box
@@ -985,9 +1070,9 @@ export const CreateRedPacketStepType = withTranslation()(
           paddingBottom={1}
           display={'flex'}
           flexDirection={'row'}
-          justifyContent={'space-between'}
+          justifyContent={'center'}
         >
-          <Box width={'48%'}>
+          <Box width={'33%'} marginRight={'2%'}>
             <Button
               variant={'outlined'}
               size={'medium'}
@@ -1011,7 +1096,7 @@ export const CreateRedPacketStepType = withTranslation()(
               {t(`labelMintBack`)}
             </Button>
           </Box>
-          <Box width={'48%'}>
+          <Box width={'33%'}>
             <BtnMain
               {...{
                 defaultLabel: 'labelContinue',
@@ -1045,6 +1130,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
     const getDisabled = React.useMemo(() => {
       return disabled
     }, [disabled])
+    const isNormal = tradeType === RedPacketOrderType.TOKEN || tradeType === RedPacketOrderType.NFT
 
     return (
       <RedPacketBoxStyle
@@ -1059,68 +1145,27 @@ export const CreateRedPacketStepTokenType = withTranslation()(
         maxHeight={'480px'}
         justifyContent={'space-evenly'}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={7} justifyContent={'center'}>
           <Grid item xs={4} display={'flex'} marginBottom={2}>
             <CardStyleItem
               className={
-                tradeType === RedPacketOrderType.TOKEN
+                isNormal
                   ? 'btnCard column selected'
                   : 'btnCard column'
               }
               sx={{ height: '100%' }}
               onClick={() => onChangeTradeType!(RedPacketOrderType.TOKEN)}
             >
-              <CardContent sx={{ alignItems: 'center' }}>
+              <CardContent sx={{ alignItems: 'center', paddingTop: 4 }}>
                 <Typography component={'span'} display={'inline-flex'}>
-                  <Avatar
-                    variant='rounded'
-                    style={{
-                      height: 'var(--redPacket-avatar)',
-                      width: 'var(--redPacket-avatar)',
-                    }}
-                    // src={sellData?.icon}
-                    src={SoursURL + 'images/redPacketERC20.webp'}
-                  />
+                  <NormalRedpacketIcon color1='var(--color-box)' color2={'var(--color-text-primary)'} style={{width: 64, height: 64}} />
                 </Typography>
-
                 <Typography component={'span'} variant={'h5'} marginTop={2}>
-                  {t('labelRedpacketTokens')}
+                  {t("labelLuckyTokenNormal")}
                 </Typography>
               </CardContent>
             </CardStyleItem>
           </Grid>
-          {showNFT && (
-            <Grid item xs={4} display={'flex'} marginBottom={2}>
-              <CardStyleItem
-                className={
-                  tradeType === RedPacketOrderType.NFT
-                    ? 'btnCard column selected'
-                    : 'btnCard column'
-                }
-                sx={{ height: '100%' }}
-                onClick={() => onChangeTradeType!(RedPacketOrderType.NFT)}
-              >
-                <CardContent sx={{ alignItems: 'center' }}>
-                  <Typography component={'span'} display={'inline-flex'}>
-                    <Typography component={'span'} display={'inline-flex'}>
-                      <Avatar
-                        variant='rounded'
-                        style={{
-                          height: 'var(--redPacket-avatar)',
-                          width: 'var(--redPacket-avatar)',
-                        }}
-                        // src={sellData?.icon}
-                        src={SoursURL + 'images/redPacketNFT.webp'}
-                      />
-                    </Typography>
-                  </Typography>
-                  <Typography component={'span'} variant={'h5'} marginTop={2}>
-                    {t('labelRedpacketNFTS')}
-                  </Typography>
-                </CardContent>
-              </CardStyleItem>
-            </Grid>
-          )}
           <Grid item xs={4} display={'flex'} marginBottom={2}>
             <CardStyleItem
               className={
@@ -1131,18 +1176,10 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               sx={{ height: '100%' }}
               onClick={() => onChangeTradeType!(RedPacketOrderType.BlindBox)}
             >
-              <CardContent sx={{ alignItems: 'center' }}>
+              <CardContent sx={{ alignItems: 'center', paddingTop: 4 }}>
                 <Typography component={'span'} display={'inline-flex'}>
                   <Typography component={'span'} display={'inline-flex'}>
-                    <Avatar
-                      variant='rounded'
-                      style={{
-                        height: 'var(--redPacket-avatar)',
-                        width: 'var(--redPacket-avatar)',
-                      }}
-                      // src={sellData?.icon}
-                      src={SoursURL + 'images/redPacketBlindbox.png'}
-                    />
+                    <BlindBoxIcon fill={'var(--color-text-primary)'} style={{width: 64, height: 64}} />
                   </Typography>
                 </Typography>
                 <Typography component={'span'} variant={'h5'} marginTop={2}>
@@ -1289,7 +1326,35 @@ export const CreateRedPacketScope = withTranslation()(
               <Typography marginRight={0.5} variant={'h4'}>
                 {t('labelLuckyTokenViewTypePrivate')}{' '}
               </Typography>
-              <Tooltip title={t('labelRedPacketPrivateTooltip')}>
+              <Tooltip
+                title={
+                  <Trans
+                    i18nKey={'labelRedPacketPrivateTooltip'}
+                    components={{
+                      p: (
+                        <Typography
+                          whiteSpace={'pre-line'}
+                          component={'span'}
+                          variant={'body1'}
+                          display={'block'}
+                          color={'textSecondary'}
+                          paddingY={1}
+                        />
+                      ),
+                      br: <br />,
+                      li: (
+                        <Typography
+                          whiteSpace={'pre-line'}
+                          component={'ol'}
+                          display={'list-item'}
+                          variant={'body1'}
+                          color={'textSecondary'}
+                        />
+                      ),
+                    }}
+                  />
+                }
+              >
                 <Box>
                   <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
                 </Box>
@@ -1447,6 +1512,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
     const [showReceipts, setShowReceipts] = React.useState(false)
+    const [enlarged, setEnlarged] = React.useState(false)
 
     return (
       <RedPacketBoxStyle
@@ -1458,131 +1524,195 @@ export const TargetRedpacktSelectStep = withTranslation()(
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
       >
-        {targetRedPackets?.length > 0 ? (
-          <Box width={'100%'}>
-            <Typography marginTop={5} marginBottom={2}>
-              {targetRedPackets?.length === 0
-                ? t('labelRedpacketExclusiveEmpty')
-                : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
-            </Typography>
-            <Box display={'flex'} flexWrap={'wrap'} maxHeight={'300px'} overflow={'scroll'}>
-              {targetRedPackets &&
-                targetRedPackets
-                  .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
-                  .map((redpacket) => (
-                    <TargetRedpacktOption
-                      onClick={() => {
-                        onClickExclusiveRedpacket({
-                          hash: redpacket.hash,
-                          remainCount: (redpacket.tokenAmount as any).remainTargetCount as number,
-                        })
-                      }}
-                      selected={false}
-                      key={redpacket.hash}
-                    >
-                      <Box
-                        display={'flex'}
-                        marginBottom={1}
-                        justifyContent={'space-between'}
-                        alignItems={'start'}
-                      >
-                        <Box display={'flex'}>
-                          {redpacket.isNft ? (
-                            <NftImageStyle
-                              src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
-                              style={{
-                                width: `${theme.unit * 4}px`,
-                                height: `${theme.unit * 4}px`,
-                                borderRadius: `${theme.unit * 0.5}px`,
-                              }}
-                            />
-                          ) : (
-                            <Box width={theme.unit * 4} height={theme.unit * 4}>
-                              <CoinIcons
-                                size={theme.unit * 4}
-                                type={TokenType.single}
-                                tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
-                              />
-                            </Box>
-                          )}
-                          <Box width={'125px'} marginLeft={1} marginBottom={1}>
-                            <Typography
-                              textOverflow={'ellipsis'}
-                              whiteSpace={'nowrap'}
-                              overflow={'hidden'}
-                            >
-                              {redpacket.isNft
-                                ? redpacket.nftTokenInfo?.metadata?.base.name
-                                : idIndex[redpacket.tokenId]}
-                            </Typography>
-                            <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                              {redpacket.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
-                                ? t('labelLuckyBlindBox')
-                                : redpacket.type.mode === sdk.LuckyTokenClaimType.RELAY
-                                ? t('labelRelayRedPacket')
-                                : redpacket.type.partition === sdk.LuckyTokenAmountType.RANDOM
-                                ? t('labelLuckyRedPacket')
-                                : t('labelNormalRedPacket')}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Typography
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onClickViewDetail(redpacket.hash)
-                          }}
-                          color={'var(--color-primary)'}
-                        >
-                          {t('labelRedPacketExclusiveViewDetails')}
-                        </Typography>
-                      </Box>
-                      <hr
-                        style={{
-                          background: 'var(--color-border)',
-                          border: 'none',
-                          height: '0.5px',
-                        }}
-                      />
-                      <Box
-                        marginTop={1}
-                        marginLeft={5}
-                        display={'flex'}
-                        justifyContent={'space-between'}
-                      >
-                        <Typography color={'var(--color-text-secondary)'}>
-                          {t('labelRedpacketSentMaxLimit')}
-                        </Typography>
-                        <Typography color={'var(--color-text-secondary)'}>
-                          {redpacket.tokenAmount.totalCount -
-                            (redpacket.tokenAmount as any).remainTargetCount}{' '}
-                          / {redpacket.tokenAmount.totalCount}
-                        </Typography>
-                      </Box>
-                    </TargetRedpacktOption>
-                  ))}
-            </Box>
-          </Box>
-        ) : (
+        {!enlarged && (
           <Box
             display={'flex'}
-            justifyContent={'center'}
             alignItems={'center'}
             flexDirection={'column'}
-            width={'100%'}
-            paddingTop={'10%'}
+            marginX={9}
+            marginTop={2}
+            padding={2.5}
+            borderBottom={'1px solid var(--color-border)'}
+            height={'216px'}
           >
-            <img
-              height={160}
-              width={160}
-              src={SoursURL + '/images/exclusive_redpacket_empty.png'}
-            />
-            <Typography marginTop={2} variant={'body2'} textAlign={'center'}>
-              {t('labelRedpacketExclusiveListEmpty')}
+            <Typography variant={'h4'} width={'100%'} marginBottom={7}>
+              {t('labelTargetRedpacketOption1')}
             </Typography>
+
+            <BtnMain
+              {...{
+                defaultLabel: 'labelRedpacketCreateNew',
+                disabled: () => false,
+                onClick: () => {
+                  onClickCreateNew()
+                },
+              }}
+            />
           </Box>
         )}
+        <Box
+          height={enlarged ? '590px' : '290px'}
+          marginX={9}
+          marginTop={enlarged ? 2 : 3}
+          // bgcolor={'var(--color-global-bg)'}
+          padding={2.5}
+          // border={'1px solid var(--color-border)'}
+          borderRadius={2}
+          position={'relative'}
+        >
+          <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
+          <Typography variant={'h4'} marginBottom={3} >
+            {t('labelTargetRedpacketOption2')}{' '}
+          </Typography>
+          <Typography fontSize={'13px'} marginBottom={3} >
+            {targetRedPackets?.length === 0
+              ? t('labelRedpacketExclusiveEmpty')
+              : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
+          </Typography>
 
-        <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>
+          </Box>
+          
+
+          {targetRedPackets?.length > 0 ? (
+            <Box width={'100%'}>
+              <Box
+                display={'flex'}
+                flexWrap={'wrap'}
+                maxHeight={enlarged ? '480px' : '190px'}
+                overflow={'scroll'}
+              >
+                {targetRedPackets &&
+                  targetRedPackets
+                    .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
+                    .map((redpacket) => (
+                      <TargetRedpacktOption
+                        onClick={() => {
+                          onClickExclusiveRedpacket({
+                            hash: redpacket.hash,
+                            remainCount: (redpacket.tokenAmount as any).remainTargetCount as number,
+                          })
+                        }}
+                        selected={false}
+                        key={redpacket.hash}
+                      >
+                        <Box
+                          display={'flex'}
+                          marginBottom={1}
+                          justifyContent={'space-between'}
+                          alignItems={'start'}
+                        >
+                          <Box display={'flex'}>
+                            {redpacket.isNft ? (
+                              <NftImageStyle
+                                src={redpacket.nftTokenInfo?.metadata?.imageSize['240-240']}
+                                style={{
+                                  width: `${theme.unit * 4}px`,
+                                  height: `${theme.unit * 4}px`,
+                                  borderRadius: `${theme.unit * 0.5}px`,
+                                }}
+                              />
+                            ) : (
+                              <Box width={theme.unit * 4} height={theme.unit * 4}>
+                                <CoinIcons
+                                  size={theme.unit * 4}
+                                  type={TokenType.single}
+                                  tokenIcon={[coinJson[idIndex[redpacket.tokenId]]]}
+                                />
+                              </Box>
+                            )}
+                            <Box width={'125px'} marginLeft={1} marginBottom={1}>
+                              <Typography
+                                textOverflow={'ellipsis'}
+                                whiteSpace={'nowrap'}
+                                overflow={'hidden'}
+                              >
+                                {redpacket.isNft
+                                  ? redpacket.nftTokenInfo?.metadata?.base.name
+                                  : idIndex[redpacket.tokenId]}
+                              </Typography>
+                              <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
+                                {redpacket.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                                  ? t('labelLuckyBlindBox')
+                                  : redpacket.type.mode === sdk.LuckyTokenClaimType.RELAY
+                                  ? t('labelRelayRedPacket')
+                                  : redpacket.type.partition === sdk.LuckyTokenAmountType.RANDOM
+                                  ? t('labelLuckyRedPacket')
+                                  : t('labelNormalRedPacket')}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Typography
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onClickViewDetail(redpacket.hash)
+                            }}
+                            color={'var(--color-primary)'}
+                          >
+                            {t('labelRedPacketExclusiveViewDetails')}
+                          </Typography>
+                        </Box>
+                        <hr
+                          style={{
+                            background: 'var(--color-border)',
+                            border: 'none',
+                            height: '0.5px',
+                          }}
+                        />
+                        <Box
+                          marginTop={1}
+                          marginLeft={5}
+                          display={'flex'}
+                          justifyContent={'space-between'}
+                        >
+                          <Typography color={'var(--color-text-secondary)'}>
+                            {t('labelRedpacketSentMaxLimit')}
+                          </Typography>
+                          <Typography color={'var(--color-text-secondary)'}>
+                            {redpacket.tokenAmount.totalCount -
+                              (redpacket.tokenAmount as any).remainTargetCount}{' '}
+                            / {redpacket.tokenAmount.totalCount}
+                          </Typography>
+                        </Box>
+                      </TargetRedpacktOption>
+                    ))}
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              flexDirection={'column'}
+              width={'100%'}
+            >
+              <img
+                height={160}
+                width={160}
+                src={SoursURL + '/images/exclusive_redpacket_empty.png'}
+              />
+              <Typography marginTop={-2.5} variant={'body2'} textAlign={'center'}>
+                {t('labelTargetRedpacketNoRedpacket')}
+              </Typography>
+              <Typography width={'300px'} marginTop={1} variant={'body2'} textAlign={'center'}>
+                {t('labelTargetRedpacketNoRedpacketDes')}
+              </Typography>
+            </Box>
+          )}
+
+          {targetRedPackets?.length > 0 && (
+            <BiArrow
+              sx={{
+                position: 'absolute',
+                bottom: 10,
+                left: '50%',
+                transform: enlarged ? 'rotate(180deg)' : 'none',
+              }}
+              onClick={() => setEnlarged(!enlarged)}
+            />
+          )}
+        </Box>
+
+        {/* <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>
           <Box width={'48%'} marginRight={'4%'}>
             <Button
               variant={'outlined'}
@@ -1611,7 +1741,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
               }}
             />
           </Box>
-        </Box>
+        </Box> */}
         <Modal
           open={popRedPacket ? true : false}
           onClose={() => {
