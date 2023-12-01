@@ -209,7 +209,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     ) {
       walletLayer2Service.sendUserUpdate()
     }
-  }, [ammMapStatus, accountStatus,tokenPricesStatus])
   }, [ammMapStatus, accountStatus, tokenPricesStatus])
 
   React.useEffect(() => {
