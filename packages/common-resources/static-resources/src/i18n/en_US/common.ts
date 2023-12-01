@@ -2100,7 +2100,7 @@ export default {
   labelL2DepositNote: 'Receive token in {{loopringL2}}',
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
-  labelReadAll: 'Read all',
+  labelReadAll: 'View all',
   labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
   labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
   labelDualLongestSettlementFixed: 'Fixed',

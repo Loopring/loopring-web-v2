@@ -139,14 +139,12 @@ export const useNotification = <R extends sdk.UserNotification>({
   onReadClick: (index: number, rest: any) => void
 }) => {
   const history = useHistory()
-  const { messageType } = rest
+  const { messageType, redirectionContext } = rest
   let ele: any = {
     i18nKey: '',
     active: undefined,
   }
-  //TODO:
-  ele.redirectionContext =
-    '0x1f78ba3b8bfe37dd4e05825a30e35f18e8503fbe3b50ec058a5681877b7fe892-1698915653481'
+  const params = JSON.parse(redirectionContext ? redirectionContext : '{}')
   switch (messageType) {
     case sdk.NotificationMessageType.L1_CREATED:
       ele.i18nKey = 'labelActiveL1successfulNote' //Active L1 Account successful
@@ -202,7 +200,7 @@ export const useNotification = <R extends sdk.UserNotification>({
       ele.active = () => {
         onReadClick(index, rest)
         history.push(
-          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${ele.redirectionContext}&show=detail`,
+          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${params.hash} &show=detail`,
         )
       }
       break
@@ -211,7 +209,7 @@ export const useNotification = <R extends sdk.UserNotification>({
       ele.active = () => {
         onReadClick(index, rest)
         history.push(
-          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${ele.redirectionContext}&show=detail`,
+          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${params.hash} &show=detail`,
         )
       }
       break
@@ -220,7 +218,7 @@ export const useNotification = <R extends sdk.UserNotification>({
       ele.active = () => {
         onReadClick(index, rest)
         history.push(
-          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${ele.redirectionContext}&show=detail`,
+          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${params.hash} &show=detail`,
         )
       }
       break
@@ -229,18 +227,16 @@ export const useNotification = <R extends sdk.UserNotification>({
       ele.active = () => {
         onReadClick(index, rest)
         history.push(
-          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${ele.redirectionContext}&show=detail`,
+          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${params.hash} &show=detail`,
         )
-        showDetail()
       }
       break
-    //TODO
     case 54:
       ele.i18nKey = 'labelL2DualNote'
       ele.active = () => {
         onReadClick(index, rest)
         history.push(
-          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${ele.redirectionContext}&show=detail`,
+          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${params.hash} &show=detail`,
         )
       }
       break
@@ -249,7 +245,7 @@ export const useNotification = <R extends sdk.UserNotification>({
       ele.active = () => {
         onReadClick(index, rest)
         history.push(
-          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${ele.redirectionContext}&show=detail`,
+          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${params.hash} &show=detail`,
         )
       }
 
