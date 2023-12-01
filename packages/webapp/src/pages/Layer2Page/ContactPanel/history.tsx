@@ -84,6 +84,7 @@ export const ContactTransactionsPage = withTranslation('common')(
             display={'flex'}
             flex={1}
             overflow={'scroll'}
+            ref={container}
           >
             <TransactionTable
               {...{

@@ -84,4 +84,5 @@ export default {
   labelContactsDeleteFailed: 'Delete Contact Failed',
   labelContactsEditFailed: 'Edit Contact Failed',
   labelContactsSendFailed: 'Send Failed',
+  errorOrderFailed: 'Order status Failed',
 }

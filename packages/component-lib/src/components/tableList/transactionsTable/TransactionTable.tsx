@@ -308,12 +308,16 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 className='rdg-cell-value textAlignRight'
                 title={`${hasSymbol}  ${
                   row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
-                    ? (hasValue ? `${renderValue} ${unit}` : renderValue)
+                    ? hasValue
+                      ? `${renderValue} ${unit}`
+                      : renderValue
                     : ''
                 }`}
               >
                 {hasSymbol}
-                {row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW && hasValue ? `${renderValue} ${unit}` : renderValue}
+                {row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW && hasValue
+                  ? `${renderValue} ${unit}`
+                  : renderValue}
               </Box>
             )
           },
@@ -405,7 +409,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
             ) {
               path =
                 row.txHash !== ''
-                  ? etherscanBaseUrl + `/tx/${row.txHash.slice(0,6)}-${row.txHash.slice(row.txHash - 4)}`
+                  ? etherscanBaseUrl +
+                    `/tx/${row.txHash.slice(0, 6)}-${row.txHash.slice(row.txHash - 4)}`
                   : Explorer +
                     `tx/${row.hash}-transfer-${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
             } else {
@@ -436,7 +441,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                   title={from && to ? from + ` ${DirectionTag} ` + to : from + to}
                 >
                   {row.side.toLowerCase() === 'change_pwd'
-                    ? `${hash.slice(0,6)}...${hash.slice(hash.length - 4)}`
+                    ? `${hash.slice(0, 6)}...${hash.slice(hash.length - 4)}`
                     : from && to
                     ? from + ` ${DirectionTag} ` + to
                     : from + to}

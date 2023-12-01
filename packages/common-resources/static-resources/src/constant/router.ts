@@ -607,6 +607,14 @@ export const MEDIA_LIST = [
 export const headerMenuData: Array<HeaderMenuItemInterface> = [
   {
     label: {
+      id: 'home',
+      i18nKey: 'labelHome',
+    },
+    router: { path: `/pro` },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
       id: 'L2Assets',
       i18nKey: 'labelAssets',
     },

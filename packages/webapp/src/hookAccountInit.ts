@@ -15,11 +15,20 @@ import {
   useContacts,
   useNotify,
   useSocket,
+  useTargetRedPackets,
+  useWalletLayer2Socket,
+  makeDefiInvestReward,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state })
   const { sendSocketTopic, socketUserEnd } = useSocket()
+  const {
+    getExclusiveRedpacket,
+    status: targetRedPacketStatus,
+    statusUnset: targetRedPacketUnset,
+  } = useTargetRedPackets()
+
   const {
     updateWalletLayer1,
     status: walletLayer1Status,
@@ -87,7 +96,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           socketUserEnd()
           break
         case AccountStatus.ACTIVATED:
-          getUserRewards()
           clearRedPacketHash()
           offFaitService.backendCheckStart()
           if (walletLayer1Status !== SagaStatus.PENDING) {
@@ -99,6 +107,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2Collection({ page: 1 })
           }
           sendSocketTopic({})
+          getExclusiveRedpacket()
           updateLegacyContracts()
           updateContacts()
           getUserNotify()
@@ -106,6 +115,14 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       }
     }
   }, [accountStatus, state, account.readyState])
+  useWalletLayer2Socket({
+    walletLayer2Callback: () => {
+      const account = store.getState().account
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getUserRewards()
+      }
+    },
+  })
   React.useEffect(() => {
     switch (walletLayer1Status) {
       case SagaStatus.ERROR:
@@ -130,6 +147,18 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [walletLayer2Status])
+  React.useEffect(() => {
+    switch (targetRedPacketStatus) {
+      case SagaStatus.ERROR:
+        targetRedPacketUnset()
+        break
+      case SagaStatus.DONE:
+        wallet2statusUnset()
+        break
+      default:
+        break
+    }
+  }, [targetRedPacketStatus])
 
   React.useEffect(() => {
     switch (walletL2CollectionStatus) {

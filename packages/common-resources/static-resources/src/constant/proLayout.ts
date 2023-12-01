@@ -98,19 +98,17 @@ const stopLimitLayout: ConfigLayout = {
   cols: { xlg: 24, lg: 24, md: 24, sm: 12, xs: 12, xxs: 6 },
   layouts: {
     xlg: [
-      { i: 'toolbar', x: 0, y: 0, w: 24, h: 9, minW: 24, minH: 9 },
-      // { i: "walletInfo", x: 0, y: 10, w: 4, h: 28, minW: 4, minH: 26 },
-      { i: 'spot', x: 0, y: 10, w: 4, h: 143, minW: 4, minH: 70 },
-      { i: 'markdown', x: 4, y: 10, w: 8, h: 88, minW: 4, minH: 20 },
-      { i: 'chart', x: 12, y: 10, w: 12, h: 88, minW: 6, minH: 32 },
-      // { i: "market2", x: 20, y: 10, w: 4, h: 88, minW: 4, minH: 36 },
-      { i: 'orderTable', x: 4, y: 64, w: 20, h: 55, minW: 6, minH: 36 },
+      { w: 24, h: 9, x: 0, y: 0, i: 'toolbar', minW: 24, minH: 9 },
+      { w: 5, h: 79, x: 0, y: 9, i: 'spot', minW: 4, minH: 68 },
+      { w: 7, h: 79, x: 5, y: 9, i: 'markdown', minW: 4, minH: 20 },
+      { w: 12, h: 78, x: 12, y: 9, i: 'chart', minW: 6, minH: 32 },
+      { w: 24, h: 36, x: 0, y: 88, i: 'orderTable', minW: 6, minH: 36 },
     ],
     lg: [
       { w: 24, h: 9, x: 0, y: 0, i: 'toolbar', minW: 24, minH: 9 },
-      { w: 5, h: 79, x: 0, y: 9, i: 'spot', minW: 4, minH: 68 },
+      { w: 5, h: 80, x: 0, y: 9, i: 'spot', minW: 4, minH: 68 },
       { w: 7, h: 44, x: 5, y: 9, i: 'markdown', minW: 4, minH: 20 },
-      { w: 12, h: 44, x: 11, y: 9, i: 'chart', minW: 6, minH: 32 },
+      { w: 12, h: 44, x: 12, y: 9, i: 'chart', minW: 6, minH: 32 },
       { w: 19, h: 36, x: 5, y: 53, i: 'orderTable', minW: 6, minH: 36 },
     ],
     md: [
