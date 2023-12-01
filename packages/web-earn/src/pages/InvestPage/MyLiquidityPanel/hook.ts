@@ -122,7 +122,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }))
 
       if (hideSmallBalances) {
-        myLog('hideSmallBalances', hideSmallBalances, resultData)
+        // myLog('hideSmallBalances', hideSmallBalances, resultData)
         resultData = resultData.filter((o) => sdk.toBig(o?.balanceU ?? 0).gt(0))
       }
       if (filter.searchValue) {

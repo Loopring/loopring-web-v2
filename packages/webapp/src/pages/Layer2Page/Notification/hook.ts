@@ -1,10 +1,4 @@
-import {
-  LoopringAPI,
-  notificationService,
-  useAccount,
-  useNotificationFunc,
-  useNotify,
-} from '@loopring-web/core'
+import { LoopringAPI, useAccount, useNotificationFunc, useNotify } from '@loopring-web/core'
 import React from 'react'
 import { MapChainId, SDK_ERROR_MAP_TO_UI } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'

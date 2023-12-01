@@ -104,12 +104,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
               __raw__: {
                 order: {
                   settlementStatus,
-                  tokenInfoOrigin: {
-                    amountIn,
-                    tokenOut,
-
-                    amountOut,
-                  },
+                  tokenInfoOrigin: { amountIn, tokenOut, amountOut },
                   timeOrigin: { expireTime },
                   investmentStatus,
                 },
@@ -291,16 +286,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
             let content = ''
             const {
               __raw__: {
-                order: {
-                  deliveryPrice,
-                  strike,
-                  dualType,
-                  investmentStatus,
-                  dualReinvestInfo,
-                  timeOrigin: { expireTime },
-                  tokenInfoOrigin,
-                  settlementStatus,
-                },
+                order: { dualReinvestInfo, tokenInfoOrigin, settlementStatus },
               },
             } = row
             switch (dualReinvestInfo?.retryStatus) {
@@ -385,7 +371,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
           },
         },
       ],
-      [],
+      [t, tokenMap, idIndex],
     )
 
     const getColumnMobileTransaction = React.useCallback(
@@ -409,7 +395,6 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 order: {
                   settlementStatus,
                   dualType,
-                  strike,
                   deliveryPrice,
                   investmentStatus,
                   tokenInfoOrigin: { amountIn, tokenOut, amountOut, tokenIn },
@@ -445,7 +430,7 @@ export const DualTxsTable = withTranslation(['tables', 'common'])(
                 ? 'var(--color-warning)'
                 : 'var(--color-success)'
             let buySymbol, buyAmount
-            if (tokenOut !== undefined && tokenOut && tokenOut != 0) {
+            if (tokenOut !== undefined) {
               buySymbol = tokenMap[idIndex[tokenOut]].symbol
               buyAmount = getValuePrecisionThousand(
                 sdk.toBig(amountOut ? amountOut : 0).div('1e' + tokenMap[buySymbol].decimals),
