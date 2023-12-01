@@ -590,7 +590,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
       'showInNormal', 
       'showInBlindBox',
       'enableInERC20', 
-      'hideForExclusive'
+      'disabledForExclusive'
     ],
     value: {
       value: 0,
