@@ -1888,7 +1888,7 @@ export default {
     <li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>
     <li>3. Designate the recipients</li>
     <li>4. Set the Notification Display</li>
-    <p>For whitelisted users, each Red Packet can accommodate a maximum of 1,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>
+    <p>For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>
     <p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>
   `,
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',

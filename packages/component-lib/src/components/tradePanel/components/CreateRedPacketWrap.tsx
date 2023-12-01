@@ -1003,7 +1003,7 @@ export const CreateRedPacketStepType = withTranslation()(
               variant='scrollable'
             >
               <Tab sx={{ marginLeft: -2 }} value={'Tokens'} label={t('labelAssetTokens')} />
-              {!(tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX && tradeData.type?.scope === sdk.LuckyTokenViewType.PUBLIC) && <Tab value={'NFT'} label={t('labelRedpacketNFTS')} />}
+              {tradeData.type?.scope !== sdk.LuckyTokenViewType.PUBLIC && <Tab value={'NFT'} label={t('labelRedpacketNFTS')} />}
             </Tabs>
           )}
           <Box display={'flex'} justifyContent={'space-between'} marginTop={2}>
