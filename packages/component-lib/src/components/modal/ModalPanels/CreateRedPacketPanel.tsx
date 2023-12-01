@@ -680,7 +680,6 @@ export const CreateRedPacketPanel = <
             }
           }}
           selectedScope={tradeData.type!.scope!}
-          exclusiveDisabled={!isWhiteListed && tradeData.tradeType === RedPacketOrderType.FromNFT}
           showBackBtn={tradeData.tradeType === RedPacketOrderType.FromNFT}
           showExclusiveOption={showExclusiveOption ? true : false}
         />
