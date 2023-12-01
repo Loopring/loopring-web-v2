@@ -61,8 +61,8 @@ export const VaultDashBoardPanel = ({
   const colors = ['var(--color-success)', 'var(--color-error)', 'var(--color-warning)']
   const profitUI = React.useMemo(() => {
     const profit = sdk
-      .toBig(vaultAccountInfo?.totalEquityOfUsd ?? 0)
-      .minus(vaultAccountInfo?.totalCollateralOfUsd ?? 0)
+      .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+      .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
       .times(forexMap[currency] ?? 0)
     const colorIs = profit.gte(0) ? 0 : 1
 
@@ -92,7 +92,7 @@ export const VaultDashBoardPanel = ({
               color={colors[colorIs]}
             >
               {getValuePrecisionThousand(
-                profit.div(vaultAccountInfo?.totalCollateralOfUsd ?? 1).times(100),
+                profit.div(vaultAccountInfo?.totalCollateralOfUsdt ?? 1).times(100),
                 4,
                 4,
                 4,
@@ -110,7 +110,7 @@ export const VaultDashBoardPanel = ({
         )}
       </>
     )
-  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsd, vaultAccountInfo?.accountStatus])
+  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsdt, vaultAccountInfo?.accountStatus])
   const marginUI = React.useMemo(() => {
     const colorIs = sdk.toBig('1.5').gte(vaultAccountInfo?.marginLevel ?? 0)
       ? 1
@@ -252,10 +252,10 @@ export const VaultDashBoardPanel = ({
                           </Typography>
                           {!hideAssets ? (
                             <Typography component={'span'} variant={'h1'}>
-                              {vaultAccountInfo?.totalBalanceOfUsd
+                              {vaultAccountInfo?.totalBalanceOfUsdt
                                 ? getValuePrecisionThousand(
                                     sdk
-                                      .toBig(vaultAccountInfo?.totalBalanceOfUsd ?? 0)
+                                      .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
                                       .times(forexMap[currency] ?? 0),
                                     2,
                                     2,
@@ -319,7 +319,7 @@ export const VaultDashBoardPanel = ({
                               ? HiddenTag
                               : PriceTag[CurrencyToTag[currency]] +
                                 getValuePrecisionThousand(
-                                  Number(vaultAccountInfo?.totalCollateralOfUsd ?? 0) *
+                                  Number(vaultAccountInfo?.totalCollateralOfUsdt ?? 0) *
                                     (forexMap[currency] ?? 0),
                                   2,
                                   2,
@@ -346,7 +346,7 @@ export const VaultDashBoardPanel = ({
                               ? HiddenTag
                               : PriceTag[CurrencyToTag[currency]] +
                                 getValuePrecisionThousand(
-                                  Number(vaultAccountInfo?.totalDebtOfUsd ?? 0) *
+                                  Number(vaultAccountInfo?.totalDebtOfUsdt ?? 0) *
                                     (forexMap[currency] ?? 0),
                                   2,
                                   2,
@@ -372,7 +372,7 @@ export const VaultDashBoardPanel = ({
                             ? hideAssets
                               ? HiddenTag
                               : getValuePrecisionThousand(
-                                  Number(vaultAccountInfo?.totalEquityOfUsd ?? 0) *
+                                  Number(vaultAccountInfo?.totalEquityOfUsdt ?? 0) *
                                     (forexMap[currency] ?? 0),
                                   2,
                                   2,

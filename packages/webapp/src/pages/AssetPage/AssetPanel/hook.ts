@@ -374,7 +374,7 @@ export const useAssetAction = () => {
                   link = `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
                   break
                 //TODO
-                case 'VAULT_DEPOSIT':
+                case sdk.LOCK_TYPE.VAULT_COLLATERAL:
                   link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
               }
