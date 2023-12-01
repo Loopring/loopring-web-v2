@@ -374,7 +374,6 @@ export const useAssetAction = () => {
                 case sdk.LOCK_TYPE.STOP_LIMIT:
                   link = `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
                   break
-                //TODO
                 case sdk.LOCK_TYPE.VAULT_COLLATERAL:
                   link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
