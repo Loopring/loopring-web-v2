@@ -1373,7 +1373,7 @@ export default {
   labelLpAmount: 'LP Amount: {{value}}',
   labelRedPacketMarketsBtn: 'Red Packet Plaza',
   labelRedPacketBtn: 'Shared',
-  labelRedPacketViewType0: 'Public Palaza',
+  labelRedPacketViewType0: 'Public Plaza',
   labelRedPacketViewType1: 'Public QR',
   labelRedPacketViewTypeDetail0: 'public Red Packet',
   labelRedPacketViewTypeDetail1: 'public Red Packet',
@@ -2107,4 +2107,6 @@ export default {
   labelTotalUnRead: '{{total}} unread(s)',
   labelReadAll: 'Read all',
   labelLuckyTokenNormal: 'Normal',
+  labelRedPacketSendAverageTitle: 'Average Red Packet',
+  sdhkahdjksahk: 'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.'
 }

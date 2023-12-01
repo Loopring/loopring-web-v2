@@ -416,7 +416,7 @@ export const CreateRedPacketStepWrap = withTranslation()(
                   : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
                   ? 'labelRelayRedPacket'
                   : selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                  ? 'labelRedPacketSendCommonTitle'
+                  ? 'labelRedPacketSendAverageTitle'
                   : 'labelRedPacketSenRandomTitle',
               ) +
                 ' — ' +
@@ -948,28 +948,23 @@ export const CreateRedPacketStepType = withTranslation()(
             variant={isMobile ? 'body1' : 'h4'}
             whiteSpace={'pre'}
             marginRight={1}
-            marginBottom={tradeType === RedPacketOrderType.BlindBox ? 4 : 2}
+            marginBottom={2}
+            display={'flex'}
+            alignItems={'center'}
           >
             {t(
               selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
                 ? 'labelLuckyBlindBox'
-                : selectedType.value.mode == sdk.LuckyTokenClaimType.RELAY
-                ? 'labelRelayRedPacket'
-                : selectedType.value.partition == sdk.LuckyTokenAmountType.AVERAGE
-                ? 'labelRedPacketSendCommonTitle'
-                : 'labelRedPacketSenRandomTitle',
+                : 'labelNormalRedPacket',
             ) +
               ' — ' +
               t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
+            {tradeType === RedPacketOrderType.BlindBox && <Tooltip title={t('sdhkahdjksahk')}>
+              <Box marginLeft={1} height={24}>
+                <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
+              </Box>
+            </Tooltip>}
           </Typography>
-
-          {tradeType === RedPacketOrderType.BlindBox && (
-            <Typography marginBottom={0} color={'var(--color-text-secondary)'}>
-              Each recipient will receive a sealed Red Packet which cannot be opened until the
-              expiration date. While some recipients will receive an NFT, others will need to try
-              their luck next time.
-            </Typography>
-          )}
 
           {tradeType === RedPacketOrderType.FromNFT ? (
             <Tabs
@@ -1003,8 +998,8 @@ export const CreateRedPacketStepType = withTranslation()(
               aria-label='l2-history-tabs'
               variant='scrollable'
             >
-              <Tab sx={{ marginLeft: -2 }} value={'Tokens'} label='Tokens' />
-              <Tab value={'NFT'} label='NFT' />
+              <Tab sx={{ marginLeft: -2 }} value={'Tokens'} label={t('labelAssetTokens')} />
+              {!(tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX && tradeData.type?.scope === sdk.LuckyTokenViewType.PUBLIC) && <Tab value={'NFT'} label={t('labelRedpacketNFTS')} />}
             </Tabs>
           )}
           <Box display={'flex'} justifyContent={'space-between'} marginTop={2}>
