@@ -129,7 +129,7 @@ export const useVaultRedeem = () => {
         ) {
           status = 'labelPending'
         } else {
-          status = 'labelSuccess'
+          status = 'labelSuccessfully'
         }
         setShowAccount({
           isShow: true,
