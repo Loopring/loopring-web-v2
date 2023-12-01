@@ -172,7 +172,10 @@ export const useVaultRedeem = () => {
       setShowAccount({
         isShow: true,
         step: AccountStep.VaultRedeem_Failed,
-        info,
+        info: {
+          ...info,
+          status: t('labelFailed'),
+        },
         error,
       })
     }
@@ -206,6 +209,7 @@ export const useVaultRedeem = () => {
           isShow: true,
           step: AccountStep.VaultRedeem_Failed,
           info: {
+            status: t('labelFailed'),
             usdValue: vaultAccountInfo?.totalBalanceOfUsdt
               ? getValuePrecisionThousand(
                   sdk

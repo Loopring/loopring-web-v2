@@ -14,7 +14,7 @@ import { useSettings } from '../../../stores'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, amount, vSymbol, sum, time } = props?.info ?? {}
+  const { percentage, symbol, amount, vSymbol, sum, time, status } = props?.info ?? {}
   return (
     <Box
       justifySelf={'stretch'}
@@ -45,10 +45,13 @@ const TradeDes2 = (props: PanelProps) => {
         component={'span'}
       >
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultTradeStatus')}
+          {props.t('labelVaultStatus')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t('labelVaultTradeStatus', { percentage })}
+          {props.t('labelVaultTradeStatus', {
+            status,
+            percentage: percentage ? `(${percentage}%)` : '',
+          })}
         </Typography>
       </Typography>
 
@@ -184,7 +187,10 @@ const JoinDes2 = (props: PanelProps) => {
           {props.t('labelVaultStatus')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t(`labelVaultJoinStatus${status}`, { percentage })}
+          {props.t(`labelVaultJoinStatus`, {
+            status,
+            percentage: percentage ? `(${percentage}%)` : '',
+          })}
         </Typography>
       </Typography>
 
