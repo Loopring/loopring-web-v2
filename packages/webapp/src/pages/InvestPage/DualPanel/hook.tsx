@@ -104,9 +104,6 @@ export const useDualHook = () => {
     marketMap,
     status: dualStatus,
   } = useDualMap()
-  const {
-    confirmation: { confirmedDualInvestV2 },
-  } = confirmation.useConfirmation()
   const history = useHistory()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -209,37 +206,34 @@ export const useDualHook = () => {
   }, [marketArray])
   const baseTokenList = React.useMemo(() => {
     if (dualStatus === SagaStatus.UNSET) {
-      const object = Reflect.ownKeys(marketMap ?? {}).reduce(
-        (prev, key) => {
-          if (!marketMap[key.toString()].enabled) {
-            return prev
-          }
-          const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
-          prev[baseSymbol] = {
-            tokenName: baseSymbol,
-            tokenList: tradeMap[baseSymbol]?.tokenList,
-          }
-          if (viewType === DualViewType.DualGain) {
-            prev[baseSymbol] = {
-              ...prev[baseSymbol],
-            }
-          } else if (viewType === DualViewType.DualDip) {
-            prev[baseSymbol] = {
-              ...prev[baseSymbol],
-            }
-          } else {
-            prev[baseSymbol] = {
-              ...prev[baseSymbol],
-            }
-          }
-
+      const object = Reflect.ownKeys(marketMap ?? {}).reduce((prev, key) => {
+        if (!marketMap[key.toString()].enabled) {
           return prev
-        },
-        {} as any,
-      )
+        }
+        const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
+        prev[baseSymbol] = {
+          tokenName: baseSymbol,
+          tokenList: tradeMap[baseSymbol]?.tokenList,
+        }
+        if (viewType === DualViewType.DualGain) {
+          prev[baseSymbol] = {
+            ...prev[baseSymbol],
+          }
+        } else if (viewType === DualViewType.DualDip) {
+          prev[baseSymbol] = {
+            ...prev[baseSymbol],
+          }
+        } else {
+          prev[baseSymbol] = {
+            ...prev[baseSymbol],
+          }
+        }
+
+        return prev
+      }, {} as any)
       return _.mapValues(object, (token) => {
         const keys = Object.keys(marketMap).filter((key) => key.includes(token.tokenName))
-        if (viewType === DualViewType.DualGain) {            
+        if (viewType === DualViewType.DualGain) {
           var maxAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number))
           var minAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.min as number))
         } else if (viewType === DualViewType.DualDip) {
@@ -248,7 +242,7 @@ export const useDualHook = () => {
         } else {
           maxAPY = _.max([
             ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number),
-            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number)
+            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number),
           ])
           minAPY = _.max([
             ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.min as number),
@@ -258,7 +252,7 @@ export const useDualHook = () => {
         return {
           ...token,
           maxAPY,
-          minAPY
+          minAPY,
         }
       })
     } else {
@@ -349,9 +343,13 @@ export const useDualHook = () => {
     }
   }, 100)
 
-  const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(undefined)
+  const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(
+    [DualViewType.DualGain, DualViewType.DualDip].includes(viewType) ? coinA : undefined,
+  )
   const [step2BuyOrSell, setStep2BuyOrSell] = React.useState<'Buy' | 'Sell' | undefined>(undefined)
-  const [step3Token, setStep3Token] = React.useState<string | undefined>(undefined)
+  const [step3Token, setStep3Token] = React.useState<string | undefined>(
+    [DualViewType.DualGain, DualViewType.DualDip].includes(viewType) ? coinB : undefined,
+  )
   const onSelectStep1Token = React.useCallback(
     (token?: string) => {
       setStep1SelectedToken(token)

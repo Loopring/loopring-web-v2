@@ -43,12 +43,15 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
+  RouterPath,
+  RecordTabIndex,
   EmptyValueTag,
   DirectionTag,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useDualAsset } from './useDualAsset'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -786,29 +789,47 @@ export const useOrderList = ({
 
 export const useDualTransaction = <R extends RawDataDualTxsItem>(
   setToastOpen: (props: any) => void,
+  path = RouterPath.l2records,
 ) => {
   const { t } = useTranslation(['error'])
-
+  const match: any = useRouteMatch(`${path}/:tab/`)
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const history = useHistory()
   const {
     account: { accountId, apiKey },
   } = useAccount()
-
+  const {
+    refresh: refreshDualDetail,
+    detail: dualDetail,
+    open: openDualDetail,
+    setOpen: setDualOpen,
+  } = useDualAsset()
+  const onClose = () => {
+    searchParams.delete('show')
+    history.replace({
+      pathname: `${path}/${RecordTabIndex.DualRecords}`,
+      search: searchParams.toString(),
+    })
+    setDualOpen(false)
+  }
   const [dualList, setDualList] = React.useState<R[]>([])
   const { idIndex } = useTokenMap()
   const [dualTotal, setDualTotal] = React.useState(0)
   const { marketMap: dualMarketMap } = useDualMap()
-  // const [pagination, setDualPagination] = React.useState<{
-  //   pageSize: number;
-  //   total: number;
-  // }>({
-  //   pageSize: Limit,
-  //   total: 0,
-  // });
   const [showLoading, setShowLoading] = React.useState(true)
 
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, settlementStatus, investmentStatus, dualTypes, limit }: any) => {
       setShowLoading(true)
+      if (
+        searchParams?.get('show') == 'detail' &&
+        match?.params?.tab == RecordTabIndex.DualRecords &&
+        searchParams?.has('hash')
+      ) {
+        let hash = searchParams.get('hash')
+        refreshDualDetail(hash ?? '', true)
+      }
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getDualTransactions(
           {
@@ -882,6 +903,10 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   )
 
   return {
+    refreshDualDetail,
+    dualDetail,
+    openDualDetail,
+    onDualClose: onClose,
     // page,
     dualList,
     showLoading,

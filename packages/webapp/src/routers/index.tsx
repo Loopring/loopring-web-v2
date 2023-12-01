@@ -45,7 +45,7 @@ import {
   useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
-import { InvestMarkdownPage, MarkdownPage, NotifyMarkdownPage } from '../pages/MarkdownPage'
+import { MarkdownPage, NotifyMarkdownPage } from '../pages/MarkdownPage'
 import { TradeRacePage } from '../pages/TradeRacePage'
 import { NFTPage } from '../pages/NFTPage'
 import { useGetAssets } from '../pages/AssetPage/AssetPanel/hook'

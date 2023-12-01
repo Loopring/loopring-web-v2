@@ -2,31 +2,24 @@ import { Box, Button, Grid, Modal, Tab, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
-  AssetsTable,
   ButtonStyle,
   CancelDualAlert,
-  DefiStakingTable,
   DualAssetTable,
   DualDetail,
   EarningsDetail,
   ModalCloseButton,
-  MyPoolTable,
   SwitchPanelStyled,
   Toast,
   ToastType,
-  useOpenModals,
   useSettings,
-  Tabs,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
-  AssetTabIndex,
   CurrencyToTag,
   DualViewBase,
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
-  HiddenTag,
   INVEST_TABS,
   InvestAssetRouter,
   // InvestTab,
@@ -35,24 +28,21 @@ import {
   MapChainId,
   myLog,
   PriceTag,
-  RowInvestConfig,
   SagaStatus,
-  STAKING_INVEST_LIMIT,
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
-  AmmPanelType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
 import {
+  confirmation,
   TableWrapStyled,
   useAccount,
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
-  useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
@@ -94,9 +84,8 @@ const MyLiquidity: any = withTranslation('common')(
     const sideStakeRef = React.useRef(null)
     const { ammActivityMap } = useAmmActivityMap()
     const { forexMap } = useSystem()
-    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap()
+    const { tokenMap, idIndex } = useTokenMap()
     const { tokenPrices } = useTokenPrices()
-    const { redeemItemClick } = useStakeRedeemClick()
     const { marketMap: dualMarketMap, status: dualMarketMapStatus } = useDualMap()
     const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
       useGetAssets()
@@ -104,7 +93,7 @@ const MyLiquidity: any = withTranslation('common')(
     const history = useHistory()
     const { currency, hideSmallBalances, defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-    const { setShowAmm } = useOpenModals()
+    const { setShowAutoDefault } = confirmation.useConfirmation()
     const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
       open: boolean
       row?: any
@@ -140,16 +129,8 @@ const MyLiquidity: any = withTranslation('common')(
     } = useDualAsset()
     const {
       summaryMyInvest,
-      myPoolRow,
-      showLoading,
-      filter,
-      tableHeight,
-      handleFilterChange,
-      stakingList,
+
       getStakingList,
-      stakeShowLoading,
-      stakingTotal,
-      totalStakedRewards,
       stakedSymbol,
     } = useOverview({
       ammActivityMap,
@@ -392,7 +373,7 @@ const MyLiquidity: any = withTranslation('common')(
         >
           {
             <>
-              {(
+              {
                 <TableWrapStyled
                   ref={dualRef}
                   className={`min-height`}
@@ -402,7 +383,6 @@ const MyLiquidity: any = withTranslation('common')(
                   flex={1}
                   marginLeft={-3}
                 >
-                  
                   <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
                     {/* {dualStakeDollar !== undefined ? (
                       <Typography component={'h4'} variant={'h3'} marginX={3}>
@@ -454,6 +434,7 @@ const MyLiquidity: any = withTranslation('common')(
                             flexDirection={'column'}
                           >
                             <DualDetail
+                              setShowAutoDefault={setShowAutoDefault}
                               isOrder={true}
                               btnConfirm={
                                 dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
@@ -482,7 +463,6 @@ const MyLiquidity: any = withTranslation('common')(
                               dualProducts={dualProducts}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
-                              tokenMap={tokenMap}
                               isPriceEditable={true}
                               toggle={{ enable: true }}
                               lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
@@ -510,7 +490,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       isRenew: false,
                                     } as any,
                                   })
-                                  onEditDualClick({dontCloseModal: true})
+                                  onEditDualClick({ dontCloseModal: true })
                                 }
                               }}
                               coinSell={{
@@ -523,7 +503,7 @@ const MyLiquidity: any = withTranslation('common')(
                     </Modal>
                   </Grid>
                 </TableWrapStyled>
-              )}
+              }
             </>
           }
         </MaxWidthContainer>
