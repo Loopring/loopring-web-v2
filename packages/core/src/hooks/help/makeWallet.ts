@@ -131,7 +131,7 @@ export const makeVaultAvaiable2 = <
     },
   } = store.getState()
   //@ts-ignore
-  const { maxBorrowableOfUsd, accountStatus } = vaultAccountInfo ?? {}
+  const { maxBorrowableOfUsdt, accountStatus } = vaultAccountInfo ?? {}
   if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
     let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins?.reduce((prev, item) => {
       const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
@@ -142,7 +142,7 @@ export const makeVaultAvaiable2 = <
         erc20Symbol,
         belong: vaultSymbol,
         count: sdk
-          .toBig(maxBorrowableOfUsd ?? 0)
+          .toBig(maxBorrowableOfUsdt ?? 0)
           .div(price)
           .times(fault)
           .toFixed(tokenInfo?.vaultTokenAmount?.qtyStepScale ?? tokenInfo.precision, 0),
@@ -181,7 +181,7 @@ export const makeVaultRepay = <
     },
   } = store.getState()
   //@ts-ignore
-  const { maxBorrowableOfUsd, accountStatus, userAssets } = vaultAccountInfo ?? {}
+  const { maxBorrowableOfUsdt, accountStatus, userAssets } = vaultAccountInfo ?? {}
   if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
     let vaultAvaiable2Map: WalletMap<C> | undefined = userAssets?.reduce((prev, item) => {
       const vaultSymbol = vaultIdIndex[item?.tokenId ?? '']

@@ -48,9 +48,9 @@ export const useVaultRedeem = () => {
     ) {
       setInfo(() => {
         return {
-          usdValue: vaultAccountInfo?.totalBalanceOfUsd
+          usdValue: vaultAccountInfo?.totalBalanceOfUsdt
             ? getValuePrecisionThousand(
-                sdk.toBig(vaultAccountInfo?.totalBalanceOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                sdk.toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                 2,
                 2,
                 2,
@@ -58,9 +58,9 @@ export const useVaultRedeem = () => {
                 { floor: true },
               )
             : EmptyValueTag,
-          usdDebt: vaultAccountInfo?.totalDebtOfUsd
+          usdDebt: vaultAccountInfo?.totalDebtOfUsdt
             ? getValuePrecisionThousand(
-                sdk.toBig(vaultAccountInfo?.totalDebtOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                sdk.toBig(vaultAccountInfo?.totalDebtOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                 2,
                 2,
                 2,
@@ -68,9 +68,9 @@ export const useVaultRedeem = () => {
                 { floor: true },
               )
             : EmptyValueTag,
-          usdEquity: vaultAccountInfo?.totalEquityOfUsd
+          usdEquity: vaultAccountInfo?.totalEquityOfUsdt
             ? getValuePrecisionThousand(
-                sdk.toBig(vaultAccountInfo?.totalEquityOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                sdk.toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                 2,
                 2,
                 2,
@@ -206,10 +206,10 @@ export const useVaultRedeem = () => {
           isShow: true,
           step: AccountStep.VaultRedeem_Failed,
           info: {
-            usdValue: vaultAccountInfo?.totalBalanceOfUsd
+            usdValue: vaultAccountInfo?.totalBalanceOfUsdt
               ? getValuePrecisionThousand(
                   sdk
-                    .toBig(vaultAccountInfo?.totalBalanceOfUsd ?? 0)
+                    .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
                     .times(forexMap[currency] ?? 0),
                   2,
                   2,
@@ -218,9 +218,9 @@ export const useVaultRedeem = () => {
                   { floor: true },
                 )
               : EmptyValueTag,
-            usdDebt: vaultAccountInfo?.totalDebtOfUsd
+            usdDebt: vaultAccountInfo?.totalDebtOfUsdt
               ? getValuePrecisionThousand(
-                  sdk.toBig(vaultAccountInfo?.totalDebtOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                  sdk.toBig(vaultAccountInfo?.totalDebtOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                   2,
                   2,
                   2,
@@ -228,9 +228,11 @@ export const useVaultRedeem = () => {
                   { floor: true },
                 )
               : EmptyValueTag,
-            usdEquity: vaultAccountInfo?.totalEquityOfUsd
+            usdEquity: vaultAccountInfo?.totalEquityOfUsdt
               ? getValuePrecisionThousand(
-                  sdk.toBig(vaultAccountInfo?.totalEquityOfUsd ?? 0).times(forexMap[currency] ?? 0),
+                  sdk
+                    .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+                    .times(forexMap[currency] ?? 0),
                   2,
                   2,
                   2,
