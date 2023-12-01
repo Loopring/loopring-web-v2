@@ -191,7 +191,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           } else if (['VAULT_STATUS_EARNING'].includes(response2?.raw_data?.operation?.status)) {
-            status = 'labelSuccess'
+            status = 'labelSuccessfully'
           } else {
             status = 'labelPending'
           }

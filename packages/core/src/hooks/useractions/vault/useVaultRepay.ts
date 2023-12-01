@@ -272,7 +272,7 @@ export const useVaultRepay = <
           ) {
             status = 'labelPending'
           } else {
-            status = 'labelSuccess'
+            status = 'labelSuccessfully'
           }
 
           // const amount = getValuePrecisionThousand(

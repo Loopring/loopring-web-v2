@@ -274,7 +274,7 @@ export const useVaultBorrow = <
         ) {
           status = 'labelPending'
         } else {
-          status = 'labelSuccess'
+          status = 'labelSuccessfully'
         }
 
         setShowAccount({
