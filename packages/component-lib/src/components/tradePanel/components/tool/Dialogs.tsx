@@ -221,6 +221,7 @@ export const RiskComponent = ({
         >
           <Box width={'48%'}>
             <Button
+              sx={{ height: '4rem' }}
               variant={strongBtn === 'cancel' ? 'contained' : 'outlined'}
               size={'medium'}
               onClick={(_) => handleClose()}
@@ -251,10 +252,8 @@ const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
   }
-
   .MuiList-root {
     list-style: inside;
-
     .MuiListItem-root {
       display: list-item;
       margin-bottom: ${({ theme }) => theme.unit}px;
@@ -859,6 +858,7 @@ export const SwapSecondConfirmation = withTranslation('common')(
         open={open}
         infos={infos}
         strongBtn={'confirm'}
+        confirmLabel={'labelConfirm'}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
       />
