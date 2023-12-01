@@ -369,7 +369,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
           currentPrice: findIndex?.index,
           precisionForPrice:
             dualMarketMap[_item.tokenInfoOrigin.market]?.precisionForPrice ??
-            tokenMap[_item.tokenInfoOrigin.quote]?.precisionForPrice,
+            tokenMap[_item.tokenInfoOrigin.quote]?.precision,
           quoteUnit: _item.tokenInfoOrigin.quote,
         }
         const format = makeDualOrderedItem(
@@ -545,7 +545,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 currentPrice: findIndex?.index,
                 precisionForPrice:
                   dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice ??
-                  tokenMap[item.tokenInfoOrigin.quote]?.precisionForPrice,
+                  tokenMap[item.tokenInfoOrigin.quote]?.precision,
                 quoteUnit: item.tokenInfoOrigin.quote,
               }
               prev.push({
