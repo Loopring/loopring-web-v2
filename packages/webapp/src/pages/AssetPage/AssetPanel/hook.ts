@@ -36,6 +36,7 @@ import {
   TabOrderIndex,
   TokenType,
   TradeBtnStatus,
+  VaultKey,
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -371,6 +372,10 @@ export const useAssetAction = () => {
                   break
                 case sdk.LOCK_TYPE.STOP_LIMIT:
                   link = `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
+                  break
+                //TODO
+                case 'VAULT_DEPOSIT':
+                  link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
               }
               prev.push({
