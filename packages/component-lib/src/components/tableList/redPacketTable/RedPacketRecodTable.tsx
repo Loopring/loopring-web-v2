@@ -210,7 +210,7 @@ export const RedPacketRecordTable = withTranslation(['tables', 'common'])(
                           : row.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX
                           ? 'labelLuckyBlindBox'
                           : row.type.partition === sdk.LuckyTokenAmountType.AVERAGE
-                          ? 'labelRedPacketSendCommonTitle'
+                          ? 'labelRedPacketSendAverageTitle'
                           : 'labelRedPacketSenRandomTitle',
 
                         { ns: 'common' },
