@@ -191,7 +191,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           } else if (['VAULT_STATUS_EARNING'].includes(response2?.raw_data?.operation?.status)) {
-            status = 'labelFinished'
+            status = 'labelSuccess'
           } else {
             status = 'labelPending'
           }
@@ -250,7 +250,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         step: AccountStep.VaultJoin_Failed,
         info: {
           title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          status: 'Failed',
+          status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
           sum: getValuePrecisionThousand(

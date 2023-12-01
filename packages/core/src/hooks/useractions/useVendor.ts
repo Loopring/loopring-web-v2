@@ -332,7 +332,7 @@ export const useVendor = () => {
           // showBanxa();
           break
         case BanxaCheck.OrderEnd:
-          // myLog("subscription Banxa", props.status, props.data);
+          // myLog("subscription Banxa", props. status:t(status), props.data);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
               isShow: true,

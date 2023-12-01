@@ -564,7 +564,7 @@ export const useVaultSwap = <
           ) {
             status = 'labelPending'
           } else {
-            status = 'labelFinished'
+            status = 'labelSuccess'
           }
           setShowAccount({
             isShow: true,
@@ -611,6 +611,10 @@ export const useVaultSwap = <
         open: true,
         type: ToastType.error,
         content,
+        // info:{
+        //   ...info,
+        //   status: t('labelFailed'),
+        // }
       })
     }
     setIsSwapLoading(false)
@@ -907,7 +911,7 @@ export const useVaultSwap = <
           )
           .times(100)
           .toString()
-        const { btradeAmount, minAmount, l2Amount } = info
+        const { maxAmount, minAmount, l2Amount } = info
         const calcDexOutput = sdk.calcDex<sdk.VaultMarket>({
           info,
           input: input.toString(),
@@ -922,11 +926,11 @@ export const useVaultSwap = <
           slipBips: slippage,
         })
         if (
-          btradeAmount &&
+          maxAmount &&
           l2Amount &&
-          (sellBuyStr == market ? btradeAmount.base !== '0' : btradeAmount.quote !== '0')
+          (sellBuyStr == market ? maxAmount.base !== '0' : maxAmount.quote !== '0')
         ) {
-          const btradeAmountVol = sellBuyStr == market ? btradeAmount.base : btradeAmount.quote
+          const btradeAmountVol = sellBuyStr == market ? maxAmount.base : maxAmount.quote
           if (btradeAmountVol) {
             poolToVol =
               sdk
@@ -951,7 +955,7 @@ export const useVaultSwap = <
                 false,
                 { isAbbreviate: true },
               )
-            : (sellBuyStr == market ? btradeAmount.base == '0' : btradeAmount.quote == '0')
+            : (sellBuyStr == market ? maxAmount.base == '0' : maxAmount.quote == '0')
             ? t('labelVaultInsufficient')
             : EmptyValueTag
         }
