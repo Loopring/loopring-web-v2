@@ -923,6 +923,10 @@ export const CreateRedPacketStepType = withTranslation()(
         : tradeType === RedPacketOrderType.TOKEN
         ? item.tags?.includes('enableInERC20')
         : item.tags?.includes('enableInNFTS'),
+    ).filter((item) =>
+      tradeData.type?.scope === sdk.LuckyTokenViewType.TARGET
+        ? !item.tags?.includes('disabledForExclusive')
+        : true,
     )
     return (
       <RedPacketBoxStyle
@@ -955,11 +959,11 @@ export const CreateRedPacketStepType = withTranslation()(
             {t(
               selectedType.value.mode == sdk.LuckyTokenClaimType.BLIND_BOX
                 ? 'labelLuckyBlindBox'
-                : 'labelNormalRedPacket',
+                : 'labelNormalRedPacketTitle',
             ) +
               ' — ' +
               t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
-            {tradeType === RedPacketOrderType.BlindBox && <Tooltip title={t('sdhkahdjksahk')}>
+            {tradeType === RedPacketOrderType.BlindBox && <Tooltip title={t('labelBlindBoxHint')}>
               <Box marginLeft={1} height={24}>
                 <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
               </Box>
@@ -1507,48 +1511,45 @@ export const TargetRedpacktSelectStep = withTranslation()(
     const theme = useTheme()
     const { coinJson, isMobile } = useSettings()
     const [showReceipts, setShowReceipts] = React.useState(false)
-    const [enlarged, setEnlarged] = React.useState(false)
+    // const [enlarged, setEnlarged] = React.useState(false)
 
     return (
       <RedPacketBoxStyle
         height={'100%'}
-        maxHeight={'480px'}
+        maxHeight={'580px'}
         justifyContent={'left'}
         width={'100%'}
         maxWidth={1152}
         paddingX={isMobile ? 2 : 5}
         position={'absolute'}
+        overflow={'scroll'}
       >
-        {!enlarged && (
-          <Box
-            display={'flex'}
-            alignItems={'center'}
-            flexDirection={'column'}
-            marginX={9}
-            marginTop={2}
-            padding={2.5}
-            borderBottom={'1px solid var(--color-border)'}
-            height={'216px'}
-          >
-            <Typography variant={'h4'} width={'100%'} marginBottom={7}>
-              {t('labelTargetRedpacketOption1')}
-            </Typography>
-
-            <BtnMain
-              {...{
-                defaultLabel: 'labelRedpacketCreateNew',
-                disabled: () => false,
-                onClick: () => {
-                  onClickCreateNew()
-                },
-              }}
-            />
-          </Box>
-        )}
         <Box
-          height={enlarged ? '590px' : '290px'}
+          display={'flex'}
+          alignItems={'center'}
+          flexDirection={'column'}
           marginX={9}
-          marginTop={enlarged ? 2 : 3}
+          marginTop={2}
+          padding={2.5}
+          borderBottom={'1px solid var(--color-border)'}
+          height={'216px'}
+        >
+          <Typography variant={'h4'} width={'100%'} marginBottom={7}>
+            {t('labelTargetRedpacketOption1')}
+          </Typography>
+          <Button
+            variant={'contained'}
+            onClick={() => {
+              onClickCreateNew()
+            }}
+          >
+            {t('labelRedpacketCreateNew')}
+          </Button>
+        </Box>
+        <Box
+          // height={'290px'}
+          marginX={9}
+          marginTop={3}
           // bgcolor={'var(--color-global-bg)'}
           padding={2.5}
           // border={'1px solid var(--color-border)'}
@@ -1556,26 +1557,16 @@ export const TargetRedpacktSelectStep = withTranslation()(
           position={'relative'}
         >
           <Box display={'flex'} justifyContent={'space-between'} width={'100%'}>
-          <Typography variant={'h4'} marginBottom={3} >
-            {t('labelTargetRedpacketOption2')}{' '}
-          </Typography>
-          <Typography fontSize={'13px'} marginBottom={3} >
-            {targetRedPackets?.length === 0
-              ? t('labelRedpacketExclusiveEmpty')
-              : t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
-          </Typography>
-
+            <Typography variant={'h4'} marginBottom={3}>
+              {t('labelTargetRedpacketOption2')}{' '}
+            </Typography>
+            <Typography fontSize={'13px'} marginBottom={3}>
+              {t('labelRedpacketExclusiveReady', { count: targetRedPackets.length })}
+            </Typography>
           </Box>
-          
-
           {targetRedPackets?.length > 0 ? (
             <Box width={'100%'}>
-              <Box
-                display={'flex'}
-                flexWrap={'wrap'}
-                maxHeight={enlarged ? '480px' : '190px'}
-                overflow={'scroll'}
-              >
+              <Box display={'flex'} flexWrap={'wrap'} maxHeight={'190px'}>
                 {targetRedPackets &&
                   targetRedPackets
                     .filter((redpacket) => (redpacket.tokenAmount as any).remainTargetCount > 0)
@@ -1694,7 +1685,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
             </Box>
           )}
 
-          {targetRedPackets?.length > 0 && (
+          {/* {targetRedPackets?.length > 0 && (
             <BiArrow
               sx={{
                 position: 'absolute',
@@ -1704,7 +1695,7 @@ export const TargetRedpacktSelectStep = withTranslation()(
               }}
               onClick={() => setEnlarged(!enlarged)}
             />
-          )}
+          )} */}
         </Box>
 
         {/* <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>

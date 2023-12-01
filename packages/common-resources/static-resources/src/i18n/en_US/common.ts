@@ -1367,10 +1367,10 @@ export default {
   labelRedPacketWaitingBlock: 'Block is not ready',
   labelShare: 'Share',
   labelRelayRedPacket: 'Relay Red Packet',
-  labelNormalRedPacket: 'Normal Red Packet',
+  labelNormalRedPacket: 'Average Red Packet',
   labelluckyRedPacket: 'Lucky Red Packet',
   labelrelayRedPacket: 'Relay Red Packet',
-  labelnormalRedPacket: 'Normal Red Packet',
+  labelnormalRedPacket: 'Average Red Packet',
   labelLuckyRedPacket: 'Lucky Red Packet',
   labelLuckyRedPacketStart: 'Starts in: {{value}}',
   labelLuckyRedPacketTimeout: 'Red Packet has been \n taken out',
@@ -2120,5 +2120,6 @@ export default {
   labelReadAll: 'Read all',
   labelLuckyTokenNormal: 'Normal',
   labelRedPacketSendAverageTitle: 'Average Red Packet',
-  sdhkahdjksahk: 'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.'
+  labelBlindBoxHint: 'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
+  labelNormalRedPacketTitle: 'Normal Red Packet',
 }
