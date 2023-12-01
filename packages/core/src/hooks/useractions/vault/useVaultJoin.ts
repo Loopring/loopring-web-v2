@@ -318,9 +318,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
               type: 4,
             })
+            const tokenListIgnoreZero = []
             const promiseAllStorageId =
               response?.raw_data?.reduce((prev, item) => {
                 if (sdk.toBig(item?.total).gt(0)) {
+                  tokenListIgnoreZero.push(item)
                   prev.push(
                     //@ts-ignore
                     LoopringAPI.userAPI.getNextStorageId(
@@ -349,11 +351,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                           payeeAddr: broker,
                           storageId: item.offchainId,
                           token: {
-                            tokenId: response?.raw_data[index].tokenId,
-                            volume: response?.raw_data[index].total,
+                            tokenId: tokenListIgnoreZero[index].tokenId,
+                            volume: tokenListIgnoreZero[index].total,
                           },
                           maxFee: {
-                            tokenId: response?.raw_data[index].tokenId,
+                            tokenId: tokenListIgnoreZero[index].tokenId,
                             volume: '0', // TEST: fee.toString(),
                           },
                           validUntil: getTimestampDaysLater(DAYS),
