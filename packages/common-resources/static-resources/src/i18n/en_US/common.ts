@@ -2248,4 +2248,12 @@ export default {
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelFailed: 'Failed',
   labelVAULT_COLLATERAL: 'Vault Collateral',
+  labelTokenVaultDes:
+    '{{vSymbol}} is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
+  labelTokenWebsite: 'website',
+  labelTokenContractAddress: 'Token Contract Address',
+  labelTokenSupply: 'Token Supply',
+  labelMarketCap: 'Market Cap',
+  labelTokenInfo: 'Token Info',
+  labelTokenIntroduce: 'Token Introduce',
 }

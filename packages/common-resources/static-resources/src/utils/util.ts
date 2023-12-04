@@ -122,7 +122,7 @@ export const getValuePrecisionThousand = (
     isExponential?: boolean
     isPrice?: boolean
     abbreviate?: 3 | 6 | 9 | 12 | 15 | 18
-    isAbbreviate?: true
+    isAbbreviate?: boolean
   },
 ) => {
   const floor = option?.floor

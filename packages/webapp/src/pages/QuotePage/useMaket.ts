@@ -8,28 +8,26 @@ import React, { useCallback } from 'react'
 import {
   favoriteVaultMarket as favoriteMarketReducer,
   LAYOUT,
-  LoopringAPI,
   store,
-  TickerMap,
   TokenMap,
   useAccount,
   useSystem,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useMarket = <R = TickerNew>({
+export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
   tableRef,
   rowConfig = RowConfig,
   tickerMap,
   handleRowClick,
   handleItemClick,
-  tokenMap = store.getState().tokenMap.tokenMap,
+  tokenMap = store.getState()?.tokenMap?.tokenMap,
 }: {
-  tickerMap: TickerMap<R>
+  tickerMap: { [key: string]: R }
   tableRef: React.Ref<any>
   rowConfig?: RowConfigType
-  handleRowClick?: (props: sdk.TokenInfo & R) => void
-  handleItemClick?: (props: sdk.TokenInfo & R) => void
+  handleRowClick?: (index: number, props: T & R) => void
+  handleItemClick?: (index: number, props: T & R) => void
   tokenMap: TokenMap<any>
 }) => {
   const { account } = useAccount()

@@ -22,7 +22,7 @@ export const VaultHomePanel = ({
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
   const { isMobile } = useSettings()
-  const { forexMap } = useSystem()
+  const { forexMap, etherscanBaseUrl } = useSystem()
   const theme = useTheme()
   const { t } = useTranslation()
   const { vaultAccountInfo, activeInfo } = useVaultLayer2()
@@ -134,6 +134,8 @@ export const VaultHomePanel = ({
             alignItems={'center'}
             flexDirection={'column'}
             position={'relative'}
+            height={'80vh'}
+            overflow={'scroll'}
           >
             {/* <Box></Box> */}
             <ModalCloseButtonPosition
@@ -143,7 +145,12 @@ export const VaultHomePanel = ({
               onClose={() => setShowDetail({ isShow: false } as any)}
             />
 
-            <MarketDetail isShow={detail.isShow} forexMap={forexMap} {...{ ...detail?.detail }} />
+            <MarketDetail
+              etherscanBaseUrl={etherscanBaseUrl}
+              isShow={detail.isShow}
+              forexMap={forexMap}
+              {...{ ...detail?.detail }}
+            />
           </Box>
         </Box>
       </Modal>
