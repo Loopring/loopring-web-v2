@@ -2249,4 +2249,12 @@ export default {
   labelFailed: 'Failed',
   //TODO
   labelVAULT_COLLATERAL: 'Vault Collateral',
+  labelTokenVaultDes:
+    '{{vSymbol}} is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
+  labelTokenWebsite: 'website',
+  labelTokenContractAddress: 'Token Contract Address',
+  labelTokenSupply: 'Token Supply',
+  labelMarketCap: 'Market Cap',
+  labelTokenInfo: 'Token Info',
+  labelTokenIntroduce: 'Token Introduce',
 }

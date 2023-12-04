@@ -12,7 +12,7 @@ import {
   SvgSize,
   TokenType,
 } from '@loopring-web/common-resources'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { CoinIcons } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
@@ -54,12 +54,15 @@ export const MarketDetail = ({
   trends,
   isShow,
   forexMap,
+
+  etherscanBaseUrl,
   timeIntervalData = TimeMarketIntervalData,
 }: {
-  tokenInfo: sdk.TokenInfo
+  tokenInfo
   trends: any
   isShow: boolean
   forexMap: ForexMap
+  etherscanBaseUrl: string
   timeIntervalData: typeof TimeMarketIntervalData
 }) => {
   const { t } = useTranslation()
@@ -82,200 +85,334 @@ export const MarketDetail = ({
       makeTenderData()
     }
   }, [isShow, trends?.length])
-  return (
-    tokenInfo?.symbol && (
-      <>
-        <Box
-          component={'header'}
-          display={'flex'}
-          flexDirection={'row'}
-          justifyContent={'space-between'}
-          width={'100%'}
-        >
-          <Typography display={'flex'} flexDirection={'row'} alignItems={'center'}>
+  return tokenInfo?.symbol ? (
+    <>
+      <Box
+        component={'header'}
+        display={'flex'}
+        flexDirection={'row'}
+        justifyContent={'space-between'}
+        width={'100%'}
+      >
+        <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+          <Typography
+            component={'span'}
+            display={'inline-flex'}
+            width={
+              tokenInfo.type == TokenType.vault
+                ? (SvgSize.svgSizeHuge * 3) / 2
+                : SvgSize.svgSizeHuge
+            }
+          >
+            {/* eslint-disable-next-line react/jsx-no-undef */}
+            <CoinIcons
+              type={tokenInfo.type as any}
+              size={SvgSize.svgSizeHuge}
+              tokenIcon={[
+                coinJson[
+                  tokenInfo.type == TokenType.vault ? tokenInfo?.erc20Symbol : tokenInfo.symbol
+                ],
+              ]}
+            />
+          </Typography>
+          <Typography component={'span'} flexDirection={'column'} display={'flex'}>
+            <Typography
+              variant={'h4'}
+              component={'span'}
+              color={'var(--color-primary)'}
+              display={'inline-flex'}
+            >
+              {tokenInfo.symbol}
+            </Typography>
             <Typography
               component={'span'}
               display={'inline-flex'}
-              width={
-                tokenInfo.type == TokenType.vault
-                  ? (SvgSize.svgSizeHuge * 3) / 2
-                  : SvgSize.svgSizeHuge
-              }
+              variant={'body1'}
+              color={'textPrimary'}
             >
-              {/* eslint-disable-next-line react/jsx-no-undef */}
-              <CoinIcons
-                type={tokenInfo.type as any}
-                size={SvgSize.svgSizeHuge}
-                tokenIcon={[
-                  coinJson[
-                    tokenInfo.type == TokenType.vault ? tokenInfo?.erc20Symbol : tokenInfo.symbol
-                  ],
-                ]}
-              />
+              {tokenInfo.name}
             </Typography>
-            <Typography component={'span'} flexDirection={'column'} display={'flex'}>
-              <Typography
-                variant={'h4'}
-                component={'span'}
-                color={'var(--color-primary)'}
-                display={'inline-flex'}
-              >
-                {tokenInfo.type == TokenType.vault ? tokenInfo?.erc20Symbol : tokenInfo.symbol}
-              </Typography>
-              <Typography
-                component={'span'}
-                display={'inline-flex'}
-                variant={'body1'}
-                color={'textPrimary'}
-              >
-                {tokenInfo.name}
-              </Typography>
-            </Typography>
-          </Typography>
-          <Typography
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'space-between'}
-            alignItems={'flex-end'}
-          >
-            <Typography component={'span'} display={'inline-flex'}>
-              {tokenInfo.price
-                ? PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    tokenInfo.price * (forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    2,
-                    true,
-                    {
-                      isFait: true,
-                    },
-                  )
-                : EmptyValueTag}
-            </Typography>
-            <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
-              {typeof tokenInfo.percentChange24H !== 'undefined'
-                ? (sdk.toBig(tokenInfo.percentChange24H).gt(0) ? '+' : '') +
-                  getValuePrecisionThousand(tokenInfo.percentChange24H, 2, 2, 2, true) +
-                  '%'
-                : EmptyValueTag}
-            </QuoteTableChangedCell>
           </Typography>
         </Box>
-        <Box
-          width={'100%'}
+        <Typography
           display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          // height={"60%"}
-          height={'calc(var(--swap-box-height) - 262px)'}
-          maxHeight={420}
-        >
-          {!trend?.length ? (
-            <img
-              className='loading-gif'
-              alt={'loading'}
-              width='36'
-              src={`${SoursURL}images/loading-line.gif`}
-            />
-          ) : (
-            <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
-          )}
-        </Box>
-        <Grid container spacing={1} marginRight={1} minWidth={296} justifyContent={'center'}>
-          {timeIntervalData.map((item) => {
-            const { id, i18nKey } = item
-            return (
-              <Grid key={id} item>
-                <Link
-                  marginTop={1}
-                  variant={'body2'}
-                  style={{
-                    color:
-                      id === timeInterval ? 'var(--color-text-primary)' : 'var(--color-text-third)',
-                  }}
-                  onClick={() => handleTimeIntervalChange(id)}
-                >
-                  {t(i18nKey)}
-                </Link>
-              </Grid>
-            )
-          })}
-        </Grid>
-        <Box
-          flex={1}
           flexDirection={'column'}
-          display={'flex'}
-          alignItems={'stretch'}
-          width={'100%'}
-          marginTop={2}
-          padding={1}
-          sx={{ background: 'var(--color-box-enhance)' }}
+          justifyContent={'space-between'}
+          alignItems={'flex-end'}
         >
-          <Typography component={'p'} variant={'h5'}>
-            {t('labelStats')}
+          <Typography component={'span'} display={'inline-flex'}>
+            {tokenInfo.price
+              ? PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  tokenInfo.price * (forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  2,
+                  true,
+                  {
+                    isFait: true,
+                  },
+                )
+              : EmptyValueTag}
           </Typography>
-          <Typography
-            component={'p'}
-            display={'inline-flex'}
-            justifyContent={'space-between'}
-            marginTop={2}
-          >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              {t('label24Volume')}
-            </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {tokenInfo.volume24H
-                ? PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    tokenInfo.volume24H,
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    tokenInfo.precision,
-                    false,
-                    { isAbbreviate: true, abbreviate: 6 },
-                  )
-                : EmptyValueTag}
-            </Typography>
+          <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
+            {typeof tokenInfo.percentChange24H !== 'undefined'
+              ? (sdk.toBig(tokenInfo.percentChange24H).gt(0) ? '+' : '') +
+                getValuePrecisionThousand(tokenInfo.percentChange24H, 2, 2, 2, true) +
+                '%'
+              : EmptyValueTag}
+          </QuoteTableChangedCell>
+        </Typography>
+      </Box>
+      <Box
+        width={'100%'}
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        // height={"60%"}
+        height={'calc(var(--swap-box-height) - 262px)'}
+        minHeihgt={'300px'}
+        // minHeight={420}
+      >
+        {!trend?.length ? (
+          <img
+            className='loading-gif'
+            alt={'loading'}
+            width='36'
+            src={`${SoursURL}images/loading-line.gif`}
+          />
+        ) : (
+          <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
+        )}
+      </Box>
+      <Grid container spacing={1} marginRight={1} minWidth={296} justifyContent={'center'}>
+        {timeIntervalData.map((item) => {
+          const { id, i18nKey } = item
+          return (
+            <Grid key={id} item>
+              <Link
+                marginTop={1}
+                variant={'body2'}
+                style={{
+                  color:
+                    id === timeInterval ? 'var(--color-text-primary)' : 'var(--color-text-third)',
+                }}
+                onClick={() => handleTimeIntervalChange(id)}
+              >
+                {t(i18nKey)}
+              </Link>
+            </Grid>
+          )
+        })}
+      </Grid>
+      <Box
+        flex={1}
+        flexDirection={'column'}
+        display={'flex'}
+        alignItems={'stretch'}
+        width={'100%'}
+        marginTop={2}
+        padding={1}
+        sx={{ background: 'var(--color-box-enhance)' }}
+      >
+        <Typography component={'p'} variant={'h5'}>
+          {t('labelStats')}
+        </Typography>
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('label24Volume')}
           </Typography>
-          <Typography
-            component={'p'}
-            display={'inline-flex'}
-            justifyContent={'space-between'}
-            marginTop={2}
-          >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              {t('label24PriceChange')}
-            </Typography>
-            <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
-              {typeof tokenInfo.percentChange24H !== 'undefined'
-                ? (sdk.toBig(tokenInfo.percentChange24H).gt(0) ? '+' : '') +
-                  getValuePrecisionThousand(tokenInfo.percentChange24H, 2, 2, 2, true) +
-                  '%'
-                : EmptyValueTag}
-            </QuoteTableChangedCell>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {tokenInfo.volume24H
+              ? PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(tokenInfo.volume24H, 2, 2, 2, false, {
+                  isAbbreviate: false,
+                  abbreviate: 6,
+                })
+              : EmptyValueTag}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('label24PriceChange')}
+          </Typography>
+          <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
+            {typeof tokenInfo.percentChange24H !== 'undefined'
+              ? (sdk.toBig(tokenInfo.percentChange24H).gt(0) ? '+' : '') +
+                getValuePrecisionThousand(tokenInfo.percentChange24H, 2, 2, 2, true) +
+                '%'
+              : EmptyValueTag}
+          </QuoteTableChangedCell>
+        </Typography>
+
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('label7dPriceChange')}
           </Typography>
 
+          <QuoteTableChangedCell value={tokenInfo.percentChange7D} upColor={upColor}>
+            {typeof tokenInfo.percentChange7D !== 'undefined'
+              ? (sdk.toBig(tokenInfo.percentChange7D).gt(0) ? '+' : '') +
+                getValuePrecisionThousand(tokenInfo.percentChange7D, 2, 2, 2, true) +
+                '%'
+              : EmptyValueTag}
+          </QuoteTableChangedCell>
+        </Typography>
+      </Box>
+      <Box
+        flex={1}
+        flexDirection={'column'}
+        display={'flex'}
+        alignItems={'stretch'}
+        width={'100%'}
+        marginTop={2}
+        padding={1}
+        sx={{ background: 'var(--color-box-enhance)' }}
+      >
+        <Typography component={'p'} variant={'h5'}>
+          {t('labelTokenInfo')}
+        </Typography>
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelMarketCap')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {tokenInfo.marketCap
+              ? PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(tokenInfo.marketCap, 2, 2, 2, false, {
+                  isAbbreviate: false,
+                  abbreviate: 6,
+                })
+              : EmptyValueTag}
+          </Typography>
+        </Typography>
+
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelTokenSupply')}
+          </Typography>
+          <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
+            {tokenInfo.totalSupply !== 'undefined' ? tokenInfo.totalSupply : EmptyValueTag}
+          </QuoteTableChangedCell>
+        </Typography>
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          alignItems={'center'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelTokenContractAddress')}
+          </Typography>
+          <Link
+            width={'60%'}
+            display={'inline-flex'}
+            sx={{ wordBreak: 'break-all' }}
+            paddingLeft={1}
+            rel='noopener noreferrer'
+            href={`${etherscanBaseUrl}address/${tokenInfo.tokenAddress}`}
+            target={'_top'}
+            justifyContent={'flex-end'}
+          >
+            {tokenInfo.tokenAddress ? tokenInfo.tokenAddress : EmptyValueTag}
+          </Link>
+        </Typography>
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelTokenWebsite')}
+          </Typography>
+          <Link
+            paddingLeft={2}
+            width={'60%'}
+            display={'inline-flex'}
+            sx={{ wordBreak: 'break-all' }}
+            rel='noopener noreferrer'
+            component={'a'}
+            href={tokenInfo.website}
+            target={'_top'}
+            justifyContent={'flex-end'}
+          >
+            {tokenInfo.website}
+          </Link>
+        </Typography>
+      </Box>
+      <Box
+        flex={1}
+        flexDirection={'column'}
+        display={'flex'}
+        alignItems={'stretch'}
+        width={'100%'}
+        marginTop={2}
+        padding={1}
+        sx={{ background: 'var(--color-box-enhance)' }}
+      >
+        <Typography component={'p'} variant={'h5'}>
+          {t('labelTokenIntroduce')}
+        </Typography>
+        {tokenInfo.type == TokenType.vault ? (
           <Typography
             component={'p'}
             display={'inline-flex'}
             justifyContent={'space-between'}
             marginTop={2}
           >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              {t('label7dPriceChange')}
-            </Typography>
-
-            <QuoteTableChangedCell value={tokenInfo.percentChange7D} upColor={upColor}>
-              {typeof tokenInfo.percentChange7D !== 'undefined'
-                ? (sdk.toBig(tokenInfo.percentChange7D).gt(0) ? '+' : '') +
-                  getValuePrecisionThousand(tokenInfo.percentChange7D, 2, 2, 2, true) +
-                  '%'
-                : EmptyValueTag}
-            </QuoteTableChangedCell>
+            <Trans
+              i18nKey={'labelTokenVaultDes'}
+              tOptions={{
+                symbol: tokenInfo.erc20Symbol,
+                vSymbol: tokenInfo.symbol,
+              }}
+            >
+              {tokenInfo.symbol} is a token backed 1:1 with {tokenInfo.erc20Symbol}, bringing
+              greater liquidity to Loopring DEX.
+            </Trans>
           </Typography>
-        </Box>
-      </>
-    )
+        ) : (
+          <></>
+        )}
+        <Typography
+          component={'p'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          whiteSpace={'pre-line'}
+        >
+          {tokenInfo.description}
+        </Typography>
+      </Box>
+    </>
+  ) : (
+    <></>
   )
 }
