@@ -66,6 +66,7 @@ export const useMarket = <R extends TickerNew, T = sdk.TokenInfo>({
       keyword?: string
     }) => {
       let filter = ''
+      const favoriteMarket = store.getState().localStore.favoriteVaultMarket
       setSearchValue((state) => {
         filter = state
         if (rest.hasOwnProperty('keyword')) {
@@ -101,7 +102,7 @@ export const useMarket = <R extends TickerNew, T = sdk.TokenInfo>({
     [
       tickerMap,
       tableTabValue,
-      favoriteMarket,
+
       searchValue,
 
       // swapRankingList,
