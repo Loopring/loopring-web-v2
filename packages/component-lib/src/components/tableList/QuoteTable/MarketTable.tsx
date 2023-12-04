@@ -21,7 +21,6 @@ import {
 import { useSettings } from '../../../stores'
 import { Button, Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
-import { useDispatch } from 'react-redux'
 import * as sdk from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { TagIconList } from '../../block'
@@ -149,11 +148,10 @@ export const MarketTable = withTranslation('tables')(
                       size={'large'}
                       onClick={(e) => {
                         e.stopPropagation()
-                        row.isFavourite = !row.isFavourite
                         handleStartClick(row.symbol, rowIdx)
                       }}
                     >
-                      {row.isFavourite ? (
+                      {row.isFavorite ? (
                         <StarSolidIcon cursor={'pointer'} />
                       ) : (
                         <StarHollowIcon cursor={'pointer'} />
