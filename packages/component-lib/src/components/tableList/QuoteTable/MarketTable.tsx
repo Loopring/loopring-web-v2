@@ -7,7 +7,6 @@ import {
   CAMPAIGNTAGCONFIG,
   CurrencyToTag,
   EmptyValueTag,
-  FloatTag,
   ForexMap,
   getValuePrecisionThousand,
   PriceTag,
@@ -83,8 +82,9 @@ export interface MarketTableProps<R> {
   onVisibleRowsChange?: (startIndex: number) => void
   account: Account
   favoriteMarket: string[]
-  addFavoriteMarket: (pair: string) => void
-  removeFavoriteMarket: (pair: string) => void
+  handleStartClick: (pair: string, index?: number) => void
+  // addFavoriteMarket: (pair: string) => void
+  // removeFavoriteMarket: (pair: string) => void
   currentheight?: number
   showLoading?: boolean
   isPro?: boolean
@@ -93,7 +93,7 @@ export interface MarketTableProps<R> {
 
 export const MarketTable = withTranslation('tables')(
   withRouter(
-    <R = TickerNew,>({
+    <R = TickerNew & { isFavorite?: boolean },>({
       t,
       currentheight = 350,
       rowConfig = RowConfig,
@@ -103,8 +103,9 @@ export const MarketTable = withTranslation('tables')(
       history,
       onRowClick,
       favoriteMarket,
-      addFavoriteMarket,
-      removeFavoriteMarket,
+      handleStartClick,
+      // addFavoriteMarket,
+      // removeFavoriteMarket,
       showLoading,
       account,
       forexMap,
@@ -113,26 +114,26 @@ export const MarketTable = withTranslation('tables')(
       ...rest
     }: MarketTableProps<R> & WithTranslation & RouteComponentProps) => {
       const { currency, isMobile, coinJson, upColor } = useSettings()
-      const handleStartClick = (
-        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        isFavourite: boolean,
-        pair: string,
-      ): void => {
-        event.stopPropagation()
-        if (isFavourite) {
-          dispatch(removeFavoriteMarket(pair))
-        } else {
-          dispatch(addFavoriteMarket(pair))
-        }
-      }
+      // const handleStartClick = (
+      //   event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      //   isFavourite: boolean,
+      //   pair: string,
+      // ): void => {
+      //   event.stopPropagation()
+      //   if (isFavourite) {
+      //     dispatch(removeFavoriteMarket(pair))
+      //   } else {
+      //     dispatch(addFavoriteMarket(pair))
+      //   }
+      // }
       const getColumnMode = React.useCallback((): Column<R, unknown>[] => {
         const basicRender = [
           {
             key: 'pair',
             name: t('labelQuotaPair'),
             sortable: true,
-            formatter: ({ row }: any) => {
-              const isFavourite = favoriteMarket?.includes(row.symbol)
+            formatter: ({ row, rowIdx }: any) => {
+              // const isFavourite = favoriteMarket?.includes(row.symbol)
               const symbol = row?.type === TokenType.vault ? row.erc20Symbol : row.symbol
               let tokenIcon: [any, any] = [coinJson[symbol], undefined]
               return (
@@ -146,9 +147,13 @@ export const MarketTable = withTranslation('tables')(
                     <IconButton
                       style={{ color: 'var(--color-star)' }}
                       size={'large'}
-                      onClick={(e: any) => handleStartClick(e, isFavourite, row.symbol)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        row.isFavourite = !row.isFavourite
+                        handleStartClick(row.symbol, rowIdx)
+                      }}
                     >
-                      {isFavourite ? (
+                      {row.isFavourite ? (
                         <StarSolidIcon cursor={'pointer'} />
                       ) : (
                         <StarHollowIcon cursor={'pointer'} />
@@ -295,8 +300,6 @@ export const MarketTable = withTranslation('tables')(
         upColor,
       ])
 
-      const dispatch = useDispatch()
-
       const defaultArgs: any = {
         rawData: [],
         columnMode: getColumnMode(),
@@ -373,7 +376,7 @@ export const MarketTable = withTranslation('tables')(
             currentheight={currentheight}
             ispro={isPro}
             className={'scrollable'}
-            onRowClick={(index: any, row: any, col: any) => onRowClick && onRowClick(row)}
+            onRowClick={onRowClick}
             {...{
               ...defaultArgs,
               ...rest,
