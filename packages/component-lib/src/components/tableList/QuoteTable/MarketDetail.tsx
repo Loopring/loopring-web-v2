@@ -54,7 +54,6 @@ export const MarketDetail = ({
   trends,
   isShow,
   forexMap,
-
   etherscanBaseUrl,
   timeIntervalData = TimeMarketIntervalData,
 }: {

@@ -15,7 +15,7 @@ import {
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
+export const useMarket = <R extends TickerNew, T = sdk.TokenInfo>({
   tableRef,
   rowConfig = RowConfig,
   tickerMap,
@@ -36,7 +36,7 @@ export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
   const [searchValue, setSearchValue] = React.useState<string>('')
   const [filteredData, setFilteredData] = React.useState<(sdk.TokenInfo & R)[]>([])
   const [tableHeight, setTableHeight] = React.useState(0)
-  const { favoriteMarket, removeMarket, addMarket } = favoriteMarketReducer.useFavoriteMarket()
+  const { favoriteMarket, removeMarket, addMarket } = favoriteMarketReducer.useFavoriteVaultMarket()
 
   // const { tickList } = useQuote()
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
@@ -73,14 +73,18 @@ export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
         }
         return filter
       })
-      let data = Object.values(tickerMap)
+      let data: R & sdk.TokenInfo[] = Object.values(tickerMap) ?? []
       data = data.map((item) => {
-        return { ...tokenMap[item.symbol], ...item }
+        return {
+          ...tokenMap[item.symbol],
+          ...item,
+          isFavorite: favoriteMarket?.includes(item.symbol),
+        }
       })
       if (type === TableFilterParams.favourite) {
         // myLog("tickList", data);
-        data = data.filter((o: any) => {
-          return favoriteMarket?.includes(o.symbol)
+        data = data.filter((item) => {
+          return favoriteMarket?.includes(item.symbol)
         })
       }
       if (filter) {
@@ -99,6 +103,7 @@ export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
       tableTabValue,
       favoriteMarket,
       searchValue,
+
       // swapRankingList,
       // getFilteredTickList,
     ],
@@ -130,7 +135,14 @@ export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
     tableTabValue,
     handleTabChange,
     searchValue,
-    removeFavoriteMarket: removeMarket,
+    handleStartClick: (symbol: string, rowIdx) => {
+      if (favoriteMarket.includes(symbol)) {
+        removeMarket(symbol)
+      } else {
+        addMarket(symbol)
+      }
+      handleTableFilterChange({})
+    },
     favoriteMarket,
     handleSearchChange,
     addFavoriteMarket: addMarket,
@@ -143,8 +155,6 @@ export const useMarket = <R = TickerNew, T = sdk.TokenInfo>({
     forexMap,
     rowConfig,
     handleTableFilterChange,
-    onItemClick: (item: R) => {
-      handleItemClick && handleItemClick(item)
-    },
+    onItemClick: handleItemClick,
   }
 }

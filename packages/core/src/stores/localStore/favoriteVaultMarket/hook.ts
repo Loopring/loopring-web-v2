@@ -3,7 +3,7 @@ import { addMarket, addMarkets, clearAll, removeMarket } from './reducer'
 import React from 'react'
 import { FavoriteMarketStates } from '../favoriteMarket'
 
-export const useFavoriteMarket = (): {
+export const useFavoriteVaultMarket = (): {
   favoriteMarket: FavoriteMarketStates
   clearAll: () => void
   removeMarket: (pair: string) => void
@@ -11,7 +11,7 @@ export const useFavoriteMarket = (): {
   addMarkets: (pair: string[]) => void
 } => {
   const favoriteMarket: FavoriteMarketStates = useSelector(
-    (state: any) => state.localStore.favoriteMarket,
+    (state: any) => state.localStore.favoriteVaultMarket,
   )
   const dispatch = useDispatch()
   return {

@@ -1,5 +1,3 @@
-import { useHistory } from 'react-router-dom'
-
 import { Box, Container, Typography, Grid, Modal } from '@mui/material'
 import React from 'react'
 import {
@@ -41,7 +39,6 @@ export const VaultDashBoardPanel = ({
 }) => {
   const { vaultAccountInfo } = _vaultAccountInfo
   const { t } = useTranslation()
-  const history = useHistory()
 
   const { forexMap } = useSystem()
   const { isMobile, currency, hideL2Assets: hideAssets, defaultNetwork } = useSettings()

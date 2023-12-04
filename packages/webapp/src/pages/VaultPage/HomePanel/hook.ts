@@ -15,7 +15,7 @@ import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useVaultMarket = <R = TickerNew, T = sdk.TokenInfo>({
+export const useVaultMarket = <R extends TickerNew, T = sdk.TokenInfo>({
   tableRef,
   rowConfig = RowConfig,
 }: {
@@ -28,9 +28,9 @@ export const useVaultMarket = <R = TickerNew, T = sdk.TokenInfo>({
 
   const [detail, setShowDetail] = React.useState<{
     isShow: boolean
-    isLoading: true
+    isLoading?: true
     row?: R
-    detail?: { tokenInfo: Partial<sdk.DatacenterTokenInfo & sdk.TokenInfo>; tenders: any }
+    detail?: { tokenInfo: Partial<sdk.DatacenterTokenInfo & sdk.TokenInfo>; trends: any }
   }>({
     isShow: false,
     isLoading: true,
@@ -112,7 +112,7 @@ export const useVaultMarket = <R = TickerNew, T = sdk.TokenInfo>({
           },
           trends: [
             ...quoteTokenTrends?.map((item) => {
-              return item.list.map((item) => ({ ...item, timeStamp: item.timeClose }))
+              return item?.list.map((trend) => ({ ...trend, timeStamp: trend.timeClose }))
             }),
           ] as any,
         },
@@ -129,11 +129,10 @@ export const useVaultMarket = <R = TickerNew, T = sdk.TokenInfo>({
     [history],
   )
   const marketProps = useMarket<R, T>({
-    handleItemClick: (row) => {
-      handleRowClick(0, row)
-    },
+    tableRef,
+    handleItemClick: handleRowClick,
     handleRowClick,
-    tickerMap: vaultTickerMap,
+    tickerMap: vaultTickerMap as any,
     tokenMap: vaultTokenMap,
   })
   const autoReCalc = React.useCallback(() => {
