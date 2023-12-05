@@ -211,7 +211,8 @@ export const MarketDetail = ({
         flexDirection={'column'}
         alignItems={'stretch'}
         justifyContent={'space-between'}
-        marginX={2}
+        width={'100%'}
+        marginTop={2}
         paddingX={2}
         paddingTop={1}
         borderRadius={1 / 2}
@@ -283,7 +284,8 @@ export const MarketDetail = ({
         flexDirection={'column'}
         alignItems={'stretch'}
         justifyContent={'space-between'}
-        marginX={2}
+        width={'100%'}
+        marginTop={2}
         paddingX={2}
         paddingTop={1}
         borderRadius={1 / 2}
@@ -375,14 +377,18 @@ export const MarketDetail = ({
         </Typography>
       </Box>
       <Box
-        flex={1}
-        flexDirection={'column'}
         display={'flex'}
+        flexDirection={'column'}
         alignItems={'stretch'}
+        justifyContent={'space-between'}
         width={'100%'}
         marginTop={2}
-        padding={1}
-        sx={{ background: 'var(--color-box-enhance)' }}
+        paddingX={2}
+        paddingTop={1}
+        borderRadius={1 / 2}
+        sx={{
+          background: 'var(--field-opacity)',
+        }}
       >
         <Typography component={'p'} variant={'h5'}>
           {t('labelTokenIntroduce')}
