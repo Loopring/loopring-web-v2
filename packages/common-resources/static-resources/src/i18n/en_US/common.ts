@@ -2151,9 +2151,11 @@ export default {
   labelVaultExitTotalBalance: 'Total Balance',
   labelVaultExitTotalDebt: 'Total Debt',
   labelVaultExitTotalEquity: 'Total Equity',
+  labelVaultExitProfit: 'Profit',
+  labelVaultExitProfitPercentage: 'Profit Percentage',
   labelVaultExitTime: 'Time',
   labelVaultExitStatusPending: 'Pending',
-
+  labelVaultExitCloseAmount: 'Close Amount',
   labelVaultExitPendingDes:
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultBorrow: 'Borrow',
@@ -2257,4 +2259,6 @@ export default {
   labelMarketCap: 'Market Cap',
   labelTokenInfo: 'Token Info',
   labelTokenIntroduce: 'Token Introduce',
+  labelVaultRedeemDetail: 'Details',
+  labelCloseOutDetail: 'Closeout Detail',
 }

@@ -83,6 +83,11 @@ const BoxStyle = styled(Box)`
       }
     }
   }
+  &.vaultExit {
+    > *:nth-of-type(2) {
+      overflow: scroll;
+    }
+  }
 `
 
 export const BasicPanel = withTranslation('common', { withRef: true })(
@@ -524,12 +529,18 @@ export const VaultJoinBase = (
   },
 ) => {
   // const { showTitle, title } = props
-  return <BasicPanel title={'labelValueJoinTitle'} {...props} />
+  return <BasicPanel {...{ title: 'labelValueJoinTitle', ...props }} />
 }
 
 export const VaultExitBase = (props: PanelProps & { showTitle: boolean }) => {
   const { showTitle } = props
-  return <BasicPanel title={showTitle ? 'labelVaultExitTitle' : undefined} {...props} />
+  return (
+    <BasicPanel
+      className={'vaultExit'}
+      title={showTitle ? 'labelVaultExitTitle' : undefined}
+      {...props}
+    />
+  )
 }
 
 export const VaultBorrowBase = (

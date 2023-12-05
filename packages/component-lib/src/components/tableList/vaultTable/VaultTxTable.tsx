@@ -1,17 +1,18 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
-import { Column, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Tooltip, Typography } from '@mui/material'
+import { Column, EmptyDefault, Table, TablePagination } from '../../basic-lib'
+import { Box, BoxProps, IconButton, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
 import { RawDataVaultTxItem, VaultRecordType } from './Interface'
-import { globalSetup, Info2Icon, RowInvestConfig } from '@loopring-web/common-resources'
+import { globalSetup, RecordIcon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment/moment'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { RedeemDes2 } from '../../modal'
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -94,12 +95,22 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                {/*<Tooltip title={t(`labelVault${row.type}Des`).toString()}>*/}
                 <Typography component={'span'} display={'flex'} alignItems={'center'}>
-                  {/*<Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
                   {t(`labelVault${row.type}`)}
+                  {row.type === VaultRecordType.closeout &&
+                  [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED, 'VAULT_STATUS_EARNING'].includes(
+                    row.status,
+                  ) ? (
+                    <IconButton
+                      sx={{ marginLeft: 1, color: 'var(--color-primary)' }}
+                      onClick={() => props.onItemClick(row)}
+                    >
+                      <RecordIcon color={'inherit'} />
+                    </IconButton>
+                  ) : (
+                    <></>
+                  )}
                 </Typography>
-                {/*</Tooltip>*/}
               </Box>
             )
           },
@@ -316,6 +327,94 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           />
         )}
       </TableWrapperStyled>
+    )
+  },
+)
+export const VaultCloseDetail = withTranslation(['common'])(
+  <R extends RawDataVaultTxItem>({
+    t,
+    vaultCloseDetail,
+  }: {
+    vaultCloseDetail: R & any
+  } & WithTranslation) => {
+    return (
+      <Box flex={1} display={'flex'} flexDirection={'column'}>
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'stretch'}
+          justifyContent={'space-between'}
+          padding={2}
+          margin={2}
+          borderRadius={1 / 2}
+          sx={{
+            background: 'var(--field-opacity)',
+          }}
+        >
+          <RedeemDes2 t={t} isNoWrap={true} info={{ ...vaultCloseDetail }} />
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultExitCloseAmount')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {vaultCloseDetail?.amount}
+            </Typography>
+          </Typography>
+        </Box>
+        {
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'stretch'}
+            justifyContent={'space-between'}
+            padding={2}
+            margin={2}
+            borderRadius={1 / 2}
+            sx={{
+              background: 'var(--field-opacity)',
+            }}
+          >
+            <Typography component={'p'} variant={'h5'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultRedeemDetail')}
+            </Typography>
+            {vaultCloseDetail?.executionHistory.length ? (
+              vaultCloseDetail?.executionHistory?.map((item, index) => {
+                return (
+                  <Typography
+                    key={index}
+                    variant={'body1'}
+                    component={'p'}
+                    display={'inline-flex'}
+                    justifyContent={'space-between'}
+                    marginTop={2}
+                    color={'var(--color-text-primary)'}
+                  >
+                    {item}
+                  </Typography>
+                )
+              })
+            ) : (
+              <Box flex={1} height={'100%'} width={'100%'}>
+                <EmptyDefault
+                  style={{ alignSelf: 'center' }}
+                  height={'100%'}
+                  message={() => (
+                    <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                      {t('labelNoContent')}
+                    </Box>
+                  )}
+                />
+              </Box>
+            )}
+          </Box>
+        }
+      </Box>
     )
   },
 )

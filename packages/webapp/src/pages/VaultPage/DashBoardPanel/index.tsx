@@ -60,7 +60,6 @@ export const VaultDashBoardPanel = ({
     const profit = sdk
       .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
       .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
-      .times(forexMap[currency] ?? 0)
     const colorIs = profit.gte(0) ? 0 : 1
 
     return (
@@ -76,10 +75,17 @@ export const VaultDashBoardPanel = ({
               {hideAssets
                 ? HiddenTag
                 : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(profit.toString(), 2, 2, 2, false, {
-                    isFait: false,
-                    floor: true,
-                  })}
+                  getValuePrecisionThousand(
+                    profit.times(forexMap[currency] ?? 0).toString(),
+                    2,
+                    2,
+                    2,
+                    false,
+                    {
+                      isFait: false,
+                      floor: true,
+                    },
+                  )}
             </Typography>
             <Typography
               component={'span'}
