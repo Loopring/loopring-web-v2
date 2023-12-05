@@ -170,7 +170,9 @@ export const MarketDetail = ({
         justifyContent={'center'}
         // height={"60%"}
         height={'calc(var(--swap-box-height) - 262px)'}
-        minHeihgt={'300px'}
+        sx={{
+          minHeihgt: '300px',
+        }}
         // minHeight={420}
       >
         {!trend?.length ? (
@@ -205,14 +207,17 @@ export const MarketDetail = ({
         })}
       </Grid>
       <Box
-        flex={1}
-        flexDirection={'column'}
         display={'flex'}
+        flexDirection={'column'}
         alignItems={'stretch'}
-        width={'100%'}
-        marginTop={2}
-        padding={1}
-        sx={{ background: 'var(--color-box-enhance)' }}
+        justifyContent={'space-between'}
+        marginX={2}
+        paddingX={2}
+        paddingTop={1}
+        borderRadius={1 / 2}
+        sx={{
+          background: 'var(--field-opacity)',
+        }}
       >
         <Typography component={'p'} variant={'h5'}>
           {t('labelStats')}
@@ -274,14 +279,17 @@ export const MarketDetail = ({
         </Typography>
       </Box>
       <Box
-        flex={1}
-        flexDirection={'column'}
         display={'flex'}
+        flexDirection={'column'}
         alignItems={'stretch'}
-        width={'100%'}
-        marginTop={2}
-        padding={1}
-        sx={{ background: 'var(--color-box-enhance)' }}
+        justifyContent={'space-between'}
+        marginX={2}
+        paddingX={2}
+        paddingTop={1}
+        borderRadius={1 / 2}
+        sx={{
+          background: 'var(--field-opacity)',
+        }}
       >
         <Typography component={'p'} variant={'h5'}>
           {t('labelTokenInfo')}

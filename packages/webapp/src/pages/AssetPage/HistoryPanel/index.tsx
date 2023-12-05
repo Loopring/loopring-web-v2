@@ -21,6 +21,7 @@ import {
   DualDes,
   ButtonStyle,
   VaultTxTable,
+  VaultCloseDetail,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,
@@ -157,6 +158,10 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     vaultOrderData,
     totalNum: vaultTotal,
     showLoading: showVaultLoaning,
+    onItemClick: onVaultDetail,
+    vaultCloseDetail,
+    openVaultDetail,
+    onVaultDetailClose,
   } = useVaultTransaction(setToastOpen)
   const {
     getBtradeOrderList,
@@ -567,19 +572,71 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               idIndex={idIndex}
             />
           ) : currentTab === RecordTabIndex.VaultRecords ? (
-            <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
-              <VaultTxTable
-                {...{
-                  showloading: showVaultLoaning,
-                  getOrderList: getVaultOrderList,
-                  rawData: vaultOrderData,
-                }}
-                pagination={{
-                  pageSize: pageSize,
-                  total: vaultTotal,
-                }}
-              />
-            </Box>
+            <>
+              <Modal
+                open={openVaultDetail}
+                onClose={onVaultDetailClose}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+              >
+                <SwitchPanelStyled width={'var(--modal-width)'}>
+                  <ModalCloseButton onClose={onVaultDetailClose} t={t} />
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'flex-start'}
+                    alignSelf={'stretch'}
+                    marginTop={-4}
+                    justifyContent={'stretch'}
+                  >
+                    <Typography
+                      display={'flex'}
+                      flexDirection={'row'}
+                      component={'header'}
+                      alignItems={'center'}
+                      height={'var(--toolbar-row-height)'}
+                      paddingX={3}
+                    >
+                      <Typography component={'span'} display={'inline-flex'}>
+                        {t('labelCloseOutDetail')}
+                      </Typography>
+                    </Typography>
+                    <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                  </Box>
+                  <Box
+                    flex={1}
+                    paddingY={2}
+                    width={'100%'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    sx={
+                      isMobile
+                        ? {
+                            maxHeight: 'initial',
+                            overflowY: 'initial',
+                          }
+                        : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                    }
+                  >
+                    {vaultCloseDetail && <VaultCloseDetail vaultCloseDetail={vaultCloseDetail} />}
+                  </Box>
+                </SwitchPanelStyled>
+              </Modal>
+              <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
+                <VaultTxTable
+                  {...{
+                    showloading: showVaultLoaning,
+                    getOrderList: getVaultOrderList,
+                    rawData: vaultOrderData,
+                    onItemClick: onVaultDetail,
+                  }}
+                  pagination={{
+                    pageSize: pageSize,
+                    total: vaultTotal,
+                  }}
+                />
+              </Box>
+            </>
           ) : (
             <></>
           )}

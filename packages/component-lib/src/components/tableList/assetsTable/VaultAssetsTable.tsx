@@ -27,8 +27,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 
   .rdg {
     flex: 1;
-
-    ${({ isMobile, lan }) =>
+    ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 200px 150px auto auto !important;`
         : `--template-columns: 54% 40% 6% !important;`}
@@ -80,13 +79,13 @@ export type VaultDataAssetsItem = {
   precision: number
 }
 
-export type VaultAssetsTableProps<R = RawDataAssetsItem> = {
+export type VaultAssetsTableProps<R> = {
   rawData: R[]
   searchValue?: string
   pagination?: {
     pageSize: number
   }
-  onRowClick?: (row: R) => void
+  onRowClick?: (index: number, row: R) => void
   allowTrade?: any
   tableHeight?: number
   onVisibleRowsChange?: (props: any) => void
@@ -105,7 +104,7 @@ export type VaultAssetsTableProps<R = RawDataAssetsItem> = {
 >
 
 export const VaultAssetsTable = withTranslation('tables')(
-  (props: WithTranslation & VaultAssetsTableProps) => {
+  <R extends VaultDataAssetsItem>(props: WithTranslation & VaultAssetsTableProps<R>) => {
     const {
       t,
       rawData,
@@ -131,7 +130,7 @@ export const VaultAssetsTable = withTranslation('tables')(
     const [pageSize, setPageSize] = React.useState(8)
     const [{ total, hasMore }, setTotal] = React.useState({ total: 0, hasMore: false })
     const [page, setPage] = React.useState(1)
-    const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>([])
+    const [viewData, setViewData] = React.useState<R[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     React.useEffect(() => {
       // let height = gridRef?.current?.offsetHeight
@@ -198,11 +197,11 @@ export const VaultAssetsTable = withTranslation('tables')(
       [setFilter],
     )
 
-    const getColumnModeAssets = (t: TFunction): Column<RawDataAssetsItem, unknown>[] => [
+    const getColumnModeAssets = (t: TFunction): Column<R, unknown>[] => [
       {
         key: 'token',
         name: t('labelToken'),
-        formatter: ({ row, column }) => {
+        formatter: ({ row }) => {
           const symbol = row.erc20Symbol
           let tokenIcon: [any, any] = [coinJson[symbol], undefined]
           return (
@@ -275,7 +274,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         formatter: actionRow,
       },
     ]
-    const getColumnMobileAssets = (t: TFunction): Column<RawDataAssetsItem, unknown>[] => [
+    const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
       {
         key: 'token',
         name: t('labelToken'),

@@ -7,6 +7,7 @@ import {
   useAccount,
   useDefiMap,
   useDualMap,
+  useSystem,
   useTokenMap,
   useVaultMap,
   useWalletLayer2,
@@ -47,6 +48,8 @@ import {
   RecordTabIndex,
   EmptyValueTag,
   DirectionTag,
+  PriceTag,
+  CurrencyToTag,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
@@ -1240,6 +1243,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   const {
     account: { accountId, apiKey },
   } = useAccount()
+  const { currency } = useSettings()
+  const { forexMap } = useSystem()
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, erc20Map } = useVaultMap()
   const { tokenMap, idIndex } = useTokenMap()
   const { setShowAccount } = useOpenModals()
@@ -1491,10 +1496,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   fillAmount: fillAmount.toString(),
                   percentage,
                   raw_data: {
-                    operateSubType,
                     order,
+                    operation,
                   },
-                }
+                } as R
                 return item
               },
             )
@@ -1506,11 +1511,113 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
     },
     [accountId, apiKey, setToastOpen, t, tokenMap, vaultIdIndex],
   )
+  const [detail, setShowDetail] = React.useState({
+    isShow: false,
+    detail: undefined,
+  })
 
+  const onItemClick = (item: R) => {
+    setShowDetail((_) => {
+      const {
+        raw_data: { operation },
+      } = item
+      const profit =
+        operation?.Collateral && operation?.Collateral
+          ? sdk.toBig(operation?.totalEquity ?? 0).minus(operation?.Collateral ?? 0)
+          : undefined
+      const outTokenInfo = tokenMap[idIndex[operation.tokenOut]]
+      const amount = sdk.toBig(operation.amountOut).div('1e' + outTokenInfo.decimals)
+      return {
+        isShow: true,
+        detail: {
+          ...item,
+          status: t(`labelVault${item.status}`),
+          amount: amount.gte(0)
+            ? getValuePrecisionThousand(
+                amount,
+                outTokenInfo.precision,
+                outTokenInfo.precision,
+                outTokenInfo.precision,
+                true,
+                { floor: true },
+              ) + outTokenInfo.symbol
+            : EmptyValueTag,
+          executionHistory: operation?.executionHistory,
+          profit: profit
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
+                sdk.toBig(profit).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          profitPercent:
+            profit && operation?.Collateral
+              ? getValuePrecisionThousand(
+                  profit.div(operation?.Collateral ?? 1).times(100) ?? '0',
+                  4,
+                  4,
+                  4,
+                  false,
+                  {
+                    isFait: false,
+                    floor: true,
+                  },
+                ) + '%'
+              : EmptyValueTag,
+          usdValue: operation?.totalBalance
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
+                sdk.toBig(operation?.totalBalance ?? 0).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          usdDebt: operation?.totalDebt
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
+                sdk.toBig(operation?.totalDebt ?? 0).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          usdEquity: operation?.totalEquity
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
+                sdk.toBig(operation?.totalEquity ?? 0).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          forexMap,
+        },
+      }
+    })
+  }
   return {
     getVaultOrderList,
     vaultOrderData,
     totalNum,
     showLoading,
+    onItemClick,
+    vaultCloseDetail: detail.detail,
+    openVaultDetail: detail.isShow,
+    onVaultDetailClose: () =>
+      setShowDetail({
+        isShow: false,
+        detail: undefined,
+      }),
   }
 }

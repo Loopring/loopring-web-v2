@@ -10,6 +10,7 @@ import {
 import { Box, Typography } from '@mui/material'
 import { YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
 import moment from 'moment/moment'
+import React from 'react'
 import { useSettings } from '../../../stores'
 
 const TradeDes2 = (props: PanelProps) => {
@@ -295,24 +296,17 @@ export const VaultJoin_In_Progress = (props: PanelProps) => {
   }
   return <VaultJoinBase title={props.info?.title} {...propsPatch} {...props} />
 }
-const RedeemDes2 = (
+export const RedeemDes2 = (
   props: PanelProps & {
     isPending?: boolean
+    isNoWrap?: boolean
   },
 ) => {
   const { isMobile } = useSettings()
-  const { usdValue, usdDebt, usdEquity, forexMap, time } = props?.info ?? {}
-  return forexMap ? (
-    <>
-      <Box
-        justifySelf={'stretch'}
-        display={'flex'}
-        flexDirection={'column'}
-        minWidth={'var(--modal-min-width)'}
-        justifyContent={'center'}
-        marginTop={2}
-        paddingX={isMobile ? 1 : 0}
-      >
+  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time } = props?.info ?? {}
+  const detail = React.useMemo(() => {
+    return (
+      <>
         <Typography
           display={'inline-flex'}
           justifyContent={'space-between'}
@@ -339,7 +333,6 @@ const RedeemDes2 = (
             {props.t('labelVaultExitStatusPending')}
           </Typography>
         </Typography>
-
         <Typography
           display={'inline-flex'}
           justifyContent={'space-between'}
@@ -353,7 +346,6 @@ const RedeemDes2 = (
             {usdValue}
           </Typography>
         </Typography>
-
         <Typography
           display={'inline-flex'}
           justifyContent={'space-between'}
@@ -387,12 +379,56 @@ const RedeemDes2 = (
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultExitProfit')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {profit}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultExitProfitPercentage')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {profitPercent}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          order={10}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultTime')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Typography>
+      </>
+    )
+  }, [usdValue, usdDebt, usdEquity, time, isMobile])
+  return props.isNoWrap ? (
+    <>{detail}</>
+  ) : (
+    <>
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        {detail}
       </Box>
       {props.isPending && (
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
@@ -400,8 +436,6 @@ const RedeemDes2 = (
         </Typography>
       )}
     </>
-  ) : (
-    <></>
   )
 }
 export const VaultRedeem_Success = (props: PanelProps) => {

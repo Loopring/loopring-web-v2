@@ -19,6 +19,7 @@ import {
   useOpenModals,
   useSettings,
   VaultAssetsTableProps,
+  Transaction,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -47,14 +48,14 @@ import { useHistory } from 'react-router-dom'
 
 const VaultPath = `${RouterPath.vault}/:item`
 
-export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
+export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }): VaultAssetsTableProps<R> & {
   totalAsset: string
   onActionBtnClick: (key: VaultAction) => void
-  setShowNoVaultAccount: (props: { isShow: boolean; whichBtn: VaultAction | undefined }) => void
+  setShowNoVaultAccount: (props: any) => void
   [key: string]: any
 } => {
   let match: any = useRouteMatch(VaultPath)
@@ -74,7 +75,7 @@ export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
   } = _vaultAccountInfo
   const [assetsRawData, setAssetsRawData] = React.useState<R[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
-  const { status: accountStatus, account } = useAccount()
+  const { account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
 
@@ -85,14 +86,8 @@ export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
     },
   } = useOpenModals()
 
-  const {
-    isMobile,
-    currency,
-    defaultNetwork,
-    hideL2Assets,
-    hideSmallBalances,
-    setHideSmallBalances,
-  } = useSettings()
+  const { isMobile, defaultNetwork, hideL2Assets, hideSmallBalances, setHideSmallBalances } =
+    useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const btnClickCallbackArray = {
     [fnType.ERROR_NETWORK]: [
@@ -477,7 +472,7 @@ export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
   const onRowClick = React.useCallback(
     ({ row }: { row: R }) => {
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
-        onSwapPop({ symbol: row.token.value })
+        onSwapPop({ symbol: row?.token?.value })
       } else {
         setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
       }
@@ -507,7 +502,6 @@ export const useGetVaultAssets = <R = VaultDataAssetsItem,>({
     setShowNoVaultAccount,
     onActionBtnClick,
     dialogBtn,
-    showNoVaultAccount,
     actionRow: ({ row }) => {
       return (
         <Button

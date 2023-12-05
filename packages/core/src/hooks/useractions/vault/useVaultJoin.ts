@@ -39,10 +39,11 @@ import {
 } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
+import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 
 export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { t } = useTranslation()
-  const { tokenMap: vaultTokenMap, joinTokenMap, coinMap: vaultCoinMap, erc20Map } = useVaultMap()
+  const { tokenMap: vaultTokenMap, joinTokenMap, erc20Map } = useVaultMap()
   const { tokenMap, coinMap, idIndex } = useTokenMap()
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
   const { exchangeInfo, chainId, baseURL } = useSystem()
@@ -59,8 +60,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const calcSupportData = (tradeData: T) => {
     let supportData = {}
     // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    if (tradeData?.belong) {
-      const vaultTokenSymbol = walletAllowMap[tradeData.belong as any].vaultToken
+    if (tradeData?.belong && walletAllowMap[tradeData.belong as any]) {
+      const vaultTokenSymbol = walletAllowMap[tradeData.belong as any]?.vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       const ercToken = tokenMap[tradeData.belong]
       // tradeData.belong
@@ -517,7 +518,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       coinMap: walletAllowMap,
     }
     let walletInfo,
-      isActiveAccount = false
+      isActiveAccount =
+        !vaultAccountInfo?.accountStatus ||
+        [VaultAccountStatus.FREE, VaultAccountStatus.UNDEFINED].includes(
+          vaultAccountInfo?.accountStatus,
+        )
 
     if (
       account &&
@@ -527,13 +532,14 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     ) {
       initSymbol = idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
     } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {
-      const key = Reflect.ownKeys(vaultCoinMap).find((keyVal) => {
-        const walletInfo = walletMap[keyVal.toString()] ?? { count: 0 }
+      const key = Reflect.ownKeys(joinTokenMap).find((keyVal) => {
+        const erc20Symbol = idIndex[joinTokenMap[keyVal.toString()]?.tokenId]
+        const walletInfo = walletMap[erc20Symbol] ?? { count: 0 }
         if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
           return true
         }
       })
-      initSymbol = key ? key.toString() : initSymbol
+      initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
     }
     walletInfo = {
       belong: initSymbol,

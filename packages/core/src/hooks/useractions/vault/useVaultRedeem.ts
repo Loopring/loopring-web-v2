@@ -1,8 +1,10 @@
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import {
+  CurrencyToTag,
   CustomErrorWithCode,
   EmptyValueTag,
   getValuePrecisionThousand,
+  PriceTag,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
@@ -31,10 +33,12 @@ export const useVaultRedeem = () => {
   const { currency } = useSettings()
   const [info, setInfo] = React.useState<
     | {
+        profit: any
         usdValue: any
         usdDebt: any
         usdEquity: any
         forexMap: any
+        profitPercent: any
       }
     | undefined
   >(undefined)
@@ -46,10 +50,43 @@ export const useVaultRedeem = () => {
       vaultAccountInfoStatus === SagaStatus.UNSET &&
       vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
     ) {
+      // const colorIs = profit.gte(0) ? 0 : 1
       setInfo(() => {
+        const profit =
+          vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
+            ? sdk
+                .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+                .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+            : undefined
         return {
+          profit: profit
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
+                sdk.toBig(profit).times(forexMap[currency] ?? 0),
+                2,
+                2,
+                2,
+                true,
+                { floor: true },
+              )
+            : EmptyValueTag,
+          profitPercent:
+            profit && vaultAccountInfo?.totalCollateralOfUsdt
+              ? getValuePrecisionThousand(
+                  profit?.div(vaultAccountInfo?.totalCollateralOfUsdt ?? 1).times(100) ?? 0,
+                  4,
+                  4,
+                  4,
+                  false,
+                  {
+                    isFait: false,
+                    floor: true,
+                  },
+                ) + '%'
+              : EmptyValueTag,
           usdValue: vaultAccountInfo?.totalBalanceOfUsdt
-            ? getValuePrecisionThousand(
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
                 sdk.toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                 2,
                 2,
@@ -59,7 +96,8 @@ export const useVaultRedeem = () => {
               )
             : EmptyValueTag,
           usdDebt: vaultAccountInfo?.totalDebtOfUsdt
-            ? getValuePrecisionThousand(
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
                 sdk.toBig(vaultAccountInfo?.totalDebtOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                 2,
                 2,
@@ -69,7 +107,8 @@ export const useVaultRedeem = () => {
               )
             : EmptyValueTag,
           usdEquity: vaultAccountInfo?.totalEquityOfUsdt
-            ? getValuePrecisionThousand(
+            ? PriceTag[CurrencyToTag[currency]] +
+              getValuePrecisionThousand(
                 sdk.toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0).times(forexMap[currency] ?? 0),
                 2,
                 2,
@@ -82,7 +121,7 @@ export const useVaultRedeem = () => {
         }
       })
     }
-  }, [vaultAccountInfoStatus])
+  }, [vaultAccountInfoStatus, currency])
   const availableTradeCheck = React.useCallback(() => {
     if (
       vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING &&
@@ -209,42 +248,8 @@ export const useVaultRedeem = () => {
           isShow: true,
           step: AccountStep.VaultRedeem_Failed,
           info: {
+            ...info,
             status: t('labelFailed'),
-            usdValue: vaultAccountInfo?.totalBalanceOfUsdt
-              ? getValuePrecisionThousand(
-                  sdk
-                    .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
-                    .times(forexMap[currency] ?? 0),
-                  2,
-                  2,
-                  2,
-                  true,
-                  { floor: true },
-                )
-              : EmptyValueTag,
-            usdDebt: vaultAccountInfo?.totalDebtOfUsdt
-              ? getValuePrecisionThousand(
-                  sdk.toBig(vaultAccountInfo?.totalDebtOfUsdt ?? 0).times(forexMap[currency] ?? 0),
-                  2,
-                  2,
-                  2,
-                  true,
-                  { floor: true },
-                )
-              : EmptyValueTag,
-            usdEquity: vaultAccountInfo?.totalEquityOfUsdt
-              ? getValuePrecisionThousand(
-                  sdk
-                    .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
-                    .times(forexMap[currency] ?? 0),
-                  2,
-                  2,
-                  2,
-                  true,
-                  { floor: true },
-                )
-              : EmptyValueTag,
-            forexMap,
           },
           error: {
             ...(e as any),
