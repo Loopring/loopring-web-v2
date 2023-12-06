@@ -25,8 +25,8 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   & .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 20% 30% auto auto !important;`
-        : `--template-columns: 20% 30% auto !important;`}
+        ? `--template-columns: 16% 46% auto auto !important;`
+        : `--template-columns: 16% 40% auto !important;`}
   }
 `
 const TableStyled = styled(Table)`
@@ -122,7 +122,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
             return (
               <>
                 {row.mainContentRender +
-                  (row.feeStr ? `fee: ${row.feeStr} ${row.feeTokenSymbol}` : '')}
+                  (row.feeStr ? `${t('labelTradeFee')}: ${row.feeStr} ${row.feeTokenSymbol}` : '')}
               </>
             )
           },

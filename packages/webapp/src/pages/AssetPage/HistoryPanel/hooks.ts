@@ -251,7 +251,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       if (tokenMap) {
         const keys = Object.keys(tokenMap)
         const values = Object.values(tokenMap)
-        const index = values.findIndex((token) => token.tokenId === tokenId)
+        const index = values.findIndex((token) => token?.tokenId === tokenId)
         if (index > -1) {
           return keys[index]
         }
@@ -1236,7 +1236,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
 export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   setToastOpen: (props: any) => void,
 ) => {
-  const { t } = useTranslation(['error'])
+  const { t } = useTranslation(['common', 'error'])
   const [vaultOrderData, setVaultOrderData] = React.useState<R[]>([])
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
@@ -1431,7 +1431,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     vSymbol = vToken.symbol
                     vSymbolB = vTokenB.symbol
                     fillAmountS = sdk.toBig(order.fillAmountS ?? 0).div('1e' + vToken.decimals)
-                    fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vSymbolB.decimals)
+                    fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vTokenB.decimals)
                     fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
                     fillAmountSStr = getValuePrecisionThousand(fillAmountS, precision, precision)
                     percentage = sdk
@@ -1493,13 +1493,13 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   erc20SymbolB,
                   erc20Symbol,
                   mainContentRender,
-                  fillAmount: fillAmount.toString(),
+                  fillAmount: fillAmount?.toString(),
                   percentage,
                   raw_data: {
                     order,
                     operation,
                   },
-                } as R
+                } as unknown as R
                 return item
               },
             )
