@@ -277,17 +277,16 @@ export const CreateRedPacketPanel = <
     return clonedWalletMap
   }, [walletMap])
   const [selectedType, setSelectType] = React.useState(
+    
     tradeData.tradeType === RedPacketOrderType.NFT
-      ? LuckyRedPacketList.find((config) => config.defaultForNFT)
+      ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForNFT'))
       : tradeData.tradeType === RedPacketOrderType.BlindBox
       ? LuckyRedPacketList.find((config) =>
-          redPacketConfig.showERC20Blindbox
-            ? config.defaultForBlindbox
-            : config.defaultForBlindboxNotShowERC20Blindbox,
+          config.tags?.includes('defaultForBlindBox')
         )
       : tradeData.tradeType === RedPacketOrderType.FromNFT
-      ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
-      : LuckyRedPacketList.find((config) => config.defaultForERC20),
+      ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForFromNFT'))
+      : LuckyRedPacketList.find((config) => config.tags?.includes('defaultForERC20')),
   )
 
   const [privateChecked, setPrivateChecked] = React.useState(false)
@@ -441,16 +440,14 @@ export const CreateRedPacketPanel = <
             onChangeTradeType: (tradeType) => {
               const found =
                 tradeType === RedPacketOrderType.NFT
-                  ? LuckyRedPacketList.find((config) => config.defaultForNFT)
+                  ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForNFT'))
                   : tradeType === RedPacketOrderType.BlindBox
                   ? LuckyRedPacketList.find((config) =>
-                      redPacketConfig?.showERC20Blindbox
-                        ? config.defaultForBlindbox
-                        : config.defaultForBlindboxNotShowERC20Blindbox,
+                      config.tags?.includes('defaultForBlindBox'),
                     )
                   : tradeType === RedPacketOrderType.FromNFT
-                  ? LuckyRedPacketList.find((config) => config.defaultForFromNFT)
-                  : LuckyRedPacketList.find((config) => config.defaultForERC20)
+                  ? LuckyRedPacketList.find((config) => config.tags?.includes('defaultForFromNFT'))
+                  : LuckyRedPacketList.find((config) => config.tags?.includes('defaultForERC20'))
 
               setSelectType(found)
 
@@ -664,12 +661,10 @@ export const CreateRedPacketPanel = <
                   partition: LuckyTokenAmountType.RANDOM,
                 },
               } as any)
-              setSelectType(LuckyRedPacketList.find((config) => config.defaultForFromNFT))
+              setSelectType(LuckyRedPacketList.find((config) => config.tags?.includes('defaultForFromNFT')))
             } else {
               const found = LuckyRedPacketList.find((config) =>
-                redPacketConfig?.showERC20Blindbox
-                  ? config.defaultForBlindbox
-                  : config.defaultForBlindboxNotShowERC20Blindbox,
+                config.tags?.includes('defaultForBlindBox') 
               )
               setSelectType(found)
               handleOnDataChange({
@@ -685,7 +680,6 @@ export const CreateRedPacketPanel = <
             }
           }}
           selectedScope={tradeData.type!.scope!}
-          exclusiveDisabled={!isWhiteListed && tradeData.tradeType === RedPacketOrderType.FromNFT}
           showBackBtn={tradeData.tradeType === RedPacketOrderType.FromNFT}
           showExclusiveOption={showExclusiveOption ? true : false}
         />
