@@ -166,7 +166,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignRight',
           name: t('labelVaultTxTime'),
           formatter: ({ row }: FormatterProps<R>) => {
-            return <>{moment(row?.raw_data?.order?.createdAt).fromNow()}</>
+            return <>{moment(row?.raw_data?.operation?.createdAt).fromNow()}</>
           },
         },
       ],

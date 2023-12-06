@@ -1447,7 +1447,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
 
                     mainContentRender = `${
                       fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
-                    }  ${vSymbol} \u2248 ${
+                    }  ${vSymbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
                     } ${vSymbolB}; ${t('labelPrice')}: ${price}`
                     break
