@@ -41,9 +41,6 @@ export const TradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  const styles = isMobile
-    ? { flex: 1, background: 'var(--color-box-third)' }
-    : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   // leverageETHAdvice
   // console.log('leverageETHAdvice', leverageETHAdvice)
   // setShowRETHStakignPopup={setShowRETHStakignPopup}
@@ -56,7 +53,10 @@ export const TradePanel = ({
         <Box
           className={'hasLinerBg'}
           display={'flex'}
-          style={styles}
+          sx={{
+            width: 'var(--modal-width)',
+            background: 'var(--color-box-third)',
+          }}
           justifyContent={'center'}
           padding={5 / 2}
         >

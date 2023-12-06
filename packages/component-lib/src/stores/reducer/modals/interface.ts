@@ -93,8 +93,11 @@ export interface ModalState {
   isShowTargetRedpacketPop: {
     isShow: boolean
     info: {
-      exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
-      
+      exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {
+        tokenIcon: CoinSource
+        tokenName: string
+      })[]
     }
   }
+  isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
 }

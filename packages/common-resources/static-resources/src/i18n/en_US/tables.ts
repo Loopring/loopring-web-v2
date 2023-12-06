@@ -368,4 +368,8 @@ export default {
   labelDualRetryStatusTerminated:
     'Auto Reinvest terminated. You successfully purchased the target token.',
   labelTypeCHANGE_PWD: 'Reset Loopring L2 Keypair',
+  labelAveragePositionCost: 'Average Position Cost <1></1>',
+  labelAveragePositionCostDes: '.....',
+  labelDefiApr: 'APR <1></1>',
+  labelDefiAprDes: '......',
 }

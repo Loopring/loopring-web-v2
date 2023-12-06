@@ -1,8 +1,8 @@
 import {
+  BackIcon,
   DeFiCalcData,
   DeFiChgType,
   EmptyValueTag,
-  ExchangeIcon,
   getValuePrecisionThousand,
   HelpIcon,
   IBData,
@@ -12,13 +12,14 @@ import {
   myLog,
   OrderListIcon,
   RecordTabIndex,
+  ReverseIcon,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { DeFiWrapProps } from './Interface'
 import { Trans, useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, Tooltip, Typography } from '@mui/material'
-import { InputCoin } from '../../../basic-lib'
+import { Box, Divider, Grid, Tooltip, Typography } from '@mui/material'
+import { Button, InputCoin } from '../../../basic-lib'
 import { ButtonStyle, IconButtonStyled } from '../Styled'
 import { CountDownIcon } from '../tool/Refresh'
 import { useHistory } from 'react-router-dom'
@@ -28,7 +29,7 @@ import { useSettings } from '../../../../stores'
 import { useTheme } from '@emotion/react'
 import { toBig } from '@loopring-web/loopring-sdk'
 
-const GridStyle = styled(Grid)`
+const BoxStyle = styled(Box)`
   ul {
     list-style: disc;
     padding-left: ${({ theme }) => theme.unit}px;
@@ -73,17 +74,20 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   isLeverageETH,
   extraWithdrawFee,
   apr,
+  onAprDetail,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   // @ts-ignore
   const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i)
   const coinSellRef = React.useRef()
-  const coinBuyRef = React.useRef()
+  // const coinBuyRef = React.useRef()
   const { t } = useTranslation()
   const theme = useTheme()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const history = useHistory()
+  const [_isStoB, setIsStoB] = React.useState(isStoB ?? true)
+
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       if (typeof switchStobEvent === 'function') {
@@ -98,7 +102,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
 
   const convertStr = React.useMemo(() => {
     return deFiCalcData.coinSell && deFiCalcData.coinBuy
-      ? isStoB
+      ? _isStoB
         ? `1${deFiCalcData.coinSell.belong} \u2248 ${
             // @ts-ignore
             // eslint-disable-next-line eqeqeq
@@ -132,7 +136,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     deFiCalcData.BtoA,
     deFiCalcData.coinBuy,
     deFiCalcData.coinSell,
-    isStoB,
+    _isStoB,
     t,
   ])
 
@@ -164,7 +168,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     })
   }, [onChangeEvent])
   const propsSell = {
-    label: t('tokenEnterPaymentToken'),
+    label: t('labelETHStakingEnterPaymentToken'),
     subLabel: t('tokenMax'),
     emptyText: t('tokenSelectToken'),
     placeholderText: '0.00',
@@ -176,19 +180,19 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     handleCountChange: handleCountChange as any,
     ...rest,
   } as any
-  const propsBuy = {
-    label: t('tokenEnterReceiveToken'),
-    // subLabel: t('tokenHave'),
-    emptyText: t('tokenSelectToken'),
-    placeholderText: '0.00',
-    isShowCoinInfo: true,
-    isShowCoinIcon: true,
-    maxAllow: false,
-    ...tokenBuyProps,
-    // handleError,
-    handleCountChange,
-    ...rest,
-  } as any
+  // const propsBuy = {
+  //   label: t('tokenEnterReceiveToken'),
+  //   // subLabel: t('tokenHave'),
+  //   emptyText: t('tokenSelectToken'),
+  //   placeholderText: '0.00',
+  //   isShowCoinInfo: true,
+  //   isShowCoinIcon: true,
+  //   maxAllow: false,
+  //   ...tokenBuyProps,
+  //   // handleError,
+  //   handleCountChange,
+  //   ...rest,
+  // } as any
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split('|')
@@ -255,17 +259,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     : EmptyValueTag
 
   return (
-    <Grid
+    <Box
       className={deFiCalcData ? '' : 'loading'}
-      container
-      direction={'column'}
+      flexDirection={'column'}
       justifyContent={'space-between'}
       alignItems={'center'}
+      display={'flex'}
       flex={1}
       height={'100%'}
     >
-      <Grid
-        item
+      <Box
         display={'flex'}
         justifyContent={'space-between'}
         alignItems={'center'}
@@ -319,16 +322,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             </IconButtonStyled>
           </Typography>
         </Box>
-      </Grid>
-      <Grid
-        item
-        marginTop={3}
-        paddingBottom={3}
+      </Box>
+      <Divider sx={{ width: '100%', marginY: 1 }} />
+      <Box
         flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
-        borderBottom={'1px solid var(--color-border)'}
+        // borderBottom={'1px solid var(--color-border)'}
       >
         <InputCoinStyled
           ref={coinSellRef}
@@ -343,191 +344,212 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             coinPrecision: tokenSell && tokenSell.precision,
           }}
         />
-        <Box alignSelf={'center'} marginY={1}>
-          <IconButtonStyled
-            size={'large'}
-            onClick={covertOnClick}
-            disabled={true}
-            aria-label={t('tokenExchange')}
-          >
-            <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-disable)'} />
-          </IconButtonStyled>
-        </Box>
-        <InputCoinStyled
-          ref={coinBuyRef}
-          disabled={getDisabled}
-          {...{
-            ...propsBuy,
-            name: 'coinBuy',
-            isHideError: true,
-            order: 'right',
-            inputData: deFiCalcData ? deFiCalcData.coinBuy : ({} as any),
-            coinMap: {},
-            coinPrecision: tokenBuy && tokenBuy.precision,
-          }}
-        />
-      </Grid>
-
-      <Grid marginTop={3} item alignSelf={'stretch'}>
-        <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
-            {isLeverageETH && (
-              <Grid
-                container
-                justifyContent={'space-between'}
-                direction={'row'}
+      </Box>
+      <Divider sx={{ width: '100%', marginY: 3 }} />
+      <Grid container spacing={1} alignItems={'stretch'} flex={1}>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+        >
+          <Typography component={'p'} variant='body2' color={'textSecondary'}>
+            {t('labelReceiveToken')}
+          </Typography>
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
+            {deFiCalcData?.coinBuy?.tradeValue
+              ? deFiCalcData.coinBuy.tradeValue + deFiCalcData.coinBuy.belong
+              : EmptyValueTag}
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+        >
+          <Box display={'flex'} flexDirection={'row'}>
+            <Tooltip title={t('labelLRCStakeAPRTooltips')}>
+              <Typography
+                component={'p'}
+                variant='body2'
+                color={'textSecondary'}
+                display={'inline-flex'}
                 alignItems={'center'}
-                marginTop={1 / 2}
               >
-                <Box display={'flex'} flexDirection={'row'}>
-                  <Typography
-                    marginRight={0.5}
-                    component={'p'}
-                    variant='body2'
-                    color={'textSecondary'}
-                  >
-                    {t('labelAPR')}
-                  </Typography>
-
-                  <Tooltip title={t('labelLRCStakeAPRTooltips')}>
-                    <span>
-                      <Info2Icon />
-                    </span>
-                  </Tooltip>
-                </Box>
-                <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                  {apr ? `${apr}%` : EmptyValueTag}
-                </Typography>
-              </Grid>
-            )}
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
+                {t('labelAPR')}
+                <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+              </Typography>
+            </Tooltip>
+          </Box>
+          <Button
+            variant={'text'}
+            size={'small'}
+            onClick={() => onAprDetail()}
+            sx={{ padding: 0, justifyContent: 'right' }}
+            endIcon={
+              <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} color={'inherit'} />
+            }
+          >
+            {apr ? `${apr}%` : EmptyValueTag}
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+        >
+          <Typography component={'p'} variant='body2' color={'textSecondary'}>
+            {t('labelDefiRate')}
+          </Typography>
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
+            {showVal ? convertStr : t('labelCalculating')}
+            <IconButtonStyled
+              size={'small'}
+              aria-label={t('tokenExchange')}
+              onClick={() => setIsStoB(!_isStoB)}
             >
-              <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('labelDefiRate')}
-              </Typography>
-              <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {showVal ? convertStr : t('labelCalculating')}
-              </Typography>
-            </Grid>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Typography component={'p'} variant='body2' color={'textSecondary'}>
-                {t('labelTradingFee')}
-              </Typography>
-              <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {fee}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <ButtonStyle
-              fullWidth
-              variant={'contained'}
-              size={'medium'}
-              color={'primary'}
-              onClick={() => {
-                onSubmitClick()
-              }}
-              loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-              disabled={
-                getDisabled ||
-                btnStatus === TradeBtnStatus.LOADING ||
-                btnStatus === TradeBtnStatus.DISABLED
-              }
-            >
-              {label}
-            </ButtonStyle>
-          </Grid>
-          {confirmShowLimitBalance && (
-            <GridStyle item>
-              {isJoin ? (
-                <Typography
-                  variant={'body1'}
-                  component={'p'}
-                  display={'flex'}
-                  marginTop={1}
-                  flexDirection={'column'}
-                  color={'var(--color-warning)'}
-                >
-                  <Trans i18nKey={'labelDefiMaxBalanceJoin'} tOptions={{ maxValue }}>
-                    The quota is almost sold out and can't fulfil your complete order. You can only
-                    subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit
-                    for subscription later.
-                  </Trans>
-                </Typography>
-              ) : (
-                <Typography
-                  variant={'body1'}
-                  component={'p'}
-                  display={'flex'}
-                  marginTop={1}
-                  flexDirection={'column'}
-                  color={'var(--color-warning)'}
-                >
-                  <Typography component={'span'} variant={'inherit'} color={'inherit'}>
-                    <Trans i18nKey={'labelDefiMaxBalanceLeverage'} tOptions={{ maxValue }}>
-                      Loopring rebalance pool can't satisfy your complete request. You can only
-                      redeem {{ maxValue }} now. For the remaining investment, you can choose one of
-                      the approaches
-                    </Trans>
-                  </Typography>
-                  <Typography
-                    component={'span'}
-                    variant={'inherit'}
-                    color={'inherit'}
-                    marginTop={1}
-                  >
-                    <ul>
-                      {isLeverageETH ? (
-                        <Trans
-                          i18nKey={'labelDefiMaxBalance1Leverage'}
-                          components={{ li: <li /> }}
-                          tOptions={{
-                            symbol: baseSymbol,
-                            type,
-                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                          }}
-                        >
-                          <li>Wait some time for Loopring to seto for redeem</li>
-                        </Trans>
-                      ) : (
-                        <Trans
-                          i18nKey={'labelDefiMaxBalance1'}
-                          components={{ li: <li /> }}
-                          tOptions={{
-                            symbol: baseSymbol,
-                            type,
-                            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                          }}
-                        >
-                          <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
-                          <li>Wait some time for Loopring to seto for redeem</li>
-                        </Trans>
-                      )}
-                    </ul>
-                  </Typography>
-                </Typography>
-              )}
-            </GridStyle>
-          )}
+              <ReverseIcon />
+            </IconButtonStyled>
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+        >
+          <Typography component={'p'} variant='body2' color={'textSecondary'}>
+            {t('labelDefiDuration')}
+          </Typography>
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
+            {t('labelFlexible')}
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+        >
+          <Typography component={'p'} variant='body2' color={'textSecondary'}>
+            {t('labelTradingFee')}
+          </Typography>
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
+            {fee}
+          </Typography>
         </Grid>
       </Grid>
-    </Grid>
+
+      <Box
+        marginTop={3}
+        alignSelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'stretch'}
+      >
+        <ButtonStyle
+          fullWidth
+          variant={'contained'}
+          size={'medium'}
+          color={'primary'}
+          onClick={() => {
+            onSubmitClick()
+          }}
+          loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+          disabled={
+            getDisabled ||
+            btnStatus === TradeBtnStatus.LOADING ||
+            btnStatus === TradeBtnStatus.DISABLED
+          }
+        >
+          {label}
+        </ButtonStyle>
+        {confirmShowLimitBalance && (
+          <BoxStyle display={'flex'} flexDirection={'column'}>
+            {isJoin ? (
+              <Typography
+                variant={'body1'}
+                component={'p'}
+                display={'flex'}
+                marginTop={1}
+                flexDirection={'column'}
+                color={'var(--color-warning)'}
+              >
+                <Trans i18nKey={'labelDefiMaxBalanceJoin'} tOptions={{ maxValue }}>
+                  The quota is almost sold out and can't fulfil your complete order. You can only
+                  subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit
+                  for subscription later.
+                </Trans>
+              </Typography>
+            ) : (
+              <Typography
+                variant={'body1'}
+                component={'p'}
+                display={'flex'}
+                marginTop={1}
+                flexDirection={'column'}
+                color={'var(--color-warning)'}
+              >
+                <Typography component={'span'} variant={'inherit'} color={'inherit'}>
+                  <Trans i18nKey={'labelDefiMaxBalanceLeverage'} tOptions={{ maxValue }}>
+                    Loopring rebalance pool can't satisfy your complete request. You can only redeem{' '}
+                    {{ maxValue }} now. For the remaining investment, you can choose one of the
+                    approaches
+                  </Trans>
+                </Typography>
+                <Typography component={'span'} variant={'inherit'} color={'inherit'} marginTop={1}>
+                  <ul>
+                    {isLeverageETH ? (
+                      <Trans
+                        i18nKey={'labelDefiMaxBalance1Leverage'}
+                        components={{ li: <li /> }}
+                        tOptions={{
+                          symbol: baseSymbol,
+                          type,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        }}
+                      >
+                        <li>Wait some time for Loopring to seto for redeem</li>
+                      </Trans>
+                    ) : (
+                      <Trans
+                        i18nKey={'labelDefiMaxBalance1'}
+                        components={{ li: <li /> }}
+                        tOptions={{
+                          symbol: baseSymbol,
+                          type,
+                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                        }}
+                      >
+                        <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
+                        <li>Wait some time for Loopring to seto for redeem</li>
+                      </Trans>
+                    )}
+                  </ul>
+                </Typography>
+              </Typography>
+            )}
+          </BoxStyle>
+        )}
+      </Box>
+    </Box>
   )
 }

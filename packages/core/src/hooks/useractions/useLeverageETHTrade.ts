@@ -72,7 +72,7 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
   // const { status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo, allowTrade } = useSystem()
   const { tradeLeverageETH, updateTradeLeverageETH, resetTradeLeverageETH } = useTradeLeverageETH()
-  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals()
+  const { setShowSupport, setShowTradeIsFrozen, setShowETHStakingApr } = useOpenModals()
 
   const { toggle } = useToggle()
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
@@ -168,7 +168,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
                 buyAmount: tradeData?.tradeValue?.toString() ?? '0',
               }
         const buyTokenBalanceVol: string = _oldTradeDefi?.defiBalances[coinBuySymbol] ?? ''
-
         calcValue = sdk.calcDefi({
           isJoin,
           isInputSell: type === DeFiChgType.coinSell,
@@ -179,18 +178,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
           tokenBuy: tokenMap[coinBuySymbol],
           buyTokenBalanceVol,
         })
-
-        // const dustToken = tokenBuy;
-
-        // const minVolBuy = BigNumber.max(
-        //   fm.toBig(feeVol).times(2),
-        //   dustToken.orderAmounts.dust
-        // );
-
-        // const miniSellVol = BigNumber.max(
-        //   minVolBuy.div(sellPrice),
-        //   tokenSell.orderAmounts.dust
-        // );
 
         const sellAmount =
           tradeData?.tradeValue === undefined
@@ -335,7 +322,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
               : undefined,
         },
       }
-
       let _feeInfo = feeInfo
         ? feeInfo
         : {
@@ -768,7 +754,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     .div('10000')
     .div('1e' + tradeLeverageETH.sellToken.decimals)
     .toString()
-  const apr = defiMarketMap && defiMarketMap[market]?.apy
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
@@ -803,7 +788,10 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
       btnStatus,
       accStatus: account.readyState,
       extraWithdrawFee: extraWithdrawFee,
-      apr,
+      apr: defiMarketMap[market]?.apy,
+      onAprDetail: () => {
+        setShowETHStakingApr({ isShow: true, symbol: market, info: defiMarketMap[market] })
+      },
     }
   }, [
     isStoB,
@@ -825,7 +813,6 @@ export const useLeverageETHTrade = <T extends IBData<I>, I, ACD extends DeFiCalc
     coinBuySymbol,
     btnStatus,
     extraWithdrawFee,
-    apr,
   ])
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
