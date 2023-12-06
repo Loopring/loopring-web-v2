@@ -153,6 +153,47 @@ export const VaultDashBoardPanel = ({
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
+      <Modal open={showNoVaultAccount} onClose={onBtnClose} sx={{ zIndex: 99 }}>
+        <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+          <Box
+            padding={5}
+            bgcolor={'var(--color-box)'}
+            width={'var(--modal-width)'}
+            borderRadius={1}
+            display={'flex'}
+            alignItems={'center'}
+            flexDirection={'column'}
+            position={'relative'}
+          >
+            {/* <Box></Box> */}
+            <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
+            <Typography marginBottom={2} variant={'h4'}>
+              {t(btnProps.title)}
+            </Typography>
+            <Typography
+              whiteSpace={'pre-line'}
+              component={'span'}
+              variant={'body1'}
+              color={'textSecondary'}
+              marginBottom={3}
+            >
+              <Trans
+                i18nKey={btnProps.des}
+                tOptions={{
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                }}
+              ></Trans>
+            </Typography>
+
+            <>{dialogBtn}</>
+          </Box>
+        </Box>
+      </Modal>
       <Container
         maxWidth='lg'
         style={{
@@ -164,64 +205,6 @@ export const VaultDashBoardPanel = ({
         <ViewAccountTemplate
           activeViewTemplate={
             <>
-              <Modal open={showNoVaultAccount} onClose={onBtnClose}>
-                <Box
-                  height={'100%'}
-                  display={'flex'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                >
-                  <Box
-                    padding={5}
-                    bgcolor={'var(--color-box)'}
-                    width={'var(--modal-width)'}
-                    borderRadius={1}
-                    display={'flex'}
-                    alignItems={'center'}
-                    flexDirection={'column'}
-                    position={'relative'}
-                  >
-                    {/* <Box></Box> */}
-                    <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
-                    <Typography marginBottom={2} variant={'h4'}>
-                      {t(btnProps.title)}
-                    </Typography>
-                    <Typography
-                      whiteSpace={'pre-line'}
-                      component={'span'}
-                      variant={'body1'}
-                      color={'textSecondary'}
-                      marginBottom={3}
-                    >
-                      <Trans
-                        i18nKey={btnProps.des}
-                        tOptions={{
-                          layer2: L1L2_NAME_DEFINED[network].layer2,
-                          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                        }}
-                        // components={{
-                        //   p: (
-                        //     <Typography
-                        //       whiteSpace={'pre-line'}
-                        //       component={'span'}
-                        //       variant={'body1'}
-                        //       display={'block'}
-                        //       marginBottom={3}
-                        //       color={'textSecondary'}
-                        //     />
-                        //   ),
-                        // }}
-                      ></Trans>
-                    </Typography>
-
-                    <>{dialogBtn}</>
-                  </Box>
-                </Box>
-              </Modal>
               <Grid container spacing={3} marginTop={3}>
                 <Grid item sm={9} xs={12} flex={1} display={'flex'}>
                   <Box

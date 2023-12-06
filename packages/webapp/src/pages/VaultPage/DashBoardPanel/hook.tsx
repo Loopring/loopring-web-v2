@@ -19,7 +19,7 @@ import {
   useOpenModals,
   useSettings,
   VaultAssetsTableProps,
-  Transaction,
+  AccountStep,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -81,6 +81,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
 
   const {
     setShowNoVaultAccount,
+    setShowAccount,
     modals: {
       isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
     },
@@ -160,8 +161,21 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   const onActionBtnClick = (props: string) => {
     accountStaticCallBack(btnClickCallbackArray, [props])
   }
+
   React.useEffect(() => {
     if (match?.params?.item == VaultKey.VAULT_DASHBOARD) {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.VaultRedeem_Success,
+        info: {
+          profit: 10,
+          usdValue: 10,
+          usdDebt: 10,
+          usdEquity: 10,
+          forexMap: 10,
+          profitPercent: 10,
+        },
+      })
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
         setShowNoVaultAccount({
           isShow: false,

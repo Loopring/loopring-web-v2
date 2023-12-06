@@ -172,10 +172,9 @@ export const useVaultRedeem = () => {
         }
         setShowAccount({
           isShow: true,
-          step: [
-            sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-            // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-          ].includes(response2?.raw_data?.operation?.status)
+          step: [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+            response2?.raw_data?.operation?.status,
+          )
             ? AccountStep.VaultRedeem_Success
             : AccountStep.VaultRedeem_In_Progress,
           info: {

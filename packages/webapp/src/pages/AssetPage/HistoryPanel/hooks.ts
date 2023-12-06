@@ -244,23 +244,22 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
   const [ammRecordTotal, setAmmRecordTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
-  const { tokenMap } = useTokenMap()
+  const { tokenMap, idIndex } = useTokenMap()
 
-  const getTokenName = React.useCallback(
-    (tokenId?: number) => {
-      if (tokenMap) {
-        const keys = Object.keys(tokenMap)
-        const values = Object.values(tokenMap)
-        const index = values.findIndex((token) => token?.tokenId === tokenId)
-        if (index > -1) {
-          return keys[index]
-        }
-        return ''
-      }
-      return ''
-    },
-    [tokenMap],
-  )
+  // const getTokenName = React.useCallback(
+  //   (tokenId?: number) => {
+  //     if (tokenMap) {
+  //       const keys = Object.keys(tokenMap)
+  //       const index = Reflect.ownKeys(tokenMap)?.findIndex((token) => token?.tokenId === tokenId)
+  //       if (index > -1) {
+  //         return keys[index]
+  //       }
+  //       return ''
+  //     }
+  //     return ''
+  //   },
+  //   [tokenMap],
+  // )
 
   const getAmmpoolList = React.useCallback(
     async ({ tokenSymbol, start, end, txTypes, offset, limit }: any) => {
@@ -294,31 +293,31 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
             side: order.txType === sdk.AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
             amount: {
               from: {
-                key: getTokenName(order.poolTokens[0]?.tokenId),
+                key: idIndex[order.poolTokens[0]?.tokenId],
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[0]?.tokenId),
+                    idIndex[order.poolTokens[0]?.tokenId],
                     order.poolTokens[0]?.actualAmount,
                   ),
                 ),
               },
               to: {
-                key: getTokenName(order.poolTokens[1]?.tokenId),
+                key: idIndex[order.poolTokens[1]?.tokenId],
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[1]?.tokenId),
+                    idIndex[order.poolTokens[1]?.tokenId],
                     order.poolTokens[1]?.actualAmount,
                   ),
                 ),
               },
             },
             lpTokenAmount: String(
-              volumeToCount(getTokenName(order.lpToken?.tokenId), order.lpToken?.actualAmount),
+              volumeToCount(idIndex[order.lpToken?.tokenId], order.lpToken?.actualAmount),
             ),
             fee: {
-              key: getTokenName(order.poolTokens[1]?.tokenId),
+              key: idIndex[order.poolTokens[1]?.tokenId],
               value: volumeToCount(
-                getTokenName(order.poolTokens[1]?.tokenId),
+                idIndex[order.poolTokens[1]?.tokenId],
                 order.poolTokens[1]?.feeAmount,
               )?.toFixed(6),
             },
@@ -331,7 +330,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, getTokenName, setToastOpen, t, tokenMap],
+    [accountId, apiKey, idIndex, setToastOpen, t, tokenMap],
   )
 
   return {
@@ -1435,7 +1434,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
                     fillAmountSStr = getValuePrecisionThousand(fillAmountS, precision, precision)
                     percentage = sdk
-                      .toBig(order.fillAmountS ?? 0)
+                      .toBig(order?.fillAmountS ?? 0)
                       .div(amountS ?? 1)
                       .times(100)
                       .toFixed(2)
@@ -1517,7 +1516,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   })
 
   const onItemClick = (item: R) => {
-    setShowDetail((_) => {
+    setShowDetail((_state) => {
       const {
         raw_data: { operation },
       } = item

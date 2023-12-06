@@ -75,7 +75,7 @@ export interface VaultTxsTableProps<R> {
 
 export const VaultTxTable = withTranslation(['tables', 'common'])(
   <R extends RawDataVaultTxItem>(props: VaultTxsTableProps<R> & WithTranslation) => {
-    const { rawData, showloading, onItemClick, pagination, getOrderList, t } = props
+    const { rawData, showloading, pagination, getOrderList, t } = props
     const [page, setPage] = React.useState(0)
     const { isMobile, upColor } = useSettings()
     const history = useHistory()
@@ -155,7 +155,12 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 color={color}
               >
                 {t(`labelVault${row.status}`) +
-                  `${row.type === VaultRecordType.trade ? '(' + row.percentage + '%)' : ''}`}
+                  `${
+                    row.type === VaultRecordType.trade &&
+                    row.status !== sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+                      ? '(' + row.percentage + '%)'
+                      : ''
+                  }`}
               </Typography>
             )
           },
@@ -243,7 +248,12 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                   alignItems={'center'}
                 >
                   {t(`labelVault${row.status}`) +
-                    `${row.type === VaultRecordType.trade ? '(' + row.percentage + '%)' : ''}`}
+                    `${
+                      row.type === VaultRecordType.trade &&
+                      row.status !== sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+                        ? '(' + row.percentage + '%)'
+                        : ''
+                    }`}
                 </Typography>
                 <Typography>{moment(row?.raw_data?.order?.createdAt).fromNow()}</Typography>
               </Box>
@@ -308,9 +318,9 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           }
           rowHeight={RowInvestConfig.rowHeight}
           headerRowHeight={RowInvestConfig.rowHeaderHeight}
-          onRowClick={(_index: number, row: R) => {
-            onItemClick(row)
-          }}
+          // onRowClick={(_index: number, row: R) => {
+          //   onItemClick(row)
+          // }}
           // sortMethod={sortMethod}
           {...{
             ...defaultArgs,
