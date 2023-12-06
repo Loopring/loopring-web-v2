@@ -1449,7 +1449,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
                     }  ${vSymbol} \u2248 ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    } ${vSymbolB} ${t('labelPrice')}: ${price}`
+                    } ${vSymbolB}; ${t('labelPrice')}: ${price}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout

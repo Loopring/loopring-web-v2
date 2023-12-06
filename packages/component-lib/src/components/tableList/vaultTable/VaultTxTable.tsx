@@ -122,7 +122,9 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
             return (
               <>
                 {row.mainContentRender +
-                  (row.feeStr ? `${t('labelTradeFee')}: ${row.feeStr} ${row.feeTokenSymbol}` : '')}
+                  (row.feeStr
+                    ? `; ${t('labelTradeFee')}: ${row.feeStr} ${row.feeTokenSymbol}`
+                    : '')}
               </>
             )
           },
