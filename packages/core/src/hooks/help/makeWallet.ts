@@ -2,7 +2,7 @@ import { BIGO, store } from '../../index'
 import { AccountStatus, CoinKey, WalletCoin, WalletMap } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const VaultBorrowFault = 0.8
+export const VaultBorrowFault = 1
 
 export type WalletMapExtend<C> = {
   [K in CoinKey<C>]?: WalletCoin<C> & {
@@ -125,9 +125,9 @@ export const makeVaultAvaiable2 = <
       // tokenMap: erc20TokenMap,
       idIndex: erc20IdIndex,
     },
-    tokenPrices: { tokenPrices },
+    // tokenPrices: { tokenPrices },
     invest: {
-      vaultMap: { tokenMap, marketCoins, idIndex: vaultIdIndex },
+      vaultMap: { tokenMap, marketCoins, idIndex: vaultIdIndex, tokenPrices },
     },
   } = store.getState()
   //@ts-ignore
@@ -135,8 +135,8 @@ export const makeVaultAvaiable2 = <
   if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
     let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins?.reduce((prev, item) => {
       const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
-      const price = tokenPrices[erc20Symbol] ?? 0
       const vaultSymbol = vaultIdIndex[tokenMap[item].vaultTokenId]
+      const price = tokenPrices[vaultSymbol] ?? 0
       const tokenInfo = tokenMap[vaultSymbol]
       let walletCoin = {
         erc20Symbol,

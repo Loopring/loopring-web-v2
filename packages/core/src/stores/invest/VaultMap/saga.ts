@@ -74,9 +74,37 @@ const getVaultMapApi = async () => {
         }
       }),
     ])
+
     const result = makeVault(tokenMapRaw as sdk.VaultToken[], marketRaw)
+    const tokenPrices = await LoopringAPI.vaultAPI
+      .getVaultPrice({ tokenIds: Reflect.ownKeys(result.idIndex) })
+      .then((response: any) => {
+        if (
+          !response ||
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          throw (response as sdk.RESULT_INFO).message
+        } else {
+          return response?.reduce((prev, item) => {
+            return { ...prev, [item.symbol]: item.price }
+          }, {})
+        }
+        //   let marketsRaw: any[] = response.markets
+        //   localStorage.setItem(
+        //     LocalStorageConfigKey.vaultMarkets,
+        //     JSON.stringify({
+        //       ...(vaultMapStorage ? JSON.parse(vaultMapStorage) : {}),
+        //       [chainId]: marketsRaw,
+        //     }),
+        //   )
+        //   // @ts-ignore
+        //   return response.markets as sdk.VaultMarket[]
+        // }
+      })
     return {
       ...result,
+      tokenPrices,
       raw_data: {
         tokenMapRaw,
         marketRaw,

@@ -11,6 +11,7 @@ export type VaultMap<
   erc20Array: string[]
   marketArray: string[]
   marketCoins: string[]
+  tokenPrices: sdk.LoopringMap<string>
   marketMap: sdk.LoopringMap<VaultUIMap & { wsMarket: string }>
   tradeMap: sdk.LoopringMap<{ tokenId: number; tradePairs: string[] }>
   coinMap: CoinMap<any>
