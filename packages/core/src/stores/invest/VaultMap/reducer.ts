@@ -12,6 +12,7 @@ const initialState: Required<VaultMapStates> = {
   tokenMap: {},
   coinMap: {},
   idIndex: {},
+  tokenPrices: {},
   joinTokenMap: {},
   addressIndex: {},
   __timer__: -1,
@@ -43,6 +44,7 @@ const vaultMapSlice: Slice = createSlice({
           state.joinTokenMap = vaultMap.joinTokenMap
           state.erc20Array = vaultMap.erc20Array
           state.erc20Map = vaultMap.erc20Map
+          state.tokenPrices = vaultMap?.tokenPrices ?? {}
           state.raw_data = vaultMap?.raw_data ?? undefined
         }
 
