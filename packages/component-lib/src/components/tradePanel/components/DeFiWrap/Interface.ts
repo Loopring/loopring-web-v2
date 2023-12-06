@@ -47,6 +47,7 @@ export type DeFiWrapProps<T, I, ACD> = {
   setShowRETHStakignPopup?: (props: { isShow: boolean; [key: string]: any }) => void
   setShowWSTETHStakignPopup?: (props: { isShow: boolean; [key: string]: any }) => void
   setShowLeverageETHPopup?: (props: { isShow: boolean; [key: string]: any }) => void
+  onAprDetail: () => void
 }
 
 export type DeFiSideType<R = RawDataDefiSideStakingItem> = {

@@ -74,7 +74,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
   // const { status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo, allowTrade } = useSystem()
   const { tradeDefi, updateTradeDefi, resetTradeDefi } = useTradeDefi()
-  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals()
+  const { setShowSupport, setShowTradeIsFrozen, setShowETHStakingApr } = useOpenModals()
 
   const { toggle } = useToggle()
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
@@ -759,6 +759,10 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
       btnStatus,
       accStatus: account.readyState,
       withdrawFeeBips: tradeDefi.withdrawFeeBips,
+      apr: defiMarketMap[market]?.apy,
+      onAprDetail: () => {
+        setShowETHStakingApr({ isShow: true, symbol: market, info: defiMarketMap[market] })
+      },
     }
   }, [
     isStoB,

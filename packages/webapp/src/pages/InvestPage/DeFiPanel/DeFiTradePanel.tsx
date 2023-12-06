@@ -38,9 +38,7 @@ export const DeFiTradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  const styles = isMobile
-    ? { flex: 1, background: 'var(--color-box-third)' }
-    : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
+  const styles = isMobile ? { flex: 1, background: 'var(--color-box-third)' } : {}
   const { t } = useTranslation()
   const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
 
@@ -50,7 +48,10 @@ export const DeFiTradePanel = ({
         <Box
           className={'hasLinerBg'}
           display={'flex'}
-          style={styles}
+          sx={{
+            width: 'var(--modal-width)',
+            background: 'var(--color-box-third)',
+          }}
           justifyContent={'center'}
           padding={5 / 2}
           bgcolor={'var(--color-box-third)'}

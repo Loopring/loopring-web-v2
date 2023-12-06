@@ -184,7 +184,7 @@ export const ModalPanel = <
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
     setShowTargetRedpacketPop,
-    setShowRedPacket
+    setShowRedPacket,
     // setShowDual,
   } = useOpenModals()
 
@@ -204,8 +204,9 @@ export const ModalPanel = <
     isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
-    isShowTargetRedpacketPop
+    isShowTargetRedpacketPop,
   } = modals
+
   const theme = useTheme()
   return (
     <>
@@ -462,6 +463,7 @@ export const ModalPanel = <
           />
         }
       />
+
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? 'Action'}
@@ -503,13 +505,13 @@ export const ModalPanel = <
         // maxWidth={'md'}
         open={isShowTargetRedpacketPop.isShow}
         onClose={() => {
-          setShowTargetRedpacketPop({isShow: false, info: {}})
+          setShowTargetRedpacketPop({ isShow: false, info: {} })
         }}
         content={
           <TargetRedpacketWrap
             exclusiveRedPackets={isShowTargetRedpacketPop.info.exclusiveRedPackets}
             onClickOpenExclusive={(redpacket) => {
-              setShowTargetRedpacketPop({isShow: false, info: {}})
+              setShowTargetRedpacketPop({ isShow: false, info: {} })
               setShowRedPacket({
                 isShow: true,
                 info: {
