@@ -318,10 +318,6 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           }
           rowHeight={RowInvestConfig.rowHeight}
           headerRowHeight={RowInvestConfig.rowHeaderHeight}
-          // onRowClick={(_index: number, row: R) => {
-          //   onItemClick(row)
-          // }}
-          // sortMethod={sortMethod}
           {...{
             ...defaultArgs,
             ...props,

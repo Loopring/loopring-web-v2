@@ -245,22 +245,6 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
   const { tokenMap, idIndex } = useTokenMap()
-
-  // const getTokenName = React.useCallback(
-  //   (tokenId?: number) => {
-  //     if (tokenMap) {
-  //       const keys = Object.keys(tokenMap)
-  //       const index = Reflect.ownKeys(tokenMap)?.findIndex((token) => token?.tokenId === tokenId)
-  //       if (index > -1) {
-  //         return keys[index]
-  //       }
-  //       return ''
-  //     }
-  //     return ''
-  //   },
-  //   [tokenMap],
-  // )
-
   const getAmmpoolList = React.useCallback(
     async ({ tokenSymbol, start, end, txTypes, offset, limit }: any) => {
       const ammPoolAddress = tokenMap[tokenSymbol]?.address
