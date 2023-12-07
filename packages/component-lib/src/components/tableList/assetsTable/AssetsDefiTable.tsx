@@ -8,7 +8,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
-  InfoIcon,
+  Info2Icon,
   RowConfig,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '../../../stores'
@@ -150,7 +150,8 @@ export const AssetsDefiTable = withTranslation('tables')(
               color={'var(--color-text-third)'}
             >
               <Trans i18nKey={'labelAveragePositionCost'} ns={'tables'}>
-                Average <InfoIcon color={'inherit'} fontSize={'small'} sx={{ marginLeft: 1 / 2 }} />
+                Average{' '}
+                <Info2Icon color={'inherit'} fontSize={'small'} sx={{ marginLeft: 1 / 2 }} />
               </Trans>
             </Typography>
           </Tooltip>
@@ -179,7 +180,7 @@ export const AssetsDefiTable = withTranslation('tables')(
               color={'var(--color-text-third)'}
             >
               <Trans i18nKey={'labelDefiApr'} ns={'tables'}>
-                APR <InfoIcon color={'inherit'} fontSize={'small'} sx={{ marginLeft: 1 / 2 }} />
+                APR <Info2Icon color={'inherit'} fontSize={'small'} sx={{ marginLeft: 1 / 2 }} />
               </Trans>
             </Typography>
           </Tooltip>
@@ -238,8 +239,8 @@ export const AssetsDefiTable = withTranslation('tables')(
           {...{ ...rest, t }}
           style={{
             height:
-              rawData?.length > 0
-                ? rowConfig.rowHeaderHeight + rawData?.length * rowConfig.rowHeight
+              rawData.length > 0
+                ? rowConfig.rowHeaderHeight + rawData.length * rowConfig.rowHeight
                 : 350,
           }}
           rowHeight={rowConfig.rowHeight}
