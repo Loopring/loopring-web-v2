@@ -22,17 +22,17 @@ const BoxStyled = styled(Box)`` as typeof Box
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case 'IncomingIcon':
-      return <IncomingIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <IncomingIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'L2l2Icon':
-      return <L2l2Icon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <L2l2Icon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'L1l2Icon':
-      return <L1l2Icon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <L1l2Icon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'ExchangeAIcon':
-      return <ExchangeAIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <ExchangeAIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'OutputIcon':
-      return <OutputIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <OutputIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'AnotherIcon':
-      return <AnotherIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <AnotherIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
   }
 }
 export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAssetProps) => {
@@ -53,7 +53,12 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
       width={'var(--modal-width)'}
     >
       <Box marginBottom={3} marginTop={-1} display={'flex'} alignItems={'center'}>
-        <Typography component={'h3'} variant={isMobile ? 'h4' : 'h3'} whiteSpace={'pre'} marginRight={1}>
+        <Typography
+          component={'h3'}
+          variant={isMobile ? 'h4' : 'h3'}
+          whiteSpace={'pre'}
+          marginRight={1}
+        >
           {t('labelSendAssetTitle', {
             symbol,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,

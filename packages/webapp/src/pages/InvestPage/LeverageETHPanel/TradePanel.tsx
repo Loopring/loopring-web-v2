@@ -1,4 +1,4 @@
-import { confirmation, useLeverageETHTrade } from '@loopring-web/core'
+import { useDefiTrade, confirmation } from '@loopring-web/core'
 import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -27,7 +27,7 @@ export const TradePanel = ({
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] = React.useState<boolean>(false)
   const [confirmShowNoBalance, setConfirmShowNoBalance] = React.useState<boolean>(false)
 
-  const { deFiWrapProps } = useLeverageETHTrade({
+  const { deFiWrapProps } = useDefiTrade({
     isJoin,
     setToastOpen: setToastOpen as any,
     market: market,
@@ -35,16 +35,17 @@ export const TradePanel = ({
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
+    isLeverageETH: true,
   })
   const { t } = useTranslation()
 
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  const styles = isMobile
-    ? { flex: 1, background: 'var(--color-box-third)' }
-    : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
-
+  // leverageETHAdvice
+  // console.log('leverageETHAdvice', leverageETHAdvice)
+  // setShowRETHStakingPopup={setShowRETHStakingPopup}
+  // setShowWSTETHStakingPopup={setShowWSTETHStakingPopup}
   const { setShowLeverageETHPopup } = confirmation.useConfirmation()
   return (
     <>
@@ -52,7 +53,10 @@ export const TradePanel = ({
         <Box
           className={'hasLinerBg'}
           display={'flex'}
-          style={styles}
+          sx={{
+            width: 'var(--modal-width)',
+            background: 'var(--color-box-third)',
+          }}
           justifyContent={'center'}
           padding={5 / 2}
         >

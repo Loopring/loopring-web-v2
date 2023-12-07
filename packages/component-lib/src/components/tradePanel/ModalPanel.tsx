@@ -255,6 +255,7 @@ export const ModalPanel = <
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
   } = modals
+
   const theme = useTheme()
   return (
     <>
@@ -511,6 +512,7 @@ export const ModalPanel = <
           />
         }
       />
+
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? 'Action'}

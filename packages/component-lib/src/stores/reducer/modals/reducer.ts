@@ -57,7 +57,8 @@ const initialState: ModalState = {
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
 	isShowTargetRedpacketPop: { isShow: false, info: {} },
-	isShowVaultExit: { isShow: false },
+  isShowETHStakingApr: { isShow: false, symbol: undefined },
+  isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
   isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
@@ -406,6 +407,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         },
       }
     },
+    setShowETHStakingApr(state, action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>) {
+      const { isShow, symbol, info } = action.payload
+      state.isShowETHStakingApr = {
+        isShow,
+        symbol,
+        info,
+      }
+    },
     setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultExit = { ...action.payload }
     },
@@ -462,6 +471,7 @@ export const {
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
   setShowTargetRedpacketPop,
+  setShowETHStakingApr,
   setShowVaultExit,
   setShowVaultJoin,
   setShowVaultSwap,

@@ -1,5 +1,10 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
+import {
+  getUserRewards,
+  getUserRewardsStatus,
+  resetUserRewards,
+  setDefiAverageMap,
+} from './reducer'
 
 import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
 import { AccountStatus } from '@loopring-web/common-resources'
@@ -7,6 +12,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 const getUserRewardsApi = async () => {
   const { accountId, apiKey, readyState } = store.getState().account
+
   if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
       _totalClaims = [],
@@ -48,6 +54,52 @@ const getUserRewardsApi = async () => {
         result = makeSummaryMyAmm({
           userRewardsMap: ammUserRewardMap,
         })
+        const { marketArray, marketLeverageArray } = store.getState().invest.defiMap
+
+        LoopringAPI.defiAPI
+          .getDefiTransaction(
+            {
+              accountId,
+              offset: 0,
+              limit: 100,
+              markets: [...marketArray, ...marketLeverageArray].join(','),
+            } as any,
+            apiKey,
+          )
+          .then((response) => {
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              return {}
+            }
+            const defiAverageMap = [...marketArray, ...marketLeverageArray].reduce((prev, item) => {
+              let priceTotal = sdk.toBig(0)
+              const _value = (response as any).userDefiTxs
+                ?.filter(
+                  (_history) =>
+                    item === _history.market &&
+                    _history.action == sdk?.DefiAction?.Deposit.toUpperCase(),
+                )
+                .slice(0, 10)
+                .map((_history) => {
+                  const price = sdk.toBig(_history.buyToken.volume).div(_history.sellToken.volume)
+                  priceTotal = priceTotal.plus(price)
+                  return {
+                    sellToken: _history.sellToken,
+                    buyToken: _history.buyToken,
+                    price: price.toString(),
+                  }
+                })
+              prev[item] = {
+                list: _value,
+                average: priceTotal.div(_value?.length ? _value?.length : 1).toString(),
+                priceTotal: priceTotal.toString(),
+              }
+              return prev
+            }, {})
+            store.dispatch(setDefiAverageMap({ defiAverageMap }))
+          })
+          .catch((error) => {
+            throw error
+          })
       }
       const totalClaims = makeClaimRewards(_totalClaims ?? [])
       let __timer__ = (() => {

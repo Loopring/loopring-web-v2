@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, BoxProps, Modal, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import { CoinIcon, Column, Table } from '../../basic-lib'
+import { Column, Table } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
 import {
@@ -11,18 +11,17 @@ import {
   getValuePrecisionThousand,
   HiddenTag,
   MarketType,
-  myLog,
   PriceTag,
   RowConfig,
   TokenType,
 } from '@loopring-web/common-resources'
-import { useSettings } from '../../../stores'
+import { useOpenModals, useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'
 import ActionMemo, { LockedMemo } from './components/ActionMemo'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { XOR } from '../../../types/lib'
 import { LockDetailPanel } from './components/modal'
-import _ from 'lodash';
+import _ from 'lodash'
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWebEarn?: boolean }>`
   display: flex;
@@ -32,7 +31,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWe
   .rdg {
     flex: 1;
 
-    ${({ isMobile, lan, isWebEarn }) =>
+    ${({ isMobile, isWebEarn }) =>
       isWebEarn
         ? isMobile
           ? `--template-columns: 54% 40% 6% !important;`
@@ -72,8 +71,6 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWe
 ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string; isWebEarn?: boolean } & BoxProps) => JSX.Element
 
-
-
 export type TradePairItem = {
   first: string
   last: string
@@ -90,6 +87,7 @@ export type RawDataAssetsItem = {
   tradePairList?: TradePairItem[]
   smallBalance: boolean
   tokenValueDollar: number
+  precision: number
 }
 
 export type AssetsTableProps<R = RawDataAssetsItem> = {
@@ -156,15 +154,15 @@ export const AssetsTable = withTranslation('tables')(
       isWebEarn,
       ...rest
     } = props
-    const gridRef = React.useRef(null);
-    const prevScrollTop = React.useRef(0);
+    const gridRef = React.useRef(null)
+    const prevScrollTop = React.useRef(0)
     // const container = React.useRef<HTMLDivElement>(null)
     const [filter, setFilter] = React.useState({
       searchValue: searchValue ?? '',
     })
     const [pageSize, setPageSize] = React.useState(8)
-    const [{total, hasMore}, setTotal] = React.useState({total: 0, hasMore: false});
-    const [page, setPage] = React.useState(1);
+    const [{ total, hasMore }, setTotal] = React.useState({ total: 0, hasMore: false })
+    const [page, setPage] = React.useState(1)
     const [viewData, setViewData] = React.useState<RawDataAssetsItem[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     const [modalState, setModalState] = React.useState(false)
@@ -181,42 +179,45 @@ export const AssetsTable = withTranslation('tables')(
     }, [gridRef?.current])
     const handleScroll = _.debounce(() => {
       // const currentScrollTop = gridRef?.current?.scrollTop;
-      const currentScrollTop = window.scrollY;
+      const currentScrollTop = window.scrollY
       if (currentScrollTop > prevScrollTop.current) {
-        setPage((prevPage) => prevPage + 1);
+        setPage((prevPage) => prevPage + 1)
       }
-    }, 200);
-    const updateData = React.useCallback((page) => {
-      if (isWebEarn) {
-        setViewData(
-          (rawData && rawData.length > 0 ? rawData : []).filter(o => {
-            return o.amount !== '--'
-          })
-        )
-        return
-      }
-      
-      let resultData = rawData && !!rawData.length ? [...rawData] : []
-      if (hideSmallBalances) {
-        resultData = resultData.filter((o) => !o.smallBalance)
-      }
-      // if (filter.hideLpToken) {
-      if (hideInvestToken) {
-        resultData = resultData.filter((o) => o.token.type === TokenType.single)
-      }
-      if (filter.searchValue) {
-        resultData = resultData.filter((o) =>
-          o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
-        )
-      }
-      if (pageSize * page >= resultData.length) {
-        setTotal({total: resultData.length, hasMore: false})
-      } else {
-        setTotal({total: pageSize * (page + 1 / 2), hasMore: true})
-      }
-      setViewData(resultData.slice(0, pageSize * page))
-      // resetTableData(resultData)
-    }, [rawData, filter, hideSmallBalances, hideInvestToken, pageSize])
+    }, 200)
+    const updateData = React.useCallback(
+      (page) => {
+        if (isWebEarn) {
+          setViewData(
+            (rawData && rawData.length > 0 ? rawData : []).filter((o) => {
+              return o.amount !== '--'
+            }),
+          )
+          return
+        }
+
+        let resultData = rawData && !!rawData.length ? [...rawData] : []
+        if (hideSmallBalances) {
+          resultData = resultData.filter((o) => !o.smallBalance)
+        }
+        // if (filter.hideLpToken) {
+        if (hideInvestToken) {
+          resultData = resultData.filter((o) => o.token.type === TokenType.single)
+        }
+        if (filter.searchValue) {
+          resultData = resultData.filter((o) =>
+            o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
+          )
+        }
+        if (pageSize * page >= resultData.length) {
+          setTotal({ total: resultData.length, hasMore: false })
+        } else {
+          setTotal({ total: pageSize * (page + 1 / 2), hasMore: true })
+        }
+        setViewData(resultData.slice(0, pageSize * page))
+        // resetTableData(resultData)
+      },
+      [rawData, filter, hideSmallBalances, hideInvestToken, pageSize],
+    )
 
     React.useEffect(() => {
       updateData(page)
@@ -228,11 +229,11 @@ export const AssetsTable = withTranslation('tables')(
       }
     }, [filter, hideInvestToken, hideSmallBalances])
     React.useEffect(() => {
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('scroll', handleScroll)
       return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-    }, []);
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }, [])
 
     const handleFilterChange = React.useCallback(
       (filter: any) => {
@@ -271,7 +272,7 @@ export const AssetsTable = withTranslation('tables')(
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginLeft: 1
+                    marginLeft: 1,
                   }}
                 >
                   <CoinIcons size={'large'} type={token.type} tokenIcon={tokenIcon} />
@@ -369,9 +370,7 @@ export const AssetsTable = withTranslation('tables')(
           const isLp = token.type === TokenType.lp
           const tokenValue = token.value
           const isDefi = token.type === TokenType.defi || tokenValue === 'CIETH'
-
           const isToL1 = token.type !== TokenType.lp
-
           const lpPairList = tokenValue.split('-')
           lpPairList.splice(0, 1)
           const lpPair = lpPairList.join('-')
@@ -391,14 +390,17 @@ export const AssetsTable = withTranslation('tables')(
                 onReceive,
                 onSend,
                 isLeverageETH: false,
-                isWebEarn: isWebEarn
+                isWebEarn: isWebEarn,
               }}
             />
           )
         },
       },
     ]
-    const getColumnMobileAssets = (t: TFunction, allowTrade?: any): Column<RawDataAssetsItem, unknown>[] => [
+    const getColumnMobileAssets = (
+      t: TFunction,
+      allowTrade?: any,
+    ): Column<RawDataAssetsItem, unknown>[] => [
       {
         key: 'token',
         name: t('labelToken'),
@@ -495,7 +497,7 @@ export const AssetsTable = withTranslation('tables')(
                 onReceive,
                 onSend,
                 isLeverageETH: false,
-                isWebEarn: isWebEarn
+                isWebEarn: isWebEarn,
               }}
             />
           )
@@ -525,34 +527,48 @@ export const AssetsTable = withTranslation('tables')(
           </>
         </Modal>
         <Table
-            ref={gridRef}
+          ref={gridRef}
           className={isInvest ? 'investAsset' : ''}
           {...{ ...rest, t }}
-            style={{height: viewData.length > 0 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight : 350}}
+          style={{
+            height:
+              viewData.length > 0
+                ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
+                : 350,
+          }}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
           showloading={isLoading}
-            // onScroll={handleScroll}
+          // onScroll={handleScroll}
           columnMode={
-            (isMobile ? getColumnMobileAssets(t, allowTrade) : getColumnModeAssets(t, allowTrade)) as any
+            (isMobile
+              ? getColumnMobileAssets(t, allowTrade)
+              : getColumnModeAssets(t, allowTrade)) as any
           }
         />
-        {hasMore && (<Typography
+        {hasMore && (
+          <Typography
             variant={'body1'}
             display={'inline-flex'}
             justifyContent={'center'}
             alignItems={'center'}
-            color={"var(--color-primary)"} textAlign={'center'} paddingY={1}>
-          <img
+            color={'var(--color-primary)'}
+            textAlign={'center'}
+            paddingY={1}
+          >
+            <img
               alt={'loading'}
               className='loading-gif'
               width='16'
               src={`./static/loading-1.gif`}
-              style={{paddingRight: 1, display: 'inline-block'}}
-          />{t('labelLoadingMore')}</Typography>)}
+              style={{ paddingRight: 1, display: 'inline-block' }}
+            />
+            {t('labelLoadingMore')}
+          </Typography>
+        )}
       </TableWrap>
     )
   },

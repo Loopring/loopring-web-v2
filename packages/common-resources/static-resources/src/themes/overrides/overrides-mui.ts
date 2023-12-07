@@ -211,7 +211,7 @@ export const MuiButton = ({
           color: colorBase.disable,
         },
         '& .MuiButton-endIcon,& .MuiButton-startIcon': {
-          color: colorBase.buttonIcon,
+          color: 'inherit',
         },
         '&.MuiButton-sizeSmall': {
           fontSize: '1.4rem',

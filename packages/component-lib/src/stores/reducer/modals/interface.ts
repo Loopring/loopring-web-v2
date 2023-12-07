@@ -94,8 +94,10 @@ export interface ModalState {
   isShowTargetRedpacketPop: {
     isShow: boolean
     info: {
-      exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
-
+      exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {
+        tokenIcon: CoinSource
+        tokenName: string
+      })[]
     }
   }
   isShowVaultExit: ModalStatePlayLoad & Transaction
@@ -105,6 +107,7 @@ export interface ModalState {
       Transaction & {
       type: string
   }
+  isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
   isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
 }
 

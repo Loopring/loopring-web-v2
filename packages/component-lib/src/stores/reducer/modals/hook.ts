@@ -33,6 +33,7 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowETHStakingApr,
   setShowVaultJoin,
   setShowVaultExit,
   setShowVaultSwap,
@@ -308,6 +309,10 @@ export const useOpenModals = () => {
           })[]
         }
       }) => dispatch(setShowTargetRedpacketPop(state)),
+      [dispatch],
+    ),
+    setShowETHStakingApr: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
       [dispatch],
     ),
     setShowVaultExit: React.useCallback(

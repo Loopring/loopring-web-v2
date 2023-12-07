@@ -19,6 +19,8 @@ import {
   Tabs,
   CoinIcons,
   MaxWidthContainer,
+  AssetsDefiTable,
+  useToggle,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -64,7 +66,6 @@ import {
   confirmation,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
-import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import React from 'react'
 import { containerColors } from '..'
 import _ from 'lodash'
@@ -88,7 +89,7 @@ const MyLiquidity: any = withTranslation('common')(
     path?: string
   }) => {
     let match: any = useRouteMatch(path + '/:type')
-
+    const { toggle } = useToggle()
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
@@ -100,12 +101,10 @@ const MyLiquidity: any = withTranslation('common')(
     const sideStakeRef = React.useRef(null)
     const { ammActivityMap } = useAmmActivityMap()
     const { forexMap } = useSystem()
-    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap()
+    const { tokenMap,disableWithdrawList, idIndex } = useTokenMap()
     const { tokenPrices } = useTokenPrices()
     const { redeemItemClick } = useStakeRedeemClick()
     const { marketMap: dualMarketMap, status: dualMarketMapStatus } = useDualMap()
-    const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
-      useGetAssets()
     const { account } = useAccount()
     const history = useHistory()
     const { currency, hideSmallBalances, defaultNetwork, coinJson } = useSettings()
@@ -157,6 +156,10 @@ const MyLiquidity: any = withTranslation('common')(
       stakingTotal,
       totalStakedRewards,
       stakedSymbol,
+      leverageETHAssets,
+      defiAsset,
+      onReceive,
+      onSend,
     } = useOverview({
       ammActivityMap,
       dualOnInvestAsset,
@@ -164,22 +167,31 @@ const MyLiquidity: any = withTranslation('common')(
       // dualList,
     })
     const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
-    // myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
+    myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
+
+    React.useEffect(() => {
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        dualMarketMapStatus === SagaStatus.UNSET
+      ) {
+        getDualTxList({})
+      }
+    }, [account.readyState, dualMarketMapStatus])
 
     const theme = useTheme()
     const { isMobile } = useSettings()
-    const lidoAssets = assetsRawData.filter((o) => {
-      return (
-        ethStakingCoins?.includes(o.name) &&
-        o.token.type !== TokenType.lp &&
-        (hideSmallBalances ? !o.smallBalance : true)
-      )
-    })
-    const leverageETHAssets = assetsRawData.filter((o) => {
-      return (
-        marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
-      )
-    })
+    // const lidoAssets = assetsRawData.filter((o) => {
+    //   return (
+    //     ethStakingCoins?.includes(o.name) &&
+    //     o.token.type !== TokenType.lp &&
+    //     (hideSmallBalances ? !o.smallBalance : true)
+    //   )
+    // })
+    // const leverageETHAssets = assetsRawData.filter((o) => {
+    //   return (
+    //     marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
+    //   )
+    // })
     const totalClaimableRewardsAmount =
       rewardsAPIError || !totalClaims
         ? '0'
@@ -469,7 +481,7 @@ const MyLiquidity: any = withTranslation('common')(
                       filter={filter}
                       handleFilterChange={handleFilterChange}
                       hideSmallBalances={hideSmallBalances}
-                      allowTrade={allowTrade}
+                      allowTrade={toggle}
                       rawData={myPoolRow}
                       showFilter={true}
                       account={account}
@@ -649,7 +661,7 @@ const MyLiquidity: any = withTranslation('common')(
               {tab === InvestAssetRouter.STAKE && (
                 <TableWrapStyled
                   ref={stakingRef}
-                  className={`table-divide-short ${lidoAssets?.length > 0 ? 'min-height' : ''}`}
+                  className={`table-divide-short`}
                   marginTop={2}
                   paddingY={2}
                   paddingX={0}
@@ -685,19 +697,76 @@ const MyLiquidity: any = withTranslation('common')(
                     ) : (
                       ''
                     )}
-                    <AssetsTable
+                    <AssetsDefiTable
                       {...{
                         disableWithdrawList,
-                        rawData: lidoAssets,
-                        showFilter: false,
-                        allowTrade,
-                        onSend,
                         onReceive,
-                        getMarketArrayListCallback: getTokenRelatedMarketArray,
+                        onSend,
+                        rawData: defiAsset,
+                        showFilter: false,
+                        allowTrade: toggle,
                         rowConfig: RowInvestConfig,
                         forexMap: forexMap as any,
                         isInvest: true,
                         hideAssets,
+                        ...rest,
+                      }}
+                    />
+                  </Grid>
+                </TableWrapStyled>
+              )}
+              {tab === InvestAssetRouter.LEVERAGEETH && (
+                <TableWrapStyled
+                  ref={leverageETHRef}
+                  className={`table-divide-short MuiPaper-elevation2 ${
+                    leverageETHAssets?.length > 0 ? 'min-height' : ''
+                  }`}
+                  marginTop={2}
+                  paddingY={2}
+                  paddingX={0}
+                  flex={1}
+                >
+                  <Grid item xs={12}>
+                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
+                      {t('labelLeverageETHTitle')}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
+                    {summaryMyInvest?.leverageETHDollar !== undefined ? (
+                      <Typography component={'h4'} variant={'h3'} marginX={3}>
+                        {summaryMyInvest?.leverageETHDollar
+                          ? hideAssets
+                            ? HiddenTag
+                            : nanToEmptyTag(
+                                getValuePrecisionThousand(
+                                  sdk
+                                    .toBig(summaryMyInvest?.leverageETHDollar)
+                                    .times(forexMap[currency] ?? 0),
+                                  undefined,
+                                  undefined,
+                                  2,
+                                  true,
+                                  { isFait: true, floor: true },
+                                ),
+                                PriceTag[CurrencyToTag[currency]],
+                              )
+                          : EmptyValueTag}
+                      </Typography>
+                    ) : (
+                      ''
+                    )}
+                    <AssetsDefiTable
+                      {...{
+                        disableWithdrawList,
+                        onReceive,
+                        onSend,
+                        rawData: leverageETHAssets,
+                        showFilter: false,
+                        allowTrade: toggle,
+                        rowConfig: RowInvestConfig,
+                        forexMap: forexMap as any,
+                        hideAssets,
+                        isLeverageETH: true,
                         ...rest,
                       }}
                     />
@@ -891,66 +960,6 @@ const MyLiquidity: any = withTranslation('common')(
                         )}
                       </SwitchPanelStyled>
                     </Modal>
-                  </Grid>
-                </TableWrapStyled>
-              )}
-              {tab === InvestAssetRouter.LEVERAGEETH && (
-                <TableWrapStyled
-                  ref={leverageETHRef}
-                  className={`table-divide-short MuiPaper-elevation2 ${
-                    leverageETHAssets?.length > 0 ? 'min-height' : ''
-                  }`}
-                  marginTop={2}
-                  paddingY={2}
-                  paddingX={0}
-                  flex={1}
-                >
-                  <Grid item xs={12}>
-                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
-                      {t('labelLeverageETHTitle')}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
-                    {summaryMyInvest?.leverageETHDollar !== undefined ? (
-                      <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {summaryMyInvest?.leverageETHDollar
-                          ? hideAssets
-                            ? HiddenTag
-                            : nanToEmptyTag(
-                                getValuePrecisionThousand(
-                                  sdk
-                                    .toBig(summaryMyInvest?.leverageETHDollar)
-                                    .times(forexMap[currency] ?? 0),
-                                  undefined,
-                                  undefined,
-                                  2,
-                                  true,
-                                  { isFait: true, floor: true },
-                                ),
-                                PriceTag[CurrencyToTag[currency]],
-                              )
-                          : EmptyValueTag}
-                      </Typography>
-                    ) : (
-                      ''
-                    )}
-                    <AssetsTable
-                      {...{
-                        disableWithdrawList,
-                        rawData: leverageETHAssets,
-                        showFilter: false,
-                        allowTrade,
-                        onSend,
-                        onReceive,
-                        getMarketArrayListCallback: getTokenRelatedMarketArray, // todo change logic
-                        rowConfig: RowInvestConfig,
-                        forexMap: forexMap as any,
-                        isInvest: true,
-                        hideAssets,
-                        isLeverageETH: true,
-                        ...rest,
-                      }}
-                    />
                   </Grid>
                 </TableWrapStyled>
               )}
