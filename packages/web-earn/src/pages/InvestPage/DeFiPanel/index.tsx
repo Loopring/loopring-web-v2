@@ -293,13 +293,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) => {
     if (isShow) {
       if (type === 'RETH') {
-        setShowRETHStakePopup({ show: true, confirmationNeeded: true })
+        setShowRETHStakignPopup({ isShow: true, confirmationNeeded: true })
       } else {
-        setShowWSTETHStakePopup({ show: true, confirmationNeeded: true })
+        setShowWSTETHStakignPopup({ isShow: true, confirmationNeeded: true })
       }
     } else {
-      setShowRETHStakePopup({ show: false, confirmationNeeded: true })
-      setShowWSTETHStakePopup({ show: false, confirmationNeeded: true })
+      setShowRETHStakignPopup({ isShow: false, confirmationNeeded: true })
+      setShowWSTETHStakignPopup({ isShow: false, confirmationNeeded: true })
     }
   }
 

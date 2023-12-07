@@ -123,7 +123,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     if (isShow) {
       setShowLeverageETHPopup({ isShow: true, confirmationNeeded: true })
     } else {
-      setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: false, confirmationNeeded: true })
     }
   }
   const match: any = useRouteMatch('/invest/leverageeth/:isJoin?')
