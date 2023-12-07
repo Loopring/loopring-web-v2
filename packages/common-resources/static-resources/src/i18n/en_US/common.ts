@@ -2130,4 +2130,6 @@ export default {
   labelDefiDuration: 'Duration',
   labelFlexible: 'Flexible',
   labelEstAPR: 'Est.APR',
+  labelTradingFeeTooltips:
+    "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
 }

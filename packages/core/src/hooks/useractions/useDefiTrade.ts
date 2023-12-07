@@ -148,18 +148,10 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
       const marketInfo = (isLeverageETH ? marketLeverageMap : marketMap)[market]
       let calcValue, feeRaw, fee
       let newTradeDefi = {
+        ...store.getState()._router_tradeDefi.tradeDefi,
         ..._tradeDefi,
-        ...store.getState()._router_tradeLeverageETH.tradeLeverageETH,
       }
       let _deFiCalcData: DeFiCalcData<T> = newTradeDefi.deFiCalcData as unknown as DeFiCalcData<T>
-
-      // let _oldTradeDefi = {
-      //   ...store.getState()._router_tradeDefi.tradeDefi,
-      //   ..._tradeDefi,
-      // }
-      //_.cloneDeep({ ...tradeDefi, ..._tradeDefi });
-      // myLog('defi handleOnchange', _oldTradeDefi.defiBalances, _oldTradeDefi)
-
       if (
         tradeData &&
         newTradeDefi.defiBalances &&
@@ -179,7 +171,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
           isJoin,
           isInputSell: type === DeFiChgType.coinSell,
           ...inputValue,
-          maxFeeBips: (isLeverageETH ? marketLeverageMap : marketMap)[market]?.maxFeeBips,
+          maxFeeBips: (isLeverageETH ? marketLeverageMap : marketMap)[market]?.extra?.maxFeeBips,
           defaultFee: newTradeDefi.defaultFee,
           marketInfo,
           tokenSell: tokenMap[coinSellSymbol],
@@ -211,8 +203,16 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
                 true,
                 { floor: true },
               ).replaceAll(sdk.SEP, '')
-        feeRaw = calcValue.feeVol
-        fee = sdk.toBig(calcValue.feeVol).div('1e' + tokenMap[coinBuySymbol].decimal)
+        if (sdk.toBig(newTradeDefi.defaultFee).gt(0)) {
+          feeRaw = isNaN(calcValue.feeVol) ? '0' : calcValue.feeVol
+          fee = sdk
+            .toBig(feeRaw)
+            .div('1e' + tokenMap[coinBuySymbol].decimals)
+            .toString()
+        } else {
+          feeRaw = '0'
+          fee = '0'
+        }
 
         // @ts-ignore
         _deFiCalcData = {
@@ -254,19 +254,6 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
       const sellExceed = sdk
         .toBig(tradeDefi.deFiCalcData?.coinSell?.tradeValue ?? 0)
         .gt(tradeDefi.deFiCalcData?.coinSell?.balance ?? 0)
-      // myLog(
-      //   'sellExceed',
-      //   sellExceed,
-      //   'sellVol',
-      //   tradeDefi.sellVol,
-      //   'buyVol',
-      //   tradeDefi.buyVol,
-      //   'feeRaw',
-      //   tradeDefi.feeRaw,
-      //   'buy market balance',
-      //   //@ts-ignore
-      //   defiMarketMap && defiMarketMap[market]?.baseVolume,
-      // )
       if (
         tradeDefi?.sellVol === undefined ||
         sdk.toBig(tradeDefi?.sellVol).lte(0) ||
@@ -278,6 +265,11 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: 'labelEnterAmount',
+        }
+      } else if (sdk.toBig(tradeDefi?.fee ?? 0).lte(0)) {
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: `labelFeeCalculating`,
         }
       } else if (
         sdk
@@ -309,10 +301,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
   }, [market, tokenMap, coinSellSymbol])
 
   const resetDefault = React.useCallback(
-    async (
-      clearTrade: boolean = false,
-      defaultFee: { fee: string; feeRaw: string } | undefined,
-    ) => {
+    async (clearTrade: boolean = false, { defaultFee }: { defaultFee?: any }) => {
       let walletMap: any = {}
       const tradeDefi = store.getState()._router_tradeDefi.tradeDefi
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i) ?? []
@@ -458,11 +447,11 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
             })
           }
         }
-        resetDefault(clearTrade, _feeInfo)
+        resetDefault(clearTrade, { defaultFee: _feeInfo })
       })
-      if (account.readyState === AccountStatus.ACTIVATED) {
-        resetDefault(clearTrade, undefined)
-      }
+      // if (account.readyState === AccountStatus.ACTIVATED) {
+      //   resetDefault(clearTrade, {})
+      // }
     }
   }, globalSetup.wait)
 

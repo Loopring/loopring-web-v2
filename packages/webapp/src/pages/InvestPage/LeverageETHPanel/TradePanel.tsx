@@ -1,4 +1,4 @@
-import { useDefiTrade, usePopup } from '@loopring-web/core'
+import { useDefiTrade, confirmation } from '@loopring-web/core'
 import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -44,10 +44,9 @@ export const TradePanel = ({
 
   // leverageETHAdvice
   // console.log('leverageETHAdvice', leverageETHAdvice)
-  // setShowRETHStakignPopup={setShowRETHStakignPopup}
-  // setShowWSTETHStakignPopup={setShowWSTETHStakignPopup}
-  const { setShowLeverageETHPopup } = usePopup()
-
+  // setShowRETHStakingPopup={setShowRETHStakingPopup}
+  // setShowWSTETHStakingPopup={setShowWSTETHStakingPopup}
+  const { setShowLeverageETHPopup } = confirmation.useConfirmation()
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (

@@ -7,16 +7,20 @@ const initialState: Confirmation = {
   confirmed: false,
   confirmedRETHDefiInvest: false,
   confirmedWSETHDefiInvest: false,
-  // confirmedDualInvest: false,
   confirmedDualInvestV2: undefined,
   confirmDualAutoInvest: false,
   confirmDualDipInvest: false,
   confirmDualGainInvest: false,
-
   confirmedLRCStakeInvest: false,
-  showDualBeginnerHelp: false,
   confirmedBtradeSwap: false,
   confirmedLeverageETHInvest: false,
+  showDualBeginnerHelp: false,
+  showRETHStakePopup: false,
+  showWSTETHStakePopup: false,
+  showLRCStakePopup: false,
+  showLeverageETHPopup: false,
+  confirmationNeeded: true,
+  showAutoDefault: false,
 }
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -66,6 +70,37 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmedLeverageETHInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedLeverageETHInvest = true
     },
+    setShowRETHStakePopup(
+      state: Confirmation,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showRETHStakePopup = action.payload.isShow
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowWSTETHStakePopup(
+      state: Confirmation,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showWSTETHStakePopup = action.payload.isShow
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowLRCStakePopup(
+      state: Confirmation,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showLRCStakePopup = action.payload.isShow
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowLeverageETHPopup(
+      state: Confirmation,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
+    ) {
+      state.showLeverageETHPopup = action.payload.isShow
+      state.confirmationNeeded = action.payload.confirmationNeeded
+    },
+    setShowAutoDefault(state: Confirmation, action: PayloadAction<{ show: boolean }>) {
+      state.showAutoDefault = action.payload.show
+    },
   },
 })
 
@@ -84,4 +119,9 @@ export const {
   showDualBeginnerHelp,
   hidDualBeginnerHelp,
   confirmedLeverageETHInvest,
+  setShowRETHStakePopup,
+  setShowWSTETHStakePopup,
+  setShowLRCStakePopup,
+  setShowLeverageETHPopup,
+  setShowAutoDefault,
 } = confirmationSlice.actions

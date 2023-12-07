@@ -15,7 +15,7 @@ import {
   useSettings,
   MaxWidthContainer,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
@@ -101,7 +101,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
-    confirmation: { confirmedLeverageETHInvest: confirmed },
+    setShowLeverageETHPopup,
+    confirmation: {
+      confirmedLeverageETHInvest: confirmed,
+      confirmationNeeded,
+      showLeverageETHPopup,
+    },
   } = confirmation.useConfirmation()
   const {
     toggle: {
@@ -109,7 +114,6 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     },
   } = useToggle()
 
-  const { confirmationNeeded, showLeverageETHPopup, setShowLeverageETHPopup } = usePopup()
   const _confirmedDefiInvest = {
     isShow: showLeverageETHPopup,
     type: 'CiETH',
@@ -117,7 +121,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }
   const setConfirmedDefiInvest = ({ isShow }: { isShow: boolean }) => {
     if (isShow) {
-      setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: true, confirmationNeeded: true })
     } else {
       setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
     }
@@ -160,10 +164,6 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           >
             {t('labelBack')}
           </Button>
-
-          {/* <Typography variant={'h4'}>
-            {t('labelLeverageETHStaking')}
-          </Typography> */}
           <Button
             onClick={() =>
               history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)

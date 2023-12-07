@@ -369,7 +369,8 @@ export default {
     'Auto Reinvest terminated. You successfully purchased the target token.',
   labelTypeCHANGE_PWD: 'Reset Loopring L2 Keypair',
   labelAveragePositionCost: 'Average Position Cost <1></1>',
-  labelAveragePositionCostDes: '.....',
-  labelDefiApr: 'APR <1></1>',
-  labelDefiAprDes: '......',
+  labelAveragePositionCostDes: 'The average holding cost of the last 10 purchases.',
+  labelDefiApr: 'Est.APR <1></1>',
+  labelDefiAprDes:
+    'Apr stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
 }

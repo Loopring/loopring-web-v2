@@ -27,7 +27,6 @@ import BigNumber from 'bignumber.js'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
 import { useTheme } from '@emotion/react'
-import { toBig } from '@loopring-web/loopring-sdk'
 
 const BoxStyle = styled(Box)`
   ul {
@@ -68,8 +67,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   maxBuyVol,
   market,
   title,
-  setShowRETHStakignPopup,
-  setShowWSTETHStakignPopup,
+  setShowRETHStakePopup,
+  setShowWSTETHStakePopup,
   setShowLeverageETHPopup,
   isLeverageETH,
   apr,
@@ -79,22 +78,12 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   // @ts-ignore
   const [, baseSymbol, _quoteSymbol] = market.match(/(\w+)-(\w+)/i)
   const coinSellRef = React.useRef()
-  // const coinBuyRef = React.useRef()
   const { t } = useTranslation()
   const theme = useTheme()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const history = useHistory()
   const [_isStoB, setIsStoB] = React.useState(isStoB ?? true)
-
-  const _onSwitchStob = React.useCallback(
-    (_event: any) => {
-      if (typeof switchStobEvent === 'function') {
-        switchStobEvent(!isStoB)
-      }
-    },
-    [switchStobEvent, isStoB],
-  )
 
   const showVal =
     deFiCalcData.coinSell?.belong && deFiCalcData.coinBuy?.belong && deFiCalcData?.AtoB
@@ -142,7 +131,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const getDisabled = React.useMemo(() => {
     return disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined
   }, [btnStatus, deFiCalcData, disabled])
-  // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
@@ -160,12 +148,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     },
     [deFiCalcData, onChangeEvent],
   )
-  const covertOnClick = React.useCallback(() => {
-    onChangeEvent({
-      tradeData: undefined,
-      type: DeFiChgType.exchange,
-    })
-  }, [onChangeEvent])
   const propsSell = {
     label: t('labelETHStakingEnterPaymentToken'),
     subLabel: t('tokenMax'),
@@ -179,19 +161,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     handleCountChange: handleCountChange as any,
     ...rest,
   } as any
-  // const propsBuy = {
-  //   label: t('tokenEnterReceiveToken'),
-  //   // subLabel: t('tokenHave'),
-  //   emptyText: t('tokenSelectToken'),
-  //   placeholderText: '0.00',
-  //   isShowCoinInfo: true,
-  //   isShowCoinIcon: true,
-  //   maxAllow: false,
-  //   ...tokenBuyProps,
-  //   // handleError,
-  //   handleCountChange,
-  //   ...rest,
-  // } as any
   const label = React.useMemo(() => {
     if (btnInfo?.label) {
       const key = btnInfo?.label.split('|')
@@ -277,13 +246,13 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             onClick={() => {
               if (isLeverageETH) {
                 setShowLeverageETHPopup &&
-                  setShowLeverageETHPopup({ show: true, confirmationNeeded: false })
+                  setShowLeverageETHPopup({ isShow: true, confirmationNeeded: false })
               } else if (market === 'RETH-ETH') {
-                setShowRETHStakignPopup &&
-                  setShowRETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowRETHStakePopup &&
+                  setShowRETHStakePopup({ isShow: true, confirmationNeeded: false })
               } else if (market === 'WSTETH-ETH') {
-                setShowWSTETHStakignPopup &&
-                  setShowWSTETHStakignPopup({ show: true, confirmationNeeded: false })
+                setShowWSTETHStakePopup &&
+                  setShowWSTETHStakePopup({ isShow: true, confirmationNeeded: false })
               }
             }}
           />
@@ -429,9 +398,19 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           marginBottom={1}
           justifyContent={'space-between'}
         >
-          <Typography component={'p'} variant='body2' color={'textSecondary'}>
-            {t('labelTradingFee')}
-          </Typography>
+          <Tooltip title={t('labelTradingFeeTooltips')}>
+            <Typography
+              component={'p'}
+              variant='body2'
+              color={'textSecondary'}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
+              {t('labelTradingFee')}
+              <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+            </Typography>
+          </Tooltip>
+
           <Typography component={'p'} variant='body2' color={'textPrimary'}>
             {fee}
           </Typography>
