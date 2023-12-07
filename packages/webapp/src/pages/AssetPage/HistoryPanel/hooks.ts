@@ -1538,12 +1538,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               )
             : EmptyValueTag,
           profitPercent:
-            profit && operation?.Collateral
+            profit && Number(operation?.Collateral ?? 0)
               ? getValuePrecisionThousand(
-                  profit.div(operation?.Collateral ?? 1).times(100) ?? '0',
-                  4,
-                  4,
-                  4,
+                  profit.div(operation?.Collateral).times(100) ?? '0',
+                  2,
+                  2,
+                  undefined,
                   false,
                   {
                     isFait: false,

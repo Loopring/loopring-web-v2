@@ -86,7 +86,7 @@ const getVaultMapApi = async () => {
         ) {
           throw (response as sdk.RESULT_INFO).message
         } else {
-          return response?.reduce((prev, item) => {
+          return response?.list?.reduce((prev, item) => {
             return { ...prev, [item.symbol]: item.price }
           }, {})
         }
