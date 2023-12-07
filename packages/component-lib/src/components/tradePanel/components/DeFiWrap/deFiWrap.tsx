@@ -360,7 +360,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           </Typography>
           <Typography component={'p'} variant='body2' color={'textPrimary'}>
             {deFiCalcData?.coinBuy?.tradeValue
-              ? deFiCalcData.coinBuy.tradeValue + deFiCalcData.coinBuy.belong
+              ? deFiCalcData.coinBuy.tradeValue + ' ' + deFiCalcData.coinBuy.belong
               : EmptyValueTag}
           </Typography>
         </Grid>

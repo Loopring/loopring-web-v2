@@ -12,7 +12,6 @@ import moment from 'moment'
 import { getAprRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { DAT_STRING_FORMAT, DAT_STRING_FORMAT_S } from '@loopring-web/common-resources'
 import { ChartType } from '../../constant'
 import { IndicatorProps } from '../KlineChart'
@@ -20,7 +19,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 // import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
-const DEFAULT_YAXIS_DOMAIN = 0.05
+const DEFAULT_YAXIS_DOMAIN = 0.01
 
 const TooltipStyled = styled(Box)`
   background: var(--color-pop-bg);
@@ -112,7 +111,7 @@ const TrendAprChart = ({
     }
     return (
       <g transform={`translate(${x}, ${y})`}>
-        <text x={0} y={0} dy={16} fontSize={12} textAnchor='start' fill='#A1A7BB'>
+        <text x={0} y={0} dy={16} fontSize={12} textAnchor='end' fill={theme.colorBase.textThird}>
           {moment(payload.value).format(DAT_STRING_FORMAT_S)}
         </text>
       </g>
@@ -143,7 +142,7 @@ const TrendAprChart = ({
   return (
     <ResponsiveContainer debounce={100} width={'99%'}>
       <ComposedChart
-        margin={{ left: 5, right: 10 }}
+        margin={{ left: 5, right: 16, top: 36 }}
         data={renderData}
         onMouseMove={showTooltip && handleMousemove}
         // onMouseLeave={showTooltip && handleMouseLeave}
@@ -156,20 +155,41 @@ const TrendAprChart = ({
           </linearGradient>
         </defs>
         <XAxis
+          reversed={true}
           hide={!showXAxis}
           dataKey={'createdAt'}
           interval={30}
           axisLine={true}
           tickLine={true}
           tick={customTick}
-          stroke={'var(--color-text-secondary)'}
+          stroke={theme.colorBase.textThird}
         />
         <YAxis
-          hide={true}
-          tickFormatter={undefined}
-          domain={getDynamicYAxisDomain() as any}
+          dataKey='apy'
+          orientation={'right'}
+          hide={false}
+          axisLine={false}
+          tickLine={true}
+          width={1}
+          label={{
+            value: 'APR %',
+            fontSize: 14,
+            textAnchor: 'end',
+            fill: theme.colorBase.textThird,
+            position: 'insideTopRight',
+            transform: 'translate(0, -36)',
+          }}
+          tick={{
+            fill: theme.colorBase.textThird,
+            fontSize: 12,
+            textAnchor: 'start',
+            width: 34,
+            transform: 'translate(-36, 0)',
+          }}
+          tickFormatter={(value, index) => (index == 0 ? '' : value)}
+          domain={[0, 'auto']}
           /* tickFormatter={convertValue} */
-          stroke={'var(--color-text-secondary)'}
+          stroke={theme.colorBase.textThird}
         />
         {hasData && showTooltip && (
           <Tooltip
