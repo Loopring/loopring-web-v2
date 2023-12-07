@@ -6,7 +6,7 @@ import { LoopringAPI } from '../../api_wrapper'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export const useStakingAprTrend = () => {
-  const { marketMap: defiMarketMap } = useDefiMap()
+  const { marketMap: defiMarketMap, marketLeverageMap } = useDefiMap()
   const [isLoading, setLoading] = React.useState(false)
   const [{ trends, defiInfo }, setTrends] = React.useState({
     trends: [],
@@ -33,8 +33,12 @@ export const useStakingAprTrend = () => {
             const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
             throw new CustomErrorWithCode(errorItem)
           } else {
+            const _defiMarketMap = {
+              ...defiMarketMap,
+              ...marketLeverageMap,
+            }
             setTrends({
-              defiInfo: defiMarketMap[isShowETHStakingApr.symbol],
+              defiInfo: _defiMarketMap[isShowETHStakingApr.symbol],
               trends: response.apys,
             })
             setLoading(false)
