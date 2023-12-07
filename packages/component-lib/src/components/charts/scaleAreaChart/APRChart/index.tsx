@@ -50,15 +50,11 @@ const TrendAprChart = ({
   indicator?: IndicatorProps
   interval?: sdk.TradingInterval
   handleMove?: (props: any) => void
-  yAxisDomainPercent?: number // defualt 0.1
+  yAxisDomainPercent?: number
   riseColor?: 'green' | 'red'
   showTooltip?: boolean
   showArea?: boolean
   showXAxis?: boolean
-  // isHeadTailCompare?: boolean
-  // marketPrecision?: number
-  // isDailyTrend?: boolean
-  // handleMoveOut?: () => void
 }) => {
   const theme = useTheme()
   const renderData = getAprRenderData(type, data)
