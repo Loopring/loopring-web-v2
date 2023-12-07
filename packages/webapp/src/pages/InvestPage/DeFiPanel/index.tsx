@@ -297,8 +297,8 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         setShowWSTETHStakePopup({ isShow: true, confirmationNeeded: true })
       }
     } else {
-      setShowRETHStakePopup({ show: false, confirmationNeeded: true })
-      setShowWSTETHStakePopup({ show: false, confirmationNeeded: true })
+      setShowRETHStakePopup({ isShow: false, confirmationNeeded: true })
+      setShowWSTETHStakePopup({ isShow: false, confirmationNeeded: true })
     }
   }
 

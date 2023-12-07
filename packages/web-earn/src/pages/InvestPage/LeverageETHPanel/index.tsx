@@ -79,12 +79,12 @@ export const StyleCardContent = styled(CardContent)`
   }
 ` as typeof CardContent
 
-const ButtonStyled = styled(Button)`  
+const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
   :hover {
     background-color: var(--color-button-outlined);
-    ::before{
+    ::before {
       border-radius: 4px;
     }
   }
@@ -112,7 +112,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     if (isShow) {
       setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
     } else {
-      setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: false, confirmationNeeded: true })
     }
   }
   const match: any = useRouteMatch('/invest/leverageETH/:isJoin?')
@@ -136,7 +136,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
         height={6 * theme.unit}
         alignItems={'center'}
         containerProps={{
-          borderBottom: '1px solid var(--color-border)'
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
         <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
@@ -148,7 +148,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             color={'inherit'}
             onClick={() => history.push(`/invest/overview`)}
           >
-            {t("labelBack")}
+            {t('labelBack')}
           </Button>
 
           {/* <Typography variant={'h4'}>
