@@ -25,6 +25,7 @@ export const useStakingAprTrend = () => {
           request: {
             defiType: isShowETHStakingApr.info?.type,
             product: isShowETHStakingApr.symbol,
+            limit: 90,
           },
         })
         .then((response) => {
