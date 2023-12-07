@@ -47,7 +47,7 @@ export const useVaultBorrow = <
 
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex } = useTokenMap()
-  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, tokenPrice } = useVaultMap()
+  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, tokenPrices } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
     return vaultAvaiable2Map
@@ -286,7 +286,9 @@ export const useVaultBorrow = <
             ? AccountStep.VaultBorrow_Success
             : AccountStep.VaultBorrow_In_Progress,
           info: {
-            amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? vaultBorrowData.repayAmtStr : 0,
+            amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+              ? vaultBorrowData.borrowAmtStr
+              : 0,
             sum: vaultBorrowData.borrowAmtStr,
             status: t(status),
             forexMap,

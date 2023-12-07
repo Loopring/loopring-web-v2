@@ -296,12 +296,8 @@ const listIcon = [
   <UploadedIcon />,
   <EditIcon />,
   <ConvertToIcon />,
-  <LinkSharedIcon />,
   <AnotherIcon />,
   <RiskIcon />,
-  <ReadIcon />,
-  <MessageIcon />,
-  <GoIcon />,
   <RiskAlertIcon />,
   <RoundCheckIcon />,
   <RoundCircleIcon />,
@@ -326,6 +322,10 @@ const listIcon = [
   <DualChartHD />,
   <DualChartHH />,
   <VaultIcon />,
+  <LinkSharedIcon />,
+  <ReadIcon />,
+  <MessageIcon />,
+  <GoIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

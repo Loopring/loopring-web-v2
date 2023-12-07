@@ -420,13 +420,20 @@ export const RedeemDes2 = (
   ) : (
     <>
       <Box
-        justifySelf={'stretch'}
-        display={'flex'}
         flexDirection={'column'}
-        minWidth={'var(--modal-min-width)'}
-        justifyContent={'center'}
+        display={'flex'}
+        alignItems={'stretch'}
+        justifyContent={'space-between'}
         marginTop={2}
-        paddingX={isMobile ? 1 : 0}
+        marginX={4}
+        borderRadius={1 / 2}
+        paddingY={1}
+        paddingX={isMobile ? 1 : 2}
+        minWidth={'var(--modal-min-width)'}
+        width={`calc(100% - 64px)`}
+        sx={{
+          background: 'var(--field-opacity)',
+        }}
       >
         {detail}
       </Box>

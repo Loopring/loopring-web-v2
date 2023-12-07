@@ -1,9 +1,4 @@
-import {
-  AccountStep,
-  setShowVaultJoin,
-  SwitchData,
-  useOpenModals,
-} from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CoinInfo,
@@ -319,7 +314,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
               type: 4,
             })
-            const tokenListIgnoreZero = []
+            const tokenListIgnoreZero: any = []
             const promiseAllStorageId =
               response?.raw_data?.reduce((prev, item) => {
                 if (sdk.toBig(item?.total).gt(0)) {
@@ -533,7 +528,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       account &&
       account.readyState === AccountStatus.ACTIVATED &&
       !isActiveAccount &&
-      vaultAccountInfo?.collateralInfo?.collateralTokenId
+      vaultAccountInfo?.collateralInfo?.collateralTokenId !== undefined
     ) {
       initSymbol = idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
     } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {

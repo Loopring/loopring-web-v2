@@ -84,8 +84,12 @@ const BoxStyle = styled(Box)`
     }
   }
   &.vaultExit {
-    > *:nth-of-type(2) {
+    .content-main {
       overflow: scroll;
+      align-self: stretch;
+      & > div {
+        align-self: stretch;
+      }
     }
   }
 `

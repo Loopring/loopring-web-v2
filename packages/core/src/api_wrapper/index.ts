@@ -11,6 +11,7 @@ import {
   WalletAPI,
   WsAPI,
   ContactAPI,
+  CoworkerAPI,
   VaultAPI,
 } from '@loopring-web/loopring-sdk'
 

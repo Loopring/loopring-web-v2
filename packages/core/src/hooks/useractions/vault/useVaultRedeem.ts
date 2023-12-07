@@ -71,12 +71,12 @@ export const useVaultRedeem = () => {
               )
             : EmptyValueTag,
           profitPercent:
-            profit && vaultAccountInfo?.totalCollateralOfUsdt
+            profit && Number(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
               ? getValuePrecisionThousand(
-                  profit?.div(vaultAccountInfo?.totalCollateralOfUsdt ?? 1).times(100) ?? 0,
-                  4,
-                  4,
-                  4,
+                  profit.div(vaultAccountInfo?.totalCollateralOfUsdt).times(100) ?? 0,
+                  2,
+                  2,
+                  undefined,
                   false,
                   {
                     isFait: false,
@@ -172,10 +172,9 @@ export const useVaultRedeem = () => {
         }
         setShowAccount({
           isShow: true,
-          step: [
-            sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-            // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-          ].includes(response2?.raw_data?.operation?.status)
+          step: [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+            response2?.raw_data?.operation?.status,
+          )
             ? AccountStep.VaultRedeem_Success
             : AccountStep.VaultRedeem_In_Progress,
           info: {

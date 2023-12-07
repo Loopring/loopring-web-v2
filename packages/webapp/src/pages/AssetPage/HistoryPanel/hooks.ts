@@ -244,24 +244,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
   const [ammRecordTotal, setAmmRecordTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
-  const { tokenMap } = useTokenMap()
-
-  const getTokenName = React.useCallback(
-    (tokenId?: number) => {
-      if (tokenMap) {
-        const keys = Object.keys(tokenMap)
-        const values = Object.values(tokenMap)
-        const index = values.findIndex((token) => token.tokenId === tokenId)
-        if (index > -1) {
-          return keys[index]
-        }
-        return ''
-      }
-      return ''
-    },
-    [tokenMap],
-  )
-
+  const { tokenMap, idIndex } = useTokenMap()
   const getAmmpoolList = React.useCallback(
     async ({ tokenSymbol, start, end, txTypes, offset, limit }: any) => {
       const ammPoolAddress = tokenMap[tokenSymbol]?.address
@@ -294,31 +277,31 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
             side: order.txType === sdk.AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
             amount: {
               from: {
-                key: getTokenName(order.poolTokens[0]?.tokenId),
+                key: idIndex[order.poolTokens[0]?.tokenId],
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[0]?.tokenId),
+                    idIndex[order.poolTokens[0]?.tokenId],
                     order.poolTokens[0]?.actualAmount,
                   ),
                 ),
               },
               to: {
-                key: getTokenName(order.poolTokens[1]?.tokenId),
+                key: idIndex[order.poolTokens[1]?.tokenId],
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[1]?.tokenId),
+                    idIndex[order.poolTokens[1]?.tokenId],
                     order.poolTokens[1]?.actualAmount,
                   ),
                 ),
               },
             },
             lpTokenAmount: String(
-              volumeToCount(getTokenName(order.lpToken?.tokenId), order.lpToken?.actualAmount),
+              volumeToCount(idIndex[order.lpToken?.tokenId], order.lpToken?.actualAmount),
             ),
             fee: {
-              key: getTokenName(order.poolTokens[1]?.tokenId),
+              key: idIndex[order.poolTokens[1]?.tokenId],
               value: volumeToCount(
-                getTokenName(order.poolTokens[1]?.tokenId),
+                idIndex[order.poolTokens[1]?.tokenId],
                 order.poolTokens[1]?.feeAmount,
               )?.toFixed(6),
             },
@@ -331,7 +314,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, getTokenName, setToastOpen, t, tokenMap],
+    [accountId, apiKey, idIndex, setToastOpen, t, tokenMap],
   )
 
   return {
@@ -1236,7 +1219,7 @@ export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
 export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   setToastOpen: (props: any) => void,
 ) => {
-  const { t } = useTranslation(['error'])
+  const { t } = useTranslation(['common', 'error'])
   const [vaultOrderData, setVaultOrderData] = React.useState<R[]>([])
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
@@ -1431,11 +1414,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     vSymbol = vToken.symbol
                     vSymbolB = vTokenB.symbol
                     fillAmountS = sdk.toBig(order.fillAmountS ?? 0).div('1e' + vToken.decimals)
-                    fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vSymbolB.decimals)
+                    fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vTokenB.decimals)
                     fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
                     fillAmountSStr = getValuePrecisionThousand(fillAmountS, precision, precision)
                     percentage = sdk
-                      .toBig(order.fillAmountS ?? 0)
+                      .toBig(order?.fillAmountS ?? 0)
                       .div(amountS ?? 1)
                       .times(100)
                       .toFixed(2)
@@ -1447,9 +1430,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
 
                     mainContentRender = `${
                       fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
-                    }  ${vSymbol} \u2248 ${
+                    }  ${vSymbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    } ${vSymbolB} ${t('labelPrice')}: ${price}`
+                    } ${vSymbolB}; ${t('labelPrice')}: ${price}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
@@ -1493,13 +1476,13 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   erc20SymbolB,
                   erc20Symbol,
                   mainContentRender,
-                  fillAmount: fillAmount.toString(),
+                  fillAmount: fillAmount?.toString(),
                   percentage,
                   raw_data: {
                     order,
                     operation,
                   },
-                } as R
+                } as unknown as R
                 return item
               },
             )
@@ -1517,7 +1500,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   })
 
   const onItemClick = (item: R) => {
-    setShowDetail((_) => {
+    setShowDetail((_state) => {
       const {
         raw_data: { operation },
       } = item
@@ -1555,12 +1538,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               )
             : EmptyValueTag,
           profitPercent:
-            profit && operation?.Collateral
+            profit && Number(operation?.Collateral ?? 0)
               ? getValuePrecisionThousand(
-                  profit.div(operation?.Collateral ?? 1).times(100) ?? '0',
-                  4,
-                  4,
-                  4,
+                  profit.div(operation?.Collateral).times(100) ?? '0',
+                  2,
+                  2,
+                  undefined,
                   false,
                   {
                     isFait: false,

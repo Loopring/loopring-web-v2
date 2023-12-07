@@ -116,7 +116,7 @@ export const ModalGroup = withTranslation('common')(
             depositProps,
             isLayer1Only,
             hideDepositWithdrawBack,
-            isWebEarn
+            isWebEarn,
           }}
         />
         <ModalSettingFee
@@ -200,3 +200,5 @@ export * from './AmmPoolModal'
 export * from './RedPacketModal'
 export * from './DualModal'
 export * from './AccountModal/components/NFTDetail'
+
+export { ModalWalletConnectPanel }

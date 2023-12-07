@@ -133,6 +133,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               inputButtonDefaultProps,
               placeholderText: minFee?.minFee ? minFee.minFee : '0.00',
               inputBtnRef,
+              ...tokenProps,
             }}
           />
         )}
