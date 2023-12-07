@@ -74,7 +74,6 @@ import { walletL2CollectionSlice } from './walletL2Collection/reducer'
 import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
-import { tradeLeverageETHSlice } from './router'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
 
 const sagaMiddleware = createSagaMiddleware()
@@ -177,7 +176,7 @@ export const initReduce = {
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
   _router_tradeVault: tradeVaultSlice.reducer,
-})
+}
 
 export const store = configureStore({
   reducer: combineReducers(initReduce),
@@ -254,7 +253,7 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
-export type RootState = ReturnType<typeof reducer>
+// export type RootState = ReturnType<ReducersMapObject<initReduce>>
 export const persistor = persistStore(store)
 
 // persistor.persist()
