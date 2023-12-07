@@ -99,9 +99,9 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
     setShowLRCStakePopup: setConfirmedLRCStakeInvestInvest,
     setShowAutoDefault,
     confirmation: {
-      showLRCStakePopup: confirmedLRCStakeInvest,
-      confirmationNeeded,
-      showAutoDefault,
+        showLRCStakePopup: confirmedLRCStakeInvest,
+        confirmationNeeded,
+         showAutoDefault,
     },
   } = confirmation.useConfirmation()
   const {

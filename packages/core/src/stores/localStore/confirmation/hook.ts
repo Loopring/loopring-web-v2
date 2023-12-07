@@ -36,10 +36,10 @@ export const useConfirmation = (): {
   confirmedLeverageETHInvest: () => void
   confirmDualDipInvest: () => void
   confirmDualGainInvest: () => void
-  setShowRETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
-  setShowWSTETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
-  setShowLRCStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
-  setShowLeverageETHPopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowRETHStakePopup: (data: { isShow: boolean; confirmationNeeded: boolean }) => void
+  setShowWSTETHStakePopup: (data: { isShow: boolean; confirmationNeeded: boolean }) => void
+  setShowLRCStakePopup: (data: { isShow: boolean; confirmationNeeded: boolean }) => void
+  setShowLeverageETHPopup: (data: { isShow: boolean; confirmationNeeded: boolean }) => void
   setShowAutoDefault: (show: boolean) => void
 } => {
   const confirmation: Confirmation = useSelector(
@@ -87,22 +87,22 @@ export const useConfirmation = (): {
       dispatch(confirmDualGainInvest(undefined))
     }, [dispatch]),
     setShowRETHStakePopup: React.useCallback(
-      (data: { show: boolean; confirmationNeeded: boolean }) =>
+      (data: { isShow: boolean; confirmationNeeded: boolean }) =>
         dispatch(setShowRETHStakePopup(data)),
       [dispatch],
     ),
     setShowWSTETHStakePopup: React.useCallback(
-      (data: { show: boolean; confirmationNeeded: boolean }) =>
+      (data: { isShow: boolean; confirmationNeeded: boolean }) =>
         dispatch(setShowWSTETHStakePopup(data)),
       [dispatch],
     ),
     setShowLRCStakePopup: React.useCallback(
-      (data: { show: boolean; confirmationNeeded: boolean }) =>
+      (data: { isShow: boolean; confirmationNeeded: boolean }) =>
         dispatch(setShowLRCStakePopup(data)),
       [dispatch],
     ),
     setShowLeverageETHPopup: React.useCallback(
-      (data: { show: boolean; confirmationNeeded: boolean }) =>
+      (data: { isShow: boolean; confirmationNeeded: boolean }) =>
         dispatch(setShowLeverageETHPopup(data)),
       [dispatch],
     ),

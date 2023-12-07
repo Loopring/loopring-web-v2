@@ -47,7 +47,10 @@ export const StackTradePanel = ({
   symbol = 'LRC',
 }: {
   symbol?: string
-  setConfirmedLRCStakeInvestInvest: (state: { show: boolean; confirmationNeeded: boolean }) => void
+  setConfirmedLRCStakeInvestInvest: (state: {
+    isShow: boolean
+    confirmationNeeded: boolean
+  }) => void
   isJoin?: boolean
 }) => {
   const {

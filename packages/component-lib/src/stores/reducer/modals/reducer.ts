@@ -55,6 +55,7 @@ const initialState: ModalState = {
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
   isShowTargetRedpacketPop: { isShow: false, info: {} },
+  isShowETHStakingApr: { isShow: false, symbol: undefined },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -399,6 +400,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         },
       }
     },
+    setShowETHStakingApr(state, action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>) {
+      const { isShow, symbol, info } = action.payload
+      state.isShowETHStakingApr = {
+        isShow,
+        symbol,
+        info,
+      }
+    },
   },
 })
 export const {
@@ -433,5 +442,6 @@ export const {
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
-  setShowTargetRedpacketPop
+  setShowTargetRedpacketPop,
+  setShowETHStakingApr,
 } = modalsSlice.actions

@@ -445,15 +445,6 @@ export const DEFI_CONFIG = {
     ARBGOERLI: ['RETH-ETH'],
   },
 }
-
-export const DUAL_CONFIG = {
-  products: {
-    TAIKO: [] as string[],
-    ETHEREUM: ['PIONEX'],
-    GOERLI: ['PIONEX'],
-    ARBGOERLI: ['PIONEX'],
-  },
-}
 export const LEVERAGE_ETH_CONFIG = {
   coins: {
     TAIKO: [] as string[],
@@ -473,7 +464,23 @@ export const LEVERAGE_ETH_CONFIG = {
     GOERLI: ['LIDO'],
     ARBGOERLI: ['LIDO'],
   },
+  MARKETS: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['CIETH-ETH'],
+    GOERLI: ['WSTETH-ETH'],
+    ARBGOERLI: ['WSTETH-ETH'],
+  },
   // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
+}
+
+
+export const DUAL_CONFIG = {
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['PIONEX'],
+    GOERLI: ['PIONEX'],
+    ARBGOERLI: ['PIONEX'],
+  },
 }
 
 export const subMenuNFT = {

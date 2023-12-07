@@ -32,6 +32,7 @@ export const DeFiTradePanel = ({
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
+    isLeverageETH: false,
   })
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []

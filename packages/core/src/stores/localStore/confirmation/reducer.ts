@@ -72,30 +72,30 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     },
     setShowRETHStakePopup(
       state: Confirmation,
-      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showRETHStakePopup = action.payload.show
+      state.showRETHStakePopup = action.payload.isShow
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
     setShowWSTETHStakePopup(
       state: Confirmation,
-      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showWSTETHStakePopup = action.payload.show
+      state.showWSTETHStakePopup = action.payload.isShow
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
     setShowLRCStakePopup(
       state: Confirmation,
-      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showLRCStakePopup = action.payload.show
+      state.showLRCStakePopup = action.payload.isShow
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
     setShowLeverageETHPopup(
       state: Confirmation,
-      action: PayloadAction<{ show: boolean; confirmationNeeded: boolean }>,
+      action: PayloadAction<{ isShow: boolean; confirmationNeeded: boolean }>,
     ) {
-      state.showLeverageETHPopup = action.payload.show
+      state.showLeverageETHPopup = action.payload.isShow
       state.confirmationNeeded = action.payload.confirmationNeeded
     },
     setShowAutoDefault(state: Confirmation, action: PayloadAction<{ show: boolean }>) {
