@@ -142,7 +142,7 @@ const TrendAprChart = ({
   return (
     <ResponsiveContainer debounce={100} width={'99%'}>
       <ComposedChart
-        margin={{ left: 5, right: 16 }}
+        margin={{ left: 5, right: 16, top: 36 }}
         data={renderData}
         onMouseMove={showTooltip && handleMousemove}
         // onMouseLeave={showTooltip && handleMouseLeave}
@@ -168,17 +168,25 @@ const TrendAprChart = ({
           dataKey='apy'
           orientation={'right'}
           hide={false}
-          axisLine={true}
+          axisLine={false}
           tickLine={true}
           width={1}
           label={{
             value: 'APR %',
-            fontSize: 12,
+            fontSize: 14,
+            textAnchor: 'end',
             fill: theme.colorBase.textThird,
             position: 'insideTopRight',
+            transform: 'translate(0, -36)',
           }}
-          tick={{ fill: theme.colorBase.textThird, fontSize: 12, left: -5 }}
-          // tickFormatter={(value, index) => (index == 0 ? '' : value + '%')}
+          tick={{
+            fill: theme.colorBase.textThird,
+            fontSize: 12,
+            textAnchor: 'start',
+            width: 34,
+            transform: 'translate(-36, 0)',
+          }}
+          tickFormatter={(value, index) => (index == 0 ? '' : value)}
           domain={[0, 'auto']}
           /* tickFormatter={convertValue} */
           stroke={theme.colorBase.textThird}
