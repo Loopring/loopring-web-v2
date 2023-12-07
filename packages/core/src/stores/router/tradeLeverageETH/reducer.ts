@@ -21,6 +21,7 @@ const initState: TradeDefi<any> = {
   },
   fee: '0',
   feeRaw: '0',
+  defaultFee: '0',
 }
 type R = { [key: string]: any }
 const initialState: TradeLeverageETHStatus<IBData<R>> = {
@@ -60,7 +61,7 @@ const tradeLeverageETHSlice: Slice<TradeLeverageETHStatus<IBData<R>>> = createSl
         maxFeeBips,
         miniSellVol,
         lastInput,
-        withdrawFeeBips
+        withdrawFeeBips,
       } = action.payload
       if (market !== undefined && market !== state.tradeLeverageETH.market && type) {
         // @ts-ignore

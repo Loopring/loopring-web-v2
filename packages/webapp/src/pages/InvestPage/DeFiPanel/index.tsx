@@ -138,7 +138,7 @@ const LandDefiInvest = ({
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
-              {item.enable && marketArray.includes(item.market) ? (
+              {item.enable && marketArray.includes(item?.market ?? '') ? (
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}

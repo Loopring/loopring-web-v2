@@ -72,7 +72,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   setShowWSTETHStakignPopup,
   setShowLeverageETHPopup,
   isLeverageETH,
-  extraWithdrawFee,
   apr,
   onAprDetail,
   ...rest
@@ -243,20 +242,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       { floor: true },
     )} ${tokenBuy.symbol}`
 
-  const fee = isJoin
-    ? deFiCalcData?.fee
-      ? deFiCalcData?.fee + ` ${tokenBuy.symbol}`
-      : EmptyValueTag
-    : deFiCalcData?.fee
-    ? getValuePrecisionThousand(
-        toBig(extraWithdrawFee ?? '0').plus(deFiCalcData.fee),
-        tokenBuy.precision,
-        tokenBuy.precision,
-        tokenBuy.precision,
-        false,
-        { floor: true },
-      ) + ` ${tokenBuy.symbol}`
-    : EmptyValueTag
+  const fee = deFiCalcData?.fee ? deFiCalcData?.fee + ` ${tokenBuy.symbol}` : EmptyValueTag
 
   return (
     <Box

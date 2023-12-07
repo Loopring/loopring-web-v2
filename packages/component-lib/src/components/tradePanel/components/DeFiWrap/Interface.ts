@@ -42,7 +42,6 @@ export type DeFiWrapProps<T, I, ACD> = {
   type: string
   title: string
   isLeverageETH?: boolean
-  extraWithdrawFee?: string
   apr?: string
   setShowRETHStakignPopup?: (props: { isShow: boolean; [key: string]: any }) => void
   setShowWSTETHStakignPopup?: (props: { isShow: boolean; [key: string]: any }) => void

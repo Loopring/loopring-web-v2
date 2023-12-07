@@ -33,6 +33,7 @@ export const DeFiTradePanel = ({
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
+    isLeverageETH: false,
   })
 
   const { isMobile } = useSettings()
