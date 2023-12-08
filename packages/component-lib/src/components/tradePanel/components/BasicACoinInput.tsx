@@ -17,6 +17,8 @@ export const BasicACoinInput = <T extends Partial<IBData<I>>, I>({
   inputCoinProps,
   inputCoinDefaultProps,
   className,
+  tokenNotEnough = 'tokenNotEnough',
+
   ...rest
 }: BasicACoinInputProps<T, I> & WithTranslation) => {
   const getDisabled = () => {
@@ -60,7 +62,7 @@ export const BasicACoinInput = <T extends Partial<IBData<I>>, I>({
       ) {
         return {
           error: true,
-          message: t('tokenNotEnough', { belong: belong }),
+          message: t(tokenNotEnough, { belong: belong }),
         }
       } else if (
         typeof tradeValue !== 'undefined' &&
