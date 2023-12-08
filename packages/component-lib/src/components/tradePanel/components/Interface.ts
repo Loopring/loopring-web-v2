@@ -294,6 +294,7 @@ export type DefaultProps<T, I> = {
   disabled?: boolean
   lastFailed?: boolean
   selectNFTDisabled?: boolean
+  tokenNotEnough?: string
 } & (
   | {
       type: TRADE_TYPE.TOKEN

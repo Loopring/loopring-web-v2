@@ -2213,7 +2213,7 @@ export default {
   labelVaultQuotaTooltips: 'VaultQuoteDes',
   labelVaultQuota: 'Total Quote',
   labelVaultBorrowMini: 'Minimum of {{arg}}',
-  labelVaultBorrowNotEnough: 'Insufficient {{arg}} balance',
+  labelVaultBorrowNotEnough: 'Exceeded Maximum Borrowable Amount',
   labelVaultBorrowMax: 'Maximum of {{arg}}',
   labelVaultBorrowBtn: 'Borrow',
   labelVaultBorrowStatusLabel: 'Status',
