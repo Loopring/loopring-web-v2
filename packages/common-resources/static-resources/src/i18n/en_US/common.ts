@@ -2226,7 +2226,7 @@ export default {
   labelVaultRepayNotEnough: 'Insufficient {{arg}} balance',
   labelVaultRepayMax: 'Maximum of {{arg}}',
   labelVaultRepayBtn: 'Repay',
-  labelRepayQuota: 'Total Repay Quota',
+  labelRepayQuota: 'Borrowed',
   labelVaultWhatis: 'What is Loopring Vault?',
   labelVaultDesSimple:
     '<p>Vault: Using a third-party funds to trade assets. Traders can access additional capital, amplifying trading results.</p>',
@@ -2248,7 +2248,6 @@ export default {
   labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
-  labelVaultTradeFailed: 'Vault Trade Failed',
   labelVaultAccountWait: 'Vault account in loading...',
   labelVaultInRedeemWaiting: 'Vault account is in process of closeout...',
   labelVaultJoinSymbolNotSame: 'Only {{symbol}} allow Margin Call',
@@ -2276,7 +2275,7 @@ export default {
   labelJoinTitle: 'Open Position',
   labelRedeemTitle: 'Closeout',
   labelRedeemDesMessage:
-    'Loopring Vault acts as an isolated margin account, enabling users to borrow and lend tokens with collateral. Besides supporting leveraged trading, it also facilitates the trading of tokens not available on Loopring DEX by tapping into CEX liquidity depth.',
+    'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelJoinDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelFailed: 'Failed',
@@ -2291,4 +2290,17 @@ export default {
   labelTokenIntroduce: 'Token Introduce',
   labelVaultRedeemDetail: 'Details',
   labelCloseOutDetail: 'Closeout Detail',
+  labelVaultTradeTitle: 'Vault trade',
+  labelVaultTradeInProgress: 'Processing...',
+  labelVaultTradeSuccess: 'Vault trade Successfully',
+  labelVaultTradeFailed: 'Vault Trade Failed',
+  labelVaultPrice: 'Price',
+  labelVaultSell: 'Sell',
+  labelVaultBuy: 'Buy',
+  labelVaultFee: 'Trade Fee',
+  labelVaultJoin: 'Open Position',
+  labelVaultMarginCall: 'Margin Call',
+  labelVaultMaxBrowserLabel: 'Max borrowable',
+  labelVaultBorrowed: 'Borrowed',
+  labelVaultRepayBalance: 'Total Balance',
 }

@@ -1111,7 +1111,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         sellStr: item.fromAmount,
         buyFStr: item.toFAmount && item.toFAmount !== '0' ? item.toFAmount : undefined,
         buyStr: item.toAmount,
-        convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
+        convertStr: `1 ${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
         feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
         settledToAmount: item.settledToAmount,
@@ -1319,9 +1319,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   case sdk.VaultOperationType.VAULT_OPEN_POSITION:
                   case sdk.VaultOperationType.VAULT_MARGIN_CALL:
                     type =
-                      sdk.VaultOperationType.VAULT_OPEN_POSITION == operateSubType
-                        ? VaultRecordType.margin
-                        : VaultRecordType.open
+                      sdk.VaultOperationType.VAULT_OPEN_POSITION == operateType
+                        ? VaultRecordType.open
+                        : VaultRecordType.margin
                     //@ts-ignore
                     erc20Token = tokenMap[idIndex[tokenS ?? '']]
                     precision = erc20Token?.precision

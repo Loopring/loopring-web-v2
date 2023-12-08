@@ -121,6 +121,15 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
       border: none;
     }
   }
+  &.vaultBorrow {
+    .menu-panel {
+      .MuiListItemText-root {
+        .MuiListItemText-secondary {
+          visibility: hidden;
+        }
+      }
+    }
+  }
 ` as (
   props: SwipeableViewsProps & {
     _height?: number | string

@@ -91,7 +91,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const convertStr = React.useMemo(() => {
     return deFiCalcData.coinSell && deFiCalcData.coinBuy
       ? _isStoB
-        ? `1${deFiCalcData.coinSell.belong} \u2248 ${
+        ? `1 ${deFiCalcData.coinSell.belong} \u2248 ${
             // @ts-ignore
             // eslint-disable-next-line eqeqeq
             deFiCalcData?.AtoB && deFiCalcData?.AtoB !== 'NaN'
@@ -105,7 +105,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 )
               : EmptyValueTag
           } ${deFiCalcData.coinBuy.belong}`
-        : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
+        : `1 ${deFiCalcData.coinBuy.belong}  \u2248 ${
             // @ts-ignore
             deFiCalcData.BtoA && deFiCalcData?.BtoA !== 'NaN'
               ? getValuePrecisionThousand(
@@ -329,6 +329,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         >
           <Box display={'flex'} flexDirection={'row'}>
             <Tooltip title={t('labelLRCStakeAPRTooltips')}>
+                  <Typography
               <Typography
                 component={'p'}
                 variant='body2'
@@ -338,6 +339,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               >
                 {t('labelAPR')}
                 <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                  </Typography>
               </Typography>
             </Tooltip>
           </Box>
@@ -441,6 +443,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         >
           {label}
         </ButtonStyle>
+            </ButtonStyle>
         {confirmShowLimitBalance && (
           <BoxStyle display={'flex'} flexDirection={'column'}>
             {isJoin ? (

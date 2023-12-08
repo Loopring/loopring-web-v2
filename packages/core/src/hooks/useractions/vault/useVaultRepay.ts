@@ -65,8 +65,11 @@ export const useVaultRepay = <
       const tradeVaule = tradeData.tradeValue
 
       if (sdk.toBig(tradeData.borrowed).div(2).lt(minRepayAmt)) {
-        minRepayVol = sdk(tradeData.borrowed).times('1e' + vaultToken.decimals).toString
-        minRepayAmt = sdk(tradeData.borrowed)
+        minRepayVol = sdk
+          .toBig(tradeData.borrowed)
+          .times('1e' + vaultToken.decimals)
+          .toString()
+        minRepayAmt = sdk.toBig(tradeData.borrowed).toString()
       }
 
       supportData = {

@@ -173,30 +173,37 @@ export const VaultDashBoardPanel = ({
           >
             {/* <Box></Box> */}
             <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
-            <Typography marginBottom={2} variant={'h4'}>
-              {t(btnProps.title)}
-            </Typography>
-            <Typography
-              whiteSpace={'pre-line'}
-              component={'span'}
-              variant={'body1'}
-              color={'textSecondary'}
-              marginBottom={3}
-            >
-              <Trans
-                i18nKey={btnProps.des}
-                tOptions={{
-                  layer2: L1L2_NAME_DEFINED[network].layer2,
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                }}
-              ></Trans>
-            </Typography>
+            <ViewAccountTemplate
+              className={'inModal'}
+              activeViewTemplate={
+                <>
+                  <Typography marginBottom={2} variant={'h4'}>
+                    {t(btnProps.title)}
+                  </Typography>
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'span'}
+                    variant={'body1'}
+                    color={'textSecondary'}
+                    marginBottom={3}
+                  >
+                    <Trans
+                      i18nKey={btnProps.des}
+                      tOptions={{
+                        layer2: L1L2_NAME_DEFINED[network].layer2,
+                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      }}
+                    ></Trans>
+                  </Typography>
 
-            <>{dialogBtn}</>
+                  <>{dialogBtn}</>
+                </>
+              }
+            />
           </Box>
         </Box>
       </Modal>

@@ -99,6 +99,10 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
       />
     </Box>
   ) : (
-    <SwitchPanel _width={'var(--modal-width)'} {...{ ...rest, i18n, t, tReady: true, ...props }} />
+    <SwitchPanel
+      className={'vaultBorrow'}
+      _width={'var(--modal-width)'}
+      {...{ ...rest, i18n, t, tReady: true, ...props }}
+    />
   )
 }

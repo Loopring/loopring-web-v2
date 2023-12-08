@@ -11,8 +11,8 @@ import {
 import { VaultRepayWrapProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Grid, Typography } from '@mui/material'
-import { ButtonStyle } from '../../../index'
+import { Grid, Typography, Box, Divider } from '@mui/material'
+import { ButtonStyle } from '../Styled'
 import { useSettings } from '../../../../stores'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 
@@ -49,7 +49,7 @@ export const VaultRepayWrap = <
   }
   const inputButtonDefaultProps = {
     label: t('labelTokenAmount'),
-    subLabel: t('labelAvailable'),
+    subLabel: '',
     placeholderText: vaultRepayData.minRepayStr
       ? t('labelInvestMiniDual', {
           value: vaultRepayData.minRepayStr,
@@ -58,6 +58,8 @@ export const VaultRepayWrap = <
     maxAllow: true,
     tokenType: TokenType.vault,
     order: 'right',
+    tokenImageKey: vaultRepayData?.tradeData?.erc20Symbol,
+
     // maxValue: vaultRepayData?.tradeData?.borrowed,
   }
   const label = React.useMemo(() => {
@@ -94,24 +96,21 @@ export const VaultRepayWrap = <
   }, [vaultRepayBtnI18nKey, network])
 
   return (
-    <Grid
+    <Box
       className={vaultRepayData ? '' : 'loading'}
-      container
-      direction={'column'}
+      flexDirection={'column'}
       justifyContent={'space-between'}
       alignItems={'center'}
       flex={1}
+      display={'flex'}
       height={'100%'}
-      wrap={'nowrap'}
     >
-      <Grid
-        item
-        marginTop={2}
+      <Box
+        flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
-        justifyContent={''}
         alignItems={'stretch'}
-        flexDirection={'column'}
+        // borderBottom={'1px solid var(--color-border)'}
       >
         <BasicACoinTrade
           isMaxBtn={true}
@@ -130,71 +129,107 @@ export const VaultRepayWrap = <
             ...tokenProps,
           }}
         />
-        <Typography
-          variant={'body1'}
-          display={'inline-flex'}
+      </Box>
+      <Divider sx={{ width: '100%', marginY: 3 }} />
+      <Grid container spacing={1} alignItems={'stretch'}>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
           alignItems={'center'}
-          paddingBottom={1}
         >
-          <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelVaultRepayBalance')}
+          </Typography>
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
+            {getValuePrecisionThousand(
+              vaultRepayData?.tradeData?.balance,
+              tokenInfo?.precision ?? 6,
+              tokenInfo?.precision ?? 6,
+            ) +
+              ' ' +
+              vaultRepayData?.tradeData?.belong}
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
             {t('labelRepayQuota')}
           </Typography>
-          <Typography
-            component={'span'}
-            variant={'inherit'}
-            color={'textPrimary'}
-            marginLeft={1 / 2}
-          >
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
             {getValuePrecisionThousand(
               vaultRepayData?.tradeData?.borrowed,
               tokenInfo?.precision ?? 6,
               tokenInfo?.precision ?? 6,
-            )}
+            ) +
+              ' ' +
+              vaultRepayData?.tradeData?.belong}
           </Typography>
-        </Typography>
-      </Grid>
-      <Grid item xs={12} width={'100%'} alignItems={'flex-end'} display={'flex'}>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <ButtonStyle
-              variant={'outlined'}
-              size={'medium'}
-              sx={{ height: 40 }}
-              onClick={() => {
-                onChangeEvent(1, {
-                  tradeData: { ...tradeData, tradeValue: 0 },
-                  to: 'menu',
-                })
-              }}
-              startIcon={<BackIcon />}
-              fullWidth={true}
-            >
-              {t('labelBack')}
-            </ButtonStyle>
-          </Grid>
-          <Grid item xs={6}>
-            <ButtonStyle
-              variant={'contained'}
-              size={'medium'}
-              color={'primary'}
-              onClick={() => {
-                onVaultRepayClick()
-              }}
-              loading={
-                !getDisabled() && vaultRepayBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
-              }
-              disabled={
-                getDisabled() ||
-                vaultRepayBtnStatus === TradeBtnStatus.DISABLED ||
-                vaultRepayBtnStatus === TradeBtnStatus.LOADING
-              }
-              fullWidth={true}
-            >
-              {label}
-            </ButtonStyle>
-          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+
+      <Grid marginTop={3} container spacing={2}>
+        <Grid item xs={6}>
+          <ButtonStyle
+            variant={'outlined'}
+            size={'medium'}
+            sx={{ height: 40 }}
+            onClick={() => {
+              onChangeEvent(1, {
+                tradeData: { ...tradeData, tradeValue: 0 },
+                to: 'menu',
+              })
+            }}
+            startIcon={<BackIcon />}
+            fullWidth={true}
+          >
+            {t('labelBack')}
+          </ButtonStyle>
+        </Grid>
+        <Grid item xs={6}>
+          <ButtonStyle
+            variant={'contained'}
+            size={'medium'}
+            color={'primary'}
+            onClick={() => {
+              onVaultRepayClick()
+            }}
+            loading={
+              !getDisabled() && vaultRepayBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
+            }
+            disabled={
+              getDisabled() ||
+              vaultRepayBtnStatus === TradeBtnStatus.DISABLED ||
+              vaultRepayBtnStatus === TradeBtnStatus.LOADING
+            }
+            fullWidth={true}
+          >
+            {label}
+          </ButtonStyle>
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
