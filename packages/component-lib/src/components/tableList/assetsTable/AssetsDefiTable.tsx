@@ -150,7 +150,7 @@ export const AssetsDefiTable = withTranslation('tables')(
               color={'var(--color-text-third)'}
             >
               <Trans i18nKey={'labelAveragePositionCost'} ns={'tables'}>
-                Average{' '}
+                Average
                 <Info2Icon color={'inherit'} fontSize={'small'} sx={{ marginLeft: 1 / 2 }} />
               </Trans>
             </Typography>
