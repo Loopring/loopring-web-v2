@@ -232,7 +232,6 @@ const MyLiquidity: any = withTranslation('common')(
       .toString()
     const visibaleTabs = _.cloneDeep(INVEST_TABS).filter(() => {
       return true
-      // TODO when has toggle
     })
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
@@ -942,7 +941,7 @@ const MyLiquidity: any = withTranslation('common')(
                         allowTrade,
                         onSend,
                         onReceive,
-                        getMarketArrayListCallback: getTokenRelatedMarketArray, // todo change logic
+                        getMarketArrayListCallback: getTokenRelatedMarketArray,
                         rowConfig: RowInvestConfig,
                         forexMap: forexMap as any,
                         isInvest: true,
