@@ -2269,7 +2269,7 @@ export default {
   labelVaultFee: 'Trade Fee',
   labelVaultJoin: 'Open Position',
   labelVaultMarginCall: 'Margin Call',
-  labelVaultMaxBrowserLabel: 'Max borrowable',
+  labelVaultMaxBrowserLabel: 'Max borrowable: ',
   labelVaultBorrowed: 'Borrowed',
   labelVaultRepayBalance: 'Total Balance',
 }
