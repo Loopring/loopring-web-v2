@@ -61,7 +61,7 @@ export const AssetsDefiTable = withTranslation('tables')(
   <R extends RawDefiAssetsItem>(props: WithTranslation & Partial<AssetsTableProps<R>>) => {
     const {
       t,
-      rawData,
+      rawData = [],
       allowTrade,
       showFilter,
       getMarketArrayListCallback,
@@ -249,7 +249,7 @@ export const AssetsDefiTable = withTranslation('tables')(
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
           showloading={isLoading}
-          columnMode={getColumnModeAssets(t, allowTrade)}
+          columnMode={getColumnModeAssets(t, allowTrade) as any}
         />
       </TableWrap>
     )
