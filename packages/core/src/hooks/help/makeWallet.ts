@@ -184,9 +184,8 @@ export const makeVaultRepay = <
       // tokenMap: erc20TokenMap,
       idIndex: erc20IdIndex,
     },
-    tokenPrices: { tokenPrices },
     invest: {
-      vaultMap: { tokenMap, idIndex: vaultIdIndex },
+      vaultMap: { tokenMap, idIndex: vaultIdIndex, tokenPrices },
     },
   } = store.getState()
   //@ts-ignore
@@ -204,6 +203,7 @@ export const makeVaultRepay = <
           .div('1e' + vaultToken.decimals)
           .toFixed(tokenInfo?.vaultTokenAmount?.qtyStepScale ?? tokenInfo.precision, 0)
         // .toFixed(tokenInfo.precision, 0)
+        const price = tokenPrices[vaultSymbol] ?? 0
         let walletCoin = {
           erc20Symbol,
           belong: vaultSymbol,
@@ -212,7 +212,7 @@ export const makeVaultRepay = <
             .div('1e' + vaultToken.decimals)
             .toString(),
           borrowed,
-          usd: sdk.toBig(borrowed).times(tokenPrices[erc20Symbol]).toString(),
+          usd: sdk.toBig(borrowed).times(price).toString(),
         }
         // @ts-ignore
         prev[vaultSymbol] = {

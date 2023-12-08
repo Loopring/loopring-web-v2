@@ -121,7 +121,7 @@ export const VaultBorrowWrap = <
           }}
         />
       </Box>
-      {/*<Divider sx={{ width: '100%', marginY: 3 }} />*/}
+      <Divider sx={{ width: '100%', marginY: 3 }} />
       <Grid container spacing={1} alignItems={'stretch'}>
         <Grid
           item

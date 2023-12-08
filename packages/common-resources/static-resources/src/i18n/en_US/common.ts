@@ -2195,7 +2195,7 @@ export default {
   labelVaultRepayNotEnough: 'Insufficient {{arg}} balance',
   labelVaultRepayMax: 'Maximum of {{arg}}',
   labelVaultRepayBtn: 'Repay',
-  labelRepayQuota: 'Total Repay Quota',
+  labelRepayQuota: 'Borrowed',
   labelVaultWhatis: 'What is Loopring Vault?',
   labelVaultDesSimple:
     '<p>Vault: Using a third-party funds to trade assets. Traders can access additional capital, amplifying trading results.</p>',
@@ -2271,4 +2271,5 @@ export default {
   labelVaultMarginCall: 'Margin Call',
   labelVaultMaxBrowserLabel: 'Max borrowable',
   labelVaultBorrowed: 'Borrowed',
+  labelVaultRepayBalance: 'Total Balance',
 }
