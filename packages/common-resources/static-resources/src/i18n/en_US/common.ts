@@ -2119,7 +2119,7 @@ export default {
   labelL2DepositNote: 'Receive token in {{loopringL2}}',
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
-  labelReadAll: 'Read all',
+  labelReadAll: 'View all',
   labelLuckyTokenNormal: 'Normal',
   labelRedPacketSendAverageTitle: 'Average Red Packet',
   labelBlindBoxHint:
