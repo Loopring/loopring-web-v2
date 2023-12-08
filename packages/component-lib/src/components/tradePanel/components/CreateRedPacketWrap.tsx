@@ -209,10 +209,10 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 false,
                 // { isFait: true }
               ) +
-              ' ' +
-              tradeData.belong,
+                ' ' +
+                tradeData.belong,
             splitValue:
-              tokenMap[tradeData?.belong as string] && 
+              tokenMap[tradeData?.belong as string] &&
               getValuePrecisionThousand(
                 splitValue,
                 tokenMap[tradeData?.belong as string].precision,
@@ -221,8 +221,8 @@ export const CreateRedPacketStepWrap = withTranslation()(
                 false,
                 // { isFait: true }
               ) +
-              ' ' +
-              tradeData.belong,
+                ' ' +
+                tradeData.belong,
           }
         } else {
           return {
@@ -881,26 +881,29 @@ export const CreateRedPacketStepType = withTranslation()(
       return disabled
     }, [disabled])
     const showERC20Blindbox = redPacketConfig.showERC20Blindbox
-    
+
     const isTokens =
       (tradeType === RedPacketOrderType.BlindBox && !tradeData.isNFT) ||
       tradeType === RedPacketOrderType.TOKEN
-    
-    const setIsTokens = React.useCallback((isTokens: boolean) => {
-      myLog('isTokens', tradeData)
-      myLog('isTokens', isTokens)
-      if (tradeType === RedPacketOrderType.BlindBox) {
-        handleOnDataChange({
-          ...tradeData,
-          isNFT: !isTokens
-        })
-      } else {
-        handleOnDataChange({
-          ...tradeData,
-          tradeType: isTokens ? RedPacketOrderType.TOKEN : RedPacketOrderType.NFT
-        })
-      }
-    }, [tradeData])
+
+    const setIsTokens = React.useCallback(
+      (isTokens: boolean) => {
+        myLog('isTokens', tradeData)
+        myLog('isTokens', isTokens)
+        if (tradeType === RedPacketOrderType.BlindBox) {
+          handleOnDataChange({
+            ...tradeData,
+            isNFT: !isTokens,
+          })
+        } else {
+          handleOnDataChange({
+            ...tradeData,
+            tradeType: isTokens ? RedPacketOrderType.TOKEN : RedPacketOrderType.NFT,
+          })
+        }
+      },
+      [tradeData],
+    )
 
     const showList = LuckyRedPacketList.filter((item) =>
       tradeType === RedPacketOrderType.FromNFT
@@ -962,11 +965,13 @@ export const CreateRedPacketStepType = withTranslation()(
             ) +
               ' — ' +
               t(`labelRedPacketViewType${tradeData?.type?.scope ?? 0}`)}
-            {tradeType === RedPacketOrderType.BlindBox && <Tooltip title={t('labelBlindBoxHint')}>
-              <Box marginLeft={1} height={24}>
-                <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
-              </Box>
-            </Tooltip>}
+            {tradeType === RedPacketOrderType.BlindBox && (
+              <Tooltip title={t('labelBlindBoxHint')}>
+                <Box marginLeft={1} height={24}>
+                  <HelpIcon htmlColor={'var(--color-text-secondary)'} fontSize={'large'} />
+                </Box>
+              </Tooltip>
+            )}
           </Typography>
 
           {tradeType === RedPacketOrderType.FromNFT ? (
@@ -1002,7 +1007,9 @@ export const CreateRedPacketStepType = withTranslation()(
               variant='scrollable'
             >
               <Tab sx={{ marginLeft: -2 }} value={'Tokens'} label={t('labelAssetTokens')} />
-              {tradeData.type?.scope !== sdk.LuckyTokenViewType.PUBLIC && <Tab value={'NFT'} label={t('labelRedpacketNFTS')} />}
+              {tradeData.type?.scope !== sdk.LuckyTokenViewType.PUBLIC && (
+                <Tab value={'NFT'} label={t('labelRedpacketNFTS')} />
+              )}
             </Tabs>
           )}
           <Box display={'flex'} justifyContent={'space-between'} marginTop={2}>
@@ -1054,7 +1061,6 @@ export const CreateRedPacketStepType = withTranslation()(
                       >
                         {t(item.desKey)}
                       </Typography>
-                        </Typography>
                     </MenuBtnStyled>
                   </Box>
                 </Box>
@@ -1147,20 +1153,19 @@ export const CreateRedPacketStepTokenType = withTranslation()(
         <Grid container spacing={7} justifyContent={'center'}>
           <Grid item xs={4} display={'flex'} marginBottom={2}>
             <CardStyleItem
-              className={
-                isNormal
-                  ? 'btnCard column selected'
-                  : 'btnCard column'
-              }
+              className={isNormal ? 'btnCard column selected' : 'btnCard column'}
               sx={{ height: '100%' }}
               onClick={() => onChangeTradeType!(RedPacketOrderType.TOKEN)}
             >
               <CardContent sx={{ alignItems: 'center', paddingTop: 4 }}>
                 <Typography component={'span'} display={'inline-flex'}>
-                  <NormalRedpacketIcon  fill={'var(--color-text-primary)'} style={{width: 64, height: 64}} />
+                  <NormalRedpacketIcon
+                    fill={'var(--color-text-primary)'}
+                    style={{ width: 64, height: 64 }}
+                  />
                 </Typography>
                 <Typography component={'span'} variant={'h5'} marginTop={2}>
-                  {t("labelLuckyTokenNormal")}
+                  {t('labelLuckyTokenNormal')}
                 </Typography>
               </CardContent>
             </CardStyleItem>
@@ -1178,7 +1183,10 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               <CardContent sx={{ alignItems: 'center', paddingTop: 4 }}>
                 <Typography component={'span'} display={'inline-flex'}>
                   <Typography component={'span'} display={'inline-flex'}>
-                    <BlindBoxIcon fill={'var(--color-text-primary)'} style={{width: 64, height: 64}} />
+                    <BlindBoxIcon
+                      fill={'var(--color-text-primary)'}
+                      style={{ width: 64, height: 64 }}
+                    />
                   </Typography>
                 </Typography>
                 <Typography component={'span'} variant={'h5'} marginTop={2}>
