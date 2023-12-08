@@ -665,6 +665,7 @@ export type RedPacketOrderData<I> = {
     sentAddresses?: string[]
   }
   showNFT: boolean
+  type: any
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
