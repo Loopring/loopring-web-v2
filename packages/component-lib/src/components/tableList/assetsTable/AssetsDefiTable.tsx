@@ -216,7 +216,8 @@ export const AssetsDefiTable = withTranslation('tables')(
           const tokenValue = token.value
           return (
             <ActionMemo
-              {...{
+              {...({
+                isLp: false,
                 onSend,
                 onReceive,
                 isInvest: true,
@@ -225,7 +226,7 @@ export const AssetsDefiTable = withTranslation('tables')(
                 isDefi: true,
                 allowTrade,
                 isLeverageETH: false,
-              }}
+              } as any)}
             />
           )
         },

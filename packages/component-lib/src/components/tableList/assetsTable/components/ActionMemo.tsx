@@ -26,7 +26,7 @@ const GridStyled = styled(Grid)`
 export type ActionProps = {
   tokenValue: any
   allowTrade?: any
-  market: `${string}-${string}`
+  market?: `${string}-${string}`
   isLp: boolean
   isDefi: boolean
   isInvest: boolean
@@ -82,6 +82,7 @@ const ActionPopContent = React.memo(
     const marketList = isLp
       ? []
       : getMarketArrayListCallback &&
+        market &&
         getMarketArrayListCallback(market).filter((pair) => {
           const [first, last] = pair.split('-')
           if (first === 'USDT' || last === 'USDT') {
@@ -161,7 +162,7 @@ const ActionPopContent = React.memo(
             </>
           )
         ) : (
-          marketList.map((pair) => {
+          marketList?.map((pair) => {
             const formattedPair = pair.replace('-', ' / ')
             return (
               <MenuItem
