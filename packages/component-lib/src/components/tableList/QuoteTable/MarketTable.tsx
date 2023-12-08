@@ -241,8 +241,7 @@ export const MarketTable = withTranslation('tables')(
               return (
                 <div className='rdg-cell-value textAlignRight'>
                   {row.volume24H
-                    ? PriceTag[CurrencyToTag[currency]] +
-                      getValuePrecisionThousand(
+                    ? getValuePrecisionThousand(
                         row.volume24H,
                         row.precision,
                         row.precision,
