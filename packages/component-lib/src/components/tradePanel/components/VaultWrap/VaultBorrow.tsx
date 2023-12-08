@@ -118,6 +118,7 @@ export const VaultBorrowWrap = <
             inputButtonDefaultProps,
             ...tokenProps,
             inputBtnRef,
+            tokenNotEnough: 'labelVaultBorrowNotEnough',
           }}
         />
       </Box>

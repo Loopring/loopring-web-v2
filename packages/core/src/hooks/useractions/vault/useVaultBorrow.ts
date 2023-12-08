@@ -449,7 +449,6 @@ export const useVaultBorrow = <
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,
     tokenProps: {
-      tokenNotEnough: 'labelVaultBorrowNotEnough',
       decimalsLimit:
         vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
       allowDecimals: vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts
