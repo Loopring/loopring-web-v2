@@ -15,7 +15,17 @@ import { useSettings } from '../../../stores'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, amount, vSymbol, sum, time, status } = props?.info ?? {}
+  const {
+    percentage,
+    status,
+    feeStr: amountFee,
+    buyStr: amountBuy,
+    sellStr: amountSell,
+    sellToken: sellSymbol,
+    buyToken: buySymbol,
+    convertStr: price,
+    time,
+  } = props?.info ?? {}
   return (
     <Box
       justifySelf={'stretch'}
@@ -63,16 +73,10 @@ const TradeDes2 = (props: PanelProps) => {
         component={'span'}
       >
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultCollateral')}
+          {props.t('labelVaultPrice')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          <>
-            {amount}
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              /{sum}
-            </Typography>
-            {symbol}
-          </>
+          {price}
         </Typography>
       </Typography>
       <Typography
@@ -82,18 +86,39 @@ const TradeDes2 = (props: PanelProps) => {
         marginTop={2}
       >
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultReceive')}
+          {props.t('labelVaultSell')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          <>
-            {amount}
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              /{sum}
-            </Typography>
-            {vSymbol}
-          </>
+          {amountSell + ' ' + sellSymbol}
         </Typography>
       </Typography>
+      <Typography
+        component={'span'}
+        display={'inline-flex'}
+        justifyContent={'space-between'}
+        marginTop={2}
+      >
+        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+          {props.t('labelVaultBuy')}
+        </Typography>
+        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+          {amountBuy + ' ' + buySymbol}
+        </Typography>
+      </Typography>
+      <Typography
+        component={'span'}
+        display={'inline-flex'}
+        justifyContent={'space-between'}
+        marginTop={2}
+      >
+        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+          {props.t('labelVaultFee')}
+        </Typography>
+        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+          {amountFee + ' ' + buySymbol}
+        </Typography>
+      </Typography>
+
       <Typography
         component={'span'}
         display={'inline-flex'}
@@ -154,7 +179,7 @@ export const VaultTrade_In_Progress = (props: PanelProps) => {
 }
 const JoinDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, vSymbol, sum, amount, status, time } = props?.info ?? {}
+  const { percentage, symbol, vSymbol, sum, amount, status, type, time } = props?.info ?? {}
   return (
     <Box
       justifySelf={'stretch'}
@@ -175,7 +200,7 @@ const JoinDes2 = (props: PanelProps) => {
           {props.t('labelVaultType')}
         </Typography>
         <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t('labelVaultTypeOpenPosition')}
+          {type}
         </Typography>
       </Typography>
       <Typography
@@ -251,7 +276,7 @@ const JoinDes2 = (props: PanelProps) => {
 }
 export const VaultJoin_Success = (props: PanelProps) => {
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: props.t('labelVaultJoinSuccess', {
       symbol: props.symbol,
       value: props.value,
@@ -438,7 +463,13 @@ export const RedeemDes2 = (
         {detail}
       </Box>
       {props.isPending && (
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+        <Typography
+          marginX={4}
+          marginTop={2}
+          variant={'body1'}
+          component={'span'}
+          color={'var(--color-text-secondary)'}
+        >
           {props.t('labelVaultExitPendingDes')}
         </Typography>
       )}
@@ -447,7 +478,7 @@ export const RedeemDes2 = (
 }
 export const VaultRedeem_Success = (props: PanelProps) => {
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: props.t('labelVaultRedeemSuccess', {
       symbol: props.symbol,
       value: props.value,

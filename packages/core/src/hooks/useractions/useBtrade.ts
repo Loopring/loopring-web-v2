@@ -527,7 +527,7 @@ export const useBtradeSwap = <
           ),
           sellFStr: undefined,
           buyFStr: undefined,
-          convertStr: `1${sellToken.symbol} \u2248 ${
+          convertStr: `1 ${sellToken.symbol} \u2248 ${
             tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
           } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,

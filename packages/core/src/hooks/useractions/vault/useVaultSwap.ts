@@ -67,8 +67,8 @@ const useVaultSocket = () => {
   // const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
   React.useEffect(() => {
     const { tradeVault } = store.getState()._router_tradeVault
-    const item = marketMap[tradeVault.market]
-    if (tradeVault?.depth?.symbol && item.wsMarket) {
+    const item = marketMap[tradeVault?.market]
+    if (tradeVault?.depth?.symbol && item?.wsMarket) {
       sendSocketTopic({
         [sdk.WsTopicType.btradedepth]: {
           showOverlap: false,
@@ -91,14 +91,14 @@ const useVaultSocket = () => {
       const { tradeVault } = store.getState()._router_tradeVault
       const item = marketMap[tradeVault.market]
       if (
+        item &&
         btradeOrderbookMap &&
-        item.wsMarket &&
+        item?.wsMarket &&
         btradeOrderbookMap[item.wsMarket] &&
         tradeVault?.depth?.symbol &&
         item.wsMarket === btradeOrderbookMap[item.wsMarket]?.symbol
       ) {
         updateTradeVault({
-          // @ts-ignore
           market: item.market,
           depth: { ...btradeOrderbookMap[item.wsMarket], symbol: tradeVault.depth.symbol },
           ...item,
@@ -126,6 +126,7 @@ export const useVaultSwap = <
     setShowTradeIsFrozen,
     modals: { isShowVaultSwap },
     setShowAccount,
+    setShowVaultSwap,
   } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   // //High: No not Move!!!!!!
@@ -515,12 +516,13 @@ export const useVaultSwap = <
           ),
           sellFStr: undefined,
           buyFStr: undefined,
-          convertStr: `1${sellToken.symbol} \u2248 ${
+          convertStr: `1 ${sellToken.symbol} \u2248 ${
             tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
           } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,
           time: Date.now(),
         }
+
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultTrade_In_Progress,
@@ -539,6 +541,7 @@ export const useVaultSwap = <
           })
         } else {
           clearData()
+          setShowVaultSwap({ isShow: false })
           updateVaultLayer2({})
           await sdk.sleep(SUBMIT_PANEL_CHECK)
           if (refreshRef.current) {
@@ -571,6 +574,11 @@ export const useVaultSwap = <
             step: AccountStep.VaultTrade_Success,
             info: {
               ...info,
+              percentage: sdk
+                .toBig(response2?.raw_data?.order?.fillAmountS ?? 0)
+                .div(response2?.raw_data?.order?.amountS ?? 1)
+                .times(100)
+                .toFixed(2),
               status: t(status),
             },
           })
@@ -578,7 +586,9 @@ export const useVaultSwap = <
           updateVaultLayer2({})
           if (
             store.getState().modals.isShowAccount.isShow &&
-            store.getState().modals.isShowAccount.step == AccountStep.VaultTrade_Success
+            [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
+              store.getState().modals.isShowAccount.step,
+            )
           ) {
             setShowAccount({ isShow: false })
           }

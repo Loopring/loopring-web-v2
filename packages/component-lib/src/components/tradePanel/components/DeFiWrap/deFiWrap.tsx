@@ -100,7 +100,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const convertStr = React.useMemo(() => {
     return deFiCalcData.coinSell && deFiCalcData.coinBuy
       ? isStoB
-        ? `1${deFiCalcData.coinSell.belong} \u2248 ${
+        ? `1 ${deFiCalcData.coinSell.belong} \u2248 ${
             // @ts-ignore
             // eslint-disable-next-line eqeqeq
             deFiCalcData?.AtoB && deFiCalcData?.AtoB !== 'NaN'
@@ -114,7 +114,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 )
               : EmptyValueTag
           } ${deFiCalcData.coinBuy.belong}`
-        : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
+        : `1 ${deFiCalcData.coinBuy.belong}  \u2248 ${
             // @ts-ignore
             deFiCalcData.BtoA && deFiCalcData?.BtoA !== 'NaN'
               ? getValuePrecisionThousand(

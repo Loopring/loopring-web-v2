@@ -1093,7 +1093,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         sellStr: item.fromAmount,
         buyFStr: item.toFAmount && item.toFAmount !== '0' ? item.toFAmount : undefined,
         buyStr: item.toAmount,
-        convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
+        convertStr: `1 ${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
         feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
         settledToAmount: item.settledToAmount,

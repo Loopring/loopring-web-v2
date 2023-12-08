@@ -1,7 +1,6 @@
 import {
   EmptyValueTag,
   IBData,
-  Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
   TokenType,
@@ -13,9 +12,10 @@ import { VaultBorrowWrapProps } from './Interface'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '../../../../stores'
-import { Grid, Tooltip, Typography } from '@mui/material'
+import { Grid, Typography, Divider, Box } from '@mui/material'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { ButtonStyle } from '../Styled'
+
 export const VaultBorrowWrap = <
   T extends IBData<I> & { erc20Symbol: string },
   V extends VaultBorrowData<T>,
@@ -44,6 +44,7 @@ export const VaultBorrowWrap = <
   }
   const inputButtonDefaultProps = {
     label: t('labelVaultBrowserToken'),
+    subLabel: t('labelVaultMaxBrowserLabel'),
     tokenType: TokenType.vault,
     placeholderText: vaultBorrowData.minBorrowStr
       ? t('labelInvestMiniDual', {
@@ -86,23 +87,21 @@ export const VaultBorrowWrap = <
   }, [vaultBorrowBtnI18nKey])
 
   return (
-    <Grid
+    <Box
       className={vaultBorrowData ? '' : 'loading'}
-      container
-      direction={'column'}
+      flexDirection={'column'}
       justifyContent={'space-between'}
       alignItems={'center'}
       flex={1}
+      display={'flex'}
       height={'100%'}
     >
-      <Grid
-        item
-        marginTop={2}
+      <Box
+        flexDirection={'column'}
         display={'flex'}
         alignSelf={'stretch'}
-        justifyContent={''}
         alignItems={'stretch'}
-        flexDirection={'column'}
+        // borderBottom={'1px solid var(--color-border)'}
       >
         <BasicACoinTrade
           {...{
@@ -121,59 +120,62 @@ export const VaultBorrowWrap = <
             inputBtnRef,
           }}
         />
-        <Typography
-          marginTop={2}
-          component={'span'}
+      </Box>
+      {/*<Divider sx={{ width: '100%', marginY: 3 }} />*/}
+      <Grid container spacing={1} alignItems={'stretch'}>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
           display={'flex'}
-          alignSelf={'stretch'}
-          alignItems={'stretch'}
-          flexDirection={'row'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+          alignItems={'center'}
         >
-          <Tooltip title={t('labelVaultQuotaTooltips').toString()} placement={'top'}>
-            <Typography
-              component={'span'}
-              variant={'body1'}
-              alignItems={'center'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-            >
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-              {t('labelVaultQuota')}
-            </Typography>
-          </Tooltip>
-          <Typography component={'span'} variant={'body1'} color={'textPrimary'} marginLeft={1 / 2}>
-            {vaultBorrowData.maxBorrowStr
-              ? vaultBorrowData.maxBorrowStr + ' ' + vaultBorrowData?.belong?.toString()
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelVaultBorrowed')}
+          </Typography>
+          <Typography component={'p'} variant='body2' color={'textPrimary'}>
+            {vaultBorrowData.borrowedAmt
+              ? vaultBorrowData.borrowedStr + ' ' + vaultBorrowData?.belong?.toString()
               : EmptyValueTag}
           </Typography>
-        </Typography>
-      </Grid>
-
-      <Grid item alignSelf={'stretch'}>
-        <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item>
-            <ButtonStyle
-              variant={'contained'}
-              size={'large'}
-              color={'primary'}
-              onClick={() => {
-                onVaultBorrowClick()
-              }}
-              loading={
-                !getDisabled() && vaultBorrowBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
-              }
-              disabled={
-                getDisabled() ||
-                vaultBorrowBtnStatus === TradeBtnStatus.DISABLED ||
-                vaultBorrowBtnStatus === TradeBtnStatus.LOADING
-              }
-              fullWidth={true}
-            >
-              {label}
-            </ButtonStyle>
-          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+
+      <Box
+        marginTop={3}
+        alignSelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'stretch'}
+      >
+        <ButtonStyle
+          variant={'contained'}
+          size={'large'}
+          color={'primary'}
+          onClick={() => {
+            onVaultBorrowClick()
+          }}
+          loading={
+            !getDisabled() && vaultBorrowBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
+          }
+          disabled={
+            getDisabled() ||
+            vaultBorrowBtnStatus === TradeBtnStatus.DISABLED ||
+            vaultBorrowBtnStatus === TradeBtnStatus.LOADING
+          }
+          fullWidth={true}
+        >
+          {label}
+        </ButtonStyle>
+      </Box>
+    </Box>
   )
 }

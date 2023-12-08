@@ -33,7 +33,7 @@ import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
 
 export const useVaultBorrow = <
-  T extends IBData<I> & { erc20Symbol: string },
+  T extends IBData<I> & { erc20Symbol: string; borrowed: string },
   V extends VaultBorrowData<T>,
   I,
 >(): Partial<VaultBorrowProps<T, I, V>> => {
@@ -47,12 +47,12 @@ export const useVaultBorrow = <
 
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex } = useTokenMap()
-  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, tokenPrices } = useVaultMap()
+  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
     return vaultAvaiable2Map
   })
-  const calcSupportData = (tradeData: T) => {
+  const calcSupportData = (tradeData: Omit<T, 'balance'> & { count: string }) => {
     let supportData: any = {
       maxBorrowAmount: undefined,
       maxBorrowStr: undefined,
@@ -71,9 +71,12 @@ export const useVaultBorrow = <
       const minBorrowVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
       const minBorrowAmt = minBorrowVol.div('1e' + borrowToken.decimals)
       const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
-      const maxBorrowAmt = BigNumber.max(totalQuote, tradeData.balance)
-      const maxBorrowVol = maxBorrowAmt.times('1e' + borrowToken.decimals)
-      const tradeVaule = tradeData.tradeValue
+      const maxBorrowAmt = sdk
+        .toBig(BigNumber.min(totalQuote, tradeData.count))
+        .toFixed(borrowToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
+      const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
+      const tradeValue = tradeData.tradeValue
+      // const = tradeData ? tradeData.count : 0
       supportData = {
         maxBorrowAmount: maxBorrowAmt?.toString(),
         maxBorrowStr: getValuePrecisionThousand(
@@ -93,16 +96,23 @@ export const useVaultBorrow = <
         minBorrowVol: minBorrowVol.toString(),
         maxQuote: orderAmounts.maximum,
         borrowVol: sdk
-          .toBig(tradeVaule ?? 0)
+          .toBig(tradeValue ?? 0)
           .times('1e' + borrowToken.decimals)
           .toString(),
         borrowAmtStr: getValuePrecisionThousand(
-          tradeVaule ?? 0,
+          tradeValue ?? 0,
           borrowToken.precision,
           borrowToken.precision,
           undefined,
         ),
-        borrowAmt: tradeVaule ?? 0,
+        borrowedStr: getValuePrecisionThousand(
+          tradeData.borrowed ?? 0,
+          borrowToken.precision,
+          borrowToken.precision,
+          undefined,
+        ),
+        balance: maxBorrowAmt,
+        borrowAmt: tradeValue ?? 0,
         totalQuote: totalQuote.toString(),
         coinInfoMap: vaultCoinMap,
       }
@@ -131,13 +141,22 @@ export const useVaultBorrow = <
     let walletInfo
     walletInfo = {
       belong: initSymbol,
-      balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
+      ...((vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]) ?? {}),
+      // balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
       tradeValue: undefined,
       erc20Symbol: idIndex[vaultTokenMap[initSymbol].tokenId],
     }
+    const supportdata = calcSupportData(walletInfo)
+    walletInfo = {
+      ...walletInfo,
+      balance: supportdata.balance,
+      borrowedAmt: walletInfo.borrowed,
+    }
     vaultBorrowData = {
       ...vaultBorrowData,
-      walletInfo,
+      ...walletInfo,
+      ...supportdata,
+      walletMap: vaultAvaiable2Map,
       tradeData: walletInfo,
     }
 
@@ -165,7 +184,6 @@ export const useVaultBorrow = <
           let walletInfo: any = vaultAvaiable2Map[data?.tradeData?.belong as string]
           walletInfo = {
             ...walletInfo,
-            balance: walletInfo ? walletInfo.count : 0,
             tradeValue: data.tradeData?.tradeValue
               ? sdk
                   .toBig(data.tradeData?.tradeValue)
@@ -174,14 +192,21 @@ export const useVaultBorrow = <
                     BigNumber.ROUND_DOWN,
                   )
               : data.tradeData?.tradeValue,
+            borrowedAmt: walletInfo.borrowed,
+          }
+          const supportdata = calcSupportData(walletInfo)
+          walletInfo = {
+            ...walletInfo,
+            balance: supportdata.balance,
           }
           vaultBorrowData = {
             ...vaultBorrowData,
             ...walletInfo,
-            ...calcSupportData(walletInfo),
+            ...supportdata,
             walletMap: vaultAvaiable2Map,
             tradeData: walletInfo,
           }
+
           updateVaultBorrow({
             ...vaultBorrowData,
           })

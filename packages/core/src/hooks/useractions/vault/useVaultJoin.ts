@@ -202,6 +202,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               : AccountStep.VaultJoin_In_Progress,
             info: {
               title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+              type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
               status: t(status),
               amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
                 ? getValuePrecisionThousand(
@@ -246,6 +247,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         step: AccountStep.VaultJoin_Failed,
         info: {
           title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+          ttype: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
@@ -284,6 +286,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           step: AccountStep.VaultJoin_In_Progress,
           info: {
             title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+            type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
             status: t('labelPending'),
             percentage: '0',
             amount: EmptyValueTag,
@@ -455,6 +458,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         step: AccountStep.VaultJoin_Failed,
         info: {
           title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
+          type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,

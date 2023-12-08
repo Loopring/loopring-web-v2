@@ -596,6 +596,8 @@ export type VaultBorrowData<
     erc20Symbol: string
   },
 > = {
+  borrowedAmt: string
+  borrowedStr: string
   maxBorrowAmount: string
   maxBorrowStr: string
   minBorrowAmount: string
