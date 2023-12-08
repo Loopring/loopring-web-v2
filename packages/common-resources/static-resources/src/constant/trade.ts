@@ -194,7 +194,7 @@ export const STAKING_INVEST_LIMIT = 5
 export const PROPERTY_Value_LIMIT = 40
 export const REDPACKET_ORDER_LIMIT = 10000
 export const REDPACKET_ORDER_NFT_LIMIT = 20000
-export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 1000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 10000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
 
@@ -542,23 +542,16 @@ export type BanxaOrder = {
 
 export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
-    labelKey: 'labelLuckyRelayToken',
-    desKey: 'labelLuckyRelayTokenDes',
-    showInERC20: true,
-    hideForExclusive: true,
-    value: {
-      value: 0,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.RELAY,
-    },
-  },
-  {
     labelKey: 'labelLuckyRandomToken',
     desKey: 'labelRedPacketsSplitLuckyDetail',
-    showInNFTS: true,
-    showInERC20: true,
-    defaultForERC20: true,
-    defaultForNFT: true,
+    tags: [
+      'showInNormal', 
+      'enableInNFTS',
+      'enableInERC20',
+      'defaultForERC20',
+      'defaultForNFT',
+      'enableInBlindBox',
+    ],
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -566,10 +559,29 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
+    labelKey: 'labelLuckyRandomToken',
+    desKey: 'labelRedPacketsSplitLuckyDetail',
+    tags: [
+      'defaultForBlindBox',
+      'enableInBlindBox',
+      'showInBlindBox',
+      'defaultForFromNFT'
+    ],
+    value: {
+      value: 4,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
     labelKey: 'labelLuckyCommonToken',
     desKey: 'labelLuckyCommonTokenDes',
-    showInNFTS: true,
-    showInERC20: true,
+    tags: [
+      'showInNormal', 
+      'showInBlindBox',
+      'enableInNFTS', 
+      'enableInERC20'
+    ],
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
@@ -577,60 +589,18 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: 'labelAssetTokens',
-    desKey: '',
-    showInBlindbox: true,
-    defaultForBlindbox: true,
-    icon: sdk.SoursURL + '/images/blindboxSelectToken.png',
+    labelKey: 'labelLuckyRelayToken',
+    desKey: 'labelLuckyRelayTokenDes',
+    tags: [
+      'showInNormal', 
+      'showInBlindBox',
+      'enableInERC20', 
+      'disabledForExclusive'
+    ],
     value: {
-      value: 4,
+      value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-    toolgleWithShowERC20Blindbox: true,
-  },
-  {
-    labelKey: 'labelRedpacketNFTS',
-    desKey: '',
-    showInBlindbox: true,
-    defaultForBlindboxNotShowERC20Blindbox: true,
-    icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
-    isBlindboxNFT: true,
-    value: {
-      value: 5,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
-  {
-    labelKey: 'labelRedpacketBlindBox',
-    desKey: 'labelLuckyBlindBoxDes',
-    defaultForFromNFT: true,
-    showInFromNFT: true,
-    value: {
-      value: 6,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
-  {
-    labelKey: 'labelLuckyRandomToken',
-    desKey: 'labelLuckyRandomTokenDes',
-    showInFromNFT: true,
-    value: {
-      value: 7,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.COMMON,
-    },
-  },
-  {
-    labelKey: 'labelLuckyCommonToken',
-    desKey: 'labelLuckyCommonTokenDes',
-    showInFromNFT: true,
-    value: {
-      value: 8,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
-      mode: sdk.LuckyTokenClaimType.COMMON,
+      mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
 ]
