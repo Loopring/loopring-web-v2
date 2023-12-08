@@ -49,7 +49,6 @@ import {
 import React from 'react'
 import { TOASTOPEN } from '../toast'
 import { VaultExitBaseProps, VaultJoinBaseProps } from './components/VaultWrap'
-import { VaultRepayPanel } from './Vault/VaultRepayPanel'
 
 export type SwapTradeData<T> = {
   sell: T

@@ -329,7 +329,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         >
           <Box display={'flex'} flexDirection={'row'}>
             <Tooltip title={t('labelLRCStakeAPRTooltips')}>
-                  <Typography
               <Typography
                 component={'p'}
                 variant='body2'
@@ -339,7 +338,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               >
                 {t('labelAPR')}
                 <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
-                  </Typography>
               </Typography>
             </Tooltip>
           </Box>
@@ -443,7 +441,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         >
           {label}
         </ButtonStyle>
-            </ButtonStyle>
         {confirmShowLimitBalance && (
           <BoxStyle display={'flex'} flexDirection={'column'}>
             {isJoin ? (

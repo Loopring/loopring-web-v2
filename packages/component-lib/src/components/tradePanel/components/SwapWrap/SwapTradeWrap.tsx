@@ -6,7 +6,6 @@ import {
   CoinMap,
   defaultSlipage,
   EmptyValueTag,
-  ExchangeIcon,
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
@@ -195,7 +194,7 @@ export const SwapTradeWrap = <
     }
   }, [t, swapBtnI18nKey, network, tradeCalcData])
   const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
-
+  const isL2Swap = !((tradeCalcData as any)?.isBtrade || (tradeCalcData as any)?.isVault)
   const convertStr = _isStoB
     ? `1 ${tradeData.sell?.belong} \u2248 ${
         tradeCalcData.StoB && tradeCalcData.StoB !== 'NaN' ? tradeCalcData.StoB : EmptyValueTag
@@ -288,7 +287,7 @@ export const SwapTradeWrap = <
       )}
       <Grid
         item
-        marginTop={(tradeCalcData as any)?.isBtrade || (tradeCalcData as any)?.isVault ? 1 : 3}
+        marginTop={!isL2Swap ? 1 : 3}
         display={'flex'}
         alignSelf={'stretch'}
         justifyContent={'flex-start'}
@@ -355,7 +354,7 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        {(tradeCalcData as any)?.isBtrade ? (
+        {!isL2Swap ? (
           <Typography
             variant={'body1'}
             display={'inline-flex'}
@@ -415,7 +414,99 @@ export const SwapTradeWrap = <
           )}
         </Typography>
       </Grid>
-      {!(tradeCalcData as any)?.isBtrade && !(tradeCalcData as any)?.isVault && (
+
+      {!isL2Swap ? (
+        <>
+          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Tooltip
+                title={t('labelBtradeFeeTooltips', {
+                  rate: userTakerRate,
+                  value: tradeCostMin,
+                }).toString()}
+                placement={'top'}
+              >
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {' ' + t('labelTradingFeeEst')}
+                </Typography>
+              </Tooltip>
+              <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                {fee}
+              </Typography>
+            </Grid>
+
+            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
+
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {t('labelSwapMinConverted')}
+                </Typography>
+              </Tooltip>
+              <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                {minimumConverted}
+              </Typography>
+            </Grid>
+
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              height={24}
+            >
+              <Tooltip title={t('labelBtradeToleranceTooltips').toString()} placement={'top'}>
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {' ' + t('swapTolerance')}
+                </Typography>
+              </Tooltip>
+
+              <Typography component={'p'} variant='body2'>
+                {tradeCalcData
+                  ? (tradeData.slippage
+                      ? tradeData.slippage
+                      : tradeCalcData.slippage
+                      ? tradeCalcData.slippage
+                      : defaultSlipage) + '%'
+                  : EmptyValueTag}
+              </Typography>
+            </Grid>
+          </Grid>
+        </>
+      ) : (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
             <Grid
@@ -575,99 +666,6 @@ export const SwapTradeWrap = <
         </>
       )}
 
-      {(tradeCalcData as any)?.isBtrade && (
-        <>
-          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Tooltip
-                title={t('labelBtradeFeeTooltips', {
-                  rate: userTakerRate,
-                  value: tradeCostMin,
-                }).toString()}
-                placement={'top'}
-              >
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('labelTradingFeeEst')}
-                </Typography>
-              </Tooltip>
-              <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {fee}
-              </Typography>
-            </Grid>
-
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
-
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {t('labelSwapMinConverted')}
-                </Typography>
-              </Tooltip>
-              <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumConverted}
-              </Typography>
-            </Grid>
-
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              height={24}
-            >
-              <Tooltip title={t('labelBtradeToleranceTooltips').toString()} placement={'top'}>
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapTolerance')}
-                </Typography>
-              </Tooltip>
-
-              <Typography component={'p'} variant='body2'>
-                {tradeCalcData
-                  ? (tradeData.slippage
-                      ? tradeData.slippage
-                      : tradeCalcData.slippage
-                      ? tradeCalcData.slippage
-                      : defaultSlipage) + '%'
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
-          </Grid>
-        </>
-      )}
-
       <Grid item alignSelf={'stretch'}>
         <Grid item>
           <ButtonStyle
@@ -689,7 +687,7 @@ export const SwapTradeWrap = <
           </ButtonStyle>
         </Grid>
       </Grid>
-      {!(tradeCalcData as any)?.isBtrade && (tradeCalcData as any)?.isShowBtradeAllow && (
+      {isL2Swap && (tradeCalcData as any)?.isShowBtradeAllow && (
         <Grid
           item
           marginTop={3}
