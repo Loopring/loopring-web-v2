@@ -360,7 +360,7 @@ export const RedeemDes2 = (
 ) => {
   const { isMobile } = useSettings()
   const theme = useTheme()
-  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time } = props?.info ?? {}
+  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time, status } = props?.info ?? {}
   const detail = React.useMemo(() => {
     return (
       <>
@@ -384,10 +384,10 @@ export const RedeemDes2 = (
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultExitStatus')}
+            {props.t('labelVaultExitStatusLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultExitStatusPending')}
+            {props.t('labelVaultExitStatus', { status })}
           </Typography>
         </Typography>
         <Typography
