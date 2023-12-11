@@ -15,7 +15,13 @@ import {
   RecordTabIndex,
   OrderListIcon,
 } from '@loopring-web/common-resources'
-import { Button, ConfirmVaultRisk, EmptyDefault, useSettings } from '@loopring-web/component-lib'
+import {
+  Button,
+  ConfirmVaultRisk,
+  EmptyDefault,
+  useOpenModals,
+  useSettings,
+} from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from './DashBoardPanel'
 import { VaultHomePanel } from './HomePanel'
 import { useTranslation } from 'react-i18next'
@@ -69,14 +75,17 @@ export const VaultPage = () => {
       ) ?? VaultKey.VAULT_HOME
     )
   })
-  const [confirmed, setConfirmed] = React.useState<boolean>(false)
-  React.useEffect(() => {
-    setConfirmed(true)
-  }, [])
   const {
-    confirmedVault,
-    confirmation: { confirmedVault: confirmedVaultShow },
-  } = confirmation.useConfirmation()
+    setShowVaultJoin,
+    setShowConfirmedVault,
+    modals: { isShowConfirmedVault },
+  } = useOpenModals()
+  // const {
+  //   // confirmedVault,
+  //   setShowConfirmedVault,
+  //   confirmation: { confirmedVault },
+  // } = confirmation.useConfirmation()
+
   const [error, setError] = React.useState(false)
   React.useEffect(() => {
     const { marketArray } = store.getState().invest.vaultMap
@@ -187,15 +196,14 @@ export const VaultPage = () => {
         </Box>
       )}
       <ConfirmVaultRisk
-        open={!confirmedVaultShow && confirmed}
+        open={isShowConfirmedVault.isShow}
         handleClose={(_e, isAgree) => {
           if (!isAgree) {
-            setConfirmed(false)
-            // confirmedVault({ isShow: false })
-            history.push(`${RouterPath.layer2}`)
+            history.push(`${RouterPath.vault}/${VaultKey.VAULT_HOME}`)
+            setShowConfirmedVault({ isShow: false })
           } else {
-            setConfirmed(false)
-            confirmedVault()
+            setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
+            setShowConfirmedVault({ isShow: false })
           }
         }}
       />

@@ -83,6 +83,10 @@ const BoxStyle = styled(Box)`
       }
     }
   }
+  &.vaultRepay,
+  &.vaultBorrow,
+  &.vaultTrade,
+  &.vaultJoin,
   &.vaultExit {
     .content-main {
       overflow: scroll;
@@ -533,7 +537,12 @@ export const VaultJoinBase = (
   },
 ) => {
   // const { showTitle, title } = props
-  return <BasicPanel {...{ title: 'labelValueJoinTitle', ...props }} />
+  return (
+    <BasicPanel
+      className={'vaultJoin'}
+      {...{ title: props.title ?? 'labelValueJoinTitle', ...props }}
+    />
+  )
 }
 
 export const VaultExitBase = (props: PanelProps & { showTitle: boolean }) => {
@@ -553,19 +562,39 @@ export const VaultBorrowBase = (
   },
 ) => {
   const { showTitle } = props
-  return <BasicPanel title={showTitle ? 'labelVaultBorrowTitle' : undefined} {...props} />
+  return (
+    <BasicPanel
+      className={'vaultBorrow'}
+      title={showTitle ? 'labelVaultBorrowTitle' : undefined}
+      {...props}
+    />
+  )
 }
+
 export const VaultRepayBase = (
   props: PanelProps & {
     showTitle: boolean
   },
 ) => {
   const { showTitle } = props
-  return <BasicPanel title={showTitle ? 'labelVaultRepayTitle' : undefined} {...props} />
+  return (
+    <BasicPanel
+      className={'vaultRepay'}
+      title={showTitle ? 'labelVaultRepayTitle' : undefined}
+      {...props}
+    />
+  )
 }
+
 export const VaultTradeBase = (props: PanelProps & { showTitle: boolean }) => {
   const { showTitle } = props
-  return <BasicPanel title={showTitle ? 'labelVaultTradeTitle' : undefined} {...props} />
+  return (
+    <BasicPanel
+      className={'vaultTrade'}
+      title={showTitle ? 'labelVaultTradeTitle' : undefined}
+      {...props}
+    />
+  )
 }
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {

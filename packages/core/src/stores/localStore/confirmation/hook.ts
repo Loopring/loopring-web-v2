@@ -16,14 +16,14 @@ import {
   confirmedLeverageETHInvest,
   confirmDualDipInvest,
   confirmDualGainInvest,
-    confirmedVault,
-    setShowRETHStakePopup,
+  setShowRETHStakePopup,
   setShowWSTETHStakePopup,
   setShowLRCStakePopup,
   setShowLeverageETHPopup,
   setShowAutoDefault,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 export const useConfirmation = (): {
   confirmation: Confirmation
@@ -37,7 +37,6 @@ export const useConfirmation = (): {
   confirmedLeverageETHInvest: () => void
   confirmDualDipInvest: () => void
   confirmDualGainInvest: () => void
-    confirmedVault: () => void
   setShowRETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
   setShowWSTETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
   setShowLRCStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
@@ -112,8 +111,5 @@ export const useConfirmation = (): {
       (show: boolean) => dispatch(setShowAutoDefault({ show })),
       [dispatch],
     ),
-      confirmedVault() {
-          dispatch(confirmedVault(undefined))
-      },
   }
 }

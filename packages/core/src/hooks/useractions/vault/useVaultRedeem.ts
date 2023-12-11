@@ -164,19 +164,20 @@ export const useVaultRedeem = () => {
         ) {
           throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         } else if (
-          response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+          [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+            response2?.raw_data?.operation?.status,
+          )
         ) {
-          status = 'labelPending'
-        } else {
           status = 'labelSuccessfully'
+        } else {
+          status = 'labelPending'
         }
         setShowAccount({
           isShow: true,
-          step: [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
-            response2?.raw_data?.operation?.status,
-          )
-            ? AccountStep.VaultRedeem_Success
-            : AccountStep.VaultRedeem_In_Progress,
+          step:
+            status == 'labelSuccessfully'
+              ? AccountStep.VaultRedeem_Success
+              : AccountStep.VaultRedeem_In_Progress,
           info: {
             ...info,
             status: t(status),

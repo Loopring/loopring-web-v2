@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Grid, Modal } from '@mui/material'
+import { Box, Container, Typography, Grid, Modal, Tooltip } from '@mui/material'
 import React from 'react'
 import {
   ConvertToIcon,
@@ -16,10 +16,11 @@ import {
   VaultAction,
   L1L2_NAME_DEFINED,
   MapChainId,
+  UpColor,
+  Info2Icon,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
-  AssetTitleMobile,
   MenuBtnStyled,
   ModalCloseButtonPosition,
   useSettings,
@@ -29,8 +30,6 @@ import { useTranslation, Trans } from 'react-i18next'
 import { useSystem, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
-import { HistoryPanel } from '../../AssetPage/HistoryPanel'
-import { AssetPanel } from '../../AssetPage/AssetPanel'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
@@ -41,7 +40,7 @@ export const VaultDashBoardPanel = ({
   const { t } = useTranslation()
 
   const { forexMap } = useSystem()
-  const { isMobile, currency, hideL2Assets: hideAssets, defaultNetwork } = useSettings()
+  const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const priceTag = PriceTag[CurrencyToTag[currency]]
@@ -60,8 +59,8 @@ export const VaultDashBoardPanel = ({
     const profit = sdk
       .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
       .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
-    const colorIs = profit.gte(0) ? 0 : 1
-
+    const colorsId = upColor == UpColor.green ? [0, 1] : [1, 0]
+    const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
     return (
       <>
         {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING ? (
@@ -119,13 +118,11 @@ export const VaultDashBoardPanel = ({
         )}
       </>
     )
-  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsdt, vaultAccountInfo?.accountStatus])
+  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsdt, vaultAccountInfo?.accountStatus, upColor])
   const marginUI = React.useMemo(() => {
-    const colorIs = sdk.toBig('1.5').gte(vaultAccountInfo?.marginLevel ?? 0)
-      ? 1
-      : sdk.toBig('1.3').gte(vaultAccountInfo?.marginLevel ?? 0)
-      ? 3
-      : 0
+    const item = vaultAccountInfo?.marginLevel ?? 0
+    //@ts-ignore
+    const colorIs = sdk.toBig('1.5').lte(item) ? 0 : sdk.toBig('1.3').lte(item) ? 2 : 1
     return (
       <>
         {vaultAccountInfo?.marginLevel ? (
@@ -138,7 +135,7 @@ export const VaultDashBoardPanel = ({
             color={colors[colorIs]}
           >
             <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
-            {vaultAccountInfo?.marginLevel}
+            {item}
           </Typography>
         ) : (
           <Typography
@@ -159,54 +156,6 @@ export const VaultDashBoardPanel = ({
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
-      <Modal open={showNoVaultAccount} onClose={onBtnClose} sx={{ zIndex: 99 }}>
-        <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-          <Box
-            padding={5}
-            bgcolor={'var(--color-box)'}
-            width={'var(--modal-width)'}
-            borderRadius={1}
-            display={'flex'}
-            alignItems={'center'}
-            flexDirection={'column'}
-            position={'relative'}
-          >
-            {/* <Box></Box> */}
-            <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
-            <ViewAccountTemplate
-              className={'inModal'}
-              activeViewTemplate={
-                <>
-                  <Typography marginBottom={2} variant={'h4'}>
-                    {t(btnProps.title)}
-                  </Typography>
-                  <Typography
-                    whiteSpace={'pre-line'}
-                    component={'span'}
-                    variant={'body1'}
-                    color={'textSecondary'}
-                    marginBottom={3}
-                  >
-                    <Trans
-                      i18nKey={btnProps.des}
-                      tOptions={{
-                        layer2: L1L2_NAME_DEFINED[network].layer2,
-                        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                      }}
-                    ></Trans>
-                  </Typography>
-
-                  <>{dialogBtn}</>
-                </>
-              }
-            />
-          </Box>
-        </Box>
-      </Modal>
       <Container
         maxWidth='lg'
         style={{
@@ -297,9 +246,21 @@ export const VaultDashBoardPanel = ({
                       justifyContent={'space-between'}
                     >
                       <Box>
-                        <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                          {t('labelVaultMarginLevel')}
-                        </Typography>
+                        <Tooltip
+                          title={t('labelVaultMarginLevelTooltips').toString()}
+                          placement={'top'}
+                        >
+                          <Typography
+                            component={'h4'}
+                            variant={'body1'}
+                            color={'textSecondary'}
+                            display={'flex'}
+                            alignItems={'center'}
+                          >
+                            {t('labelVaultMarginLevel')}
+                            <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                          </Typography>
+                        </Tooltip>
                         <>{marginUI}</>
                       </Box>
                       <Box>
@@ -330,9 +291,21 @@ export const VaultDashBoardPanel = ({
                         </Typography>
                       </Box>
                       <Box>
-                        <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                          {t('labelVaultTotalDebt')}
-                        </Typography>
+                        <Tooltip
+                          title={t('labelVaultTotalDebtTooltips').toString()}
+                          placement={'top'}
+                        >
+                          <Typography
+                            component={'h4'}
+                            variant={'body1'}
+                            color={'textSecondary'}
+                            display={'flex'}
+                            alignItems={'center'}
+                          >
+                            {t('labelVaultTotalDebt')}
+                            <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                          </Typography>
+                        </Tooltip>
                         <Typography
                           component={'span'}
                           marginTop={1}
@@ -370,7 +343,8 @@ export const VaultDashBoardPanel = ({
                           {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
                             ? hideAssets
                               ? HiddenTag
-                              : getValuePrecisionThousand(
+                              : PriceTag[CurrencyToTag[currency]] +
+                                getValuePrecisionThousand(
                                   Number(vaultAccountInfo?.totalEquityOfUsdt ?? 0) *
                                     (forexMap[currency] ?? 0),
                                   2,
@@ -540,8 +514,61 @@ export const VaultDashBoardPanel = ({
                 marginY={3}
                 paddingY={2}
               >
-                <VaultAssetsTable {...assetPanelProps} />
+                <VaultAssetsTable {...assetPanelProps} showFilter={false} />
               </Box>
+              <Modal open={showNoVaultAccount} onClose={onBtnClose} sx={{ zIndex: 99 }}>
+                <Box
+                  height={'100%'}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  <Box
+                    padding={5}
+                    bgcolor={'var(--color-box)'}
+                    width={'var(--modal-width)'}
+                    borderRadius={1}
+                    display={'flex'}
+                    alignItems={'center'}
+                    flexDirection={'column'}
+                    position={'relative'}
+                  >
+                    {/* <Box></Box> */}
+                    <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
+                    <ViewAccountTemplate
+                      className={'inModal'}
+                      activeViewTemplate={
+                        <>
+                          <Typography marginBottom={2} variant={'h4'}>
+                            {t(btnProps.title)}
+                          </Typography>
+                          <Typography
+                            whiteSpace={'pre-line'}
+                            component={'span'}
+                            variant={'body1'}
+                            color={'textSecondary'}
+                            marginBottom={3}
+                          >
+                            <Trans
+                              i18nKey={btnProps.des}
+                              tOptions={{
+                                layer2: L1L2_NAME_DEFINED[network].layer2,
+                                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                              }}
+                            ></Trans>
+                          </Typography>
+
+                          <>{dialogBtn}</>
+                        </>
+                      }
+                    />
+                  </Box>
+                </Box>
+              </Modal>
             </>
           }
         />

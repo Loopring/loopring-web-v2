@@ -152,6 +152,7 @@ export const ModalVaultWrap = () => {
       <Modal
         contentClassName={'vault-wrap'}
         open={isShowVaultExit.isShow}
+        _width={'var(--modal-width)'}
         onClose={() => {
           setShowVaultExit({ isShow: false })
         }}

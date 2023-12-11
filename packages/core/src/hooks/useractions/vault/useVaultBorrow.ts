@@ -12,6 +12,7 @@ import {
 } from '@loopring-web/common-resources'
 import {
   AccountStep,
+  coinMap,
   SwitchData,
   useOpenModals,
   VaultBorrowProps,
@@ -47,11 +48,12 @@ export const useVaultBorrow = <
 
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex } = useTokenMap()
-  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins } = useVaultMap()
+  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
     return vaultAvaiable2Map
   })
+
   const calcSupportData = (tradeData: Omit<T, 'balance'> & { count: string }) => {
     let supportData: any = {
       maxBorrowAmount: undefined,
@@ -169,6 +171,7 @@ export const useVaultBorrow = <
   React.useEffect(() => {
     if (isShowVaultLoan.isShow) {
       initData()
+      getVaultMap()
     } else {
       resetVaultBorrow()
     }
@@ -295,21 +298,21 @@ export const useVaultBorrow = <
         ) {
           throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         } else if (
-          response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_PENDING
+          [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+            response2?.raw_data?.operation?.status,
+          )
         ) {
-          status = 'labelPending'
-        } else {
           status = 'labelSuccessfully'
+        } else {
+          status = 'labelPending'
         }
 
         setShowAccount({
           isShow: true,
-          step: [
-            sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-            // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-          ].includes(response2?.raw_data?.operation?.status)
-            ? AccountStep.VaultBorrow_Success
-            : AccountStep.VaultBorrow_In_Progress,
+          step:
+            status == 'labelSuccessfully'
+              ? AccountStep.VaultBorrow_Success
+              : AccountStep.VaultBorrow_In_Progress,
           info: {
             amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
               ? vaultBorrowData.borrowAmtStr
@@ -445,7 +448,9 @@ export const useVaultBorrow = <
     vaultBorrowBtnI18nKey: btnLabel,
     onVaultBorrowClick: onBtnClick,
     walletMap: walletMap as unknown as any,
-    coinMap: vaultCoinMap,
+    coinMap: Reflect.ownKeys(walletMap ?? {}).reduce((prev, item) => {
+      return { ...prev, [item]: { ...vaultCoinMap[item] } }
+    }, {}),
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,
     tokenProps: {

@@ -77,6 +77,8 @@ export interface MarketTableProps<R> {
   onItemClick?: (item: R) => void
   onRowClick?: (item: R) => void
   campaignTagConfig: CAMPAIGNTAGCONFIG
+  hidenFav?: boolean
+  actionEle?: JSX.Element
   // headerRowHeight?: number
   onVisibleRowsChange?: (startIndex: number) => void
   account: Account
@@ -103,6 +105,19 @@ export const MarketTable = withTranslation('tables')(
       onRowClick,
       favoriteMarket,
       handleStartClick,
+      hiddenFav = false,
+      actionEle = (row) => {
+        return (
+          <Button
+            variant='outlined'
+            onClick={() => {
+              onItemClick && onItemClick(row)
+            }}
+          >
+            {t('labelDetail')}
+          </Button>
+        )
+      },
       // addFavoriteMarket,
       // removeFavoriteMarket,
       showLoading,
@@ -142,22 +157,26 @@ export const MarketTable = withTranslation('tables')(
                   alignItems={'center'}
                   height={'100%'}
                 >
-                  <Typography marginRight={1} marginLeft={-2}>
-                    <IconButton
-                      style={{ color: 'var(--color-star)' }}
-                      size={'large'}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleStartClick(row.symbol, rowIdx)
-                      }}
-                    >
-                      {row.isFavorite ? (
-                        <StarSolidIcon cursor={'pointer'} />
-                      ) : (
-                        <StarHollowIcon cursor={'pointer'} />
-                      )}
-                    </IconButton>
-                  </Typography>
+                  {!hiddenFav ? (
+                    <Typography marginRight={1} marginLeft={-2}>
+                      <IconButton
+                        style={{ color: 'var(--color-star)' }}
+                        size={'large'}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleStartClick(row.symbol, rowIdx)
+                        }}
+                      >
+                        {row.isFavorite ? (
+                          <StarSolidIcon cursor={'pointer'} />
+                        ) : (
+                          <StarHollowIcon cursor={'pointer'} />
+                        )}
+                      </IconButton>
+                    </Typography>
+                  ) : (
+                    <></>
+                  )}
                   <CoinIcons type={row?.type} tokenIcon={tokenIcon} />
                   <Typography marginLeft={1 / 2} component={'span'}>
                     {row.symbol}
@@ -260,18 +279,7 @@ export const MarketTable = withTranslation('tables')(
             name: t('labelQuoteAction'),
             cellClass: 'textAlignRight',
             formatter: ({ row }: any) => {
-              return (
-                <>
-                  <Button
-                    variant='outlined'
-                    onClick={() => {
-                      onItemClick && onItemClick(row)
-                    }}
-                  >
-                    {t('labelTrade')}
-                  </Button>
-                </>
-              )
+              return <>{actionEle(row)}</>
             },
           },
         ]

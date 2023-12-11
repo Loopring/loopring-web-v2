@@ -66,7 +66,13 @@ export const VaultExitPanel = ({
         </Typography>
         <Divider />
       </Box>
-      <Box flex={1} marginX={3} marginTop={2} marginBottom={3}>
+      <Box
+        flex={1}
+        marginX={3}
+        marginTop={2}
+        marginBottom={3}
+        width={'calc(var(--modal-width) - 48px)'}
+      >
         <Typography marginBottom={2}>
           {/* eslint-disable-next-line react/jsx-no-undef */}
           <Trans

@@ -1630,7 +1630,7 @@ export default {
   labelBtradePoolDes: 'Loopring Pool:',
   labelBtradePool: 'Loopring Pool',
   labelBtradeToleranceTooltips:
-    'Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.',
+    'Your trade will revert if the price changes unfavorably by more than this percentage.',
   labelBtradeFeeTooltips: 'The trading fee is fixed at 0.3%.',
   labelBtradeMinReceiveTooltips:
     'The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.',
@@ -1894,7 +1894,7 @@ export default {
   labelRedPacketRecipientList: 'Recipient List',
   labelRedPacketPublicTooltip:
     'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip:`
+  labelRedPacketPrivateTooltip: `
     <p>Your Red Packet is private, and only the addresses you specify can claim it.</p>
     <p>To create a new Exclusive Red Packet, please follow these steps:</p>
     <li>1. Select the type of Red Packet</li>
@@ -2037,13 +2037,15 @@ export default {
   labelL1toL2ThirdPartOn: 'On-ramp Crypto',
   labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
   labelTargetRedpacketOption1: 'Option 1',
-  labelTargetRedpacketCreateTitle: 'The following steps are required to create a new Exclusive Red Packet',
+  labelTargetRedpacketCreateTitle:
+    'The following steps are required to create a new Exclusive Red Packet',
   labelTargetRedpacketCreateStep1: '1. Select the type of red packet to be sent.',
   labelTargetRedpacketCreateStep2: '2. Number of red packets to be sent/transmission time',
   labelTargetRedpacketCreateStep3: '3. Designated Red Packet Recipients',
   labelTargetRedpacketCreateStep4: '4. Notification display for red packet recipients',
   labelTargetRedpacketNoRedpacket: 'You do not have an existing wallet yet',
-  labelTargetRedpacketNoRedpacketDes: 'If your prepared but unaddressed Red Packets will be displayed here !',
+  labelTargetRedpacketNoRedpacketDes:
+    'If your prepared but unaddressed Red Packets will be displayed here !',
   labelTargetRedpacketOption2: 'Option 2',
   labelEarnVaultTitle: 'Total Vault',
   labelDualBTC: 'ETH - WBTC Dual Investment',
@@ -2120,7 +2122,8 @@ export default {
   labelReadAll: 'View all',
   labelLuckyTokenNormal: 'Normal',
   labelRedPacketSendAverageTitle: 'Average Red Packet',
-  labelBlindBoxHint: 'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
+  labelBlindBoxHint:
+    'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelNormalRedPacketTitle: 'Normal Red Packet',
   labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
   labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
@@ -2279,7 +2282,7 @@ export default {
   labelTokenInfo: 'Token Info',
   labelTokenIntroduce: 'Token Introduce',
   labelVaultRedeemDetail: 'Details',
-  labelCloseOutDetail: 'Closeout Detail',
+  labelCloseOutDetail: 'Close Out Detail',
   labelVaultTradeTitle: 'Vault trade',
   labelVaultTradeInProgress: 'Processing...',
   labelVaultTradeSuccess: 'Vault trade Successfully',
@@ -2293,4 +2296,10 @@ export default {
   labelVaultMaxBrowserLabel: 'Max borrowable: ',
   labelVaultBorrowed: 'Borrowed',
   labelVaultRepayBalance: 'Total Balance',
+  labelVaultPendingDes:
+    'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
+  labelVaultTotalDebtTooltips:
+    'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis. The Funding Rate is fixed at 0.01%.',
+  labelVaultMarginLevelTooltips:
+    'Margin Level determine the assurance of your collateral. To avoid liquidations you can supply more collateral or repay borrow positions.',
 }
