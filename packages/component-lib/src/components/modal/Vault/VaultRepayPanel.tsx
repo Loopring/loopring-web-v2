@@ -80,14 +80,16 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
                         marginRight={1 / 2}
                       >
                         <Typography component='span' color='textPrimary' variant={'body1'}>
-                          {ele?.count || ele.count !== '0'
-                            ? getValuePrecisionThousand(
-                                ele.count,
-                                tokenInfo?.precision ?? 6,
-                                tokenInfo?.precision ?? 6,
-                              )
-                            : EmptyValueTag}
-                          /
+                          {
+                            //   ele?.count || ele.count !== '0'
+                            //   ? getValuePrecisionThousand(
+                            //       ele.count,
+                            //       tokenInfo?.precision ?? 6,
+                            //       tokenInfo?.precision ?? 6,
+                            //     )
+                            //   : EmptyValueTag}
+                            // /
+                          }
                           {getValuePrecisionThousand(
                             ele.borrowed,
                             tokenInfo?.precision ?? 6,

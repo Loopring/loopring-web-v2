@@ -122,7 +122,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
       if (maxAllow && !disabled) {
-        _handleContChange(balance, name)
+        _handleContChange(Math.floor(balance), name)
         //setsValue(balance);
       }
     },

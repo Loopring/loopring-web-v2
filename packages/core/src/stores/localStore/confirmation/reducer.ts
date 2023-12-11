@@ -21,8 +21,7 @@ const initialState: Confirmation = {
   showLeverageETHPopup: false,
   confirmationNeeded: true,
   showAutoDefault: false,
-    confirmedVault: false,
-
+  confirmedVault: false,
 }
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -103,9 +102,6 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     setShowAutoDefault(state: Confirmation, action: PayloadAction<{ show: boolean }>) {
       state.showAutoDefault = action.payload.show
     },
-      confirmedVault(state: Confirmation, _action: PayloadAction<string>) {
-          state.confirmedVault = true
-      },
   },
 })
 
@@ -128,6 +124,4 @@ export const {
   setShowLRCStakePopup,
   setShowLeverageETHPopup,
   setShowAutoDefault,
-    confirmedVault,
-
 } = confirmationSlice.actions

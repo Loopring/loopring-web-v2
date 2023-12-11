@@ -8,13 +8,15 @@ import {
   VaultTradeBase,
 } from './BasicPanel'
 import { Box, Typography } from '@mui/material'
-import { YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
+import { AlertIcon, YEAR_DAY_MINUTE_FORMAT, hexToRGB } from '@loopring-web/common-resources'
 import moment from 'moment/moment'
 import React from 'react'
 import { useSettings } from '../../../stores'
+import { useTheme } from '@emotion/react'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
+  const theme = useTheme()
   const {
     percentage,
     status,
@@ -23,121 +25,141 @@ const TradeDes2 = (props: PanelProps) => {
     sellStr: amountSell,
     sellToken: sellSymbol,
     buyToken: buySymbol,
-    convertStr: price,
+    price,
     time,
   } = props?.info ?? {}
   return (
-    <Box
-      justifySelf={'stretch'}
-      display={'flex'}
-      flexDirection={'column'}
-      minWidth={'var(--modal-min-width)'}
-      justifyContent={'center'}
-      marginTop={2}
-      paddingX={isMobile ? 1 : 0}
-    >
-      <Typography
-        display={'inline-flex'}
-        justifyContent={'space-between'}
+    <>
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
         marginTop={2}
-        component={'span'}
+        paddingX={isMobile ? 1 : 0}
       >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultType')}
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultType')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {props.t('labelVaultTypeOpenPosition')}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t('labelVaultTypeOpenPosition')}
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultStatus')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {props.t('labelVaultTradeStatus', {
+              status,
+              percentage: percentage ? `(${percentage}%)` : '',
+            })}
+          </Typography>
         </Typography>
-      </Typography>
-      <Typography
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-        component={'span'}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultStatus')}
-        </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t('labelVaultTradeStatus', {
-            status,
-            percentage: percentage ? `(${percentage}%)` : '',
-          })}
-        </Typography>
-      </Typography>
 
-      <Typography
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-        component={'span'}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultPrice')}
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultPrice')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {price}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {price}
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultSell')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {amountSell + ' ' + sellSymbol}
+          </Typography>
         </Typography>
-      </Typography>
-      <Typography
-        component={'span'}
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultSell')}
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultBuy')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {amountBuy + ' ' + buySymbol}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {amountSell + ' ' + sellSymbol}
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultFee')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {amountFee + ' ' + buySymbol}
+          </Typography>
         </Typography>
-      </Typography>
-      <Typography
-        component={'span'}
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultBuy')}
-        </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {amountBuy + ' ' + buySymbol}
-        </Typography>
-      </Typography>
-      <Typography
-        component={'span'}
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultFee')}
-        </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {amountFee + ' ' + buySymbol}
-        </Typography>
-      </Typography>
 
-      <Typography
-        component={'span'}
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultTime')}
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
-        </Typography>
-      </Typography>
-    </Box>
+      </Box>
+      <>
+        {props.isPending && (
+          <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            padding={1}
+            display={'inline-flex'}
+            width={`calc(100% - ${9 * theme.unit}px)`}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+            borderRadius={2}
+            color={'var(--color-text-button)'}
+          >
+            <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+            {props.t('labelVaultPendingDes')}
+          </Typography>
+        )}
+      </>
+    </>
   )
 }
 export const VaultTrade_Success = (props: PanelProps) => {
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: props.t('labelVaultTradeSuccess', {
       symbol: props.symbol,
       value: props.value,
@@ -173,105 +195,114 @@ export const VaultTrade_In_Progress = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <TradeDes2 {...props} />,
+    describe2: props.info && <TradeDes2 {...props} isPending={true} />,
   }
   return <VaultTradeBase showTitle={true} {...propsPatch} {...props} />
 }
 const JoinDes2 = (props: PanelProps) => {
   const { isMobile } = useSettings()
-  const { percentage, symbol, vSymbol, sum, amount, status, type, time } = props?.info ?? {}
+  const theme = useTheme()
+  const { symbol, vSymbol, sum, status, type, time } = props?.info ?? {}
   return (
-    <Box
-      justifySelf={'stretch'}
-      display={'flex'}
-      flexDirection={'column'}
-      minWidth={'var(--modal-min-width)'}
-      justifyContent={'center'}
-      marginTop={2}
-      paddingX={isMobile ? 1 : 0}
-    >
-      <Typography
-        display={'inline-flex'}
-        justifyContent={'space-between'}
+    <>
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
         marginTop={2}
-        component={'span'}
+        paddingX={isMobile ? 1 : 0}
       >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultType')}
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultType')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {type}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {type}
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultStatus')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {props.t(`labelVaultJoinStatus`, {
+              status,
+              percentage: '',
+            })}
+          </Typography>
         </Typography>
-      </Typography>
-      <Typography
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-        component={'span'}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultStatus')}
-        </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {props.t(`labelVaultJoinStatus`, {
-            status,
-            percentage: percentage ? `(${percentage}%)` : '',
-          })}
-        </Typography>
-      </Typography>
 
-      <Typography
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-        component={'span'}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultCollateral')}
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultCollateral')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {sum + ' ' + symbol}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          <>
-            {amount}
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              /{sum}
-            </Typography>
-            {symbol}
-          </>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultReceive')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {sum + ' ' + vSymbol}
+          </Typography>
         </Typography>
-      </Typography>
-      <Typography
-        component={'span'}
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultReceive')}
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelVaultTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
         </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          <>
-            {amount}
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              /{sum}
-            </Typography>
-            {vSymbol}
-          </>
-        </Typography>
-      </Typography>
-      <Typography
-        component={'span'}
-        display={'inline-flex'}
-        justifyContent={'space-between'}
-        marginTop={2}
-      >
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-          {props.t('labelVaultTime')}
-        </Typography>
-        <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-          {moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
-        </Typography>
-      </Typography>
-    </Box>
+      </Box>
+      <>
+        {props.isPending && (
+          <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            padding={1}
+            display={'inline-flex'}
+            width={`calc(100% - ${9 * theme.unit}px)`}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+            borderRadius={2}
+            color={'var(--color-text-button)'}
+          >
+            <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+            {props.t('labelVaultPendingDes')}
+          </Typography>
+        )}
+      </>
+    </>
   )
 }
 export const VaultJoin_Success = (props: PanelProps) => {
@@ -317,7 +348,7 @@ export const VaultJoin_In_Progress = (props: PanelProps) => {
       symbol: props.symbol,
       value: props.value,
     }),
-    describe2: props.info && <JoinDes2 {...props} />,
+    describe2: props.info && <JoinDes2 {...props} isPending={true} />,
   }
   return <VaultJoinBase title={props.info?.title} {...propsPatch} {...props} />
 }
@@ -328,6 +359,7 @@ export const RedeemDes2 = (
   },
 ) => {
   const { isMobile } = useSettings()
+  const theme = useTheme()
   const { usdValue, usdDebt, usdEquity, profitPercent, profit, time } = props?.info ?? {}
   const detail = React.useMemo(() => {
     return (
@@ -464,13 +496,18 @@ export const RedeemDes2 = (
       </Box>
       {props.isPending && (
         <Typography
-          marginX={4}
           marginTop={2}
           variant={'body1'}
           component={'span'}
-          color={'var(--color-text-secondary)'}
+          padding={1}
+          display={'inline-flex'}
+          width={`calc(100% - ${9 * theme.unit}px)`}
+          bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+          borderRadius={2}
+          color={'var(--color-text-button)'}
         >
-          {props.t('labelVaultExitPendingDes')}
+          <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+          {props.t('labelVaultPendingDes')}
         </Typography>
       )}
     </>
@@ -530,7 +567,8 @@ export const BorrowDes2 = (
   },
 ) => {
   const { isMobile } = useSettings()
-  const { amount, sum, status, symbol, time } = props?.info ?? {}
+  const theme = useTheme()
+  const { sum, status, symbol, time } = props?.info ?? {}
   return (
     <>
       <Box
@@ -579,7 +617,7 @@ export const BorrowDes2 = (
             {props.t('labelVaultBorrowAmountLabel')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {amount}/{sum} {symbol}
+            {sum + ' ' + symbol}
           </Typography>
         </Typography>
         <Typography
@@ -596,13 +634,31 @@ export const BorrowDes2 = (
           </Typography>
         </Typography>
       </Box>
+      <>
+        {props.isPending && (
+          <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            padding={1}
+            display={'inline-flex'}
+            width={`calc(100% - ${9 * theme.unit}px)`}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+            borderRadius={2}
+            color={'var(--color-text-button)'}
+          >
+            <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+            {props.t('labelVaultPendingDes')}
+          </Typography>
+        )}
+      </>
     </>
   )
 }
 
 export const VaultBorrow_Success = (props: PanelProps) => {
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: props.t('labelVaultBorrowSuccess', {
       symbol: props.symbol,
       value: props.value,
@@ -653,7 +709,8 @@ export const RepayDes2 = (
   },
 ) => {
   const { isMobile } = useSettings()
-  const { status, amount, sum, vSymbol, time } = props
+  const theme = useTheme()
+  const { status, sum, vSymbol, time } = props
   // const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
   return (
     <>
@@ -703,17 +760,7 @@ export const RepayDes2 = (
             {props.t('labelVaultRepayTotalBalance')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            <>
-              {amount}
-              <Typography
-                variant={'body1'}
-                component={'span'}
-                color={'var(--color-text-secondary)'}
-              >
-                /{sum}
-              </Typography>
-              {vSymbol}
-            </>
+            {sum + ' ' + vSymbol}
           </Typography>
         </Typography>
 
@@ -733,12 +780,18 @@ export const RepayDes2 = (
       </Box>
       {props.isPending && (
         <Typography
-          width={'var(--modal-min-width)'}
+          marginTop={2}
           variant={'body1'}
           component={'span'}
-          color={'var(--color-text-secondary)'}
+          padding={1}
+          display={'inline-flex'}
+          width={`calc(100% - ${9 * theme.unit}px)`}
+          bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+          borderRadius={2}
+          color={'var(--color-text-button)'}
         >
-          {props.t('labelVaultExitPendingDes')}
+          <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+          {props.t('labelVaultPendingDes')}
         </Typography>
       )}
     </>
@@ -747,7 +800,7 @@ export const RepayDes2 = (
 
 export const VaultRepay_Success = (props: PanelProps) => {
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
+    iconType: IconType.DoneIcon,
     describe1: props.t('labelVaultRepaySuccess', {
       symbol: props.symbol,
       value: props.value,

@@ -396,4 +396,6 @@ export default {
   labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
+  labelTradeFee: 'Trade fee',
+  labelDetail: 'Detail',
 }

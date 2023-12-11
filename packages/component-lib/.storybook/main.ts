@@ -4,9 +4,7 @@ import path, { join, dirname } from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 const nodePath = '../../'
 import webpack from 'webpack'
-
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath)
-
 const disableEsLint = (e) => {
   return (
     e.module.rules
@@ -17,7 +15,6 @@ const disableEsLint = (e) => {
     e
   )
 }
-
 function findBabelRules(config): any {
   let result_rule = {}
   config.module.rules.filter((rule) => {
@@ -81,7 +78,12 @@ const config: StorybookConfig = {
           modules: false,
         },
       ],
-      ['@babel/preset-react', { useBuiltIns: true }],
+      [
+        '@babel/preset-react',
+        {
+          useBuiltIns: true,
+        },
+      ],
       ...rule.options.presets,
     ]
     console.log('rule.plugins:', rule.options.plugins)
@@ -91,7 +93,11 @@ const config: StorybookConfig = {
       use: [
         {
           loader: MiniCssExtractPlugin.loader,
-          options: { emit: false, esModule: false, hmr: false },
+          options: {
+            emit: false,
+            esModule: false,
+            hmr: false,
+          },
         },
         'css-loader',
       ],
@@ -117,10 +123,9 @@ const config: StorybookConfig = {
         ],
       }),
     ]
-
     return {
       ...config,
-
+      framework: '@storybook/react',
       plugins: [...config.plugins],
       resolve: {
         ...config.resolve,
@@ -157,3 +162,4 @@ const config: StorybookConfig = {
   },
 }
 export default config
+export const framework = '@storybook/react'

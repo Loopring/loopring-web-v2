@@ -64,7 +64,7 @@ export const useVaultRepay = <
       let minRepayAmt = minRepayVol.div('1e' + vaultToken.decimals)
       const tradeVaule = tradeData.tradeValue
 
-      if (sdk.toBig(tradeData.borrowed).div(2).lt(minRepayAmt)) {
+      if (sdk.toBig(tradeData.borrowed).minus(tradeData.tradeValue).lt(minRepayAmt)) {
         minRepayVol = sdk
           .toBig(tradeData.borrowed)
           .times('1e' + vaultToken.decimals)
@@ -275,27 +275,21 @@ export const useVaultRepay = <
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           } else if (
-            response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+            [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+              response2?.raw_data?.operation?.status,
+            )
           ) {
-            status = 'labelPending'
-          } else {
             status = 'labelSuccessfully'
+          } else {
+            status = 'labelPending'
           }
 
-          // const amount = getValuePrecisionThousand(
-          //   sdk.toBig(response2?.raw_data?.operation?.amountIn).div('1e' + vaultToken.decimals),
-          //   vaultToken?.vaultTokenAmounts?.qtyStepScale,
-          //   vaultToken?.vaultTokenAmounts?.qtyStepScale,
-          //   undefined,
-          // )
           setShowAccount({
             isShow: true,
-            step: [
-              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-              // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-            ].includes(response2?.raw_data?.operation?.status)
-              ? AccountStep.VaultRepay_Success
-              : AccountStep.VaultRepay_In_Progress,
+            step:
+              status == 'labelSuccessfully'
+                ? AccountStep.VaultRepay_Success
+                : AccountStep.VaultRepay_In_Progress,
             info: {
               status: t(status),
               amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED

@@ -1335,10 +1335,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + erc20Token.decimals)
                     percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
                     mainContentRender = `${
-                      fillAmount.gte(0)
-                        ? getValuePrecisionThousand(fillAmount, precision, precision)
-                        : EmptyValueTag
-                    }/${
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
@@ -1363,10 +1359,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       .toFixed(2)
 
                     mainContentRender = `${
-                      fillAmount.gte(0)
-                        ? getValuePrecisionThousand(fillAmount, precision, precision)
-                        : EmptyValueTag
-                    }/${
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
@@ -1391,10 +1383,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     //   .toFixed(2)
 
                     mainContentRender = `${
-                      fillAmount.gte(0)
-                        ? getValuePrecisionThousand(fillAmount, precision, precision)
-                        : EmptyValueTag
-                    }/${
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
@@ -1453,10 +1441,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     //   .times(100)
                     //   .toFixed(2)
                     mainContentRender = `${
-                      fillAmount.gte(0)
-                        ? getValuePrecisionThousand(fillAmount, precision, precision)
-                        : EmptyValueTag
-                    }/${
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
@@ -1514,7 +1498,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         isShow: true,
         detail: {
           ...item,
-          status: t(`labelVault${item.status}`),
+          status: t(`labelVault${operation.status}`),
           amount: amount.gte(0)
             ? getValuePrecisionThousand(
                 amount,
@@ -1523,7 +1507,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                 outTokenInfo.precision,
                 true,
                 { floor: true },
-              ) + outTokenInfo.symbol
+              ) +
+              ' ' +
+              outTokenInfo.symbol
             : EmptyValueTag,
           executionHistory: operation?.executionHistory,
           profit: profit

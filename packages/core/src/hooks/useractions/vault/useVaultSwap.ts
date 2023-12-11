@@ -87,7 +87,6 @@ const useVaultSocket = () => {
   }, [tradeVault?.depth?.symbol])
   React.useEffect(() => {
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
-      // const { market } = store.getState()._router_tradeBtrade.tradeBtrade
       const { tradeVault } = store.getState()._router_tradeVault
       const item = marketMap[tradeVault.market]
       if (
@@ -103,7 +102,7 @@ const useVaultSocket = () => {
           depth: { ...btradeOrderbookMap[item.wsMarket], symbol: tradeVault.depth.symbol },
           ...item,
         })
-        myLog('useBtradeSwap: depth', btradeOrderbookMap[item.wsMarket])
+        myLog('useVaultSwap: depth', btradeOrderbookMap[item.wsMarket])
         // debonceCall()
       }
     })
@@ -496,8 +495,8 @@ export const useVaultSwap = <
         }
         myLog('useVaultSwap: submitOrder request', request)
         let info: any = {
-          sellToken,
-          buyToken,
+          sellToken: sellToken.symbol,
+          buyToken: buyToken.symbol,
           sellStr: getValuePrecisionThousand(
             sdk.toBig(tradeCalcData.volumeSell).div('1e' + sellToken.decimals),
             sellToken.precision,
@@ -514,11 +513,10 @@ export const useVaultSwap = <
             false,
             { floor: false },
           ),
+          price: tradeCalcData.depth.mid_price,
           sellFStr: undefined,
           buyFStr: undefined,
-          convertStr: `1 ${sellToken.symbol} \u2248 ${
-            tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
-          } ${buyToken.symbol}`,
+          convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
           feeStr: tradeCalcData?.fee,
           time: Date.now(),
         }
@@ -526,7 +524,11 @@ export const useVaultSwap = <
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultTrade_In_Progress,
-          info,
+          info: {
+            percentage: undefined,
+            status: t('labelPending'),
+            ...info,
+          },
         })
         const response = await LoopringAPI.vaultAPI.submitVaultOrder({
           request,
@@ -557,23 +559,50 @@ export const useVaultSwap = <
               },
               account.apiKey,
             )
-          let status = ''
+          let status = '',
+            sellFStr = undefined,
+            buyFStr = undefined
           if (
             response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           } else if (
-            response2?.raw_data?.operation?.status !== sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+            [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+              response2?.raw_data?.operation?.status,
+            )
           ) {
-            status = 'labelPending'
-          } else {
             status = 'labelSuccessfully'
+            sellFStr = getValuePrecisionThousand(
+              sdk.toBig(response2?.raw_data.order.fillAmountS).div('1e' + sellToken.decimals),
+              sellToken.precision,
+              sellToken.precision,
+              sellToken.precision,
+              false,
+              { floor: false },
+            )
+            buyFStr = getValuePrecisionThousand(
+              sdk.toBig(response2?.raw_data.order.fillAmountB).div('1e' + buyToken.decimals),
+              buyToken.precision,
+              buyToken.precision,
+              buyToken.precision,
+              false,
+              { floor: false },
+            )
+          } else {
+            status = 'labelPending'
           }
+
           setShowAccount({
             isShow: true,
-            step: AccountStep.VaultTrade_Success,
+            step:
+              status == 'labelSuccessfully'
+                ? AccountStep.VaultTrade_Success
+                : AccountStep.VaultTrade_In_Progress,
             info: {
               ...info,
+              sellFStr,
+              buyFStr,
+              price: response2?.raw_data.order.price,
               percentage: sdk
                 .toBig(response2?.raw_data?.order?.fillAmountS ?? 0)
                 .div(response2?.raw_data?.order?.amountS ?? 1)
@@ -921,7 +950,12 @@ export const useVaultSwap = <
           )
           .times(100)
           .toString()
-        const { maxAmount, minAmount, l2Amount } = info
+        const {
+          // maxAmount,
+          minAmount,
+          l2Amount,
+        } = info
+
         const calcDexOutput = sdk.calcDex<sdk.VaultMarket>({
           info,
           input: input.toString(),
@@ -935,16 +969,19 @@ export const useVaultSwap = <
           feeBips: maxFeeBips.toString(),
           slipBips: slippage,
         })
+        const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
         if (
-          maxAmount &&
-          l2Amount &&
-          (sellBuyStr == market ? maxAmount.base !== '0' : maxAmount.quote !== '0')
+          amountVol &&
+          // maxAmount &&
+          l2Amount
+          // &&
+          // (sellBuyStr == market ? maxAmount.base !== '0' : maxAmount.quote !== '0')
         ) {
-          const btradeAmountVol = sellBuyStr == market ? maxAmount.base : maxAmount.quote
-          if (btradeAmountVol) {
+          // const amountVol = sellBuyStr == market ? maxAmount.base : maxAmount.quote
+          if (amountVol) {
             poolToVol =
               sdk
-                .toBig(btradeAmountVol)
+                .toBig(amountVol)
                 .div('1e' + sellToken.decimals)
                 .toString() ?? '0'
           }
@@ -965,9 +1002,22 @@ export const useVaultSwap = <
                 false,
                 { isAbbreviate: true },
               )
-            : (sellBuyStr == market ? maxAmount.base == '0' : maxAmount.quote == '0')
-            ? t('labelVaultInsufficient')
             : EmptyValueTag
+          sellMaxAmtInfo = poolToVol
+            ? BigNumber.min(sellDeepStr, poolToVol, calcDexOutput?.amountS ?? 0)
+            : sellDeepStr
+          // totalQuote = poolToVol
+          //   ? getValuePrecisionThousand(
+          //       BigNumber.min(sellDeepStr, poolToVol),
+          //       sellToken.precision,
+          //       sellToken.precision,
+          //       undefined,
+          //       false,
+          //       { isAbbreviate: true },
+          //     )
+          //   : (sellBuyStr == market ? maxAmount.base == '0' : maxAmount.quote == '0')
+          //   ? t('labelVaultInsufficient')
+          //   : EmptyValueTag
         }
         sellMinAmtInfo = BigNumber.max(
           sellToken.orderAmounts.dust,

@@ -1630,7 +1630,7 @@ export default {
   labelBtradePoolDes: 'Loopring Pool:',
   labelBtradePool: 'Loopring Pool',
   labelBtradeToleranceTooltips:
-    'Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.',
+    'Your trade will revert if the price changes unfavorably by more than this percentage.',
   labelBtradeFeeTooltips: 'The trading fee is fixed at 0.3%.',
   labelBtradeMinReceiveTooltips:
     'The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.',
@@ -2289,7 +2289,7 @@ export default {
   labelTokenInfo: 'Token Info',
   labelTokenIntroduce: 'Token Introduce',
   labelVaultRedeemDetail: 'Details',
-  labelCloseOutDetail: 'Closeout Detail',
+  labelCloseOutDetail: 'Close Out Detail',
   labelVaultTradeTitle: 'Vault trade',
   labelVaultTradeInProgress: 'Processing...',
   labelVaultTradeSuccess: 'Vault trade Successfully',
@@ -2303,4 +2303,10 @@ export default {
   labelVaultMaxBrowserLabel: 'Max borrowable: ',
   labelVaultBorrowed: 'Borrowed',
   labelVaultRepayBalance: 'Total Balance',
+  labelVaultPendingDes:
+    'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
+  labelVaultTotalDebtTooltips:
+    'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis. The Funding Rate is fixed at 0.01%.',
+  labelVaultMarginLevelTooltips:
+    'Margin Level determine the assurance of your collateral. To avoid liquidations you can supply more collateral or repay borrow positions.',
 }

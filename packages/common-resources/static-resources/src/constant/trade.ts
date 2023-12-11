@@ -1,5 +1,4 @@
 import {
-  CoinMap,
   CollectionMeta,
   DeFiCalcData,
   DeFiSideCalcData,
@@ -7,7 +6,6 @@ import {
   FeeInfo,
   IBData,
   LuckyRedPacketItem,
-  WalletMap,
 } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { MarketType } from './market'

@@ -12,6 +12,7 @@ import {
   TRADE_TYPE,
   TradeBtnStatus,
   WalletMap,
+  myLog,
 } from '@loopring-web/common-resources'
 import React from 'react'
 import {
@@ -117,7 +118,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     } else if (sdk.toBig(vaultJoinData.tradeValue ?? 0).gt(vaultJoinData.balance ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultJoinNotEnough ${vaultJoinData.belong}`,
+        label: `labelVaultJoinNotEnough|${vaultJoinData.belong}`,
       }
     } else if (sdk.toBig(vaultJoinData.amount ?? 0).gt(vaultJoinData.maxAmount ?? 0)) {
       return {
@@ -186,7 +187,12 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-          } else if (['VAULT_STATUS_EARNING'].includes(response2?.raw_data?.operation?.status)) {
+          } else if (
+            [
+              sdk.VaultOperationStatus.VAULT_STATUS_EARNING,
+              sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+            ].includes(response2?.raw_data?.operation?.status)
+          ) {
             status = 'labelSuccessfully'
           } else {
             status = 'labelPending'
@@ -194,12 +200,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
           setShowAccount({
             isShow: true,
-            step: [
-              'VAULT_STATUS_EARNING',
-              // sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
-            ].includes(response2?.raw_data?.operation?.status)
-              ? AccountStep.VaultJoin_Success
-              : AccountStep.VaultJoin_In_Progress,
+            step:
+              status == 'labelSuccessfully'
+                ? AccountStep.VaultJoin_Success
+                : AccountStep.VaultJoin_In_Progress,
             info: {
               title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
               type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
@@ -247,7 +251,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         step: AccountStep.VaultJoin_Failed,
         info: {
           title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          ttype: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+          type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
@@ -301,81 +305,87 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             time: Date.now(),
           },
         })
-        //step 1: has rest balance
-        if (isActiveAccount) {
-          const response = await LoopringAPI.vaultAPI.getVaultBalance(
-            {
-              accountId: account.accountId,
-              tokens: '',
-            },
-            account.apiKey,
-          )
+        let number = 3
+        //step 1: has rest balance     //loop three times for dust
+        while (number--) {
+          if (isActiveAccount) {
+            const response = await LoopringAPI.vaultAPI.getVaultBalance(
+              {
+                accountId: account.accountId,
+                tokens: '',
+              },
+              account.apiKey,
+            )
 
-          if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-            throw response
-          } else if (response.raw_data?.length) {
-            const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
-              type: 4,
-            })
-            const tokenListIgnoreZero: any = []
-            const promiseAllStorageId =
-              response?.raw_data?.reduce((prev, item) => {
-                if (sdk.toBig(item?.total).gt(0)) {
-                  tokenListIgnoreZero.push(item)
-                  prev.push(
-                    //@ts-ignore
-                    LoopringAPI.userAPI.getNextStorageId(
-                      {
-                        accountId: account.accountId,
-                        sellTokenId: item.tokenId,
-                      },
-                      account.apiKey,
-                    ),
-                  )
-                }
-                return prev
-              }, [] as Array<Promise<any>>) ?? []
-            await Promise.all([...promiseAllStorageId]).then((result) => {
-              return Promise.all(
-                result.map((item, index) => {
-                  return (
-                    item &&
-                    LoopringAPI.vaultAPI?.sendVaultResetToken(
-                      {
-                        request: {
-                          exchange: exchangeInfo.exchangeAddress,
-                          payerAddr: account.accAddress,
-                          payerId: account.accountId,
-                          payeeId: 0,
-                          payeeAddr: broker,
-                          storageId: item.offchainId,
-                          token: {
-                            tokenId: tokenListIgnoreZero[index].tokenId,
-                            volume: tokenListIgnoreZero[index].total,
-                          },
-                          maxFee: {
-                            tokenId: tokenListIgnoreZero[index].tokenId,
-                            volume: '0', // TEST: fee.toString(),
-                          },
-                          validUntil: getTimestampDaysLater(DAYS),
-                          memo: '',
-                        } as any,
-                        web3: connectProvides.usedWeb3 as any,
-                        chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-                        walletType: (ConnectProviders[account.connectName] ??
-                          account.connectName) as unknown as sdk.ConnectorNames,
-                        eddsaKey: account.eddsaKey.sk,
-                        apiKey: account.apiKey,
-                      },
-                      {
-                        accountId: account.accountId,
-                        counterFactualInfo: account.eddsaKey.counterFactualInfo,
-                      },
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              throw response
+            } else if (response.raw_data?.length) {
+              const tokenListIgnoreZero: any = []
+              const promiseAllStorageId =
+                response?.raw_data?.reduce((prev, item) => {
+                  if (sdk.toBig(item?.total).gt(0)) {
+                    tokenListIgnoreZero.push(item)
+                    prev.push(
+                      //@ts-ignore
+                      LoopringAPI.userAPI.getNextStorageId(
+                        {
+                          accountId: account.accountId,
+                          sellTokenId: item.tokenId,
+                        },
+                        account.apiKey,
+                      ),
                     )
-                  )
-                }),
-              )
-            })
+                  }
+                  return prev
+                }, [] as Array<Promise<any>>) ?? []
+              if (tokenListIgnoreZero.length === 0) {
+                break
+              }
+              const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+                type: 4,
+              })
+              await Promise.all([...promiseAllStorageId]).then((result) => {
+                return Promise.all(
+                  result.map((item, index) => {
+                    return (
+                      item &&
+                      LoopringAPI.vaultAPI?.sendVaultResetToken(
+                        {
+                          request: {
+                            exchange: exchangeInfo.exchangeAddress,
+                            payerAddr: account.accAddress,
+                            payerId: account.accountId,
+                            payeeId: 0,
+                            payeeAddr: broker,
+                            storageId: item.offchainId,
+                            token: {
+                              tokenId: tokenListIgnoreZero[index].tokenId,
+                              volume: tokenListIgnoreZero[index].total,
+                            },
+                            maxFee: {
+                              tokenId: tokenListIgnoreZero[index].tokenId,
+                              volume: '0', // TEST: fee.toString(),
+                            },
+                            validUntil: getTimestampDaysLater(DAYS),
+                            memo: '',
+                          } as any,
+                          web3: connectProvides.usedWeb3 as any,
+                          chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
+                          walletType: (ConnectProviders[account.connectName] ??
+                            account.connectName) as unknown as sdk.ConnectorNames,
+                          eddsaKey: account.eddsaKey.sk,
+                          apiKey: account.apiKey,
+                        },
+                        {
+                          accountId: account.accountId,
+                          counterFactualInfo: account.eddsaKey.counterFactualInfo,
+                        },
+                      )
+                    )
+                  }),
+                )
+              })
+            }
           }
         }
 
@@ -609,6 +619,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             )
         : data.tradeData?.tradeValue,
     }
+    myLog('walletInfo', walletInfo)
     // debugger
     if (tokenSymbol) {
       updateVaultJoin({
@@ -618,9 +629,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           .times('1e' + tokenMap[tokenSymbol].decimals)
           .toString(),
         tradeData: walletInfo,
-        ...calcSupportData(data.tradeData),
         ...walletInfo,
-        // walletMap: makeWalletLayer2({ needFilterZero: true }).walletMap ?? {},
+        ...calcSupportData(walletInfo),
       })
     }
   }

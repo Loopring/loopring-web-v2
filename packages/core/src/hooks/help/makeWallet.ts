@@ -136,23 +136,25 @@ export const makeVaultAvaiable2 = <
     let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins?.reduce((prev, item) => {
       const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
       const vaultSymbol = vaultIdIndex[tokenMap[item].vaultTokenId]
-      const price = tokenPrices[vaultSymbol] ?? 0
+      const price = tokenPrices[vaultSymbol] ?? (vaultSymbol == 'USDT' ? 1 : 1)
       const vaultToken = tokenMap[vaultSymbol]
       const status = vaultToken?.vaultTokenAmounts?.status?.toString(2)
       if (status[0] == '1' && status[3] == '1') {
         const borrowed = sdk
           .toBig((vaultLayer2 && vaultLayer2[vaultSymbol]?.borrowed) ?? 0)
           .div('1e' + vaultToken.decimals)
-          .toFixed(vaultToken?.vaultTokenAmount?.qtyStepScale ?? vaultToken.precision, 0)
+          .toFixed(vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision, 0)
         let walletCoin = {
           erc20Symbol,
           belong: vaultSymbol,
           borrowed: borrowed,
-          count: sdk
-            .toBig(maxBorrowableOfUsdt ?? 0)
-            .div(price)
-            .times(fault)
-            .toFixed(vaultToken?.vaultTokenAmount?.qtyStepScale ?? vaultToken.precision, 0),
+          count: price
+            ? sdk
+                .toBig(maxBorrowableOfUsdt ?? 0)
+                .div(price ? price : 1)
+                .times(fault)
+                .toFixed(vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision, 0)
+            : 0,
         }
         prev[item] = {
           ...walletCoin,
@@ -196,12 +198,15 @@ export const makeVaultRepay = <
       const erc20Symbol = erc20IdIndex[tokenMap[vaultSymbol]?.tokenId ?? '']
       // const price = tokenPrices[erc20Symbol] ?? 0
       const vaultToken = tokenMap[vaultSymbol]
-      const tokenInfo = tokenMap[vaultSymbol]
-      if ((vaultSymbol && needFilterZero && sdk.toBig(item.borrowed).gt(0)) || !needFilterZero) {
+      const status = vaultToken?.vaultTokenAmounts?.status?.toString(2)
+      if (
+        status[4] == '1' &&
+        ((vaultSymbol && needFilterZero && sdk.toBig(item.borrowed).gt(0)) || !needFilterZero)
+      ) {
         const borrowed = sdk
           .toBig(item.borrowed)
           .div('1e' + vaultToken.decimals)
-          .toFixed(tokenInfo?.vaultTokenAmount?.qtyStepScale ?? tokenInfo.precision, 0)
+          .toFixed(vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision, 0)
         // .toFixed(tokenInfo.precision, 0)
         const price = tokenPrices[vaultSymbol] ?? 0
         let walletCoin = {

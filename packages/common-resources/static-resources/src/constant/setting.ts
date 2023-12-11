@@ -191,3 +191,10 @@ export enum TableFilterParams {
   favourite = 'favourite',
   ranking = 'ranking',
 }
+
+export enum ToastType {
+  success = 'success',
+  error = 'error',
+  warning = 'warning',
+  info = 'info',
+}

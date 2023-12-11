@@ -7,6 +7,7 @@ import {
   MarketDetail,
   MarketTable,
   ModalCloseButtonPosition,
+  useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
@@ -120,7 +121,7 @@ export const VaultHomePanel = ({
             flex: 1,
           }}
         >
-          <MarketTable {...{ ...vaultMarketProps }} />
+          <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
         </Container>
       </Box>
       <Modal open={detail?.isShow} onClose={() => setShowDetail({ isShow: false })}>

@@ -578,7 +578,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     [accountId, apiKey, setToastOpen, t, dualMarketMap, idIndex, tokenMap],
   )
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
-  // TODO:
   const getProduct = async (detail) => {
     if (detail && detail.dualViewInfo) {
       const { marketMap: dualMarketMap } = store.getState().invest.dualMap

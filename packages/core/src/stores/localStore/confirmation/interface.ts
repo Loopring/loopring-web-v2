@@ -1,4 +1,5 @@
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 export interface Confirmation {
   confirmed: boolean
@@ -19,5 +20,4 @@ export interface Confirmation {
   showLeverageETHPopup: boolean
   showAutoDefault: boolean
   confirmationNeeded: boolean
-    confirmedVault: boolean
 }

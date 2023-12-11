@@ -39,6 +39,7 @@ import {
   setShowVaultSwap,
   setShowVaultLoan,
   setShowNoVaultAccount,
+  setShowConfirmedVault,
 } from './reducer'
 
 import React from 'react'
@@ -339,5 +340,8 @@ export const useOpenModals = () => {
       ) => dispatch(setShowNoVaultAccount(state)),
       [dispatch],
     ),
+    setShowConfirmedVault(state: ModalStatePlayLoad) {
+      dispatch(setShowConfirmedVault(state))
+    },
   }
 }

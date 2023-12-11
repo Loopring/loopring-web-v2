@@ -1,4 +1,5 @@
 import {
+  confirmation,
   store,
   useSubmitBtn,
   useTokenMap,
@@ -48,7 +49,14 @@ export const useAccountInfo = () => {
   const { erc20Map } = useVaultMap()
   const { idIndex } = useTokenMap()
 
-  const { setShowVaultJoin, setShowVaultSwap, setShowVaultExit, setShowVaultLoan } = useOpenModals()
+  const {
+    setShowVaultJoin,
+    setShowVaultSwap,
+    setShowVaultExit,
+    setShowVaultLoan,
+    setShowConfirmedVault,
+  } = useOpenModals()
+
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -98,9 +106,10 @@ export const useAccountInfo = () => {
           setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
           break
         // @ts-ignore
-        case sdk.VaultAccountStatus.FREE: //sdk.VaultAccountStatus.FREE:
+        case sdk.VaultAccountStatus.FREE: //sdk.VaultAccountStatus.FREE
         default:
-          setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
+          setShowConfirmedVault({ isShow: true })
+        //setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
       }
     },
   })
