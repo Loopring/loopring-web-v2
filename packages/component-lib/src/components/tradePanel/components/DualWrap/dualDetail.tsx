@@ -33,7 +33,6 @@ import { SwitchPanelStyled } from '../../../styled'
 import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
 import { CancelDualAlert } from '../tool'
 
-
 const BoxChartStyle = styled(Box)`
   background-clip: content-box;
   background-size: contain;
@@ -112,7 +111,15 @@ export const DualDetail = ({
   showClock = false,
   ...rest
 }: DualDetailProps) => {
-  const { dualViewInfo, currentPrice, tokenMap, lessEarnView, greaterEarnView, onChange, onChangeOrderReinvest } = rest
+  const {
+    dualViewInfo,
+    currentPrice,
+    tokenMap,
+    lessEarnView,
+    greaterEarnView,
+    onChange,
+    onChangeOrderReinvest,
+  } = rest
   const [showEdit, setShowEdit] = React.useState(false)
   const { t } = useTranslation(['common', 'tables'])
   const { upColor, isMobile } = useSettings()
@@ -163,10 +170,13 @@ export const DualDetail = ({
         )
       : EmptyValueTag
   }, [dualViewInfo?.strike])
-  myLog('dualViewInfo?.__raw__?.order?.investmentStatus', dualViewInfo?.__raw__?.order?.investmentStatus)
+  myLog(
+    'dualViewInfo?.__raw__?.order?.investmentStatus',
+    dualViewInfo?.__raw__?.order?.investmentStatus,
+  )
   const [showCancelOneAlert, setShowCancelOneAlert] = React.useState({
     open: false,
-    row: undefined as any
+    row: undefined as any,
   })
   return (
     <>
@@ -200,8 +210,6 @@ export const DualDetail = ({
         }}
         handleClose={() => setShowCancelOneAlert({ open: false, row: undefined })}
       />
-
-
 
       <Box display={'flex'} flexDirection={'column'}>
         {isOrder && showClock && (
