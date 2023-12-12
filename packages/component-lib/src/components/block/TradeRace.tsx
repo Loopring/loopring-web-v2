@@ -53,7 +53,7 @@ const TableStyle = styled(Table)`
       text-align: right;
     }
   }
-` as typeof Table
+`
 
 export const TradeRacePanel = ({ rawData, ...rest }: { rawData: TradeRaceRow[] }) => {
   const { t } = useTranslation(['tables'])
@@ -103,12 +103,12 @@ export const TradeRacePanel = ({ rawData, ...rest }: { rawData: TradeRaceRow[] }
     [],
   )
 
-  const defaultArgs: any = {
+  const defaultArgs = {
     columnMode: getColumnMode(),
     currentheight: (rawData.length + 1) * rowHeight,
     generateRows: (rawData: any) => rawData,
     generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
   }
 
-  return <TableStyle<TradeRaceRow, unknown> {...{ ...defaultArgs, t, ...rest, rawData }} />
+  return <TableStyle {...{ ...defaultArgs, t, ...rest, rawData }} />
 }

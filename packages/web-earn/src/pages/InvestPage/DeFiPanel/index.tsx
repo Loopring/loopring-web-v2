@@ -13,18 +13,16 @@ import {
   ConfirmInvestDefiRisk,
   ToastType,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, useNotify, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useNotify, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
-  DualInvestmentLogo,
   hexToRGB,
   Info2Icon,
   MarketType,
   SatkingLogo,
-  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'
@@ -141,7 +139,10 @@ const LandDefiInvest = ({
             <React.Fragment key={item.type + index}>
               {item.enable ? (
                 <Grid item xs={12} md={4} lg={3}>
-                  <Card sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }} onClick={item.click}>
+                  <Card
+                    sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}
+                    onClick={item.click}
+                  >
                     <StyleCardContent className={isMobile ? 'isMobile' : 'tableLap'}>
                       <Box
                         className={'content'}
@@ -254,12 +255,12 @@ const LandDefiInvest = ({
   )
 }
 
-const ButtonStyled = styled(Button)`  
+const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
   :hover {
     background-color: var(--color-button-outlined);
-    ::before{
+    ::before {
       border-radius: 4px;
     }
   }
@@ -269,20 +270,16 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketArray } = useDefiMap()
 
   const {
+    confirmation: { confirmationNeeded, showRETHStakePopup, showWSTETHStakePopup },
+    setShowRETHStakePopup,
+    setShowWSTETHStakePopup,
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
   } = confirmation.useConfirmation()
   // const []
-  const {
-    confirmationNeeded,
-    showRETHStakignPopup,
-    showWSTETHStakignPopup,
-    setShowRETHStakignPopup,
-    setShowWSTETHStakignPopup,
-  } = usePopup()
   const _confirmedDefiInvest = {
-    isShow: showRETHStakignPopup || showWSTETHStakignPopup,
-    type: showRETHStakignPopup ? 'RETH' : showWSTETHStakignPopup ? 'WSETH' : undefined,
+    isShow: showRETHStakePopup || showWSTETHStakePopup,
+    type: showRETHStakePopup ? 'RETH' : showWSTETHStakePopup ? 'WSETH' : undefined,
     confirmationNeeded,
   }
   const setConfirmedDefiInvest = ({
@@ -294,13 +291,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) => {
     if (isShow) {
       if (type === 'RETH') {
-        setShowRETHStakignPopup({ show: true, confirmationNeeded: true })
+        setShowRETHStakePopup({ isShow: true, confirmationNeeded: true })
       } else {
-        setShowWSTETHStakignPopup({ show: true, confirmationNeeded: true })
+        setShowWSTETHStakePopup({ isShow: true, confirmationNeeded: true })
       }
     } else {
-      setShowRETHStakignPopup({ show: false, confirmationNeeded: true })
-      setShowWSTETHStakignPopup({ show: false, confirmationNeeded: true })
+      setShowRETHStakePopup({ isShow: false, confirmationNeeded: true })
+      setShowWSTETHStakePopup({ isShow: false, confirmationNeeded: true })
     }
   }
 
@@ -322,9 +319,7 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const theme = useTheme()
   const { isMobile } = useSettings()
   const isMainView = !(match?.params?.market && _market)
-  const height = isMainView 
-    ? isMobile ? 34 * theme.unit : 30 * theme.unit
-    : 6 * theme.unit
+  const height = isMainView ? (isMobile ? 34 * theme.unit : 30 * theme.unit) : 6 * theme.unit
 
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1}>
@@ -335,28 +330,32 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         height={height}
         alignItems={'center'}
         containerProps={{
-          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`
+          borderBottom: isMainView ? '' : `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
         }}
       >
         {isMainView ? (
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} width={'100%'}>
-            <Box >
-          <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
-            {t('labelInvestDefiTitle')}
-          </Typography>
-          <Box display={'flex'} alignItems={'center'}>
-            <Button
-              onClick={() => history.push('/invest/balance')}
-              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
-              variant={'contained'}
-            >
-              {t('labelInvestMyAmm')}
-            </Button>
-          </Box>
-          </Box>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            width={'100%'}
+          >
+            <Box>
+              <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
+                {t('labelInvestDefiTitle')}
+              </Typography>
+              <Box display={'flex'} alignItems={'center'}>
+                <Button
+                  onClick={() => history.push('/invest/balance')}
+                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+                  variant={'contained'}
+                >
+                  {t('labelInvestMyAmm')}
+                </Button>
+              </Box>
+            </Box>
             {!isMobile && <SatkingLogo />}
           </Box>
-          
         ) : (
           <Box
             width={'100%'}
@@ -390,7 +389,10 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
         )}
       </MaxWidthContainer>
 
-      <MaxWidthContainer height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'} background={isMainView ? containerColors[1] : 'transparent'}>
+      <MaxWidthContainer
+        height={isMainView ? 'calc(100vh - 360px)' : 'calc(100vh - 180px)'}
+        background={isMainView ? containerColors[1] : 'transparent'}
+      >
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}

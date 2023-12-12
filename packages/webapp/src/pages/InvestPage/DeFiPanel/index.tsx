@@ -14,7 +14,7 @@ import {
   ToastType,
   MaxWidthContainer,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, useNotify, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useNotify, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
@@ -138,7 +138,7 @@ const LandDefiInvest = ({
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
-              {item.enable && marketArray.includes(item.market) ? (
+              {item.enable && marketArray.includes(item?.market ?? '') ? (
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}
@@ -271,20 +271,16 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketArray } = useDefiMap()
 
   const {
+    confirmation: { confirmationNeeded, showRETHStakePopup, showWSTETHStakePopup },
+    setShowRETHStakePopup,
+    setShowWSTETHStakePopup,
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
   } = confirmation.useConfirmation()
-  // const []
-  const {
-    confirmationNeeded,
-    showRETHStakignPopup,
-    showWSTETHStakignPopup,
-    setShowRETHStakignPopup,
-    setShowWSTETHStakignPopup,
-  } = usePopup()
+
   const _confirmedDefiInvest = {
-    isShow: showRETHStakignPopup || showWSTETHStakignPopup,
-    type: showRETHStakignPopup ? 'RETH' : showWSTETHStakignPopup ? 'WSETH' : undefined,
+    isShow: showRETHStakePopup || showWSTETHStakePopup,
+    type: showRETHStakePopup ? 'RETH' : showWSTETHStakePopup ? 'WSETH' : undefined,
     confirmationNeeded,
   }
   const setConfirmedDefiInvest = ({
@@ -296,13 +292,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) => {
     if (isShow) {
       if (type === 'RETH') {
-        setShowRETHStakignPopup({ show: true, confirmationNeeded: true })
+        setShowRETHStakePopup({ isShow: true, confirmationNeeded: true })
       } else {
-        setShowWSTETHStakignPopup({ show: true, confirmationNeeded: true })
+        setShowWSTETHStakePopup({ isShow: true, confirmationNeeded: true })
       }
     } else {
-      setShowRETHStakignPopup({ show: false, confirmationNeeded: true })
-      setShowWSTETHStakignPopup({ show: false, confirmationNeeded: true })
+      setShowRETHStakePopup({ isShow: false, confirmationNeeded: true })
+      setShowWSTETHStakePopup({ isShow: false, confirmationNeeded: true })
     }
   }
 

@@ -33,6 +33,7 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowETHStakingApr,
 } from './reducer'
 
 import React from 'react'
@@ -296,9 +297,16 @@ export const useOpenModals = () => {
       (state: {
         isShow: boolean
         info: {
-          exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {tokenIcon: CoinSource, tokenName: string})[]
+          exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {
+            tokenIcon: CoinSource
+            tokenName: string
+          })[]
         }
       }) => dispatch(setShowTargetRedpacketPop(state)),
+      [dispatch],
+    ),
+    setShowETHStakingApr: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
       [dispatch],
     ),
   }

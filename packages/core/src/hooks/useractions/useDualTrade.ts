@@ -12,7 +12,6 @@ import {
   DualCalcData,
   DualTrade,
   DualViewInfo,
-  DualViewType,
   getValuePrecisionThousand,
   globalSetup,
   myLog,
@@ -23,7 +22,6 @@ import {
 } from '@loopring-web/common-resources'
 
 import {
-  confirmation,
   DAYS,
   getTimestampDaysLater,
   makeDualViewItem,
@@ -41,21 +39,13 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 import { LoopringAPI, store, useAccount, useSystem, useTokenMap } from '../../index'
 import { useTradeDual } from '../../stores'
-import { useLocation } from 'react-router-dom'
 
 export const useDualTrade = <
   T extends DualTrade<I>,
   I,
   ACD extends DualCalcData<R>,
   R extends DualViewInfo,
->({
-  setConfirmDualAutoInvest,
-}: {
-  setConfirmDualAutoInvest: (state: boolean) => void
-}) => {
-  const { search } = useLocation()
-  const searchParams = new URLSearchParams(search)
-  const viewType = searchParams.get('viewType')
+>() => {
   const refreshRef = React.useRef()
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
@@ -63,12 +53,6 @@ export const useDualTrade = <
   const { marketMap: dualMarketMap } = useDualMap()
   const { account, status: accountStatus } = useAccount()
   const { setShowDual } = useOpenModals()
-  const {
-    confirmation: {
-      // confirmedDualInvest,
-      confirmDualAutoInvest,
-    },
-  } = confirmation.useConfirmation()
   const { toastOpen, closeToast } = useToast()
   const {
     modals: { isShowDual },
@@ -121,6 +105,8 @@ export const useDualTrade = <
       }
       if (index && _updateInfo.dualViewInfo) {
         _updateInfo.dualViewInfo.__raw__.index = index
+      } else if (!_updateInfo.dualViewInfo) {
+        return
       }
       if (balance) {
         _updateInfo.balance = balance
@@ -513,7 +499,6 @@ export const useDualTrade = <
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
-      //
     }
   }, [accountStatus])
 
