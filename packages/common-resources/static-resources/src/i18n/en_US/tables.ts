@@ -398,3 +398,4 @@ export default {
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelDetail: 'Detail',
 }
+

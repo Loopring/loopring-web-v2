@@ -7,9 +7,15 @@ import {
 } from './reducer'
 
 import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
-import { AccountStatus } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  DEFI_CONFIG,
+  LEVERAGE_ETH_CONFIG,
+  MapChainId,
+} from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
+const defiNum = 10
 const getUserRewardsApi = async () => {
   const { accountId, apiKey, readyState } = store.getState().account
 
@@ -55,14 +61,17 @@ const getUserRewardsApi = async () => {
           userRewardsMap: ammUserRewardMap,
         })
         const { marketArray, marketLeverageArray } = store.getState().invest.defiMap
+        const { defaultNetwork } = store.getState().settings
+        const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
         LoopringAPI.defiAPI
-          .getDefiTransaction(
+          .getDefiDepositList(
+            // .getDefiTransaction(
             {
               accountId,
-              offset: 0,
-              limit: 100,
-              markets: [...marketArray, ...marketLeverageArray].join(','),
+              number: defiNum,
+              markets: [...marketArray, ...marketLeverageArray],
+              types: [...DEFI_CONFIG.products[network], ...LEVERAGE_ETH_CONFIG.products[network]],
             } as any,
             apiKey,
           )
@@ -72,13 +81,13 @@ const getUserRewardsApi = async () => {
             }
             const defiAverageMap = [...marketArray, ...marketLeverageArray].reduce((prev, item) => {
               let priceTotal = sdk.toBig(0)
-              const _value = (response as any).userDefiTxs
+              const _value = (response as any).transactions
                 ?.filter(
                   (_history) =>
                     item === _history.market &&
                     _history.action == sdk?.DefiAction?.Deposit.toUpperCase(),
                 )
-                .slice(0, 10)
+                .slice(0, defiNum)
                 .map((_history) => {
                   const price = sdk.toBig(_history.buyToken.volume).div(_history.sellToken.volume)
                   priceTotal = priceTotal.plus(price)

@@ -284,7 +284,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
-        // borderBottom={'1px solid var(--color-border)'}
       >
         <InputCoinStyled
           ref={coinSellRef}

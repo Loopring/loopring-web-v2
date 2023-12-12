@@ -191,7 +191,6 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   enhancers: [reduxBatch],
 })
-
 export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
   let firebase_app
   switch (process.env.REACT_APP_NAME) {
