@@ -446,6 +446,7 @@ export const useVaultSwap = <
       tradeCalcData,
       sellToken: _sellToken,
       buyToken: _buyToken,
+      depth,
     } = store.getState()._router_tradeVault.tradeVault
     const account = store.getState().account
 
@@ -513,7 +514,7 @@ export const useVaultSwap = <
             false,
             { floor: false },
           ),
-          price: tradeCalcData.depth.mid_price,
+          price: depth?.mid_price,
           sellFStr: undefined,
           buyFStr: undefined,
           convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
@@ -978,13 +979,13 @@ export const useVaultSwap = <
           // (sellBuyStr == market ? maxAmount.base !== '0' : maxAmount.quote !== '0')
         ) {
           // const amountVol = sellBuyStr == market ? maxAmount.base : maxAmount.quote
-          if (amountVol) {
-            poolToVol =
-              sdk
-                .toBig(amountVol)
-                .div('1e' + sellToken.decimals)
-                .toString() ?? '0'
-          }
+          // if (amountVol) {
+          //   poolToVol =
+          //     sdk
+          //       .toBig(amountVol)
+          //       .div('1e' + sellToken.decimals)
+          //       .toString() ?? '0'
+          // }
           const sellDeepStr =
             sdk
               .toBig(sellBuyStr == market ? depth.bids_amtTotal : depth.asks_volTotal)
@@ -992,7 +993,8 @@ export const useVaultSwap = <
               .times(0.99)
               .toString() ?? '0'
 
-          sellMaxAmtInfo = poolToVol ? BigNumber.min(sellDeepStr, poolToVol) : sellDeepStr
+          // sellMaxAmtInfo =  poolToVol ? BigNumber.min(sellDeepStr, poolToVol) :
+          sellMaxAmtInfo = sellDeepStr
           totalQuote = poolToVol
             ? getValuePrecisionThousand(
                 BigNumber.min(sellDeepStr, poolToVol),
@@ -1003,19 +1005,8 @@ export const useVaultSwap = <
                 { isAbbreviate: true },
               )
             : EmptyValueTag
-          sellMaxAmtInfo = poolToVol
-            ? BigNumber.min(sellDeepStr, poolToVol, calcDexOutput?.amountS ?? 0)
-            : sellDeepStr
-          // totalQuote = poolToVol
-          //   ? getValuePrecisionThousand(
-          //       BigNumber.min(sellDeepStr, poolToVol),
-          //       sellToken.precision,
-          //       sellToken.precision,
-          //       undefined,
-          //       false,
-          //       { isAbbreviate: true },
-          //     )
-          //   : (sellBuyStr == market ? maxAmount.base == '0' : maxAmount.quote == '0')
+          sellMaxAmtInfo = BigNumber.min(sellDeepStr, _tradeData.sell.balance ?? 0)
+          // totalQuote = (sellBuyStr == market ? maxAmount.base == '0' : maxAmount.quote == '0')
           //   ? t('labelVaultInsufficient')
           //   : EmptyValueTag
         }
