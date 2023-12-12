@@ -315,8 +315,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           </Box>
         </Container>
       </ContainerStyle>
-
-      <ContainerStyle sx={{ zIndex: 10, marginBottom: 10 }}>
+      <ContainerStyle sx={{ zIndex: 10, marginBottom: 4 }}>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <Typography
             component={'h4'}
