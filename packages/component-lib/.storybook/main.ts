@@ -3,7 +3,6 @@ import CopyWebpackPlugin from 'copy-webpack-plugin'
 import path, { join, dirname } from 'path'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 const nodePath = '../../'
-// import webpack from 'webpack'
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath)
 const disableEsLint = (e) => {
   return (
@@ -44,10 +43,10 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-onboarding'),
     getAbsolutePath('@storybook/addon-interactions'),
   ],
-  // framework: {
-  //   name: getAbsolutePath('@storybook/react-webpack5'),
-  //   options: {},
-  // },
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
+  },
   docs: {
     autodocs: 'tag',
   },
@@ -110,9 +109,9 @@ const config: StorybookConfig = {
       //   chunkFilename: isProd ? '[id].[contenthash].css' : '[id].css',
       //   ignoreOrder: true,
       // }),
-      // new webpack.ProvidePlugin({
-      //   Buffer: ['buffer', 'Buffer'],
-      // }),
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -125,7 +124,7 @@ const config: StorybookConfig = {
     ]
     return {
       ...config,
-      framework: '@storybook/react',
+      // framework: getAbsolutePath('@storybook/react-webpack5'),
       plugins: [...config.plugins],
       resolve: {
         ...config.resolve,

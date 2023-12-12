@@ -1,4 +1,4 @@
-import { Box, Link, Typography } from '@mui/material'
+import { Box, Link, Typography, Divider } from '@mui/material'
 import { TFunction, Trans, withTranslation } from 'react-i18next'
 import {
   Account,
@@ -83,19 +83,26 @@ const BoxStyle = styled(Box)`
       }
     }
   }
-  &.vaultRepay,
-  &.vaultBorrow,
-  &.vaultTrade,
-  &.vaultJoin,
-  &.vaultExit {
-    .content-main {
-      overflow: scroll;
+  .content-main {
+    overflow: scroll;
+    align-self: stretch;
+    & > div {
       align-self: stretch;
-      & > div {
-        align-self: stretch;
-      }
     }
   }
+  //&.vaultRepay,
+  //&.vaultBorrow,
+  //&.vaultTrade,
+  //&.vaultJoin,
+  //&.vaultExit {
+  //  .content-main {
+  //    overflow: scroll;
+  //    align-self: stretch;
+  //    & > div {
+  //      align-self: stretch;
+  //    }
+  //  }
+  //}
 `
 
 export const BasicPanel = withTranslation('common', { withRef: true })(
@@ -204,227 +211,256 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
     return (
-      <BoxStyle
-        flex={1}
-        display={'flex'}
-        alignItems={'center'}
-        flexDirection={'column'}
-        paddingBottom={4}
-        width={'100%'}
-        className={className}
-      >
-        <Typography component={'h3'} variant={isMobile ? 'h4' : 'h3'} whiteSpace={'pre'}>
-          {t(title as string, {
-            layer2: L1L2_NAME_DEFINED[network].layer2,
-            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
-          })}
-        </Typography>
+      <>
         <Box
-          flex={1}
           display={'flex'}
           flexDirection={'column'}
+          alignItems={'flex-start'}
+          alignSelf={'stretch'}
+          marginTop={-4}
+          justifyContent={'stretch'}
+        >
+          <Typography
+            display={'flex'}
+            flexDirection={'row'}
+            component={'header'}
+            alignItems={'center'}
+            height={'var(--toolbar-row-height)'}
+            paddingX={3}
+          >
+            {typeof title !== 'string' ? (
+              title
+            ) : (
+              <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
+                {t(title, {
+                  layer2: L1L2_NAME_DEFINED[network].layer2,
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                })}
+              </Typography>
+            )}
+          </Typography>
+          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+        </Box>
+        <BoxStyle
+          flex={1}
+          display={'flex'}
           alignItems={'center'}
-          justifyContent={'space-between'}
-          className={'content-main'}
+          flexDirection={'column'}
+          paddingBottom={4}
+          width={'100%'}
+          className={className}
         >
           <Box
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            justifyContent={'center'}
             flex={1}
-          >
-            <Typography
-              component={'div'}
-              display={'flex'}
-              alignItems={'flex-start'}
-              flexDirection={'column'}
-              className={'status-icon'}
-            >
-              {iconDiv}
-            </Typography>
-            {describe1 && (
-              <Box display={'flex'} marginTop={marginTopDescribe1} alignItems={'flex-center'}>
-                {iconType === IconType.FailedIcon ? (
-                  <Typography
-                    component={'span'}
-                    marginX={3}
-                    whiteSpace={'pre-line'}
-                    variant={'body1'}
-                    marginBottom={2}
-                    alignSelf={'flex-center'}
-                    paddingX={1}
-                    marginY={1}
-                    textAlign={'center'}
-                  >
-                    {error ? (
-                      <Typography
-                        color={'var(--color-error)'}
-                        component={'span'}
-                        variant={'inherit'}
-                        display={'inline-flex'}
-                        alignItems={'center'}
-                        onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-                      >
-                        <TransErrorHelp error={error} options={errorOptions} />
-                        <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                      </Typography>
-                    ) : typeof describe1 === 'string' ? (
-                      <Typography
-                        color={'var(--color-error)'}
-                        component={'span'}
-                        variant={'inherit'}
-                        display={'inline-flex'}
-                        onClick={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
-                        dangerouslySetInnerHTML={{
-                          __html: sanitize(describe1),
-                        }}
-                      />
-                    ) : (
-                      <>{describe1}</>
-                    )}
-                    {dropdownStatus === 'up' && (
-                      <TextareaAutosizeStyled
-                        aria-label='Error Description'
-                        minRows={5}
-                        style={{ maxHeight: '90px', overflow: 'scroll' }}
-                        disabled={true}
-                        value={`${JSON.stringify(error)}}`}
-                      />
-                    )}
-
-                    {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
-                  </Typography>
-                ) : typeof describe1 === 'string' ? (
-                  <Typography
-                    component={'span'}
-                    variant={'h5'}
-                    whiteSpace={'pre-line'}
-                    textAlign={'center'}
-                    color={
-                      iconType === IconType.SubmitIcon || iconType === IconType.DoneIcon
-                        ? 'var(--color-success)'
-                        : iconType === IconType.RefuseIcon
-                        ? 'var(--color-error)'
-                        : 'textPrimary'
-                    }
-                    marginTop={0}
-                    alignSelf={'flex-center'}
-                    paddingX={2}
-                    sx={{ wordBreak: 'break-all' }}
-                    dangerouslySetInnerHTML={{
-                      __html: sanitize(describe1),
-                    }}
-                  />
-                ) : (
-                  <Typography
-                    component={'span'}
-                    variant={'h5'}
-                    whiteSpace={'pre-line'}
-                    textAlign={'center'}
-                    color={
-                      iconType === IconType.SubmitIcon || iconType === IconType.DoneIcon
-                        ? 'var(--color-success)'
-                        : iconType === IconType.RefuseIcon
-                        ? 'var(--color-error)'
-                        : 'textPrimary'
-                    }
-                    marginTop={0}
-                    alignSelf={'flex-center'}
-                    paddingX={2}
-                  >
-                    {describe1}
-                  </Typography>
-                )}
-
-                {txCheck && (
-                  <Link
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    href={txCheck.route}
-                    display={'inline-block'}
-                    marginTop={1 / 4}
-                  >
-                    <LinkIcon
-                      color={'primary'}
-                      fontSize={'small'}
-                      style={{ verticalAlign: 'middle' }}
-                    />
-                  </Link>
-                )}
-              </Box>
-            )}
-            {!!describe2 && <>{describe2}</>}
-          </Box>
-          {providerName && (
-            <Typography
-              variant={'body2'}
-              color={'textSecondary'}
-              component={'span'}
-              paddingX={5}
-              alignSelf={'flex-start'}
-            >
-              {providerDescribe}
-            </Typography>
-          )}
-        </Box>
-        {btnInfo && (
-          <Box
-            width={'100%'}
             display={'flex'}
             flexDirection={'column'}
             alignItems={'center'}
-            justifyContent={'flex-end'}
+            justifyContent={'space-between'}
+            className={'content-main'}
           >
-            <Box alignSelf={'stretch'} paddingX={5}>
-              <Button
-                variant={'contained'}
-                fullWidth
-                size={'medium'}
-                onClick={(e?: any) => {
-                  if (btnInfo?.callback) {
-                    btnInfo.callback(e)
-                  }
-                }}
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              flex={1}
+            >
+              <Typography
+                component={'div'}
+                display={'flex'}
+                alignItems={'flex-start'}
+                flexDirection={'column'}
+                className={'status-icon'}
               >
-                {t(btnInfo?.btnTxt, { ...btnInfo?.param })}
-              </Button>
-            </Box>
-
-            {link && (
-              <Box marginTop={marginToplink} alignSelf={'flex-center'} paddingX={0}>
-                <Link
-                  variant={'body1'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                  color={'secondary'}
-                  href={link.url}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  {link.name}
-                  {['Txn Hash', 'Banxa Status'].includes(link.name) && (
+                {iconDiv}
+              </Typography>
+              {describe1 && (
+                <Box display={'flex'} marginTop={marginTopDescribe1} alignItems={'flex-center'}>
+                  {iconType === IconType.FailedIcon ? (
                     <Typography
                       component={'span'}
-                      paddingLeft={1}
-                      color={'secondary'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
+                      marginX={3}
+                      whiteSpace={'pre-line'}
+                      variant={'body1'}
+                      marginBottom={2}
+                      alignSelf={'flex-center'}
+                      paddingX={1}
+                      marginY={1}
+                      textAlign={'center'}
                     >
-                      <LinkIcon color={'inherit'} fontSize={'medium'} />
+                      {error ? (
+                        <Typography
+                          color={'var(--color-error)'}
+                          component={'span'}
+                          variant={'inherit'}
+                          display={'inline-flex'}
+                          alignItems={'center'}
+                          onClick={() =>
+                            setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))
+                          }
+                        >
+                          <TransErrorHelp error={error} options={errorOptions} />
+                          <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
+                        </Typography>
+                      ) : typeof describe1 === 'string' ? (
+                        <Typography
+                          color={'var(--color-error)'}
+                          component={'span'}
+                          variant={'inherit'}
+                          display={'inline-flex'}
+                          onClick={() =>
+                            setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))
+                          }
+                          dangerouslySetInnerHTML={{
+                            __html: sanitize(describe1),
+                          }}
+                        />
+                      ) : (
+                        <>{describe1}</>
+                      )}
+                      {dropdownStatus === 'up' && (
+                        <TextareaAutosizeStyled
+                          aria-label='Error Description'
+                          minRows={5}
+                          style={{ maxHeight: '90px', overflow: 'scroll' }}
+                          disabled={true}
+                          value={`${JSON.stringify(error)}}`}
+                        />
+                      )}
+
+                      {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
+                    </Typography>
+                  ) : typeof describe1 === 'string' ? (
+                    <Typography
+                      component={'span'}
+                      variant={'h5'}
+                      whiteSpace={'pre-line'}
+                      textAlign={'center'}
+                      color={
+                        iconType === IconType.SubmitIcon || iconType === IconType.DoneIcon
+                          ? 'var(--color-success)'
+                          : iconType === IconType.RefuseIcon
+                          ? 'var(--color-error)'
+                          : 'textPrimary'
+                      }
+                      marginTop={0}
+                      alignSelf={'flex-center'}
+                      paddingX={2}
+                      sx={{ wordBreak: 'break-all' }}
+                      dangerouslySetInnerHTML={{
+                        __html: sanitize(describe1),
+                      }}
+                    />
+                  ) : (
+                    <Typography
+                      component={'span'}
+                      variant={'h5'}
+                      whiteSpace={'pre-line'}
+                      textAlign={'center'}
+                      color={
+                        iconType === IconType.SubmitIcon || iconType === IconType.DoneIcon
+                          ? 'var(--color-success)'
+                          : iconType === IconType.RefuseIcon
+                          ? 'var(--color-error)'
+                          : 'textPrimary'
+                      }
+                      marginTop={0}
+                      alignSelf={'flex-center'}
+                      paddingX={2}
+                    >
+                      {describe1}
                     </Typography>
                   )}
-                </Link>
-              </Box>
+
+                  {txCheck && (
+                    <Link
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      href={txCheck.route}
+                      display={'inline-block'}
+                      marginTop={1 / 4}
+                    >
+                      <LinkIcon
+                        color={'primary'}
+                        fontSize={'small'}
+                        style={{ verticalAlign: 'middle' }}
+                      />
+                    </Link>
+                  )}
+                </Box>
+              )}
+              {!!describe2 && <>{describe2}</>}
+            </Box>
+            {providerName && (
+              <Typography
+                variant={'body2'}
+                color={'textSecondary'}
+                component={'span'}
+                paddingX={5}
+                alignSelf={'flex-start'}
+              >
+                {providerDescribe}
+              </Typography>
             )}
           </Box>
-        )}
-      </BoxStyle>
+          {btnInfo && (
+            <Box
+              width={'100%'}
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'center'}
+              justifyContent={'flex-end'}
+            >
+              <Box alignSelf={'stretch'} paddingX={5}>
+                <Button
+                  variant={'contained'}
+                  fullWidth
+                  size={'medium'}
+                  onClick={(e?: any) => {
+                    if (btnInfo?.callback) {
+                      btnInfo.callback(e)
+                    }
+                  }}
+                >
+                  {t(btnInfo?.btnTxt, { ...btnInfo?.param })}
+                </Button>
+              </Box>
+
+              {link && (
+                <Box marginTop={marginToplink} alignSelf={'flex-center'} paddingX={0}>
+                  <Link
+                    variant={'body1'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                    color={'secondary'}
+                    href={link.url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {link.name}
+                    {['Txn Hash', 'Banxa Status'].includes(link.name) && (
+                      <Typography
+                        component={'span'}
+                        paddingLeft={1}
+                        color={'secondary'}
+                        display={'inline-flex'}
+                        alignItems={'center'}
+                      >
+                        <LinkIcon color={'inherit'} fontSize={'medium'} />
+                      </Typography>
+                    )}
+                  </Link>
+                </Box>
+              )}
+            </Box>
+          )}
+        </BoxStyle>
+      </>
     )
   },
 )
