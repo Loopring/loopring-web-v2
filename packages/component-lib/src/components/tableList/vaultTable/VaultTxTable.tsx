@@ -7,7 +7,7 @@ import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
 import { RawDataVaultTxItem, VaultRecordType } from './Interface'
-import { globalSetup, RecordIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import { globalSetup, OrderListIcon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment/moment'
 import _ from 'lodash'
@@ -105,7 +105,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                       sx={{ marginLeft: 1, color: 'var(--color-primary)' }}
                       onClick={() => props.onItemClick(row)}
                     >
-                      <RecordIcon color={'inherit'} />
+                      <OrderListIcon color={'inherit'} />
                     </IconButton>
                   ) : (
                     <></>
