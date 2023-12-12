@@ -1894,14 +1894,15 @@ export default {
   labelRedPacketRecipientList: 'Recipient List',
   labelRedPacketPublicTooltip:
     'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip: "<p>Your Red Packet is private, and only the addresses you specify can claim it.</p>"
-    +"<p>To create a new Exclusive Red Packet, please follow these steps:</p>"
-    +"<li>1. Select the type of Red Packet</li>"
-    +"<li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>"
-    +"<li>3. Designate the recipients</li>"
-    +"<li>4. Set the Notification Display</li>"
-    +"<p>For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>"
-    +"<p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>",
+  labelRedPacketPrivateTooltip:
+    '<p>Your Red Packet is private, and only the addresses you specify can claim it.</p>' +
+    '<p>To create a new Exclusive Red Packet, please follow these steps:</p>' +
+    '<li>1. Select the type of Red Packet</li>' +
+    '<li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>' +
+    '<li>3. Designate the recipients</li>' +
+    '<li>4. Set the Notification Display</li>' +
+    '<p>For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>' +
+    "<p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>",
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
@@ -2137,13 +2138,6 @@ export default {
   labelDualSettingConfirm: 'Confirm',
   labelL2DualNote: 'Dual Investment Notification',
   labelQuickInvest: 'Quick Invest',
-  labelReceiveToken: 'Receive',
-  labelETHStakingEnterPaymentToken: 'Amount',
-  labelDefiDuration: 'Duration',
-  labelFlexible: 'Flexible',
-  labelEstAPR: 'Est.APR',
-  labelTradingFeeTooltips:
-    "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',

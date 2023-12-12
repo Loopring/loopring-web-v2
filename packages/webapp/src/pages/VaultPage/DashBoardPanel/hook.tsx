@@ -161,31 +161,44 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     accountStaticCallBack(btnClickCallbackArray, [props])
   }
   React.useEffect(() => {
-    if (match?.params?.item == VaultKey.VAULT_DASHBOARD) {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
-        setShowNoVaultAccount({
-          isShow: false,
-          des: '',
-          title: '',
-        })
-      } else if (
-        [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
-      ) {
-        setShowNoVaultAccount({
-          isShow: true,
-          des: 'labelRedeemDesMessage',
-          title: 'labelRedeemTitle',
-        })
+    if (
+      match?.params?.item == VaultKey.VAULT_DASHBOARD &&
+      vaultAccountInfoStatus === SagaStatus.UNSET
+    ) {
+      const { vaultAccountInfo } = store.getState().vaultLayer2
+      if (vaultAccountInfo?.accountStatus) {
+        if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
+          setShowNoVaultAccount({
+            isShow: false,
+            des: '',
+            title: '',
+          })
+        } else if (
+          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+        ) {
+          setShowNoVaultAccount({
+            isShow: true,
+            des: 'labelRedeemDesMessage',
+            title: 'labelRedeemTitle',
+          })
+        } else {
+          setShowNoVaultAccount({
+            isShow: true,
+            whichBtn: VaultAction.VaultJoin,
+            des: 'labelJoinDesMessage',
+            title: 'labelVaultJoinTitle',
+          })
+        }
       } else {
         setShowNoVaultAccount({
           isShow: true,
-          whichBtn: VaultAction.VaultJoin,
+          // whichBtn: VaultAction.VaultJoin,
           des: 'labelJoinDesMessage',
-          title: 'labelJoinTitle',
+          title: 'labelVaultCheckInProcessing',
         })
       }
     }
-  }, [vaultAccountInfo?.accountStatus, match?.params?.item])
+  }, [vaultAccountInfoStatus, match?.params?.item])
   const dialogBtn = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
