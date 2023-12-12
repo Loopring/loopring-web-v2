@@ -939,7 +939,6 @@ export const useVaultSwap = <
         let sellMaxL2AmtInfo: any = undefined
         let totalFeeRaw: any = undefined
         let totalQuote: any = undefined
-        let poolToVol: any = undefined
         const info = marketMap[market] as sdk.VaultMarket
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS
 
@@ -951,11 +950,7 @@ export const useVaultSwap = <
           )
           .times(100)
           .toString()
-        const {
-          // maxAmount,
-          minAmount,
-          l2Amount,
-        } = info
+        const { minAmount, l2Amount } = info
 
         const calcDexOutput = sdk.calcDex<sdk.VaultMarket>({
           info,
@@ -971,21 +966,7 @@ export const useVaultSwap = <
           slipBips: slippage,
         })
         const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
-        if (
-          amountVol &&
-          // maxAmount &&
-          l2Amount
-          // &&
-          // (sellBuyStr == market ? maxAmount.base !== '0' : maxAmount.quote !== '0')
-        ) {
-          // const amountVol = sellBuyStr == market ? maxAmount.base : maxAmount.quote
-          // if (amountVol) {
-          //   poolToVol =
-          //     sdk
-          //       .toBig(amountVol)
-          //       .div('1e' + sellToken.decimals)
-          //       .toString() ?? '0'
-          // }
+        if (amountVol && l2Amount) {
           const sellDeepStr =
             sdk
               .toBig(sellBuyStr == market ? depth.bids_amtTotal : depth.asks_volTotal)
@@ -993,11 +974,9 @@ export const useVaultSwap = <
               .times(0.99)
               .toString() ?? '0'
 
-          // sellMaxAmtInfo =  poolToVol ? BigNumber.min(sellDeepStr, poolToVol) :
-          sellMaxAmtInfo = sellDeepStr
-          totalQuote = poolToVol
+          totalQuote = sellDeepStr
             ? getValuePrecisionThousand(
-                BigNumber.min(sellDeepStr, poolToVol),
+                BigNumber.min(sellDeepStr),
                 sellToken.precision,
                 sellToken.precision,
                 undefined,
@@ -1006,9 +985,6 @@ export const useVaultSwap = <
               )
             : EmptyValueTag
           sellMaxAmtInfo = BigNumber.min(sellDeepStr, _tradeData.sell.balance ?? 0)
-          // totalQuote = (sellBuyStr == market ? maxAmount.base == '0' : maxAmount.quote == '0')
-          //   ? t('labelVaultInsufficient')
-          //   : EmptyValueTag
         }
         sellMinAmtInfo = BigNumber.max(
           sellToken.orderAmounts.dust,
@@ -1115,7 +1091,7 @@ export const useVaultSwap = <
                 )
               : undefined,
           totalQuota: totalQuote,
-          l1Pool: poolToVol,
+          // l1Pool: poolToVol,
           l2Pool: getValuePrecisionThousand(
             sdk
               .toBig((sellBuyStr == market ? l2Amount.quote : l2Amount.base) ?? 0)

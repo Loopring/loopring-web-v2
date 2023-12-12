@@ -1,5 +1,4 @@
 import {
-  confirmation,
   store,
   useSubmitBtn,
   useTokenMap,
@@ -85,7 +84,7 @@ export const useAccountInfo = () => {
       }
     } else {
       // setIsLoading(true)
-      return { tradeBtnStatus: TradeBtnStatus.LOADING, label: `labelVaultJoinInProcessing|` }
+      return { tradeBtnStatus: TradeBtnStatus.LOADING, label: `labelVaultCheckInProcessing|` }
     }
   }, [vaultAccountInfoStatus, activeInfo])
   const {
