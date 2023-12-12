@@ -62,7 +62,7 @@ export const useVaultRepay = <
       const orderAmounts = vaultToken.orderAmounts
       let minRepayVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
       let minRepayAmt = minRepayVol.div('1e' + vaultToken.decimals)
-      const tradeVaule = tradeData.tradeValue
+      const tradeValue = tradeData.tradeValue
 
       if (sdk.toBig(tradeData.borrowed).minus(tradeData.tradeValue).lt(minRepayAmt)) {
         minRepayVol = sdk
@@ -94,16 +94,16 @@ export const useVaultRepay = <
           .toString(),
         minRepayVol: minRepayVol.toString(),
         repayVol: sdk
-          .toBig(tradeVaule ?? 0)
+          .toBig(tradeValue ?? 0)
           .times('1e' + vaultToken.decimals)
           .toString(),
         repayAmtStr: getValuePrecisionThousand(
-          tradeVaule ?? 0,
+          tradeValue ?? 0,
           vaultToken?.vaultTokenAmounts?.qtyStepScale,
           vaultToken?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
-        repayAmt: tradeVaule ?? 0,
+        repayAmt: tradeValue ?? 0,
         coinInfoMap: vaultCoinMap,
       }
     }

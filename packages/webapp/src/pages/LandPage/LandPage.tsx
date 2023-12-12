@@ -19,7 +19,7 @@ import {
 } from '@loopring-web/common-resources'
 import { Trans, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { LoopringAPI, useNotify, WalletConnectL2Btn } from '@loopring-web/core'
+import { useNotify, WalletConnectL2Btn } from '@loopring-web/core'
 import { CoinIcons, useSettings } from '@loopring-web/component-lib'
 import { ContainerStyle, CardBox } from './style'
 import { useTheme } from '@emotion/react'
@@ -74,16 +74,6 @@ const ButtonStyled = styled(Button)`
 `
 
 export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => {
-  const [value, setValue] = React.useState<
-    | {
-        timestamp: string
-        tradeVolume: string
-        totalUserNum: string
-        tradeNum: string
-        layerTwoLockedVolume: string
-      }
-    | undefined
-  >()
   const history = useHistory()
   const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
@@ -111,24 +101,6 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
       ...notifyMap?.invest?.investAdvice[3],
     },
   ]
-
-  const result = React.useCallback(async () => {
-    if (LoopringAPI.exchangeAPI) {
-      const { timestamp, tradeVolume, totalUserNum, tradeNum, layerTwoLockedVolume } =
-        await LoopringAPI.exchangeAPI.getProtocolPortrait<any>()
-      setValue({
-        timestamp,
-        tradeVolume,
-        totalUserNum,
-        tradeNum,
-        layerTwoLockedVolume,
-      })
-    }
-  }, [])
-  React.useEffect(() => {
-    result()
-  }, [result, LoopringAPI.exchangeAPI])
-
   return (
     <>
       <ContainerStyle sx={{ zIndex: 10 }}>

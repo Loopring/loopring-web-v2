@@ -2138,7 +2138,7 @@ export default {
   labelVaultRefresh: 'Refresh',
   labelVaultAddBtn: 'Margin Call',
   labelVaultJoinBtn: 'Open Position',
-  labelVaultJoinInProcessing: 'Open Position',
+  labelVaultCheckInProcessing: 'Checking Vault status',
   labelVaultRecord: 'Records',
   labelEnterToken: 'Select Token',
   labelVaultExitBtn: 'Close Out',
