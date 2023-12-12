@@ -218,10 +218,13 @@ export const IWrap = styled(Box)<
     &.buyInput {
       padding-top: ${({ theme }) => 2 * theme.unit}px;
     }
+    :has(.btnInput-wrap.error) {
+      border-color: var(--color-error);
+    }
     .btnInput-wrap {
       &.error {
         border: initial !important;
-        border-bottom: 1px solid var(--color-error) !important;
+        //border-bottom: 1px solid var(--color-error) !important;
       }
       input:focus + label::before {
         box-shadow: initial;

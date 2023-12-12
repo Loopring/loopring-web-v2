@@ -336,6 +336,7 @@ export const useAssetAction = () => {
             sdk.LOCK_TYPE.BTRADE,
             sdk.LOCK_TYPE.L2STAKING,
             sdk.LOCK_TYPE.STOP_LIMIT,
+            sdk.LOCK_TYPE.VAULT_COLLATERAL,
           ].join(','),
         } as any,
         account.apiKey,
@@ -377,6 +378,7 @@ export const useAssetAction = () => {
                   link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
               }
+
               prev.push({
                 key: `label${record.lockTag}`,
                 value: getValuePrecisionThousand(
