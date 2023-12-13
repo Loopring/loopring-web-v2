@@ -83,26 +83,16 @@ const BoxStyle = styled(Box)`
       }
     }
   }
-  .content-main {
-    overflow: scroll;
-    align-self: stretch;
-    & > div {
+  & {
+    height: inherit;
+    .content-main {
+      overflow: scroll;
       align-self: stretch;
+      & > div {
+        align-self: stretch;
+      }
     }
   }
-  //&.vaultRepay,
-  //&.vaultBorrow,
-  //&.vaultTrade,
-  //&.vaultJoin,
-  //&.vaultExit {
-  //  .content-main {
-  //    overflow: scroll;
-  //    align-self: stretch;
-  //    & > div {
-  //      align-self: stretch;
-  //    }
-  //  }
-  //}
 `
 
 export const BasicPanel = withTranslation('common', { withRef: true })(
@@ -207,7 +197,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
       return <></>
     }, [providerName])
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
-    const { isMobile, defaultNetwork } = useSettings()
+    const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
     return (
