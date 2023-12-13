@@ -27,6 +27,7 @@ import {
   useSettings,
   WithdrawPanel,
   WithdrawProps,
+  EditContact,
 } from '../..'
 import {
   Account,
@@ -35,7 +36,6 @@ import {
   IBData,
   TRADE_TYPE,
   TradeNFT,
-  myLog,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
@@ -141,6 +141,7 @@ export const ModalPanel = <
   activeAccountProps,
   collectionAdvanceProps,
   sideStackRedeemProps,
+  contactAddProps,
   assetsData,
   account,
   baseURL,
@@ -148,6 +149,7 @@ export const ModalPanel = <
 }: {
   _width?: number | string
   _height?: number | string
+  contactAddProps: any
   transferProps: TransferProps<T, I>
   withdrawProps: WithdrawProps<T, I>
   baseURL: string
@@ -184,7 +186,8 @@ export const ModalPanel = <
     setShowCollectionAdvance,
     setShowSideStakingRedeem,
     setShowTargetRedpacketPop,
-    setShowRedPacket
+    setShowRedPacket,
+    setShowEditContact,
     // setShowDual,
   } = useOpenModals()
 
@@ -204,7 +207,8 @@ export const ModalPanel = <
     isShowAnotherNetwork,
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
-    isShowTargetRedpacketPop
+    isShowTargetRedpacketPop,
+    isShowEditContact,
   } = modals
   const theme = useTheme()
   return (
@@ -503,13 +507,13 @@ export const ModalPanel = <
         // maxWidth={'md'}
         open={isShowTargetRedpacketPop.isShow}
         onClose={() => {
-          setShowTargetRedpacketPop({isShow: false, info: {}})
+          setShowTargetRedpacketPop({ isShow: false, info: {} })
         }}
         content={
           <TargetRedpacketWrap
             exclusiveRedPackets={isShowTargetRedpacketPop.info.exclusiveRedPackets}
             onClickOpenExclusive={(redpacket) => {
-              setShowTargetRedpacketPop({isShow: false, info: {}})
+              setShowTargetRedpacketPop({ isShow: false, info: {} })
               setShowRedPacket({
                 isShow: true,
                 info: {
@@ -518,6 +522,20 @@ export const ModalPanel = <
                 step: RedPacketViewStep.OpenPanel,
               })
             }}
+          />
+        }
+      />
+      <Modal
+        // maxWidth={'md'}
+        open={isShowEditContact.isShow}
+        onClose={() => {
+          setShowEditContact({ isShow: false, info: {} })
+        }}
+        content={
+          <EditContact
+            {...{ ...contactAddProps }}
+            // contacts={isShowAccount.info?.contacts}
+            // setToast={setToast}
           />
         }
       />

@@ -540,7 +540,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     labelKey: 'labelLuckyRandomToken',
     desKey: 'labelRedPacketsSplitLuckyDetail',
     tags: [
-      'showInNormal', 
+      'showInNormal',
       'enableInNFTS',
       'enableInERC20',
       'defaultForERC20',
@@ -556,12 +556,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: 'labelLuckyRandomToken',
     desKey: 'labelRedPacketsSplitLuckyDetail',
-    tags: [
-      'defaultForBlindBox',
-      'enableInBlindBox',
-      'showInBlindBox',
-      'defaultForFromNFT'
-    ],
+    tags: ['defaultForBlindBox', 'enableInBlindBox', 'showInBlindBox', 'defaultForFromNFT'],
     value: {
       value: 4,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -571,12 +566,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: 'labelLuckyCommonToken',
     desKey: 'labelLuckyCommonTokenDes',
-    tags: [
-      'showInNormal', 
-      'showInBlindBox',
-      'enableInNFTS', 
-      'enableInERC20'
-    ],
+    tags: ['showInNormal', 'showInBlindBox', 'enableInNFTS', 'enableInERC20'],
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
@@ -586,12 +576,7 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
     labelKey: 'labelLuckyRelayToken',
     desKey: 'labelLuckyRelayTokenDes',
-    tags: [
-      'showInNormal', 
-      'showInBlindBox',
-      'enableInERC20', 
-      'disabledForExclusive'
-    ],
+    tags: ['showInNormal', 'showInBlindBox', 'enableInERC20', 'disabledForExclusive'],
     value: {
       value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,

@@ -2122,7 +2122,8 @@ export default {
   labelReadAll: 'Read all',
   labelLuckyTokenNormal: 'Normal',
   labelRedPacketSendAverageTitle: 'Average Red Packet',
-  labelBlindBoxHint: 'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
+  labelBlindBoxHint:
+    'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelNormalRedPacketTitle: 'Normal Red Packet',
   labelReceiveToken: 'Receive',
   labelETHStakingEnterPaymentToken: 'Amount',
@@ -2136,4 +2137,9 @@ export default {
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
   labelDualSettingConfirm: 'Confirm',
+  labelENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelSendToContact: 'Send to',
+  labelContactENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
 }

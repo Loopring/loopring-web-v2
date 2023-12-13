@@ -38,6 +38,7 @@ import {
   getValuePrecisionThousand,
   LEVERAGE_ETH_CONFIG,
   MapChainId,
+  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
@@ -234,24 +235,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
   const [ammRecordTotal, setAmmRecordTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
-  const { tokenMap } = useTokenMap()
-
-  const getTokenName = React.useCallback(
-    (tokenId?: number) => {
-      if (tokenMap) {
-        const keys = Object.keys(tokenMap)
-        const values = Object.values(tokenMap)
-        const index = values.findIndex((token) => token.tokenId === tokenId)
-        if (index > -1) {
-          return keys[index]
-        }
-        return ''
-      }
-      return ''
-    },
-    [tokenMap],
-  )
-
+  const { tokenMap, idIndex } = useTokenMap()
   const getAmmpoolList = React.useCallback(
     async ({ tokenSymbol, start, end, txTypes, offset, limit }: any) => {
       const ammPoolAddress = tokenMap[tokenSymbol]?.address
@@ -284,31 +268,31 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
             side: order.txType === sdk.AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
             amount: {
               from: {
-                key: getTokenName(order.poolTokens[0]?.tokenId),
+                key: idIndex[order.poolTokens[0]?.tokenId],
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[0]?.tokenId),
+                    idIndex[order.poolTokens[0]?.tokenId],
                     order.poolTokens[0]?.actualAmount,
                   ),
                 ),
               },
               to: {
-                key: getTokenName(order.poolTokens[1]?.tokenId),
+                key: idIndex[order.poolTokens[1]?.tokenId],
                 value: String(
                   volumeToCount(
-                    getTokenName(order.poolTokens[1]?.tokenId),
+                    idIndex[order.poolTokens[1]?.tokenId],
                     order.poolTokens[1]?.actualAmount,
                   ),
                 ),
               },
             },
             lpTokenAmount: String(
-              volumeToCount(getTokenName(order.lpToken?.tokenId), order.lpToken?.actualAmount),
+              volumeToCount(idIndex[order.lpToken?.tokenId], order.lpToken?.actualAmount),
             ),
             fee: {
-              key: getTokenName(order.poolTokens[1]?.tokenId),
+              key: idIndex[order.poolTokens[1]?.tokenId],
               value: volumeToCount(
-                getTokenName(order.poolTokens[1]?.tokenId),
+                idIndex[order.poolTokens[1]?.tokenId],
                 order.poolTokens[1]?.feeAmount,
               )?.toFixed(6),
             },
@@ -321,7 +305,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, getTokenName, setToastOpen, t, tokenMap],
+    [accountId, apiKey, idIndex, setToastOpen, t, tokenMap],
   )
 
   return {
@@ -378,7 +362,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, network],
   )
 
   return {
@@ -433,7 +417,7 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, setToastOpen, t],
+    [accountId, apiKey, setToastOpen, t, tokenMap],
   )
 
   return {
@@ -589,12 +573,12 @@ export const useOrderList = ({
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, marketMap, tokenMap, isStopLimit],
+    [accountId, apiKey, isStopLimit, setToastOpen, t, tokenMap, marketMap],
   )
 
   React.useEffect(() => {
     ;(async () => {
-      if (status === 'UNSET' && isOrderBookScroll === true) {
+      if (status === SagaStatus.UNSET && isOrderBookScroll) {
         getOrderList({
           limit: 50,
           status: ['processing'],
@@ -836,7 +820,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == DUAL_TYPE.DUAL_BASE
+                item.dualType === DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -1093,7 +1077,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         sellStr: item.fromAmount,
         buyFStr: item.toFAmount && item.toFAmount !== '0' ? item.toFAmount : undefined,
         buyStr: item.toAmount,
-        convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
+        convertStr: `1 ${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
         feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
         settledToAmount: item.settledToAmount,

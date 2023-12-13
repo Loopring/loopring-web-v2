@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Box, CardContent, Tooltip, Typography, Divider, Tab, Tabs } from '@mui/material'
 import styled from '@emotion/styled'
 import { MenuBtnStyled } from '../../styled'
 import { SendAssetProps } from './Interface'
@@ -14,25 +14,33 @@ import {
   L2l2Icon,
   MapChainId,
   OutputIcon,
+  AlertIcon,
+  SendAssetList,
+  hexToRGB,
+  Contact,
 } from '@loopring-web/common-resources'
-import { useSettings, useToggle } from '../../../stores'
+import { useOpenModals, useSettings, useToggle } from '../../../stores'
+
+import { Button, CoinIcon, TickCardStyleItem } from '../../basic-lib'
+import React from 'react'
+import { useTheme } from '@emotion/react'
 
 const BoxStyled = styled(Box)`` as typeof Box
 
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case 'IncomingIcon':
-      return <IncomingIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <IncomingIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'L2l2Icon':
-      return <L2l2Icon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <L2l2Icon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'L1l2Icon':
-      return <L1l2Icon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <L1l2Icon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'ExchangeAIcon':
-      return <ExchangeAIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <ExchangeAIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'OutputIcon':
-      return <OutputIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <OutputIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
     case 'AnotherIcon':
-      return <AnotherIcon color={'inherit'} fontSize={'inherit'} sx={{marginRight: 1}}/>
+      return <AnotherIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
   }
 }
 export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAssetProps) => {
@@ -53,7 +61,12 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
       width={'var(--modal-width)'}
     >
       <Box marginBottom={3} marginTop={-1} display={'flex'} alignItems={'center'}>
-        <Typography component={'h3'} variant={isMobile ? 'h4' : 'h3'} whiteSpace={'pre'} marginRight={1}>
+        <Typography
+          component={'h3'}
+          variant={isMobile ? 'h4' : 'h3'}
+          whiteSpace={'pre'}
+          marginRight={1}
+        >
           {t('labelSendAssetTitle', {
             symbol,
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -132,4 +145,234 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
   {
     /*</WalletConnectPanelStyled>*/
   }
+}
+
+const BoxStyle = styled(Box)`
+  & {
+    height: inherit;
+    .content-main {
+      overflow: scroll;
+      align-self: stretch;
+      & > div {
+        align-self: stretch;
+      }
+    }
+  }
+`
+
+export const SendFromContact = ({
+  contact,
+  // contacts,
+  isENSWrong,
+}: {
+  isENSWrong
+  contact: Contact
+}) => {
+  const [selected, setSelected] = React.useState(SendAssetList.SendAssetToOtherL1.key)
+  const { defaultNetwork } = useSettings()
+  const { setShowTransfer, setShowWithdraw, setShowEditContact } = useOpenModals()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const theme = useTheme()
+
+  const submit = React.useCallback(() => {
+    // : Contact, network: 'SendToOtherL1'| 'SendTOL2', onClose: () => void
+    if (isENSWrong) {
+      setShowEditContact({
+        isShow: true,
+        info: {
+          ...contact,
+        },
+      })
+    } else if (network === 'L1') {
+      setShowWithdraw({
+        isShow: true,
+        address: contact.contactAddress,
+        name: contact.contactName,
+        addressType: contact.addressType,
+        // symbol: 'ETH',
+        // info: {
+        //   onCloseCallBack: onClose,
+        // },
+      })
+    } else {
+      setShowTransfer({
+        isShow: true,
+        address: contact.contactAddress,
+        name: contact.contactName,
+        addressType: contact.addressType,
+        // symbol: 'ETH',
+        // info: {
+        //   onCloseCallBack: onClose,
+        // },
+      })
+    }
+  }, [])
+  const { t } = useTranslation()
+  return (
+    <>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'flex-start'}
+        alignSelf={'stretch'}
+        marginTop={-4}
+        justifyContent={'stretch'}
+      >
+        <Typography
+          display={'flex'}
+          flexDirection={'row'}
+          component={'header'}
+          alignItems={'center'}
+          height={'var(--toolbar-row-height)'}
+          paddingX={3}
+        >
+          <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
+            {t('labelContactsNetworkChoose', {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+            })}
+          </Typography>
+        </Typography>
+        <Divider style={{ marginTop: '-1px', width: '100%' }} />
+      </Box>
+      <BoxStyle
+        flex={1}
+        display={'flex'}
+        alignItems={'center'}
+        flexDirection={'column'}
+        paddingBottom={4}
+        width={'100%'}
+      >
+        <Box
+          flex={1}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
+          className={'content-main'}
+        >
+          <Box display={'flex'} flexDirection={'column'} justifyContent={'stretch'} marginTop={2}>
+            <Typography
+              variant={'body1'}
+              component={'span'}
+              color={'var(--color-text-secondary)'}
+              marginBottom={1}
+            >
+              {t('labelSendToContact')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {contact?.contactName}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {contact?.contactAddress}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {contact?.ens}
+            </Typography>
+            {isENSWrong && (
+              <Typography
+                marginTop={2}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                width={`calc(100% - ${9 * theme.unit}px)`}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.1)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelContactENSAlert')}
+              </Typography>
+            )}
+          </Box>
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            flex={1}
+          >
+            <Tabs
+              value={selected}
+              onChange={(_event, value) => setSelected(value)}
+              aria-label='l2-history-tabs'
+              variant='scrollable'
+              sx={{
+                display: 'flex',
+                flexWrap: 'nowrap',
+              }}
+            >
+              <Tab
+                value={SendAssetList.SendAssetToOtherL1.key}
+                key={SendAssetList.SendAssetToOtherL1.key}
+                label={
+                  <TickCardStyleItem
+                    selected={selected == SendAssetList.SendAssetToOtherL1.key}
+                    className={'btnCard'}
+                    sx={{
+                      width: '50%',
+                      // minWidth: isMobile ? '180px' : '280px',
+                    }}
+                  >
+                    <CardContent>
+                      <Typography component={'span'} display={'inline-flex'}>
+                        <CoinIcon size={32} symbol={'ETH'} />
+                      </Typography>
+                      <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                        {L1L2_NAME_DEFINED[network].l1ChainName +
+                          '/' +
+                          L1L2_NAME_DEFINED[network].l1Symbol}
+                      </Typography>
+                    </CardContent>
+                  </TickCardStyleItem>
+                }
+              />
+              <Tab
+                value={SendAssetList.SendAssetToL2.key}
+                key={SendAssetList.SendAssetToL2.key}
+                label={
+                  <TickCardStyleItem
+                    selected={selected == SendAssetList.SendAssetToL2.key}
+                    className={'btnCard'}
+                    sx={{
+                      width: '50%',
+                      // minWidth: isMobile ? '180px' : '280px',
+                    }}
+                  >
+                    <CardContent>
+                      <Typography component={'span'} display={'inline-flex'}>
+                        <CoinIcon size={32} symbol={'ETH'} />
+                      </Typography>
+                      <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                        {L1L2_NAME_DEFINED[network].loopringL2 +
+                          '/' +
+                          L1L2_NAME_DEFINED[network].l2Symbol}
+                      </Typography>
+                    </CardContent>
+                  </TickCardStyleItem>
+                }
+              />
+            </Tabs>
+          </Box>
+        </Box>
+        <Box
+          width={'100%'}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'center'}
+          justifyContent={'flex-end'}
+        >
+          <Box alignSelf={'stretch'} paddingX={5}>
+            <Button onClick={submit} fullWidth>
+              {t('labelContactsNext')}
+            </Button>
+          </Box>
+        </Box>
+      </BoxStyle>
+    </>
+  )
 }

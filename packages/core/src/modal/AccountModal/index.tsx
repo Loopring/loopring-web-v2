@@ -68,6 +68,7 @@ export const ModalAccountInfo = withTranslation('common')(
       currentModal,
       onBackReceive,
       onBackSend,
+      contactAddProps,
       // toastOpen,
       // closeToast,
     } = useAccountModalForUI({
@@ -132,23 +133,28 @@ export const ModalAccountInfo = withTranslation('common')(
               }
             },
           }}
+          contactAddProps={contactAddProps}
           withdrawProps={{
             ...withdrawProps,
-            onBack: hideDepositWithdrawBack ? undefined : () => {
-              if (withdrawProps.isFromContact) {
-                setShowWithdraw({ isShow: false })
-              } else {
-                setShowWithdraw({ isShow: false })
-                onBackSend()
-              }
-            },
+            onBack: hideDepositWithdrawBack
+              ? undefined
+              : () => {
+                  if (withdrawProps.isFromContact) {
+                    setShowWithdraw({ isShow: false })
+                  } else {
+                    setShowWithdraw({ isShow: false })
+                    onBackSend()
+                  }
+                },
           }}
           depositProps={{
             ...depositProps,
-            onBack: hideDepositWithdrawBack ? undefined : () => {
-              setShowDeposit({ isShow: false })
-              onBackReceive()
-            },
+            onBack: hideDepositWithdrawBack
+              ? undefined
+              : () => {
+                  setShowDeposit({ isShow: false })
+                  onBackReceive()
+                },
           }}
           collectionAdvanceProps={collectionAdvanceProps as any}
           nftTransferProps={
