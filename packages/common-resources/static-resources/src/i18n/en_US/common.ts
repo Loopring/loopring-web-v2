@@ -2122,8 +2122,7 @@ export default {
   labelReadAll: 'Read all',
   labelLuckyTokenNormal: 'Normal',
   labelRedPacketSendAverageTitle: 'Average Red Packet',
-  labelBlindBoxHint:
-    'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
+  labelBlindBoxHint: 'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelNormalRedPacketTitle: 'Normal Red Packet',
   labelReceiveToken: 'Receive',
   labelETHStakingEnterPaymentToken: 'Amount',
@@ -2132,4 +2131,9 @@ export default {
   labelEstAPR: 'Est.APR',
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
+  labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
+  labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
+  labelDualLongestSettlementFixed: 'Fixed',
+  labelDualLongestSettlementAutomatic: 'Automatic',
+  labelDualSettingConfirm: 'Confirm',
 }

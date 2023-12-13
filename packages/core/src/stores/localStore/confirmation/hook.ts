@@ -16,6 +16,11 @@ import {
   confirmedLeverageETHInvest,
   confirmDualDipInvest,
   confirmDualGainInvest,
+  setShowRETHStakePopup,
+  setShowWSTETHStakePopup,
+  setShowLRCStakePopup,
+  setShowLeverageETHPopup,
+  setShowAutoDefault,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
@@ -31,6 +36,11 @@ export const useConfirmation = (): {
   confirmedLeverageETHInvest: () => void
   confirmDualDipInvest: () => void
   confirmDualGainInvest: () => void
+  setShowRETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowWSTETHStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowLRCStakePopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowLeverageETHPopup: (data: { show: boolean; confirmationNeeded: boolean }) => void
+  setShowAutoDefault: (show: boolean) => void
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation,
@@ -76,5 +86,29 @@ export const useConfirmation = (): {
     confirmDualGainInvest: React.useCallback(() => {
       dispatch(confirmDualGainInvest(undefined))
     }, [dispatch]),
+    setShowRETHStakePopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowRETHStakePopup(data)),
+      [dispatch],
+    ),
+    setShowWSTETHStakePopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowWSTETHStakePopup(data)),
+      [dispatch],
+    ),
+    setShowLRCStakePopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowLRCStakePopup(data)),
+      [dispatch],
+    ),
+    setShowLeverageETHPopup: React.useCallback(
+      (data: { show: boolean; confirmationNeeded: boolean }) =>
+        dispatch(setShowLeverageETHPopup(data)),
+      [dispatch],
+    ),
+    setShowAutoDefault: React.useCallback(
+      (show: boolean) => dispatch(setShowAutoDefault({ show })),
+      [dispatch],
+    ),
   }
 }
