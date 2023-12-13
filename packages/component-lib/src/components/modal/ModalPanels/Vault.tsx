@@ -145,7 +145,7 @@ const TradeDes2 = (props: PanelProps) => {
             padding={1}
             display={'inline-flex'}
             width={`calc(100% - ${9 * theme.unit}px)`}
-            bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
             borderRadius={2}
             color={'var(--color-text-button)'}
           >
@@ -293,7 +293,7 @@ const JoinDes2 = (props: PanelProps) => {
             padding={1}
             display={'inline-flex'}
             width={`calc(100% - ${9 * theme.unit}px)`}
-            bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
             borderRadius={2}
             color={'var(--color-text-button)'}
           >
@@ -502,7 +502,7 @@ export const RedeemDes2 = (
           padding={1}
           display={'inline-flex'}
           width={`calc(100% - ${9 * theme.unit}px)`}
-          bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
           borderRadius={2}
           color={'var(--color-text-button)'}
         >
@@ -643,7 +643,7 @@ export const BorrowDes2 = (
             padding={1}
             display={'inline-flex'}
             width={`calc(100% - ${9 * theme.unit}px)`}
-            bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
             borderRadius={2}
             color={'var(--color-text-button)'}
           >
@@ -786,7 +786,7 @@ export const RepayDes2 = (
           padding={1}
           display={'inline-flex'}
           width={`calc(100% - ${9 * theme.unit}px)`}
-          bgcolor={hexToRGB(theme.colorBase.warning, 0.3)}
+          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
           borderRadius={2}
           color={'var(--color-text-button)'}
         >
