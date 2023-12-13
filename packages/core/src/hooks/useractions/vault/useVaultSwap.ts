@@ -495,6 +495,7 @@ export const useVaultSwap = <
           fastMode: false,
         }
         myLog('useVaultSwap: submitOrder request', request)
+        const priceToken = tradeCalcData.isReverse ? sellToken : buyToken
         let info: any = {
           sellToken: sellToken.symbol,
           buyToken: buyToken.symbol,
@@ -514,7 +515,14 @@ export const useVaultSwap = <
             false,
             { floor: false },
           ),
-          price: depth?.mid_price,
+          price: getValuePrecisionThousand(
+            depth?.mid_price,
+            priceToken.precision,
+            priceToken.precision,
+            priceToken.precision,
+            false,
+            { floor: false },
+          ),
           sellFStr: undefined,
           buyFStr: undefined,
           convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,

@@ -505,14 +505,14 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
   const walletAllowMap =
     (joinTokenMap &&
-      Reflect.ownKeys(joinTokenMap).reduce((prev, key) => {
+      Reflect.ownKeys(joinTokenMap).reduce((prev, key: string) => {
         const token = vaultTokenMap[key.toString()]
         const symbol = idIndex[token.tokenId]
         // as sdk.VaultToken
         return {
           ...prev,
           [symbol]: { ...coinMap[symbol], vaultToken: token.symbol, vaultId: token.vaultTokenId },
-        }
+        } as CoinMap<CoinInfo<I> & { vaultToken: string; vaultId: number }>
       }, {} as CoinMap<CoinInfo<I> & { vaultToken: string; vaultId: number }>)) ??
     ({} as CoinMap<CoinInfo<I> & { vaultToken: string; vaultId: number }>)
   // const calc =
@@ -557,7 +557,9 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     }
     walletInfo = {
       belong: initSymbol,
-      balance: (walletMap && walletMap[initSymbol.toString()]?.count) ?? 0,
+      balance: sdk
+        .toBig((walletMap && walletMap[initSymbol.toString()]?.count) ?? 0)
+        .toFixed(erc20Map[initSymbol]?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN),
       tradeValue: undefined,
     }
     vaultJoinData = {
@@ -610,15 +612,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const tokenSymbol = data.tradeData.belong
     let walletInfo: any = {
       ...walletMap[tokenSymbol],
-      balance: (walletMap && walletMap[tokenSymbol]?.count) ?? 0,
-      tradeValue: data.tradeData?.tradeValue
-        ? sdk
-            .toBig(data.tradeData?.tradeValue)
-            .toFixed(
-              erc20Map[data.tradeData.belong]?.vaultTokenAmounts?.qtyStepScale,
-              BigNumber.ROUND_DOWN,
-            )
-        : data.tradeData?.tradeValue,
+      balance: sdk
+        .toBig((walletMap && walletMap[tokenSymbol]?.count) ?? 0)
+        .toFixed(erc20Map[tokenSymbol]?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN),
+      tradeValue: data.tradeData?.tradeValue,
     }
     myLog('walletInfo', walletInfo)
     // debugger
