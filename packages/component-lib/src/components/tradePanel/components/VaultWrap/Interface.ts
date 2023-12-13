@@ -2,7 +2,7 @@ import { InputButtonProps } from '../../../basic-lib'
 import { CoinInfo, ForexMap, IBData, TradeBtnStatus } from '@loopring-web/common-resources'
 import { BasicACoinTradeViewProps, SwitchData } from '../Interface'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { TokenInfo } from '@loopring-web/loopring-sdk'
+import React from 'react'
 
 export type VaultJoinBaseProps<T, I, V> = {
   btnStatus?: keyof typeof TradeBtnStatus | undefined
@@ -12,6 +12,8 @@ export type VaultJoinBaseProps<T, I, V> = {
   vaultJoinData: V
   tradeData: T
   isActiveAccount: boolean
+  onRefreshData: () => void
+  refreshRef: React.Ref<any>
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type VaultJoinExtendProps<T, I, C = IBData<I>> = {
@@ -44,6 +46,8 @@ export type VaultBorrowBaseProps<T, I, B> = {
   vaultBorrowData: B
   propsExtends?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   tradeData: T
+  onRefreshData: () => void
+  refreshRef: React.Ref<any>
 }
 export type VaultBorrowWrapProps<T, I, B> = BasicACoinTradeViewProps<T, I> &
   VaultBorrowBaseProps<T, I, B>
