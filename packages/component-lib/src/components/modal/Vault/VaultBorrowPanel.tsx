@@ -5,9 +5,14 @@ import {
   TRADE_TYPE,
   VaultBorrowData,
 } from '@loopring-web/common-resources'
-import { SwitchPanel, SwitchPanelProps, VaultBorrowProps } from '@loopring-web/component-lib'
+import {
+  CountDownIcon,
+  SwitchPanel,
+  SwitchPanelProps,
+  VaultBorrowProps,
+} from '@loopring-web/component-lib'
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { TradeMenuList, useBasicTrade, VaultBorrowWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
 
@@ -17,6 +22,8 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
   coinMap = {},
   _width,
   type = TRADE_TYPE.TOKEN,
+  onRefreshData,
+  refreshRef,
   ...rest
 }: VaultBorrowProps<T, I, V>) => {
   const { t, i18n } = useTranslation()
@@ -38,6 +45,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
         key: 'trade',
         element: React.useMemo(
           () => (
+            // @ts-ignore
             <VaultBorrowWrap
               key={'trade'}
               {...{
@@ -53,7 +61,23 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
           ),
           [rest, switchData.tradeData, onChangeEvent, walletMap, coinMap],
         ),
-        toolBarItem: React.useMemo(() => <></>, []),
+        toolBarItem: React.useMemo(
+          () => (
+            <>
+              <Typography
+                display={'inline-block'}
+                marginLeft={2}
+                component={'span'}
+                visibility={'hidden'}
+                height={0}
+                width={0}
+              >
+                <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+              </Typography>
+            </>
+          ),
+          [],
+        ),
       },
       {
         key: 'tradeMenuList',

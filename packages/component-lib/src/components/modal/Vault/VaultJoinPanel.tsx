@@ -1,5 +1,10 @@
 import { IBData, SoursURL, TRADE_TYPE, VaultJoinData } from '@loopring-web/common-resources'
-import { SwitchPanel, SwitchPanelProps, VaultJoinProps } from '@loopring-web/component-lib'
+import {
+  CountDownIcon,
+  SwitchPanel,
+  SwitchPanelProps,
+  VaultJoinProps,
+} from '@loopring-web/component-lib'
 import React from 'react'
 import { Box, Typography, Divider } from '@mui/material'
 import { TradeMenuList, useBasicTrade, VaultJoinWrap } from '../../tradePanel/components'
@@ -11,6 +16,8 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
   isActiveAccount,
   walletMap = {},
   coinMap = {},
+  onRefreshData,
+  refreshRef,
   _width,
   ...rest
 }: VaultJoinProps<T, I, V>) => {
@@ -37,6 +44,7 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
         // onBack,
         element: React.useMemo(
           () => (
+            // @ts-ignore
             <VaultJoinWrap
               key={'trade'}
               {...{
@@ -70,6 +78,16 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
               <Box className={'toolbarTitle'}>
                 <Typography marginBottom={1.5} variant={'h5'} component={'span'} paddingX={3}>
                   {t(isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'))}
+                </Typography>
+                <Typography
+                  display={'inline-block'}
+                  marginLeft={2}
+                  component={'span'}
+                  visibility={'hidden'}
+                  height={0}
+                  width={0}
+                >
+                  <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
                 </Typography>
                 <Divider />
               </Box>

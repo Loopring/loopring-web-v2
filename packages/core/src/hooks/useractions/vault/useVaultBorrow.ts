@@ -3,6 +3,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
+  myLog,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
@@ -31,6 +32,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../../api_wrapper'
 import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
+import { walletLayer2Service } from '../../../services'
 
 export const useVaultBorrow = <
   T extends IBData<I> & { erc20Symbol: string; borrowed: string },
@@ -170,10 +172,36 @@ export const useVaultBorrow = <
   React.useEffect(() => {
     if (isShowVaultLoan.isShow) {
       initData()
-      getVaultMap()
     } else {
       resetVaultBorrow()
     }
+  }, [isShowVaultLoan.isShow])
+  const refreshRef = React.createRef()
+  const onRefreshData = React.useCallback(() => {
+    myLog('useVaultSwap: onRefreshData')
+    walletLayer2Service.sendUserUpdate()
+    getVaultMap()
+    updateVaultLayer2({})
+  }, [])
+
+  React.useEffect(() => {
+    let time: any = -1
+    if (isShowVaultLoan.isShow) {
+      onRefreshData()
+      initData()
+      time = setTimeout(() => {
+        if (refreshRef.current) {
+          // @ts-ignore
+          refreshRef.current.firstElementChild.click()
+        }
+      }, 500)
+    } else {
+      resetVaultBorrow()
+    }
+    return () => {
+      clearTimeout(time)
+    }
+    // @ts-ignore
   }, [isShowVaultLoan.isShow])
 
   const handlePanelEvent = React.useCallback(async (data: SwitchData<T>) => {
@@ -445,6 +473,8 @@ export const useVaultBorrow = <
     }, {}),
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,
+    onRefreshData,
+    refreshRef,
     tokenProps: {
       decimalsLimit:
         vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,

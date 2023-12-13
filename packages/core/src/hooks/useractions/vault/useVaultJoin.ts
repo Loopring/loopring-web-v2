@@ -49,7 +49,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
   const { exchangeInfo, chainId, baseURL } = useSystem()
   const { account } = useAccount()
-  const { updateVaultJoin, vaultJoinData } = useTradeVault()
+  const { updateVaultJoin, vaultJoinData, resetVaultJoin } = useTradeVault()
   const [isLoading, setIsLoading] = React.useState(false)
 
   const isActiveAccount =
@@ -600,13 +600,31 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   useWalletLayer2Socket({ walletLayer2Callback })
 
   React.useEffect(() => {
+    let time: any = -1
     if (isShow) {
+      onRefreshData()
       initData()
-      walletLayer2Service.sendUserUpdate()
-      getVaultMap()
-      updateVaultLayer2({})
+      time = setTimeout(() => {
+        if (refreshRef.current) {
+          // @ts-ignore
+          refreshRef.current.firstElementChild.click()
+        }
+      }, 500)
+    } else {
+      resetVaultJoin()
+    }
+    return () => {
+      clearTimeout(time)
     }
   }, [isShow])
+  const onRefreshData = React.useCallback(() => {
+    myLog('useVaultSwap: onRefreshData')
+    walletLayer2Service.sendUserUpdate()
+    getVaultMap()
+    updateVaultLayer2({})
+  }, [])
+  const refreshRef = React.createRef()
+
   const handlePanelEvent = async (data: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
     const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
     const tokenSymbol = data.tradeData.belong
@@ -649,6 +667,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     propsExtends: {},
     tradeData: vaultJoinData.tradeData as unknown as T,
     handlePanelEvent,
+    onRefreshData,
+    refreshRef,
     walletMap: vaultJoinData.walletMap as WalletMap<any>,
     vaultJoinData,
     coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
