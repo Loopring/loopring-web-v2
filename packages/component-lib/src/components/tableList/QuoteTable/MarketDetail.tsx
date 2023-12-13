@@ -140,19 +140,7 @@ export const MarketDetail = ({
           alignItems={'flex-end'}
         >
           <Typography component={'span'} display={'inline-flex'}>
-            {tokenInfo.price
-              ? PriceTag[CurrencyToTag[currency]] +
-                getValuePrecisionThousand(
-                  tokenInfo.price * (forexMap[currency] ?? 0),
-                  undefined,
-                  undefined,
-                  2,
-                  true,
-                  {
-                    isFait: true,
-                  },
-                )
-              : EmptyValueTag}
+            {PriceTag[CurrencyToTag[currency]] + tokenInfo.price * (forexMap[currency] ?? 0)}
           </Typography>
           <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
             {typeof tokenInfo.percentChange24H !== 'undefined'

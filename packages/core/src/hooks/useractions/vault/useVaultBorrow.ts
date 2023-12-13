@@ -186,14 +186,7 @@ export const useVaultBorrow = <
           let walletInfo: any = vaultAvaiable2Map[data?.tradeData?.belong as string]
           walletInfo = {
             ...walletInfo,
-            tradeValue: data.tradeData?.tradeValue
-              ? sdk
-                  .toBig(data.tradeData?.tradeValue)
-                  .toFixed(
-                    vaultTokenMap[data?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
-                    BigNumber.ROUND_DOWN,
-                  )
-              : data.tradeData?.tradeValue,
+            tradeValue: data.tradeData?.tradeValue,
             borrowedAmt: walletInfo.borrowed,
           }
           const supportdata = calcSupportData(walletInfo)

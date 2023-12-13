@@ -197,14 +197,7 @@ export const useVaultRepay = <
             walletInfo = {
               ...walletInfo,
               balance: walletInfo ? walletInfo.count : 0,
-              tradeValue: data.tradeData?.tradeValue
-                ? sdk
-                    .toBig(data.tradeData?.tradeValue)
-                    .toFixed(
-                      vaultTokenMap[data?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
-                      BigNumber.ROUND_DOWN,
-                    )
-                : data.tradeData?.tradeValue,
+              tradeValue: data.tradeData?.tradeValue,
               max: BigNumber.min(walletInfo.borrowed, walletInfo.count),
             }
             setTradeData(walletInfo)
