@@ -143,7 +143,7 @@ export const VaultBorrowWrap = <
             {t('labelVaultBorrowed')}
           </Typography>
           <Typography component={'p'} variant='body2' color={'textPrimary'}>
-            {vaultBorrowData.borrowedAmt
+            {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt
               ? vaultBorrowData.borrowedStr + ' ' + vaultBorrowData?.belong?.toString()
               : EmptyValueTag}
           </Typography>

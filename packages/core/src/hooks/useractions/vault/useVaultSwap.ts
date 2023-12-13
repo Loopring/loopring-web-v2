@@ -1079,17 +1079,17 @@ export const useVaultSwap = <
             false,
             { isAbbreviate: true },
           ),
-          sellMaxAmtStr:
-            sellMaxAmtInfo !== undefined
-              ? getValuePrecisionThousand(
-                  sdk.toBig(sellMaxAmtInfo ?? 0),
-                  sellToken.precision,
-                  sellToken.precision,
-                  undefined,
-                  false,
-                  { isAbbreviate: true },
-                )
-              : undefined,
+          sellMaxAmtStr: undefined,
+          // sellMaxAmtInfo !== undefined
+          //   ? getValuePrecisionThousand(
+          //       sdk.toBig(sellMaxAmtInfo ?? 0),
+          //       sellToken.precision,
+          //       sellToken.precision,
+          //       undefined,
+          //       false,
+          //       { isAbbreviate: true },
+          //     )
+          //   : undefined,
           totalQuota: totalQuote,
           // l1Pool: poolToVol,
           l2Pool: getValuePrecisionThousand(

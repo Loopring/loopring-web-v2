@@ -44,7 +44,7 @@ import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 
 export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { t } = useTranslation()
-  const { tokenMap: vaultTokenMap, joinTokenMap, erc20Map } = useVaultMap()
+  const { tokenMap: vaultTokenMap, joinTokenMap, erc20Map, getVaultMap } = useVaultMap()
   const { tokenMap, coinMap, idIndex } = useTokenMap()
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
   const { exchangeInfo, chainId, baseURL } = useSystem()
@@ -601,6 +601,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     if (isShow) {
       initData()
       walletLayer2Service.sendUserUpdate()
+      getVaultMap()
       updateVaultLayer2({})
     }
   }, [isShow])
