@@ -2249,7 +2249,7 @@ export default {
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelVaultAccountWait: 'Vault account in loading...',
-  labelVaultInRedeemWaiting: 'Vault account is in process of closeout...',
+  labelVaultInRedeemWaiting: 'Vault account is in process of close out...',
   labelVaultJoinSymbolNotSame: 'Only {{symbol}} allow Margin Call',
   labelVaultJoinInProgress: 'Processing...',
   labelVaultJoinSuccess: 'Open Position Successfully',
@@ -2270,10 +2270,10 @@ export default {
   labelStats: 'Stats',
   label24PriceChange: '24h Price Change',
   label7dPriceChange: '7d Price Change',
-  labelVaultREDEEMPendingBtn: 'Closeout in Processing',
-  labelVaultlnredeemWaiting: 'Closeout in Processing',
+  labelVaultREDEEMPendingBtn: 'Close out in Processing',
+  labelVaultlnredeemWaiting: 'Close out in Processing',
   labelJoinTitle: 'Open Position',
-  labelRedeemTitle: 'Closeout',
+  labelRedeemTitle: 'Close out',
   labelRedeemDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelJoinDesMessage:
@@ -2308,5 +2308,5 @@ export default {
   labelVaultTotalDebtTooltips:
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis. The Funding Rate is fixed at 0.01%.',
   labelVaultMarginLevelTooltips:
-    'Margin Level determine the assurance of your collateral. To avoid liquidations you can supply more collateral or repay borrow positions.',
+    'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
 }

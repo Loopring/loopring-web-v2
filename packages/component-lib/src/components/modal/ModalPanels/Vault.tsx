@@ -49,7 +49,7 @@ const TradeDes2 = (props: PanelProps) => {
             {props.t('labelVaultType')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultTypeOpenPosition')}
+            {props.t('labelVaultSwap')}
           </Typography>
         </Typography>
         <Typography
