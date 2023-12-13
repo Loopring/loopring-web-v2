@@ -77,7 +77,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
   const { account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
-  const { status: tokenPriceStatus } = useTokenPrices()
 
   const {
     setShowNoVaultAccount,
@@ -359,9 +358,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         idIndex: erc20IdIndex,
       },
       // tokenPrices: { tokenPrices },
-      tokenPrices: { tokenPrices },
+      // tokenPrices: { tokenPrices },
       invest: {
-        vaultMap: { tokenMap, idIndex: vaultIdIndex },
+        vaultMap: { tokenMap, idIndex: vaultIdIndex, tokenPrices },
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
@@ -393,7 +392,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             tokenInfo.erc20Symbol,
             tokenInfo.detail?.detail?.total ?? 0,
           )
-          const price = tokenPrices?.[tokenInfo.erc20Symbol] || 0
+          const price = tokenPrices?.[tokenInfo.symbol] || 0
           if (totalAmount && price) {
             tokenValueDollar = totalAmount?.times(price)
           }
@@ -458,7 +457,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       showNoVaultAccount === true &&
       vaultAccountInfoStatus === SagaStatus.UNSET &&
       vaultAccountInfo?.accountStatus &&
-      tokenPriceStatus === SagaStatus.UNSET &&
       walletL2Status === SagaStatus.UNSET &&
       whichBtn &&
       vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
@@ -472,7 +470,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     vaultAccountInfo?.accountStatus,
     activeInfo,
     assetsRawData,
-    tokenPriceStatus,
+    // tokenPriceStatus,
   ])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()

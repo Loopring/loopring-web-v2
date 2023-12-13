@@ -12,7 +12,6 @@ import {
 } from '@loopring-web/common-resources'
 import {
   AccountStep,
-  coinMap,
   SwitchData,
   useOpenModals,
   VaultBorrowProps,

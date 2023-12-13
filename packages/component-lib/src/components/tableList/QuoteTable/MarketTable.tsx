@@ -209,7 +209,7 @@ export const MarketTable = withTranslation('tables')(
                     undefined,
                     undefined,
                     2,
-                    true,
+                    false,
                     {
                       isFait: true,
                     },

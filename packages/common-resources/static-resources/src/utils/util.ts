@@ -185,7 +185,9 @@ export const getValuePrecisionThousand = (
       if (floor === false) {
         result = getFloatCeil(result, 6)
       }
-      return toBig(result).toNumber().toLocaleString('en-US', { minimumFractionDigits: 6 })
+      return toBig(result)
+        .toNumber()
+        .toLocaleString('en-US', { minimumFractionDigits: notRemoveEndZero ? 6 : undefined })
     }
   }
   if (isTrade === true) {

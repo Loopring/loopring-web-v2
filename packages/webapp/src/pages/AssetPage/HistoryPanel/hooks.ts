@@ -1338,7 +1338,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${erc20Symbol}  ${DirectionTag}  ${vSymbol}`
+                    } (${erc20Symbol}  ${DirectionTag}  ${vSymbol})`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
