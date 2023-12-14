@@ -74,7 +74,6 @@ export const VaultExitPanel = ({
         width={'calc(var(--modal-width) - 48px)'}
       >
         <Typography marginBottom={2}>
-          {/* eslint-disable-next-line react/jsx-no-undef */}
           <Trans
             i18nKey={'labelVaultExitDes'}
             tOptions={{

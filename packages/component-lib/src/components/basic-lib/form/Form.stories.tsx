@@ -240,9 +240,6 @@ const InputSelectWrap = (rest: any) => {
   const backElement = React.useMemo(
     () => (
       <>
-        {/*<Button variant={'text'} size={'medium'} color={'primary'}*/}
-        {/*       */}
-        {/*></Button>*/}
         <Typography component={'span'} fontSize={'body1'} color={'textPrimary'}>
           <Link
             color={'inherit'}
@@ -494,7 +491,6 @@ const Template: Story<any> = withTranslation()((props: any) => {
         </Grid>
 
         <Grid item xs={3} marginTop={2} alignSelf={'stretch'} position={'relative'}>
-          {/* <SearchWrap/> */}
           <InputSearch value={searchValue} fullWidth onChange={handleSearchChange} />
           {searchValue !== '' ? (
             <IconClearStyled

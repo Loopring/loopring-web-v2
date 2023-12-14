@@ -34,7 +34,7 @@ const WrapStyle = styled(Box)<
   ${({ _width, isMobile }) =>
     isMobile
       ? `width:100%;height:auto;`
-      : `       
+      : `
       width: ${
         typeof _width === 'string'
           ? _width
@@ -46,15 +46,16 @@ const WrapStyle = styled(Box)<
   ${({ theme }) => boxLiner({ theme })}
   ${({ theme }) => toolBarPanel({ theme })}
   border-radius: ${({ theme }) => theme.unit}px;
+
   .trade-panel .menu-panel > div {
     padding: 8px 0px;
   }
+
   .trade-panel .coinInput-wrap {
     background: var(--field-opacity);
   }
 
   .MuiToolbar-root {
-    //padding-left:0;
     justify-content: space-between;
     padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px;
   }
@@ -64,6 +65,7 @@ const WrapStyle = styled(Box)<
       .MuiListItemText-root {
         align-items: center;
       }
+
       width: auto;
       padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit / 2}px
         ${({ theme }) => theme.unit}px ${({ theme }) => 2 * theme.unit}px;

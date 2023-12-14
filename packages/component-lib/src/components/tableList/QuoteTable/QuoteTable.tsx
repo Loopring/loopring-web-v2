@@ -243,7 +243,6 @@ export const QuoteTable = withTranslation('tables')(
                     color={'var(--color-text-third)'}
                   >
                     {'/'}
-                    {/*{isMobile ? "\n" : "/"}*/}
                     {faitPrice}
                   </Typography>
                 </Typography>

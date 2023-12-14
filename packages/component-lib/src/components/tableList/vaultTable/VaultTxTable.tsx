@@ -193,12 +193,9 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                {/*<Tooltip title={t(`labelVault${row.type}Des`).toString()}>*/}
                 <Typography component={'span'} display={'flex'}>
-                  {/*<Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />*/}
                   {t(`labelVault${row.type}`)}
                 </Typography>
-                {/*</Tooltip>*/}
               </Box>
             )
           },

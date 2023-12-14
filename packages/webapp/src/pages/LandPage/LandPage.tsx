@@ -34,7 +34,6 @@ const BgStyle = styled(Box)`
   height: 1200px;
   overflow: hidden;
   pointer-events: none;
-  //position:relative;
   background: url('./bgpro-${({ theme }) => theme.mode}.webp') no-repeat;
   background-position-y: 0;
   background-position-x: right;

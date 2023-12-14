@@ -136,7 +136,6 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
       toolBarItem: React.useMemo(
         () => (
           <>
-            {/* {(onBack && !isFromContact ) ? ( */}
             {onBack ? (
               <ModalBackButton
                 marginTop={0}

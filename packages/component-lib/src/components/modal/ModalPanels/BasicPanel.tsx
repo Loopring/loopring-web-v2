@@ -322,8 +322,6 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
                           value={`${JSON.stringify(error)}}`}
                         />
                       )}
-
-                      {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
                     </Typography>
                   ) : typeof describe1 === 'string' ? (
                     <Typography

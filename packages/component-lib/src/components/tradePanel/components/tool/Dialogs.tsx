@@ -80,7 +80,6 @@ const RiskStyle = styled(Dialog)`
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        // padding: ${({ theme }) => 1 * theme.unit}px ${({ theme }) => 2 * theme.unit}px;
       }
     }
   }

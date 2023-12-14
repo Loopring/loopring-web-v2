@@ -25,7 +25,6 @@ const BgStyle = styled(Box)`
   overflow: hidden;
   pointer-events: none;
   width: 100%;
-  //position:relative;
   background: url('./bgio.webp') no-repeat;
   background-position-y: 0;
   background-position-x: -360px;
@@ -45,8 +44,6 @@ const BgStyle = styled(Box)`
     height: 528px;
     background: url('./bg-2.webp') center center no-repeat;
     background-size: 528px 528px;
-
-    //background-size: 50% 50%;
   }
 `
 

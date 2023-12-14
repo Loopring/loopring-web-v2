@@ -90,9 +90,6 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
 
   &.header {
     .MuiSelect-outlined {
-      //.MuiAvatar-root {
-      //  display: none;
-      //}
     }
 
     &.mobile {
@@ -451,10 +448,6 @@ const ViewAccountTemplateStyle = styled(Box)`
       line-height: 1.2em;
       font-weight: 500;
     }
-
-    //> .MuiButtonBase-root {
-    //
-    //}
   }
 `
 export const ViewAccountTemplate = React.memo(

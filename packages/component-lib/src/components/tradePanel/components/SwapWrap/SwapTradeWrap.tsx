@@ -447,9 +447,6 @@ export const SwapTradeWrap = <
                 {fee}
               </Typography>
             </Grid>
-
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
-
             <Grid
               container
               justifyContent={'space-between'}
@@ -562,8 +559,6 @@ export const SwapTradeWrap = <
                 {priceImpact}
               </Typography>
             </Grid>
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
-
             <Grid
               container
               justifyContent={'space-between'}
@@ -618,51 +613,6 @@ export const SwapTradeWrap = <
               </Typography>
             </Grid>
           </Grid>
-          {/*{(tradeCalcData as any).isNotMatchMarketPrice && (*/}
-          {/*  <Grid item marginBottom={1}>*/}
-          {/*    <MuiFormControlLabel*/}
-          {/*      sx={{ alignItems: 'flex-start' }}*/}
-          {/*      control={*/}
-          {/*        <Checkbox*/}
-          {/*          checked={(tradeCalcData as any)?.isChecked ? true : false}*/}
-          {/*          onChange={() => {*/}
-          {/*            onChangeEvent(0, {*/}
-          {/*              tradeData: {*/}
-          {/*                ...tradeData,*/}
-          {/*                isChecked: !(tradeCalcData as any)?.isChecked,*/}
-          {/*              } as SwapTradeData<T>,*/}
-          {/*              type: (tradeCalcData as any)?.lastStepAt ?? 'sell',*/}
-          {/*              to: 'button',*/}
-          {/*            })*/}
-          {/*          }}*/}
-          {/*          checkedIcon={<CheckedIcon />}*/}
-          {/*          icon={<CheckBoxIcon />}*/}
-          {/*          color='default'*/}
-          {/*        />*/}
-          {/*      }*/}
-          {/*      label={*/}
-          {/*        <Typography variant={'body2'}>*/}
-          {/*          <Trans*/}
-          {/*            i18nKey={'labelExpectSettlementPrice'}*/}
-          {/*            interpolation={{ escapeValue: false }}*/}
-          {/*            tOptions={{*/}
-          {/*              symbolSell: tradeData.sell?.belong,*/}
-          {/*              symbolBuy: tradeData.buy?.belong,*/}
-          {/*              stob: tradeCalcData.StoB,*/}
-          {/*              marketPrice: (tradeCalcData as any).marketPrice,*/}
-          {/*              marketRatePrice: (tradeCalcData as any).marketRatePrice,*/}
-          {/*            }}*/}
-          {/*          >*/}
-          {/*            The expected settlement price from this order is symbol = value, while the*/}
-          {/*            current market price from a trusted oracle is symbol= marketPrice. There is*/}
-          {/*            marketRatePrice% variance observed. Please acknowledge the risk if you still*/}
-          {/*            want to continue.*/}
-          {/*          </Trans>*/}
-          {/*        </Typography>*/}
-          {/*      }*/}
-          {/*    />*/}
-          {/*  </Grid>*/}
-          {/*)}*/}
         </>
       )}
 

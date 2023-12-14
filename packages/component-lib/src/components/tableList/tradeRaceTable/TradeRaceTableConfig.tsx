@@ -18,7 +18,6 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
 
     .rdgCellCenter {
       height: 100%;
-      // display: flex;
       justify-content: center;
       align-items: center;
     }

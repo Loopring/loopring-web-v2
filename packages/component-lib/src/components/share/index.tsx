@@ -59,9 +59,6 @@ export const Share = ({ social, loading, size, direction = 'row' }: ShareProps) 
         </Box>
       ) : (
         <Box className={'shareContainer'}>
-          {/*<div className={'shareLabel'}>*/}
-          {/*  <FormattedMessage id='store/store-components.share.label' />*/}
-          {/*</div>*/}
           <Box className={'shareButtons'} display={'flex'} flexDirection={direction}>
             {Object.keys(social).map(
               (socialNetwork, index) =>
@@ -252,9 +249,6 @@ export const ShareModal = withTranslation('common')(
               >
                 <DownloadIcon htmlColor={'var(--color-text-button)'} />
               </IconButton>
-              {/*<Button*/}
-              {/*  variant={'contained'}*/}
-              {/*  size={'small'} onClick={onClick}>{t('labelDownloadShared')}</Button>*/}
             </Box>
           </Box>
         </BoxStyle>

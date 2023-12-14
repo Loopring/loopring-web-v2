@@ -103,12 +103,6 @@ export const ClaimWithdrawPanel = withTranslation(['common', 'error'], {
             </Typography>
           )}
         </Grid>
-        {/*<Grid item xs={12}>*/}
-        {/*  <Typography color={"var(--color-text-third)"} variant={"body1"}>*/}
-        {/*    {t("labelL2toL2TokenAmount")}*/}
-        {/*  </Typography>*/}
-        {/*</Grid>*/}
-
         <Grid item xs={12}>
           <Typography color={'var(--color-text-third)'} variant={'body1'}>
             {t('labelRedPacketFrom')}

@@ -55,9 +55,5 @@ export const useStakingAprTrend = () => {
     isLoading,
     trends,
     defiInfo,
-    // confirmShowNoBalance,
-    // setConfirmShowNoBalance,
-    // serverUpdate,
-    // setServerUpdate,
   }
 }

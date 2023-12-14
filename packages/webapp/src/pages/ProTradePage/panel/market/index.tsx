@@ -357,9 +357,6 @@ export const MarketView = withTranslation('common')(
               />
             </Tabs>
           )}
-          {/*<Tab key={TabMarketIndex.Orderbook} value={TabMarketIndex.Orderbook} label={t(`labelPro${TabMarketIndex.Orderbook}`)}/>*/}
-          {/*<Tab key={TabMarketIndex.Trades} value={TabMarketIndex.Trades} label={t(`labelPro${TabMarketIndex.Trades}`)}/>*/}
-          {/*{React.useMemo(()=>store.getState()._router_pageTradePro.pageTradePro.depthLevel,[pageTradePro])}*/}
         </Box>
         <Divider style={{ marginTop: '-1px' }} />
         {tabIndex === TabMarketIndex.Orderbook ? (
