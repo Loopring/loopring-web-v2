@@ -10,7 +10,7 @@ import {
   setHideSmallBalances,
   setIsDevToggle,
   setIsMobile,
-  // setIsTaikoTest,
+  setDualDefault,
   setLanguage,
   setLayouts,
   setPlatform,
@@ -54,6 +54,7 @@ export function useSettings(): SettingsState & {
   setSwapSecondConfirmation(value: boolean): void
   setIsDevToggle(value: boolean): void
   setReferralCode(value: string): void
+  setDualDefault(vaule: { auto: boolean; day: number | 'auto' }): void
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings)
   const dispatch = useDispatch()
@@ -121,6 +122,10 @@ export function useSettings(): SettingsState & {
     setIsMobile: React.useCallback((value: boolean) => dispatch(setIsMobile(value)), [dispatch]),
     setSwapSecondConfirmation: React.useCallback(
       (value: boolean) => dispatch(setSwapSecondConfirmation(value)),
+      [dispatch],
+    ),
+    setDualDefault: React.useCallback(
+      (value: { auto: boolean; day: number | 'auto' }) => dispatch(setDualDefault(value)),
       [dispatch],
     ),
   }

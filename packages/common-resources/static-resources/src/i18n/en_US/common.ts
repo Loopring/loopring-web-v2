@@ -2125,6 +2125,11 @@ export default {
   labelBlindBoxHint:
     'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelNormalRedPacketTitle: 'Normal Red Packet',
+  labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
+  labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
+  labelDualLongestSettlementFixed: 'Fixed',
+  labelDualLongestSettlementAutomatic: 'Automatic',
+  labelDualSettingConfirm: 'Confirm',
   labelReceiveToken: 'Receive',
   labelETHStakingEnterPaymentToken: 'Amount',
   labelDefiDuration: 'Duration',

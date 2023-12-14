@@ -268,15 +268,15 @@ const ButtonStyled = styled(Button)`
 
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { marketArray } = useDefiMap()
-
   const {
-    confirmation: { confirmationNeeded, showRETHStakePopup, showWSTETHStakePopup },
+    confirmation: { confirmationNeeded },
+    showRETHStakePopup,
+    showWSTETHStakePopup,
     setShowRETHStakePopup,
     setShowWSTETHStakePopup,
     confirmedRETHDefiInvest: confirmedRETHDefiInvestFun,
     confirmedWSETHDefiInvest: confirmedWSETHDefiInvestFun,
   } = confirmation.useConfirmation()
-  // const []
   const _confirmedDefiInvest = {
     isShow: showRETHStakePopup || showWSTETHStakePopup,
     type: showRETHStakePopup ? 'RETH' : showWSTETHStakePopup ? 'WSETH' : undefined,

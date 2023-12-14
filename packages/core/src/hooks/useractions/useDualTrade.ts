@@ -4,6 +4,7 @@ import {
   DualChgData,
   DualWrapProps,
   useOpenModals,
+  useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
 import {
@@ -47,6 +48,8 @@ export const useDualTrade = <
   R extends DualViewInfo,
 >() => {
   const refreshRef = React.useRef()
+  const { dualAuto } = useSettings()
+
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
   const { setShowAccount } = useOpenModals()
@@ -119,19 +122,29 @@ export const useDualTrade = <
         dualMarketMap[`DUAL-${buySymbol}-${sellSymbol}`]
 
       setSellBuySymbol([baseSymbol, quoteSymbol])
-      let coinSell: T =
-        tradeData && tradeData.belong === baseSymbol
-          ? tradeData
-          : _coinSell?.belong === baseSymbol
-          ? ({
-              ..._coinSell,
-            } as unknown as T)
-          : ({
-              balance: _updateInfo?.coinSell?.balance ?? 0,
-              tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
-              belong: baseSymbol,
-              isRenew: _updateInfo?.coinSell?.isRenew ?? dual_reinvest?.enable ? true : false,
-            } as unknown as T)
+      let coinSell = tradeData
+      if (tradeData && tradeData.belong === baseSymbol) {
+        // coinSell= tradeData;
+      } else if (_coinSell?.belong === baseSymbol) {
+        coinSell = {
+          ..._coinSell,
+        } as unknown as T
+      } else {
+        const isRenew =
+          _updateInfo?.coinSell?.isRenew ?? (dual_reinvest?.enable && dualAuto.auto) ? true : false
+        let calc = (_updateInfo.dualViewInfo.expireTime - Date.now()) / 86400000
+        calc = calc < 1 ? Math.ceil(calc) : Math.floor(calc)
+        const renewDuration = Number(
+          tradeDual?.coinSell?.renewDuration ?? (dualAuto.day === 'auto' ? calc : dualAuto.day),
+        )
+        coinSell = {
+          balance: _updateInfo?.coinSell?.balance ?? 0,
+          tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
+          belong: baseSymbol,
+          isRenew,
+          renewDuration,
+        } as unknown as T
+      }
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
@@ -173,6 +186,7 @@ export const useDualTrade = <
       tokenMap,
       tradeDual,
       updateTradeDual,
+      dualAuto,
     ],
   )
 

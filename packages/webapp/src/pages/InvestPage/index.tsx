@@ -1,9 +1,16 @@
 import { useRouteMatch } from 'react-router-dom'
 
-import { Box, Typography } from '@mui/material'
+import { Box, Modal, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
-import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
+import {
+  ComingSoonPanel,
+  ConfirmInvestLRCStakeRisk,
+  ModalCloseButton,
+  SwitchPanelStyled,
+  useToggle,
+  ModifySetting,
+} from '@loopring-web/component-lib'
 import React from 'react'
 import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
 import { MyLiquidity } from './MyLiquidityPanel'
@@ -90,7 +97,12 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
   const {
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
     setShowLRCStakePopup: setConfirmedLRCStakeInvestInvest,
-    confirmation: { showLRCStakePopup: confirmedLRCStakeInvest, confirmationNeeded },
+    setShowAutoDefault,
+    confirmation: {
+      showLRCStakePopup: confirmedLRCStakeInvest,
+      confirmationNeeded,
+      showAutoDefault,
+    },
   } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
@@ -160,7 +172,19 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-
+      <Modal
+        open={showAutoDefault}
+        onClose={() => setShowAutoDefault(false)}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <SwitchPanelStyled width={'var(--modal-width)'}>
+          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
+            <ModalCloseButton onClose={() => setShowAutoDefault(false)} t={t} />
+            <ModifySetting onClose={() => setShowAutoDefault(false)} />
+          </Box>
+        </SwitchPanelStyled>
+      </Modal>
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}

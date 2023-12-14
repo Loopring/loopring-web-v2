@@ -1,5 +1,5 @@
-import { useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
-import { DEFI_ADVICE_MAP, MarketType, myLog } from '@loopring-web/common-resources'
+import { useDefiMap, useDefiTrade, confirmation } from '@loopring-web/core'
+import { DEFI_ADVICE_MAP, MarketType } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
   DeFiWrap,
