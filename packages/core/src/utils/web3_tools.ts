@@ -6,7 +6,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { utils } from 'ethers'
+import { ethers, utils } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError, myLog, isAddress } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../api_wrapper'
@@ -143,6 +143,7 @@ export interface AddrCheckResult {
   realAddr: string
   addressErr: AddressError
   isContract?: boolean
+  ens: string
 }
 
 export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResult> {
@@ -153,7 +154,9 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
   let realAddr = ''
 
   let addressErr: AddressError = AddressError.NoError
-
+  let isContract: undefined | boolean,
+    response: any,
+    ens: any = ''
   if (address) {
     try {
       if (/^\d{5,8}$/g.test(address) && Number(address) > 10000 && LoopringAPI.exchangeAPI) {
@@ -170,63 +173,44 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
       }
       addressErr = AddressError.NoError
     } catch (reason: any) {
-      const result = await new Promise<AddrCheckResult>((resolve) => {
-        try {
-          if (web3) {
-            web3.eth.ens
-              .getAddress(address)
-              .then((addressResovled: string) => {
-                myLog('addressResovled:', addressResovled)
-                resolve({
-                  realAddr: addressResovled,
-                  addressErr: AddressError.NoError,
-                })
-              })
-              .catch((e: any) => {
-                myLog('ens catch', e)
-                resolve({
-                  realAddr: '',
-                  addressErr: AddressError.InvalidAddr,
-                })
-              })
-          } else {
-            resolve({
-              realAddr: '',
-              addressErr: AddressError.ENSResolveFailed,
-            })
-          }
-        } catch (reason2) {
-          resolve({
-            realAddr: '',
-            addressErr: AddressError.InvalidAddr,
-          })
-        }
-      })
-      realAddr = result.realAddr
-      addressErr = result.addressErr
+      if (web3) {
+        addressErr = AddressError.NoError
+        realAddr = await web3.eth?.ens?.getAddress(address).catch((_e: any) => {
+          addressErr = AddressError.InvalidAddr
+          return ''
+        })
+      } else {
+        realAddr = ''
+        addressErr = AddressError.ENSResolveFailed
+      }
+    }
+    if (realAddr && web3) {
+      //#ts-ignore
+      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
+      //#ts-ignore
+      // ens =
+      ;[isContract, response, ens] = await Promise.all([
+        sdk.isContract(web3, realAddr),
+        LoopringAPI.exchangeAPI.getAccount({
+          owner: realAddr,
+        }),
+        //#ts-ignore
+        provider.lookupAddress(realAddr),
+      ])
+      if (
+        isContract &&
+        ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
+      ) {
+        addressErr = AddressError.IsNotLoopringContract
+      }
     }
   } else {
     addressErr = AddressError.EmptyAddr
   }
-  let isContract: undefined | boolean, response: any
-  if (realAddr && LoopringAPI.exchangeAPI && web3) {
-    ;[isContract, response] = await Promise.all([
-      sdk.isContract(web3, realAddr),
-      LoopringAPI.exchangeAPI.getAccount({
-        owner: realAddr,
-      }),
-    ])
-    if (
-      isContract &&
-      ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)
-    ) {
-      addressErr = AddressError.IsNotLoopringContract
-    }
-  }
-
   return {
     realAddr,
     addressErr,
     isContract,
+    ens,
   }
 }

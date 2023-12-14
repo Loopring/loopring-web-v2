@@ -2136,6 +2136,11 @@ export default {
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
   labelDualSettingConfirm: 'Confirm',
+  labelENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelSendToContact: 'Send to',
+  labelContactENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelL2DualNote: 'Dual Investment Notification',
   labelQuickInvest: 'Quick Invest',
   labelVault: 'Vault',

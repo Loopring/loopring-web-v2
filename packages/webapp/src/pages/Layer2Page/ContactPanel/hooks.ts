@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import {
   LoopringAPI,
   store,
@@ -14,18 +14,19 @@ import {
   TransactionStatus,
   useOpenModals,
   useSettings,
+  AccountStep,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
-import { NetworkMap, SDK_ERROR_MAP_TO_UI, ContactType } from '@loopring-web/common-resources'
+import {
+  NetworkMap,
+  SDK_ERROR_MAP_TO_UI,
+  ContactType,
+  Contact,
+} from '@loopring-web/common-resources'
 import { useLocation } from 'react-router-dom'
+import { connectProvides } from '@loopring-web/web3-provider'
 
-export type Contact = {
-  name: string
-  address: string
-  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
-  // id: string
-}
 type Network = 'L1' | 'L2'
 const RowHeight = 78
 export const viewHeightRatio = 0.85
@@ -38,7 +39,7 @@ const checkIsHebao = (accountAddress: string) =>
   })
 
 export const useContact = () => {
-  const [addOpen, setAddOpen] = React.useState(false)
+  // const [addOpen, setAddOpen] = React.useState(false)
   const [deleteInfo, setDeleteInfo] = React.useState({
     open: false,
     selected: undefined as Contact | undefined,
@@ -52,10 +53,12 @@ export const useContact = () => {
     account: { accountId, apiKey, accAddress, isContractAddress, isCFAddress },
   } = useAccount()
   const { defaultNetwork } = useSettings()
+  const { setShowAccount, setShowEditContact } = useOpenModals()
+
   // const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
   const { t } = useTranslation()
-  const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
-  const [page, setPage] = useState(1)
+  const [tableHeight] = React.useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
+  const [page, setPage] = React.useState(1)
   const pageSize = Math.floor(tableHeight / RowHeight)
   const {
     contacts,
@@ -78,7 +81,7 @@ export const useContact = () => {
       updateContacts()
     }
   }, [])
-  const [selectAddress, setSelectAddress] = React.useState<ContactType | undefined>(undefined)
+  // const [selectAddress, setSelectAddress] = React.useState<ContactType | undefined>(undefined)
 
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input)
@@ -102,19 +105,27 @@ export const useContact = () => {
     })
   }, [])
 
-  const onClickSend = React.useCallback(
-    (address: string, name: string, addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys]) => {
-      setSendInfo({
-        open: true,
-        selected: {
-          address,
-          name,
-          addressType,
-        },
-      })
-    },
-    [],
-  )
+  const onClickSend = React.useCallback(async (data: Contact) => {
+    let isENSWrong = false
+    if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
+      //#ts-ignore
+      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
+      //#ts-ignore
+      const ens = await provider.lookupAddress(data.contactAddress)
+
+      if (data?.ens?.toLowerCase() != ens?.toLowerCase()) {
+        isENSWrong = true
+      }
+    }
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.SendAssetFromContact,
+      info: {
+        ...data,
+        isENSWrong,
+      },
+    })
+  }, [])
   const onCloseSend = React.useCallback(() => {
     setSendInfo({
       open: false,
@@ -183,8 +194,8 @@ export const useContact = () => {
               contact.contactName.toLowerCase().includes(searchValue.toLowerCase())
             )
           })),
-    selectAddress,
-    setSelectAddress,
+    // selectAddress,
+    // setSelectAddress,
     onChangeSearch,
     onClearSearch,
     searchValue,
@@ -196,60 +207,17 @@ export const useContact = () => {
     onCloseDelete,
     submitDeleteContact,
     deleteLoading,
-
-    addOpen,
-    setAddOpen,
-    // addLoading,
-    // submitAddContact,
-
+    setShowEditContact,
+    // addOpen,
+    // setAddOpen,
     onClickSend,
     onCloseSend,
     sendInfo,
-
     pagination,
     onPageChange,
     // loading,
     showPagination,
     // onScroll
-  }
-}
-
-export const useContactSend = () => {
-  const [sendNetwork, setSendNetwork] = React.useState('L2' as Network)
-  const { setShowTransfer, setShowWithdraw } = useOpenModals()
-  const submitSendingContact = React.useCallback(
-    (contact: Contact, network: Network, onClose: () => void) => {
-      if (network === 'L1') {
-        setShowWithdraw({
-          isShow: true,
-          address: contact.address,
-          name: contact.name,
-          addressType: contact.addressType,
-          // symbol: 'ETH',
-          info: {
-            onCloseCallBack: onClose,
-          },
-        })
-      } else {
-        setShowTransfer({
-          isShow: true,
-          address: contact.address,
-          name: contact.name,
-          addressType: contact.addressType,
-          // symbol: 'ETH',
-          info: {
-            onCloseCallBack: onClose,
-          },
-        })
-      }
-    },
-    [],
-  )
-
-  return {
-    submitSendingContact,
-    sendNetwork,
-    setSendNetwork,
   }
 }
 
@@ -269,9 +237,9 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
   } = useAccount()
   const { tokenMap } = store.getState().tokenMap
   const { t } = useTranslation(['error'])
-  const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
-  const [txsTotal, setTxsTotal] = useState(0)
-  const [showLoading, setShowLoading] = useState(false)
+  const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
+  const [txsTotal, setTxsTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
 
@@ -287,7 +255,7 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
       : TransactionStatus.failed
   }
 
-  const getUserTxnList = useCallback(
+  const getUserTxnList = React.useCallback(
     async ({ tokenSymbol, start, end, limit, offset }: TxsFilterProps) => {
       // const address = routeMatch.params[0];
       const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined

@@ -24,6 +24,7 @@ import {
   EXCHANGE_TYPE,
   FeeInfo,
   globalSetup,
+  hexToRGB,
   IBData,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -92,6 +93,8 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   isFromContact,
   onClickContact,
   loopringSmartWalletVersion,
+  isENSWrong,
+  ens,
   // addressType,
   ...rest
 }: TransferViewProps<T, I, C> &
@@ -312,6 +315,27 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 )}
               </Box>
             )}
+          {isENSWrong && (
+            <>
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {ens}
+              </Typography>
+              <Typography
+                marginTop={2}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                width={`calc(100% - ${9 * theme.unit}px)`}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelContactENSAlert')}
+              </Typography>
+            </>
+          )}
         </>
       )
     }

@@ -1070,6 +1070,8 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'TAIKO',
     ethereumL1: 'TAIKO',
     loopringLayer2: 'Loopring Layer 3',
+    L1Token: 'ETH',
+    L2Token: 'TAIKO',
   },
   ETHEREUM: {
     layer2: 'Layer 2',
@@ -1079,6 +1081,8 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'L1',
     ethereumL1: 'Ethereum L1',
     loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
   },
   GOERLI: {
     layer2: 'Layer 2',
@@ -1088,6 +1092,8 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'L1',
     ethereumL1: 'Ethereum L1',
     loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
   },
   ARBGOERLI: {
     layer2: 'Layer 2',
@@ -1097,5 +1103,7 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'L1',
     ethereumL1: 'Ethereum L1',
     loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
   },
 }

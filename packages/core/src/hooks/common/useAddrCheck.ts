@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { ethers } from 'ethers'
 
 import { connectProvides } from '@loopring-web/web3-provider'
 import {
@@ -23,7 +24,17 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
   const { defaultNetwork } = useSettings()
-  const [realAddr, setRealAddr] = React.useState<string>('')
+  const [{ realAddr, ens, isENSWrong }, setRealAddr] = React.useState<{
+    realAddr: string
+    ens: string
+    isENSWrong: boolean
+  }>({
+    realAddr: '',
+    ens: '',
+    isENSWrong: false,
+  })
+  // const [ens, setENS] = React.useState<string>('')
+
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(AddressError.NoError)
   const [checkAddAccountId, setCheckAddaccountId] = React.useState<number | undefined>()
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
@@ -53,9 +64,9 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         ) {
           myLog('address update ', address)
           setIsAddressCheckLoading(true)
-          const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
+          const { realAddr, addressErr, isContract, ens } = await checkAddr(address, web3)
           if (_address.current == address) {
-            setRealAddr(realAddr)
+            setRealAddr({ realAddr, ens, isENSWrong: false })
             setAddrStatus(addressErr)
             if (isContract) {
               setIsContractAddress(isContract)
@@ -170,12 +181,12 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       if (_address?.current == address && error?.code == sdk.LoopringErrorCode.HTTP_ERROR) {
         _address.current = ''
         setAddrStatus(AddressError.TimeOut)
-        setRealAddr('')
+        setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
         setIsAddressCheckLoading(false)
       } else {
         setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
         myLog('address update address async', address, error)
-        setRealAddr('')
+        setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
         _address.current = ''
         setIsLoopringAddress(false)
         setIsAddressCheckLoading(false)
@@ -216,7 +227,20 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         sdk.AddressType.CONTRACT,
       ].concat(checkLayer2Status ? [sdk.AddressType.EOA] : [])
       if (found && listNoCheckRequired.includes(found.addressType)) {
-        setRealAddr(address)
+        let ens = '',
+          isENSWrong = false
+        if (found?.ens && connectProvides?.usedWeb3) {
+          //#ts-ignore
+          const provider = new ethers.providers.Web3Provider(
+            connectProvides?.usedWeb3.currentProvider,
+          )
+          //#ts-ignore
+          ens = await provider.lookupAddress(realAddr)
+          if (ens.toLowerCase() !== found?.ens.toLowerCase()) {
+            isENSWrong = true
+          }
+        }
+        setRealAddr({ realAddr: address, ens, isENSWrong })
         switch (found.addressType) {
           case sdk.AddressType.LOOPRING_HEBAO_CF:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6:
@@ -367,7 +391,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     { maxWait: 1000, leading: false, trailing: true },
   )
   const initAddresss = () => {
-    setRealAddr('')
+    setRealAddr({ realAddr: '', ens: '' })
     setAddrStatus(AddressError.NoError)
     setCheckAddaccountId(undefined)
     setIsLoopringAddress(false)
@@ -410,6 +434,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   }, [realAddr, accAddress])
   return {
     address,
+    ens,
     realAddr,
     checkAddAccountId,
     setAddress,
@@ -422,6 +447,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     isContract1XAddress,
     isContractAddress,
     isActiveAccountFee,
+    isENSWrong,
     loopringSmartWalletVersion,
     reCheck,
   }

@@ -5,6 +5,7 @@ import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import { Box, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
 import {
   AddressError,
+  AlertIcon,
   AssetsRawDataItem,
   CloseIcon,
   ContactIcon,
@@ -13,6 +14,7 @@ import {
   EmptyValueTag,
   FeeInfo,
   globalSetup,
+  hexToRGB,
   IBData,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -78,6 +80,8 @@ export const WithdrawWrap = <
   isFromContact,
   onClickContact,
   loopringSmartWalletVersion,
+  isENSWrong,
+  ens,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -180,6 +184,7 @@ export const WithdrawWrap = <
 
   return (
     <GridWrapStyle
+          className={'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -395,10 +400,31 @@ export const WithdrawWrap = <
               )}
             </>
           )}
+          {isENSWrong && (
+            <>
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {ens}
+              </Typography>
+              <Typography
+                marginTop={2}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                width={`calc(100% - ${9 * theme.unit}px)`}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelContactENSAlert')}
+              </Typography>
+            </>
+          )}
         </Box>
       </Grid>
       {!isToMyself && (
-        <Grid item alignSelf={'stretch'} position={'relative'} className={'address-type-wrap'}>
+        <Grid item alignSelf={'stretch'} position={'relative'}>
           <FullAddressType
             detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
@@ -408,7 +434,7 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'}>
+      <Grid item alignSelf={'stretch'} position={'relative'}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (

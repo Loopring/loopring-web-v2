@@ -119,6 +119,8 @@ export type TransferExtendProps<T, I, C> = {
   contact?: { address: string; name: string; addressType: typeof sdk.AddressType }
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
+  isENSWrong?: boolean
+  ens?: string
   // contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   TransferInfoProps<C>
@@ -251,6 +253,8 @@ export type WithdrawExtendProps<T, I, C> = {
   isFromContact?: boolean
   // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
+  isENSWrong?: boolean
+  ens?: string
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   WithdrawInfoProps<C>

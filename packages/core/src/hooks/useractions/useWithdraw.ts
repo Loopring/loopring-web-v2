@@ -138,6 +138,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isLoopringAddress,
     isAddressCheckLoading,
     loopringSmartWalletVersion,
+    isENSWrong,
+    ens,
   } = useAddressCheck(false)
 
   React.useEffect(() => {
@@ -781,6 +783,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       : undefined,
     loopringSmartWalletVersion,
     contacts,
+    isENSWrong,
+    ens,
   }
 
   return {

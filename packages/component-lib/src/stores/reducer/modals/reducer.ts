@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { Contact, ModalState, ModalStatePlayLoad, Transaction } from './interface'
+import { ModalState, ModalStatePlayLoad, Transaction } from './interface'
 import {
   CLAIM_TYPE,
   ClaimToken,
@@ -10,6 +10,7 @@ import {
   VaultLoanType,
   VaultAction,
   CoinSource,
+  Contact,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 import { ToastType } from '@loopring-web/component-lib'
@@ -50,6 +51,7 @@ const initialState: ModalState = {
   isShowCollectionAdvance: { isShow: false },
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
+  isShowEditContact: { isShow: false },
   isShowClaimWithdraw: {
     isShow: false,
     claimToken: undefined,
@@ -384,6 +386,20 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         symbol,
       }
     },
+    setShowEditContact(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          info: any
+        }
+      >,
+    ) {
+      const { isShow, info } = action.payload
+      state.isShowEditContact = {
+        isShow,
+        info,
+      }
+    },
     setShowTargetRedpacketPop(
       state,
       action: PayloadAction<
@@ -475,6 +491,7 @@ export const {
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
   setShowTargetRedpacketPop,
+  setShowEditContact,
   setShowETHStakingApr,
   setShowVaultExit,
   setShowVaultJoin,

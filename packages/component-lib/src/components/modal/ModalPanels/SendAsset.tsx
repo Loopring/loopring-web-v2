@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Box, CardContent, Tooltip, Typography, Divider, Tab, Tabs } from '@mui/material'
 import styled from '@emotion/styled'
 import { MenuBtnStyled } from '../../styled'
 import { SendAssetProps } from './Interface'
@@ -14,8 +14,16 @@ import {
   L2l2Icon,
   MapChainId,
   OutputIcon,
+  AlertIcon,
+  SendAssetList,
+  hexToRGB,
+  Contact,
 } from '@loopring-web/common-resources'
-import { useSettings, useToggle } from '../../../stores'
+import { useOpenModals, useSettings, useToggle } from '../../../stores'
+
+import { Button, CoinIcon, TickCardStyleItem } from '../../basic-lib'
+import React from 'react'
+import { useTheme } from '@emotion/react'
 
 const BoxStyled = styled(Box)`` as typeof Box
 
@@ -137,4 +145,228 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
   {
     /*</WalletConnectPanelStyled>*/
   }
+}
+
+const BoxStyle = styled(Box)`
+  & {
+    height: inherit;
+    .content-main {
+      overflow: scroll;
+      align-self: stretch;
+      & > div {
+        align-self: stretch;
+      }
+    }
+    .MuiTab-root.sendType {
+      padding: ${({ theme }) => 3 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
+      &.Mui-selected,
+      &:hover {
+        padding: ${({ theme }) => 3 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
+        box-sizing: border-box;
+      }
+      &:after {
+        display: none;
+      }
+    }
+  }
+`
+
+export const SendFromContact = ({
+  // contacts,
+  isENSWrong,
+  ...contact
+}: {
+  isENSWrong
+} & Contact) => {
+  const [selected, setSelected] = React.useState(SendAssetList.SendAssetToOtherL1.key)
+  const { defaultNetwork } = useSettings()
+  const { setShowTransfer, setShowWithdraw, setShowEditContact } = useOpenModals()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const theme = useTheme()
+
+  const submit = React.useCallback(() => {
+    // : Contact, network: 'SendToOtherL1'| 'SendTOL2', onClose: () => void
+    if (isENSWrong) {
+      setShowEditContact({
+        isShow: true,
+        info: {
+          ...contact,
+        },
+      })
+    } else if (network === 'L1') {
+      setShowWithdraw({
+        isShow: true,
+        address: contact.contactAddress,
+        name: contact.contactName,
+        addressType: contact.addressType,
+        // symbol: 'ETH',
+        // info: {
+        //   onCloseCallBack: onClose,
+        // },
+      })
+    } else {
+      setShowTransfer({
+        isShow: true,
+        address: contact.contactAddress,
+        name: contact.contactName,
+        addressType: contact.addressType,
+        // symbol: 'ETH',
+        // info: {
+        //   onCloseCallBack: onClose,
+        // },
+      })
+    }
+  }, [])
+  const { t } = useTranslation()
+  return (
+    <>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'flex-start'}
+        alignSelf={'stretch'}
+        marginTop={-4}
+        justifyContent={'stretch'}
+      >
+        <Typography
+          display={'flex'}
+          flexDirection={'row'}
+          component={'header'}
+          alignItems={'center'}
+          height={'var(--toolbar-row-height)'}
+          paddingX={3}
+        >
+          <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
+            {t('labelContactsNetworkChoose', {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+              loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+            })}
+          </Typography>
+        </Typography>
+        <Divider style={{ marginTop: '-1px', width: '100%' }} />
+      </Box>
+      <BoxStyle
+        display={'flex'}
+        alignItems={'stretch'}
+        flexDirection={'column'}
+        paddingBottom={4}
+        width={'100%'}
+      >
+        <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'stretch'}
+            marginTop={2}
+            paddingX={3}
+          >
+            <Typography
+              variant={'body1'}
+              component={'span'}
+              color={'var(--color-text-secondary)'}
+              marginBottom={1}
+            >
+              {t('labelSendToContact')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {contact?.contactName}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {contact?.contactAddress}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {contact?.ens}
+            </Typography>
+            {isENSWrong && (
+              <Typography
+                marginTop={2}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                width={`calc(100% - ${9 * theme.unit}px)`}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelContactENSAlert')}
+              </Typography>
+            )}
+          </Box>
+          <Tabs
+            variant={'fullWidth'}
+            value={selected}
+            onChange={(_event, value) => setSelected(value)}
+            aria-label='l2-history-tabs'
+            sx={{
+              display: 'flex',
+              flexWrap: 'nowrap',
+            }}
+          >
+            <Tab
+              className={'sendType'}
+              value={SendAssetList.SendAssetToOtherL1.key}
+              key={SendAssetList.SendAssetToOtherL1.key}
+              label={
+                <TickCardStyleItem
+                  className={'btnCard'}
+                  selected={selected == SendAssetList.SendAssetToOtherL1.key}
+                >
+                  <CardContent>
+                    <Typography component={'span'} display={'inline-flex'}>
+                      <CoinIcon size={32} symbol={L1L2_NAME_DEFINED[network].L1Token} />
+                    </Typography>
+                    <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                      {L1L2_NAME_DEFINED[network].l1ChainName +
+                        '/' +
+                        L1L2_NAME_DEFINED[network].l1Symbol}
+                    </Typography>
+                  </CardContent>
+                </TickCardStyleItem>
+              }
+            />
+            <Tab
+              className={'sendType'}
+              value={SendAssetList.SendAssetToL2.key}
+              key={SendAssetList.SendAssetToL2.key}
+              label={
+                <TickCardStyleItem
+                  selected={selected == SendAssetList.SendAssetToL2.key}
+                  className={'btnCard'}
+                >
+                  <CardContent>
+                    <Typography component={'span'} display={'inline-flex'}>
+                      <CoinIcon size={32} symbol={L1L2_NAME_DEFINED[network].L2Token} />
+                    </Typography>
+                    <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                      {L1L2_NAME_DEFINED[network].loopringL2 +
+                        '/' +
+                        L1L2_NAME_DEFINED[network].l2Symbol}
+                    </Typography>
+                  </CardContent>
+                </TickCardStyleItem>
+              }
+            />
+          </Tabs>
+        </Box>
+        <Box
+          width={'100%'}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'center'}
+          justifyContent={'flex-end'}
+        >
+          <Box alignSelf={'stretch'} paddingX={3}>
+            <Button onClick={submit} variant={'contained'} size={'medium'} fullWidth>
+              {t('labelContactsNext')}
+            </Button>
+          </Box>
+        </Box>
+      </BoxStyle>
+    </>
+  )
 }

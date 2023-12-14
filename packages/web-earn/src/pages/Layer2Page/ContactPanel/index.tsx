@@ -18,10 +18,9 @@ import {
   MoreIcon,
   TOAST_TIME,
   ContactType,
+  Contact,
 } from '@loopring-web/common-resources'
-import { EditContact } from './add'
 import { Delete } from './delete'
-import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -60,7 +59,6 @@ export const ContactPage = () => {
   }, [match?.params?.item])
   return <>{view}</>
 }
-
 const ActionMemo = React.memo(
   <N = ContactType,>({
     data,
@@ -68,11 +66,7 @@ const ActionMemo = React.memo(
     onClickDelete,
   }: {
     data: ContactType
-    onClickSend: (
-      contactAddress: string,
-      contactName: string,
-      addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys],
-    ) => void
+    onClickSend: (data: Contact) => void
     onClickDelete: (contactAddress: string, contactName: string) => void
   }) => {
     const history = useHistory()
@@ -108,13 +102,7 @@ const ActionMemo = React.memo(
               }}
             >
               <Box borderRadius={'inherit'} minWidth={110}>
-                <MenuItem
-                  onClick={() =>
-                    onClickSend(data.contactAddress, data.contactName, data.addressType)
-                  }
-                >
-                  {t('labelContactsSend')}
-                </MenuItem>
+                <MenuItem onClick={() => onClickSend(data)}>{t('labelContactsSend')}</MenuItem>
                 <MenuItem
                   onClick={() => {
                     history.push(
@@ -137,7 +125,7 @@ const ActionMemo = React.memo(
         ) : (
           <>
             <Button
-              onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
+              onClick={() => onClickSend(data)}
               variant={'contained'}
               size={'small'}
               sx={{ marginLeft: 1 }}
@@ -172,22 +160,17 @@ const ActionMemo = React.memo(
 )
 export const ContractPanel = () => {
   const {
-    setAddOpen,
-    addOpen,
     contacts,
     searchValue,
     onChangeSearch,
     onClickDelete,
-    selectAddress,
-    setSelectAddress,
+    setShowEditContact,
     toastInfo,
     deleteInfo,
     onCloseDelete,
     submitDeleteContact,
     deleteLoading,
     onClickSend,
-    onCloseSend,
-    sendInfo,
     closeToast,
     setToast,
     pagination,
@@ -242,8 +225,12 @@ export const ContractPanel = () => {
                         }}
                         fontSize={'large'}
                         onClick={() => {
-                          setAddOpen(true)
-                          setSelectAddress(data as ContactType)
+                          setShowEditContact({
+                            isShow: true,
+                            info: {
+                              ...data,
+                            },
+                          })
                         }}
                       />
                     </Typography>
@@ -291,24 +278,12 @@ export const ContractPanel = () => {
         onClose={closeToast}
         // onClose={closeToastL}
       />
-      <EditContact
-        isEdit={selectAddress ? { item: selectAddress } : false}
-        addOpen={addOpen}
-        setAddOpen={setAddOpen}
-        onClose={() => {
-          setSelectAddress(undefined)
-          setAddOpen(false)
-        }}
-        contacts={contacts}
-        setToast={setToast}
-      />
       <Delete
         deleteInfo={deleteInfo}
         onCloseDelete={onCloseDelete}
         submitDeleteContact={submitDeleteContact}
         loading={deleteLoading}
       />
-      <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
       <Box display={'flex'} justifyContent={'space-between'}>
         <Typography variant={'h2'} paddingRight={2}>
           {t('labelContacts')}
@@ -325,8 +300,7 @@ export const ContractPanel = () => {
               variant={'contained'}
               size={'small'}
               onClick={() => {
-                setSelectAddress(undefined)
-                setAddOpen(true)
+                setShowEditContact({ isShow: true })
               }}
             >
               {t('labelContactsAddContactBtn')}

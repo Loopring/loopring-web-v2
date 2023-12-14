@@ -7,6 +7,7 @@ import {
   AmmPanelType,
   VaultAction,
   CoinSource,
+  Contact,
 } from '@loopring-web/common-resources'
 import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -25,11 +26,6 @@ export type ModalStatePlayLoad = {
 }
 export type Transaction = {
   symbol?: undefined | string
-}
-export type Contact = {
-  name?: string
-  address?: string
-  addressType?: typeof sdk.AddressType
 }
 
 export interface ModalState {
@@ -67,6 +63,10 @@ export interface ModalState {
   }
   isShowConnect: ModalStatePlayLoad & {
     step: number
+    error?: sdk.RESULT_INFO
+    info?: { [key: string]: any }
+  }
+  isShowEditContact: ModalStatePlayLoad & {
     error?: sdk.RESULT_INFO
     info?: { [key: string]: any }
   }
