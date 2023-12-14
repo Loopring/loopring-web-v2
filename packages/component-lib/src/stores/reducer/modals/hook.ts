@@ -315,7 +315,7 @@ export const useOpenModals = () => {
       [dispatch],
     ),
     setShowEditContact: React.useCallback(
-      (state: { isShow: boolean; info: any }) => dispatch(setShowEditContact(state)),
+      (state: { isShow: boolean; info?: any }) => dispatch(setShowEditContact(state)),
       [dispatch],
     ),
     setShowETHStakingApr: React.useCallback(

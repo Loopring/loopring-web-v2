@@ -18,6 +18,7 @@ import {
   SendAssetList,
   hexToRGB,
   Contact,
+  fontDefault,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings, useToggle } from '../../../stores'
 
@@ -150,20 +151,25 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
 const BoxStyle = styled(Box)`
   & {
     height: inherit;
+
     .content-main {
       overflow: scroll;
       align-self: stretch;
+
       & > div {
         align-self: stretch;
       }
     }
+
     .MuiTab-root.sendType {
       padding: ${({ theme }) => 3 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
+
       &.Mui-selected,
       &:hover {
         padding: ${({ theme }) => 3 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
         box-sizing: border-box;
       }
+
       &:after {
         display: none;
       }
@@ -186,37 +192,42 @@ export const SendFromContact = ({
 
   const submit = React.useCallback(() => {
     // : Contact, network: 'SendToOtherL1'| 'SendTOL2', onClose: () => void
-    if (isENSWrong) {
-      setShowEditContact({
-        isShow: true,
-        info: {
-          ...contact,
-        },
-      })
-    } else if (network === 'L1') {
-      setShowWithdraw({
-        isShow: true,
-        address: contact.contactAddress,
-        name: contact.contactName,
-        addressType: contact.addressType,
-        // symbol: 'ETH',
-        // info: {
-        //   onCloseCallBack: onClose,
-        // },
-      })
-    } else {
-      setShowTransfer({
-        isShow: true,
-        address: contact.contactAddress,
-        name: contact.contactName,
-        addressType: contact.addressType,
-        // symbol: 'ETH',
-        // info: {
-        //   onCloseCallBack: onClose,
-        // },
-      })
+    switch (selected) {
+      case SendAssetList.SendAssetToOtherL1.key:
+        setShowWithdraw({
+          isShow: true,
+          address: contact.contactAddress,
+          name: contact.contactName,
+          addressType: contact.addressType,
+          // symbol: 'ETH',
+          // info: {
+          //   onCloseCallBack: onClose,
+          // },
+        })
+        break
+      case SendAssetList.SendAssetToL2.key:
+        setShowTransfer({
+          isShow: true,
+          address: contact.contactAddress,
+          name: contact.contactName,
+          addressType: contact.addressType,
+          // symbol: 'ETH',
+          // info: {
+          //   onCloseCallBack: onClose,
+          // },
+        })
+        break
     }
   }, [])
+  const geUpdateContact = (_e) => {
+    setShowEditContact({
+      isShow: true,
+      info: {
+        ...contact,
+        isENSWrong,
+      },
+    })
+  }
   const { t } = useTranslation()
   return (
     <>
@@ -271,30 +282,50 @@ export const SendFromContact = ({
             >
               {t('labelSendToContact')}
             </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {contact?.contactName}
-            </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {contact?.contactAddress}
-            </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {contact?.ens}
-            </Typography>
-            {isENSWrong && (
-              <Typography
-                marginTop={2}
-                variant={'body1'}
-                component={'span'}
-                padding={1}
-                display={'inline-flex'}
-                width={`calc(100% - ${9 * theme.unit}px)`}
-                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                borderRadius={2}
-                color={'var(--color-text-button)'}
-              >
-                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
-                {t('labelContactENSAlert')}
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'stretch'}
+              borderRadius={2}
+              padding={1}
+              bgcolor='var(--field-opacity)'
+            >
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {contact?.contactName}
               </Typography>
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {contact?.contactAddress}
+              </Typography>
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {contact?.ens}
+              </Typography>
+            </Box>
+            {isENSWrong && (
+              <Button
+                variant={'contained'}
+                sx={{
+                  fontSize: fontDefault.body1,
+                  marginTop: 2,
+                  padding: 1,
+                  color: 'var(--color-text-button)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: hexToRGB(theme.colorBase.warning, 0.2),
+                  textAlign: 'left',
+                  borderRadius: 2,
+                  height: 'auto',
+                  '&:hover': {
+                    background: hexToRGB(theme.colorBase.warning, 0.3),
+                  },
+                }}
+                onClick={geUpdateContact}
+                endIcon={<BackIcon fontSize={'large'} sx={{ transform: 'rotate(180deg)' }} />}
+              >
+                <Typography component={'span'} color={'inherit'} display={'inline-flex'}>
+                  <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2, marginTop: '2px' }} />
+                  {t('labelContactENSAlert')}
+                </Typography>
+              </Button>
             )}
           </Box>
           <Tabs
@@ -361,8 +392,14 @@ export const SendFromContact = ({
           justifyContent={'flex-end'}
         >
           <Box alignSelf={'stretch'} paddingX={3}>
-            <Button onClick={submit} variant={'contained'} size={'medium'} fullWidth>
-              {t('labelContactsNext')}
+            <Button
+              disabled={isENSWrong}
+              onClick={submit}
+              variant={'contained'}
+              size={'medium'}
+              fullWidth
+            >
+              {t(isENSWrong ? 'labelENSAddressMismatch' : 'labelContactsNext')}
             </Button>
           </Box>
         </Box>

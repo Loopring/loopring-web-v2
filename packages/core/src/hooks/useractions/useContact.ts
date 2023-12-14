@@ -31,6 +31,10 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
   const [searchValue, setSearchValue] = React.useState('')
   const { defaultNetwork } = useSettings()
   const { setShowAccount, setShowEditContact } = useOpenModals()
+  const [btnLoading, setBtnLoading] = React.useState<{ index: number; loading: boolean }>({
+    loading: false,
+    index: 0,
+  })
 
   // const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
   const { t } = useTranslation()
@@ -77,7 +81,8 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
     })
   }, [])
 
-  const onClickSend = React.useCallback(async (data: Contact) => {
+  const onClickSend = React.useCallback(async (data: Contact, index: number) => {
+    setBtnLoading({ loading: true, index })
     let isENSWrong = false
     if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
       const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(data.ens)
@@ -85,6 +90,8 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
         isENSWrong = true
       }
     }
+    // geUpdateContact,
+
     setShowAccount({
       isShow: true,
       step: AccountStep.SendAssetFromContact,
@@ -93,6 +100,7 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
         isENSWrong,
       },
     })
+    setBtnLoading({ loading: false, index })
   }, [])
   const onCloseSend = React.useCallback(() => {
     setSendInfo({
@@ -176,16 +184,13 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
     submitDeleteContact,
     deleteLoading,
     setShowEditContact,
-    // addOpen,
-    // setAddOpen,
     onClickSend,
     onCloseSend,
     sendInfo,
     pagination,
     onPageChange,
-    // loading,
     showPagination,
-    // onScroll
+    btnLoading,
   }
 }
 
