@@ -319,7 +319,7 @@ export const ModalPanel = <
           />
         }
       />
-      
+
       <Modal
         open={isShowNFTTransfer.isShow}
         contentClassName={'trade-wrap'}

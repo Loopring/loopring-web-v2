@@ -1001,7 +1001,7 @@ export const MintAdvanceNFTWrap = <
     getIPFSString,
     nftMintBtnStatus,
     onNFTMintClick,
-    showFeeModal
+    showFeeModal,
   ])
 
   // @ts-ignore

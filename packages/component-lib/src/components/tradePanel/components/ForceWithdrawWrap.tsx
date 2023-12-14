@@ -17,12 +17,7 @@ import {
   TRADE_TYPE,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
-import {
-  FeeSelect,
-  ForceWithdrawViewProps,
-  InputButtonDefaultProps,
-  PopoverPure,
-} from '../..'
+import { FeeSelect, ForceWithdrawViewProps, InputButtonDefaultProps, PopoverPure } from '../..'
 import { Button, IconClearStyled, TextField, useSettings } from '../../../index'
 import { BasicACoinTrade } from './BasicACoinTrade'
 import styled from '@emotion/styled'
