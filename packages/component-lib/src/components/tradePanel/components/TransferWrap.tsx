@@ -14,6 +14,7 @@ import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import {
   AddressError,
   AlertIcon,
+  BackIcon,
   CheckBoxIcon,
   CheckedIcon,
   CloseIcon,
@@ -23,6 +24,7 @@ import {
   EmptyValueTag,
   EXCHANGE_TYPE,
   FeeInfo,
+  fontDefault,
   globalSetup,
   hexToRGB,
   IBData,
@@ -51,6 +53,7 @@ import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
 import { useSettings } from '../../../stores'
 import { TransferAddressType } from './AddressType'
+import { useTheme } from '@emotion/react'
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
   t,
@@ -95,6 +98,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   loopringSmartWalletVersion,
   isENSWrong,
   ens,
+  geUpdateContact,
   // addressType,
   ...rest
 }: TransferViewProps<T, I, C> &
@@ -155,6 +159,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
   }, [sureItsLayer2, sureItsLayer2])
 
   const isOtherSmartWallet = detectedWalletType === WALLET_TYPE.OtherSmart
+  const theme = useTheme()
   myLog('transferWrap', realAddr)
   const view = React.useMemo(() => {
     if (isOtherSmartWallet && realAddr) {
@@ -315,27 +320,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
                 )}
               </Box>
             )}
-          {isENSWrong && (
-            <>
-              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-                {ens}
-              </Typography>
-              <Typography
-                marginTop={2}
-                variant={'body1'}
-                component={'span'}
-                padding={1}
-                display={'inline-flex'}
-                width={`calc(100% - ${9 * theme.unit}px)`}
-                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                borderRadius={2}
-                color={'var(--color-text-button)'}
-              >
-                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
-                {t('labelContactENSAlert')}
-              </Typography>
-            </>
-          )}
         </>
       )
     }
@@ -466,7 +450,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           size={'large'}
           className={'text-address'}
           value={addressDefault}
-          error={!!(isInvalidAddressOrENS || isSameAddress)}
+          error={!!(isInvalidAddressOrENS || isSameAddress || isENSWrong)}
           label={t('labelL2toL2Address')}
           placeholder={t('labelL2toL2AddressInput')}
           onChange={(event) => handleOnAddressChange(event?.target?.value)}
@@ -515,6 +499,38 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C e
           }}
         />
         <Box marginLeft={1 / 2}>{view}</Box>
+        {isENSWrong && (
+          <>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {ens}
+            </Typography>
+            <Button
+              variant={'contained'}
+              sx={{
+                fontSize: fontDefault.body1,
+                marginTop: 2,
+                padding: 1,
+                color: 'var(--color-text-button)',
+                display: 'flex',
+                alignItems: 'center',
+                background: hexToRGB(theme.colorBase.warning, 0.2),
+                textAlign: 'left',
+                borderRadius: 2,
+                height: 'auto',
+                '&:hover': {
+                  background: hexToRGB(theme.colorBase.warning, 0.3),
+                },
+              }}
+              onClick={geUpdateContact}
+              endIcon={<BackIcon fontSize={'large'} sx={{ transform: 'rotate(180deg)' }} />}
+            >
+              <Typography component={'span'} color={'inherit'} display={'inline-flex'}>
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2, marginTop: '2px' }} />
+                {t('labelContactENSAlert')}
+              </Typography>
+            </Button>
+          </>
+        )}
       </Grid>
 
       <Grid item alignSelf={'stretch'} position={'relative'}>

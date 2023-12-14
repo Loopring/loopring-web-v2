@@ -7,12 +7,14 @@ import {
   AddressError,
   AlertIcon,
   AssetsRawDataItem,
+  BackIcon,
   CloseIcon,
   ContactIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
+  fontDefault,
   globalSetup,
   hexToRGB,
   IBData,
@@ -33,6 +35,7 @@ import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
 import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useTheme } from '@emotion/react'
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
@@ -81,6 +84,7 @@ export const WithdrawWrap = <
   loopringSmartWalletVersion,
   isENSWrong,
   ens,
+  geUpdateContact,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -89,6 +93,7 @@ export const WithdrawWrap = <
   }) => {
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const theme = useTheme()
 
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
   const popupState = usePopupState({
@@ -291,7 +296,7 @@ export const WithdrawWrap = <
               size={'large'}
               className={'text-address'}
               value={addressDefault}
-              error={!!(isNotAvailableAddress || isInvalidAddressOrENS)}
+              error={!!(isNotAvailableAddress || isInvalidAddressOrENS || isENSWrong)}
               placeholder={t('labelPleaseInputWalletAddress')}
               onChange={(event) => handleOnAddressChange(event?.target?.value)}
               label={t('labelL2toL1Address', {
@@ -402,20 +407,31 @@ export const WithdrawWrap = <
               <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
                 {ens}
               </Typography>
-              <Typography
-                marginTop={2}
-                variant={'body1'}
-                component={'span'}
-                padding={1}
-                display={'inline-flex'}
-                width={`calc(100% - ${9 * theme.unit}px)`}
-                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                borderRadius={2}
-                color={'var(--color-text-button)'}
+              <Button
+                variant={'contained'}
+                sx={{
+                  fontSize: fontDefault.body1,
+                  marginTop: 2,
+                  padding: 1,
+                  color: 'var(--color-text-button)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: hexToRGB(theme.colorBase.warning, 0.2),
+                  textAlign: 'left',
+                  borderRadius: 2,
+                  height: 'auto',
+                  '&:hover': {
+                    background: hexToRGB(theme.colorBase.warning, 0.3),
+                  },
+                }}
+                onClick={geUpdateContact}
+                endIcon={<BackIcon fontSize={'large'} sx={{ transform: 'rotate(180deg)' }} />}
               >
-                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
-                {t('labelContactENSAlert')}
-              </Typography>
+                <Typography component={'span'} color={'inherit'} display={'inline-flex'}>
+                  <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2, marginTop: '2px' }} />
+                  {t('labelContactENSAlert')}
+                </Typography>
+              </Button>
             </>
           )}
         </Box>

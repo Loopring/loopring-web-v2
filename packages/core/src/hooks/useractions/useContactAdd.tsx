@@ -29,11 +29,14 @@ export const useContactAdd = () => {
   const [loading, setLoading] = React.useState(false)
   const [isNameExit, setIsNameExit] = React.useState(false)
   const [isContactExit, setIsContactExit] = React.useState(false)
-  const [isEdit, setIsEdit] = React.useState<{ item: Contact } | false>(false)
+  const [isEdit, setIsEdit] = React.useState<{ item: Contact & { isENSWrong: boolean } } | false>(
+    false,
+  )
   const {
     modals: { isShowEditContact },
     setShowOtherExchange,
     setShowGlobalToast,
+    setShowEditContact,
   } = useOpenModals()
   const {
     address,
@@ -45,6 +48,7 @@ export const useContactAdd = () => {
     isAddressCheckLoading,
     loopringSmartWalletVersion,
     ens,
+    // isENSWrong,
   } = useAddressCheck(false)
   const { contacts, updateContacts } = useContacts()
   const [addName, setAddName] = React.useState('')
@@ -86,6 +90,10 @@ export const useContactAdd = () => {
         const type = addressToExWalletMapFn(addressType)
         myLog('onChangeAddressType before', type)
         onChangeAddressType(type)
+      } else if (isEdit && isEdit.item.addressType) {
+        const type = addressToExWalletMapFn(isEdit.item.addressType)
+        myLog('onChangeAddressType before isEdit', type)
+        onChangeAddressType(type)
       } else {
         onChangeAddressType(undefined)
       }
@@ -94,13 +102,14 @@ export const useContactAdd = () => {
   const onSubmit = React.useCallback(async () => {
     setLoading(true)
     const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
+
     let createContact: sdk.CreateContactRequest | sdk.UpdateContactRequest = {
       contactAddress: realAddr,
       accountId,
       contactName: addName,
       isHebao: !!(isContractAddress || isCFAddress),
       network: NetworkMap[defaultNetwork].walletType,
-      ens,
+      ens: isEdit?.item?.isENSWrong ? '' : isEdit ? isEdit?.item.ens : ens,
     } as any
     createContact = {
       ...createContact,
@@ -125,6 +134,9 @@ export const useContactAdd = () => {
           },
         })
         restData()
+        setShowEditContact({
+          isShow: false,
+        })
       } catch (error) {
         const _error = LoopringAPI?.globalAPI?.genErr(error as unknown as any) ?? {}
         error = {
@@ -181,6 +193,9 @@ export const useContactAdd = () => {
         })
 
         restData()
+        setShowEditContact({
+          isShow: false,
+        })
       } catch (error) {
         const _error = LoopringAPI?.globalAPI?.genErr(error as unknown as any) ?? {}
         error = {
@@ -218,15 +233,7 @@ export const useContactAdd = () => {
       }
       setLoading(false)
     }
-  }, [
-    realAddr,
-    addName,
-    mapContactAddressType,
-    isEdit,
-    t,
-    // restData,
-    // enableBtn,
-  ])
+  }, [realAddr, addName, mapContactAddressType, isEdit, t])
   React.useEffect(() => {
     if (realAddr && addName && realAddr !== '' && !isAddressCheckLoading) {
       autoSetWalletType()
@@ -298,6 +305,8 @@ export const useContactAdd = () => {
       } else {
         setIsEdit(false)
       }
+    } else {
+      restData()
     }
 
     setLoading(false)
@@ -325,9 +334,9 @@ export const useContactAdd = () => {
     onChangeAddress('')
     onChangeName('')
     onChangeAddressType(undefined)
-    updateContacts()
     setSelectedAddressType(undefined)
     setLoading(false)
+    updateContacts()
     setShowOtherExchange({ agree: false, isShow: false })
   }
 
@@ -355,6 +364,7 @@ export const useContactAdd = () => {
       isContactExit,
       btnLabel,
       submitContact: onBtnClick,
+      isENSWrong: isEdit?.item?.isENSWrong,
     },
   }
 }

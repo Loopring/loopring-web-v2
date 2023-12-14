@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import {
   AddressError,
+  AlertIcon,
   CloseIcon,
+  hexToRGB,
   L1L2_NAME_DEFINED,
   LoadingIcon,
   MapChainId,
@@ -13,6 +15,7 @@ import { Box, Divider, IconButton, InputAdornment, Typography } from '@mui/mater
 import { Button, TextField } from '../../basic-lib'
 import { FullAddressType } from '../../tradePanel'
 import styled from '@emotion/styled'
+import { useTheme } from '@emotion/react'
 const BoxStyle = styled(Box)`
   & {
     height: inherit;
@@ -42,6 +45,7 @@ export const EditContact = ({
   btnStatus,
   addrStatus,
   submitContact,
+  isENSWrong,
   btnLabel,
 }) => {
   const { t } = useTranslation(['common'])
@@ -82,6 +86,7 @@ export const EditContact = ({
   const getDisabled = React.useMemo(() => {
     return btnStatus === TradeBtnStatus.DISABLED
   }, [btnStatus])
+  const theme = useTheme()
 
   const isInvalidAddressOrENS =
     !isAddressCheckLoading && addressDefault && addrStatus === AddressError.InvalidAddr
@@ -122,6 +127,21 @@ export const EditContact = ({
         width={'100%'}
         paddingX={3}
       >
+        {isEdit && isENSWrong && (
+          <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            padding={1}
+            display={'inline-flex'}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+            borderRadius={2}
+            color={'var(--color-text-button)'}
+          >
+            <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+            {t('labelContactENSAlert')}
+          </Typography>
+        )}
         <Box
           flex={1}
           display={'flex'}
