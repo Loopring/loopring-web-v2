@@ -17,7 +17,6 @@ import {
   useSettings,
   InitialNameAvatar,
   MaxWidthContainer,
-  setShowEditContact,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -31,7 +30,6 @@ import {
   Contact,
 } from '@loopring-web/common-resources'
 import { Delete } from './delete'
-import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
@@ -39,6 +37,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import styled from '@emotion/styled'
+import { useContact } from '@loopring-web/core'
 
 const StyledPaper = styled(Box)`
   width: 100%;
@@ -158,7 +157,7 @@ const ActionMemo = React.memo(
     )
   },
 )
-export const ContractPanel = () => {
+export const ContractPanel = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) => {
   const {
     contacts,
     searchValue,
@@ -176,7 +175,10 @@ export const ContractPanel = () => {
     pagination,
     onPageChange,
     showPagination,
-  } = useContact()
+  } = useContact({
+    viewHeightRatio,
+    viewHeightOffset,
+  })
   const { t } = useTranslation()
 
   const noContact = (

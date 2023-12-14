@@ -179,23 +179,20 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
           addressErr = AddressError.InvalidAddr
           return ''
         })
+        if (realAddr && addressErr == AddressError.NoError) {
+          ens = address
+        }
       } else {
         realAddr = ''
         addressErr = AddressError.ENSResolveFailed
       }
     }
     if (realAddr && web3) {
-      //#ts-ignore
-      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
-      //#ts-ignore
-      // ens =
-      ;[isContract, response, ens] = await Promise.all([
+      ;[isContract, response] = await Promise.all([
         sdk.isContract(web3, realAddr),
         LoopringAPI.exchangeAPI.getAccount({
           owner: realAddr,
         }),
-        //#ts-ignore
-        provider.lookupAddress(realAddr),
       ])
       if (
         isContract &&

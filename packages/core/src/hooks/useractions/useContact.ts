@@ -1,44 +1,24 @@
 import React from 'react'
+import { Contact, NetworkMap, SDK_ERROR_MAP_TO_UI, ToastType } from '@loopring-web/common-resources'
+import { store, useAccount, useContacts } from '../../stores'
 import {
-  LoopringAPI,
-  store,
-  useAccount,
-  useContacts,
-  useToast,
-  volumeToCount,
-  volumeToCountAsBigNumber,
-} from '@loopring-web/core'
-import {
+  AccountStep,
   RawDataTransactionItem,
-  ToastType,
   TransactionStatus,
   useOpenModals,
   useSettings,
-  AccountStep,
 } from '@loopring-web/component-lib'
-import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
-import {
-  NetworkMap,
-  SDK_ERROR_MAP_TO_UI,
-  ContactType,
-  Contact,
-} from '@loopring-web/common-resources'
-import { useLocation } from 'react-router-dom'
 import { connectProvides } from '@loopring-web/web3-provider'
+import { useToast } from '../common'
+import { LoopringAPI } from '../../api_wrapper'
+import * as sdk from '@loopring-web/loopring-sdk'
+import { useLocation } from 'react-router-dom'
+import { volumeToCount, volumeToCountAsBigNumber } from '../help'
 
-type Network = 'L1' | 'L2'
 const RowHeight = 78
-export const viewHeightRatio = 0.85
-export const viewHeightOffset = 130
-const checkIsHebao = (accountAddress: string) =>
-  LoopringAPI.walletAPI!.getWalletType({
-    wallet: accountAddress,
-  }).then((walletType) => {
-    return walletType?.walletType?.loopringWalletContractVersion !== ''
-  })
 
-export const useContact = () => {
+export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) => {
   // const [addOpen, setAddOpen] = React.useState(false)
   const [deleteInfo, setDeleteInfo] = React.useState({
     open: false,
@@ -49,9 +29,6 @@ export const useContact = () => {
     selected: undefined as Contact | undefined,
   })
   const [searchValue, setSearchValue] = React.useState('')
-  const {
-    account: { accountId, apiKey, accAddress, isContractAddress, isCFAddress },
-  } = useAccount()
   const { defaultNetwork } = useSettings()
   const { setShowAccount, setShowEditContact } = useOpenModals()
 
@@ -60,12 +37,7 @@ export const useContact = () => {
   const [tableHeight] = React.useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
   const [page, setPage] = React.useState(1)
   const pageSize = Math.floor(tableHeight / RowHeight)
-  const {
-    contacts,
-    status: contactStatus,
-    errorMessage: contactsErrorMessage,
-    updateContacts,
-  } = useContacts()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
   const total = contacts?.length
   const pagination = total
     ? {
@@ -108,12 +80,8 @@ export const useContact = () => {
   const onClickSend = React.useCallback(async (data: Contact) => {
     let isENSWrong = false
     if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
-      //#ts-ignore
-      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
-      //#ts-ignore
-      const ens = await provider.lookupAddress(data.contactAddress)
-
-      if (data?.ens?.toLowerCase() != ens?.toLowerCase()) {
+      const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(data.ens)
+      if (ensAddr?.toLowerCase() !== data?.contactAddress?.toLowerCase()) {
         isENSWrong = true
       }
     }
@@ -147,7 +115,7 @@ export const useContact = () => {
   }, [])
   const showPagination = total !== undefined && searchValue === ''
   const submitDeleteContact = React.useCallback(
-    async (address: string, name: string) => {
+    async (address: string, _name: string) => {
       setDeleteLoading(true)
       const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
       const response = await LoopringAPI.contactAPI?.deleteContact(
