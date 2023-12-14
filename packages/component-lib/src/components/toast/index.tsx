@@ -138,4 +138,5 @@ export const NoticePanelSnackBar = ({
     </>
   )
 }
+
 export { ToastType }
