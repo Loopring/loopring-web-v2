@@ -197,3 +197,9 @@ export type Contact = {
   addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
   ens?: string
 } & Partial<sdk.CreateContactRequest>
+export enum ToastType {
+  success = 'success',
+  error = 'error',
+  warning = 'warning',
+  info = 'info',
+}
