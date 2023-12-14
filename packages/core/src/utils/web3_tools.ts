@@ -6,7 +6,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { ethers, utils } from 'ethers'
+import { utils } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError, myLog, isAddress } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../api_wrapper'
