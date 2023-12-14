@@ -15,10 +15,11 @@ import { Trans, useTranslation } from 'react-i18next'
 import { VaultJoinWrapProps } from './Interface'
 import React from 'react'
 import { Grid, Tooltip, Typography } from '@mui/material'
-import { useSettings } from '../../../../stores'
+import { useOpenModals, useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
+import { BasicACoinInput } from '../BasicACoinInput'
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -84,7 +85,24 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
     }
   }, [btnI18nKey, isActiveAccount, network, t])
   const inputEle = React.useMemo(() => {
-    return (
+    return !isActiveAccount ? (
+      <BasicACoinInput
+        {...{
+          ...rest,
+          ...i18n,
+          t,
+          tReady: true,
+          tradeData: tradeData as any,
+          type: TRADE_TYPE.TOKEN,
+          disabled,
+          onChangeEvent: onChangeEvent as any,
+          inputCoinDefaultProps: inputButtonDefaultProps,
+          inputCoinRef: inputBtnRef,
+          ...tokenProps,
+          // inputCoinProps: rest?.inputCoinProps,
+        }}
+      />
+    ) : (
       <BasicACoinTrade
         {...{
           ...rest,
