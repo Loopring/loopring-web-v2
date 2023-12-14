@@ -502,7 +502,18 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     setShowVaultJoin,
     setShowAccount,
   } = useOpenModals()
-
+  const makeWalletLayer2ForVault = () => {
+    let walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+    Reflect.ownKeys(walletMap ?? {}).forEach((symbol) => {
+      walletMap[symbol.toString()] = {
+        ...walletMap[symbol.toString()],
+        count: sdk
+          .toBig((walletMap && walletMap[symbol.toString()]?.count) ?? 0)
+          .toFixed(erc20Map[symbol]?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN),
+      } as any
+    })
+    return walletMap
+  }
   const walletAllowMap =
     (joinTokenMap &&
       Reflect.ownKeys(joinTokenMap).reduce((prev, key: string) => {
@@ -522,9 +533,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     if (symbol) {
       initSymbol = symbol
     }
-    let walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+    let walletMap = makeWalletLayer2ForVault()
     let vaultMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-
     vaultJoinData = {
       ...vaultJoinData,
       walletMap,
@@ -557,14 +567,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     }
     walletInfo = {
       belong: initSymbol,
-      balance: sdk
-        .toBig((walletMap && walletMap[initSymbol.toString()]?.count) ?? 0)
-        .toFixed(erc20Map[initSymbol]?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN),
+      balance: walletMap[initSymbol]?.count ?? 0,
       tradeValue: undefined,
-    }
-    vaultJoinData = {
-      ...vaultJoinData,
-      walletInfo,
     }
     updateVaultJoin({
       ...walletInfo,
@@ -575,12 +579,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   }
   const vaultLayer2Callback = React.useCallback(() => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
-    // setWalletMap(walletMap as WalletMap<T>)
+    let walletMap = makeWalletLayer2ForVault()
     updateVaultJoin({
       ...vaultJoinData,
       walletMap,
-      // walletMap: makeWalletLayer2({ needFilterZero: true }).walletMap ?? {},
       vaultLayer2Map: makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map,
     })
   }, [])
@@ -594,7 +596,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     updateVaultJoin({
       ...vaultJoinData,
-      walletMap: makeWalletLayer2({ needFilterZero: true }).walletMap ?? {},
+      walletMap: makeWalletLayer2ForVault(),
     })
   }, [])
   useWalletLayer2Socket({ walletLayer2Callback })
@@ -626,13 +628,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const refreshRef = React.createRef()
 
   const handlePanelEvent = async (data: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
-    const walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
+    const walletMap = makeWalletLayer2ForVault()
     const tokenSymbol = data.tradeData.belong
     let walletInfo: any = {
       ...walletMap[tokenSymbol],
-      balance: sdk
-        .toBig((walletMap && walletMap[tokenSymbol]?.count) ?? 0)
-        .toFixed(erc20Map[tokenSymbol]?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN),
+      balance: walletMap[tokenSymbol]?.count ?? 0,
       tradeValue: data.tradeData?.tradeValue,
     }
     myLog('walletInfo', walletInfo)

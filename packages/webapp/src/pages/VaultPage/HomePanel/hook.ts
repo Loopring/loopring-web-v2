@@ -15,7 +15,10 @@ import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useVaultMarket = <R extends TickerNew, T = sdk.TokenInfo>({
+export const useVaultMarket = <
+  R extends TickerNew & { cmcTokenId: number; isFavorite: boolean },
+  T = sdk.TokenInfo,
+>({
   tableRef,
   rowConfig = RowConfig,
 }: {
@@ -53,33 +56,35 @@ export const useVaultMarket = <R extends TickerNew, T = sdk.TokenInfo>({
     try {
       const [tokneInfoDetail, quoteTokenTrend, ...quoteTokenTrends] = await Promise.all([
         LoopringAPI?.exchangeAPI?.getTokenInfo({
-          token: tokenMap[row?.erc20Symbol ?? '']?.address,
+          cmcTokenId: row.cmcTokenId,
+          // cmcTokenId
+          // token: tokenMap[row?.erc20Symbol ?? '']?.address,
           currency: 'USD',
         }),
         LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
-          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          cmcTokenId: row.cmcTokenId,
           currency: 'USD',
         }),
         LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
-          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
           range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ALL,
         }),
         LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
-          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
           range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_DAY,
         }),
         LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
-          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
           range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_WEEK,
         }),
         LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
-          token: tokenMap[row?.erc20Symbol ?? ''].address,
+          cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
           range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_MONTH,
@@ -106,13 +111,13 @@ export const useVaultMarket = <R extends TickerNew, T = sdk.TokenInfo>({
         detail: {
           tokenInfo: {
             ...tokenMap[row?.erc20Symbol ?? ''],
-            ...tokneInfoDetail?.data[0],
+            ...tokneInfoDetail?.raw_data[0],
             ...row,
             // symbol: row.symbol,
           },
           trends: [
             ...quoteTokenTrends?.map((item) => {
-              return item?.list.map((trend) => ({ ...trend, timeStamp: trend.timeClose }))
+              return item?.list?.map((trend) => ({ ...trend, timeStamp: trend.timeClose }))
             }),
           ] as any,
         },

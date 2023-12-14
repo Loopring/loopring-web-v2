@@ -18,7 +18,6 @@ export const BasicACoinInput = <T extends Partial<IBData<I>>, I>({
   inputCoinDefaultProps,
   className,
   tokenNotEnough = 'tokenNotEnough',
-
   ...rest
 }: BasicACoinInputProps<T, I> & WithTranslation) => {
   const getDisabled = () => {

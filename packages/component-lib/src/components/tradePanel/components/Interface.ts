@@ -337,6 +337,7 @@ export type BasicACoinInputProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   inputCoinProps?: InputCoinDefaultProps<I, CoinInfo<I>>
   inputCoinDefaultProps?: InputCoinDefaultProps<I, CoinInfo<I>>
   className?: string
+  tokenNotEnough?: string
 }
 
 export type BasicANFTTradeProps<T, I> = (Omit<

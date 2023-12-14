@@ -4,6 +4,7 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+  myLog,
 } from '@loopring-web/common-resources'
 import { InputCoinProps, InputSize } from './Interface'
 import React from 'react'
@@ -98,6 +99,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     value: tradeValue,
   })
 
+  myLog('inputCoin ref inputEle', inputEle)
   // const debounceCount = debounce(({...props}: any) => {
   //     if (handleCountChange) {
   //         handleCountChange({...props}, ref)
