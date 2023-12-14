@@ -230,13 +230,8 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         let ens = '',
           isENSWrong = false
         if (found?.ens && connectProvides?.usedWeb3) {
-          //#ts-ignore
-          const provider = new ethers.providers.Web3Provider(
-            connectProvides?.usedWeb3.currentProvider,
-          )
-          //#ts-ignore
-          ens = await provider.lookupAddress(realAddr)
-          if (ens.toLowerCase() !== found?.ens.toLowerCase()) {
+          const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(found?.ens)
+          if (ensAddr?.toLowerCase() !== address?.toLowerCase()) {
             isENSWrong = true
           }
         }

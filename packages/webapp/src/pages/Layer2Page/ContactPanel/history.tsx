@@ -7,8 +7,7 @@ import {
   ToastType,
   TransactionTable,
 } from '@loopring-web/component-lib'
-import { StylePaper, useAccount, useSystem, useToast, useTokenMap } from '@loopring-web/core'
-import { useContractRecord } from './hooks'
+import { useContractRecord, useAccount, useSystem, useToast, useTokenMap } from '@loopring-web/core'
 import { BackIcon, RowConfig, TOAST_TIME } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import { WithTranslation, withTranslation } from 'react-i18next'

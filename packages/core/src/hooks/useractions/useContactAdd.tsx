@@ -9,7 +9,6 @@ import {
   TradeBtnStatus,
   UIERROR_CODE,
   WALLET_TYPE,
-  ContactType,
   Contact,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
@@ -25,9 +24,6 @@ import {
 import { ToastType, useSettings, useOpenModals } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-type EditItem = {
-  item: ContactType
-}
 export const useContactAdd = () => {
   const { t } = useTranslation()
   const [loading, setLoading] = React.useState(false)

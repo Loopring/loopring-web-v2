@@ -158,7 +158,7 @@ const ActionMemo = React.memo(
     )
   },
 )
-export const ContractPanel = () => {
+export const ContractPanel = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) => {
   const {
     contacts,
     searchValue,
@@ -176,7 +176,10 @@ export const ContractPanel = () => {
     pagination,
     onPageChange,
     showPagination,
-  } = useContact()
+  } = useContact({
+    viewHeightRatio,
+    viewHeightOffset,
+  })
   const { t } = useTranslation()
 
   const noContact = (
