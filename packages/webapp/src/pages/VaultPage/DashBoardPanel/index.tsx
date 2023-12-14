@@ -59,11 +59,11 @@ export const VaultDashBoardPanel = ({
     const profit = sdk
       .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
       .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
-    const colorsId = upColor == UpColor.green ? [0, 1] : [1, 0]
+    const colorsId = upColor === UpColor.green ? [0, 1] : [1, 0]
     const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
     return (
       <>
-        {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING ? (
+        {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING ? (
           <>
             <Typography
               component={'span'}
@@ -118,7 +118,16 @@ export const VaultDashBoardPanel = ({
         )}
       </>
     )
-  }, [hideAssets, vaultAccountInfo?.totalEquityOfUsdt, vaultAccountInfo?.accountStatus, upColor])
+  }, [
+    vaultAccountInfo?.totalEquityOfUsdt,
+    vaultAccountInfo?.totalCollateralOfUsdt,
+    vaultAccountInfo?.accountStatus,
+    upColor,
+    hideAssets,
+    currency,
+    forexMap,
+    colors,
+  ])
   const marginUI = React.useMemo(() => {
     const item = vaultAccountInfo?.marginLevel ?? 0
     //@ts-ignore
@@ -152,7 +161,7 @@ export const VaultDashBoardPanel = ({
         )}
       </>
     )
-  }, [hideAssets, vaultAccountInfo?.marginLevel, vaultAccountInfo?.accountStatus])
+  }, [colors, vaultAccountInfo?.marginLevel])
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -231,7 +240,7 @@ export const VaultDashBoardPanel = ({
                           {t('labelVaultOpenDate')}
                         </Typography>
                         <Typography component={'span'} variant={'body1'} color={'textPrimary'}>
-                          {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
+                          {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                             ? moment(new Date(vaultAccountInfo?.openDate)).format(
                                 YEAR_DAY_MINUTE_FORMAT,
                               )
@@ -274,7 +283,7 @@ export const VaultDashBoardPanel = ({
                           variant={'body1'}
                           color={'textPrimary'}
                         >
-                          {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
+                          {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                             ? hideAssets
                               ? HiddenTag
                               : PriceTag[CurrencyToTag[currency]] +
@@ -313,7 +322,7 @@ export const VaultDashBoardPanel = ({
                           variant={'body1'}
                           color={'textPrimary'}
                         >
-                          {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
+                          {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                             ? hideAssets
                               ? HiddenTag
                               : PriceTag[CurrencyToTag[currency]] +
@@ -340,7 +349,7 @@ export const VaultDashBoardPanel = ({
                           variant={'body1'}
                           color={'textPrimary'}
                         >
-                          {vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
+                          {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                             ? hideAssets
                               ? HiddenTag
                               : PriceTag[CurrencyToTag[currency]] +
@@ -388,7 +397,7 @@ export const VaultDashBoardPanel = ({
                       className={`vaultBtn  ${isMobile ? 'isMobile' : ''}`}
                       fullWidth
                       endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
-                      onClick={(e) => {
+                      onClick={(_e) => {
                         onActionBtnClick(VaultAction.VaultLoan)
                       }}
                     >
@@ -418,7 +427,7 @@ export const VaultDashBoardPanel = ({
                       className={`vaultBtn  ${isMobile ? 'isMobile' : ''}`}
                       fullWidth
                       endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
-                      onClick={(e) => {
+                      onClick={(_e) => {
                         onActionBtnClick(VaultAction.VaultJoin)
                       }}
                     >
@@ -478,7 +487,7 @@ export const VaultDashBoardPanel = ({
                       className={`vaultBtn  ${isMobile ? 'isMobile' : ''}`}
                       fullWidth
                       endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
-                      onClick={(e) => {
+                      onClick={(_e) => {
                         onActionBtnClick(VaultAction.VaultExit)
                       }}
                     >
