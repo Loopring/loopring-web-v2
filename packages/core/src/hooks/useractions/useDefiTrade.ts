@@ -726,7 +726,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
       handleOnchange.cancel()
     }
   }, [isJoin, market])
-  myLog('isLoading', isLoading)
+
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,

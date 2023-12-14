@@ -7,7 +7,6 @@ import {
   MarketDetail,
   MarketTable,
   ModalCloseButtonPosition,
-  useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
@@ -150,6 +149,7 @@ export const VaultHomePanel = ({
               etherscanBaseUrl={etherscanBaseUrl}
               isShow={detail.isShow}
               forexMap={forexMap}
+              isLoading={detail.isLoading}
               {...{ ...detail?.detail }}
             />
           </Box>

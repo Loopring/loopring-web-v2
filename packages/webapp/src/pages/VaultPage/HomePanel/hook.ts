@@ -14,6 +14,7 @@ import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring
 import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { DatacenterRange } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export const useVaultMarket = <
   R extends TickerNew & { cmcTokenId: number; isFavorite: boolean },
@@ -31,7 +32,7 @@ export const useVaultMarket = <
 
   const [detail, setShowDetail] = React.useState<{
     isShow: boolean
-    isLoading?: true
+    isLoading: boolean
     row?: R
     detail?: { tokenInfo: Partial<sdk.DatacenterTokenInfo & sdk.TokenInfo>; trends: any }
   }>({
@@ -54,40 +55,44 @@ export const useVaultMarket = <
       },
     })
     try {
-      const [tokneInfoDetail, quoteTokenTrend, ...quoteTokenTrends] = await Promise.all([
+      const [
+        tokneInfoDetail,
+        // quoteTokenTrend,
+        ...quoteTokenTrends
+      ] = await Promise.all([
         LoopringAPI?.exchangeAPI?.getTokenInfo({
           cmcTokenId: row.cmcTokenId,
           // cmcTokenId
           // token: tokenMap[row?.erc20Symbol ?? '']?.address,
           currency: 'USD',
         }),
+        // LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
+        //   cmcTokenId: row.cmcTokenId,
+        //   currency: 'USD',
+        // }),
         LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
           cmcTokenId: row.cmcTokenId,
           currency: 'USD',
+          //@ts-ignore
+          range: sdk.DatacenterRange.RANGE_ONE_HOUR,
         }),
-        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+        LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
           cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
-          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ALL,
+          range: sdk.DatacenterRange.RANGE_ONE_DAY,
         }),
-        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+        LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
           cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
-          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_DAY,
+          range: sdk.DatacenterRange.RANGE_ONE_WEEK,
         }),
-        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
+        LoopringAPI?.exchangeAPI?.getQuoteTokenInfo({
           cmcTokenId: row.cmcTokenId,
           currency: 'USD',
           //@ts-ignore
-          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_WEEK,
-        }),
-        LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
-          cmcTokenId: row.cmcTokenId,
-          currency: 'USD',
-          //@ts-ignore
-          range: sdk.OHLCVDatacenterRange.OHLCV_RANGE_ONE_MONTH,
+          range: sdk.DatacenterRange.RANGE_ONE_MONTH,
         }),
         // LoopringAPI?.exchangeAPI?.getQuoteTokenOhlcv({
         //   token: tokenMap[row?.erc20Symbol ?? ''].address,
@@ -98,26 +103,52 @@ export const useVaultMarket = <
       ])
       if (
         (tokneInfoDetail as sdk.RESULT_INFO).code ||
-        (tokneInfoDetail as sdk.RESULT_INFO).message ||
-        (quoteTokenTrend as sdk.RESULT_INFO).code ||
-        (quoteTokenTrend as sdk.RESULT_INFO).message
+        (tokneInfoDetail as sdk.RESULT_INFO).message
+        // ||
+        // (quoteTokenTrend as sdk.RESULT_INFO).code ||
+        // (quoteTokenTrend as sdk.RESULT_INFO).message
       ) {
         // throw tokneInfoDetail
       }
       setShowDetail({
         isShow: true,
-        isLoading: true,
+        isLoading: false,
         row,
         detail: {
           tokenInfo: {
             ...tokenMap[row?.erc20Symbol ?? ''],
-            ...tokneInfoDetail?.raw_data[0],
+            // ...tokneInfoDetail?.list[0],
             ...row,
             // symbol: row.symbol,
           },
           trends: [
             ...quoteTokenTrends?.map((item) => {
-              return item?.list?.map((trend) => ({ ...trend, timeStamp: trend.timeClose }))
+              return item?.list?.map((trend) => {
+                const [
+                  timestamp,
+                  price,
+                  volume24H,
+                  volumeChange24H,
+                  percentChange1H,
+                  percentChange24H,
+                  percentChange7D,
+                  percentChange30D,
+                  marketCap,
+                ] = trend
+                return {
+                  close: price,
+                  timeStamp: timestamp,
+                  timestamp,
+                  price,
+                  volume24H,
+                  volumeChange24H,
+                  percentChange1H,
+                  percentChange24H,
+                  percentChange7D,
+                  percentChange30D,
+                  marketCap,
+                }
+              })
             }),
           ] as any,
         },

@@ -55,9 +55,11 @@ export const MarketDetail = ({
   isShow,
   forexMap,
   etherscanBaseUrl,
+  isLoading,
   timeIntervalData = TimeMarketIntervalData,
 }: {
   tokenInfo
+  isLoading: boolean
   trends: any
   isShow: boolean
   forexMap: ForexMap
@@ -69,21 +71,21 @@ export const MarketDetail = ({
   // const [data, setData] = React.useState([])
   const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
   const [trend, setTrend] = React.useState<AmmHistoryItem[] | undefined>([])
-  const makeTenderData = React.useCallback(() => {
-    setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
-  }, [timeInterval, trends])
-  const handleTimeIntervalChange = React.useCallback((timeInterval: TradingInterval) => {
-    setTimeInterval(timeInterval)
-  }, [])
+  const handleTimeIntervalChange = React.useCallback(
+    (timeInterval: TradingInterval) => {
+      setTimeInterval(timeInterval)
+      if (trends?.length) {
+        setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
+      }
+    },
+    [trends],
+  )
 
   React.useEffect(() => {
-    if (isShow) {
+    if (isShow && !isLoading) {
       handleTimeIntervalChange(TradingInterval.hr1)
     }
-    if (trends?.length) {
-      makeTenderData()
-    }
-  }, [isShow, trends?.length])
+  }, [isShow, isLoading])
   return tokenInfo?.symbol ? (
     <>
       <Box
@@ -160,7 +162,7 @@ export const MarketDetail = ({
         // height={"60%"}
         height={'calc(var(--swap-box-height) - 262px)'}
         sx={{
-          minHeihgt: '300px',
+          minHeight: '300px',
         }}
         // minHeight={420}
       >
