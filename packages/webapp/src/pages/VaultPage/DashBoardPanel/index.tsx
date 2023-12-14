@@ -23,6 +23,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   MenuBtnStyled,
   ModalCloseButtonPosition,
+  useOpenModals,
   useSettings,
   VaultAssetsTable,
 } from '@loopring-web/component-lib'
@@ -42,7 +43,13 @@ export const VaultDashBoardPanel = ({
   const { forexMap } = useSystem()
   const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-
+  const {
+    // setShowNoVaultAccount,
+    modals: {
+      isShowVaultJoin,
+      // isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
+    },
+  } = useOpenModals()
   const priceTag = PriceTag[CurrencyToTag[currency]]
   const {
     onActionBtnClick,
@@ -525,7 +532,11 @@ export const VaultDashBoardPanel = ({
               >
                 <VaultAssetsTable {...assetPanelProps} showFilter={false} />
               </Box>
-              <Modal open={showNoVaultAccount} onClose={onBtnClose} sx={{ zIndex: 99 }}>
+              <Modal
+                open={showNoVaultAccount && !isShowVaultJoin?.isShow}
+                onClose={onBtnClose}
+                sx={{ zIndex: 1000 }}
+              >
                 <Box
                   height={'100%'}
                   display={'flex'}
