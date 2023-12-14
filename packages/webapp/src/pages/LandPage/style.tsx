@@ -221,6 +221,7 @@ export const ContainerStyle = styled(Box)`
       width: calc(66% - 48px);
       max-width: inherit;
       position: relative;
+      overflow: hidden;
       svg {
         position: absolute;
         right: 20px;
@@ -242,7 +243,7 @@ export const ContainerStyle = styled(Box)`
 
     > .MuiGrid-root {
       transition: all 0.5s ease;
-      svg: {
+      svg {
         transition: all 0.5s ease;
       }
     }
@@ -262,11 +263,12 @@ export const ContainerStyle = styled(Box)`
       }
     }
     svg {
+      opacity: 0.5;
       .fill-light {
-        fill: var(--color-text-third);
+        fill: var(--color-text-primary);
       }
       .fill-primary {
-        fill: var(--color-primary-pressed);
+        fill: var(--color-primary);
       }
     }
 
@@ -277,17 +279,12 @@ export const ContainerStyle = styled(Box)`
         opacity: 1;
       }
       .boxDetail {
-        outline: 1px solid var(--color-border-hover);
+        border: 1px solid var(--color-border-hover);
       }
 
       svg {
         align-self: flex-end;
-        .fill-light {
-          fill: var(--color-text-primary);
-        }
-        .fill-primary {
-          fill: var(--color-primary);
-        }
+        opacity: 1;
       }
     }
   }
@@ -456,7 +453,10 @@ export const CardBox = styled(Box)`
       text-transform: initial;
     }
   }
+  border: 1px solid var(--opacity);
+  box-shadow: 0 0 0.5px 0.5px var(--color-divide);
   &.hasHover:hover {
     border: 1px solid var(--color-border-hover);
+    box-shadow: none;
   }
 ` as typeof Box

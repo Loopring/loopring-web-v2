@@ -234,7 +234,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     <Button
                       rel='noopener'
                       title={ExchangePro}
-                      onClick={() => window.open(ExchangePro, '_blank')}
+                      // onClick={() => window.open(ExchangePro, '_blank')}
                       endIcon={<GoIcon color='inherit' />}
                     >
                       <span aria-label={ExchangePro} id='labelGo1'>
@@ -282,7 +282,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       className='light'
                       title={Earnlite}
                       endIcon={<GoIcon color='inherit' />}
-                      onClick={() => window.open(Earnlite, '_blank')}
+                      // onClick={() => window.open(Earnlite, '_blank')}
                     >
                       <span aria-label={Earnlite} id='labelGo2'>
                         <Trans i18nKey={'labelGo'} ns={['landPage']}>

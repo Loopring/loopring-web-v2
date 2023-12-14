@@ -120,6 +120,7 @@ export const RiskComponent = ({
   isAgree = true,
   confirmLabel = 'labelRiskAgree',
   cancelLabel = 'labelRiskCancel',
+  strongBtn = 'cancel',
   title,
 }: {
   open: boolean
@@ -129,6 +130,7 @@ export const RiskComponent = ({
   infos?: RiskInformation[]
   description?: JSX.Element[]
   checkElement?: JSX.Element
+  strongBtn?: string
   isAgree?: boolean // if mutiple when all aggree set true
   confirmLabel?: string
   cancelLabel?: string
@@ -219,7 +221,8 @@ export const RiskComponent = ({
         >
           <Box width={'48%'}>
             <Button
-              variant={'contained'}
+              sx={{ height: '4rem' }}
+              variant={strongBtn === 'cancel' ? 'contained' : 'outlined'}
               size={'medium'}
               onClick={(_) => handleClose()}
               color={'primary'}
@@ -231,7 +234,7 @@ export const RiskComponent = ({
           <Box width={'48%'}>
             <Button
               sx={{ height: '4rem' }}
-              variant={'outlined'}
+              variant={strongBtn == 'cancel' ? 'outlined' : 'contained'}
               size={'medium'}
               disabled={!isAgree}
               fullWidth
@@ -249,10 +252,8 @@ const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
   }
-
   .MuiList-root {
     list-style: inside;
-
     .MuiListItem-root {
       display: list-item;
       margin-bottom: ${({ theme }) => theme.unit}px;
@@ -856,6 +857,8 @@ export const SwapSecondConfirmation = withTranslation('common')(
         }
         open={open}
         infos={infos}
+        strongBtn={'confirm'}
+        confirmLabel={'labelConfirm'}
         handleClose={handleClose}
         handleConfirm={handleConfirm}
       />
