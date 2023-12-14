@@ -15,7 +15,10 @@ import {
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const useMarket = <R extends TickerNew, T = sdk.TokenInfo>({
+export const useMarket = <
+  R extends TickerNew & { cmcTokenId: number; isFavorite: boolean },
+  T = sdk.TokenInfo,
+>({
   tableRef,
   rowConfig = RowConfig,
   tickerMap,
@@ -74,11 +77,12 @@ export const useMarket = <R extends TickerNew, T = sdk.TokenInfo>({
         }
         return filter
       })
-      let data: R & sdk.TokenInfo[] = Object.values(tickerMap) ?? []
+      let data: Array<R & sdk.TokenInfo> = Object.values(tickerMap) ?? []
       data = data.map((item) => {
         return {
           ...tokenMap[item.symbol],
           ...item,
+          cmcTokenId: item.tokenId,
           isFavorite: favoriteMarket?.includes(item.symbol),
         }
       })

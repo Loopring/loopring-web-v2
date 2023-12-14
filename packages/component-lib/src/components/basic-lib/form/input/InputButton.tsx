@@ -41,6 +41,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     isHideError = false,
     fullwidth = false,
     loading = false,
+    disableBelong = false,
     className,
     tokenType,
     tokenImageKey,
@@ -198,7 +199,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             endIcon={
               <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
             }
-            disabled={disabled}
+            disabled={disabled || disableBelong}
           >
             {belong ? (
               <Grid container align-items={'center'} display={'flex'}>

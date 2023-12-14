@@ -19,7 +19,6 @@ import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
-import { BasicACoinInput } from '../BasicACoinInput'
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -38,16 +37,20 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
 }: Required<VaultJoinWrapProps<T, I, V>>) => {
   const { t, ...i18n } = useTranslation()
   const inputBtnRef = React.useRef()
+  // const inputCoinRef = React.useRef()
+
   let { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const [minFee] = React.useState<{ minFee: string } | undefined>(undefined)
+  // const [minFee] = React.useState<{ minFee: string } | undefined>(undefined)
   const getDisabled = React.useMemo(() => {
     return disabled || btnStatus === TradeBtnStatus.DISABLED
   }, [btnStatus, disabled])
 
   const inputButtonDefaultProps: InputButtonDefaultProps<I, CoinInfo<I>> = {
     label: t('labelEnterToken'),
+    focusOnInput: true,
   }
+  // myLog('VaultJoinWrap inputBtnRef', inputBtnRef)
   const label = React.useMemo(() => {
     if (btnI18nKey) {
       const key = btnI18nKey.split('|')
@@ -79,7 +82,37 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
         ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
       })
     }
-  }, [btnI18nKey, isActiveAccount])
+  }, [btnI18nKey, isActiveAccount, network, t])
+  const inputEle = React.useMemo(() => {
+    return (
+      <BasicACoinTrade
+        {...{
+          ...rest,
+          ...i18n,
+          t,
+          tReady: true,
+          tradeData: tradeData as any,
+          type: TRADE_TYPE.TOKEN,
+          disabled,
+          onChangeEvent: onChangeEvent as any,
+          inputButtonDefaultProps: { ...inputButtonDefaultProps, disableBelong: !isActiveAccount },
+          placeholderText: '0.00',
+          inputBtnRef,
+          ...tokenProps,
+        }}
+      />
+    )
+  }, [
+    disabled,
+    i18n,
+    inputButtonDefaultProps,
+    isActiveAccount,
+    onChangeEvent,
+    rest,
+    t,
+    tokenProps,
+    tradeData,
+  ])
 
   return (
     <Grid
@@ -101,42 +134,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
         alignItems={'stretch'}
         flexDirection={'column'}
       >
-        {!isActiveAccount ? (
-          // @ts-ignore
-          <BasicACoinInput
-            {...{
-              ...rest,
-              ...i18n,
-              t,
-              tReady: true,
-              tradeData: tradeData as any,
-              type: TRADE_TYPE.TOKEN,
-              disabled,
-              onChangeEvent: onChangeEvent as any,
-              inputCoinDefaultProps: inputButtonDefaultProps,
-              ...tokenProps,
-              inputCoinRef: inputBtnRef,
-              // inputCoinProps: rest?.inputCoinProps,
-            }}
-          />
-        ) : (
-          <BasicACoinTrade
-            {...{
-              ...rest,
-              ...i18n,
-              t,
-              tReady: true,
-              tradeData: tradeData as any,
-              type: TRADE_TYPE.TOKEN,
-              disabled,
-              onChangeEvent: onChangeEvent as any,
-              inputButtonDefaultProps,
-              placeholderText: minFee?.minFee ? minFee.minFee : '0.00',
-              inputBtnRef,
-              ...tokenProps,
-            }}
-          />
-        )}
+        {inputEle}
       </Grid>
       <Grid item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>

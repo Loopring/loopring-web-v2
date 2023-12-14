@@ -31,6 +31,7 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   isAllowBalanceClick?: boolean
   maxAllow?: boolean
   disableInputValue?: boolean
+  disableBelong?: boolean
   disabled?: boolean
   logoColor?: string
   wait?: number
