@@ -147,7 +147,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isContractAddress,
     loopringSmartWalletVersion,
+    isENSWrong,
     reCheck,
+    ens,
   } = useAddressCheck(true)
 
   React.useEffect(() => {
@@ -336,7 +338,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               request,
               web3: connectProvides.usedWeb3 as any,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProviders[ connectName ] ??
+              walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -710,6 +712,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     },
     isActiveAccount,
     isActiveAccountFee,
+    isENSWrong,
     feeWithActive,
     handleOnFeeWithActive: (value: boolean) => {
       setFeeWithActive(value)

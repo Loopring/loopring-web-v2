@@ -26,6 +26,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useLocation } from 'react-router-dom'
 import { connectProvides } from '@loopring-web/web3-provider'
+import { ethers } from 'ethers'
 
 type Network = 'L1' | 'L2'
 const RowHeight = 78
@@ -108,11 +109,11 @@ export const useContact = () => {
   const onClickSend = React.useCallback(async (data: Contact) => {
     let isENSWrong = false
     if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
-      debugger
-      //@ts-ignore
-      const ens = await connectProvides.usedWeb3?.currentProvider?.lookupAddress(
-        data.contactAddress,
-      )
+      //#ts-ignore
+      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
+      //#ts-ignore
+      const ens = await provider.lookupAddress(data.contactAddress)
+
       if (data?.ens?.toLowerCase() != ens?.toLowerCase()) {
         isENSWrong = true
       }

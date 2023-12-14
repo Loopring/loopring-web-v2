@@ -93,6 +93,10 @@ export const EditContact = ({
         alignItems={'flex-start'}
         alignSelf={'stretch'}
         marginTop={-4}
+        width={'var(--modal-width)'}
+        //   height={}
+        //   : `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+        // _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
         justifyContent={'stretch'}
       >
         <Typography
@@ -116,6 +120,7 @@ export const EditContact = ({
         flexDirection={'column'}
         paddingBottom={4}
         width={'100%'}
+        paddingX={3}
       >
         <Box
           flex={1}
@@ -265,22 +270,21 @@ export const EditContact = ({
           flexDirection={'column'}
           alignItems={'center'}
           justifyContent={'flex-end'}
+          marginTop={3}
         >
-          <Box alignSelf={'stretch'} paddingX={5}>
-            <Button
-              fullWidth
-              variant={'contained'}
-              size={'medium'}
-              color={'primary'}
-              onClick={() => {
-                submitContact()
-              }}
-              loading={btnStatus === TradeBtnStatus.LOADING && !getDisabled ? 'true' : 'false'}
-              disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
-            >
-              {label}
-            </Button>
-          </Box>
+          <Button
+            fullWidth
+            variant={'contained'}
+            size={'medium'}
+            color={'primary'}
+            onClick={() => {
+              submitContact()
+            }}
+            loading={btnStatus === TradeBtnStatus.LOADING && !getDisabled ? 'true' : 'false'}
+            disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
+          >
+            {label}
+          </Button>
         </Box>
       </BoxStyle>
     </>

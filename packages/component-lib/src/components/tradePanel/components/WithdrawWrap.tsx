@@ -2,15 +2,10 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import { bindHover } from 'material-ui-popup-state/es'
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
-import {
-  Box,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Typography,
-} from '@mui/material'
+import { Box, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
 import {
   AddressError,
+  AlertIcon,
   AssetsRawDataItem,
   CloseIcon,
   ContactIcon,
@@ -19,6 +14,7 @@ import {
   EmptyValueTag,
   FeeInfo,
   globalSetup,
+  hexToRGB,
   IBData,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -83,6 +79,8 @@ export const WithdrawWrap = <
   isFromContact,
   onClickContact,
   loopringSmartWalletVersion,
+  isENSWrong,
+  ens,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -184,8 +182,8 @@ export const WithdrawWrap = <
     : WALLET_TYPE.EOA
 
   return (
-      <GridWrapStyle
-          className={'withdraw-wrap'}
+    <GridWrapStyle
+      className={'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -399,6 +397,27 @@ export const WithdrawWrap = <
               )}
             </>
           )}
+          {isENSWrong && (
+            <>
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {ens}
+              </Typography>
+              <Typography
+                marginTop={2}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                width={`calc(100% - ${9 * theme.unit}px)`}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelContactENSAlert')}
+              </Typography>
+            </>
+          )}
         </Box>
       </Grid>
       {!isToMyself && (
@@ -477,6 +496,6 @@ export const WithdrawWrap = <
         }}
         severity={ToastType.success}
       />
-      </GridWrapStyle>
+    </GridWrapStyle>
   )
 }

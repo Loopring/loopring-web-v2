@@ -157,17 +157,27 @@ const BoxStyle = styled(Box)`
         align-self: stretch;
       }
     }
+    .MuiTab-root.sendType {
+      padding: ${({ theme }) => 3 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
+      &.Mui-selected,
+      &:hover {
+        padding: ${({ theme }) => 3 * theme.unit}px ${({ theme }) => 3 * theme.unit}px;
+        box-sizing: border-box;
+      }
+      &:after {
+        display: none;
+      }
+    }
   }
 `
 
 export const SendFromContact = ({
-  contact,
   // contacts,
   isENSWrong,
+  ...contact
 }: {
   isENSWrong
-  contact: Contact
-}) => {
+} & Contact) => {
   const [selected, setSelected] = React.useState(SendAssetList.SendAssetToOtherL1.key)
   const { defaultNetwork } = useSettings()
   const { setShowTransfer, setShowWithdraw, setShowEditContact } = useOpenModals()
@@ -239,22 +249,20 @@ export const SendFromContact = ({
         <Divider style={{ marginTop: '-1px', width: '100%' }} />
       </Box>
       <BoxStyle
-        flex={1}
         display={'flex'}
-        alignItems={'center'}
+        alignItems={'stretch'}
         flexDirection={'column'}
         paddingBottom={4}
         width={'100%'}
       >
-        <Box
-          flex={1}
-          display={'flex'}
-          flexDirection={'column'}
-          alignItems={'center'}
-          justifyContent={'space-between'}
-          className={'content-main'}
-        >
-          <Box display={'flex'} flexDirection={'column'} justifyContent={'stretch'} marginTop={2}>
+        <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'stretch'}
+            marginTop={2}
+            paddingX={3}
+          >
             <Typography
               variant={'body1'}
               component={'span'}
@@ -280,7 +288,7 @@ export const SendFromContact = ({
                 padding={1}
                 display={'inline-flex'}
                 width={`calc(100% - ${9 * theme.unit}px)`}
-                bgcolor={hexToRGB(theme.colorBase.warning, 0.1)}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
                 borderRadius={2}
                 color={'var(--color-text-button)'}
               >
@@ -289,75 +297,61 @@ export const SendFromContact = ({
               </Typography>
             )}
           </Box>
-          <Box
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-            justifyContent={'center'}
-            flex={1}
+          <Tabs
+            variant={'fullWidth'}
+            value={selected}
+            onChange={(_event, value) => setSelected(value)}
+            aria-label='l2-history-tabs'
+            sx={{
+              display: 'flex',
+              flexWrap: 'nowrap',
+            }}
           >
-            <Tabs
-              value={selected}
-              onChange={(_event, value) => setSelected(value)}
-              aria-label='l2-history-tabs'
-              variant='scrollable'
-              sx={{
-                display: 'flex',
-                flexWrap: 'nowrap',
-              }}
-            >
-              <Tab
-                value={SendAssetList.SendAssetToOtherL1.key}
-                key={SendAssetList.SendAssetToOtherL1.key}
-                label={
-                  <TickCardStyleItem
-                    selected={selected == SendAssetList.SendAssetToOtherL1.key}
-                    className={'btnCard'}
-                    sx={{
-                      width: '50%',
-                      // minWidth: isMobile ? '180px' : '280px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography component={'span'} display={'inline-flex'}>
-                        <CoinIcon size={32} symbol={'ETH'} />
-                      </Typography>
-                      <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
-                        {L1L2_NAME_DEFINED[network].l1ChainName +
-                          '/' +
-                          L1L2_NAME_DEFINED[network].l1Symbol}
-                      </Typography>
-                    </CardContent>
-                  </TickCardStyleItem>
-                }
-              />
-              <Tab
-                value={SendAssetList.SendAssetToL2.key}
-                key={SendAssetList.SendAssetToL2.key}
-                label={
-                  <TickCardStyleItem
-                    selected={selected == SendAssetList.SendAssetToL2.key}
-                    className={'btnCard'}
-                    sx={{
-                      width: '50%',
-                      // minWidth: isMobile ? '180px' : '280px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography component={'span'} display={'inline-flex'}>
-                        <CoinIcon size={32} symbol={'ETH'} />
-                      </Typography>
-                      <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
-                        {L1L2_NAME_DEFINED[network].loopringL2 +
-                          '/' +
-                          L1L2_NAME_DEFINED[network].l2Symbol}
-                      </Typography>
-                    </CardContent>
-                  </TickCardStyleItem>
-                }
-              />
-            </Tabs>
-          </Box>
+            <Tab
+              className={'sendType'}
+              value={SendAssetList.SendAssetToOtherL1.key}
+              key={SendAssetList.SendAssetToOtherL1.key}
+              label={
+                <TickCardStyleItem
+                  className={'btnCard'}
+                  selected={selected == SendAssetList.SendAssetToOtherL1.key}
+                >
+                  <CardContent>
+                    <Typography component={'span'} display={'inline-flex'}>
+                      <CoinIcon size={32} symbol={L1L2_NAME_DEFINED[network].L1Token} />
+                    </Typography>
+                    <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                      {L1L2_NAME_DEFINED[network].l1ChainName +
+                        '/' +
+                        L1L2_NAME_DEFINED[network].l1Symbol}
+                    </Typography>
+                  </CardContent>
+                </TickCardStyleItem>
+              }
+            />
+            <Tab
+              className={'sendType'}
+              value={SendAssetList.SendAssetToL2.key}
+              key={SendAssetList.SendAssetToL2.key}
+              label={
+                <TickCardStyleItem
+                  selected={selected == SendAssetList.SendAssetToL2.key}
+                  className={'btnCard'}
+                >
+                  <CardContent>
+                    <Typography component={'span'} display={'inline-flex'}>
+                      <CoinIcon size={32} symbol={L1L2_NAME_DEFINED[network].L2Token} />
+                    </Typography>
+                    <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                      {L1L2_NAME_DEFINED[network].loopringL2 +
+                        '/' +
+                        L1L2_NAME_DEFINED[network].l2Symbol}
+                    </Typography>
+                  </CardContent>
+                </TickCardStyleItem>
+              }
+            />
+          </Tabs>
         </Box>
         <Box
           width={'100%'}
@@ -366,8 +360,8 @@ export const SendFromContact = ({
           alignItems={'center'}
           justifyContent={'flex-end'}
         >
-          <Box alignSelf={'stretch'} paddingX={5}>
-            <Button onClick={submit} fullWidth>
+          <Box alignSelf={'stretch'} paddingX={3}>
+            <Button onClick={submit} variant={'contained'} size={'medium'} fullWidth>
               {t('labelContactsNext')}
             </Button>
           </Box>

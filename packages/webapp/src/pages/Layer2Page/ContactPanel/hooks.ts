@@ -108,11 +108,11 @@ export const useContact = () => {
   const onClickSend = React.useCallback(async (data: Contact) => {
     let isENSWrong = false
     if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
-      debugger
-      //@ts-ignore
-      const ens = await connectProvides.usedWeb3?.currentProvider?.lookupAddress(
-        data.contactAddress,
-      )
+      //#ts-ignore
+      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
+      //#ts-ignore
+      const ens = await provider.lookupAddress(data.contactAddress)
+
       if (data?.ens?.toLowerCase() != ens?.toLowerCase()) {
         isENSWrong = true
       }

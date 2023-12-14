@@ -533,7 +533,9 @@ export const ModalPanel = <
         }}
         content={
           <EditContact
-            {...{ ...contactAddProps }}
+            {...{
+              ...contactAddProps,
+            }}
             // contacts={isShowAccount.info?.contacts}
             // setToast={setToast}
           />

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { ethers } from 'ethers'
 
 import { connectProvides } from '@loopring-web/web3-provider'
 import {
@@ -23,9 +24,14 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
   const { defaultNetwork } = useSettings()
-  const [{ realAddr, ens }, setRealAddr] = React.useState<{ realAddr: string; ens: string }>({
+  const [{ realAddr, ens, isENSWrong }, setRealAddr] = React.useState<{
+    realAddr: string
+    ens: string
+    isENSWrong: boolean
+  }>({
     realAddr: '',
     ens: '',
+    isENSWrong: false,
   })
   // const [ens, setENS] = React.useState<string>('')
 
@@ -60,7 +66,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
           setIsAddressCheckLoading(true)
           const { realAddr, addressErr, isContract, ens } = await checkAddr(address, web3)
           if (_address.current == address) {
-            setRealAddr({ realAddr, ens })
+            setRealAddr({ realAddr, ens, isENSWrong: false })
             setAddrStatus(addressErr)
             if (isContract) {
               setIsContractAddress(isContract)
@@ -175,12 +181,12 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       if (_address?.current == address && error?.code == sdk.LoopringErrorCode.HTTP_ERROR) {
         _address.current = ''
         setAddrStatus(AddressError.TimeOut)
-        setRealAddr({ realAddr: '', ens: '' })
+        setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
         setIsAddressCheckLoading(false)
       } else {
         setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
         myLog('address update address async', address, error)
-        setRealAddr({ realAddr: '', ens: '' })
+        setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
         _address.current = ''
         setIsLoopringAddress(false)
         setIsAddressCheckLoading(false)
@@ -221,7 +227,20 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         sdk.AddressType.CONTRACT,
       ].concat(checkLayer2Status ? [sdk.AddressType.EOA] : [])
       if (found && listNoCheckRequired.includes(found.addressType)) {
-        setRealAddr({ realAddr: address, ens: found?.ens ?? '' })
+        let ens = '',
+          isENSWrong = false
+        if (found?.ens && connectProvides?.usedWeb3) {
+          //#ts-ignore
+          const provider = new ethers.providers.Web3Provider(
+            connectProvides?.usedWeb3.currentProvider,
+          )
+          //#ts-ignore
+          ens = await provider.lookupAddress(realAddr)
+          if (ens.toLowerCase() !== found?.ens.toLowerCase()) {
+            isENSWrong = true
+          }
+        }
+        setRealAddr({ realAddr: address, ens, isENSWrong })
         switch (found.addressType) {
           case sdk.AddressType.LOOPRING_HEBAO_CF:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6:
@@ -428,6 +447,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     isContract1XAddress,
     isContractAddress,
     isActiveAccountFee,
+    isENSWrong,
     loopringSmartWalletVersion,
     reCheck,
   }

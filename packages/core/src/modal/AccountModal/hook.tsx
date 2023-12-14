@@ -866,9 +866,9 @@ export function useAccountModalForUI({
             // sendInfo={isShowAccount?.info}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false })
-        },
+        // onBack: () => {
+        //   setShowAccount({ isShow: false })
+        // },
       },
       [AccountStep.SendNFTGateway]: {
         view: (

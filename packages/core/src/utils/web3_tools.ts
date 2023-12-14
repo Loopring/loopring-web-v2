@@ -6,7 +6,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { utils } from 'ethers'
+import { ethers, utils } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError, myLog, isAddress } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../api_wrapper'
@@ -156,7 +156,7 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
   let addressErr: AddressError = AddressError.NoError
   let isContract: undefined | boolean,
     response: any,
-    ens = ''
+    ens: any = ''
   if (address) {
     try {
       if (/^\d{5,8}$/g.test(address) && Number(address) > 10000 && LoopringAPI.exchangeAPI) {
@@ -185,12 +185,17 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
       }
     }
     if (realAddr && web3) {
+      //#ts-ignore
+      const provider = new ethers.providers.Web3Provider(connectProvides?.usedWeb3.currentProvider)
+      //#ts-ignore
+      // ens =
       ;[isContract, response, ens] = await Promise.all([
         sdk.isContract(web3, realAddr),
         LoopringAPI.exchangeAPI.getAccount({
           owner: realAddr,
         }),
-        web3?.currentProvider?.lookupAddress(realAddr),
+        //#ts-ignore
+        provider.lookupAddress(realAddr),
       ])
       if (
         isContract &&

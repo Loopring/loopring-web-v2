@@ -287,7 +287,7 @@ export const useContactAdd = () => {
   })
   React.useEffect(() => {
     if (isShowEditContact.isShow) {
-      if (isShowEditContact?.info?.address) {
+      if (isShowEditContact?.info?.contactName) {
         setIsEdit(() => {
           return { item: isShowEditContact.info }
         })
@@ -295,9 +295,10 @@ export const useContactAdd = () => {
         onChangeAddressType(
           addressToExWalletMapFn(isShowEditContact.info?.addressType ?? undefined),
         )
-        if (isShowEditContact?.info?.contactAddress) {
-          onChangeAddress((isEdit as EditItem)?.item.contactAddress)
-        }
+        onChangeAddress(isShowEditContact.info?.contactAddress)
+        // if (isShowEditContact?.info?.contactAddress ) {
+        //   onChangeAddress((isEdit as EditItem)?.item.contactAddress)
+        // }
       } else {
         setIsEdit(false)
       }
