@@ -203,18 +203,7 @@ export const MarketTable = withTranslation('tables')(
             sortable: true,
             formatter: ({ row }: any) => {
               const price = row.price
-              // ? PriceTag[CurrencyToTag[currency]] +
-              //   getValuePrecisionThousand(
-              //     row.price * (forexMap[currency] ?? 0),
-              //     undefined,
-              //     undefined,
-              //     2,
-              //     false,
-              //     {
-              //       isFait: true,
-              //     },
-              //   )
-              // : EmptyValueTag
+
               return (
                 <Typography
                   className='rdg-cell-value'
@@ -223,7 +212,8 @@ export const MarketTable = withTranslation('tables')(
                   whiteSpace={isMobile ? 'pre-line' : 'pre'}
                   justifyContent={isMobile ? 'flex-end' : 'flex-start'}
                 >
-                  {PriceTag[CurrencyToTag[currency]] + price * (forexMap[currency] ?? 0)}
+                  {PriceTag[CurrencyToTag[currency]] +
+                    price * (forexMap[currency]?.toFixed(2) ?? 0)}
                 </Typography>
               )
             },

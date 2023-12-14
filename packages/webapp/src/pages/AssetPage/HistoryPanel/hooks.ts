@@ -1334,11 +1334,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + erc20Token.decimals)
                     percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
-                    mainContentRender = `${
-                      amount.gte(0)
-                        ? getValuePrecisionThousand(amount, precision, precision)
-                        : EmptyValueTag
-                    } (${erc20Symbol}  ${DirectionTag}  ${vSymbol})`
+                    const amountStr = amount.gte(0)
+                      ? getValuePrecisionThousand(amount, precision, precision)
+                      : EmptyValueTag
+                    mainContentRender = `${amountStr} ${erc20Symbol} ${DirectionTag} ${amountStr} ${vSymbol})`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow

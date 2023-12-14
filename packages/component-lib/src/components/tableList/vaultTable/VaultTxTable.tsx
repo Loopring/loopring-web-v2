@@ -9,7 +9,7 @@ import { FormatterProps } from 'react-data-grid'
 import { RawDataVaultTxItem, VaultRecordType } from './Interface'
 import { globalSetup, OrderListIcon, RowInvestConfig } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-import moment from 'moment/moment'
+import moment from 'moment'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { RedeemDes2 } from '../../modal'
@@ -175,7 +175,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           },
         },
       ],
-      [history, upColor, t],
+      [t, props],
     )
     const getColumnMobileTransaction = React.useCallback(
       (): Column<R, unknown>[] => [
