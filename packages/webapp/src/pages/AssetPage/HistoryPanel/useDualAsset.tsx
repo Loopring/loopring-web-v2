@@ -611,7 +611,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         const rawData = infos.map((item: sdk.DualProductAndPrice) => {
           return makeDualViewItem(item, index, rule, baseSymbol, quoteSymbol, dualMarket)
         })
-        myLog('setDualProducts', rawData)
         setDualProducts(rawData)
       }
     } else {
