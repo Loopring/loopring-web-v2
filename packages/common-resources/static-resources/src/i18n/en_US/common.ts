@@ -1630,7 +1630,7 @@ export default {
   labelBtradePoolDes: 'Loopring Pool:',
   labelBtradePool: 'Loopring Pool',
   labelBtradeToleranceTooltips:
-    'Slippage tolerance refers to the maximum acceptable difference between the expected and actual execution price of a trade.',
+    'Your trade will revert if the price changes unfavorably by more than this percentage.',
   labelBtradeFeeTooltips: 'The trading fee is fixed at 0.3%.',
   labelBtradeMinReceiveTooltips:
     'The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.',
@@ -1894,16 +1894,15 @@ export default {
   labelRedPacketRecipientList: 'Recipient List',
   labelRedPacketPublicTooltip:
     'Your Red Packet is public, and everyone can participate in claiming it.',
-  labelRedPacketPrivateTooltip: `
-    <p>Your Red Packet is private, and only the addresses you specify can claim it.</p>
-    <p>To create a new Exclusive Red Packet, please follow these steps:</p>
-    <li>1. Select the type of Red Packet</li>
-    <li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>
-    <li>3. Designate the recipients</li>
-    <li>4. Set the Notification Display</li>
-    <p>For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>
-    <p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>
-  `,
+  labelRedPacketPrivateTooltip:
+    '<p>Your Red Packet is private, and only the addresses you specify can claim it.</p>' +
+    '<p>To create a new Exclusive Red Packet, please follow these steps:</p>' +
+    '<li>1. Select the type of Red Packet</li>' +
+    '<li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>' +
+    '<li>3. Designate the recipients</li>' +
+    '<li>4. Set the Notification Display</li>' +
+    '<p>For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>' +
+    "<p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>",
   labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
   labelRedpacketExclusiveSelected: 'Selected: {{count}}',
   labelRedpacketExclusiveManualEdit: 'Manual Edit',
@@ -2119,12 +2118,19 @@ export default {
   labelL2DepositNote: 'Receive token in {{loopringL2}}',
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
-  labelReadAll: 'Read all',
+  labelReadAll: 'View all',
   labelLuckyTokenNormal: 'Normal',
   labelRedPacketSendAverageTitle: 'Average Red Packet',
   labelBlindBoxHint:
     'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelNormalRedPacketTitle: 'Normal Red Packet',
+  labelReceiveToken: 'Receive',
+  labelETHStakingEnterPaymentToken: 'Amount',
+  labelDefiDuration: 'Duration',
+  labelFlexible: 'Flexible',
+  labelEstAPR: 'Est.APR',
+  labelTradingFeeTooltips:
+    "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
   labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
   labelDualLongestSettlementFixed: 'Fixed',
@@ -2139,4 +2145,184 @@ export default {
   labelEstAPR: 'Est.APR',
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
-}
+  labelENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelSendToContact: 'Send to',
+  labelContactENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelL2DualNote: 'Dual Investment Notification',
+  labelQuickInvest: 'Quick Invest',
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
+  labelVault: 'Vault',
+  labelVaultHome: 'Home',
+  labelVaultDashboard: 'Dashboard',
+  labelVaultRefresh: 'Refresh',
+  labelVaultAddBtn: 'Margin Call',
+  labelVaultJoinBtn: 'Open Position',
+  labelVaultCheckInProcessing: 'Checking Vault status',
+  labelVaultRecord: 'Records',
+  labelEnterToken: 'Select Token',
+  labelVaultExitBtn: 'Close Out',
+  labelVaultLoanBtn: 'Loan',
+  labelVaultTutorial: 'Tutorial',
+  labelVaultTotalToken: 'Vault Token',
+  labelVaultJoinMini: 'Minimum of {{arg}}',
+  labelVaultJoinMax: 'Maximum of {{arg}}',
+  labelVaultJoinNotEnough: 'Insufficient {{arg}} balance',
+  labelVaultJoinMarginTitle: 'Margin Call',
+  labelVaultJoinTitle: 'Open Position',
+  labelVaultTradeBtn: 'Vault Trade',
+  labelVaultRedeemBtn: 'Close Out',
+  labelVaultExitDes:
+    'Upon closing your position, all open orders will be canceled, and any outstanding debts will be automatically repaid. If the available balance of the Vault_Token is insufficient to cover the debt, Loopring will sell a portion of your assets at the market price to repay the debt. The remaining Vault_Token will be converted to the token you have staked at the current market price and returned to your {{loopringL2}} Account.',
+  labelVaultConfirm: 'Confirm',
+  labelVaultCancel: 'Cancel',
+  labelVaultExitTitle: 'Close Out',
+  labelVaultSwapBtn: 'Swap',
+  labelVaultSwap: 'Vault Trade',
+  labelVaultType: 'Type',
+  labelVaultTypeOpenPosition: 'Open Position',
+  labelVaultStatus: 'Status',
+  labelVaultJoinStatus: '{{status}} {{percentage}}',
+  labelVaultTradeStatus: '{{status}} {{percentage}}',
+  labelVaultCollateral: 'Collateral',
+  labelVaultReceive: 'Receive',
+  labelVaultTime: 'Time',
+  labelVaultExitType: 'Type',
+  labelVaultExitTypeClose: 'Close Out',
+  labelVaultExitStatusLabel: 'Status',
+  labelVaultExitStatus: '{{status}}',
+  labelVaultExitStatusSuccess: 'Successful',
+  labelVaultExitTotalBalance: 'Total Balance',
+  labelVaultExitTotalDebt: 'Total Debt',
+  labelVaultExitTotalEquity: 'Total Equity',
+  labelVaultExitProfit: 'Profit',
+  labelVaultExitProfitPercentage: 'Profit Percentage',
+  labelVaultExitTime: 'Time',
+  labelVaultExitStatusPending: 'Pending',
+  labelVaultExitCloseAmount: 'Close Amount',
+  labelVaultExitPendingDes:
+    'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
+  labelVaultBorrow: 'Borrow',
+  labelVaultRepay: 'Repay',
+  labelVaultTotalQuoteDes:
+    'Total Quota is the maximum amount available  for you to be used as collateral.',
+  labelVaultTokenQuoteDes:
+    'When provide the token as collateral, you will receive an equivalent amount of Vault Token.',
+  labelTitleVaultDes:
+    'Use third-party funds to trade assets. Traders can access additional capital to leverage their positions and amplify trading results. ',
+  labelTitleVault: 'Vault',
+  labelVaultHomeTitle: 'Home',
+  labelVaultDashboardTitle: 'Dashboard',
+  labelVaultTotalBalance: 'Total Balance',
+  labelVaultOpenDate: 'Open Date:',
+  labelVaultMarginLevel: 'Margin Level',
+  labelVaultTotalCollateral: 'Total Collateral',
+  labelVaultTotalDebt: 'Total Debt',
+  labelVaultTotalEquity: 'Total Equity',
+  labelVaultProfit: 'Profit',
+  labelVaultCloseBtn: 'Close',
+  labelGoVaultDashBoard: 'Go to Dashboard',
+  labelVaultBrowserToken: 'Amount',
+  labelVaultQuotaTooltips: 'VaultQuoteDes',
+  labelVaultQuota: 'Total Quote',
+  labelVaultBorrowMini: 'Minimum of {{arg}}',
+  labelVaultBorrowNotEnough: 'Exceeded Maximum Borrowable Amount',
+  labelVaultBorrowMax: 'Maximum of {{arg}}',
+  labelVaultBorrowBtn: 'Borrow',
+  labelVaultBorrowStatusLabel: 'Status',
+  labelVaultBorrowTypeLabel: 'Type',
+  labelVaultBorrowAmountLabel: 'Amount',
+  labelVaultBorrowStatus: '{{status}}',
+  labelVaultBorrowTitle: 'Borrow',
+  labelPending: 'Pending',
+  labelVaultRepayMini: 'Minimum of {{arg}}',
+  labelVaultRepayNotEnough: 'Insufficient {{arg}} balance',
+  labelVaultRepayMax: 'Maximum of {{arg}}',
+  labelVaultRepayBtn: 'Repay',
+  labelRepayQuota: 'Borrowed',
+  labelVaultWhatis: 'What is Loopring Vault?',
+  labelVaultDesSimple:
+    '<p>Vault: Using a third-party funds to trade assets. Traders can access additional capital, amplifying trading results.</p>',
+  labelVaultRiskDes:
+    '<p>Loopring Vault acts as an isolated margin account, enabling users to borrow and lend tokens with collateral. Besides supporting leveraged trading, it also facilitates the trading of tokens not available on Loopring DEX by tapping into CEX liquidity depth. </p>' +
+    "<p>It's important to note that all assets in Vault are hedged on CEX, incurring an associated cost known as the Asset Holding Fee, charged on an hourly basis. We strongly recommend closing your position if it's no longer needed for trading to reduce costs.</p>" +
+    '<p>In order to initiate the forced clearing of assets in the event of liquidation, Loopring will require your approval to handle the collateral asset. Additionally, after closing a position, there may be some remaining vault tokens in your account that Loopring will need to clear before allowing you to open a new position.</p><ul>' +
+    '<li>There is an Asset Holding Fee for assets in Vault.</li>' +
+    '<li>I will grant Loopring authority to deal with my collateral in case of forced liquidation.</li>' +
+    '<li> I will grant Loopring the authority to clear all previously remaining Lv tokens for all new position openings in Vault.</li></ul>',
+  labelVaultRepayTitle: 'Repay',
+  labelVaultRepayStatus: '{{status}}',
+  labelVaultRepayStatusLabel: 'Status',
+  labelVaultRepayTypeLabel: 'Type',
+  labelVaultRepayType: 'Repay',
+  labelVaultRepayTotalBalance: 'Amount',
+  labelVaultVAULT_STATUS_RECEIVED: 'Received',
+  labelVaultVAULT_STATUS_PROCESSING: 'Processing',
+  labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
+  labelVaultVAULT_STATUS_FAILED: 'Failed',
+  labelVaultVAULT_STATUS_PENDING: 'Pending',
+  labelVaultAccountWait: 'Vault account in loading...',
+  labelVaultInRedeemWaiting: 'Vault account is in process of close out...',
+  labelVaultJoinSymbolNotSame: 'Only {{symbol}} allow Margin Call',
+  labelVaultRepaySuccess: 'Successfully',
+  labelVaultJoinSuccess: 'Successfully',
+  labelVaultRedeemSuccess: 'Successfully',
+  labelVaultBorrowSuccess: 'Successfully',
+  labelVaultTradeSuccess: 'Successfully',
+  labelVaultRepayInProgress: 'Processing...',
+  labelVaultRedeemInProgress: 'Processing...',
+  labelVaultBorrowInProgress: 'Processing...',
+  labelVaultTradeInProgress: 'Processing...',
+  labelVaultJoinInProgress: 'Processing...',
+  labelVaultRepayFailed: 'Failed',
+  labelVaultRedeemFailed: 'Failed',
+  labelVaultBorrowFailed: 'Failed',
+  labelVaultJoinFailed: 'Failed',
+  labelVaultTradeFailed: 'Failed',
+  labelLayer2HistoryVaultRecords: 'Vault Records',
+  labelVaultTitleRisk: 'What is Loopring Vault?',
+  labelProTime1h: '1h',
+  labelProTime1d: '1d',
+  labelProTime1w: '1w',
+  labelStats: 'Stats',
+  label24PriceChange: '24h Price Change',
+  label7dPriceChange: '7d Price Change',
+  labelVaultREDEEMPendingBtn: 'Close out in Processing',
+  labelVaultlnredeemWaiting: 'Close out in Processing',
+  labelJoinTitle: 'Open Position',
+  labelRedeemTitle: 'Close out',
+  labelRedeemDesMessage:
+    'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
+  labelJoinDesMessage:
+    'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
+  labelFailed: 'Failed',
+  labelVAULT_COLLATERAL: 'Vault Collateral',
+  labelTokenVaultDes:
+    '{{vSymbol}} is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
+  labelTokenWebsite: 'website',
+  labelTokenContractAddress: 'Token Contract Address',
+  labelTokenSupply: 'Token Supply',
+  labelMarketCap: 'Market Cap',
+  labelTokenInfo: 'Token Info',
+  labelTokenIntroduce: 'Token Introduce',
+  labelVaultRedeemDetail: 'Details',
+  labelCloseOutDetail: 'Close Out Detail',
+  labelVaultTradeTitle: 'Vault trade',
+  labelVaultPrice: 'Price',
+  labelVaultSell: 'Sell',
+  labelVaultBuy: 'Buy',
+  labelVaultFee: 'Trade Fee',
+  labelVaultJoin: 'Open Position',
+  labelVaultMarginCall: 'Margin Call',
+  labelVaultMaxBrowserLabel: 'Max borrowable: ',
+  labelVaultBorrowed: 'Borrowed',
+  labelVaultRepayBalance: 'Total Balance',
+  labelVaultPendingDes:
+    'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
+  labelVaultTotalDebtTooltips:
+    'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
+  labelVaultMarginLevelTooltips:
+    'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+ }

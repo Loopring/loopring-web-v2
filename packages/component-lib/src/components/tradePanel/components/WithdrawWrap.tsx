@@ -5,14 +5,18 @@ import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import { Box, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
 import {
   AddressError,
+  AlertIcon,
   AssetsRawDataItem,
+  BackIcon,
   CloseIcon,
   ContactIcon,
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
   FeeInfo,
+  fontDefault,
   globalSetup,
+  hexToRGB,
   IBData,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -31,6 +35,7 @@ import { BasicACoinTrade } from './BasicACoinTrade'
 import { NFTInput } from './BasicANFTTrade'
 import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useTheme } from '@emotion/react'
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
@@ -78,6 +83,9 @@ export const WithdrawWrap = <
   isFromContact,
   onClickContact,
   loopringSmartWalletVersion,
+  isENSWrong,
+  ens,
+  geUpdateContact,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -86,6 +94,7 @@ export const WithdrawWrap = <
   }) => {
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const theme = useTheme()
 
   const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
   const popupState = usePopupState({
@@ -180,6 +189,7 @@ export const WithdrawWrap = <
 
   return (
     <GridWrapStyle
+          className={'withdraw-wrap'}
       container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -289,7 +299,7 @@ export const WithdrawWrap = <
               size={'large'}
               className={'text-address'}
               value={addressDefault}
-              error={!!(isNotAvailableAddress || isInvalidAddressOrENS)}
+              error={!!(isNotAvailableAddress || isInvalidAddressOrENS || isENSWrong)}
               placeholder={t('labelPleaseInputWalletAddress')}
               onChange={(event) => handleOnAddressChange(event?.target?.value)}
               label={t('labelL2toL1Address', {
@@ -393,6 +403,38 @@ export const WithdrawWrap = <
                   {realAddr}
                 </Typography>
               )}
+            </>
+          )}
+          {isENSWrong && (
+            <>
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {ens}
+              </Typography>
+              <Button
+                variant={'contained'}
+                sx={{
+                  fontSize: fontDefault.body1,
+                  marginTop: 2,
+                  padding: 1,
+                  color: 'var(--color-text-button)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: hexToRGB(theme.colorBase.warning, 0.2),
+                  textAlign: 'left',
+                  borderRadius: 2,
+                  height: 'auto',
+                  '&:hover': {
+                    background: hexToRGB(theme.colorBase.warning, 0.3),
+                  },
+                }}
+                onClick={geUpdateContact}
+                endIcon={<BackIcon fontSize={'large'} sx={{ transform: 'rotate(180deg)' }} />}
+              >
+                <Typography component={'span'} color={'inherit'} display={'inline-flex'}>
+                  <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2, marginTop: '2px' }} />
+                  {t('labelContactENSAlert')}
+                </Typography>
+              </Button>
             </>
           )}
         </Box>

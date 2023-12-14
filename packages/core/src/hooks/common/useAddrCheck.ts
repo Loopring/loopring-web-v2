@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-
 import { connectProvides } from '@loopring-web/web3-provider'
 import {
   AddressError,
@@ -23,7 +22,17 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   const _address = React.useRef<string>('')
   const { chainId } = useSystem()
   const { defaultNetwork } = useSettings()
-  const [realAddr, setRealAddr] = React.useState<string>('')
+  const [{ realAddr, ens, isENSWrong }, setRealAddr] = React.useState<{
+    realAddr: string
+    ens: string
+    isENSWrong: boolean
+  }>({
+    realAddr: '',
+    ens: '',
+    isENSWrong: false,
+  })
+  // const [ens, setENS] = React.useState<string>('')
+
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(AddressError.NoError)
   const [checkAddAccountId, setCheckAddaccountId] = React.useState<number | undefined>()
   const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
@@ -53,9 +62,9 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         ) {
           myLog('address update ', address)
           setIsAddressCheckLoading(true)
-          const { realAddr, addressErr, isContract } = await checkAddr(address, web3)
+          const { realAddr, addressErr, isContract, ens } = await checkAddr(address, web3)
           if (_address.current == address) {
-            setRealAddr(realAddr)
+            setRealAddr({ realAddr, ens, isENSWrong: false })
             setAddrStatus(addressErr)
             if (isContract) {
               setIsContractAddress(isContract)
@@ -153,8 +162,6 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
               })
             }
           }
-          // clearTimeout(nodeTimer.current)
-          // nodeTimer.current = -1
           myLog('address update async', address, realAddr)
           setIsAddressCheckLoading(false)
         } else {
@@ -172,12 +179,12 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       if (_address?.current == address && error?.code == sdk.LoopringErrorCode.HTTP_ERROR) {
         _address.current = ''
         setAddrStatus(AddressError.TimeOut)
-        setRealAddr('')
+        setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
         setIsAddressCheckLoading(false)
       } else {
         setAddrStatus(address === '' ? AddressError.EmptyAddr : AddressError.InvalidAddr)
         myLog('address update address async', address, error)
-        setRealAddr('')
+        setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
         _address.current = ''
         setIsLoopringAddress(false)
         setIsAddressCheckLoading(false)
@@ -218,7 +225,15 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         sdk.AddressType.CONTRACT,
       ].concat(checkLayer2Status ? [sdk.AddressType.EOA] : [])
       if (found && listNoCheckRequired.includes(found.addressType)) {
-        setRealAddr(address)
+        let ens = '',
+          isENSWrong = false
+        if (found?.ens && connectProvides?.usedWeb3) {
+          const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(found?.ens)
+          if (ensAddr?.toLowerCase() !== address?.toLowerCase()) {
+            isENSWrong = true
+          }
+        }
+        setRealAddr({ realAddr: address, ens, isENSWrong })
         switch (found.addressType) {
           case sdk.AddressType.LOOPRING_HEBAO_CF:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6:
@@ -369,7 +384,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     { maxWait: 1000, leading: false, trailing: true },
   )
   const initAddresss = () => {
-    setRealAddr('')
+    setRealAddr({ realAddr: '', ens: '' })
     setAddrStatus(AddressError.NoError)
     setCheckAddaccountId(undefined)
     setIsLoopringAddress(false)
@@ -399,7 +414,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       debounceCheck.cancel()
     }
   }, [address, isAddressCheckLoading, chainId])
-  const reCheck = useCallback(() => {
+  const reCheck = React.useCallback(() => {
     debounceCheck(address)
     _address.current = address
     return () => {
@@ -412,6 +427,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
   }, [realAddr, accAddress])
   return {
     address,
+    ens,
     realAddr,
     checkAddAccountId,
     setAddress,
@@ -424,7 +440,28 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     isContract1XAddress,
     isContractAddress,
     isActiveAccountFee,
+    isENSWrong,
     loopringSmartWalletVersion,
     reCheck,
   }
 }
+
+// curl 'https://dev.loopring.io/api/v3/user/contact/update' \
+//   -H 'Accept: application/json, text/plain, */*' \
+//   -H 'Accept-Language: en-US,en;q=0.9,de;q=0.8,zh-CN;q=0.7,zh;q=0.6' \
+//   -H 'Connection: keep-alive' \
+//   -H 'Content-Type: application/json' \
+//   -H 'Origin: https://localhost:3000' \
+//   -H 'Referer: https://localhost:3000/' \
+//   -H 'Sec-Fetch-Dest: empty' \
+//   -H 'Sec-Fetch-Mode: cors' \
+//   -H 'Sec-Fetch-Site: cross-site' \
+//   -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' \
+//   -H 'X-API-KEY: Vbr9sQv63gaIzWK1dcI16NwSPHWpNQdCMgrQT1W9BxC2dMGlZVHaPKjUjAHyVEeQ' \
+//   -H 'feeVersion: v2' \
+//   -H 'pf: web' \
+//   -H 'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"' \
+//   -H 'sec-ch-ua-mobile: ?0' \
+//   -H 'sec-ch-ua-platform: "macOS"' \
+//   --data-raw '{"accountId":10012,"contactAddress":"0x145E8aa4ECff3Bdea8d98739105AE038f1f0E352","contactName":"ens wrong","ens":"wrong.eth","isHebao":false,"network":"ETHEREUM"}' \
+//   --compressed

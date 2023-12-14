@@ -199,10 +199,10 @@ export const SwapTradeWrap = <
   const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
 
   const convertStr = _isStoB
-    ? `1${tradeData.sell?.belong} \u2248 ${
+    ? `1 ${tradeData.sell?.belong} \u2248 ${
         tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
       } ${tradeData.buy?.belong}`
-    : `1${tradeData.buy?.belong} \u2248 ${
+    : `1 ${tradeData.buy?.belong} \u2248 ${
         tradeCalcData.BtoS && tradeCalcData.BtoS != 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
       } ${tradeData.sell?.belong}`
   const priceImpactColor = (tradeCalcData as SCD)?.priceImpactColor
