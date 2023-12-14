@@ -6,7 +6,6 @@ import {
   Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
-  Required,
   TRADE_TYPE,
   TradeBtnStatus,
   VaultJoinData,
@@ -15,7 +14,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { VaultJoinWrapProps } from './Interface'
 import React from 'react'
 import { Grid, Tooltip, Typography } from '@mui/material'
-import { useOpenModals, useSettings } from '../../../../stores'
+import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
@@ -35,7 +34,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   // coinBPrecision,
   tokenProps,
   ...rest
-}: Required<VaultJoinWrapProps<T, I, V>>) => {
+}: VaultJoinWrapProps<T, I, V>) => {
   const { t, ...i18n } = useTranslation()
   const inputBtnRef = React.useRef()
   // const inputCoinRef = React.useRef()
