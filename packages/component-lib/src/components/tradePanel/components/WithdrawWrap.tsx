@@ -450,7 +450,7 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      <Grid item alignSelf={'stretch'} position={'relative'}>
+      <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (

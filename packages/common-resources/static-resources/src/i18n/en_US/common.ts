@@ -2136,6 +2136,15 @@ export default {
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
   labelDualSettingConfirm: 'Confirm',
+  labelL2DualNote: 'Dual Investment Notification',
+  labelQuickInvest: 'Quick Invest',
+  labelReceiveToken: 'Receive',
+  labelETHStakingEnterPaymentToken: 'Amount',
+  labelDefiDuration: 'Duration',
+  labelFlexible: 'Flexible',
+  labelEstAPR: 'Est.APR',
+  labelTradingFeeTooltips:
+    "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
@@ -2143,6 +2152,8 @@ export default {
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelL2DualNote: 'Dual Investment Notification',
   labelQuickInvest: 'Quick Invest',
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
@@ -2173,7 +2184,6 @@ export default {
   labelVaultType: 'Type',
   labelVaultTypeOpenPosition: 'Open Position',
   labelVaultStatus: 'Status',
-
   labelVaultJoinStatus: '{{status}} {{percentage}}',
   labelVaultTradeStatus: '{{status}} {{percentage}}',
   labelVaultCollateral: 'Collateral',
@@ -2315,6 +2325,4 @@ export default {
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
-  labelUpdateContactsNext: 'Go to Update Contact',
-  labelENSAddressMismatch: 'ENS & Address Mismatch',
-}
+ }
