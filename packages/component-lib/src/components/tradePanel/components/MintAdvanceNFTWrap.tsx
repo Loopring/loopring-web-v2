@@ -860,7 +860,6 @@ export const MintAdvanceNFTWrap = <
                       title={tradeData.collectionMeta?.contractAddress}
                     >
                       {tradeData.collectionMeta?.name}
-                      {/*{tradeData.collectionMeta?.name  + ' ' ?? EmptyValueTag}*/}
                     </Typography>
                   </Typography>
 

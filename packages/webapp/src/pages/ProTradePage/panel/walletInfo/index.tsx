@@ -435,8 +435,6 @@ const UnLookView = React.memo(
               <Typography variant={'body1'}>{coinB}</Typography>
             </Box>
             <AssetsValue symbol={coinB} />
-
-            {/*<Typography variant={'body1'}>{walletMap[ coinB ] ? walletMap[ coinB ]?.count : 0}</Typography>*/}
           </Box>
           <Box
             display={'flex'}

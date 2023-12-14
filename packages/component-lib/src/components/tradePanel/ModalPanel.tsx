@@ -157,7 +157,6 @@ export const Modal = withTranslation('common')(
         >
           <Box display={'flex'} width={'100%'} flexDirection={'column'}>
             <ModalCloseButton onClose={onClose} {...rest} />
-            {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
           </Box>
           <Box
             className={contentClassName}
@@ -166,7 +165,6 @@ export const Modal = withTranslation('common')(
             {content}
           </Box>
         </BoxStyle>
-        {/*</>*/}
       </MuiModal>
     )
   },
@@ -321,18 +319,7 @@ export const ModalPanel = <
           />
         }
       />
-      {/*<Modal*/}
-      {/*  open={isShowDeposit.isShow}*/}
-      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
-      {/*  content={*/}
-      {/*    <DepositGroup*/}
-      {/*      {...{*/}
-      {/*        ...rest,*/}
-      {/*        ...depositGroupProps,*/}
-      {/*      }}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*/>*/}
+      
       <Modal
         open={isShowNFTTransfer.isShow}
         contentClassName={'trade-wrap'}
@@ -425,13 +412,6 @@ export const ModalPanel = <
           />
         }
       />
-      {/*<Modal*/}
-      {/*  open={isShowDeposit.isShow}*/}
-      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
-      {/*  content={*/}
-      {/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
-      {/*  }*/}
-      {/*/>*/}
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() => setShowResetAccount({ ...isShowResetAccount, isShow: false })}

@@ -152,7 +152,6 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
               >
                 <Typography component={'span'} display={'inline-flex'}>
-                  {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={TokenType.dual}
                     size={24}
@@ -392,14 +391,12 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
               >
                 <Typography component={'span'} display={'inline-flex'}>
-                  {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={TokenType.dual}
                     size={24}
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                {/*{inAuto && <ClockIcon color={'primary'} />}*/}
                 {showClock && (
                   <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
                     <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />

@@ -68,16 +68,6 @@ export const StopLimitView = withTranslation('common')(
                     }}
                     {...{...(confirmStopLimit as any)}}
                 />
-
-                {/*<AlertLimitPrice*/}
-                {/*  handleClose={limitSubmit}*/}
-                {/*  open={limitAlertOpen}*/}
-                {/*  value={*/}
-                {/*    pageTradePro.tradeType === TradeProType.buy*/}
-                {/*      ? 'labelPriceCompareGreat'*/}
-                {/*      : 'labelPriceCompareLess'*/}
-                {/*  }*/}
-                {/*/>*/}
                 <Box
                     display={'flex'}
                     flexDirection={'column'}

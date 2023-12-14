@@ -59,7 +59,6 @@ import { useTranslation } from 'react-i18next'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
 import { VaultPage } from '../pages/VaultPage'
-
 const ContentWrap = ({
   children,
   state,
@@ -187,12 +186,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       setReferralCode(value ? value : '')
     }
   }, [location.search])
-
-  // React.useEffect(() => {
-  //   if (state === SagaStatus.ERROR) {
-  //     window.location.replace(`${window.location.origin}/#/error`)
-  //   }
-  // }, [state])
   if (searchParams.has('___OhTrustDebugger___')) {
     // @ts-ignore
     setMyLog(true)
@@ -263,23 +256,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NotifyMarkdownPage />
           </Container>
         </Route>
-        {/*<Route exact path='/investrule/:path'>*/}
-        {/*  {searchParams && searchParams.has('noheader') ? (*/}
-        {/*    <></>*/}
-        {/*  ) : (*/}
-        {/*    <Header isHideOnScroll={true} isLandPage />*/}
-        {/*  )}*/}
-        {/*  <Container*/}
-        {/*    maxWidth='lg'*/}
-        {/*    style={{*/}
-        {/*      display: 'flex',*/}
-        {/*      flexDirection: 'column',*/}
-        {/*      flex: 1,*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <InvestMarkdownPage />*/}
-        {/*  </Container>*/}
-        {/*</Route>*/}
         <Route exact path={['/document', '/race-event', '/notification', '/investrule']}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <ErrorPage messageKey={'error404'} />

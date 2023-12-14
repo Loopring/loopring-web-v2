@@ -109,7 +109,6 @@ export const LButton: Story<ButtonProps> = withTranslation()(
     return (
       <>
         <Styled>
-          {/*<MemoryRouter initialEntries={['/']}>*/}
           <h4>Button</h4>
           <Box>
             <Grid

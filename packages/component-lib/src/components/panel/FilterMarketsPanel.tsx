@@ -43,14 +43,12 @@ export const FilterMarketPanel = withTranslation('common')(({ t }: WithTranslati
   return (
     <Box display={'flex'} flexDirection={'column'}>
       <>
-        {/*<AppBar position="static">*/}
         <Tabs value={value} onChange={handleChange} aria-label='tabs switch'>
           <Tab label={t('labelAll')} />
           <Tab label={t('labelFavorite')} />
           <Tab label={'ETH'} />
           <Tab label={'LRC'} />
         </Tabs>
-        {/*</AppBar>*/}
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={value}

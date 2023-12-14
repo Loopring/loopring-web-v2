@@ -55,7 +55,6 @@ export const VipStyled = styled(Typography)`
   ${({ theme }) => theme.border.defaultFrame({ c_key: 'rgba(0,0,0,0)', d_R: 0.25 })};
   background-color: var(--vip-bg);
   height: 2rem;
-  //line-height: 2rem;
   color: var(--vip-text);
 ` as typeof Typography
 export const floatTag = ({ theme, custom }: any) => css`
@@ -76,11 +75,6 @@ export const floatTag = ({ theme, custom }: any) => css`
   }
 `
 export const AvatarIconPair = ({ theme }: any) => css`
-  //.MuiAvatar-root {
-  //  width: var(--chart-title-coin-size);
-  //  height: var(--chart-title-coin-size);
-  //}
-
   .icon-next {
     margin-left: -${theme.unit}px;
   }
@@ -241,7 +235,6 @@ export const toolBarPanel = ({ theme }: any) => css`
     box-sizing: border-box;
     height: var(--toolbar-row-padding-minus);
     padding: 0 ${(theme.unit * 5) / 2}px;
-    //min-height: var(--toolbar-row-padding);
     margin-top: var(--toolbar-row-padding-minus);
 
     .MuiIconButton-root {
@@ -273,7 +266,6 @@ export const AnimationArrow = styled(Box)`
     transform: rotate(45deg) scale(0.5);
     position: relative;
     margin: ${({ theme }) => theme.unit * 2}px;
-    //margin: 25vh auto;
   }
 
   &.arrowCta:after,
@@ -500,11 +492,9 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
       content: '\u25CF';
       text-indent: 0em;
       color: var(--color-success);
-      //width: 100%;
       display: flex;
       left: 0;
       padding-left: ${({ theme }) => (theme.unit * 3) / 2}px;
-      //justify-content: ;
       align-items: center;
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }

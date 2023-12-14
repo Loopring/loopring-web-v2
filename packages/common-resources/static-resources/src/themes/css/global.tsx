@@ -145,9 +145,6 @@ export const scrollbarDefault = ({ theme }: any) => css`
   .MuiPaper-elevation4 {
     box-shadow: var(--shadow-header);
   }
-
-  //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
-  // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase.textHint};}
   ::-webkit-scrollbar-track {
     background-color: ${theme.colorBase.box};
     border-radius: 3px;
@@ -194,7 +191,6 @@ export const globalCss = ({ theme }: any) => css`
     -webkit-box-sizing: border-box; /* Safari */
     font-family: Roboto, Helvetica, Arial, '华文细黑', 'Microsoft YaHei', '微软雅黑', SimSun, '宋体',
       Heiti, '黑体', sans-serif;
-    //font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
   }
 
@@ -253,7 +249,6 @@ export const globalCss = ({ theme }: any) => css`
     --desktop-min-width: 1024px;
     --btn-Input-small-height: 32px;
     --btn-medium-height: 40px;
-    //--btn-max-width: 160px;
     --btn-min-width: 100px;
     --coin-min-width: 80px;
     --datePicker-width: 320px;
@@ -264,7 +259,6 @@ export const globalCss = ({ theme }: any) => css`
     --header-menu-icon-large: 28px;
     --list-menu-coin-size: 24px;
     --slippage-pop-width: 308px;
-    //--slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 20px;
     --btn-icon-size-medium: 24px;

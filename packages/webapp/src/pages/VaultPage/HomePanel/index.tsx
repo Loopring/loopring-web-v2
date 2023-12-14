@@ -137,7 +137,6 @@ export const VaultHomePanel = ({
             height={'80vh'}
             overflow={'scroll'}
           >
-            {/* <Box></Box> */}
             <ModalCloseButtonPosition
               right={2}
               top={2}

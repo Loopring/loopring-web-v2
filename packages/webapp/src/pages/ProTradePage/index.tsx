@@ -121,7 +121,6 @@ export const OrderbookPage = withTranslation('common')(<Config extends LayoutCon
             alignItems={'center'}
             justifyContent={'center'}
           >
-            {/*<LoadingIcon />*/}
             <img
               className='loading-gif'
               alt={'loading'}
@@ -354,7 +353,6 @@ export const OrderbookPage = withTranslation('common')(<Config extends LayoutCon
           alignItems={'center'}
           justifyContent={'center'}
         >
-          {/*<LoadingIcon />*/}
           <img
             className='loading-gif'
             alt={'loading'}

@@ -250,20 +250,6 @@ export const SpotView = withTranslation('common')(
                     autoHideDuration={TOAST_TIME}
                     onClose={closeToastL}
                 />
-                {/*<AlertImpact*/}
-                {/*  value={priceImpact}*/}
-                {/*  open={alertOpen}*/}
-                {/*  handleClose={priceAlertCallBack(false)}*/}
-                {/*  handleConfirm={priceAlertCallBack(true)}*/}
-                {/*  variance={}*/}
-                {/*  marketPrice={}*/}
-                {/*  settlementPrice={}*/}
-                {/*  symbol={}*/}
-                {/*  // handleClose={() => priceAlertCallBack(false)}*/}
-                {/*  // handleConfirm={() => priceAlertCallBack(true)}*/}
-                {/* */}
-                {/*  // value={priceImpact}*/}
-                {/*/>*/}
                 <AlertImpact
                     open={showAlert.isShow && showAlert.showWitch === ShowWitchAle3t1.AlertImpact}
                     handleClose={handleClose}

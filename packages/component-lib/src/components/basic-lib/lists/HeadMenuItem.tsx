@@ -244,7 +244,6 @@ Layer2Item = React.memo(
         >
           {label?.description ? t(label.description) : ''}
         </Typography>
-        {/*</Box>*/}
       </StyledLayer2Item>
     )
   },

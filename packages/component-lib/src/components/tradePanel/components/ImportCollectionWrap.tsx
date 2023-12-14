@@ -512,26 +512,6 @@ export const ImportCollectionWrap = <Co extends CollectionMeta, NFT extends Part
           return <React.Fragment key={index}>{step === index ? panel.view : <></>}</React.Fragment>
         })}
       </MintAdStyle>
-      {/*{copyToastOpen && (*/}
-      {/*  <Toast*/}
-      {/*    alertText={*/}
-      {/*      copyToastOpen?.type === "json"*/}
-      {/*        ? t("labelCopyMetaClip")*/}
-      {/*        : copyToastOpen.type === "url"*/}
-      {/*        ? t("labelCopyUrlClip")*/}
-      {/*        : t("labelCopyAddClip")*/}
-      {/*    }*/}
-      {/*    open={copyToastOpen?.isShow}*/}
-      {/*    autoHideDuration={TOAST_TIME}*/}
-      {/*    onClose={() => {*/}
-      {/*      collectionInputProps?.collectionListProps?.setCopyToastOpen({*/}
-      {/*        isShow: false,*/}
-      {/*        type: "",*/}
-      {/*      });*/}
-      {/*    }}*/}
-      {/*    severity={"success"}*/}
-      {/*  />*/}
-      {/*)}*/}
     </Box>
   )
 }

@@ -24,10 +24,6 @@ const TableStyled = styled(Box)`
 
   .textAlignRight {
     text-align: right;
-
-    // .rdg-header-sort-cell {
-    //     justify-content: flex-end;
-    // }
   }
 
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}

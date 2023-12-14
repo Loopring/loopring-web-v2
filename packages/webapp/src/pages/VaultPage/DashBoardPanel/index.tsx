@@ -553,7 +553,6 @@ export const VaultDashBoardPanel = ({
                     flexDirection={'column'}
                     position={'relative'}
                   >
-                    {/* <Box></Box> */}
                     <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
                     <ViewAccountTemplate
                       className={'inModal'}

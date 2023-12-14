@@ -184,9 +184,6 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
       </Grid>
       <Grid item alignSelf={'stretch'} position={'relative'}>
         <Typography display={'inline-flex'}>
-          {/*<Typography component={"span"} lineHeight={2}>*/}
-          {/*  <Info2Icon color={"warning"} fontSize={"medium"} />*/}
-          {/*</Typography>*/}
           <ListStyle>
             <ListItem>
               <ListItemText>

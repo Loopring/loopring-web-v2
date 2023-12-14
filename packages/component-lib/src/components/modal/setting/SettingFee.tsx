@@ -157,7 +157,6 @@ export const ModalSettingFee = withTranslation('common', { withRef: true })(
                                   htmlColor={'var(--color-text-third)'}
                                   fontSize={'large'}
                                 />
-                                {/*{draggableProvided.placeholder}*/}
                               </Box>
                             )}
                           </Draggable>
