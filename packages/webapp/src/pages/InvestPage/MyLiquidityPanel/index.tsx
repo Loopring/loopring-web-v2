@@ -242,7 +242,6 @@ const MyLiquidity: any = withTranslation('common')(
       .toString()
     const visibaleTabs = _.cloneDeep(INVEST_TABS).filter(() => {
       return true
-      // TODO when has toggle
     })
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
