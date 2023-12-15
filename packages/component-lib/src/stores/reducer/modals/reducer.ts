@@ -13,7 +13,6 @@ import {
   ToastType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
-import { ToastType } from '@loopring-web/component-lib'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
