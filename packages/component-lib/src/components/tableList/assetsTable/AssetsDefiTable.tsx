@@ -1,15 +1,17 @@
 import React from 'react'
-import { Box, BoxProps, Typography, Tooltip, Link } from '@mui/material'
+import { Box, BoxProps, Typography, Tooltip } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation, Trans } from 'react-i18next'
-import { Column, Table } from '../../basic-lib'
+import { Column, Table, Button } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
 import {
+  BackIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
   HiddenTag,
   Info2Icon,
   RowConfig,
+  UpColor,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'
@@ -84,6 +86,12 @@ export const AssetsDefiTable = withTranslation('tables')(
     const gridRef = React.useRef(null)
     const { setShowETHStakingApr } = useOpenModals()
     const { isMobile, coinJson } = useSettings()
+    const { upColor } = useSettings()
+    const colorRight =
+      upColor === UpColor.green
+        ? ['var(--color-success)', 'var(--color-error)']
+        : ['var(--color-error)', 'var(--color-success)']
+
     const getColumnModeAssets = (t: TFunction, allowTrade?: any): Column<R, unknown>[] => [
       {
         key: 'token',
@@ -188,11 +196,9 @@ export const AssetsDefiTable = withTranslation('tables')(
         headerCellClass: 'textAlignCenter',
         formatter: ({ row }) => {
           return (
-            <Link
-              width={'100%'}
-              display={'inline-flex'}
-              justifyContent={'center'}
-              className={'textAlignCenter'}
+            <Button
+              variant={'text'}
+              size={'small'}
               onClick={() =>
                 setShowETHStakingApr({
                   isShow: true,
@@ -200,9 +206,21 @@ export const AssetsDefiTable = withTranslation('tables')(
                   info: row?.defiInfo,
                 })
               }
+              sx={{
+                padding: 0,
+                justifyContent: 'right',
+                color: row?.apr?.toString().charAt(0) == '-' ? colorRight[1] : colorRight[0],
+              }}
+              endIcon={
+                <BackIcon
+                  fontSize={'small'}
+                  sx={{ transform: 'rotate(180deg)' }}
+                  color={'inherit'}
+                />
+              }
             >
               {row.apr && row.apr !== '0.00' ? row.apr + '%' : EmptyValueTag}
-            </Link>
+            </Button>
           )
         },
       },

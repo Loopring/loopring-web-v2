@@ -1,12 +1,24 @@
 import { Box, Divider, Typography } from '@mui/material'
-import { ChartType, myLog, SoursURL, YEAR_DAY_MINUTE_FORMAT } from '@loopring-web/common-resources'
-import { useTranslation } from 'react-i18next'
+import {
+  ChartType,
+  DEFI_ADVICE_MAP,
+  myLog,
+  SoursURL,
+  YEAR_DAY_MINUTE_FORMAT,
+  UpColor,
+} from '@loopring-web/common-resources'
 import moment from 'moment'
 import TrendAprChart from '../charts/scaleAreaChart/APRChart'
+import { useSettings } from '../../stores'
 
 export const ETHStakingDetail = ({ symbol, trends, defiInfo }: any) => {
-  const { t } = useTranslation()
   myLog('trends', trends)
+  const [, baseSymbol] = symbol.match(/(\w+)-(\w+)/i)
+  const { upColor } = useSettings()
+  const colorRight =
+    upColor === UpColor.green
+      ? ['var(--color-success)', 'var(--color-error)']
+      : ['var(--color-error)', 'var(--color-success)']
   return symbol ? (
     <>
       <Box
@@ -26,14 +38,20 @@ export const ETHStakingDetail = ({ symbol, trends, defiInfo }: any) => {
           alignItems={'center'}
         >
           <Typography component={'span'} flexDirection={'column'} display={'flex'}>
-            {t('labelEstAPR')}
+            {DEFI_ADVICE_MAP[baseSymbol]?.project}
+            {/*{t('labelEstAPR')}*/}
           </Typography>
         </Typography>
       </Box>
       <Divider />
       {defiInfo && (
         <Box paddingX={3} marginTop={2}>
-          <Typography variant={'h2'}>{'+' + defiInfo?.apy + '%'}</Typography>
+          <Typography
+            variant={'h2'}
+            color={defiInfo?.apy?.toString().charAt(0) == '-' ? colorRight[1] : colorRight[0]}
+          >
+            {(defiInfo?.apy?.toString().charAt(0) == '-' ? '' : '+') + defiInfo?.apy + '%' + ' APR'}
+          </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-third)'}>
             {moment().format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>

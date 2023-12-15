@@ -473,7 +473,6 @@ export const LEVERAGE_ETH_CONFIG = {
   // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
 }
 
-
 export const DUAL_CONFIG = {
   products: {
     TAIKO: [] as string[],
@@ -705,10 +704,6 @@ export const defiRETHAdvice: InvestAdvice = {
   market: 'RETH-ETH',
 }
 
-export const DEFI_ADVICE_MAP = {
-  WSTETH: defiWSTETHAdvice,
-  RETH: defiRETHAdvice,
-}
 export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,
   router: `${RouterPath.invest}/${InvestAssetRouter.DUAL}`,
@@ -735,8 +730,13 @@ export const leverageETHAdvice: InvestAdvice = {
   titleI18n: 'labelInvestLeverageETH',
   desI18n: 'labelInvestLeverageETHDes',
   enable: true,
-  project: 'CIETH Pool',
+  project: 'Leveraged ETH Staking',
   market: 'CIETH-ETH',
+}
+export const DEFI_ADVICE_MAP = {
+  WSTETH: defiWSTETHAdvice,
+  RETH: defiRETHAdvice,
+  CIETH: leverageETHAdvice,
 }
 
 export enum RecordTabIndex {
