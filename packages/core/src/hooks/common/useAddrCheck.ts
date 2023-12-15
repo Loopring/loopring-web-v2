@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { connectProvides } from '@loopring-web/web3-provider'
 import {
   AddressError,
@@ -445,23 +445,3 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     reCheck,
   }
 }
-
-// curl 'https://dev.loopring.io/api/v3/user/contact/update' \
-//   -H 'Accept: application/json, text/plain, */*' \
-//   -H 'Accept-Language: en-US,en;q=0.9,de;q=0.8,zh-CN;q=0.7,zh;q=0.6' \
-//   -H 'Connection: keep-alive' \
-//   -H 'Content-Type: application/json' \
-//   -H 'Origin: https://localhost:3000' \
-//   -H 'Referer: https://localhost:3000/' \
-//   -H 'Sec-Fetch-Dest: empty' \
-//   -H 'Sec-Fetch-Mode: cors' \
-//   -H 'Sec-Fetch-Site: cross-site' \
-//   -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' \
-//   -H 'X-API-KEY: Vbr9sQv63gaIzWK1dcI16NwSPHWpNQdCMgrQT1W9BxC2dMGlZVHaPKjUjAHyVEeQ' \
-//   -H 'feeVersion: v2' \
-//   -H 'pf: web' \
-//   -H 'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"' \
-//   -H 'sec-ch-ua-mobile: ?0' \
-//   -H 'sec-ch-ua-platform: "macOS"' \
-//   --data-raw '{"accountId":10012,"contactAddress":"0x145E8aa4ECff3Bdea8d98739105AE038f1f0E352","contactName":"ens wrong","ens":"wrong.eth","isHebao":false,"network":"ETHEREUM"}' \
-//   --compressed

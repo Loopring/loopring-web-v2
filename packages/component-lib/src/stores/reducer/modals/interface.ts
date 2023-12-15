@@ -100,6 +100,7 @@ export interface ModalState {
       })[]
     }
   }
+  isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
   isShowVaultExit: ModalStatePlayLoad & Transaction
   isShowVaultJoin: ModalStatePlayLoad & Transaction
   isShowVaultSwap: ModalStatePlayLoad & Transaction
@@ -107,7 +108,6 @@ export interface ModalState {
       Transaction & {
       type: string
   }
-  isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
   isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
   isShowConfirmedVault: ModalStatePlayLoad
 }

@@ -171,7 +171,8 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
           isJoin,
           isInputSell: type === DeFiChgType.coinSell,
           ...inputValue,
-          maxFeeBips: (isLeverageETH ? marketLeverageMap : marketMap)[market]?.extra?.maxFeeBips,
+          maxFeeBips:
+            (isLeverageETH ? marketLeverageMap : marketMap)[market]?.extra?.maxFeeBips ?? 5,
           defaultFee: newTradeDefi.defaultFee,
           marketInfo,
           tokenSell: tokenMap[coinSellSymbol],

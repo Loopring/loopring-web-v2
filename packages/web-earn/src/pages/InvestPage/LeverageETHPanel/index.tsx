@@ -94,9 +94,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
-    showLeverageETHPopup,
+    confirmation: {
+      confirmedLeverageETHInvest: confirmed,
+      confirmationNeeded,
+      showLeverageETHPopup,
+    },
     setShowLeverageETHPopup,
-    confirmation: { confirmedLeverageETHInvest: confirmed, confirmationNeeded },
   } = confirmation.useConfirmation()
   const {
     toggle: {

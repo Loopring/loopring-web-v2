@@ -1478,7 +1478,7 @@ export default {
   labelInvestLRCStakingLockAlert:
     'Your assets for investment will be locked until your redemption.',
   labelLRCStakeAPRTooltips:
-    'APR is adjusted daily based on the on-chain staking rewards; APR does not represent the actual or predicted returns in fiat currency.',
+    'Apr stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
   labelLRCStakeAPR: 'APR <1></1>',
   labelLRCStakeEarn: 'Daily Rewards (est.) <1></1>',
   labelLRCStakeEarnTooltips:
@@ -1785,8 +1785,7 @@ export default {
     '<p>CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform, where users could earn either through joining algorithmic strategy vaults or through building their own DeFi strategies using CIAN’s advanced automation tools.</p>' +
     "<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user's asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>" +
     '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
-  labelDefiWithdrawFee:
-    '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
+  labelDefiWithdrawFee: '',
   labelLeverageETHTitle: 'Leveraged ETH Staking',
   labelLayer2HistoryleverageETHRecords: 'Leveraged ETH Staking',
   labelSwapMinConverted: 'Minimum Converted',
@@ -2124,20 +2123,11 @@ export default {
   labelBlindBoxHint:
     'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
   labelNormalRedPacketTitle: 'Normal Red Packet',
-  labelReceiveToken: 'Receive',
-  labelETHStakingEnterPaymentToken: 'Amount',
-  labelDefiDuration: 'Duration',
-  labelFlexible: 'Flexible',
-  labelEstAPR: 'Est.APR',
-  labelTradingFeeTooltips:
-    "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
   labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
   labelDualSettingConfirm: 'Confirm',
-  labelL2DualNote: 'Dual Investment Notification',
-  labelQuickInvest: 'Quick Invest',
   labelReceiveToken: 'Receive',
   labelETHStakingEnterPaymentToken: 'Amount',
   labelDefiDuration: 'Duration',

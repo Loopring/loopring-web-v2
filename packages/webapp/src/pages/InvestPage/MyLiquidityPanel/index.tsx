@@ -167,7 +167,6 @@ const MyLiquidity: any = withTranslation('common')(
       // dualList,
     })
     const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
-    myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
       if (
@@ -947,66 +946,6 @@ const MyLiquidity: any = withTranslation('common')(
                         )}
                       </SwitchPanelStyled>
                     </Modal>
-                  </Grid>
-                </TableWrapStyled>
-              )}
-              {tab === InvestAssetRouter.LEVERAGEETH && (
-                <TableWrapStyled
-                  ref={leverageETHRef}
-                  className={`table-divide-short MuiPaper-elevation2 ${
-                    leverageETHAssets?.length > 0 ? 'min-height' : ''
-                  }`}
-                  marginTop={2}
-                  paddingY={2}
-                  paddingX={0}
-                  flex={1}
-                >
-                  <Grid item xs={12}>
-                    <Typography variant={'h5'} marginBottom={1} marginX={3}>
-                      {t('labelLeverageETHTitle')}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} marginX={0}>
-                    {summaryMyInvest?.leverageETHDollar !== undefined ? (
-                      <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {summaryMyInvest?.leverageETHDollar
-                          ? hideAssets
-                            ? HiddenTag
-                            : nanToEmptyTag(
-                                getValuePrecisionThousand(
-                                  sdk
-                                    .toBig(summaryMyInvest?.leverageETHDollar)
-                                    .times(forexMap[currency] ?? 0),
-                                  undefined,
-                                  undefined,
-                                  2,
-                                  true,
-                                  { isFait: true, floor: true },
-                                ),
-                                PriceTag[CurrencyToTag[currency]],
-                              )
-                          : EmptyValueTag}
-                      </Typography>
-                    ) : (
-                      ''
-                    )}
-                    <AssetsTable
-                      {...{
-                        disableWithdrawList,
-                        rawData: leverageETHAssets,
-                        showFilter: false,
-                        allowTrade,
-                        onSend,
-                        onReceive,
-                        getMarketArrayListCallback: getTokenRelatedMarketArray,
-                        rowConfig: RowInvestConfig,
-                        forexMap: forexMap as any,
-                        isInvest: true,
-                        hideAssets,
-                        isLeverageETH: true,
-                        ...rest,
-                      }}
-                    />
                   </Grid>
                 </TableWrapStyled>
               )}

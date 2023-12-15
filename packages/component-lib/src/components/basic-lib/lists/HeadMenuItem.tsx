@@ -110,7 +110,7 @@ const StyledLayer2Item = styled(Box)<BoxProps<any>>`
   padding: 0;
   margin: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
 
   &:hover {
@@ -228,6 +228,10 @@ Layer2Item = React.memo(
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <StyledLayer2Item className={'layer-sub'} key={label.id}>
+        <Box paddingLeft={1} paddingRight={2.5} paddingY={1} paddingTop={1.2}>
+          {label.icon && <label.icon style={{width: '25px', height: '24px'}} htmlColor={'var(--color-text-primary)'}/>}
+        </Box>
+        <Box>
         <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
           {t(label.i18nKey, {
             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -244,6 +248,7 @@ Layer2Item = React.memo(
         >
           {label?.description ? t(label.description) : ''}
         </Typography>
+        </Box>
       </StyledLayer2Item>
     )
   },

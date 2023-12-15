@@ -13,7 +13,9 @@ import {
   OrderListIcon,
   RecordTabIndex,
   ReverseIcon,
+  RouterPath,
   TradeBtnStatus,
+  UpColor,
 } from '@loopring-web/common-resources'
 import { DeFiWrapProps } from './Interface'
 import { Trans, useTranslation } from 'react-i18next'
@@ -27,6 +29,7 @@ import BigNumber from 'bignumber.js'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../../stores'
 import { useTheme } from '@emotion/react'
+import { CoinIcons } from '../../../tableList'
 
 const BoxStyle = styled(Box)`
   ul {
@@ -80,11 +83,15 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinSellRef = React.useRef()
   const { t } = useTranslation()
   const theme = useTheme()
-  const { defaultNetwork } = useSettings()
+  const { defaultNetwork, coinJson } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const history = useHistory()
   const [_isStoB, setIsStoB] = React.useState(isStoB ?? true)
-
+  const { upColor } = useSettings()
+  const colorRight =
+    upColor === UpColor.green
+      ? ['var(--color-success)', 'var(--color-error)']
+      : ['var(--color-error)', 'var(--color-success)']
   const showVal =
     deFiCalcData.coinSell?.belong && deFiCalcData.coinBuy?.belong && deFiCalcData?.AtoB
 
@@ -263,9 +270,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             <IconButtonStyled
               onClick={() => {
                 if (isLeverageETH) {
-                  history.push('/l2assets/history/leverageETHRecords')
+                  history.push(`${RouterPath.l2records}/leverageETHRecords`)
                 } else {
-                  history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                  history.push(
+                    `${RouterPath.l2records}/${RecordTabIndex.DefiRecords}?market=${market}`,
+                  )
                 }
               }}
               sx={{ backgroundColor: 'var(--field-opacity)' }}
@@ -312,10 +321,27 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography component={'p'} variant='body2' color={'textSecondary'}>
             {t('labelReceiveToken')}
           </Typography>
-          <Typography component={'p'} variant='body2' color={'textPrimary'}>
-            {deFiCalcData?.coinBuy?.tradeValue
-              ? deFiCalcData.coinBuy.tradeValue + ' ' + deFiCalcData.coinBuy.belong
-              : EmptyValueTag}
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textPrimary'}
+            alignItems={'center'}
+            display={'inline-flex'}
+          >
+            {deFiCalcData?.coinBuy?.tradeValue ? (
+              <>
+                <CoinIcons
+                  size={'small'}
+                  type={TokenType.single}
+                  tokenIcon={[coinJson[deFiCalcData.coinBuy.belong]]}
+                />
+                <span style={{ marginRight: 1 / 2 }}>
+                  {deFiCalcData.coinBuy.tradeValue + ' ' + deFiCalcData.coinBuy.belong}
+                </span>
+              </>
+            ) : (
+              EmptyValueTag
+            )}
           </Typography>
         </Grid>
         <Grid
@@ -344,12 +370,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             variant={'text'}
             size={'small'}
             onClick={() => onAprDetail()}
-            sx={{ padding: 0, justifyContent: 'right' }}
+            sx={{
+              padding: 0,
+              justifyContent: 'right',
+              color: apr?.toString().charAt(0) == '-' ? colorRight[1] : colorRight[0],
+            }}
             endIcon={
               <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} color={'inherit'} />
             }
           >
-            {apr ? `${apr}%` : EmptyValueTag}
+            {apr ? `${(apr.toString().charAt(0) == '-' ? '' : '+') + apr + '%'}` : EmptyValueTag}
           </Button>
         </Grid>
         <Grid
