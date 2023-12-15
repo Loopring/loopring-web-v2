@@ -226,10 +226,13 @@ Layer2Item = React.memo(
   <I extends BasicHeaderItem>({ t, label }: MenuItemProps<I> & WithTranslation) => {
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const [isHover, setIsHover] = React.useState(false)
+
+
     return (
-      <StyledLayer2Item className={'layer-sub'} key={label.id}>
+      <StyledLayer2Item onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)} className={'layer-sub'} key={label.id}>
         <Box paddingLeft={1} paddingRight={2.5} paddingY={1} paddingTop={1.2}>
-          {label.icon && <label.icon style={{width: '25px', height: '24px'}} htmlColor={'var(--color-text-primary)'}></label.icon>}
+          {label.icon && <label.icon style={{width: '25px', height: '24px'}} color={isHover ? 'var(--color-primary)' : 'var(--color-text-primary)'}></label.icon>}
         </Box>
         <Box>
         <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
