@@ -74,7 +74,6 @@ import { walletL2CollectionSlice } from './walletL2Collection/reducer'
 import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
-import { tradeLeverageETHSlice } from './router'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
 
 const sagaMiddleware = createSagaMiddleware()
@@ -176,7 +175,6 @@ const reducer = combineReducers({
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
-  _router_tradeLeverageETH: tradeLeverageETHSlice.reducer,
   _router_tradeVault: tradeVaultSlice.reducer,
 })
 
