@@ -105,20 +105,20 @@ export const walletConnectCallback = async () => {
   providerCallback()
 }
 
-export const walletConnectV1Callback = async () => {
-  const { themeMode } = store.getState().settings
-  store.dispatch(
-    accountReducer.updateAccountStatus({
-      connectName: ConnectProviders.WalletConnectV1,
-    }),
-  )
-  if (!window.process) {
-    window.process = process
-  }
-
-  await connectProvides.WalletConnectV1({
-    darkMode: themeMode === ThemeType.dark,
-    // chainId: defaultNetwork,
-  })
-  providerCallback()
-}
+// export const walletConnectV1Callback = async () => {
+//   const { themeMode } = store.getState().settings
+//   store.dispatch(
+//     accountReducer.updateAccountStatus({
+//       connectName: ConnectProviders.WalletConnectV1,
+//     }),
+//   )
+//   if (!window.process) {
+//     window.process = process
+//   }
+//
+//   // await connectProvides.WalletConnectV1({
+//   //   darkMode: themeMode === ThemeType.dark,
+//   //   // chainId: defaultNetwork,
+//   // })
+//   providerCallback()
+// }
