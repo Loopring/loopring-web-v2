@@ -100,6 +100,7 @@ export interface ModalState {
       })[]
     }
   }
+  isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
   isShowVaultExit: ModalStatePlayLoad & Transaction
   isShowVaultJoin: ModalStatePlayLoad & Transaction
   isShowVaultSwap: ModalStatePlayLoad & Transaction

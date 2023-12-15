@@ -71,7 +71,6 @@ const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
   const { marketMap } = useBtradeMap()
 
   const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
-  const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
   React.useEffect(() => {
     if (tradeBtrade?.depth?.symbol) {
       sendSocketTopic({

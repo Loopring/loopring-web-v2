@@ -56,6 +56,8 @@ export const DAY_FORMAT = 'MM/DD'
 export const MINUTE_FORMAT = 'HH:mm'
 export const DAY_MINUTE_FORMAT = `${DAY_FORMAT} ${MINUTE_FORMAT}`
 export const DAT_STRING_FORMAT = 'MMM DD [UTC]Z'
+export const DAT_STRING_FORMAT_S = 'MMM DD'
+
 export const SECOND_FORMAT = `${MINUTE_FORMAT}:ss`
 export const YEAR_DAY_FORMAT = `${YEAR_FROMATE}/${DAY_FORMAT}`
 export const YEAR_DAY_MINUTE_FORMAT = `${YEAR_DAY_FORMAT} ${MINUTE_FORMAT}`

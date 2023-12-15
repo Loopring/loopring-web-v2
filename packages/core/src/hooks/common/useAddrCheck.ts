@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react'
-
+import React from 'react'
 import { connectProvides } from '@loopring-web/web3-provider'
 import {
   AddressError,
@@ -397,7 +396,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
       debounceCheck.cancel()
     }
   }, [address, isAddressCheckLoading, chainId])
-  const reCheck = useCallback(() => {
+  const reCheck = React.useCallback(() => {
     debounceCheck(address)
     _address.current = address
     return () => {

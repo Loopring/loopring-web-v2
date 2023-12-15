@@ -1,5 +1,11 @@
 import React from 'react'
-import { AmmRecordRow, MyPoolRow, RawDataDefiSideStakingItem } from '@loopring-web/component-lib'
+import {
+  AmmRecordRow,
+  MyPoolRow,
+  RawDataAssetsItem,
+  RawDataDefiSideStakingItem,
+  RawDefiAssetsItem,
+} from '@loopring-web/component-lib'
 import {
   LoopringAPI,
   makeDefiInvestReward,
@@ -19,13 +25,16 @@ import {
 import {
   AccountStatus,
   CustomError,
+  EmptyValueTag,
   ErrorMap,
+  getValuePrecisionThousand,
   myLog,
   RowInvestConfig,
   SagaStatus,
   STAKING_INVEST_LIMIT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 // import { walletServices } from "@loopring-web/web3-provider";
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
@@ -37,33 +46,26 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   dualOnInvestAsset: any //RawDataDualAssetItem[];
   rowConfig?: any
   hideSmallBalances: boolean
-}): {
-  myAmmMarketArray: AmmRecordRow<R>[]
-  summaryMyInvest: Partial<SummaryMyInvest>
-  myPoolRow: MyPoolRow<R>[]
-  showLoading: boolean
-  filter: { searchValue: string }
-  tableHeight: number
-  handleFilterChange: (props: { searchValue: string }) => void
-  stakingList: RawDataDefiSideStakingItem[]
-  getStakingList: (props: { limit?: number; offset?: number }) => Promise<void>
-  stakeShowLoading: boolean
-  stakingTotal: number
-  totalStaked: string
-  totalStakedRewards: string
-  totalLastDayPendingRewards: string
-  totalClaimableRewards: string
-  stakedSymbol: string
-} => {
+}) => {
+  const { assetsRawData, onReceive, onSend } = useGetAssets()
   const { account, status: accountStatus } = useAccount()
-  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap, getUserRewards } = useUserRewards()
+  const {
+    status: userRewardsStatus,
+    userRewardsMap,
+    myAmmLPMap,
+    getUserRewards,
+    defiAverageMap,
+  } = useUserRewards()
   const { tokenMap } = useTokenMap()
-  const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
-
+  const {
+    marketCoins: defiCoinArray,
+    marketLeverageMap: defiLeverageMap,
+    marketMap: defiMap,
+    marketLeverageCoins: leverageETHCoinArray,
+  } = useDefiMap()
   const { status: ammMapStatus, ammMap } = useAmmMap()
   const { status: tokenPricesStatus, tokenPrices } = useTokenPrices()
   const { marketMap: stakingMap } = useStakingMap()
-
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
   const [filter, setFilter] = React.useState({
     searchValue: '',
@@ -334,5 +336,39 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     totalLastDayPendingRewards,
     totalClaimableRewards,
     stakedSymbol,
+    onReceive,
+    onSend,
+    leverageETHAssets: assetsRawData?.reduce((prev, item) => {
+      if (leverageETHCoinArray.includes(item.token?.value?.toUpperCase())) {
+        const market = `${item.token?.value?.toUpperCase()}-ETH`
+        const defiInfo = defiLeverageMap[market]
+        const precision = item.precision
+        prev.push({
+          ...item,
+          apr: Number(defiInfo.apy),
+          defiInfo,
+          average: defiAverageMap
+            ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
+            : EmptyValueTag,
+        } as any)
+      }
+      return prev
+    }, [] as Array<RawDefiAssetsItem>),
+    defiAsset: assetsRawData?.reduce((prev, item) => {
+      if (defiCoinArray.includes(item.token?.value?.toUpperCase())) {
+        const market = `${item.token?.value?.toUpperCase()}-ETH`
+        const defiInfo = defiMap[market]
+        const precision = item.precision
+        prev.push({
+          ...item,
+          apr: Number(defiInfo.apy),
+          defiInfo,
+          average: defiAverageMap
+            ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
+            : EmptyValueTag,
+        } as any)
+      }
+      return prev
+    }, [] as Array<RawDefiAssetsItem>),
   }
 }

@@ -27,11 +27,12 @@ export const DeFiTradePanel = ({
   const { deFiWrapProps } = useDefiTrade({
     isJoin,
     setToastOpen: setToastOpen as any,
-    market: market ? market : marketArray[0], // marketArray[1] as MarketType,
+    market: market ? market : marketArray[0],
     setServerUpdate,
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
+    isLeverageETH: false,
   })
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
@@ -58,7 +59,7 @@ export const DeFiTradePanel = ({
             setShowWSTETHStakePopup={setShowWSTETHStakePopup}
             // setShowLeverageETHPopup={setShowLeverageETHPopup}
             type={DEFI_ADVICE_MAP[tokenBase].project}
-            title={market === 'WSTETH-ETH' ? t('labelDefiLido') : t('labelDefiRocketPool')}
+            title={DEFI_ADVICE_MAP[tokenBase].project}
             {...(deFiWrapProps as any)}
           />
         </Box>

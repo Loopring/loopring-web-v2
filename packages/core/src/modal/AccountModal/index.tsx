@@ -1,14 +1,16 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import {
   DepositProps,
+  Modal,
   ModalAccount,
   ModalPanel,
   ModalQRCode,
   Toast,
   ToastType,
   useOpenModals,
+  ETHStakingDetail,
 } from '@loopring-web/component-lib'
-import { useSystem } from '@loopring-web/core'
+import { useStakingAprTrend, useSystem } from '@loopring-web/core'
 import { useAccountModalForUI } from './hook'
 import { Account, AssetsRawDataItem, TOAST_TIME } from '@loopring-web/common-resources'
 
@@ -36,13 +38,15 @@ export const ModalAccountInfo = withTranslation('common')(
   } & WithTranslation) => {
     const { baseURL } = useSystem()
     const {
-      modals: { isShowAccount, isShowGlobalToast },
+      modals: { isShowAccount, isShowGlobalToast, isShowETHStakingApr },
       setShowAccount,
       setShowDeposit,
       setShowTransfer,
       setShowWithdraw,
       setShowGlobalToast,
+      setShowETHStakingApr,
     } = useOpenModals()
+    const stakingAprProps = useStakingAprTrend()
     const {
       exportAccountAlertText,
       exportAccountToastOpen,
@@ -79,13 +83,6 @@ export const ModalAccountInfo = withTranslation('common')(
       isWebEarn,
       ...rest,
     })
-    // const closeToast = React.useCallback(() => {
-    //   setToastOpen({
-    //     open: false,
-    //     content: '',
-    //     type: ToastType.info,
-    //   })
-    // }, [setToastOpen])
 
     return (
       <>
@@ -134,21 +131,25 @@ export const ModalAccountInfo = withTranslation('common')(
           }}
           withdrawProps={{
             ...withdrawProps,
-            onBack: hideDepositWithdrawBack ? undefined : () => {
-              if (withdrawProps.isFromContact) {
-                setShowWithdraw({ isShow: false })
-              } else {
-                setShowWithdraw({ isShow: false })
-                onBackSend()
-              }
-            },
+            onBack: hideDepositWithdrawBack
+              ? undefined
+              : () => {
+                  if (withdrawProps.isFromContact) {
+                    setShowWithdraw({ isShow: false })
+                  } else {
+                    setShowWithdraw({ isShow: false })
+                    onBackSend()
+                  }
+                },
           }}
           depositProps={{
             ...depositProps,
-            onBack: hideDepositWithdrawBack ? undefined : () => {
-              setShowDeposit({ isShow: false })
-              onBackReceive()
-            },
+            onBack: hideDepositWithdrawBack
+              ? undefined
+              : () => {
+                  setShowDeposit({ isShow: false })
+                  onBackReceive()
+                },
           }}
           collectionAdvanceProps={collectionAdvanceProps as any}
           nftTransferProps={
@@ -196,6 +197,11 @@ export const ModalAccountInfo = withTranslation('common')(
           step={isShowAccount.step}
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
+        />
+        <Modal
+          open={isShowETHStakingApr.isShow}
+          onClose={() => setShowETHStakingApr({ ...isShowETHStakingApr, isShow: false })}
+          content={<ETHStakingDetail symbol={isShowETHStakingApr.symbol} {...stakingAprProps} />}
         />
       </>
     )

@@ -401,6 +401,7 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string }
   lastInput?: DeFiChgType
   withdrawFeeBips?: number
+  defaultFee: string
 }
 export type TradeStake<C> = {
   sellToken: sdk.TokenInfo

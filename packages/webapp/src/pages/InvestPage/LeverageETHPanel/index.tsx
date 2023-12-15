@@ -125,9 +125,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }
   const setConfirmedDefiInvest = ({ isShow }: { isShow: boolean }) => {
     if (isShow) {
-      setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: true, confirmationNeeded: true })
     } else {
-      setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: false, confirmationNeeded: true })
     }
   }
   const [serverUpdate, setServerUpdate] = React.useState(false)

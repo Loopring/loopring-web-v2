@@ -39,6 +39,7 @@ import {
   setShowVaultLoan,
   setShowNoVaultAccount,
   setShowConfirmedVault,
+  setShowETHStakingApr,
 } from './reducer'
 
 import React from 'react'
@@ -309,6 +310,10 @@ export const useOpenModals = () => {
           })[]
         }
       }) => dispatch(setShowTargetRedpacketPop(state)),
+      [dispatch],
+    ),
+    setShowETHStakingApr: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
       [dispatch],
     ),
     setShowVaultExit: React.useCallback(

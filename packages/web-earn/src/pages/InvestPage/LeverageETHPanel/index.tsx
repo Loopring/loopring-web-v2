@@ -16,7 +16,7 @@ import {
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
+import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
@@ -94,9 +94,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
-    showLeverageETHPopup,
+    confirmation: {
+      confirmedLeverageETHInvest: confirmed,
+      confirmationNeeded,
+      showLeverageETHPopup,
+    },
     setShowLeverageETHPopup,
-    confirmation: { confirmedLeverageETHInvest: confirmed, confirmationNeeded },
   } = confirmation.useConfirmation()
   const {
     toggle: {
@@ -111,9 +114,9 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }
   const setConfirmedDefiInvest = ({ isShow }: { isShow: boolean }) => {
     if (isShow) {
-      setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: true, confirmationNeeded: true })
     } else {
-      setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: false, confirmationNeeded: true })
     }
   }
   const match: any = useRouteMatch('/invest/leverageETH/:isJoin?')

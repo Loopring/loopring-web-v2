@@ -1,4 +1,4 @@
-import { confirmation, useLeverageETHTrade } from '@loopring-web/core'
+import { confirmation, useDefiTrade } from '@loopring-web/core'
 import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -27,7 +27,7 @@ export const TradePanel = ({
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] = React.useState<boolean>(false)
   const [confirmShowNoBalance, setConfirmShowNoBalance] = React.useState<boolean>(false)
 
-  const { deFiWrapProps } = useLeverageETHTrade({
+  const { deFiWrapProps } = useDefiTrade({
     isJoin,
     setToastOpen: setToastOpen as any,
     market: market,
@@ -35,6 +35,7 @@ export const TradePanel = ({
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
+    isLeverageETH: true,
   })
   const { t } = useTranslation()
 

@@ -138,7 +138,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       resetTableData(resultData)
     }
-  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray, leverageETHCoinArray])
+  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray])
   const handleFilterChange = React.useCallback(
     (filter) => {
       setFilter(filter)

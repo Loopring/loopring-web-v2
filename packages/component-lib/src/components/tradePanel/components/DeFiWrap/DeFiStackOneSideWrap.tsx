@@ -492,7 +492,7 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
             color={'inherit'}
             sx={{ marginLeft: 1, cursor: 'pointer' }}
             onClick={() => {
-              setShowLRCStakePopup({ show: true, confirmationNeeded: false })
+              setShowLRCStakePopup({ isShow: true, confirmationNeeded: false })
             }}
           />
         </Typography>

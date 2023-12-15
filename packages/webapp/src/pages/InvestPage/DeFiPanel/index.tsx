@@ -138,7 +138,7 @@ const LandDefiInvest = ({
         {investAdviceList.map((item, index) => {
           return (
             <React.Fragment key={item.type + index}>
-              {item.enable && marketArray.includes(item.market) ? (
+              {item.enable && marketArray.includes(item?.market ?? '') ? (
                 <Grid item xs={12} md={4} lg={3}>
                   <Card
                     sx={{ display: 'flex', bgcolor: 'var(--color-box-third)' }}
@@ -295,13 +295,13 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }) => {
     if (isShow) {
       if (type === 'RETH') {
-        setShowRETHStakePopup({ show: true, confirmationNeeded: true })
+        setShowRETHStakePopup({ isShow: true, confirmationNeeded: true })
       } else {
-        setShowWSTETHStakePopup({ show: true, confirmationNeeded: true })
+        setShowWSTETHStakePopup({ isShow: true, confirmationNeeded: true })
       }
     } else {
-      setShowRETHStakePopup({ show: false, confirmationNeeded: true })
-      setShowWSTETHStakePopup({ show: false, confirmationNeeded: true })
+      setShowRETHStakePopup({ isShow: false, confirmationNeeded: true })
+      setShowWSTETHStakePopup({ isShow: false, confirmationNeeded: true })
     }
   }
 

@@ -10,6 +10,7 @@ import {
   VaultLoanType,
   VaultAction,
   CoinSource,
+  ToastType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 import { ToastType } from '@loopring-web/component-lib'
@@ -19,7 +20,7 @@ const initialState: ModalState = {
     isShow: false,
     info: {
       content: '',
-      type: 'info',
+      type: ToastType.info,
     },
   },
   isShowNFTMetaNotReady: { isShow: false },
@@ -57,6 +58,7 @@ const initialState: ModalState = {
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
   isShowTargetRedpacketPop: { isShow: false, info: {} },
+  isShowETHStakingApr: { isShow: false, symbol: undefined },
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false },
@@ -407,6 +409,14 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         },
       }
     },
+    setShowETHStakingApr(state, action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>) {
+      const { isShow, symbol, info } = action.payload
+      state.isShowETHStakingApr = {
+        isShow,
+        symbol,
+        info,
+      }
+    },
     setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultExit = { ...action.payload }
     },
@@ -466,6 +476,7 @@ export const {
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
   setShowTargetRedpacketPop,
+  setShowETHStakingApr,
   setShowVaultExit,
   setShowVaultJoin,
   setShowVaultSwap,
