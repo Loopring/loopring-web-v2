@@ -192,6 +192,14 @@ export enum TableFilterParams {
   ranking = 'ranking',
 }
 
+export type Contact = {
+  contactName: string
+  // name?: string
+  address?: string
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
+  ens?: string
+} & Partial<sdk.CreateContactRequest>
+
 export enum ToastType {
   success = 'success',
   error = 'error',

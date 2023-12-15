@@ -1,9 +1,9 @@
 import { useDefiTrade, confirmation } from '@loopring-web/core'
 import {
+  DEFI_ADVICE_MAP,
   MarketType,
   leverageETHAdvice,
   myLog,
-  DEFI_ADVICE_MAP,
 } from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
@@ -47,10 +47,6 @@ export const TradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  // leverageETHAdvice
-  // console.log('leverageETHAdvice', leverageETHAdvice)
-  // setShowRETHStakingPopup={setShowRETHStakingPopup}
-  // setShowWSTETHStakingPopup={setShowWSTETHStakingPopup}
   const { setShowLeverageETHPopup } = confirmation.useConfirmation()
   return (
     <>

@@ -41,6 +41,7 @@ import {
   getValuePrecisionThousand,
   LEVERAGE_ETH_CONFIG,
   MapChainId,
+  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
@@ -585,12 +586,12 @@ export const useOrderList = ({
       }
       setShowLoading(false)
     },
-    [accountId, apiKey, marketMap, tokenMap, isStopLimit],
+    [accountId, apiKey, isStopLimit, setToastOpen, t, tokenMap, marketMap],
   )
 
   React.useEffect(() => {
     ;(async () => {
-      if (status === 'UNSET' && isOrderBookScroll === true) {
+      if (status === SagaStatus.UNSET && isOrderBookScroll) {
         getOrderList({
           limit: 50,
           status: ['processing'],

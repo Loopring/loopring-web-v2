@@ -326,7 +326,6 @@ export const useDualHook = () => {
           const rawData = infos.map((item: sdk.DualProductAndPrice) => {
             return makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol, marketMap[market])
           })
-          myLog('setDualProducts', rawData)
           setDualProducts(rawData)
           // setIsLoading(false)
         }
@@ -344,11 +343,11 @@ export const useDualHook = () => {
   }, 100)
 
   const [step1SelectedToken, setStep1SelectedToken] = React.useState<string | undefined>(
-    [DualViewType.DualGain, DualViewType.DualDip].includes(viewType) ? coinA : undefined,
+    [DualViewType.DualGain, DualViewType.DualDip].includes(viewType as any) ? coinA : undefined,
   )
   const [step2BuyOrSell, setStep2BuyOrSell] = React.useState<'Buy' | 'Sell' | undefined>(undefined)
   const [step3Token, setStep3Token] = React.useState<string | undefined>(
-    [DualViewType.DualGain, DualViewType.DualDip].includes(viewType) ? coinB : undefined,
+    [DualViewType.DualGain, DualViewType.DualDip].includes(viewType as any) ? coinB : undefined,
   )
   const onSelectStep1Token = React.useCallback(
     (token?: string) => {

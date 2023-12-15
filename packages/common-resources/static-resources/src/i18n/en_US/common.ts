@@ -2135,11 +2135,6 @@ export default {
   labelEstAPR: 'Est.APR',
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
-  labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
-  labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
-  labelDualLongestSettlementFixed: 'Fixed',
-  labelDualLongestSettlementAutomatic: 'Automatic',
-  labelDualSettingConfirm: 'Confirm',
   labelL2DualNote: 'Dual Investment Notification',
   labelQuickInvest: 'Quick Invest',
   labelVault: 'Vault',
@@ -2172,7 +2167,6 @@ export default {
   labelVaultType: 'Type',
   labelVaultTypeOpenPosition: 'Open Position',
   labelVaultStatus: 'Status',
-
   labelVaultJoinStatus: '{{status}} {{percentage}}',
   labelVaultTradeStatus: '{{status}} {{percentage}}',
   labelVaultCollateral: 'Collateral',
