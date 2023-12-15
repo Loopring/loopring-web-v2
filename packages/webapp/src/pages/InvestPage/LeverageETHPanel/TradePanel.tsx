@@ -1,5 +1,10 @@
 import { useDefiTrade, confirmation } from '@loopring-web/core'
-import { MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
+import {
+  MarketType,
+  leverageETHAdvice,
+  myLog,
+  DEFI_ADVICE_MAP,
+} from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
   DeFiWrap,
@@ -66,7 +71,7 @@ export const TradePanel = ({
             isJoin={isJoin}
             setShowLeverageETHPopup={setShowLeverageETHPopup}
             type={leverageETHAdvice.project}
-            title={t('labelLeverageETHStaking')}
+            title={DEFI_ADVICE_MAP[tokenBase].project}
             {...(deFiWrapProps as any)}
           />
         </Box>

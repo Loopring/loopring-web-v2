@@ -12,11 +12,12 @@ import moment from 'moment'
 import { getAprRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
-import { DAT_STRING_FORMAT, DAT_STRING_FORMAT_S } from '@loopring-web/common-resources'
+import { DAT_STRING_FORMAT, DAT_STRING_FORMAT_S, UpColor } from '@loopring-web/common-resources'
 import { ChartType } from '../../constant'
 import { IndicatorProps } from '../KlineChart'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
+import { useSettings } from '../../../../stores'
 // import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.01
@@ -56,6 +57,11 @@ const TrendAprChart = ({
   showXAxis?: boolean
 }) => {
   const theme = useTheme()
+  const { upColor } = useSettings()
+  const colorRight =
+    upColor === UpColor.green
+      ? ['var(--color-success)', 'var(--color-error)']
+      : ['var(--color-error)', 'var(--color-success)']
   const renderData = getAprRenderData(type, data)
   const trendColor = theme.colorBase.primary
   // current chart xAxis index
@@ -92,8 +98,12 @@ const TrendAprChart = ({
             <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
               Apr:
             </Typography>
-            <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
-              &nbsp;{`+${apy}`} %
+            <Typography
+              component={'span'}
+              variant={'inherit'}
+              color={apy?.toString().charAt(0) == '-' ? colorRight[1] : colorRight[0]}
+            >
+              {(apy?.toString().charAt(0) == '-' ? '' : '+') + apy + '%'}
             </Typography>
           </Typography>
           <Typography component={'div'} variant={'body2'} color={'var(--color-text-third)'}>
@@ -118,27 +128,6 @@ const TrendAprChart = ({
     )
   }
 
-  const getDynamicYAxisDomain = React.useCallback(() => {
-    const valueList = renderData.map((o) => Number(o.apy))
-    const min = Math.min(...valueList)
-    const max = Math.max(...valueList)
-    if (min / max < 0.1) {
-      return [(dataMin: number) => dataMin * 0.1, (dataMax: number) => dataMax * 2.5]
-    }
-    if (min / max < 0.5) {
-      return [(dataMin: number) => dataMin * 0.5, (dataMax: number) => dataMax * 1.2]
-    }
-    return [
-      (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
-      (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
-    ]
-  }, [renderData, yAxisDomainPercent])
-
-  // const customYAxisTick = (value: any) => {
-  //     const formattedValue = getValuePrecisionThousand((Number.isFinite(value) ? value : Number(value || 0)).toFixed(2), undefined, undefined, 2)
-  //     return formattedValue ?? '0.00'
-  // }
-
   return (
     <ResponsiveContainer debounce={100} width={'99%'}>
       <ComposedChart
@@ -149,7 +138,6 @@ const TrendAprChart = ({
       >
         <defs>
           <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-            {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}
             <stop offset='5%' stopColor={trendColor} stopOpacity={0.4} />
             <stop offset='90%' stopColor={trendColor} stopOpacity={0.1} />
           </linearGradient>
@@ -171,6 +159,7 @@ const TrendAprChart = ({
           axisLine={false}
           tickLine={true}
           width={1}
+          tickCount={6}
           label={{
             value: 'APR %',
             fontSize: 14,
@@ -187,7 +176,16 @@ const TrendAprChart = ({
             transform: 'translate(-36, 0)',
           }}
           tickFormatter={(value, index) => (index == 0 ? '' : value)}
-          domain={[0, 'auto']}
+          domain={[
+            Math.min.apply(
+              null,
+              Object.values(renderData ?? {}).map((item) => Number(item.apy)),
+            ) - 1,
+            Math.max.apply(
+              null,
+              Object.values(renderData ?? {}).map((item) => Number(item.apy)),
+            ),
+          ]}
           /* tickFormatter={convertValue} */
           stroke={theme.colorBase.textThird}
         />
