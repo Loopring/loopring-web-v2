@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { Contact, ModalState, ModalStatePlayLoad, Transaction } from './interface'
+import { ModalState, ModalStatePlayLoad, Transaction } from './interface'
 import {
   setNFTMetaNotReady,
   setShowAccount,
@@ -33,6 +33,7 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowEditContact,
   setShowVaultJoin,
   setShowVaultExit,
   setShowVaultSwap,
@@ -51,6 +52,7 @@ import {
   TradeNFT,
   AmmPanelType,
   CoinSource,
+  Contact,
   VaultAction,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -310,6 +312,10 @@ export const useOpenModals = () => {
           })[]
         }
       }) => dispatch(setShowTargetRedpacketPop(state)),
+      [dispatch],
+    ),
+    setShowEditContact: React.useCallback(
+      (state: { isShow: boolean; info?: any }) => dispatch(setShowEditContact(state)),
       [dispatch],
     ),
     setShowETHStakingApr: React.useCallback(

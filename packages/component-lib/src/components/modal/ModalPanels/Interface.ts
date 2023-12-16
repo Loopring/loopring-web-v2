@@ -3,6 +3,7 @@ import {
   Account,
   AccountHashInfo,
   CAMPAIGNTAGCONFIG,
+  Contact,
   FeeInfo,
   NFTWholeINFO,
   TradeTypes,
@@ -42,6 +43,7 @@ export enum AccountStep {
   CheckingActive,
   AddAssetGateway,
   SendAssetGateway,
+  SendAssetFromContact,
   SendNFTGateway,
   PayWithCard,
   QRCodeScanner,
@@ -284,4 +286,12 @@ export interface CheckImportCollectionProps {
   disabled?: boolean
   loading?: boolean
   onClick: (item: string) => void
+}
+
+export interface SendDialogProps {
+  // onCloseSend: () => void
+  sendInfo: {
+    open: boolean
+    selected: Contact | undefined
+  }
 }

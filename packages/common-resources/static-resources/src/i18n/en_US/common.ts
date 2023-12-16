@@ -2135,8 +2135,15 @@ export default {
   labelEstAPR: 'Est.APR',
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelL2DualNote: 'Dual Investment Notification',
   labelQuickInvest: 'Quick Invest',
+  labelENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelSendToContact: 'Send to',
+  labelContactENSAlert:
+    "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
