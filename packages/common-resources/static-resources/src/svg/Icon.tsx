@@ -469,6 +469,7 @@ export const InfoIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
+
 export const UnConnectIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox='0 0 24 24' fill='none'>

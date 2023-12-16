@@ -26,7 +26,6 @@ export const localStoreReducer = combineReducers({
 export * as confirmation from './confirmation'
 export * as favoriteMarket from './favoriteMarket'
 export * as favoriteVaultMarket from './favoriteVaultMarket'
-
 export * as layer1Store from './layer1Store'
 export * as onchainHashInfo from './onchainHashInfo'
 export * as nftRefresh from './nftRefresh'

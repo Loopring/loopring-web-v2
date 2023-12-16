@@ -1,5 +1,4 @@
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
-import { PayloadAction } from '@reduxjs/toolkit'
 
 export interface Confirmation {
   confirmed: boolean

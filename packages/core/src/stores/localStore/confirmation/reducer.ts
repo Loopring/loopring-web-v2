@@ -21,7 +21,6 @@ const initialState: Confirmation = {
   showLeverageETHPopup: false,
   confirmationNeeded: true,
   showAutoDefault: false,
-  confirmedVault: false,
 }
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
