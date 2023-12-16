@@ -47,7 +47,6 @@ const btradeMapSlice: Slice = createSlice({
     },
   },
 })
-
 const { getBtradeMap, updateBtradeSyncMap, getBtradeMapStatus, statusUnset } =
   btradeMapSlice.actions
 export { btradeMapSlice, getBtradeMap, getBtradeMapStatus, statusUnset, updateBtradeSyncMap }

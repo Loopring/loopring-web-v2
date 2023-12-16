@@ -57,14 +57,14 @@ import { WalletInfo } from './localStore/walletInfo'
 
 import {
   modalDataSlice,
-  pageAmmPoolSlice,
   pageTradeLiteSlice,
-  pageTradeProSlice,
   redeemStakeSlice,
   tradeStakeSlice,
   tradeVaultSlice,
   tradeDefiSlice,
   tradeDualSlice,
+  pageTradeProSlice,
+  pageAmmPoolSlice,
 } from './router'
 import { firebaseReducer, ReactReduxFirebaseProviderProps } from 'react-redux-firebase'
 import firebase from 'firebase/compat/app'
@@ -251,7 +251,7 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
-// export type RootState = ReturnType<ReducersMapObject<initReduce>>
+export type RootState = ReturnType<typeof reducer>
 export const persistor = persistStore(store)
 
 // persistor.persist()

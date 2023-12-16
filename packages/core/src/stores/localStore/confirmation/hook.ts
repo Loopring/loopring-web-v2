@@ -23,7 +23,6 @@ import {
   setShowAutoDefault,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
-import { PayloadAction } from '@reduxjs/toolkit'
 
 export const useConfirmation = (): {
   confirmation: Confirmation

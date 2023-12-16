@@ -38,8 +38,6 @@ import {
   updateRedPacketOrder,
   updateClaimData,
   resetClaimData,
-  // updateJoinVault,
-  // resetJoinVault,
 } from './reducer'
 import {
   ActiveAccountData,
@@ -147,7 +145,6 @@ export function useModalData(): {
   transferRampValue: TransferData
   resetTransferRampData: () => void
   updateTransferRampData: (transferData: RequireOne<TransferData, never>) => void
-
   transferBanxaValue: TransferData
   resetTransferBanxaData: () => void
   updateTransferBanxaData: (transferData: RequireOne<TransferData, never>) => void
@@ -159,10 +156,6 @@ export function useModalData(): {
   claimValue: Partial<ClaimData>
   updateClaimData: (value: Partial<ClaimData>) => void
   resetClaimData: () => void
-
-  // joinVault: Partial<VaultJoinData>
-  // updateJoinVault: (value: Partial<VaultJoinData>) => void
-  // resetJoinVault: () => void
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData,
@@ -375,14 +368,5 @@ export function useModalData(): {
     resetClaimData: React.useCallback(() => {
       dispatch(resetClaimData(undefined))
     }, [dispatch]),
-    // updateJoinVault: React.useCallback(
-    //   (vaultJoinData: Partial<VaultJoinData>) => {
-    //     dispatch(updateJoinVault(vaultJoinData))
-    //   },
-    //   [dispatch],
-    // ),
-    // resetJoinVault: React.useCallback(() => {
-    //   dispatch(resetJoinVault(undefined))
-    // }, [dispatch]),
   }
 }
