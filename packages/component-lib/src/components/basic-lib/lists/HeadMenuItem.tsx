@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { WithTranslation } from 'react-i18next'
-import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks'
+import { bindHover, bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import { BasicHeaderItem, HeadMenuType, MenuItemLink, MenuItemProps } from './Interface'
 import styled from '@emotion/styled'
 import clsx from 'clsx'
@@ -231,8 +231,8 @@ Layer2Item = React.memo(
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <StyledLayer2Item className={'layer-sub'} key={label.id}>
-        <Box paddingLeft={1} paddingRight={2}>
-          {label.icon && <label.icon size={'large'} color={'inherit '} />}
+        <Box paddingLeft={1} paddingRight={2} display={'flex'} alignItems={'center'}>
+          {label.icon && <label.icon fontSize={'large'} color={'inherit'} />}
         </Box>
         <Box>
           <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
