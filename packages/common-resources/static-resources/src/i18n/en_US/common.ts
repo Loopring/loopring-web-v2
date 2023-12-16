@@ -1281,7 +1281,7 @@ export default {
   labelBlindBoxExpirationExplainationForToken:
     'After expiration, any unopened Red Packets will be forfeited and sent back to the Sender',
   labelBlindBoxExpirationExplainationForNFT:
-    "If NFT Red Packet recipients do not claim their NFT within 3 days, it will be forfeited and returned to the Sender's wallet.",
+    "If NFT Red Packet recipients do not claim their NFT within 30 days, it will be forfeited and returned to the Sender's wallet.",
   labelBlindBoxPrivate: 'Private Red Packet',
   labelBlindBoxPrivateDes: 'Your Red Packet is shared privately with others via a custom QR code.',
   labelBlindBoxClaimWarning:

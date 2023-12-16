@@ -1857,10 +1857,7 @@ const MultiLineInput = styled('textarea')`
   }
 `
 const isAddressValid = (address: string, previousAddress: string[]) => {
-  const existed = previousAddress.find(
-    (existedAddress) => existedAddress.toLocaleLowerCase() === address.toLocaleLowerCase(),
-  )
-  return !existed && isAddress(address)
+  return isAddress(address)
 }
 const getValidAddresses = (input: string, sentAddress: string[]) => {
   const addresses = input
