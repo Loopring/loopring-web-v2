@@ -5,10 +5,9 @@ import {
   VaultMarketExtends,
 } from '@loopring-web/common-resources'
 import { DepartmentRow, RowInvest } from '@loopring-web/component-lib'
-import { InvestTokenTypeMap, store } from '../../stores'
+import { InvestTokenTypeMap, store, btradeReducer } from '../../stores'
 import { LoopringAPI } from '../../api_wrapper'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { getBtradeMapStatus } from '../../stores/invest/BtradeMap/reducer'
 
 export const makeInvestRow = <R extends RowInvest>(
   investTokenTypeMap: InvestTokenTypeMap,
@@ -76,7 +75,7 @@ export const makeBtrade = (btradeMarkets: any) => {
     }, {})
     if (!marketArray?.length) {
       store.dispatch(
-        getBtradeMapStatus({
+        btradeReducer.getBtradeMapStatus({
           marketArray,
           marketCoins,
           marketMap,

@@ -7,7 +7,6 @@ import React, { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AddressTypeTag } from '../../basic-lib'
-import { AddressType, AddressTypeKeys } from '@loopring-web/loopring-sdk'
 
 type SingleContactProps = {
   editing: boolean

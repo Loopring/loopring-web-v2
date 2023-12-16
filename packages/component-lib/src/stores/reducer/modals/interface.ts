@@ -7,9 +7,9 @@ import {
   AmmPanelType,
   VaultAction,
   CoinSource,
+  ToastType,
   Contact,
 } from '@loopring-web/common-resources'
-import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum ModalType {

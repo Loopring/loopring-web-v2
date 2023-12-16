@@ -288,12 +288,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         </Box>
       </Box>
       <Divider sx={{ width: '100%', marginY: 1 }} />
-      <Box
-        flexDirection={'column'}
-        display={'flex'}
-        alignSelf={'stretch'}
-        alignItems={'stretch'}
-      >
+      <Box flexDirection={'column'} display={'flex'} alignSelf={'stretch'} alignItems={'stretch'}>
         <InputCoinStyled
           ref={coinSellRef}
           disabled={getDisabled}

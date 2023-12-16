@@ -33,14 +33,14 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
-  setShowETHStakingApr,
+  setShowEditContact,
   setShowVaultJoin,
   setShowVaultExit,
   setShowVaultSwap,
   setShowVaultLoan,
   setShowNoVaultAccount,
   setShowConfirmedVault,
-  setShowEditContact,
+  setShowETHStakingApr,
 } from './reducer'
 
 import React from 'react'

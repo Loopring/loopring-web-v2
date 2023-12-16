@@ -1160,7 +1160,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
               <CardContent sx={{ alignItems: 'center', paddingTop: 4 }}>
                 <Typography component={'span'} display={'inline-flex'}>
                   <NormalRedpacketIcon
-                    fill={'var(--color-text-primary)'}
+                    htmlColor={'var(--color-text-primary)'}
                     style={{ width: 64, height: 64 }}
                   />
                 </Typography>
@@ -1184,7 +1184,7 @@ export const CreateRedPacketStepTokenType = withTranslation()(
                 <Typography component={'span'} display={'inline-flex'}>
                   <Typography component={'span'} display={'inline-flex'}>
                     <BlindBoxIcon
-                      fill={'var(--color-text-primary)'}
+                      htmlColor={'var(--color-text-primary)'}
                       style={{ width: 64, height: 64 }}
                     />
                   </Typography>

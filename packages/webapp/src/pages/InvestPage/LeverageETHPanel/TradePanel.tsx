@@ -1,5 +1,10 @@
 import { useDefiTrade, confirmation } from '@loopring-web/core'
-import { DEFI_ADVICE_MAP,MarketType, leverageETHAdvice, myLog } from '@loopring-web/common-resources'
+import {
+  DEFI_ADVICE_MAP,
+  MarketType,
+  leverageETHAdvice,
+  myLog,
+} from '@loopring-web/common-resources'
 import {
   ConfirmDefiNOBalance,
   DeFiWrap,
