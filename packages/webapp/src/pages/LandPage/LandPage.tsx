@@ -6,9 +6,7 @@ import {
   BlockTradeLandIcon,
   defiAdvice,
   SpotIcon,
-  SwapLandIcon,
   dualAdvice,
-  FiatLandIcon,
   fnType,
   GoIcon,
   leverageETHAdvice,
@@ -17,7 +15,6 @@ import {
   TokenType,
   NFTSubRouter,
   SwapLandIcon,
-  BlockTradeLandIcon,
   FiatLandIcon,
 } from '@loopring-web/common-resources'
 import { Trans, withTranslation } from 'react-i18next'

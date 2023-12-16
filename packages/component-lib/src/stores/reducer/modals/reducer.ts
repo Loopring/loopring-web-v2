@@ -10,8 +10,8 @@ import {
   VaultLoanType,
   VaultAction,
   CoinSource,
-  ToastType,
   Contact,
+  ToastType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 

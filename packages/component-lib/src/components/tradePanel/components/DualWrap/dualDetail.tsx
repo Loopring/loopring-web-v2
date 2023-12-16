@@ -36,7 +36,6 @@ import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
 import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
 import { CancelDualAlert } from '../tool'
-import { confirmation } from '@loopring-web/core'
 
 const BoxChartStyle = styled(Box)`
   background-clip: content-box;

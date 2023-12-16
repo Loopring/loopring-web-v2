@@ -23,7 +23,9 @@ export type WithdrawType =
   | sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
 
 export type WithdrawTypes = {
+  // @ts-ignore
   [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: 'Fast'
+  // @ts-ignore
   [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard'
 }
 

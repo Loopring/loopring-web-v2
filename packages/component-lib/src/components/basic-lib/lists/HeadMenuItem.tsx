@@ -111,13 +111,16 @@ const StyledLayer2Item = styled(Box)<BoxProps<any>>`
   margin: 0;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
 
   &:hover {
     //border-left-color: transparent;
     background: var(--opacity);
     h5 {
       color: var(--color-primary);
+    }
+    svg {
+      fill: var(--color-primary);
     }
   }
 ` as typeof MenuItem
@@ -228,26 +231,26 @@ Layer2Item = React.memo(
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <StyledLayer2Item className={'layer-sub'} key={label.id}>
-        <Box paddingLeft={1} paddingRight={2.5} paddingY={1} paddingTop={1.2}>
-          {label.icon && <label.icon style={{width: '25px', height: '24px'}} />}
+        <Box paddingLeft={1} paddingRight={2}>
+          {label.icon && <label.icon size={'large'} color={'inherit '} />}
         </Box>
         <Box>
-        <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
-          {t(label.i18nKey, {
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-            ns: ['layout', 'landPage', 'common'],
-          })}
-        </Typography>
-        <Typography
-          lineHeight={'20px'}
-          component={'p'}
-          whiteSpace={'pre-line'}
-          variant={'body2'}
-          color={'inherit'}
-        >
-          {label?.description ? t(label.description) : ''}
-        </Typography>
+          <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
+            {t(label.i18nKey, {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              ns: ['layout', 'landPage', 'common'],
+            })}
+          </Typography>
+          <Typography
+            lineHeight={'20px'}
+            component={'p'}
+            whiteSpace={'pre-line'}
+            variant={'body2'}
+            color={'inherit'}
+          >
+            {label?.description ? t(label.description) : ''}
+          </Typography>
         </Box>
       </StyledLayer2Item>
     )

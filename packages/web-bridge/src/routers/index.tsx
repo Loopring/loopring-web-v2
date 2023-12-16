@@ -1,7 +1,7 @@
 import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react'
 import { Box, Container } from '@mui/material'
-import { ModalGroup, useDeposit, useSystem } from '@loopring-web/core'
+import { ModalGroup, useDeposit } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
 import { SagaStatus, setMyLog, ThemeType } from '@loopring-web/common-resources'
 import { ErrorPage } from '../pages/ErrorPage'

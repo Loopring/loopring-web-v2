@@ -8,11 +8,6 @@ import {
   RewardIcon,
   SecurityIcon,
   VipIcon,
-} from '../svg'
-import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
-import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
-import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
-import {
   AmmIcon,
   BlockTradeIcon,
   CreateNFTIcon,
@@ -27,7 +22,12 @@ import {
   OverviewIcon,
   StopLimitIcon,
   SwapIcon,
-} from '../svg/dropdownLogo'
+  VaultHomeIcon,
+  VaultDashboardIcon,
+} from '../svg'
+import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
+import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
+import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -326,6 +326,7 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
       id: VaultKey.VAULT_HOME,
       i18nKey: 'labelVaultHome',
       description: 'labelVaultHomeDes',
+      icon: VaultHomeIcon,
     },
     router: { path: RouterPath.vault + '' },
   },
@@ -334,6 +335,7 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
       id: VaultKey.VAULT_DASHBOARD,
       i18nKey: 'labelVaultDashboard',
       description: 'labelVaultDashboardDes',
+      icon: VaultDashboardIcon,
     },
     router: { path: RouterPath.vault + `/${VaultKey.VAULT_DASHBOARD}` },
   },

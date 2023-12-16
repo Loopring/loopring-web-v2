@@ -63,12 +63,11 @@ import {
   redeemStakeSlice,
   tradeStakeSlice,
   tradeVaultSlice,
+  tradeDefiSlice,
+  tradeDualSlice,
 } from './router'
 import { firebaseReducer, ReactReduxFirebaseProviderProps } from 'react-redux-firebase'
 import firebase from 'firebase/compat/app'
-import { tradeDefiSlice } from './router'
-import { tradeDualSlice } from './router'
-
 import { investReducer } from './invest'
 import { walletL2CollectionSlice } from './walletL2Collection/reducer'
 import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
@@ -140,7 +139,7 @@ const persistedLocalStoreReducer = persistReducer<
   }>
 >(persistLocalStoreConfig, localStoreReducer)
 
-const reducer = combineReducers({
+export const initReduce = {
   account: persistedAccountReducer,
   socket: socketSlice.reducer,
   settings: persistedSettingReducer,
@@ -176,10 +175,10 @@ const reducer = combineReducers({
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
   _router_tradeVault: tradeVaultSlice.reducer,
-})
+}
 
 export const store = configureStore({
-  reducer,
+  reducer: combineReducers(initReduce),
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   middleware: [
     ...getDefaultMiddleware({
@@ -252,7 +251,7 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
-export type RootState = ReturnType<typeof reducer>
+// export type RootState = ReturnType<ReducersMapObject<initReduce>>
 export const persistor = persistStore(store)
 
 // persistor.persist()
