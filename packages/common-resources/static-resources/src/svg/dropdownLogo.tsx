@@ -23,13 +23,6 @@ export const DualInvestIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-;<svg
-  width='24'
-  height='24'
-  viewBox='0 0 24 24'
-  fill='none'
-  xmlns='http://www.w3.org/2000/svg'
-></svg>
 
 export const ETHStakingIcon = (props: SvgIconProps) => {
   return (
@@ -42,13 +35,6 @@ export const ETHStakingIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-;<svg
-  width='24'
-  height='24'
-  viewBox='0 0 24 24'
-  fill='none'
-  xmlns='http://www.w3.org/2000/svg'
-></svg>
 
 export const LeverageETHIcon = (props: SvgIconProps) => {
   return (
@@ -61,13 +47,6 @@ export const LeverageETHIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-;<svg
-  width='24'
-  height='24'
-  viewBox='0 0 24 24'
-  fill='none'
-  xmlns='http://www.w3.org/2000/svg'
-></svg>
 
 export const AmmIcon = (props: SvgIconProps) => {
   return (
@@ -139,13 +118,6 @@ export const BlockTradeIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-;<svg
-  width='24'
-  height='24'
-  viewBox='0 0 24 24'
-  fill='none'
-  xmlns='http://www.w3.org/2000/svg'
-></svg>
 
 export const FiatIcon = (props: SvgIconProps) => {
   return (
@@ -170,13 +142,6 @@ export const MyNFTIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-;<svg
-  width='24'
-  height='24'
-  viewBox='0 0 24 24'
-  fill='none'
-  xmlns='http://www.w3.org/2000/svg'
-></svg>
 
 export const CreateNFTIcon = (props: SvgIconProps) => {
   return (

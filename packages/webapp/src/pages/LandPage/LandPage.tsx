@@ -16,9 +16,6 @@ import {
   stakeAdvice,
   TokenType,
   NFTSubRouter,
-  SwapLandIcon,
-  BlockTradeLandIcon,
-  FiatLandIcon,
 } from '@loopring-web/common-resources'
 import { Trans, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'

@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { WithTranslation } from 'react-i18next'
-import { bindHover, bindMenu, usePopupState } from 'material-ui-popup-state/hooks'
+import { bindHover, bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import { BasicHeaderItem, HeadMenuType, MenuItemLink, MenuItemProps } from './Interface'
 import styled from '@emotion/styled'
 import clsx from 'clsx'
@@ -111,13 +111,16 @@ const StyledLayer2Item = styled(Box)<BoxProps<any>>`
   margin: 0;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
 
   &:hover {
     //border-left-color: transparent;
     background: var(--opacity);
     h5 {
       color: var(--color-primary);
+    }
+    svg {
+      fill: var(--color-primary);
     }
   }
 ` as typeof MenuItem
@@ -226,31 +229,28 @@ Layer2Item = React.memo(
   <I extends BasicHeaderItem>({ t, label }: MenuItemProps<I> & WithTranslation) => {
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-    const [isHover, setIsHover] = React.useState(false)
-
-
     return (
-      <StyledLayer2Item onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)} className={'layer-sub'} key={label.id}>
-        <Box paddingLeft={1} paddingRight={2.5} paddingY={1} paddingTop={1.2}>
-          {label.icon && <label.icon style={{width: '25px', height: '24px'}} color={isHover ? 'var(--color-primary)' : 'var(--color-text-primary)'}></label.icon>}
+      <StyledLayer2Item className={'layer-sub'} key={label.id}>
+        <Box paddingLeft={1} paddingRight={2} display={'flex'} alignItems={'center'}>
+          {label.icon && <label.icon fontSize={'large'} color={'inherit'} />}
         </Box>
         <Box>
-        <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
-          {t(label.i18nKey, {
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-            ns: ['layout', 'landPage', 'common'],
-          })}
-        </Typography>
-        <Typography
-          lineHeight={'20px'}
-          component={'p'}
-          whiteSpace={'pre-line'}
-          variant={'body2'}
-          color={'inherit'}
-        >
-          {label?.description ? t(label.description) : ''}
-        </Typography>
+          <Typography lineHeight={'22px'} component={'h5'} variant={'body1'} color={'text.primary'}>
+            {t(label.i18nKey, {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+              ns: ['layout', 'landPage', 'common'],
+            })}
+          </Typography>
+          <Typography
+            lineHeight={'20px'}
+            component={'p'}
+            whiteSpace={'pre-line'}
+            variant={'body2'}
+            color={'inherit'}
+          >
+            {label?.description ? t(label.description) : ''}
+          </Typography>
         </Box>
       </StyledLayer2Item>
     )
