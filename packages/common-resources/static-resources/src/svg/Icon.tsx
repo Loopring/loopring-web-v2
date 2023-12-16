@@ -1598,7 +1598,7 @@ export const ReadIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-export const FiatIcon = (props: SvgIconProps) => {
+export const FiatLandIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox='0 0 24 24'>
       <path
@@ -1609,7 +1609,7 @@ export const FiatIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-export const SwapIcon = (props: SvgIconProps) => {
+export const SwapLandIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox='0 0 24 24'>
       <path
@@ -1631,7 +1631,7 @@ export const SpotIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-export const BlockTradeIcon = (props: SvgIconProps) => {
+export const BlockTradeLandIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} viewBox='0 0 24 24'>
       <path
