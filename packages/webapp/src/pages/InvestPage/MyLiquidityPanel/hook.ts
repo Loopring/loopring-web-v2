@@ -2,7 +2,6 @@ import React from 'react'
 import {
   AmmRecordRow,
   MyPoolRow,
-  RawDataAssetsItem,
   RawDataDefiSideStakingItem,
   RawDefiAssetsItem,
 } from '@loopring-web/component-lib'
@@ -80,8 +79,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       totalStakedRewards,
       totalClaimableRewards,
       stakedSymbol,
-      // leverageETHAssets,
-      // defiAsset,
     },
     setStakingProps,
   ] = React.useState<{
@@ -325,6 +322,25 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     [account, tokenPrices],
   )
 
+  const reduceDefiFunc = (prev, item) => {
+    if (defiCoinArray.includes(item.token?.value?.toUpperCase())) {
+      const market = `${item.token?.value?.toUpperCase()}-ETH`
+      const defiInfo = defiMap[market]
+      const precision = item.precision
+      const baseToken = 'ETH'
+      prev.push({
+        ...item,
+        market,
+        baseToken,
+        apr: Number(defiInfo.apy),
+        defiInfo,
+        average: defiAverageMap
+          ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
+          : EmptyValueTag,
+      } as any)
+    }
+    return prev
+  }
   return {
     myAmmMarketArray,
     summaryMyInvest,
@@ -344,37 +360,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     stakedSymbol,
     onReceive,
     onSend,
-    leverageETHAssets: assetsRawData?.reduce((prev, item) => {
-      if (leverageETHCoinArray.includes(item.token?.value?.toUpperCase())) {
-        const market = `${item.token?.value?.toUpperCase()}-ETH`
-        const defiInfo = defiLeverageMap[market]
-        const precision = item.precision
-        prev.push({
-          ...item,
-          apr: Number(defiInfo.apy),
-          defiInfo,
-          average: defiAverageMap
-            ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
-            : EmptyValueTag,
-        } as any)
-      }
-      return prev
-    }, [] as Array<RawDefiAssetsItem>),
-    defiAsset: assetsRawData?.reduce((prev, item) => {
-      if (defiCoinArray.includes(item.token?.value?.toUpperCase())) {
-        const market = `${item.token?.value?.toUpperCase()}-ETH`
-        const defiInfo = defiMap[market]
-        const precision = item.precision
-        prev.push({
-          ...item,
-          apr: Number(defiInfo.apy),
-          defiInfo,
-          average: defiAverageMap
-            ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
-            : EmptyValueTag,
-        } as any)
-      }
-      return prev
-    }, [] as Array<RawDefiAssetsItem>),
+    leverageETHAssets: assetsRawData?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
+    defiAsset: assetsRawData?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
   }
 }

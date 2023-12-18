@@ -171,9 +171,11 @@ export const AssetsDefiTable = withTranslation('tables')(
             <Box className={'textAlignRight'}>
               {hideAssets
                 ? HiddenTag
-                : getValuePrecisionThousand(row.average, precision, precision, undefined, false, {
+                : row.average
+                ? getValuePrecisionThousand(row.average, precision, precision, undefined, false, {
                     floor: true,
-                  })}
+                  }) + ` ${row.baseToken}`
+                : EmptyValueTag}
             </Box>
           )
         },
