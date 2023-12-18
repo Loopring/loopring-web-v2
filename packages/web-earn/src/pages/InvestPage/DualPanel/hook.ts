@@ -147,6 +147,7 @@ export const useDualHook = () => {
               : undefined,
           )
           setCurrentPrice({
+            quoteUnit: marketSymbolB,
             base: marketSymbolA,
             quote: marketSymbolB,
             currentPrice: index.index,
@@ -167,13 +168,11 @@ export const useDualHook = () => {
       nodeTimer.current = setTimeout(() => {
         getProduct()
       }, 60000)
-
     } catch {
       setDualProducts([])
     } finally {
       setIsLoading(false)
     }
-    
   }, 100)
   React.useEffect(() => {
     if (dualStatus === SagaStatus.UNSET && pair) {
@@ -264,38 +263,35 @@ export const useDualHook = () => {
   )
   const baseTokenList = React.useMemo(() => {
     if (dualStatus === SagaStatus.UNSET) {
-      const object = Reflect.ownKeys(marketMap ?? {}).reduce(
-        (prev, key) => {
-          if (!marketMap[key.toString()].enabled) {
-            return prev
-          }
-          const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
-          prev[baseSymbol] = {
-            tokenName: baseSymbol,
-            tokenList: tradeMap[baseSymbol]?.tokenList,
-          }
-          if (viewType === DualViewType.DualGain) {
-            prev[baseSymbol] = {
-              ...prev[baseSymbol],
-            }
-          } else if (viewType === DualViewType.DualDip) {
-            prev[baseSymbol] = {
-              ...prev[baseSymbol],
-            }
-          } else {
-            prev[baseSymbol] = {
-              ...prev[baseSymbol],
-            }
-          }
-
+      const object = Reflect.ownKeys(marketMap ?? {}).reduce((prev, key) => {
+        if (!marketMap[key.toString()].enabled) {
           return prev
-        },
-        {} as any,
-      )
+        }
+        const baseSymbol = idIndex[marketMap[key.toString()].baseTokenId]
+        prev[baseSymbol] = {
+          tokenName: baseSymbol,
+          tokenList: tradeMap[baseSymbol]?.tokenList,
+        }
+        if (viewType === DualViewType.DualGain) {
+          prev[baseSymbol] = {
+            ...prev[baseSymbol],
+          }
+        } else if (viewType === DualViewType.DualDip) {
+          prev[baseSymbol] = {
+            ...prev[baseSymbol],
+          }
+        } else {
+          prev[baseSymbol] = {
+            ...prev[baseSymbol],
+          }
+        }
+
+        return prev
+      }, {} as any)
       myLog('asdhksjahdjs')
       return _.mapValues(object, (token) => {
         const keys = Object.keys(marketMap).filter((key) => key.includes(token.tokenName))
-        if (viewType === DualViewType.DualGain) {            
+        if (viewType === DualViewType.DualGain) {
           var maxAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number))
           var minAPY = _.max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.min as number))
         } else if (viewType === DualViewType.DualDip) {
@@ -304,7 +300,7 @@ export const useDualHook = () => {
         } else {
           maxAPY = _.max([
             ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number),
-            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number)
+            ...keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number),
           ])
           minAPY = _.max([
             ...keys.map((key) => (marketMap[key] as any).quoteTokenApy?.min as number),
@@ -314,7 +310,7 @@ export const useDualHook = () => {
         return {
           ...token,
           maxAPY,
-          minAPY
+          minAPY,
         }
       })
     } else {

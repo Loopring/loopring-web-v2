@@ -22,6 +22,7 @@ import {
   usePageAmmPool,
   useSubmitBtn,
   useTokenMap,
+  useUserRewards,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from '../../index'

@@ -63,6 +63,7 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
+  confirmation,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import React from 'react'
@@ -92,6 +93,7 @@ const MyLiquidity: any = withTranslation('common')(
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
+    const { setShowAutoDefault } = confirmation.useConfirmation()
     const ammPoolRef = React.useRef(null)
     const stakingRef = React.useRef(null)
     const leverageETHRef = React.useRef(null)
@@ -178,18 +180,6 @@ const MyLiquidity: any = withTranslation('common')(
 
     const theme = useTheme()
     const { isMobile } = useSettings()
-    // const lidoAssets = assetsRawData.filter((o) => {
-    //   return (
-    //     ethStakingCoins?.includes(o.name) &&
-    //     o.token.type !== TokenType.lp &&
-    //     (hideSmallBalances ? !o.smallBalance : true)
-    //   )
-    // })
-    // const leverageETHAssets = assetsRawData.filter((o) => {
-    //   return (
-    //     marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
-    //   )
-    // })
     const totalClaimableRewardsAmount =
       rewardsAPIError || !totalClaims
         ? '0'
@@ -245,11 +235,26 @@ const MyLiquidity: any = withTranslation('common')(
     })
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
-      setTab(match?.params?.type ?? InvestAssetRouter.DUAL)
-      if (searchParams?.get('refreshStake')) {
-        getStakingList({})
+      const tab = match?.params?.type ?? InvestAssetRouter.DUAL
+      setTab(tab)
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        if (tab == InvestAssetRouter.DUAL && dualMarketMapStatus === SagaStatus.UNSET) {
+          getDualTxList({})
+          if (
+            searchParams?.get('show') == 'detail' &&
+            match?.params?.type == InvestAssetRouter.DUAL &&
+            searchParams?.has('hash')
+          ) {
+            let hash = searchParams.get('hash')
+            refresh(hash ?? '', true)
+          }
+        }
+
+        if (searchParams?.get('refreshStake')) {
+          getStakingList({})
+        }
       }
-    }, [match?.params?.type, searchParams?.get('refreshStake')])
+    }, [match?.params?.type, searchParams?.toString(), dualMarketMapStatus, account.readyState])
 
     const label = React.useMemo(() => {
       if (editDualBtnInfo.label) {
@@ -796,7 +801,7 @@ const MyLiquidity: any = withTranslation('common')(
                       pagination={pagination}
                       getDualAssetList={getDualTxList}
                       showDetail={showDetail}
-                      refresh={refresh}
+                      refresh={(item) => refresh(item.__raw__.order.hash)}
                       hideAssets={hideAssets}
                       cancelReInvest={_cancelReInvest as any}
                       getProduct={getProduct}
@@ -865,6 +870,7 @@ const MyLiquidity: any = withTranslation('common')(
                             }
                           >
                             <DualDetail
+                              setShowAutoDefault={setShowAutoDefault}
                               isOrder={true}
                               order={dualDetail?.__raw__?.order}
                               btnConfirm={
@@ -901,7 +907,6 @@ const MyLiquidity: any = withTranslation('common')(
                               dualProducts={dualProducts}
                               dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
                               currentPrice={dualDetail.dualViewInfo.currentPrice}
-                              tokenMap={tokenMap}
                               isPriceEditable={true}
                               toggle={{ enable: true }}
                               lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}

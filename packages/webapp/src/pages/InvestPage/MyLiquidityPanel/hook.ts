@@ -89,8 +89,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     totalClaimableRewards: string
     total: number
     stakedSymbol: string
-    // leverageETHAssets: Array<RawDataAssetsItem & { apr: string; average: string }>
-    // defiAsset: Array<RawDataAssetsItem & { apr: string; average: string }>
   }>({
     stakingList: [],
     total: 0,
@@ -99,8 +97,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     totalStakedRewards: '0',
     totalClaimableRewards: '0',
     stakedSymbol: 'LRC',
-    // leverageETHAssets: [],
-    // defiAsset: [],
   })
 
   // const [totalData, setTotalData] = React.useState<MyPoolRow<R>[]>([]);

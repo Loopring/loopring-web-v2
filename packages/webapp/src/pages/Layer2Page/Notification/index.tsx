@@ -15,7 +15,6 @@ import { useToast, NotificationItem } from '@loopring-web/core'
 
 import {
   DeleteIcon,
-  EmptyValueTag,
   NotificationIcon,
   ReadIcon,
   SoursURL,
@@ -23,21 +22,6 @@ import {
 } from '@loopring-web/common-resources'
 import { useNotification } from './hook'
 
-const StylePaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-
-  .content {
-    width: 420px;
-  }
-
-  &.isMobile {
-    .content {
-      flex: 1;
-      width: var(--swap-box-width);
-    }
-  }
-`
 const RowHeight = 95
 const StyledPaper = styled(Box)`
   width: 100%;
@@ -57,7 +41,6 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     getNotification,
     rawData,
     total,
-    unReads,
     onReadClick,
     onReadAllClick,
     onClearAllClick,
@@ -133,7 +116,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           flex={1}
           ref={container}
         >
-          {rawData.length ? (
+          {!!rawData.length ? (
             <Grid container paddingBottom={2} display={'flex'} flex={1}>
               {rawData.map((ele, index) => {
                 return (
@@ -166,7 +149,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
             />
           )}
           <Box>
-            {total && total > pageSize && (
+            {total && total > pageSize ? (
               <TablePagination
                 page={page}
                 pageSize={pageSize}
@@ -175,6 +158,8 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
                   handlePageChange({ page })
                 }}
               />
+            ) : (
+              <></>
             )}
           </Box>
         </StyledPaper>

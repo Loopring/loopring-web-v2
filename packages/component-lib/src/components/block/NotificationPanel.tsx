@@ -66,56 +66,55 @@ export const NotificationPanel = ({
       alignItems={'center'}
       // paddingBottom={1}
     >
-      {/*//TODO: after Notification Socket*/}
-      {/*{myNotifyMap?.total !== undefined && (*/}
-      {/*  <>*/}
-      {/*    <Typography*/}
-      {/*      alignSelf={'stretch'}*/}
-      {/*      sx={{ background: 'var(--field-opacity)' }}*/}
-      {/*      borderRadius={1 / 2}*/}
-      {/*      padding={1}*/}
-      {/*      display={'inline-flex'}*/}
-      {/*      alignItems={'center'}*/}
-      {/*      justifyContent={'space-between'}*/}
-      {/*    >*/}
-      {/*      <Typography component={'span'}>*/}
-      {/*        {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}*/}
-      {/*      </Typography>*/}
-      {/*      <Link href={`/#${RouterPath.layer2}/${Layer2RouterID.notification}`} color={'primary'}>*/}
-      {/*        {t('labelReadAll')}*/}
-      {/*      </Link>*/}
-      {/*    </Typography>*/}
-      {/*    {myNotifyMap?.total ? (*/}
-      {/*      <Box paddingX={1} display={'flex'} width={330} alignItems={'center'}>*/}
-      {/*        <Grid container spacing={1 / 2} margin={0}>*/}
-      {/*          {myNotifyMap?.items?.reduce((prev, ele, index) => {*/}
-      {/*            if (index < 3) {*/}
-      {/*              prev.push(*/}
-      {/*                <Grid item key={ele?.id} xs={12}>*/}
-      {/*                  <NotificationItem*/}
-      {/*                    {...ele}*/}
-      {/*                    size={'small'}*/}
-      {/*                    className={'headerItem'}*/}
-      {/*                    index={index}*/}
-      {/*                    onReadClick={() => {*/}
-      {/*                      history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)*/}
-      {/*                    }}*/}
-      {/*                  />*/}
-      {/*                  <Divider sx={{ marginY: 1 }} />*/}
-      {/*                </Grid>,*/}
-      {/*              )*/}
-      {/*            }*/}
-      {/*            return prev*/}
-      {/*          }, [])}*/}
-      {/*        </Grid>*/}
-      {/*      </Box>*/}
-      {/*    ) : (*/}
-      {/*      <Divider*/}
-      {/*        sx={{ paddingY: showExclusiveRedpacket || hasActivities || hasNotifications ? 1 : 0 }}*/}
-      {/*      />*/}
-      {/*    )}*/}
-      {/*  </>*/}
-      {/*)}*/}
+      {myNotifyMap?.total !== undefined && (
+        <>
+          <Typography
+            alignSelf={'stretch'}
+            sx={{ background: 'var(--field-opacity)' }}
+            borderRadius={1 / 2}
+            padding={1}
+            display={'inline-flex'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
+            <Typography component={'span'}>
+              {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}
+            </Typography>
+            <Link href={`/#${RouterPath.layer2}/${Layer2RouterID.notification}`} color={'primary'}>
+              {t('labelReadAll')}
+            </Link>
+          </Typography>
+          {myNotifyMap?.total ? (
+            <Box paddingX={1} display={'flex'} width={330} alignItems={'center'}>
+              <Grid container spacing={1 / 2} margin={0}>
+                {myNotifyMap?.items?.reduce((prev, ele, index) => {
+                  if (index < 3) {
+                    prev.push(
+                      <Grid item key={ele?.id} xs={12}>
+                        <NotificationItem
+                          {...ele}
+                          size={'small'}
+                          className={'headerItem'}
+                          index={index}
+                          onReadClick={() => {
+                            history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)
+                          }}
+                        />
+                        <Divider sx={{ marginY: 1 }} />
+                      </Grid>,
+                    )
+                  }
+                  return prev
+                }, [])}
+              </Grid>
+            </Box>
+          ) : (
+            <Divider
+              sx={{ paddingY: showExclusiveRedpacket || hasActivities || hasNotifications ? 1 : 0 }}
+            />
+          )}
+        </>
+      )}
 
       {showExclusiveRedpacket || hasActivities || hasNotifications ? (
         <>
