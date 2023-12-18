@@ -518,7 +518,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     (joinTokenMap &&
       Reflect.ownKeys(joinTokenMap).reduce((prev, key: string) => {
         const token = vaultTokenMap[key.toString()]
-        const symbol = idIndex[token.tokenId]
+        const symbol = idIndex[token?.tokenId]
         // as sdk.VaultToken
         return {
           ...prev,

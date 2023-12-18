@@ -68,6 +68,7 @@ export type VaultDataAssetsItem = {
   token: {
     type: TokenType
     value: string
+    belongAlice?: string
   }
   amount: string
   available: string
@@ -217,7 +218,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                 paddingRight={1}
               >
                 <Typography component={'span'} className={'next-coin'}>
-                  {row.token.value}
+                  {row.token.belongAlice ?? row.token.vaule}
                 </Typography>
               </Typography>
             </>

@@ -64,7 +64,8 @@ export const SwapTradeWrap = <
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true)
-
+  const buySymbol = tradeCalcData?.belongBuyAlice ?? tradeData.buy?.belong
+  const sellSymbol = tradeCalcData?.belongSellAlice ?? tradeData.sell?.belong
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       setIsStoB(!_isStoB)
@@ -193,15 +194,15 @@ export const SwapTradeWrap = <
       })
     }
   }, [t, swapBtnI18nKey, network, tradeCalcData])
-  const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
+  const showVal = buySymbol && sellSymbol && tradeCalcData?.StoB
   const isL2Swap = !((tradeCalcData as any)?.isBtrade || (tradeCalcData as any)?.isVault)
   const convertStr = _isStoB
-    ? `1 ${tradeData.sell?.belong} \u2248 ${
+    ? `1 ${sellSymbol} \u2248 ${
         tradeCalcData.StoB && tradeCalcData.StoB !== 'NaN' ? tradeCalcData.StoB : EmptyValueTag
-      } ${tradeData.buy?.belong}`
-    : `1 ${tradeData.buy?.belong} \u2248 ${
+      } ${buySymbol}`
+    : `1 ${buySymbol} \u2248 ${
         tradeCalcData.BtoS && tradeCalcData.BtoS !== 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
-      } ${tradeData.sell?.belong}`
+      } ${sellSymbol}`
   const priceImpactColor = (tradeCalcData as any)?.priceImpactColor
     ? (tradeCalcData as any).priceImpactColor
     : 'textPrimary'
@@ -218,7 +219,7 @@ export const SwapTradeWrap = <
 
   const fee =
     tradeCalcData && tradeCalcData.fee
-      ? `${tradeCalcData.fee} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+      ? `${tradeCalcData.fee} ${buySymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
   const userTakerRate =
@@ -227,12 +228,12 @@ export const SwapTradeWrap = <
       : EmptyValueTag
   const tradeCostMin =
     tradeCalcData && tradeCalcData.tradeCost
-      ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+      ? `${tradeCalcData.tradeCost} ${buySymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
   const minimumConverted =
     tradeCalcData && tradeCalcData.minimumConverted
-      ? `${tradeCalcData.minimumConverted}  ${tradeData.buy?.belong}`
+      ? `${tradeCalcData.minimumConverted}  ${buySymbol}`
       : EmptyValueTag
   const { isMobile } = useSettings()
 
@@ -378,7 +379,7 @@ export const SwapTradeWrap = <
 
             <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
               {tradeCalcData?.totalQuota
-                ? tradeCalcData?.totalQuota + ' ' + tradeData?.sell?.belong
+                ? tradeCalcData?.totalQuota + ' ' + sellSymbol
                 : EmptyValueTag}
             </Typography>
           </Typography>
@@ -661,9 +662,7 @@ export const SwapTradeWrap = <
                 a: (
                   <Link
                     onClick={() => {
-                      history.push(
-                        '/trade/btrade/' + tradeData.sell?.belong + '-' + tradeData.buy?.belong,
-                      )
+                      history.push('/trade/btrade/' + sellSymbol + '-' + buySymbol)
                     }}
                     target='_blank'
                     rel='noopener noreferrer'

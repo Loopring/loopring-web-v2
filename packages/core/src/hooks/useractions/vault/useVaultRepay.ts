@@ -15,6 +15,7 @@ import {
   store,
   useAccount,
   useSystem,
+  useTokenMap,
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
@@ -44,6 +45,7 @@ export const useVaultRepay = <
   } = useOpenModals()
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { account } = useAccount()
+  const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
@@ -229,6 +231,8 @@ export const useVaultRepay = <
     const account = store.getState().account
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     const vaultToken = vaultTokenMap[vaultRepayData.belong]
+    const erc20Symbol = erc20IdIndex[vaultToken.tokenId]
+
     try {
       if ((request || vaultRepayData.request) && LoopringAPI.vaultAPI) {
         let response = await LoopringAPI.vaultAPI?.submitVaultRepay(
@@ -276,7 +280,6 @@ export const useVaultRepay = <
           } else {
             status = 'labelPending'
           }
-
           setShowAccount({
             isShow: true,
             step:
@@ -289,6 +292,7 @@ export const useVaultRepay = <
                 ? vaultRepayData.repayAmtStr
                 : 0,
               sum: vaultRepayData.repayAmtStr,
+              symbol: erc20Symbol,
               vSymbol: vaultToken.symbol,
               time: response2?.raw_data?.order?.createdAt,
             },
@@ -326,6 +330,7 @@ export const useVaultRepay = <
           status: t('labelFailed'),
           amount: EmptyValueTag,
           sum: vaultRepayData.repayAmtStr,
+          symbol: erc20Symbol,
           vSymbol: vaultToken.symbol,
           time: Date.now(),
           error,
@@ -336,7 +341,7 @@ export const useVaultRepay = <
 
   const submitCallback = async () => {
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
-
+    const erc20Symbol = erc20IdIndex[vaultTokenMap[vaultRepayData.belong]?.tokenId]
     try {
       if (
         vaultRepayData &&
@@ -356,6 +361,7 @@ export const useVaultRepay = <
             status: t('labelPending'),
             amount: EmptyValueTag,
             sum: vaultRepayData.repayAmtStr,
+            symbol: erc20Symbol,
             vSymbol: vaultRepayData.belong,
             time: Date.now(),
           },

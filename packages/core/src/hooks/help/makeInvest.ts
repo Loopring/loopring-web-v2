@@ -160,16 +160,21 @@ export const makeVault = (
         ...pairs[key as string],
         tradePairs,
       }
+      const erc20Symbol = erc20IdIndex[tokensMap[key.toString()].tokenId]
       tokenMap[key.toString()] = {
         ...tokensMap[key.toString()],
+        erc20Symbol,
+        belongAlice: erc20Symbol,
         tradePairs: pairs[key.toString()].tokenList,
       }
       return prev
     }, {})
     const _coinMap = Reflect.ownKeys(coinMap).reduce((prev, ele) => {
+      const erc20Symbol = erc20IdIndex[tokensMap[ele.toString()].tokenId]
       prev[ele.toString()] = {
         ...coinMap[ele.toString()],
-        erc20Symbol: erc20IdIndex[tokensMap[ele.toString()].tokenId],
+        belongAlice: erc20Symbol,
+        erc20Symbol: erc20Symbol,
       }
       return prev
     }, {} as CoinMap<any, any>)

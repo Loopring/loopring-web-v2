@@ -46,6 +46,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
     coinPrecision = 6,
     tokenType,
     tokenImageKey,
+    belongAlice = undefined,
   }: // tokenType = TokenType.single,
   // isAllowBalanceClick
   InputButtonProps<T, C, I>,
@@ -271,7 +272,7 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
                   <Typography
                     fontSize={'inherit'}
                     color={'inherit'}
-                    dangerouslySetInnerHTML={{ __html: sanitize(belong) }}
+                    dangerouslySetInnerHTML={{ __html: sanitize(belongAlice ?? belong) }}
                   />
                 </Grid>
               </Grid>

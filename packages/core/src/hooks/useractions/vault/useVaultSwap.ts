@@ -49,6 +49,7 @@ import {
   useSubmitBtn,
   useSystem,
   useToast,
+  useTokenMap,
   useTokenPrices,
   useTradeVault,
   useVaultLayer2,
@@ -118,6 +119,7 @@ export const useVaultSwap = <
 }: {
   path: string
 }) => {
+  const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
   const {
@@ -239,6 +241,8 @@ export const useVaultSwap = <
           walletMap,
           coinSell: coinA,
           coinBuy: coinB,
+          belongSellAlice: erc20IdIndex[tokenMap[coinA]?.tokenId],
+          belongBuyAlice: erc20IdIndex[tokenMap[coinB]?.tokenId],
           sellPrecision: tokenMap[coinA as string]?.precision,
           buyPrecision: tokenMap[coinB as string]?.precision,
           sellCoinInfoMap,
@@ -496,9 +500,12 @@ export const useVaultSwap = <
         }
         myLog('useVaultSwap: submitOrder request', request)
         const priceToken = tradeCalcData.isReverse ? sellToken : buyToken
+
         let info: any = {
-          sellToken: sellToken.symbol,
-          buyToken: buyToken.symbol,
+          sellToken: erc20IdIndex[tokenMap[sellToken.symbol]?.tokenId],
+          buyToken: erc20IdIndex[tokenMap[buyToken.symbol]?.tokenId],
+          sellVToken: sellToken.symbol,
+          buyVToken: buyToken.symbol,
           sellStr: getValuePrecisionThousand(
             sdk.toBig(tradeCalcData.volumeSell).div('1e' + sellToken.decimals),
             sellToken.precision,
@@ -830,6 +837,8 @@ export const useVaultSwap = <
           ...tradeCalcData,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
+          belongSellAlice: erc20IdIndex[tokenMap[tradeCalcData.coinSell]?.tokenId],
+          belongBuyAlice: erc20IdIndex[tokenMap[tradeCalcData.coinBuy]?.tokenId],
           sellPrecision,
           buyPrecision,
           sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
