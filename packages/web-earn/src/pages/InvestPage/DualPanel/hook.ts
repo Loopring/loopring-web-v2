@@ -158,7 +158,6 @@ export const useDualHook = () => {
           const rawData = infos.map((item: sdk.DualProductAndPrice) => {
             return makeDualViewItem(item, index, rule, pairASymbol, pairBSymbol, marketMap[market])
           })
-          myLog('setDualProducts', rawData)
           setDualProducts(rawData)
           // setIsLoading(false)
         }

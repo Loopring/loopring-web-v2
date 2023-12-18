@@ -10,9 +10,8 @@ export interface HeaderToolBarInterface {
   buttonComponent: number
   args?: any
 }
-
 export interface HeaderProps<R, N = sdk.UserNotification> {
-  headerToolBarData: { [key: number]: R }
+  headerToolBarData: { [key in ButtonComponentsMap]: R }
   headerMenuData: HeaderMenuItemInterface[]
   notification?: NOTIFICATIONHEADER<N>
   account?: Account

@@ -877,13 +877,8 @@ export function useAccountModalForUI({
         view: (
           <SendFromContact
             {...(isShowAccount?.info as any)}
-            // isENSWrong={.isENSWrong}
-            // sendInfo={isShowAccount?.info}
-          />
+               />
         ),
-        // onBack: () => {
-        //   setShowAccount({ isShow: false })
-        // },
       },
       [AccountStep.SendNFTGateway]: {
         view: (

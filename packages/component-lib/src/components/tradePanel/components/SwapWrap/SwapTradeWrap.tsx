@@ -576,7 +576,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('labelSwapMinConverted')}
+                  {t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>

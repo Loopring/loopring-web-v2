@@ -496,7 +496,6 @@ export const ModalPanel = <
           />
         }
       />
-
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? 'Action'}
@@ -557,7 +556,6 @@ export const ModalPanel = <
         }
       />
       <Modal
-        // maxWidth={'md'}
         open={isShowEditContact.isShow}
         onClose={() => {
           setShowEditContact({ isShow: false, info: {} })
@@ -567,8 +565,6 @@ export const ModalPanel = <
             {...{
               ...contactAddProps,
             }}
-            // contacts={isShowAccount.info?.contacts}
-            // setToast={setToast}
           />
         }
       />

@@ -28,6 +28,7 @@ export class LoopringAPI {
   public static luckTokenAPI: LuckTokenAPI | undefined = undefined
   public static contactAPI: ContactAPI | undefined = undefined
   public static vaultAPI: VaultAPI | undefined = undefined
+  public static coworkerAPI: CoworkerAPI | undefined = undefined
   public static __chainId__: ChainId | undefined = undefined
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 6000)
@@ -41,6 +42,7 @@ export class LoopringAPI {
     LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000)
     LoopringAPI.defiAPI = new DefiAPI({ chainId }, 12000)
     LoopringAPI.contactAPI = new ContactAPI({ chainId }, 6000)
+    LoopringAPI.coworkerAPI = new CoworkerAPI({ chainId }, 6000)
     LoopringAPI.vaultAPI = new VaultAPI({ chainId }, 6000)
     LoopringAPI.__chainId__ = chainId
   }
@@ -56,6 +58,8 @@ export class LoopringAPI {
     LoopringAPI.delegate?.setBaseUrl(baseURL)
     LoopringAPI.defiAPI?.setBaseUrl(baseURL)
     LoopringAPI.contactAPI?.setBaseUrl(baseURL)
+    LoopringAPI.coworkerAPI?.setBaseUrl(baseURL)
     LoopringAPI.vaultAPI?.setBaseUrl(baseURL)
+
   }
 }

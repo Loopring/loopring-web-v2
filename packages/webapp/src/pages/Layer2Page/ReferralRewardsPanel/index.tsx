@@ -85,6 +85,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const [open, setOpen] = React.useState(false)
   const [images, setImages] = React.useState<CarouselItem[]>([])
   const [loading, setLoading] = React.useState(true)
+  const { ipfsProvides } = useIPFS({
+    handleSuccessUpload: () => undefined,
+    handleFailedUpload: () => undefined,
+  })
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -106,6 +110,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
       // onDownloadImage();
     },
   })
+
   // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
@@ -179,6 +184,8 @@ const ReferHeader = <R extends ImageReferralBanner>({
           })
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
+
+            setImages(images)
           }
         }
       })
@@ -244,11 +251,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
       }
     })
   }
-
-  const { ipfsProvides } = useIPFS({
-    handleSuccessUpload: () => undefined,
-    handleFailedUpload: () => undefined,
-  })
 
   const label = React.useMemo(() => {
     if (btnLabel) {

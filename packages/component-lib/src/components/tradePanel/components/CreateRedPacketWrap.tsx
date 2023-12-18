@@ -1692,18 +1692,6 @@ export const TargetRedpacktSelectStep = withTranslation()(
               </Typography>
             </Box>
           )}
-
-          {/* {targetRedPackets?.length > 0 && (
-            <BiArrow
-              sx={{
-                position: 'absolute',
-                bottom: 10,
-                left: '50%',
-                transform: enlarged ? 'rotate(180deg)' : 'none',
-              }}
-              onClick={() => setEnlarged(!enlarged)}
-            />
-          )} */}
         </Box>
 
         {/* <Box width={'100%'} marginTop={10} display={'flex'} justifyContent={'center'}>
@@ -2210,7 +2198,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       ...showChangeTips,
                       contactImportCaches: undefined,
                       previousInputType: undefined,
-                      confirmCallBack: undefined,
+                      confirmCallBack: undefined
                     })
                     onClickSend()
                   }}
@@ -2482,7 +2470,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         ...showChangeTips,
                         contactImportCaches: undefined,
                         previousInputType: undefined,
-                        confirmCallBack: undefined,
+                        confirmCallBack: undefined
                       })
                       onClickSend()
                     }

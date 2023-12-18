@@ -105,9 +105,10 @@ export interface ModalState {
   isShowVaultJoin: ModalStatePlayLoad & Transaction
   isShowVaultSwap: ModalStatePlayLoad & Transaction
   isShowVaultLoan: ModalStatePlayLoad &
-    Transaction & {
+      Transaction & {
       type: string
-    }
+  }
   isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
   isShowConfirmedVault: ModalStatePlayLoad
 }
+

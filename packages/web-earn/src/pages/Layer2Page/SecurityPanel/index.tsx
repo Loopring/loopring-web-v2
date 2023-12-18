@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Box, Button, Grid, Typography } from '@mui/material'
+import React from 'react'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useResetAccount } from './hook'
 import { useSettings } from '@loopring-web/component-lib'
@@ -11,6 +12,7 @@ import {
 
 const StyledPaper = styled(Grid)`
   width: 100%;
+  height: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `

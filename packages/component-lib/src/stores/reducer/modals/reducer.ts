@@ -58,7 +58,7 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
-  isShowTargetRedpacketPop: { isShow: false, info: {} },
+	isShowTargetRedpacketPop: { isShow: false, info: {} },
   isShowETHStakingApr: { isShow: false, symbol: undefined },
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },

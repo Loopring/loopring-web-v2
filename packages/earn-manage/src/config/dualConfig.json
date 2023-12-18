@@ -1,0 +1,10 @@
+{
+  "ETHEREUM": {
+    "GasSymbol":"ETH",
+    "tokenList": ["LRC","ETH","USDC","USDT"]
+  },
+  "GOERLI": {
+    "GasSymbol":"ETH",
+    "tokenList": ["LRC","ETH","USDC","USDT"]
+  }
+}
