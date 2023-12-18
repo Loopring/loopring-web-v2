@@ -174,7 +174,7 @@ export const AssetsDefiTable = withTranslation('tables')(
                 : row.average
                 ? getValuePrecisionThousand(row.average, precision, precision, undefined, false, {
                     floor: true,
-                  }) + ` ${row.baseToken}`
+                  }) + ` ${row?.baseToken}`
                 : EmptyValueTag}
             </Box>
           )
