@@ -22,6 +22,7 @@ export type RawDefiAssetsItem = RawDataAssetsItem & {
   apr: string
   average: string
   defiInfo: sdk.DefiMarketInfo
+  baseToken?: string
 }
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -171,9 +172,11 @@ export const AssetsDefiTable = withTranslation('tables')(
             <Box className={'textAlignRight'}>
               {hideAssets
                 ? HiddenTag
-                : getValuePrecisionThousand(row.average, precision, precision, undefined, false, {
+                : row.average
+                ? getValuePrecisionThousand(row.average, precision, precision, undefined, false, {
                     floor: true,
-                  })}
+                  }) + ` ${row?.baseToken}`
+                : EmptyValueTag}
             </Box>
           )
         },
