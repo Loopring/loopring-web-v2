@@ -123,7 +123,7 @@ export const MarketDetail = ({
               color={'var(--color-primary)'}
               display={'inline-flex'}
             >
-              {tokenInfo.symbol}
+              {tokenInfo.type == TokenType.vault ? tokenInfo?.erc20Symbol : tokenInfo.symbol}
             </Typography>
             <Typography
               component={'span'}

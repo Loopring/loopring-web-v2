@@ -39,6 +39,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
     CoinIconElement,
     tokenType,
     tokenImageKey,
+    belongAlice = undefined,
   }: // coinIcon,
   InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,

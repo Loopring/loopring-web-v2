@@ -48,7 +48,7 @@ export const useVaultBorrow = <
   const [isLoading, setIsLoading] = React.useState(false)
 
   const { exchangeInfo, forexMap } = useSystem()
-  const { idIndex } = useTokenMap()
+  const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
@@ -147,7 +147,7 @@ export const useVaultBorrow = <
       ...((vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]) ?? {}),
       // balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
       tradeValue: undefined,
-      erc20Symbol: idIndex[vaultTokenMap[initSymbol].tokenId],
+      erc20Symbol: erc20IdIndex[vaultTokenMap[initSymbol].tokenId],
     }
     const supportdata = calcSupportData(walletInfo)
     walletInfo = {
@@ -289,6 +289,8 @@ export const useVaultBorrow = <
     const {
       account: { eddsaKey, apiKey, accountId },
     } = store.getState()
+    const erc20Symbol = erc20IdIndex[vaultToken.tokenId]
+
     try {
       if ((LoopringAPI.vaultAPI && request) || (vaultBorrowData.request && accountId)) {
         let response = await LoopringAPI.vaultAPI.submitVaultBorrow({
@@ -340,7 +342,8 @@ export const useVaultBorrow = <
             sum: vaultBorrowData.borrowAmtStr,
             status: t(status),
             forexMap,
-            symbol: vaultToken.symbol,
+            symbol: erc20Symbol,
+            vSymbol: vaultToken.symbol,
             time: response2?.raw_data?.order?.createdAt,
           },
         })
@@ -377,7 +380,8 @@ export const useVaultBorrow = <
           sum: vaultBorrowData.borrowAmtStr,
           status: t('labelFailed'),
           forexMap,
-          symbol: vaultBorrowData.belong,
+          symbol: erc20Symbol,
+          vSymbol: vaultBorrowData.belong,
           time: Date.now(),
           title: t('labelVaultBorrowTitle'),
         },
@@ -389,6 +393,7 @@ export const useVaultBorrow = <
   const submitCallback = async () => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const account = store.getState().account
+    const erc20Symbol = erc20IdIndex[vaultTokenMap[vaultBorrowData?.belong]?.tokenId]
     setIsLoading(true)
     try {
       if (
@@ -409,7 +414,8 @@ export const useVaultBorrow = <
             sum: vaultBorrowData.borrowAmtStr,
             status: t('labelPending'),
             forexMap,
-            symbol: vaultBorrowData.belong,
+            symbol: erc20Symbol,
+            vSymbol: vaultBorrowData.belong,
             time: Date.now(),
             title: t('labelVaultBorrowTitle'),
           },
@@ -440,7 +446,8 @@ export const useVaultBorrow = <
           sum: vaultBorrowData.borrowAmtStr,
           status: t('labelFailed'),
           forexMap,
-          symbol: vaultBorrowData.belong,
+          symbol: erc20Symbol,
+          vSymbol: vaultBorrowData.belong,
           time: Date.now(),
           title: t('labelVaultBorrowTitle'),
         },

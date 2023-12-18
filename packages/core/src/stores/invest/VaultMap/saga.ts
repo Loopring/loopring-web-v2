@@ -90,17 +90,6 @@ const getVaultMapApi = async () => {
             return { ...prev, [item.symbol]: item.price }
           }, {})
         }
-        //   let marketsRaw: any[] = response.markets
-        //   localStorage.setItem(
-        //     LocalStorageConfigKey.vaultMarkets,
-        //     JSON.stringify({
-        //       ...(vaultMapStorage ? JSON.parse(vaultMapStorage) : {}),
-        //       [chainId]: marketsRaw,
-        //     }),
-        //   )
-        //   // @ts-ignore
-        //   return response.markets as sdk.VaultMarket[]
-        // }
       })
     return {
       ...result,

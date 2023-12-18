@@ -1338,7 +1338,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = amount.gte(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${amountStr} ${erc20Symbol} ${DirectionTag} ${amountStr} ${vSymbol})`
+                    mainContentRender = `${amountStr} ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
@@ -1362,7 +1362,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_REPAY:
                     type = VaultRecordType.repay
@@ -1386,7 +1386,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_TRADE:
                     type = VaultRecordType.trade
@@ -1418,9 +1418,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
 
                     mainContentRender = `${
                       fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
-                    }  ${vSymbol} ${DirectionTag} ${
+                    }  ${erc20Symbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    } ${vSymbolB}; ${t('labelPrice')}: ${price}`
+                    } ${erc20SymbolB}; ${t('labelPrice')}: ${price}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
@@ -1455,8 +1455,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   vTokenB,
                   operateType,
                   symbolB,
+                  vSymbolB,
                   feeStr,
                   feeTokenSymbol: feeToken?.symbol,
+                  feeErc20Symbol: erc20SymbolB,
                   erc20SymbolB,
                   erc20Symbol,
                   mainContentRender,
@@ -1484,7 +1486,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   })
 
   const onItemClick = (item: R) => {
-    setShowDetail((_state) => {
+    setShowDetail(() => {
       const {
         raw_data: { operation },
       } = item

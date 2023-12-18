@@ -78,7 +78,12 @@ export const makeVaultLayer2 = <
   vaultLayer2Map: WalletMap<C> | undefined
 } => {
   const { vaultAccountInfo } = store.getState().vaultLayer2
-  const { tokenMap, idIndex } = store.getState().invest.vaultMap
+  const {
+    invest: {
+      vaultMap: { tokenMap, idIndex },
+    },
+    tokenMap: { idIndex: erc20IdIndex },
+  } = store.getState()
   const { readyState } = store.getState().account
   let vaultLayer2Map: WalletMap<C> | undefined
   if (vaultAccountInfo?.userAssets) {
@@ -89,9 +94,12 @@ export const makeVaultLayer2 = <
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
+      const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
       return {
         ...prev,
         [symbol]: {
+          belongAlice: erc20Symbol,
+          erc20Symbol,
           belong: symbol,
           count: sdk.fromWEI(tokenMap, symbol, countBig.toString()),
           detail: item,
@@ -146,6 +154,7 @@ export const makeVaultAvaiable2 = <
           .toFixed(vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision, 0)
         let walletCoin = {
           erc20Symbol,
+          belongAlice: erc20Symbol,
           belong: vaultSymbol,
           borrowed: borrowed,
           count: price
@@ -211,6 +220,7 @@ export const makeVaultRepay = <
         const price = tokenPrices[vaultSymbol] ?? 0
         let walletCoin = {
           erc20Symbol,
+          belongAlice: erc20Symbol,
           belong: vaultSymbol,
           count: sdk
             .toBig(item.total)

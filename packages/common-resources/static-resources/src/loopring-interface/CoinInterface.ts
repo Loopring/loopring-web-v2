@@ -10,7 +10,6 @@ export interface IBData<R> {
   belong: CoinKey<R>
   balance: number
   tradeValue: number | undefined
-  max?: string
 }
 
 export interface IBDataMax<R> extends IBData<R> {
@@ -23,7 +22,7 @@ export interface CoinInfo<R> {
   simpleName: CoinKey<R>
   description?: string
   company: string
-
+  belongAlice?: string
   [key: string]: any
 }
 
@@ -159,6 +158,8 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
 
 export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 'isBtrade'> & {
   isVault: true
+  belongBuyAlice: string
+  belongSellAlice: string
 }
 
 export type TradeCalcProData<T> = {
@@ -530,7 +531,7 @@ export type RedPacketSend = {
 export type LuckyRedPacketItem = {
   labelKey: string
   desKey: string
-  tags?: string[],
+  tags?: string[]
   value: {
     value: number
     partition: sdk.LuckyTokenAmountType

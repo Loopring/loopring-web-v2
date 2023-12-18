@@ -380,6 +380,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           token: key,
           erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
         }
+        const erc20Symbol = erc20IdIndex[tokenMap[key].tokenId]
         if (walletMap && walletMap[key]) {
           tokenInfo = {
             ...tokenInfo,
@@ -400,14 +401,15 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           item = {
             token: {
               type: TokenType.vault,
-              value: tokenInfo.token,
+              value: key,
+              belongAlice: erc20Symbol,
             },
             amount: totalAmount?.toString() || EmptyValueTag,
             available: Number(tokenInfo.detail?.count) || EmptyValueTag,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
-            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+            erc20Symbol,
           }
         } else {
           item = {
@@ -415,6 +417,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             token: {
               type: TokenType.vault,
               value: key,
+              belongAlice: erc20Symbol,
             },
             amount: EmptyValueTag,
             available: EmptyValueTag,
@@ -423,7 +426,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             tokenValueDollar: 0,
             name: key,
             tokenValueYuan: 0,
-            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+            erc20Symbol,
           }
         }
         if (item) {

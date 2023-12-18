@@ -21,6 +21,7 @@ export type RawDataVaultTxItem = {
   percentage: string
   feeStr: string
   feeTokenSymbol: string
+  feeErc20Symbol: string
   raw_data: { operation: sdk.VaultOperation; order: sdk.VaultOrder }
   // fromAmount: string
   // fromSymbol: string
