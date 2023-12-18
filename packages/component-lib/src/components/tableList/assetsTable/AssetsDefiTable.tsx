@@ -22,6 +22,7 @@ export type RawDefiAssetsItem = RawDataAssetsItem & {
   apr: string
   average: string
   defiInfo: sdk.DefiMarketInfo
+  baseToken?: string
 }
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
