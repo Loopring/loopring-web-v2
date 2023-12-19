@@ -41,9 +41,8 @@ const StyledPaper = styled(Box)`
 const PageSizeHeight = 44
 export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: WithTranslation) => {
   const container = React.useRef<HTMLDivElement>(null)
-  const [pageSize, setPageSize] = React.useState(0)
   const { toastOpen, setToastOpen, closeToast } = useToast()
-  const [filter, setFIter] = React.useState(undefined)
+  const [pageSize, setPageSize] = React.useState(0)
   const [page, setPage] = React.useState(1)
   const [hideRead, setHideRead] = React.useState(true)
   const {
@@ -58,7 +57,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
   const handlePageChange = React.useCallback(
     async ({
       page,
-      _pageSize = pageSize,
+      _pageSize,
       _hideRead = hideRead,
     }: {
       page: number
@@ -67,10 +66,17 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     }) => {
       setPage(page)
       setHideRead(_hideRead)
-      const pageSize = _pageSize ? _pageSize : 20
+      setPageSize((state) => {
+        if (_pageSize && Math.abs(state - _pageSize) > 1 && _pageSize > 3) {
+          _pageSize = _pageSize
+        } else {
+          _pageSize = state > 3 ? state : 4
+        }
+        return _pageSize
+      })
       getNotification({
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
+        offset: (page - 1) * _pageSize ?? 4,
+        limit: _pageSize ?? 4,
         filter: { notRead: _hideRead },
       })
     },
@@ -78,17 +84,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
   )
   React.useEffect(() => {
     if (container?.current?.offsetHeight && pageSize == 0) {
-      let pageSize = 20
-      setPageSize((state) => {
-        // @ts-ignore
-        const newState = Math.floor((container.current.offsetHeight - 10) / RowHeight)
-        if (Math.abs(state - newState) > 1 && newState > 3) {
-          pageSize = newState
-        } else {
-          pageSize = state > 3 ? state : 4
-        }
-        return pageSize
-      })
+      let pageSize = Math.floor((container.current.offsetHeight - 10) / RowHeight)
       handlePageChange({ page, _pageSize: pageSize })
     }
   }, [container?.current?.offsetHeight])
