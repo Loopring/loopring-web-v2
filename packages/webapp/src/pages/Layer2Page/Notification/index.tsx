@@ -66,9 +66,10 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
   }) => {
     setPage(page)
     setHideRead(_hideRead)
+    const pageSize = _pageSize ? _pageSize : 20
     getNotification({
-      offset: page - 1,
-      limit: _pageSize ? _pageSize : 20,
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
       filter: { notRead: _hideRead },
     })
   }
