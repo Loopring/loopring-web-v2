@@ -12,7 +12,7 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, useConfirmation, ViewAccountTemplate } from '@loopring-web/core'
+import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
 import MyLiquidityPanel from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
