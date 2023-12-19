@@ -178,8 +178,7 @@ export const NotificationPanel = ({
         </>
       )}
       {!(
-        myNotifyMap?.total !== undefined ||
-        myNotifyMap?.total ||
+        myNotifyMap?.items?.length ||
         showExclusiveRedpacket ||
         hasActivities ||
         hasNotifications
