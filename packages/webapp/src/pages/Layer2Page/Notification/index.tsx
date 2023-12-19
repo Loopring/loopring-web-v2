@@ -18,7 +18,7 @@ import {
   Button,
   EmptyDefault,
 } from '@loopring-web/component-lib'
-import { useToast, NotificationItem } from '@loopring-web/core'
+import { useToast, NotificationItem, useNFTDeploy } from '@loopring-web/core'
 
 import {
   CheckBoxIcon,
@@ -42,9 +42,11 @@ const PageSizeHeight = 44
 export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: WithTranslation) => {
   const container = React.useRef<HTMLDivElement>(null)
   const { toastOpen, setToastOpen, closeToast } = useToast()
-  const [pageSize, setPageSize] = React.useState(0)
-  const [page, setPage] = React.useState(1)
-  const [hideRead, setHideRead] = React.useState(true)
+  const [{ pageSize, page, hideRead }, setPageFilter] = React.useState({
+    pageSize: 0,
+    page: 1,
+    hideRead: true,
+  })
   const {
     showLoading,
     getNotification,
@@ -64,24 +66,28 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
       _pageSize?: number
       _hideRead?: boolean
     }) => {
-      setPage(page)
-      setHideRead(_hideRead)
-      setPageSize((state) => {
-        if (_pageSize && Math.abs(state - _pageSize) > 1 && _pageSize > 3) {
-          _pageSize = _pageSize
-        } else {
-          _pageSize = state > 3 ? state : 4
+      setPageFilter((state) => {
+        if (!_pageSize || !(Math.abs(state.pageSize - _pageSize) > 1 && _pageSize > 3)) {
+          _pageSize = state.pageSize && state.pageSize > 3 ? state.pageSize : 4
         }
-        return _pageSize
-      })
-      getNotification({
-        offset: (page - 1) * _pageSize ?? 4,
-        limit: _pageSize ?? 4,
-        filter: { notRead: _hideRead },
+        _hideRead = _hideRead !== undefined ? _hideRead : state.hideRead
+        return {
+          page,
+          hideRead: _hideRead,
+          pageSize: _pageSize,
+        }
       })
     },
-    [pageSize, hideRead],
+    [pageSize, page, hideRead],
   )
+  React.useEffect(() => {
+    getNotification({
+      offset: (page - 1) * pageSize,
+      limit: pageSize ?? 4,
+      filter: { notRead: hideRead },
+    })
+  }, [pageSize, page, hideRead])
+
   React.useEffect(() => {
     if (container?.current?.offsetHeight && pageSize == 0) {
       let pageSize = Math.floor((container.current.offsetHeight - 10) / RowHeight)
