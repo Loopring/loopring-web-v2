@@ -202,7 +202,6 @@ export const NotificationItem = React.memo(
             color={'secondary'}
             size={size}
             onClick={() => {
-              rest.read = true
               _onReadIconClick(index, rest)
             }}
           >
