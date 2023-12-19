@@ -60,7 +60,11 @@ export const useVaultRepay = <
       const vaultToken = vaultTokenMap[tradeData.belong as any]
       const borrowed = tradeData.borrowed
       const orderAmounts = vaultToken.orderAmounts
-      let minRepayVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
+      let minRepayVol = BigNumber.max(
+        orderAmounts.dust,
+        //@ts-ignore
+        vaultToken?.vaultTokenAmounts?.minLoanAmount,
+      )
       let minRepayAmt = minRepayVol.div('1e' + vaultToken.decimals)
       const tradeValue = tradeData.tradeValue
 
