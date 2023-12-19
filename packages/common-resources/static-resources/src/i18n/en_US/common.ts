@@ -1478,7 +1478,7 @@ export default {
   labelInvestLRCStakingLockAlert:
     'Your assets for investment will be locked until your redemption.',
   labelLRCStakeAPRTooltips:
-    'Apr stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
+    'APR stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
   labelLRCStakeAPR: 'APR <1></1>',
   labelLRCStakeEarn: 'Daily Rewards (est.) <1></1>',
   labelLRCStakeEarnTooltips:

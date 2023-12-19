@@ -29,7 +29,7 @@ const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
-
+const PageSizeHeight = 44
 export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: WithTranslation) => {
   const container = React.useRef<HTMLDivElement>(null)
   const [pageSize, setPageSize] = React.useState(0)
@@ -41,21 +41,25 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     getNotification,
     rawData,
     total,
-    onReadClick,
+    // onReadClick,
     onReadAllClick,
     onClearAllClick,
   } = useNotification({ setToastOpen, page, pageSize })
   const handlePageChange = async ({ page }: { page: number }) => {
     setPage(page)
-    await getNotification({ offset: page - 1, limit: pageSize, filter })
+    getNotification({ offset: page - 1, limit: pageSize ? pageSize : 20, filter })
   }
   React.useEffect(() => {
-    let height = container?.current?.offsetHeight
-    if (height) {
-      // const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
-      setPageSize(Math.floor((height - 44) / RowHeight))
-      // handleTabChange(currentTab, pageSize);
-      // getNotification({})
+    if (container?.current?.offsetHeight) {
+      setPageSize((state) => {
+        // @ts-ignore
+        const newState = Math.floor((container.current.offsetHeight - 10) / RowHeight)
+        if (Math.abs(state - newState) > 1 && newState > 3) {
+          return newState
+        } else {
+          return state > 3 ? state : 4
+        }
+      })
       handlePageChange({ page: 1 })
     }
   }, [container?.current?.offsetHeight])
@@ -114,41 +118,49 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           paddingX={2}
           paddingY={2}
           flex={1}
-          ref={container}
+          height={'100%'}
         >
-          {!!rawData.length ? (
-            <Grid container paddingBottom={2} display={'flex'} flex={1}>
-              {rawData.map((ele, index) => {
-                return (
-                  <Grid item xs={12} key={ele.id}>
-                    <NotificationItem {...ele} index={index} onReadClick={onReadClick} />
-                    {index !== rawData?.length - 1 && <Divider />}
-                  </Grid>
-                )
-              })}
-              {showLoading && (
-                <LoadingStyled color={'inherit'}>
-                  <img
-                    className='loading-gif'
-                    alt={'loading'}
-                    width='36'
-                    src={`${SoursURL}images/loading-line.gif`}
-                  />
-                </LoadingStyled>
-              )}
-            </Grid>
-          ) : (
-            <EmptyDefault
-              style={{ flex: 1 }}
-              height={'100%'}
-              message={() => (
-                <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                  {t('labelNoContent')}
-                </Box>
-              )}
-            />
-          )}
-          <Box>
+          <Box display={'flex'} flex={1} ref={container}>
+            {!!rawData.length ? (
+              <Grid
+                container
+                paddingBottom={2}
+                display={'flex'}
+                flex={1}
+                alignContent={'flex-start'}
+              >
+                {rawData.map((ele, index) => {
+                  return (
+                    <Grid item xs={12} key={ele.id}>
+                      <NotificationItem {...ele} index={index} />
+                      {index !== rawData?.length - 1 && <Divider />}
+                    </Grid>
+                  )
+                })}
+              </Grid>
+            ) : (
+              <EmptyDefault
+                style={{ flex: 1 }}
+                height={'100%'}
+                message={() => (
+                  <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                    {t('labelNoContent')}
+                  </Box>
+                )}
+              />
+            )}
+            {showLoading && (
+              <LoadingStyled color={'inherit'}>
+                <img
+                  className='loading-gif'
+                  alt={'loading'}
+                  width='36'
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+              </LoadingStyled>
+            )}
+          </Box>
+          <Box height={PageSizeHeight}>
             {total && total > pageSize ? (
               <TablePagination
                 page={page}

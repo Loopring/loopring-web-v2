@@ -96,7 +96,7 @@ const TrendAprChart = ({
         <TooltipStyled>
           <Typography display={'inline-flex'} variant={'body1'}>
             <Typography component={'span'} variant={'inherit'} color={'textSecondary'}>
-              Apr:
+              APR:
             </Typography>
             <Typography
               component={'span'}

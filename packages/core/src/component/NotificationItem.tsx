@@ -179,23 +179,29 @@ export const NotificationItem = React.memo(
     index: number
     className?: string
     size?: 'small' | 'medium' | 'large'
-    onReadClick: (index: number, rest: any) => void
+    onReadClick?: (index: number, rest: any) => void
   }) => {
     const { message, createAt } = rest
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { t } = useTranslation()
-    const ele = useNotification({ index, onReadClick, ...rest })
+    const { onReadClick: defaultOnRead } = useNotificationFunc({})
+    const ele = useNotification({
+      index,
+      onReadClick: defaultOnRead,
+      ...rest,
+    })
     return (
       <BoxStyle display={'flex'} justifyContent={'stretch'} paddingY={1} className={className}>
         <Box position={'relative'} marginRight={2}>
-          {!rest.read ? (
-            <IconButton size={size} onClick={() => onReadClick(index, rest)}>
-              <MessageIcon htmlColor={'var(--color-text-secondary)'} />
-            </IconButton>
-          ) : (
-            <MessageIcon fontSize={size} htmlColor={'var(--color-text-third)'} />
-          )}
+          <IconButton
+            disabled={rest.read}
+            color={'secondary'}
+            size={size}
+            onClick={() => onReadClick(index, rest)}
+          >
+            <MessageIcon color={'inherit'} />
+          </IconButton>
           {!rest.read && <Typography className={'point'} component={'i'} display={'block'} />}
         </Box>
         <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'flex-start'}>
@@ -208,7 +214,7 @@ export const NotificationItem = React.memo(
               ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })}
           </Typography>
-          {ele.active ? (
+          {!onReadClick && ele.active ? (
             <Link
               variant={'body1'}
               color={'textPrimary'}
