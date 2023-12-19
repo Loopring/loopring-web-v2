@@ -24,7 +24,6 @@ import {
 import {
   AccountStatus,
   CustomError,
-  EmptyValueTag,
   ErrorMap,
   getValuePrecisionThousand,
   myLog,
@@ -34,10 +33,8 @@ import {
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
-// import { walletServices } from "@loopring-web/web3-provider";
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
-  dualOnInvestAsset,
   rowConfig = RowInvestConfig,
   hideSmallBalances,
 }: {
@@ -46,7 +43,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   rowConfig?: any
   hideSmallBalances: boolean
 }) => {
-  const { assetsRawData, onReceive, onSend } = useGetAssets()
+  const { assetsRawMap, onReceive, onSend } = useGetAssets()
   const { account, status: accountStatus } = useAccount()
   const {
     status: userRewardsStatus,
@@ -138,7 +135,15 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       resetTableData(resultData)
     }
-  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray, leverageETHCoinArray])
+  }, [
+    ammMap,
+    myAmmLPMap,
+    filter,
+    hideSmallBalances,
+    resetTableData,
+    defiCoinArray,
+    leverageETHCoinArray,
+  ])
   const handleFilterChange = React.useCallback(
     (filter) => {
       setFilter(filter)
@@ -200,7 +205,16 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       })
       setShowLoading(false)
     }
-  }, [ammMap, tokenPrices, userRewardsMap, summaryDefiReward])
+  }, [
+    ammMap,
+    tokenPrices,
+    userRewardsMap,
+    summaryDefiReward,
+    leverageETHCoinArray,
+    myAmmLPMap,
+    defiCoinArray,
+    updateData,
+  ])
 
   React.useEffect(() => {
     if (
@@ -315,24 +329,30 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       setStakeShowLoading(false)
     },
-    [account, tokenPrices],
+    [account, tokenPrices, tokenMap, stakingMap],
   )
 
   const reduceDefiFunc = (prev, item) => {
-    if (defiCoinArray.includes(item.token?.value?.toUpperCase())) {
-      const market = `${item.token?.value?.toUpperCase()}-ETH`
-      const defiInfo = defiMap[market]
+    if (assetsRawMap[item]) {
+      const market = `${item}-ETH`
+      const defiInfo = {
+        ...defiMap,
+        ...defiLeverageMap,
+      }[market]
       const precision = item.precision
       const baseToken = 'ETH'
       prev.push({
-        ...item,
+        ...assetsRawMap[item],
         market,
         baseToken,
         apr: Number(defiInfo.apy),
         defiInfo,
-        average: defiAverageMap
-          ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
-          : EmptyValueTag,
+        average:
+          defiAverageMap &&
+          defiAverageMap[market]?.average &&
+          defiAverageMap[market]?.average !== '0'
+            ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
+            : undefined,
       } as any)
     }
     return prev
@@ -356,7 +376,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     stakedSymbol,
     onReceive,
     onSend,
-    leverageETHAssets: assetsRawData?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
-    defiAsset: assetsRawData?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
+    leverageETHAssets: leverageETHCoinArray?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
+    defiAsset: defiCoinArray?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
   }
 }

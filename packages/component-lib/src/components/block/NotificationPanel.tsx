@@ -26,11 +26,13 @@ export const NotificationPanel = ({
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
   exclusiveRedpacketCount,
+  closePop,
 }: {
   notification: NOTIFICATIONHEADER<any> & { chainId: number; account }
   onClickExclusiveredPacket: () => void
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
+  closePop?: () => void
 }) => {
   const { t } = useTranslation()
   const history = useHistory()
@@ -64,6 +66,7 @@ export const NotificationPanel = ({
       maxHeight={600}
       sx={{ overflowY: 'scroll' }}
       alignItems={'center'}
+
       // paddingBottom={1}
     >
       {myNotifyMap?.total !== undefined && (
@@ -76,11 +79,18 @@ export const NotificationPanel = ({
             display={'inline-flex'}
             alignItems={'center'}
             justifyContent={'space-between'}
+            minWidth={300}
           >
             <Typography component={'span'}>
               {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}
             </Typography>
-            <Link href={`/#${RouterPath.layer2}/${Layer2RouterID.notification}`} color={'primary'}>
+            <Link
+              onClick={() => {
+                history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)
+                closePop && closePop()
+              }}
+              color={'primary'}
+            >
               {t('labelReadAll')}
             </Link>
           </Typography>
@@ -96,8 +106,10 @@ export const NotificationPanel = ({
                           size={'small'}
                           className={'headerItem'}
                           index={index}
+                          noAction={true}
                           onReadClick={() => {
                             history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)
+                            closePop && closePop()
                           }}
                         />
                         <Divider sx={{ marginY: 1 }} />
@@ -116,7 +128,7 @@ export const NotificationPanel = ({
         </>
       )}
 
-      {showExclusiveRedpacket || hasActivities || hasNotifications ? (
+      {!!(showExclusiveRedpacket || hasActivities || hasNotifications) && (
         <>
           <Box
             component={'section'}
@@ -127,7 +139,10 @@ export const NotificationPanel = ({
           >
             {showExclusiveRedpacket && (
               <Box
-                onClick={() => onClickExclusiveredPacket()}
+                onClick={() => {
+                  onClickExclusiveredPacket()
+                  closePop && closePop()
+                }}
                 sx={{
                   backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,
                   backgroundSize: 'contain',
@@ -173,7 +188,13 @@ export const NotificationPanel = ({
             </>
           )}
         </>
-      ) : (
+      )}
+      {!(
+        myNotifyMap?.items?.length ||
+        showExclusiveRedpacket ||
+        hasActivities ||
+        hasNotifications
+      ) && (
         <Box margin={2}>
           <EmptyDefault
             height={`calc(100% - var(--header-row-height))`}
