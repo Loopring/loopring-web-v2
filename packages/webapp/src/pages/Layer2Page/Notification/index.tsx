@@ -55,24 +55,27 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     onReadAllClick,
     onClearAllClick,
   } = useNotification({ setToastOpen, page, pageSize })
-  const handlePageChange = async ({
-    page,
-    _pageSize = pageSize,
-    _hideRead = hideRead,
-  }: {
-    page: number
-    _pageSize?: number
-    _hideRead?: boolean
-  }) => {
-    setPage(page)
-    setHideRead(_hideRead)
-    const pageSize = _pageSize ? _pageSize : 20
-    getNotification({
-      offset: (page - 1) * pageSize,
-      limit: pageSize,
-      filter: { notRead: _hideRead },
-    })
-  }
+  const handlePageChange = React.useCallback(
+    async ({
+      page,
+      _pageSize = pageSize,
+      _hideRead = hideRead,
+    }: {
+      page: number
+      _pageSize?: number
+      _hideRead?: boolean
+    }) => {
+      setPage(page)
+      setHideRead(_hideRead)
+      const pageSize = _pageSize ? _pageSize : 20
+      getNotification({
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+        filter: { notRead: _hideRead },
+      })
+    },
+    [pageSize, hideRead],
+  )
   React.useEffect(() => {
     if (container?.current?.offsetHeight && pageSize == 0) {
       let pageSize = 20
