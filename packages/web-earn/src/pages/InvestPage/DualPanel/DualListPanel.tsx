@@ -87,9 +87,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
   const { setShowDual } = useOpenModals()
   const [confirmDualAutoInvest, setConfirmDualAutoInvest] = React.useState(false)
   const dualListProps = useDualHook()
-  const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
-    setConfirmDualAutoInvest,
-  })
+  const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade()
   const {
     pairASymbol,
     pairBSymbol,

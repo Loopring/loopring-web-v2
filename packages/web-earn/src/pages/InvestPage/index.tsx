@@ -1,13 +1,14 @@
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
-import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
+import { Box, BoxProps, Modal, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
   ComingSoonPanel,
-  ConfirmInvestDualAutoRisk,
-  ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
+  ModalCloseButton,
+  ModifySetting,
+  SwitchPanelStyled,
   useToggle,
 } from '@loopring-web/component-lib'
 import React from 'react'
@@ -145,16 +146,18 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
   let match: any = useRouteMatch('/invest/:item?')
   const {
     confirmation: {
-      confirmedLRCStakeInvest: confirmedLRCInvestFun,
       confirmationNeeded,
       showLRCStakePopup: confirmedLRCStakeInvest,
+      showAutoDefault,
     },
+    confirmedLRCStakeInvest: confirmedLRCInvestFun,
+    setShowAutoDefault,
     setShowLRCStakePopup: setConfirmedLRCStakeInvestInvest,
   } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
-
+  const { t } = useTranslation()
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     (InvestRouter.includes(match?.params?.item)
       ? InvestType[match?.params?.item]
@@ -219,12 +222,24 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-
+      <Modal
+        open={showAutoDefault}
+        onClose={() => setShowAutoDefault(false)}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <SwitchPanelStyled width={'var(--modal-width)'}>
+          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
+            <ModalCloseButton onClose={() => setShowAutoDefault(false)} t={t} />
+            <ModifySetting onClose={() => setShowAutoDefault(false)} />
+          </Box>
+        </SwitchPanelStyled>
+      </Modal>
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest({ show: false, confirmationNeeded: false })
+          setConfirmedLRCStakeInvestInvest({ isShow: false, confirmationNeeded: false })
           if (!isAgree) {
             // history.goBack()
           } else {
