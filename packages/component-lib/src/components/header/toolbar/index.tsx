@@ -85,8 +85,8 @@ export const BtnNotification = <N = sdk.UserNotification,>({
     variant: 'popover',
     popupId: 'notificationPop',
   })
-  // const [content] = React.useState(0)
-
+  const popupStateEle = bindPopper(popupState)
+  // bindHover(popupState)
   return (
     <Box position={'relative'}>
       <IconButton aria-label={'notification'} {...bindHover(popupState)}>
@@ -119,7 +119,7 @@ export const BtnNotification = <N = sdk.UserNotification,>({
         <></>
       )}
       <PopoverPure
-        {...bindPopper(popupState)}
+        {...popupStateEle}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -130,6 +130,7 @@ export const BtnNotification = <N = sdk.UserNotification,>({
         }}
       >
         <NotificationPanel
+          closePop={popupStateEle.onMouseLeave as any}
           exclusiveRedpacketCount={exclusiveRedpacketCount}
           onClickExclusiveredPacket={onClickExclusiveredPacket}
           showExclusiveRedpacket={showExclusiveRedpacket}
