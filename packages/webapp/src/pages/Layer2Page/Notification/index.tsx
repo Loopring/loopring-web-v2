@@ -1,5 +1,12 @@
 import styled from '@emotion/styled'
-import { Box, Divider, Grid, Typography } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  Divider,
+  FormControlLabel as MuiFormControlLabel,
+  Grid,
+  Typography,
+} from '@mui/material'
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import {
@@ -14,6 +21,8 @@ import {
 import { useToast, NotificationItem } from '@loopring-web/core'
 
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   DeleteIcon,
   NotificationIcon,
   ReadIcon,
@@ -22,7 +31,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useNotification } from './hook'
 
-const RowHeight = 95
+const RowHeight = 116
 const StyledPaper = styled(Box)`
   width: 100%;
   height: 100%;
@@ -36,31 +45,47 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const [filter, setFIter] = React.useState(undefined)
   const [page, setPage] = React.useState(1)
+  const [hideRead, setHideRead] = React.useState(true)
   const {
     showLoading,
     getNotification,
     rawData,
     total,
-    // onReadClick,
+    onReadClick,
     onReadAllClick,
     onClearAllClick,
   } = useNotification({ setToastOpen, page, pageSize })
-  const handlePageChange = async ({ page }: { page: number }) => {
+  const handlePageChange = async ({
+    page,
+    _pageSize = pageSize,
+    _hideRead = hideRead,
+  }: {
+    page: number
+    _pageSize?: number
+    _hideRead?: boolean
+  }) => {
     setPage(page)
-    getNotification({ offset: page - 1, limit: pageSize ? pageSize : 20, filter })
+    setHideRead(_hideRead)
+    getNotification({
+      offset: page - 1,
+      limit: _pageSize ? _pageSize : 20,
+      filter: { notRead: _hideRead },
+    })
   }
   React.useEffect(() => {
-    if (container?.current?.offsetHeight) {
+    if (container?.current?.offsetHeight && pageSize == 0) {
+      let pageSize = 20
       setPageSize((state) => {
         // @ts-ignore
         const newState = Math.floor((container.current.offsetHeight - 10) / RowHeight)
         if (Math.abs(state - newState) > 1 && newState > 3) {
-          return newState
+          pageSize = newState
         } else {
-          return state > 3 ? state : 4
+          pageSize = state > 3 ? state : 4
         }
+        return pageSize
       })
-      handlePageChange({ page: 1 })
+      handlePageChange({ page, _pageSize: pageSize })
     }
   }, [container?.current?.offsetHeight])
 
@@ -77,6 +102,20 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           <NotificationIcon color={'inherit'} sx={{ marginRight: 1 }} /> {t('labelNoticeTitle')}
         </Typography>
         <Box>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={hideRead}
+                onChange={(_event: any, state: boolean) => {
+                  handlePageChange({ page, _hideRead: state })
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={t('labelHideRead')}
+          />
           <Button
             startIcon={<ReadIcon color={'inherit'} fontSize={'small'} />}
             variant={'text'}
@@ -131,8 +170,14 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
               >
                 {rawData.map((ele, index) => {
                   return (
-                    <Grid item xs={12} key={ele.id}>
-                      <NotificationItem {...ele} index={index} />
+                    <Grid
+                      item
+                      xs={12}
+                      key={ele.id}
+                      maxHeight={RowHeight}
+                      sx={{ overflow: 'scroll' }}
+                    >
+                      <NotificationItem {...ele} index={index} onReadClick={onReadClick} />
                       {index !== rawData?.length - 1 && <Divider />}
                     </Grid>
                   )

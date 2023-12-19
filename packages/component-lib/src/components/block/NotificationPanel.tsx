@@ -64,6 +64,7 @@ export const NotificationPanel = ({
       maxHeight={600}
       sx={{ overflowY: 'scroll' }}
       alignItems={'center'}
+
       // paddingBottom={1}
     >
       {myNotifyMap?.total !== undefined && (
@@ -76,6 +77,7 @@ export const NotificationPanel = ({
             display={'inline-flex'}
             alignItems={'center'}
             justifyContent={'space-between'}
+            minWidth={300}
           >
             <Typography component={'span'}>
               {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}
@@ -96,6 +98,7 @@ export const NotificationPanel = ({
                           size={'small'}
                           className={'headerItem'}
                           index={index}
+                          noAction={true}
                           onReadClick={() => {
                             history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)
                           }}
@@ -116,7 +119,7 @@ export const NotificationPanel = ({
         </>
       )}
 
-      {showExclusiveRedpacket || hasActivities || hasNotifications ? (
+      {!!(showExclusiveRedpacket || hasActivities || hasNotifications) && (
         <>
           <Box
             component={'section'}
@@ -173,7 +176,14 @@ export const NotificationPanel = ({
             </>
           )}
         </>
-      ) : (
+      )}
+      {!(
+        myNotifyMap?.total !== undefined ||
+        myNotifyMap?.total ||
+        showExclusiveRedpacket ||
+        hasActivities ||
+        hasNotifications
+      ) && (
         <Box margin={2}>
           <EmptyDefault
             height={`calc(100% - var(--header-row-height))`}
