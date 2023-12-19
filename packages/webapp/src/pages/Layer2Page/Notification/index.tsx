@@ -81,11 +81,13 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
     [pageSize, page, hideRead],
   )
   React.useEffect(() => {
-    getNotification({
-      offset: (page - 1) * pageSize,
-      limit: pageSize ?? 4,
-      filter: { notRead: hideRead },
-    })
+    if (pageSize) {
+      getNotification({
+        offset: (page - 1) * pageSize,
+        limit: pageSize ?? 4,
+        filter: { notRead: hideRead },
+      })
+    }
   }, [pageSize, page, hideRead])
 
   React.useEffect(() => {

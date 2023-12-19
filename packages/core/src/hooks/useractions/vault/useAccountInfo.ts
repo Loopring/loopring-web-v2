@@ -1,7 +1,10 @@
 import {
+  btradeOrderbookService,
   store,
+  useSocket,
   useSubmitBtn,
   useTokenMap,
+  useTradeVault,
   useVaultLayer2,
   useVaultMap,
   VaultLayer2States,
@@ -10,6 +13,7 @@ import React from 'react'
 import {
   L1L2_NAME_DEFINED,
   MapChainId,
+  myLog,
   SagaStatus,
   TradeBtnStatus,
   VaultLoanType,
@@ -17,6 +21,60 @@ import {
 import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { merge } from 'rxjs'
+
+const useVaultSocket = () => {
+  // const { tradeVault, updateTradeVault } = useTradeVault()
+  const { sendSocketTopic, socketEnd } = useSocket()
+  // const { account } = useAccount()
+  const { marketMap } = useVaultMap()
+
+  const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
+  // const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
+  React.useEffect(() => {
+    const { tradeVault } = store.getState()._router_tradeVault
+    const item = marketMap[tradeVault?.market]
+    if (tradeVault?.depth?.symbol && item?.wsMarket) {
+      sendSocketTopic({
+        [sdk.WsTopicType.btradedepth]: {
+          showOverlap: false,
+          markets: [item.wsMarket],
+          level: 0,
+          count: 50,
+          snapshot: false,
+        },
+      })
+    } else {
+      socketEnd()
+    }
+    return () => {
+      socketEnd()
+    }
+  }, [tradeVault?.depth?.symbol])
+  React.useEffect(() => {
+    const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
+      const { tradeVault } = store.getState()._router_tradeVault
+      const item = marketMap[tradeVault.market]
+      if (
+        item &&
+        btradeOrderbookMap &&
+        item?.wsMarket &&
+        btradeOrderbookMap[item.wsMarket] &&
+        tradeVault?.depth?.symbol &&
+        item.wsMarket === btradeOrderbookMap[item.wsMarket]?.symbol
+      ) {
+        updateTradeVault({
+          market: item.market,
+          depth: { ...btradeOrderbookMap[item.wsMarket], symbol: tradeVault.depth.symbol },
+          ...item,
+        })
+        myLog('useVaultSwap: depth', btradeOrderbookMap[item.wsMarket])
+        // debonceCall()
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [tradeVault.market])
+}
 
 export type VaultAccountInfoStatus = VaultLayer2States & {
   joinBtnStatus: TradeBtnStatus

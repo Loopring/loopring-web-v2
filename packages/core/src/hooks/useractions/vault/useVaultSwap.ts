@@ -58,7 +58,7 @@ import {
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
 
-const useVaultSocket = () => {
+const useVaultTradeSocket = () => {
   const { tradeVault, updateTradeVault } = useTradeVault()
   const { sendSocketTopic, socketEnd } = useSocket()
   // const { account } = useAccount()
@@ -772,7 +772,7 @@ export const useVaultSwap = <
       })
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState])
-  useVaultSocket()
+  useVaultTradeSocket()
   React.useEffect(() => {
     if (vaultLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
       vaultLayer2Callback()

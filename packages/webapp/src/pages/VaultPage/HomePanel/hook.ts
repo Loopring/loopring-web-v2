@@ -14,7 +14,6 @@ import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring
 import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DatacenterRange } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export const useVaultMarket = <
   R extends TickerNew & { cmcTokenId: number; isFavorite: boolean },

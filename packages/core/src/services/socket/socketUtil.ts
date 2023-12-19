@@ -81,6 +81,22 @@ export class LoopringSocket {
         })
       }
     },
+    [sdk.WsTopicType.btradedepth]: (data: sdk.DepthData, topic: any) => {
+      if (
+        (window as any)?.loopringSocket?.socketKeyMap &&
+        (window as any).loopringSocket?.socketKeyMap[sdk.WsTopicType.btradedepth]?.level ===
+          topic.level
+      ) {
+        const timestamp = Date.now()
+        btradeOrderbookService.sendBtradeOrderBook({
+          [topic.market]: {
+            ...data,
+            timestamp: timestamp,
+            symbol: topic.market,
+          } as any,
+        })
+      }
+    },
     [sdk.WsTopicType.trade]: (datas: string[][]) => {
       const marketTrades: sdk.MarketTradeInfo[] = datas.map((data) => {
         const [market, tradeTime, tradeId, side, volume, price, fee] = data
