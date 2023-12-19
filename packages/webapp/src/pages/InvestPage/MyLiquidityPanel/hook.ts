@@ -35,7 +35,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
-  dualOnInvestAsset,
   rowConfig = RowInvestConfig,
   hideSmallBalances,
 }: {
@@ -349,7 +348,9 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         apr: Number(defiInfo.apy),
         defiInfo,
         average:
-          defiAverageMap && defiAverageMap[market]?.average
+          defiAverageMap &&
+          defiAverageMap[market]?.average &&
+          defiAverageMap[market]?.average !== '0'
             ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
             : undefined,
       } as any)

@@ -1478,7 +1478,7 @@ export default {
   labelInvestLRCStakingLockAlert:
     'Your assets for investment will be locked until your redemption.',
   labelLRCStakeAPRTooltips:
-    'Apr stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
+    'APR stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
   labelLRCStakeAPR: 'APR <1></1>',
   labelLRCStakeEarn: 'Daily Rewards (est.) <1></1>',
   labelLRCStakeEarnTooltips:
@@ -2118,16 +2118,18 @@ export default {
   labelL2WithdrawNote: 'Send token in {{loopringL2}}',
   labelTotalUnRead: '{{total}} unread(s)',
   labelReadAll: 'View all',
-  labelLuckyTokenNormal: 'Normal',
-  labelRedPacketSendAverageTitle: 'Average Red Packet',
-  labelBlindBoxHint:
-    'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
-  labelNormalRedPacketTitle: 'Normal Red Packet',
   labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
   labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
   labelDualLongestSettlementFixed: 'Fixed',
   labelDualLongestSettlementAutomatic: 'Automatic',
   labelDualSettingConfirm: 'Confirm',
+  labelLuckyTokenNormal: 'Normal',
+  labelRedPacketSendAverageTitle: 'Average Red Packet',
+  labelBlindBoxHint:
+    'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
+  labelNormalRedPacketTitle: 'Normal Red Packet',
+  labelL2DualNote: 'Dual Investment Notification',
+  labelQuickInvest: 'Quick Invest',
   labelReceiveToken: 'Receive',
   labelETHStakingEnterPaymentToken: 'Amount',
   labelDefiDuration: 'Duration',
@@ -2135,6 +2137,7 @@ export default {
   labelEstAPR: 'Est.APR',
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
+  labelHideRead: 'Hide Read(s)',
   labelUpdateContactsNext: 'Go to Update Contact',
   labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelL2DualNote: 'Dual Investment Notification',

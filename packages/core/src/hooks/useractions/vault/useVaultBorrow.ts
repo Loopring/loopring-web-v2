@@ -71,7 +71,11 @@ export const useVaultBorrow = <
     if (tradeData?.belong) {
       const borrowToken = vaultTokenMap[tradeData.belong]
       const orderAmounts = borrowToken.orderAmounts
-      const minBorrowVol = BigNumber.max(orderAmounts.dust, orderAmounts?.minimum)
+      const minBorrowVol = BigNumber.max(
+        orderAmounts.dust,
+        //@ts-ignore
+        borrowToken?.vaultTokenAmounts?.minLoanAmount,
+      )
       const minBorrowAmt = minBorrowVol.div('1e' + borrowToken.decimals)
       const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
       const maxBorrowAmt = sdk
@@ -476,7 +480,7 @@ export const useVaultBorrow = <
     onVaultBorrowClick: onBtnClick,
     walletMap: walletMap as unknown as any,
     coinMap: Reflect.ownKeys(walletMap ?? {}).reduce((prev, item) => {
-      return { ...prev, [item]: { ...vaultCoinMap[item] } }
+      return { ...prev, [item]: { ...vaultCoinMap[item?.toString() ?? ''] } }
     }, {}),
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,

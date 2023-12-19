@@ -372,7 +372,7 @@ export default {
   labelAveragePositionCostDes: 'The average holding cost of the last 10 purchases.',
   labelDefiApr: 'Est.APR <1></1>',
   labelDefiAprDes:
-    'Apr stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
+    'APR stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
   labelVaultAssetsTableValue: 'Value',
   labelVaultborrow: 'Borrow',
   labelVaultopen: 'Open Position',

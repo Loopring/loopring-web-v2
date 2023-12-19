@@ -218,7 +218,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       { floor: true },
     )} ${tokenBuy.symbol}`
 
-  const fee = deFiCalcData?.fee ? deFiCalcData?.fee + ` ${tokenBuy.symbol}` : EmptyValueTag
+  const fee =
+    deFiCalcData?.fee && deFiCalcData.fee !== '0'
+      ? deFiCalcData?.fee + ` ${tokenBuy.symbol}`
+      : EmptyValueTag
 
   return (
     <Box
@@ -339,44 +342,51 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             )}
           </Typography>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          direction={'row'}
-          display={'flex'}
-          marginBottom={1}
-          justifyContent={'space-between'}
-        >
-          <Box display={'flex'} flexDirection={'row'}>
-            <Tooltip title={t('labelLRCStakeAPRTooltips')}>
-              <Typography
-                component={'p'}
-                variant='body2'
-                color={'textSecondary'}
-                display={'inline-flex'}
-                alignItems={'center'}
-              >
-                {t('labelAPR')}
-                <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
-              </Typography>
-            </Tooltip>
-          </Box>
-          <Button
-            variant={'text'}
-            size={'small'}
-            onClick={() => onAprDetail()}
-            sx={{
-              padding: 0,
-              justifyContent: 'right',
-              color: apr?.toString().charAt(0) == '-' ? colorRight[1] : colorRight[0],
-            }}
-            endIcon={
-              <BackIcon fontSize={'small'} sx={{ transform: 'rotate(180deg)' }} color={'inherit'} />
-            }
+        {isJoin && (
+          <Grid
+            item
+            xs={12}
+            direction={'row'}
+            display={'flex'}
+            marginBottom={1}
+            justifyContent={'space-between'}
           >
-            {apr ? `${(apr.toString().charAt(0) == '-' ? '' : '+') + apr + '%'}` : EmptyValueTag}
-          </Button>
-        </Grid>
+            <Box display={'flex'} flexDirection={'row'}>
+              <Tooltip title={t('labelLRCStakeAPRTooltips')}>
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  {t('labelAPR')}
+                  <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                </Typography>
+              </Tooltip>
+            </Box>
+            <Button
+              variant={'text'}
+              size={'small'}
+              onClick={() => onAprDetail()}
+              sx={{
+                padding: 0,
+                justifyContent: 'right',
+                color: apr?.toString().charAt(0) == '-' ? colorRight[1] : colorRight[0],
+              }}
+              endIcon={
+                <BackIcon
+                  fontSize={'small'}
+                  sx={{ transform: 'rotate(180deg)' }}
+                  color={'inherit'}
+                />
+              }
+            >
+              {apr ? `${(apr.toString().charAt(0) == '-' ? '' : '+') + apr + '%'}` : EmptyValueTag}
+            </Button>
+          </Grid>
+        )}
+
         <Grid
           item
           xs={12}
@@ -399,21 +409,23 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             </IconButtonStyled>
           </Typography>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          direction={'row'}
-          display={'flex'}
-          marginBottom={1}
-          justifyContent={'space-between'}
-        >
-          <Typography component={'p'} variant='body2' color={'textSecondary'}>
-            {t('labelDefiDuration')}
-          </Typography>
-          <Typography component={'p'} variant='body2' color={'textPrimary'}>
-            {t('labelFlexible')}
-          </Typography>
-        </Grid>
+        {isJoin && (
+          <Grid
+            item
+            xs={12}
+            direction={'row'}
+            display={'flex'}
+            marginBottom={1}
+            justifyContent={'space-between'}
+          >
+            <Typography component={'p'} variant='body2' color={'textSecondary'}>
+              {t('labelDefiDuration')}
+            </Typography>
+            <Typography component={'p'} variant='body2' color={'textPrimary'}>
+              {t('labelFlexible')}
+            </Typography>
+          </Grid>
+        )}
         <Grid
           item
           xs={12}

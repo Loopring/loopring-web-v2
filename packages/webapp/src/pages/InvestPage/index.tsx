@@ -189,7 +189,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest({ show: false, confirmationNeeded: false })
+          setConfirmedLRCStakeInvestInvest({isShow: false, confirmationNeeded: false })
           if (!isAgree) {
             // history.goBack()
           } else {
