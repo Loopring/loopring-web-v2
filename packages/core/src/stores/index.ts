@@ -40,7 +40,6 @@ import { walletLayer2NFTSlice } from './walletLayer2NFT/reducer'
 import { redPacketConfigsSlice } from './redPacket/reducer'
 import { localStoreReducer } from './localStore'
 import { getAnalytics } from 'firebase/analytics'
-
 import {
   ChainHashInfos,
   firebaseBridgeConfig,
@@ -251,6 +250,7 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
+//@ts-ignore
 export type RootState = ReturnType<typeof reducer>
 export const persistor = persistStore(store)
 

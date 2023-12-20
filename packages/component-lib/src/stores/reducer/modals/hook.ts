@@ -314,10 +314,6 @@ export const useOpenModals = () => {
       }) => dispatch(setShowTargetRedpacketPop(state)),
       [dispatch],
     ),
-    setShowETHStakingApr: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
-      [dispatch],
-    ),
     setShowEditContact: React.useCallback(
       (state: { isShow: boolean; info?: any }) => dispatch(setShowEditContact(state)),
       [dispatch],

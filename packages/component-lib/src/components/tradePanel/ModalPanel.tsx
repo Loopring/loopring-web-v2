@@ -258,7 +258,6 @@ export const ModalPanel = <
     isShowTargetRedpacketPop,
     isShowEditContact,
   } = modals
-
   const theme = useTheme()
   return (
     <>
