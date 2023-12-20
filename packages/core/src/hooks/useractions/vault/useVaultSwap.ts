@@ -349,6 +349,19 @@ export const useVaultSwap = <
     } else {
       resetTradeVault()
       setIsMarketStatus({ market: undefined })
+      if (borrowHash?.current?.hash) {
+        updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
+      }
+    }
+    return () => {
+      if (borrowHash?.current?.hash) {
+        updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
+      }
+      if (borrowHash.current?.timer) {
+        clearTimeout(borrowHash.current?.timer)
+        setIsSwapLoading(false)
+        borrowHash.current = null
+      }
     }
   }, [isShowVaultSwap?.isShow])
   const startLoopHashCheck = () => {
@@ -406,21 +419,6 @@ export const useVaultSwap = <
       borrowHash.current = null
     }
   }
-  React.useEffect(() => {
-    if (borrowHash?.current?.hash) {
-      startLoopHashCheck()
-    }
-    return () => {
-      if (borrowHash?.current?.hash) {
-        updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
-      }
-      if (borrowHash.current?.timer) {
-        clearTimeout(borrowHash.current?.timer)
-        borrowHash.current = null
-      }
-      setIsSwapLoading(false)
-    }
-  }, [borrowHash?.current?.hash])
 
   const clearData = () => {
     let _tradeCalcData: any = {}
@@ -898,10 +896,10 @@ export const useVaultSwap = <
           throw response
         }
         borrowHash.current = { hash: (response as any).hash }
+        startLoopHashCheck()
       }
     } catch (e) {
       borrowHash.current = null
-      setIsSwapLoading(false)
       const code =
         (e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           ? UIERROR_CODE.ERROR_ORDER_FAILED
@@ -916,6 +914,7 @@ export const useVaultSwap = <
         type: ToastType.error,
         content: t('labelVaultBorrowFailed') + t(error.messageKey, { ns: 'error' }),
       })
+      setIsSwapLoading(false)
     }
   }
   // processRequest(vaultBorrowRequest)
@@ -1195,7 +1194,7 @@ export const useVaultSwap = <
       const {
         account,
         _router_tradeVault: {
-          tradeVault: { depth, tradePair },
+          tradeVault: { depth, tradePair, tradeCalcData },
         },
         vaultLayer2: { vaultLayer2 },
       } = store.getState()
@@ -1249,10 +1248,11 @@ export const useVaultSwap = <
 
         const calcDexOutput = sdk.calcDex<sdk.VaultMarket>({
           info,
-          input: input.toString(),
+          input:
+            tradeCalcData?.step != 'edit' ? _tradeData?.sell?.tradeValue ?? 0 : input.toString(),
           sell: sellToken.symbol,
           buy: buyToken.symbol,
-          isAtoB,
+          isAtoB: tradeCalcData?.step != 'edit' ? true : isAtoB,
           marketArr: marketArray,
           tokenMap,
           marketMap: marketMap as any,
