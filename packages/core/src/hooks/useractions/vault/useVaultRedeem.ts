@@ -5,7 +5,6 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
-  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
@@ -14,19 +13,20 @@ import {
 } from '@loopring-web/common-resources'
 import React from 'react'
 import {
+  l2CommonService,
   LoopringAPI,
   store,
+  useL2CommonSocket,
   useSubmitBtn,
   useSystem,
   useVaultLayer2,
-  walletLayer2Service,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
 
 export const useVaultRedeem = () => {
   const { t } = useTranslation('common')
-  const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
+  const { status: vaultAccountInfoStatus, vaultAccountInfo } = useVaultLayer2()
   const [isLoading, setIsLoading] = React.useState(false)
   const { setShowVaultExit, setShowAccount } = useOpenModals()
   const { forexMap } = useSystem()
@@ -42,15 +42,12 @@ export const useVaultRedeem = () => {
       }
     | undefined
   >(undefined)
-  React.useEffect(() => {
+
+  const vaultLayer2Callback = React.useCallback(() => {
     const {
       vaultLayer2: { vaultAccountInfo },
     } = store.getState()
-    if (
-      vaultAccountInfoStatus === SagaStatus.UNSET &&
-      vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING
-    ) {
-      // const colorIs = profit.gte(0) ? 0 : 1
+    if (vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING) {
       setInfo(() => {
         const profit =
           vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
@@ -121,7 +118,12 @@ export const useVaultRedeem = () => {
         }
       })
     }
-  }, [vaultAccountInfoStatus, currency])
+  }, [currency])
+  React.useEffect(() => {
+    vaultLayer2Callback()
+  }, [currency])
+  useL2CommonSocket({ vaultLayer2Callback })
+
   const availableTradeCheck = React.useCallback(() => {
     if (
       vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING &&
@@ -149,7 +151,6 @@ export const useVaultRedeem = () => {
         }
         // submit success
         setShowVaultExit({ isShow: false })
-        updateVaultLayer2({})
         await sdk.sleep(SUBMIT_PANEL_CHECK)
         const response2 = await LoopringAPI.vaultAPI.getVaultGetOperationByHash(
           {
@@ -185,8 +186,7 @@ export const useVaultRedeem = () => {
         })
         setIsLoading(false)
         await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        walletLayer2Service.sendUserUpdate()
-        updateVaultLayer2({})
+        l2CommonService.sendUserUpdate()
         if (
           store.getState().modals.isShowAccount.isShow &&
           [AccountStep.VaultRedeem_Success, AccountStep.VaultRedeem_In_Progress].includes(

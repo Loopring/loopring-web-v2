@@ -122,7 +122,7 @@ export const useDualTrade = <
         dualMarketMap[`DUAL-${buySymbol}-${sellSymbol}`]
 
       setSellBuySymbol([baseSymbol, quoteSymbol])
-      let coinSell = tradeData
+      let coinSell: any = tradeData ?? {}
       if (tradeData && tradeData.belong === baseSymbol) {
         // coinSell= tradeData;
       } else if (_coinSell?.belong === baseSymbol) {
@@ -526,7 +526,7 @@ export const useDualTrade = <
     submitCallback: onSubmitBtnClick,
   })
 
-  const dualTradeProps: DualWrapProps<T, I, ACD> = {
+  const dualTradeProps: Omit<DualWrapProps<T, I, ACD>, 'setShowAutoDefault'> = {
     refreshRef,
     disabled: false,
     btnInfo: {

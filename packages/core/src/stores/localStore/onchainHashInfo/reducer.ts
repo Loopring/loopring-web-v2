@@ -10,7 +10,11 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
 >({
   name: 'chainHashInfos',
   initialState: Reflect.ownKeys(NetworkMap).reduce((prev, item) => {
-    prev[NetworkMap[item]?.chainId] = { depositHashes: {}, showHadUnknownCollection: {} }
+    prev[NetworkMap[item]?.chainId] = {
+      depositHashes: {},
+      vaultBorrowHashes: {},
+      showHadUnknownCollection: {},
+    }
     return prev
   }, {}),
   reducers: {
@@ -18,7 +22,11 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
     clearAll(state: ChainHashInfos, _action: PayloadAction<undefined>) {
       state = {
         ...Reflect.ownKeys(NetworkMap).reduce((prev, item) => {
-          prev[NetworkMap[item]?.chainId] = { depositHashes: {}, showHadUnknownCollection: {} }
+          prev[NetworkMap[item]?.chainId] = {
+            depositHashes: {},
+            vaultBorrowHashes: {},
+            showHadUnknownCollection: {},
+          }
           return prev
         }, {}),
       }
@@ -45,8 +53,11 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
       }>,
     ) {
       const { accountAddress, chainId } = action.payload
-      if (!state[chainId] || !state[chainId].depositHashes) {
-        state[chainId] = { ...state[chainId], depositHashes: {}, showHadUnknownCollection: {} }
+      if (!state[chainId] || !state[chainId].showHadUnknownCollection) {
+        state[chainId] = {
+          ...state[chainId],
+          showHadUnknownCollection: {},
+        }
       }
       if (accountAddress) {
         state[chainId].showHadUnknownCollection = {
@@ -55,6 +66,7 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
         }
       }
     },
+
     updateDepositHash(
       state: ChainHashInfos,
       action: PayloadAction<{
@@ -65,7 +77,10 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
     ) {
       const { txInfo, accountAddress, chainId } = action.payload
       if (!state[chainId] || !state[chainId].depositHashes) {
-        state[chainId] = { ...state[chainId], depositHashes: {}, showHadUnknownCollection: {} }
+        state[chainId] = {
+          ...state[chainId],
+          depositHashes: {},
+        }
       }
       if (accountAddress && txInfo) {
         if (!txInfo.status) {
@@ -96,6 +111,52 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
         }
       }
     },
+    updateVaultBorrowHash(
+      state: ChainHashInfos,
+      action: PayloadAction<{
+        txInfo: TxInfo
+        accountAddress: string
+        chainId: ChainId
+      }>,
+    ) {
+      const { txInfo, accountAddress, chainId } = action.payload
+      if (!state[chainId] || !state[chainId].vaultBorrowHashes) {
+        state[chainId] = {
+          ...state[chainId],
+          vaultBorrowHashes: {},
+        }
+      }
+      if (accountAddress && txInfo) {
+        if (!txInfo.status) {
+          txInfo.status = 'pending'
+          txInfo.timestamp = Date.now()
+          state[chainId].vaultBorrowHashes = {
+            [accountAddress]: state[chainId].vaultBorrowHashes[accountAddress]
+              ? [...[txInfo], ...state[chainId].vaultBorrowHashes[accountAddress]]
+              : [txInfo],
+          }
+        }
+        if (
+          ['success', 'failed'].includes(txInfo.status) &&
+          state[chainId].vaultBorrowHashes[accountAddress]
+        ) {
+          state[chainId].vaultBorrowHashes[accountAddress] = state[chainId].vaultBorrowHashes[
+            accountAddress
+          ].filter((item) => item.hash !== txInfo.hash)
+        }
+      }
+    },
+    clearVaultBorrowHash(
+      state: ChainHashInfos,
+      action: PayloadAction<{ accountAddress?: string; chainId: ChainId }>,
+    ) {
+      const { accountAddress, chainId } = action.payload
+      if (accountAddress && state[chainId].vaultBorrowHashes) {
+        state[chainId].vaultBorrowHashes[accountAddress] = []
+      } else {
+        state[chainId].vaultBorrowHashes = {}
+      }
+    },
   },
 })
 
@@ -107,4 +168,6 @@ export const {
   clearWithdrawHash,
   updateWithdrawHash,
   updateHadUnknownCollection,
+  updateVaultBorrowHash,
+  clearVaultBorrowHash,
 } = OnChainHashInfoSlice.actions

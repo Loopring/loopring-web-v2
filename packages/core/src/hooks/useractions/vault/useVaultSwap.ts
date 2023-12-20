@@ -9,6 +9,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
+  MapChainId,
   MarketType,
   myLog,
   SagaStatus,
@@ -37,13 +38,16 @@ import {
   btradeOrderbookService,
   DAYS,
   getTimestampDaysLater,
+  l2CommonService,
   LoopringAPI,
   makeVaultLayer2,
   MAPFEEBIPS,
   marketInitCheck,
+  onchainHashInfo,
   reCalcStoB,
   store,
   useAccount,
+  useL2CommonSocket,
   usePairMatch,
   useSocket,
   useSubmitBtn,
@@ -61,13 +65,25 @@ import { merge } from 'rxjs'
 const useVaultTradeSocket = () => {
   const { tradeVault, updateTradeVault } = useTradeVault()
   const { sendSocketTopic, socketEnd } = useSocket()
-  // const { account } = useAccount()
-  const { marketMap } = useVaultMap()
-
   const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
   // const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
+
   React.useEffect(() => {
-    const { tradeVault } = store.getState()._router_tradeVault
+    const {
+      account: { accAddress },
+      _router_tradeVault: { tradeVault },
+      settings: { defaultNetwork },
+      invest: {
+        vaultMap: { marketMap },
+      },
+    } = store.getState()
+    const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+    const networkWallet: sdk.NetworkWallet = [
+      sdk.NetworkWallet.ETHEREUM,
+      sdk.NetworkWallet.GOERLI,
+    ].includes(network as sdk.NetworkWallet)
+      ? sdk.NetworkWallet.ETHEREUM
+      : sdk.NetworkWallet[network]
     const item = marketMap[tradeVault?.market]
     if (tradeVault?.depth?.symbol && item?.wsMarket) {
       sendSocketTopic({
@@ -77,6 +93,10 @@ const useVaultTradeSocket = () => {
           level: 0,
           count: 50,
           snapshot: false,
+        },
+        [sdk.WsTopicType.l2Common]: {
+          address: accAddress,
+          network: networkWallet,
         },
       })
     } else {
@@ -88,7 +108,12 @@ const useVaultTradeSocket = () => {
   }, [tradeVault?.depth?.symbol])
   React.useEffect(() => {
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
-      const { tradeVault } = store.getState()._router_tradeVault
+      const {
+        _router_tradeVault: { tradeVault },
+        invest: {
+          vaultMap: { marketMap },
+        },
+      } = store.getState()
       const item = marketMap[tradeVault.market]
       if (
         item &&
@@ -120,6 +145,7 @@ export const useVaultSwap = <
   path: string
 }) => {
   const { idIndex: erc20IdIndex } = useTokenMap()
+  const { account } = useAccount()
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
   const { tokenPrices } = useTokenPrices()
   const {
@@ -129,7 +155,12 @@ export const useVaultSwap = <
     setShowAccount,
     setShowVaultSwap,
   } = useOpenModals()
-  const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
+  const { defaultNetwork } = useSettings()
+  const { chainInfos, updateVaultBorrowHash, clearVaultBorrowHash } =
+    onchainHashInfo.useOnChainInfo()
+
+  const hashs = chainInfos[defaultNetwork].vaultBorrowHashes[account.accAddress]
+  const { vaultAccountInfo } = useVaultLayer2()
   // //High: No not Move!!!!!!
   //@ts-ignore
   const { realMarket } = usePairMatch({
@@ -147,7 +178,6 @@ export const useVaultSwap = <
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { isMobile } = useSettings()
 
-  const { account } = useAccount()
   const {
     toggle: { VaultInvest },
   } = useToggle()
@@ -560,7 +590,7 @@ export const useVaultSwap = <
         } else {
           clearData()
           setShowVaultSwap({ isShow: false })
-          updateVaultLayer2({})
+          l2CommonService.sendUserUpdate()
           await sdk.sleep(SUBMIT_PANEL_CHECK)
           if (refreshRef.current) {
             // @ts-ignore
@@ -628,7 +658,7 @@ export const useVaultSwap = <
             },
           })
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-          updateVaultLayer2({})
+          l2CommonService.sendUserUpdate()
           if (
             store.getState().modals.isShowAccount.isShow &&
             [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
@@ -773,11 +803,7 @@ export const useVaultSwap = <
     }
   }, [tradeData, market, tradeCalcData, marketArray, account.readyState])
   useVaultTradeSocket()
-  React.useEffect(() => {
-    if (vaultLayer2Callback && vaultAccountInfoStatus === SagaStatus.UNSET) {
-      vaultLayer2Callback()
-    }
-  }, [vaultAccountInfoStatus])
+  useL2CommonSocket({ vaultLayer2Callback })
 
   /*** user Action function ***/
   //High: effect by wallet state update

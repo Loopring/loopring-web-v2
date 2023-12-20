@@ -19,6 +19,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import {
+  onchainHashInfo,
   store,
   useSystem,
   useTokenMap,
@@ -32,7 +33,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../../api_wrapper'
 import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
-import { walletLayer2Service } from '../../../services'
+import { l2CommonService } from '../../../services'
 
 export const useVaultBorrow = <
   T extends IBData<I> & { erc20Symbol: string; borrowed: string },
@@ -45,6 +46,7 @@ export const useVaultBorrow = <
     setShowAccount,
     setShowVaultLoan,
   } = useOpenModals()
+
   const [isLoading, setIsLoading] = React.useState(false)
 
   const { exchangeInfo, forexMap } = useSystem()
@@ -54,6 +56,9 @@ export const useVaultBorrow = <
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
     return vaultAvaiable2Map
   })
+
+  const { updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
+  // chainInfos[defaultNetwork].vaultBorrowHashes
 
   const calcSupportData = (tradeData: Omit<T, 'balance'> & { count: string }) => {
     let supportData: any = {
@@ -128,7 +133,7 @@ export const useVaultBorrow = <
       ...supportData,
     }
   }
-  const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
+  const { vaultAccountInfo, status: vaultAccountInfoStatus } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
   // const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
   const initData = () => {
@@ -183,9 +188,8 @@ export const useVaultBorrow = <
   const refreshRef = React.createRef()
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
-    walletLayer2Service.sendUserUpdate()
+    l2CommonService.sendUserUpdate()
     getVaultMap()
-    updateVaultLayer2({})
   }, [])
 
   React.useEffect(() => {
@@ -291,7 +295,7 @@ export const useVaultBorrow = <
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const vaultToken = vaultTokenMap[vaultBorrowData.belong]
     const {
-      account: { eddsaKey, apiKey, accountId },
+      account: { eddsaKey, apiKey, accountId, accAddress },
     } = store.getState()
     const erc20Symbol = erc20IdIndex[vaultToken.tokenId]
 
@@ -309,7 +313,9 @@ export const useVaultBorrow = <
           isShow: false,
         })
         setIsLoading(false)
-        updateVaultLayer2({})
+        l2CommonService.sendUserUpdate()
+        updateVaultBorrowHash((response as any).hash, accAddress)
+
         await sdk.sleep(SUBMIT_PANEL_CHECK)
         const response2 = await LoopringAPI?.vaultAPI.getVaultGetOperationByHash(
           {
@@ -322,12 +328,14 @@ export const useVaultBorrow = <
         if (
           response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         ) {
+          updateVaultBorrowHash((response as any).hash, accAddress, 'failed')
           throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         } else if (
           [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
             response2?.raw_data?.operation?.status,
           )
         ) {
+          updateVaultBorrowHash((response as any).hash, accAddress, 'success')
           status = 'labelSuccessfully'
         } else {
           status = 'labelPending'
@@ -353,7 +361,8 @@ export const useVaultBorrow = <
         })
 
         await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        updateVaultLayer2({})
+        l2CommonService.sendUserUpdate()
+
         if (
           store.getState().modals.isShowAccount.isShow &&
           [AccountStep.VaultBorrow_Success, AccountStep.VaultBorrow_In_Progress].includes(

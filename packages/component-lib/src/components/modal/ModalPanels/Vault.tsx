@@ -293,19 +293,6 @@ const JoinDes2 = (props: PanelProps) => {
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultCollateral')}
           </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {sum + ' ' + symbol}
-          </Typography>
-        </Typography>
-        <Typography
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          component={'span'}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultReceive')}
-          </Typography>
           <Typography
             variant={'body1'}
             component={'span'}
@@ -315,12 +302,36 @@ const JoinDes2 = (props: PanelProps) => {
           >
             <CoinIcons
               size='small'
-              type={TokenType.vault}
+              type={TokenType.single}
               tokenIcon={[coinJson[symbol], undefined]}
             />
             {sum + ' ' + symbol}
           </Typography>
         </Typography>
+        {/*<Typography*/}
+        {/*  display={'inline-flex'}*/}
+        {/*  justifyContent={'space-between'}*/}
+        {/*  marginTop={2}*/}
+        {/*  component={'span'}*/}
+        {/*>*/}
+        {/*  <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>*/}
+        {/*    {props.t('labelVaultReceive')}*/}
+        {/*  </Typography>*/}
+        {/*  <Typography*/}
+        {/*    variant={'body1'}*/}
+        {/*    component={'span'}*/}
+        {/*    color={'var(--color-text-primary)'}*/}
+        {/*    display={'inline-flex'}*/}
+        {/*    alignItems={'center'}*/}
+        {/*  >*/}
+        {/*    <CoinIcons*/}
+        {/*      size='small'*/}
+        {/*      type={TokenType.vault}*/}
+        {/*      tokenIcon={[coinJson[symbol], undefined]}*/}
+        {/*    />*/}
+        {/*    {sum + ' ' + symbol}*/}
+        {/*  </Typography>*/}
+        {/*</Typography>*/}
 
         <Typography
           component={'span'}

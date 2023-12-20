@@ -74,6 +74,7 @@ import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
+import reducer from './account/reducer'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -251,6 +252,7 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
+// @ts-ignore
 export type RootState = ReturnType<typeof reducer>
 export const persistor = persistStore(store)
 

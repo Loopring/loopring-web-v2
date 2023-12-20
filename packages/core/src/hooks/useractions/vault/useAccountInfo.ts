@@ -1,10 +1,10 @@
 import {
-  btradeOrderbookService,
   store,
+  useAccount,
+  useL2CommonSocket,
   useSocket,
   useSubmitBtn,
   useTokenMap,
-  useTradeVault,
   useVaultLayer2,
   useVaultMap,
   VaultLayer2States,
@@ -13,7 +13,6 @@ import React from 'react'
 import {
   L1L2_NAME_DEFINED,
   MapChainId,
-  myLog,
   SagaStatus,
   TradeBtnStatus,
   VaultLoanType,
@@ -21,59 +20,35 @@ import {
 import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { merge } from 'rxjs'
 
 const useVaultSocket = () => {
   // const { tradeVault, updateTradeVault } = useTradeVault()
   const { sendSocketTopic, socketEnd } = useSocket()
-  // const { account } = useAccount()
-  const { marketMap } = useVaultMap()
-
-  const subjectBtradeOrderbook = React.useMemo(() => btradeOrderbookService.onSocket(), [])
-  // const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
+  const {
+    account: { accAddress },
+  } = useAccount()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const networkWallet: sdk.NetworkWallet = [
+    sdk.NetworkWallet.ETHEREUM,
+    sdk.NetworkWallet.GOERLI,
+  ].includes(network as sdk.NetworkWallet)
+    ? sdk.NetworkWallet.ETHEREUM
+    : sdk.NetworkWallet[network]
   React.useEffect(() => {
-    const { tradeVault } = store.getState()._router_tradeVault
-    const item = marketMap[tradeVault?.market]
-    if (tradeVault?.depth?.symbol && item?.wsMarket) {
-      sendSocketTopic({
-        [sdk.WsTopicType.btradedepth]: {
-          showOverlap: false,
-          markets: [item.wsMarket],
-          level: 0,
-          count: 50,
-          snapshot: false,
-        },
-      })
-    } else {
-      socketEnd()
-    }
+    sendSocketTopic({
+      [sdk.WsTopicType.l2Common]: {
+        address: accAddress,
+        network: networkWallet,
+      },
+    })
     return () => {
       socketEnd()
     }
-  }, [tradeVault?.depth?.symbol])
-  React.useEffect(() => {
-    const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
-      const { tradeVault } = store.getState()._router_tradeVault
-      const item = marketMap[tradeVault.market]
-      if (
-        item &&
-        btradeOrderbookMap &&
-        item?.wsMarket &&
-        btradeOrderbookMap[item.wsMarket] &&
-        tradeVault?.depth?.symbol &&
-        item.wsMarket === btradeOrderbookMap[item.wsMarket]?.symbol
-      ) {
-        updateTradeVault({
-          market: item.market,
-          depth: { ...btradeOrderbookMap[item.wsMarket], symbol: tradeVault.depth.symbol },
-          ...item,
-        })
-        myLog('useVaultSwap: depth', btradeOrderbookMap[item.wsMarket])
-        // debonceCall()
-      }
-    })
-    return () => subscription.unsubscribe()
-  }, [tradeVault.market])
+  }, [])
+  // const subjectL2Common = React.useMemo(() => l2CommonService.onSocket(), [])
+  // const _debonceCall = _.debounce(() => upateAPICall(), globalSetup.wait)
+  useL2CommonSocket({})
 }
 
 export type VaultAccountInfoStatus = VaultLayer2States & {
@@ -102,6 +77,7 @@ export const useAccountInfo = () => {
     updateVaultLayer2,
     activeInfo,
   } = useVaultLayer2()
+  // @ts-ignore
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const { erc20Map } = useVaultMap()
   const { idIndex } = useTokenMap()
@@ -113,7 +89,7 @@ export const useAccountInfo = () => {
     setShowVaultLoan,
     setShowConfirmedVault,
   } = useOpenModals()
-
+  useVaultSocket()
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]

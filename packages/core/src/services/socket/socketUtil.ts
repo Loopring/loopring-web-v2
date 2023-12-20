@@ -10,7 +10,7 @@ import { tradeService } from './services/tradeService'
 import { mixorderService } from './services/mixorderService'
 import { mixtradeService } from './services/mixtradeService'
 import { btradeOrderbookService } from './services/btradeOrderbookService'
-import { l2CommonService2Service } from './services/l2CommonService'
+import { l2CommonService } from './services/l2CommonService'
 
 export type SocketEvent = (e: any, ...props: any[]) => any
 
@@ -36,14 +36,14 @@ export class LoopringSocket {
       notificationService.sendNotification(data)
     },
     [sdk.WsTopicType.l2Common]: (
-      { actionType, data }: { data: sdk.WsL2Common; actionType: string },
+      { actionType }: { data: sdk.WsL2Common; actionType: string },
       _topic: any,
     ) => {
       if (actionType == sdk.WS_ACTIONT_YPE.VAULT_ACCOUNT_UPDATE) {
-        l2CommonService2Service.sendUserUpdate()
+        l2CommonService.sendUserUpdate()
       }
     },
-    [sdk.WsTopicType.l2common]: (data: sdk.OrderDetail) => {
+    [sdk.WsTopicType.order]: (data: sdk.OrderDetail) => {
       bookService.sendBook({
         [data.market]: data as any,
       })
@@ -327,10 +327,9 @@ export class LoopringSocket {
 
           break
         case sdk.WsTopicType.l2Common:
-          const params = socket[sdk.WsTopicType.l2Common]
-          if (params) {
-            this.addSocketEvents(sdk.WsTopicType.notification)
-            topics = [...topics, sdk.getNotificationArg(params)]
+          if (socket[sdk.WsTopicType.l2Common]) {
+            this.addSocketEvents(sdk.WsTopicType.l2Common)
+            topics = [...topics, sdk.getL2Common(socket[sdk.WsTopicType.l2Common])]
           }
           break
         case sdk.WsTopicType.order:
