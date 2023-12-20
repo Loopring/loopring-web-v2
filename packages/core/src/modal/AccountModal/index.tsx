@@ -72,6 +72,7 @@ export const ModalAccountInfo = withTranslation('common')(
       currentModal,
       onBackReceive,
       onBackSend,
+      contactAddProps,
       // toastOpen,
       // closeToast,
     } = useAccountModalForUI({
@@ -129,6 +130,7 @@ export const ModalAccountInfo = withTranslation('common')(
               }
             },
           }}
+          contactAddProps={contactAddProps}
           withdrawProps={{
             ...withdrawProps,
             onBack: hideDepositWithdrawBack

@@ -135,8 +135,6 @@ export const Footer = withTranslation(['layout'])(
 
     return (
       <FooterDiv component={'footer'} fontSize={'body1'}>
-        {/*<Divider />*/}
-
         {!!(isLandingPage && !isMobile) ? (
           <Container>
             <>

@@ -3,6 +3,7 @@ import {
   AccountStatus,
   AmmExitData,
   AmmJoinData,
+  AmmPanelType,
   CoinInfo,
   IBData,
 } from '@loopring-web/common-resources'

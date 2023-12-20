@@ -122,7 +122,7 @@ export const getValuePrecisionThousand = (
     isExponential?: boolean
     isPrice?: boolean
     abbreviate?: 3 | 6 | 9 | 12 | 15 | 18
-    isAbbreviate?: true
+    isAbbreviate?: boolean
   },
 ) => {
   const floor = option?.floor
@@ -185,7 +185,9 @@ export const getValuePrecisionThousand = (
       if (floor === false) {
         result = getFloatCeil(result, 6)
       }
-      return toBig(result).toNumber().toLocaleString('en-US', { minimumFractionDigits: 6 })
+      return toBig(result)
+        .toNumber()
+        .toLocaleString('en-US', { minimumFractionDigits: notRemoveEndZero ? 6 : undefined })
     }
   }
   if (isTrade === true) {
@@ -215,7 +217,11 @@ export const getValuePrecisionThousand = (
     if (floor === false) {
       result = getFloatCeil(result, fixed || precision).toString()
     } else {
-      result = fixed ? result.toFixed(fixed) : toBig(result).toPrecision(precision)
+      result = fixed
+        ? result.toFixed(fixed)
+        : precision
+        ? toBig(result).toPrecision(precision)
+        : toBig(result).toFixed(0)
     }
   }
 

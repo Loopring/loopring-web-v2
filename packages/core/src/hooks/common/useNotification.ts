@@ -231,7 +231,7 @@ export const useNotification = <R extends sdk.UserNotification>({
         )
       }
       break
-    case 54:
+    case sdk.NotificationMessageType.D:
       ele.i18nKey = 'labelL2DualNote'
       ele.active = () => {
         onReadClick(index, rest)

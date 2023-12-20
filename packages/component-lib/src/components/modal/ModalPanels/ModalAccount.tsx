@@ -43,6 +43,7 @@ export const ModalAccount = withTranslation('common', { withRef: true })(
               <Box
                 display={step === index ? 'flex' : 'none'}
                 alignItems={'stretch'}
+                flexDirection={'column'}
                 height={panel.height ? panel.height : 'var(--modal-height)'}
                 width={panel.width ? panel.width : 'var(--modal-width)'}
                 key={index}

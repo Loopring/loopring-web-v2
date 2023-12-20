@@ -16,7 +16,7 @@ import {
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
-import { PriceLevel, ShowWitchAle3t1, useNotify, useSubmitBtn, useSwap } from '@loopring-web/core'
+import { PriceLevel, ShowWitchAle3t1, useNotify, useSwap } from '@loopring-web/core'
 import React from 'react'
 
 export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation) => {

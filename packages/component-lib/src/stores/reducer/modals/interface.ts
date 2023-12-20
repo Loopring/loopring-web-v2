@@ -5,9 +5,11 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  VaultAction,
   CoinSource,
+  ToastType,
+  Contact,
 } from '@loopring-web/common-resources'
-import { ToastType } from '../../../components'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum ModalType {
@@ -24,11 +26,6 @@ export type ModalStatePlayLoad = {
 }
 export type Transaction = {
   symbol?: undefined | string
-}
-export type Contact = {
-  name?: string
-  address?: string
-  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
 }
 
 export interface ModalState {
@@ -69,6 +66,10 @@ export interface ModalState {
     error?: sdk.RESULT_INFO
     info?: { [key: string]: any }
   }
+  isShowEditContact: ModalStatePlayLoad & {
+    error?: sdk.RESULT_INFO
+    info?: { [key: string]: any }
+  }
   isShowAccount: ModalStatePlayLoad & {
     step: number
     error?: sdk.RESULT_INFO
@@ -100,4 +101,13 @@ export interface ModalState {
     }
   }
   isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
+  isShowVaultExit: ModalStatePlayLoad & Transaction
+  isShowVaultJoin: ModalStatePlayLoad & Transaction
+  isShowVaultSwap: ModalStatePlayLoad & Transaction
+  isShowVaultLoan: ModalStatePlayLoad &
+    Transaction & {
+      type: string
+    }
+  isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
+  isShowConfirmedVault: ModalStatePlayLoad
 }

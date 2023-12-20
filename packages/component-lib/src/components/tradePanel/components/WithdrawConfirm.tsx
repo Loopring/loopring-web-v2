@@ -68,14 +68,6 @@ export const WithdrawConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
               ? t('labelL2ToMyL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
               : t('labelL2ToOtherL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })}
           </Typography>
-          {/*<Typography*/}
-          {/*  component={"h6"}*/}
-          {/*  variant={isMobile ? "h5" : "h4"}*/}
-          {/*  whiteSpace={"pre"}*/}
-          {/*  marginTop={1}*/}
-          {/*>*/}
-          {/*  {t("labelL2toL2Confirm")}*/}
-          {/*</Typography>*/}
         </Box>
       </Grid>
       <Grid item xs={12}>

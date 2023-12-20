@@ -37,6 +37,7 @@ import {
   WithdrawTypes,
   ContactType,
   RedPacketConfig,
+  TokenType,
 } from '@loopring-web/common-resources'
 
 export enum RedPacketStep {
@@ -66,6 +67,10 @@ export type TradeMenuListProps<T, I> = {
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
   selected?: string
   tradeData: T
+  tokenType?: TokenType
+  className?: string
+  hasCancel?: boolean
+  contentEle?: ({ ele }: { ele: any }) => JSX.Element
 }
 
 /**
@@ -114,6 +119,9 @@ export type TransferExtendProps<T, I, C> = {
   contact?: { address: string; name: string; addressType: typeof sdk.AddressType }
   isFromContact?: boolean
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
+  isENSWrong?: boolean
+  ens?: string
+  geUpdateContact: () => void
   // contacts?: { address: string; name: string; addressType: typeof sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   TransferInfoProps<C>
@@ -246,6 +254,10 @@ export type WithdrawExtendProps<T, I, C> = {
   isFromContact?: boolean
   // onClickContact?: () => void
   loopringSmartWalletVersion?: { isLoopringSmartWallet: boolean; version?: string }
+  isENSWrong?: boolean
+  ens?: string
+  title?: string
+  geUpdateContact: () => void
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   WithdrawInfoProps<C>
@@ -289,6 +301,7 @@ export type DefaultProps<T, I> = {
   disabled?: boolean
   lastFailed?: boolean
   selectNFTDisabled?: boolean
+  tokenNotEnough?: string
 } & (
   | {
       type: TRADE_TYPE.TOKEN
@@ -327,6 +340,7 @@ export type BasicACoinInputProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   inputCoinProps?: InputCoinDefaultProps<I, CoinInfo<I>>
   inputCoinDefaultProps?: InputCoinDefaultProps<I, CoinInfo<I>>
   className?: string
+  tokenNotEnough?: string
 }
 
 export type BasicANFTTradeProps<T, I> = (Omit<
@@ -716,3 +730,14 @@ export type TargetRedpacktInputAddressStepProps = {
   sentAddresses?: string[]
   clearInput: () => void
 }
+
+/**
+ * private props
+ */
+export type VaultJoinInfoProps = {
+  btnStatus?: keyof typeof TradeBtnStatus | undefined
+  title?: string
+  description?: string
+  chargeFeeTokenList?: FeeInfo[]
+  wait?: number
+} & BtnInfoProps

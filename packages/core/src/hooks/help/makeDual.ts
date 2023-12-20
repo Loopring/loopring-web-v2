@@ -4,7 +4,6 @@ import {
   DualViewInfo,
   DualViewOrder,
   getValuePrecisionThousand,
-  myLog,
 } from '@loopring-web/common-resources'
 import moment from 'moment'
 import { BigNumber } from 'bignumber.js'

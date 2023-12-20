@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Grid } from '@mui/material'
 import {
@@ -271,11 +271,6 @@ const Template: Story<any> = withTranslation('common')((...rest) => {
             <AmmCardWrap />
           </Grid>
         </Grid>
-
-        {/*<h4>Account Info</h4>*/}
-        {/*<Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'} marginBottom={2}>*/}
-        {/*    <AccountInfoWrap/>*/}
-        {/*</Grid>*/}
         <h4>Asset Title</h4>
         <Grid
           container
@@ -372,19 +367,91 @@ const Template: Story<any> = withTranslation('common')((...rest) => {
               amountClaimStr={''}
               myAmountStr={''}
               claimList={[]}
+              showReceiptListBtn={true}
               detail={
                 {
                   champion: {
-                    accountId: 0,
-                    address: '',
-                    ens: '',
-                    amount: 0,
+                    accountId: 10001,
+                    address: '0x',
+                    ens: '.loopring',
+                    amount: '1',
                   },
-                  claimAmount: 0,
-                  claims: [],
-                  tokenId: 0,
+                  claimAmount: 1,
+                  claims: [
+                    //   {id:1,
+                    // hash: string
+                    // claimer: {
+                    //   accountId: number
+                    //   address: string
+                    //   ens: string
+                    // }
+                    // referrer: {
+                    //   accountId: number
+                    //   address: number
+                    //   ens: string
+                    // }
+                    // helper: {
+                    //   accountId: number
+                    //   address: number
+                    //   ens: number
+                    // }
+                    // amount: number
+                    // createdAt: number
+                    // claimId: number}
+                  ],
+                  tokenId: 1,
                   hash: '',
-                  helpers: [],
+                  helpers: [
+                    //     {
+                    //   accountId: number
+                    //   address: number
+                    //   ens: number
+                    //   amount: number
+                    // }
+                  ],
+                  claimStatus: 'WAITING_CLAIM',
+                  luckyToken: {
+                    hash: '',
+                    sender: {
+                      accountId: 10001,
+                      address: '0x',
+                      ens: '.loopring',
+                    },
+                    champion: {
+                      accountId: 10001,
+                      address: '0x',
+                      ens: '.loopring',
+                      amount: '1',
+                    },
+                    tokenId: 0,
+                    tokenAmount: {
+                      totalCount: 1,
+                      remainCount: 1,
+                      totalAmount: 1,
+                      remainAmount: 1,
+                      claimedBoxCount: 1,
+                      giftCount: 1,
+                    },
+                    type: {
+                      partition: 0,
+                      scope: 0,
+                      mode: 0,
+                    },
+                    status: 'SUBMITTING',
+                    info: {
+                      memo: 'xxx',
+                      signer: 'xxx',
+                      signerUrl: 'xxx',
+                      logoUrl: 'xxx',
+                    },
+                    isNft: false,
+                    validSince: 1,
+                    validUntil: 1,
+                    templateNo: 1,
+                    createdAt: 1,
+                    isOfficial: false,
+                    nftExpireTime: 1,
+                  },
                 } as any
               }
               isShouldSharedRely={false}

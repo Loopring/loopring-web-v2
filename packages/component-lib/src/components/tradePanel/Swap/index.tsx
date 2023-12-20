@@ -17,7 +17,9 @@ import {
   SlippageTolerance,
   SwapSettingIcon,
   SwapTradeCalcData,
+  TokenType,
   TradeCalcData,
+  VaultTradeCalcData,
 } from '@loopring-web/common-resources'
 import { SlippagePanel, SwapData, SwapMenuList, SwapTradeWrap } from '../components'
 import { CountDownIcon } from '../components/tool/Refresh'
@@ -42,7 +44,11 @@ const PopoverStyled = styled(Popover)`
 `
 
 export const SwapPanel = withTranslation('common', { withRef: true })(
-  <T extends IBData<I>, I, TCD extends BtradeTradeCalcData<I>, SCD extends SwapTradeCalcData<I>>({
+  <
+    T extends IBData<I>,
+    I,
+    TCD extends BtradeTradeCalcData<I> | SwapTradeCalcData<I> | VaultTradeCalcData<T>,
+  >({
     disabled,
     tradeCalcData,
     swapBtnStatus,
@@ -133,7 +139,8 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           element: React.useMemo(() => {
             myLog('hookSwap view tradeData', tradeData)
             return (
-              <SwapTradeWrap<T, I, TCD, SCD>
+              // @ts-ignore
+              <SwapTradeWrap<T, I, TCD>
                 key={'trade'}
                 {...{
                   ...rest,
@@ -190,7 +197,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   </Typography>
                 </Typography>
 
-                <Box alignSelf={'flex-end'} display={'flex'}>
+                <Box alignSelf={'flex-end'} display={'flex'} className={'toolButton'}>
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <IconButtonStyled
                       onClick={(e) => {
@@ -238,7 +245,8 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                           t={rest.t}
                           max={100}
                           slippageList={
-                            tradeCalcData.isBtrade
+                            (tradeCalcData as BtradeTradeCalcData<I>)?.isBtrade ||
+                            (tradeCalcData as VaultTradeCalcData<T>)?.isVault
                               ? (SlippageBtradeTolerance.concat(`slippage:${slippage}`) as Array<
                                   number | string
                                 >)
@@ -247,10 +255,10 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                                 >)
                           }
                           slippage={
-                            tradeData.slippage
-                              ? tradeData.slippage
-                              : tradeCalcData.slippage
-                              ? tradeCalcData.slippage
+                            tradeData?.slippage
+                              ? tradeData?.slippage
+                              : tradeCalcData?.slippage
+                              ? tradeCalcData?.slippage
                               : defaultBlockTradeSlipage
                           }
                           handleChange={(slippage, customSlippage) => {
@@ -297,15 +305,26 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
                     <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
                   </Typography>
-                  <Typography display={'inline-block'} marginLeft={2} component={'span'}>
+                  <Typography
+                    display={'inline-block'}
+                    marginLeft={2}
+                    component={'span'}
+                    className={'record'}
+                  >
                     <IconButtonStyled
                       onClick={() => {
-                        !tradeCalcData.isBtrade
+                        // @ts-ignore
+                        tradeCalcData.isBtrade
                           ? history.push(
-                              `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                            )
+                          : // @ts-ignore
+                          tradeCalcData.isVault
+                          ? history.push(
+                              `${RouterPath.l2records}/${RecordTabIndex.VaultRecords}?market=${market}`,
                             )
                           : history.push(
-                              `${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}?market=${market}`,
+                              `${RouterPath.l2records}/${RecordTabIndex.Trades}?market=${market}`,
                             )
                       }}
                       sx={{ backgroundColor: 'var(--field-opacity)' }}
@@ -334,10 +353,14 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
           key: 'tradeMenuList',
           element: React.useMemo(
             () => (
-              <SwapMenuList<T, I, TCD | SCD>
+              // @ts-ignore
+              <SwapMenuList<T, I, TCD>
                 key={'tradeMenuList'}
                 {...{
                   ...rest,
+                  tokenType: (tradeCalcData as VaultTradeCalcData<T>)?.isVault
+                    ? TokenType.vault
+                    : undefined,
                   onChangeEvent,
                   tradeCalcData,
                   swapData: {
@@ -354,7 +377,12 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
         },
       ],
     }
-    return <SwitchPanel className={'hasLinerBg'} {...{ ...rest, ...props, size: 'large' }} />
+    return (
+      <SwitchPanel
+        className={`hasLinerBg ${rest?.classWrapName}`}
+        {...{ ...rest, ...props, size: 'large' }}
+      />
+    )
   },
 ) as <T extends IBData<I>, I, TCD extends TradeCalcData<I>>(
   props: SwapProps<T, I, TCD> & React.RefAttributes<any>,

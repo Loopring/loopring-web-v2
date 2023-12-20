@@ -17,7 +17,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     scroolDisabled?: boolean
   }
 >`
-  overflow: ${({ scroolDisabled }) =>  scroolDisabled ? 'hidden' : 'scroll'};
+  overflow: ${({ scroolDisabled }) => (scroolDisabled ? 'hidden' : 'scroll')};
   position: relative;
   flex: 1;
   ${({ _height, _width, ismobile }) => ` 
@@ -115,6 +115,21 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     justify-content: space-between;
     padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px;
   }
+  &.vaultSwap {
+    height: auto;
+    .react-swipeable-view-container > div {
+      border: none;
+    }
+  }
+  &.vaultBorrow {
+    .menu-panel {
+      .MuiListItemText-root {
+        .MuiListItemText-secondary {
+          visibility: hidden;
+        }
+      }
+    }
+  }
 ` as (
   props: SwipeableViewsProps & {
     _height?: number | string
@@ -143,7 +158,7 @@ function _SwitchPanel<T extends string>(
   const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined)
   const ref = React.useRef<any>(null)
   React.useEffect(() => {
-    ref.current && ref.current.rootNode.scrollTo(0,0)
+    ref.current && ref.current.rootNode.scrollTo(0, 0)
   }, [index])
   return (
     <SwipeableViewsStyled

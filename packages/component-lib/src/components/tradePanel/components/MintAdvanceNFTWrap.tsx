@@ -860,7 +860,6 @@ export const MintAdvanceNFTWrap = <
                       title={tradeData.collectionMeta?.contractAddress}
                     >
                       {tradeData.collectionMeta?.name}
-                      {/*{tradeData.collectionMeta?.name  + ' ' ?? EmptyValueTag}*/}
                     </Typography>
                   </Typography>
 
@@ -1002,7 +1001,7 @@ export const MintAdvanceNFTWrap = <
     getIPFSString,
     nftMintBtnStatus,
     onNFTMintClick,
-    showFeeModal
+    showFeeModal,
   ])
 
   // @ts-ignore

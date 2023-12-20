@@ -153,16 +153,6 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
             <Cell key={entry.name} fill={colors[index]} />
           ))}
         </Pie>
-        {/* <Tooltip
-                    formatter={(value: any, name: any) => ([`$${value}`, `${name}`])}
-                    contentStyle={{
-                        backgroundColor: 'var(--color-pop-bg)',
-                        border: 'none'
-                    }}
-                    itemStyle={{
-                        color: '#FFFFFF'
-                    }}
-                /> */}
         <Legend layout='vertical' align='right' verticalAlign='middle' content={getRenderLegend} />
       </PieChart>
     </ResponsiveContainer>

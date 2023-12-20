@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
-  IconButton,
-  MenuItem,
-  Popover,
-  Typography,
-} from '@mui/material'
+import { Box, Divider, Grid, IconButton, Popover, Typography } from '@mui/material'
 import {
   AddressTypeTag,
   InputSearch,
@@ -18,6 +8,8 @@ import {
   useSettings,
   InitialNameAvatar,
   MaxWidthContainer,
+  Button,
+  MenuItem,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -28,12 +20,11 @@ import {
   MoreIcon,
   TOAST_TIME,
   ContactType,
-  NotificationIcon,
+  Contact,
+  RouterPath,
+  myLog,
 } from '@loopring-web/common-resources'
-import { EditContact } from './add'
 import { Delete } from './delete'
-import { Send } from './send'
-import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
@@ -41,6 +32,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
 import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import styled from '@emotion/styled'
+import { useContact } from '@loopring-web/core'
 
 const StyledPaper = styled(Box)`
   width: 100%;
@@ -48,6 +40,7 @@ const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
+
 export enum ContactL3Router {
   list = 'list',
   transactions = 'transactions',
@@ -66,14 +59,14 @@ const ActionMemo = React.memo(
     data,
     onClickSend,
     onClickDelete,
+    index,
+    btnLoading,
   }: {
     data: ContactType
-    onClickSend: (
-      contactAddress: string,
-      contactName: string,
-      addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys],
-    ) => void
+    index: number
+    onClickSend: (data: Contact, index: number) => void
     onClickDelete: (contactAddress: string, contactName: string) => void
+    btnLoading: { index: number; loading: boolean }
   }) => {
     const history = useHistory()
     const { isMobile } = useSettings()
@@ -84,10 +77,7 @@ const ActionMemo = React.memo(
     })
     const bindContent = bindMenu(popupState)
     const bindAction = bindTrigger(popupState)
-
-    const items = React.useMemo(() => {
-      return <></>
-    }, [])
+    myLog('btnLoading', btnLoading)
     return (
       <Grid item marginTop={1}>
         {isMobile ? (
@@ -108,11 +98,7 @@ const ActionMemo = React.memo(
               }}
             >
               <Box borderRadius={'inherit'} minWidth={110}>
-                <MenuItem
-                  onClick={() =>
-                    onClickSend(data.contactAddress, data.contactName, data.addressType)
-                  }
-                >
+                <MenuItem onClick={() => onClickSend(data, index)}>
                   {t('labelContactsSend')}
                 </MenuItem>
                 <MenuItem
@@ -137,10 +123,12 @@ const ActionMemo = React.memo(
         ) : (
           <>
             <Button
-              onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
+              onClick={() => onClickSend(data, index)}
               variant={'contained'}
               size={'small'}
               sx={{ marginLeft: 1 }}
+              disabled={btnLoading.index == index && btnLoading.loading}
+              loading={btnLoading.index == index && btnLoading.loading ? 'true' : 'false'}
             >
               {t('labelContactsSend')}
             </Button>
@@ -148,7 +136,9 @@ const ActionMemo = React.memo(
               variant={'outlined'}
               size={'medium'}
               onClick={() => {
-                history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
+                history.push(
+                  `${RouterPath.layer2}/contact/transactions?contactAddress=${data.contactAddress}`,
+                )
               }}
               sx={{ marginLeft: 1 }}
             >
@@ -170,30 +160,29 @@ const ActionMemo = React.memo(
     )
   },
 )
-export const ContractPanel = () => {
+export const ContractPanel = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) => {
   const {
-    setAddOpen,
-    addOpen,
     contacts,
     searchValue,
     onChangeSearch,
     onClickDelete,
-    selectAddress,
-    setSelectAddress,
+    setShowEditContact,
     toastInfo,
     deleteInfo,
     onCloseDelete,
     submitDeleteContact,
     deleteLoading,
     onClickSend,
-    onCloseSend,
-    sendInfo,
+    btnLoading,
     closeToast,
     setToast,
     pagination,
     onPageChange,
     showPagination,
-  } = useContact()
+  } = useContact({
+    viewHeightRatio,
+    viewHeightOffset,
+  })
   const { t } = useTranslation()
 
   const noContact = (
@@ -206,81 +195,6 @@ export const ContractPanel = () => {
 
   const { isMobile } = useSettings()
 
-  const normalView = (
-    <>
-      <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
-        {contacts &&
-          contacts.map((data) => {
-            return (
-              <Box
-                key={data.contactAddress}
-                paddingY={2}
-                display={data.addressType === sdk.AddressType.OFFICIAL ? 'none' : 'flex'}
-                justifyContent={'space-between'}
-              >
-                <Box display={'flex'}>
-                  <InitialNameAvatar name={data.contactName} />
-                  <Typography
-                    component={'p'}
-                    marginLeft={1}
-                    display={'flex'}
-                    flexDirection={'column'}
-                  >
-                    <Typography
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                      component={'span'}
-                      paddingRight={1}
-                    >
-                      <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
-                        {data.contactName}
-                      </Typography>
-                      <AddressTypeTag addressType={data.addressType} />
-                      <EditIcon
-                        sx={{
-                          paddingLeft: 1,
-                        }}
-                        fontSize={'large'}
-                        onClick={() => {
-                          setAddOpen(true)
-                          setSelectAddress(data as ContactType)
-                        }}
-                      />
-                    </Typography>
-                    <Typography component={'span'} title={data.contactAddress}>
-                      {isMobile ? getShortAddr(data.contactAddress ?? '') : data.contactAddress}
-                      <IconButton
-                        onClick={() => {
-                          navigator.clipboard.writeText(data.contactAddress)
-                          setToast({
-                            open: true,
-                            type: ToastType.success,
-                            content: t('labelContactsCopySuccess'),
-                          })
-                        }}
-                      >
-                        <CopyIcon />
-                      </IconButton>
-                    </Typography>
-                  </Typography>
-                </Box>
-                <Box display={'flex'}>
-                  <ActionMemo data={data} onClickSend={onClickSend} onClickDelete={onClickDelete} />
-                </Box>
-              </Box>
-            )
-          })}
-      </Box>
-      {showPagination && pagination && (
-        <TablePagination
-          page={pagination.page}
-          pageSize={pagination.pageSize}
-          total={pagination.total}
-          onPageChange={onPageChange}
-        />
-      )}
-    </>
-  )
   return (
     <>
       <Toast
@@ -291,24 +205,12 @@ export const ContractPanel = () => {
         onClose={closeToast}
         // onClose={closeToastL}
       />
-      <EditContact
-        isEdit={selectAddress ? { item: selectAddress } : false}
-        addOpen={addOpen}
-        setAddOpen={setAddOpen}
-        onClose={() => {
-          setSelectAddress(undefined)
-          setAddOpen(false)
-        }}
-        contacts={contacts}
-        setToast={setToast}
-      />
       <Delete
         deleteInfo={deleteInfo}
         onCloseDelete={onCloseDelete}
         submitDeleteContact={submitDeleteContact}
         loading={deleteLoading}
       />
-      <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
       <MaxWidthContainer
         sx={{ flexDirection: 'row' }}
         background={'var(--color-global-bg)'}
@@ -337,8 +239,9 @@ export const ContractPanel = () => {
               variant={'contained'}
               size={'small'}
               onClick={() => {
-                setSelectAddress(undefined)
-                setAddOpen(true)
+                setShowEditContact({ isShow: true })
+                // setSelectAddress(undefined)
+                // setAddOpen(true)
               }}
             >
               {t('labelContactsAddContactBtn')}
@@ -362,7 +265,102 @@ export const ContractPanel = () => {
           paddingY={2}
         >
           <Box className='table-divide'>
-            {!contacts || contacts.length === 0 ? noContact : normalView}
+            {!contacts || contacts.length === 0 ? (
+              noContact
+            ) : (
+              <>
+                <Box
+                  height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`}
+                  overflow={'scroll'}
+                >
+                  {contacts &&
+                    contacts.map((data, index) => {
+                      return (
+                        <Box
+                          key={data.contactAddress}
+                          paddingY={2}
+                          display={data.addressType === sdk.AddressType.OFFICIAL ? 'none' : 'flex'}
+                          justifyContent={'space-between'}
+                        >
+                          <Box display={'flex'}>
+                            <InitialNameAvatar name={data.contactName} />
+                            <Typography
+                              component={'p'}
+                              marginLeft={1}
+                              display={'flex'}
+                              flexDirection={'column'}
+                            >
+                              <Typography
+                                display={'inline-flex'}
+                                alignItems={'center'}
+                                component={'span'}
+                                paddingRight={1}
+                              >
+                                <Typography
+                                  display={'inline-flex'}
+                                  paddingRight={1}
+                                  component={'span'}
+                                >
+                                  {data.contactName}
+                                </Typography>
+                                <AddressTypeTag addressType={data.addressType} />
+                                <EditIcon
+                                  sx={{
+                                    paddingLeft: 1,
+                                  }}
+                                  fontSize={'large'}
+                                  onClick={() => {
+                                    setShowEditContact({
+                                      isShow: true,
+                                      info: {
+                                        ...data,
+                                      },
+                                    })
+                                  }}
+                                />
+                              </Typography>
+                              <Typography component={'span'} title={data.contactAddress}>
+                                {isMobile
+                                  ? getShortAddr(data.contactAddress ?? '')
+                                  : data.contactAddress}
+                                <IconButton
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(data.contactAddress)
+                                    setToast({
+                                      open: true,
+                                      type: ToastType.success,
+                                      content: t('labelContactsCopySuccess'),
+                                    })
+                                  }}
+                                >
+                                  <CopyIcon />
+                                </IconButton>
+                              </Typography>
+                            </Typography>
+                          </Box>
+                          <Box display={'flex'}>
+                            <ActionMemo
+                              data={data}
+                              btnLoading={btnLoading}
+                              index={index}
+                              onClickSend={onClickSend}
+                              onClickDelete={onClickDelete}
+                            />
+                          </Box>
+                        </Box>
+                      )
+                    })}
+                </Box>
+                {showPagination && pagination && (
+                  <TablePagination
+                    page={pagination.page}
+                    pageSize={pagination.pageSize}
+                    total={pagination.total}
+                    onPageChange={onPageChange}
+                  />
+                )}
+              </>
+            )}
           </Box>
         </StyledPaper>
       </MaxWidthContainer>

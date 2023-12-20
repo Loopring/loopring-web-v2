@@ -3,7 +3,12 @@ import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from './reducer'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { AmmPoolInfoV3, AmmPoolStat, ChainId, toBig } from '@loopring-web/loopring-sdk'
 
-import { AmmDetail, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources'
+import {
+  AmmDetail,
+  getValuePrecisionThousand,
+  LocalStorageConfigKey,
+  myLog,
+} from '@loopring-web/common-resources'
 import { store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { PayloadAction } from '@reduxjs/toolkit'
@@ -14,7 +19,9 @@ import _ from 'lodash'
 const ammMapStoreLocal = (ammpoolsRaw: any, chainId?: any) => {
   // const system = store.getState().system;
   myLog('system', chainId)
-  const ammpoolsChain = JSON.parse(window.localStorage.getItem('ammpools') ?? '{}')
+  const ammpoolsChain = JSON.parse(
+    window.localStorage.getItem(LocalStorageConfigKey.ammpools) ?? '{}',
+  )
   localStorage.setItem(
     'ammpools',
     JSON.stringify({

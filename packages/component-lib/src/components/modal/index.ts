@@ -5,6 +5,7 @@ export * from './ModalPanels'
 export * from './WalletPanels'
 export * from './RedPacketPanels'
 export * from './setting'
+export * from './Vault'
 export type ModalBasicProps = {
   open: boolean
   onClose: {

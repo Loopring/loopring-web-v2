@@ -12,6 +12,7 @@ import {
   RedPacketOrderData,
   TRADE_TYPE,
   TradeNFT,
+  // VaultJoinData,
 } from '@loopring-web/common-resources'
 import { WalletLayer2Map } from '../../walletLayer2'
 

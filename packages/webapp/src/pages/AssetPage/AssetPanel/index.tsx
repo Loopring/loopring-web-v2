@@ -25,6 +25,7 @@ const StyleTitlePaper = styled(Box)`
   background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
+export const l2assetsRouter = `${RouterPath.l2assets}/:assets?/:item?`
 
 export const AssetPanel = withTranslation('common')(
   ({
@@ -55,7 +56,7 @@ export const AssetPanel = withTranslation('common')(
     const { disableWithdrawList } = useTokenMap()
     const { forexMap } = useSystem()
     const { isMobile, defaultNetwork } = useSettings()
-    const match: any = useRouteMatch('/l2assets/:assets?/:item?')
+    const match: any = useRouteMatch(l2assetsRouter)
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
     const { onTokenLockHold, tokenLockDetail } = useAssetAction()
@@ -90,8 +91,6 @@ export const AssetPanel = withTranslation('common')(
       handleTabChange(match?.params?.item)
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
-
-    // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (

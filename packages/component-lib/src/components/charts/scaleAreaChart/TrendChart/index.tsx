@@ -105,9 +105,6 @@ const TrendChart = ({
       if (isDailyTrend) {
         return (
           <TooltipStyled>
-            {/* {extraInfo && (
-                        <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
-                    )} */}
             <Typography component={'div'} variant={'body1'}>
               {moment(timeStamp).format(DAT_STRING_FORMAT)}
             </Typography>
@@ -224,7 +221,6 @@ const TrendChart = ({
       >
         <defs>
           <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-            {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}
             <stop offset='5%' stopColor={trendColor} stopOpacity={0.3} />
             <stop offset='90%' stopColor={trendColor} stopOpacity={0} />
           </linearGradient>

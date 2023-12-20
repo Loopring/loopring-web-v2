@@ -90,9 +90,6 @@ export const OutlineSelectStyle = styled(OutlineSelect)`
 
   &.header {
     .MuiSelect-outlined {
-      //.MuiAvatar-root {
-      //  display: none;
-      //}
     }
 
     &.mobile {
@@ -438,9 +435,31 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     handleConnect,
   })
 }
-
+const ViewAccountTemplateStyle = styled(Box)`
+  &.inModal,
+  &.inBlock {
+    > .MuiTypography-root {
+      font-size: ${({ theme }) => theme.fontDefault.body1};
+      line-height: 1.2em;
+      font-weight: 400;
+    }
+    > h1.MuiTypography-root {
+      font-size: ${({ theme }) => theme.fontDefault.h5};
+      line-height: 1.2em;
+      font-weight: 500;
+    }
+  }
+`
 export const ViewAccountTemplate = React.memo(
-  ({ activeViewTemplate }: { activeViewTemplate: JSX.Element }) => {
+  ({
+    activeViewTemplate,
+    className,
+    size = 'large',
+  }: {
+    activeViewTemplate: JSX.Element
+    className?: string
+    size?: string
+  }) => {
     const { account } = useAccount()
     const { t } = useTranslation(['common', 'layout'])
     const { isMobile, defaultNetwork } = useSettings()
@@ -450,8 +469,9 @@ export const ViewAccountTemplate = React.memo(
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
           return (
-            <Box
+            <ViewAccountTemplateStyle
               flex={1}
+              className={className}
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'column'}
@@ -470,14 +490,15 @@ export const ViewAccountTemplate = React.memo(
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
-              <WalletConnectL2Btn />
-            </Box>
+              <WalletConnectL2Btn size={size} />
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.LOCKED:
           return (
-            <Box
+            <ViewAccountTemplateStyle
               flex={1}
+              className={className}
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'column'}
@@ -488,14 +509,15 @@ export const ViewAccountTemplate = React.memo(
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
                 {t('describeTitleLocked')}
               </Typography>
-              <WalletConnectL2Btn />
-            </Box>
+              <WalletConnectL2Btn size={size} />
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.NO_ACCOUNT:
           return (
-            <Box
+            <ViewAccountTemplateStyle
               flex={1}
+              className={className}
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'column'}
@@ -515,14 +537,15 @@ export const ViewAccountTemplate = React.memo(
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
-              <WalletConnectL2Btn />
-            </Box>
+              <WalletConnectL2Btn size={size} />
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.NOT_ACTIVE:
           return (
-            <Box
+            <ViewAccountTemplateStyle
               flex={1}
+              className={className}
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'column'}
@@ -537,14 +560,15 @@ export const ViewAccountTemplate = React.memo(
                   l1ChainName: 'Ethereum',
                 })}
               </Typography>
-              <WalletConnectL2Btn />
-            </Box>
+              <WalletConnectL2Btn size={size} />
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.DEPOSITING:
           return (
-            <Box
+            <ViewAccountTemplateStyle
               flex={1}
+              className={className}
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'column'}
@@ -563,13 +587,14 @@ export const ViewAccountTemplate = React.memo(
                   l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
                 })}
               </Typography>
-            </Box>
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.ERROR_NETWORK:
           return (
-            <Box
+            <ViewAccountTemplateStyle
               flex={1}
+              className={className}
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'column'}
@@ -582,7 +607,7 @@ export const ViewAccountTemplate = React.memo(
                   connectName: account.connectName,
                 })}
               </Typography>
-            </Box>
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.ACTIVATED:

@@ -110,10 +110,10 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
 
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
         (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
-      ? InvestType[match?.params?.item]
-      : InvestType.Overview) as any,
-    // InvestType.Overview
-  )
+            ? InvestType[match?.params?.item]
+            : InvestType.Overview) as any,
+        // InvestType.Overview
+    )
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false)
   React.useEffect(() => {
     switch (match?.params.item) {

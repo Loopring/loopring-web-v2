@@ -430,7 +430,6 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
                 justifyContent={'flex-start'}
                 title={side}
               >
-                {/*{side + " "}*/}
                 <Typography
                   display={'flex'}
                   marginRight={1}
@@ -543,7 +542,6 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
                     title={hash}
                   >
                     {from + ` ${DirectionTag} ` + to}
-                    {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                   </Typography>
                   <Typography marginLeft={1}>
                     <CellStatus {...{ row }} />

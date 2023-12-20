@@ -50,15 +50,10 @@ export const useStakingAprTrend = () => {
     }
     return () => {}
   }, [isShowETHStakingApr.isShow])
-  myLog('isLoading', isLoading)
 
   return {
     isLoading,
     trends,
     defiInfo,
-    // confirmShowNoBalance,
-    // setConfirmShowNoBalance,
-    // serverUpdate,
-    // setServerUpdate,
   }
 }

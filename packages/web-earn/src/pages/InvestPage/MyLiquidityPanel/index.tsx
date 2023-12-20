@@ -214,10 +214,7 @@ const MyLiquidity: any = withTranslation('common')(
       .toBig(dualStakeDollar ?? 0)
       .plus(summaryMyInvest.investDollar ?? 0)
       .toString()
-    const visibaleTabs = _.cloneDeep(INVEST_TABS).filter(() => {
-      return true
-      // TODO when has toggle
-    })
+
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
       setTab(
@@ -482,7 +479,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       renewDuration: info.renewDuration,
                                     } as any,
                                   })
-                                  onEditDualClick({ dontCloseModal: true })
+                                  onEditDualClick({ dontCloseModal: false })
                                 } else {
                                   handleOnchange({
                                     tradeData: {

@@ -253,7 +253,7 @@ export const useSwap = <
         }
       })
       setTradeData({ ...tradeDataTmp })
-      history.push('/trade/lite/' + _market)
+      history.push(`${RouterPath.lite}/${_market}`)
       updatePageTradeLite({ market, tradePair })
       myLog('hookSwap: Market change getAmount', market)
     }

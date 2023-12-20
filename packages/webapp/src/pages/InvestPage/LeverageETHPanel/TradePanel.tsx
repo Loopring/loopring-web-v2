@@ -47,10 +47,6 @@ export const TradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
-  // leverageETHAdvice
-  // console.log('leverageETHAdvice', leverageETHAdvice)
-  // setShowRETHStakingPopup={setShowRETHStakingPopup}
-  // setShowWSTETHStakingPopup={setShowWSTETHStakingPopup}
   const { setShowLeverageETHPopup } = confirmation.useConfirmation()
   return (
     <>

@@ -262,9 +262,6 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 justifyContent={'flex-start'}
                 height={'100%'}
               >
-                {/*{/_LUCKY_TOKEN/gi.test(value?.toUpperCase()) && (*/}
-                {/*  <RedPacketIcon fontSize={"inherit"} />*/}
-                {/*)}*/}
                 {renderValue}
               </Box>
             )
@@ -574,7 +571,6 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
                 title={`${hasSymbol}  ${renderValue} ${unit}`}
               >
-                {/*{side + " "}*/}
                 <Typography
                   display={'flex'}
                   marginRight={1}
@@ -680,15 +676,6 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                   justifyContent={'flex-end'}
                   alignItems={'center'}
                 >
-                  {/*<Typography*/}
-                  {/*  style={{*/}
-                  {/*    cursor: "pointer",*/}
-                  {/*  }}*/}
-                  {/*  color={"var(--color-primary)"}*/}
-                  {/*  title={hash}*/}
-                  {/*>*/}
-                  {/*  {from + ` ${DirectionTag} ` + to}*/}
-                  {/*</Typography>*/}
                   <Link
                     style={{
                       cursor: 'pointer',

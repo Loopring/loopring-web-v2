@@ -28,3 +28,7 @@ export * from './useBtrade'
 export * from './hookSwap'
 export * from './useDualEdit'
 export * from './useStakingAprTrend'
+export * from './vault'
+export * from './useContactAdd'
+export * from './useContact'
+

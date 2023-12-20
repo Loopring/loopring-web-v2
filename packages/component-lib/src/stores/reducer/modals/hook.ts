@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { Contact, ModalState, ModalStatePlayLoad, Transaction } from './interface'
+import { ModalState, ModalStatePlayLoad, Transaction } from './interface'
 import {
   setNFTMetaNotReady,
   setShowAccount,
@@ -33,6 +33,13 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowEditContact,
+  setShowVaultJoin,
+  setShowVaultExit,
+  setShowVaultSwap,
+  setShowVaultLoan,
+  setShowNoVaultAccount,
+  setShowConfirmedVault,
   setShowETHStakingApr,
 } from './reducer'
 
@@ -45,6 +52,8 @@ import {
   TradeNFT,
   AmmPanelType,
   CoinSource,
+  Contact,
+  VaultAction,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
@@ -309,5 +318,40 @@ export const useOpenModals = () => {
       (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
       [dispatch],
     ),
+    setShowEditContact: React.useCallback(
+      (state: { isShow: boolean; info?: any }) => dispatch(setShowEditContact(state)),
+      [dispatch],
+    ),
+    setShowETHStakingApr: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
+      [dispatch],
+    ),
+    setShowVaultExit: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultExit(state)),
+      [dispatch],
+    ),
+    setShowVaultJoin: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultJoin(state)),
+      [dispatch],
+    ),
+    setShowVaultSwap: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultSwap(state)),
+      [dispatch],
+    ),
+    setShowVaultLoan: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction & { type?: string }) =>
+        dispatch(setShowVaultLoan(state)),
+      [dispatch],
+    ),
+    setShowNoVaultAccount: React.useCallback(
+      (
+        state: ModalStatePlayLoad &
+          Transaction & { whichBtn?: VaultAction | undefined; des?: string; title?: string },
+      ) => dispatch(setShowNoVaultAccount(state)),
+      [dispatch],
+    ),
+    setShowConfirmedVault(state: ModalStatePlayLoad) {
+      dispatch(setShowConfirmedVault(state))
+    },
   }
 }

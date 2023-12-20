@@ -124,6 +124,22 @@ import {
   useSettings,
   TOASTOPEN,
   setShowGlobalToast,
+  SendFromContact,
+  VaultTrade_Success,
+  VaultTrade_Failed,
+  VaultTrade_In_Progress,
+  VaultJoin_Success,
+  VaultJoin_Failed,
+  VaultJoin_In_Progress,
+  VaultRedeem_Success,
+  VaultRedeem_Failed,
+  VaultRedeem_In_Progress,
+  VaultBorrow_Success,
+  VaultBorrow_Failed,
+  VaultBorrow_In_Progress,
+  VaultRepay_Success,
+  VaultRepay_Failed,
+  VaultRepay_In_Progress,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -166,6 +182,7 @@ import {
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useContacts,
   useCreateRedPacket,
   useExportAccount,
   useForceWithdraw,
@@ -189,6 +206,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router-dom'
 import { ImportRedPacket } from './components/QRCodeScanner'
 import { useClaimConfirm } from '../../hooks/useractions/useClaimConfirm'
+import { useContactAdd } from '../../hooks/useractions/useContactAdd'
 
 export function useAccountModalForUI({
   t,
@@ -272,6 +290,8 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
   const { nftDeployProps } = useNFTDeploy()
+
+  const { contactAddProps } = useContactAdd()
   const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
   })
@@ -853,6 +873,18 @@ export function useAccountModalForUI({
           />
         ),
       },
+      [AccountStep.SendAssetFromContact]: {
+        view: (
+          <SendFromContact
+            {...(isShowAccount?.info as any)}
+            // isENSWrong={.isENSWrong}
+            // sendInfo={isShowAccount?.info}
+          />
+        ),
+        // onBack: () => {
+        //   setShowAccount({ isShow: false })
+        // },
+      },
       [AccountStep.SendNFTGateway]: {
         view: (
           <SendNFTAsset
@@ -922,7 +954,7 @@ export function useAccountModalForUI({
               addressShort,
               etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
               mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
-              hideVIPlevel: isWebEarn ? true : false
+              hideVIPlevel: isWebEarn ? true : false,
             }}
           />
         ),
@@ -2711,7 +2743,10 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-              setShowActiveAccount({ isShow: true, info: { isReset: true, confirmationType: 'lockedReset' } })
+              setShowActiveAccount({
+                isShow: true,
+                info: { isReset: true, confirmationType: 'lockedReset' },
+              })
             }}
             {...{
               ...rest,
@@ -2995,7 +3030,6 @@ export function useAccountModalForUI({
                   setShowAccount({ isShow: false })
                   history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
                 }
-                
               },
             }}
             {...{
@@ -3146,6 +3180,126 @@ export function useAccountModalForUI({
         ),
         height: 'auto',
       },
+      [AccountStep.VaultTrade_Success]: {
+        view: (
+          <VaultTrade_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultTrade_Failed]: {
+        view: (
+          <VaultTrade_Failed
+            btnInfo={undefined}
+            {...{
+              t,
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultTrade_In_Progress]: {
+        view: (
+          <VaultTrade_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultJoin_Success]: {
+        view: (
+          <VaultJoin_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultJoin_Failed]: {
+        view: (
+          <VaultJoin_Failed
+            btnInfo={undefined}
+            {...{
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              t,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultJoin_In_Progress]: {
+        view: (
+          <VaultJoin_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_Success]: {
+        view: (
+          <VaultRedeem_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRedeem_Failed]: {
+        view: (
+          <VaultRedeem_Failed
+            btnInfo={undefined}
+            {...{
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              t,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_In_Progress]: {
+        view: (
+          <VaultRedeem_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultBorrow_Success]: {
+        view: (
+          <VaultBorrow_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultBorrow_Failed]: {
+        view: (
+          <VaultBorrow_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultBorrow_In_Progress]: {
+        view: (
+          <VaultBorrow_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultRepay_Success]: {
+        view: (
+          <VaultRepay_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRepay_Failed]: {
+        view: (
+          <VaultRepay_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRepay_In_Progress]: {
+        view: (
+          <VaultRepay_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
     })
   }, [
     activeAccountProps,
@@ -3231,6 +3385,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
+    contactAddProps,
     // checkActiveStatusProps,
     // dualToastOpen,
   }
