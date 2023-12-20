@@ -96,8 +96,8 @@ const getUserRewardsApi = async () => {
                   }
                 })
               const price = sdk
-                .toBig(_value.sellTokenVol.volume)
-                .div(sdk.toBig(_value.buyTokenVol.volume).minus(_value.feeVol.volume))
+                .toBig(_value.sellTokenVol)
+                .div(sdk.toBig(_value.buyTokenVol).minus(_value.feeVol))
               prev[item] = {
                 list: _value,
                 average: price.toString(),
