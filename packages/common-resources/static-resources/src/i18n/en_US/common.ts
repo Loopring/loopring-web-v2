@@ -2330,4 +2330,6 @@ export default {
   labelTobeBorrowed: 'To be Borrowed',
   labelStep1Borrow: 'STEP1: Borrow',
   labelStep2Swap: 'STEP2: Swap',
+  labelVaultSwapCancel:
+    'You are borrowing tokens. Are you sure you want to change the token pair or exit the trade?',
 }

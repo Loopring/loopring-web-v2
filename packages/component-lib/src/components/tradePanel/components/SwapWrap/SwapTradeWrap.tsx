@@ -59,6 +59,7 @@ export const SwapTradeWrap = <
   tradeCalcData,
   tokenSellProps,
   tokenBuyProps,
+  onCancelClick,
   BtnEle,
   ...rest
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
@@ -391,6 +392,10 @@ export const SwapTradeWrap = <
           </Typography>
         ) : (
           <></>
+        )}
+
+        {(tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== 'edit' && (
+          <Box className={'cover'} onClick={onCancelClick} />
         )}
       </Grid>
 

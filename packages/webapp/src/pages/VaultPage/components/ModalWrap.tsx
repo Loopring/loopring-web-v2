@@ -18,6 +18,7 @@ import {
   VaultExitPanel,
   VaultJoinPanel,
   VaultLoanPanel,
+  VaultSwapCancel,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
 import {
@@ -27,9 +28,9 @@ import {
   VaultAction,
   VaultLoanType,
 } from '@loopring-web/common-resources'
+import { useVaultSwapExtends } from './useVaultSwapExtends'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { useVaultSwapExtends } from './VaultSwapExtends'
 
 export const ModalVaultWrap = () => {
   const { t } = useTranslation()
@@ -45,7 +46,7 @@ export const ModalVaultWrap = () => {
     setShowNoVaultAccount,
   } = useOpenModals()
   const { vaultAccountInfo } = useVaultLayer2()
-
+  const [openCancel, setOpenCancel] = React.useState(false)
   const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
   const {
@@ -69,6 +70,7 @@ export const ModalVaultWrap = () => {
     btnBorrowStatus,
     onBorrowClick,
     borrowBtnI18nKey,
+    cancelBorrow,
     // isSwapLoading,
   } = useVaultSwap({ path: 'vault' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
@@ -128,7 +130,7 @@ export const ModalVaultWrap = () => {
           setShowVaultSwap({ isShow: false })
         }}
         content={
-          tradeData && (
+          tradeData ? (
             // @ts-ignore
             <SwapPanel
               _width={'var(--modal-width)'}
@@ -144,6 +146,9 @@ export const ModalVaultWrap = () => {
                 allowDecimals: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision
                   ? true
                   : false,
+              }}
+              onCancelClick={() => {
+                setOpenCancel(true)
               }}
               BtnEle={BtnEle}
               tokenSellProps={{
@@ -186,6 +191,8 @@ export const ModalVaultWrap = () => {
                 isMobile,
               }}
             />
+          ) : (
+            <></>
           )
         }
       />
@@ -211,6 +218,15 @@ export const ModalVaultWrap = () => {
             handleTabChange={handleTabChange}
           />
         }
+      />
+      <VaultSwapCancel
+        open={openCancel}
+        handleClose={(_, isAgree) => {
+          setOpenCancel(false)
+          if (isAgree) {
+            cancelBorrow()
+          }
+        }}
       />
     </>
   )

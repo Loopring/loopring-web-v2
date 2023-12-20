@@ -199,31 +199,33 @@ export const useVaultSwapExtends = ({
             <Typography
               variant={'inherit'}
               component={'span'}
-              color={tradeCalcData.borrowVol != 0 ? 'textPrimary' : 'inherit'}
+              color={tradeCalcData.step == 'swap' ? 'inherit' : 'textPrimary'}
             >
               {t('labelStep1Borrow')}
             </Typography>
-            {DirectionTag}
+            {' ' + DirectionTag + ' '}
             <Typography
               variant={'inherit'}
               component={'span'}
-              color={tradeCalcData.borrowVol != 0 ? 'inherit' : 'textPrimary'}
+              color={tradeCalcData.step == 'swap' ? 'textPrimary' : 'inherit'}
             >
               {t('labelStep2Swap')}
             </Typography>
           </Typography>
         </Grid>
-        <Grid item xs={12}>
-          <Typography
-            variant={'body2'}
-            component={'span'}
-            color={'error'}
-            display={'inline-flex'}
-            alignItems={'center'}
-          >
-            {labelBorrow}
-          </Typography>
-        </Grid>
+        {labelBorrow && (
+          <Grid item xs={12}>
+            <Typography
+              variant={'body2'}
+              component={'span'}
+              color={'error'}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
+              {labelBorrow}
+            </Typography>
+          </Grid>
+        )}
         <Grid item xs={6}>
           <ButtonStyle
             sx={{
@@ -235,11 +237,12 @@ export const useVaultSwapExtends = ({
             onClick={() => {
               onBorrowClick()
             }}
-            loading={!getDisabled && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+            loading={!getDisabled && btnBorrowStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
             disabled={
               getDisabled ||
-              swapBtnStatus === TradeBtnStatus.DISABLED ||
-              swapBtnStatus === TradeBtnStatus.LOADING
+              tradeCalcData.step == 'swap' ||
+              btnBorrowStatus === TradeBtnStatus.DISABLED ||
+              btnBorrowStatus === TradeBtnStatus.LOADING
             }
             fullWidth={true}
           >
@@ -257,12 +260,18 @@ export const useVaultSwapExtends = ({
             onClick={() => {
               onSwapClick()
             }}
-            loading={!getDisabled && btnBorrowStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+            loading={
+              !getDisabled &&
+              tradeCalcData.step === 'swap' &&
+              swapBtnStatus === TradeBtnStatus.LOADING
+                ? 'true'
+                : 'false'
+            }
             disabled={
               getDisabled ||
-              tradeCalcData.borrowVol != 0 ||
-              btnBorrowStatus === TradeBtnStatus.DISABLED ||
-              btnBorrowStatus === TradeBtnStatus.LOADING
+              tradeCalcData.step !== 'swap' ||
+              swapBtnStatus === TradeBtnStatus.DISABLED ||
+              swapBtnStatus === TradeBtnStatus.LOADING
             }
             fullWidth={true}
           >

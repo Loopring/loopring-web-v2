@@ -29,6 +29,7 @@ export type SwapTradeBaseProps<T, I, TCD> = {
 }
 export type SwapTradeBaseEventProps<T, I> = {
   onSwapClick: () => void | any
+  onCancelClick?: () => void | any
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type SwapTradeExtendProps<T> = {

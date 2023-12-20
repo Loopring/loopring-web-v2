@@ -165,6 +165,7 @@ export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 
   isRequiredBorrow: boolean
   borrowVol: string
   borrowStr: string
+  step: 'edit' | 'borrow' | 'swap'
 }
 
 export type TradeCalcProData<T> = {

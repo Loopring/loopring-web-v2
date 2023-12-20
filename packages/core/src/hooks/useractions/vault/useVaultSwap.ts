@@ -150,7 +150,6 @@ export const useVaultSwap = <
   path: string
 }) => {
   const borrowHash = React.useRef<null | { hash: string; timer?: any }>(null)
-
   const { idIndex: erc20IdIndex } = useTokenMap()
   const { account } = useAccount()
   const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
@@ -315,6 +314,9 @@ export const useVaultSwap = <
           totalQuota: undefined,
           l1Pool: undefined,
           l2Pool: undefined,
+          step: 'edit',
+          borrowStr: 0,
+          borrowVol: 0,
           showHasBorrow,
           isRequiredBorrow: undefined,
         }
@@ -369,6 +371,12 @@ export const useVaultSwap = <
             borrowHash.current = null
             l2CommonService.sendUserUpdate()
             setIsSwapLoading(false)
+            setTradeCalcData((state) => {
+              return {
+                ...state,
+                step: 'swap',
+              }
+            })
           } else if (sdk.VaultOperationStatus.VAULT_STATUS_FAILED == operation?.status) {
             clearTimeout(borrowHash.current?.timer)
             borrowHash.current = null
@@ -379,6 +387,12 @@ export const useVaultSwap = <
               content: t('labelVaultBorrowFailed'),
             })
             setIsSwapLoading(false)
+            setTradeCalcData((state) => {
+              return {
+                ...state,
+                step: 'edit',
+              }
+            })
           } else {
             borrowHash.current = {
               hash: operation.hash,
@@ -404,6 +418,7 @@ export const useVaultSwap = <
         clearTimeout(borrowHash.current?.timer)
         borrowHash.current = null
       }
+      setIsSwapLoading(false)
     }
   }, [borrowHash?.current?.hash])
 
@@ -759,6 +774,12 @@ export const useVaultSwap = <
           })
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
           l2CommonService.sendUserUpdate()
+          setTradeCalcData((state) => {
+            return {
+              ...state,
+              step: 'edit',
+            }
+          })
           if (
             store.getState().modals.isShowAccount.isShow &&
             [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
@@ -830,7 +851,13 @@ export const useVaultSwap = <
     } = store.getState()
     // const erc20Symbol = erc20IdIndex[tokenMap[_sellToken]?.tokenId]
     setIsSwapLoading(true)
-    const vaultToken = tokenMap[tradeCalcData?.volumeSell]
+    setTradeCalcData((state) => {
+      return {
+        ...state,
+        step: 'borrow',
+      }
+    })
+    const vaultToken = tokenMap[_sellToken?.toString()]
     try {
       if (
         exchangeInfo &&
@@ -1372,16 +1399,6 @@ export const useVaultSwap = <
           minimumConverted,
           supportBorrowData,
           showHasBorrow,
-          isRequiredBorrow,
-          borrowVol: borrowVol?.gt(0) ? borrowVol.toString() : 0,
-          borrowStr: getValuePrecisionThousand(
-            borrowVol?.gt(0) ? borrowVol.div('1e' + sellToken.decimals) : 0,
-            sellToken.vaultTokenAmounts?.qtyStepScale,
-            sellToken.vaultTokenAmounts?.qtyStepScale,
-            sellToken.vaultTokenAmounts?.qtyStepScale,
-            false,
-            { isAbbreviate: true },
-          ),
         }
 
         setTradeCalcData((state) => {
@@ -1411,9 +1428,29 @@ export const useVaultSwap = <
             : calcDexOutput?.isReverse
             ? mid_price
             : _mid_price_convert
+          // step,
+          let _edit = {}
+          switch (state.step) {
+            case 'edit':
+              _edit = {
+                isRequiredBorrow,
+                borrowVol: borrowVol?.gt(0) ? borrowVol.toString() : 0,
+                borrowStr: getValuePrecisionThousand(
+                  borrowVol?.gt(0) ? borrowVol.div('1e' + sellToken.decimals) : 0,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  false,
+                  { isAbbreviate: true },
+                ),
+              }
+              break
+            default:
+          }
           _tradeCalcData = {
             ...state,
             ..._tradeCalcData,
+            ..._edit,
             StoB: getValuePrecisionThousand(
               stob?.replaceAll(sdk.SEP, '') ?? 0,
               buyToken.precision,
@@ -1572,5 +1609,12 @@ export const useVaultSwap = <
     btnBorrowStatus,
     onBorrowClick,
     borrowBtnI18nKey,
+    cancelBorrow: () => {
+      if (borrowHash?.current?.hash && account) {
+        updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
+      }
+      setIsSwapLoading(false)
+      resetMarket(market as any, 'sell')
+    },
   }
 }
