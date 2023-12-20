@@ -120,7 +120,7 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
       }>,
     ) {
       const { txInfo, accountAddress, chainId } = action.payload
-      if (!state[chainId] || !state[chainId].vaultBorrowHashes) {
+      if (!state[chainId] || !state[chainId]?.vaultBorrowHashes) {
         state[chainId] = {
           ...state[chainId],
           vaultBorrowHashes: {},

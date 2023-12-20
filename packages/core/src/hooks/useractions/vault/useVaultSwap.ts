@@ -36,10 +36,12 @@ import { useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
 import {
   btradeOrderbookService,
+  calcSupportBorrowData,
   DAYS,
   getTimestampDaysLater,
   l2CommonService,
   LoopringAPI,
+  makeVaultAvaiable2,
   makeVaultLayer2,
   MAPFEEBIPS,
   marketInitCheck,
@@ -58,6 +60,7 @@ import {
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
+  VaultBorrowTradeData,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
@@ -135,8 +138,9 @@ const useVaultTradeSocket = () => {
     return () => subscription.unsubscribe()
   }, [tradeVault.market])
 }
+export type VaultTradeTradeData = VaultBorrowTradeData & { borrowAvailable: string }
 export const useVaultSwap = <
-  T extends SwapTradeData<IBData<C>>,
+  T extends SwapTradeData<VaultTradeTradeData>,
   C extends { [key: string]: any },
   CAD extends VaultTradeCalcData<T>,
 >({
@@ -156,10 +160,8 @@ export const useVaultSwap = <
     setShowVaultSwap,
   } = useOpenModals()
   const { defaultNetwork } = useSettings()
-  const { chainInfos, updateVaultBorrowHash, clearVaultBorrowHash } =
-    onchainHashInfo.useOnChainInfo()
+  const { chainInfos, updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
 
-  const hashs = chainInfos[defaultNetwork].vaultBorrowHashes[account.accAddress]
   const { vaultAccountInfo } = useVaultLayer2()
   // //High: No not Move!!!!!!
   //@ts-ignore
@@ -231,10 +233,11 @@ export const useVaultSwap = <
     if (coinMap && tokenMap && marketMap && tokenMap && marketArray) {
       // @ts-ignore
       const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i)
-      let walletMap: WalletMap<any> | undefined
+      let walletMap: WalletMap<any> | undefined, vaultAvaiable2Map: WalletMap<any> | undefined
       if (account.readyState === AccountStatus.ACTIVATED && vaultLayerStatus === SagaStatus.UNSET) {
         if (!Object.keys(tradeCalcData?.walletMap ?? {}).length) {
           walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
+          vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
         }
         walletMap = tradeCalcData?.walletMap as WalletMap<any>
       }
@@ -243,11 +246,15 @@ export const useVaultSwap = <
           belong: coinA,
           tradeValue: undefined,
           balance: walletMap ? walletMap[coinA]?.count : 0,
+          borrowAvailable: (vaultAvaiable2Map && vaultAvaiable2Map[coinA]?.count) ?? 0,
+          erc20Symbol: erc20IdIndex[tokenMap[coinA].tokenId],
         },
         buy: {
           belong: coinB,
           tradeValue: undefined,
           balance: walletMap ? walletMap[coinB]?.count : 0,
+          borrowAvailable: (vaultAvaiable2Map && vaultAvaiable2Map[coinB]?.count) ?? 0,
+          erc20Symbol: erc20IdIndex[tokenMap[coinB].tokenId],
         },
       }
 
@@ -367,7 +374,11 @@ export const useVaultSwap = <
     const sellToken = tokenMap[tradeData?.sell.belong as string]
     const buyToken = tokenMap[tradeData?.buy.belong as string]
     const account = store.getState().account
-    const { tradeCalcData, sellMinAmtInfo, sellMaxAmtInfo } = tradeVault
+    const {
+      tradeCalcData: { supportBorrowData, ...tradeCalcData },
+      sellMinAmtInfo,
+      sellMaxAmtInfo,
+    } = tradeVault
 
     if (!sellToken || !buyToken || !tradeCalcData) {
       return {
@@ -376,6 +387,7 @@ export const useVaultSwap = <
       }
     }
     const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
+    const vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
     let validAmt = !!(
       tradeCalcData?.volumeSell &&
       sellMinAmtInfo &&
@@ -750,6 +762,33 @@ export const useVaultSwap = <
     if (market) {
       getVaultMap()
       callPairDetailInfoAPIs()
+      if (chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress]?.length) {
+        chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress].forEach(({ hash }) => {
+          const { account } = store.getState()
+          LoopringAPI?.vaultAPI
+            .getVaultGetOperationByHash(
+              {
+                accountId: account.accountId?.toString(),
+                hash,
+              },
+              account.apiKey,
+            )
+            .then(({ operation }) => {
+              if (
+                [
+                  sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+                  sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
+                ].includes(operation.status)
+              ) {
+                updateVaultBorrowHash(
+                  operation.hash,
+                  account.accAddress,
+                  sdk.VaultOperationStatus.VAULT_STATUS_FAILED ? 'failed' : 'success',
+                )
+              }
+            })
+        })
+      }
     }
   }, [market])
 
@@ -889,18 +928,27 @@ export const useVaultSwap = <
         // @ts-ignore
         setTradeData((state) => {
           const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
-
+          const vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
           return {
             ...(state ?? {}),
             sell: {
               belong: _tradeCalcData.coinSell,
               tradeValue: undefined,
               balance: walletMap ? walletMap[_tradeCalcData.coinSell as string]?.count : 0,
+              borrowAvailable:
+                (vaultAvaiable2Map &&
+                  vaultAvaiable2Map[_tradeCalcData.coinSell as string]?.count) ??
+                0,
+              erc20Symbol: erc20IdIndex[tokenMap[_tradeCalcData.coinSell as string].tokenId],
             },
             buy: {
               belong: _tradeCalcData.coinBuy,
               tradeValue: undefined,
               balance: walletMap ? walletMap[_tradeCalcData.coinBuy as string]?.count : 0,
+              borrowAvailable:
+                (vaultAvaiable2Map && vaultAvaiable2Map[_tradeCalcData.coinBuy as string]?.count) ??
+                0,
+              erc20Symbol: erc20IdIndex[tokenMap[_tradeCalcData.coinBuy as string].tokenId],
             },
           }
         })
@@ -950,7 +998,7 @@ export const useVaultSwap = <
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const { depth, tradePair } = store.getState()._router_tradeVault.tradeVault
-
+      let vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
       const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
       myLog('useVaultSwap:reCalculateDataWhenValueChange', tradeData, _tradePair, type)
       if (
@@ -982,6 +1030,7 @@ export const useVaultSwap = <
         let sellMaxL2AmtInfo: any = undefined
         let totalFeeRaw: any = undefined
         let totalQuote: any = undefined
+        let showHasBorrow: boolean = false
         const info = marketMap[market] as sdk.VaultMarket
         let maxFeeBips = info.feeBips ?? MAPFEEBIPS
 
@@ -1008,7 +1057,18 @@ export const useVaultSwap = <
           feeBips: maxFeeBips.toString(),
           slipBips: slippage,
         })
+
+        const supportBorrowData = calcSupportBorrowData({
+          belong: sellToken.symbol,
+          ...((vaultAvaiable2Map && vaultAvaiable2Map[sellToken.toString()]) ?? {}),
+          // balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
+          tradeValue: undefined,
+          erc20Symbol: erc20IdIndex[tokenMap[sellToken.toString()].tokenId],
+        } as unknown as VaultBorrowTradeData)
         const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
+        if (chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress]?.length) {
+          showHasBorrow = true
+        }
         if (amountVol && l2Amount) {
           const sellDeepStr =
             sdk
@@ -1123,6 +1183,8 @@ export const useVaultSwap = <
             { isAbbreviate: true },
           ),
           sellMaxAmtStr: undefined,
+          supportBorrowData,
+          showHasBorrow,
           // sellMaxAmtInfo !== undefined
           //   ? getValuePrecisionThousand(
           //       sdk.toBig(sellMaxAmtInfo ?? 0),
@@ -1241,12 +1303,12 @@ export const useVaultSwap = <
         `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
     ) {
       const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
+      let vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
 
       const result = reCalcStoB({
         market,
-        tradeData: tradeData as SwapTradeData<IBData<unknown>>,
+        tradeData: tradeData as SwapTradeData<VaultTradeTradeData>,
         tradePair: tradePair as any,
-
         marketMap,
         tokenMap,
       })

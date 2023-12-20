@@ -160,6 +160,8 @@ export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 
   isVault: true
   belongBuyAlice: string
   belongSellAlice: string
+  supportBorrowData: VaultBorrowData
+  showHasBorrow: boolean
 }
 
 export type TradeCalcProData<T> = {
