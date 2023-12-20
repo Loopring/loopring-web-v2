@@ -627,7 +627,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       tradeValue: data.tradeData?.tradeValue,
     }
     myLog('walletInfo', walletInfo)
-    // debugger
     if (tokenSymbol) {
       updateVaultJoin({
         ...vaultJoinData,

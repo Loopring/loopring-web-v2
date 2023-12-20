@@ -142,7 +142,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               onRedeemPop({ isShow: true })
               break
             case VaultAction.VaultLoan:
-              // debugger
               onBorrowPop({ isShow: true })
               break
             case VaultAction.VaultSwap:
@@ -350,7 +349,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   ])
   const { status: walletL2Status } = useWalletLayer2()
   const getAssetsRawData = () => {
-    // debugger
     const {
       // vaultLayer2: { vaultAccountInfo },
       tokenMap: {
@@ -493,7 +491,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     },
     [vaultAccountInfo?.accountStatus],
   )
-  myLog('assetsRawData', assetsRawData)
   return {
     btnProps,
     onBtnClose: () => {

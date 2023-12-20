@@ -91,6 +91,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
         case AccountStatus.ERROR_NETWORK:
+          restUserNotify()
           socketUserEnd()
           break
         case AccountStatus.DEPOSITING:
