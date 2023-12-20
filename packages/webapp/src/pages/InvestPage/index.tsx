@@ -1,66 +1,29 @@
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
-import { Box, BoxProps, Tab, Tabs, Typography } from '@mui/material'
+import { Box, Modal, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
 import {
   ComingSoonPanel,
-  ConfirmInvestDualRisk,
   ConfirmInvestLRCStakeRisk,
-  useSettings,
+  ModalCloseButton,
+  SwitchPanelStyled,
   useToggle,
+  ModifySetting,
 } from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
-import MyLiquidityPanel from './MyLiquidityPanel'
+import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
+import { MyLiquidity } from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
 import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
+import { InvestType, RouterPath, InvestRouter } from '@loopring-web/common-resources'
 
-export enum InvestType {
-  MyBalance = 0,
-  AmmPool = 1,
-  DeFi = 2,
-  Overview = 3,
-  Dual = 4,
-  Stack = 5,
-  LeverageETH = 6,
-}
-export const MaxWidthContainer = (
-  props: {
-    children: React.ReactNode
-    background?: string
-  } & BoxProps,
-) => {
-  const { children, background, sx, ...otherProps } = props
-  return (
-    <Box sx={{ background }} display={'flex'} justifyContent={'center'}>
-      <Box
-        sx={{
-          width: '1200px',
-          maxWidth: '100%',
-          ...sx,
-        }}
-        paddingX={3}
-        {...otherProps}
-      >
-        {children}
-      </Box>
-    </Box>
-  )
-}
-export const InvestRouter = [
-  'balance',
-  'ammpool',
-  'defi',
-  'overview',
-  'dual',
-  'stakelrc',
-  'leverageETH',
-]
+export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
+
 export const BalanceTitle = () => {
   const { t } = useTranslation()
   return (
@@ -127,32 +90,26 @@ export const DefiTitle = () => {
     </Typography>
   )
 }
-
+const InvestRouterMatch = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
-  let match: any = useRouteMatch('/invest/:item?')
-  const history = useHistory()
+    let match: any = useRouteMatch(InvestRouterMatch)
+  let { t } = useTranslation()
   const {
-    confirmDualInvest: confirmDualInvestFun,
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
+    setShowLRCStakePopup: setConfirmedLRCStakeInvestInvest,
+    setShowAutoDefault,
+    confirmation: {
+      showLRCStakePopup: confirmedLRCStakeInvest,
+      confirmationNeeded,
+      showAutoDefault,
+    },
   } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
-  const [confirmDualInvest, setConfirmDualInvest] = React.useState(
-    'hidden' as 'hidden' | 'all' | 'USDCOnly',
-  )
-  const {
-    showLRCStakignPopup: confirmedLRCStakeInvest,
-    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
-    confirmationNeeded,
-  } = usePopup()
 
-  const [showBeginnerModeHelp, setShowBeginnerModeHelp] = React.useState(false)
-  const onShowBeginnerModeHelp = React.useCallback((show: boolean) => {
-    setShowBeginnerModeHelp(show)
-  }, [])
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    (InvestRouter.includes(match?.params?.item)
+        (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
       ? InvestType[match?.params?.item]
       : InvestType.Overview) as any,
     // InvestType.Overview
@@ -191,7 +148,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         setIsShowTab(true)
         return
     }
-  }, [match?.params.item])
+  }, [match?.params?.item])
 
   return (
     <Box flex={1} flexDirection={'column'} display={'flex'}>
@@ -199,16 +156,10 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
-        {tabIndex === InvestType.Dual && (
-          <DualListPanel
-            showBeginnerModeHelp={showBeginnerModeHelp}
-            onShowBeginnerModeHelp={onShowBeginnerModeHelp}
-            setConfirmDualInvest={setConfirmDualInvest}
-          />
-        )}
+        {tabIndex === InvestType.Dual && <DualListPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box flex={1} alignItems={'stretch'} display={'flex'} flexDirection={'column'}>
-            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
+            <ViewAccountTemplate activeViewTemplate={<MyLiquidity />} />
           </Box>
         )}
         {tabIndex === InvestType.Stack && (
@@ -221,29 +172,26 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-
-      <ConfirmInvestDualRisk
-        open={confirmDualInvest !== 'hidden'}
-        USDCOnly={confirmDualInvest === 'USDCOnly'}
-        handleClose={(_e, isAgree) => {
-          if (!isAgree) {
-            history.goBack()
-          } else {
-            confirmDualInvestFun()
-            setShowBeginnerModeHelp(true)
-            setTimeout(() => {
-              onShowBeginnerModeHelp(false)
-            }, 5 * 1000)
-          }
-        }}
-      />
+      <Modal
+        open={showAutoDefault}
+        onClose={() => setShowAutoDefault(false)}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <SwitchPanelStyled width={'var(--modal-width)'}>
+          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
+            <ModalCloseButton onClose={() => setShowAutoDefault(false)} t={t} />
+            <ModifySetting onClose={() => setShowAutoDefault(false)} />
+          </Box>
+        </SwitchPanelStyled>
+      </Modal>
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest({ show: false, confirmationNeeded: false })
+          setConfirmedLRCStakeInvestInvest({isShow: false, confirmationNeeded: false })
           if (!isAgree) {
-            history.goBack()
+            // history.goBack()
           } else {
             confirmedLRCInvestFun()
           }

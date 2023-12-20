@@ -37,7 +37,8 @@ export default {
   resetFee: 'Fee {{count}} GAS ≈ ${{price}}',
   resetLabelBtn: 'Reset',
   labelActiveEnterToken: 'Select payment token',
-  labelActiveAccountDescription: 'You have enough balance to pay for {{layer2}} creation as below.',
+  labelActiveAccountDescription:
+    'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Activate Account',
   depositLabelEnterToken: 'Select Layer 1 Token',
@@ -523,6 +524,7 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: 'REMOVE GUARDIAN', // 35
   labelTxGuardianUNLOCK_WALLET_WA: 'UNLOCK WALLET', // 37
   labelTxGuardianRESET_GUARDIANS_WA: 'RESET GUARDIANS', // 200
+  labelTxGuardianCONTACT_UPDATE_WA: 'RESET GUARDIANS', // 201
   labelTxGuardianCALL_CONTRACT_WA: 'CALL CONTRACT',
   labelTxGuardian_recovery: 'recovery wallet',
   labelTxGuardian_transfer: 'over daily quota transfer',
@@ -539,7 +541,8 @@ export default {
   labelBuyToken: 'Buy {{token}}',
   labelCurrentlyLevel: 'Currently {{value}} {{token}}',
   labelLRCBalance: 'LRC Balance',
-  labelNoticeForForAccountFrozen: 'Please wait while {{ type }} is updating.',
+  labelNoticeForForAccountFrozen:
+    'Your wallet’s L2 account is locked. While locked, you can’t perform any L2 operations. If you require further assistance, please send an email to support@loopring.io.',
   labelAction: 'action',
   labelGoExplore: 'View transactions on the <1>Loopring Block Explorer</1>.',
   labelNOETH: 'Need ETH for gas',
@@ -625,7 +628,6 @@ export default {
   labelGuid: 'Go to Guide',
   labelOK: 'Ok',
   labelL2toL2InvalidAddr: 'Invalid address or ENS',
-  labelL2toL2IsNotLoopringContract: 'Is not Loopring Contract wallet address',
   labelL2toL2AddressNotLoopring:
     '<0></0> This address does not have an activated {{loopringL2}}. Please ensure  the recipient can access {{loopringL2}} before sending.',
   labelL2toL2AddressType: 'Address Type',
@@ -636,7 +638,6 @@ export default {
   labelL2toL2Confirm: 'Confirm',
   labelL2toL2TokenAmount: 'Token Amount',
 
-  labelL1toL2ThirdPart: '{{type}} Crypto with',
   labelActiveAccountFeeNotEnough: 'Insufficient balance <1>Add assets</1>',
   labelNFTTransferTX: '{{l2Symbol}} \u2192 {{l2Symbol}}',
   labelNFTWithdrawTX: '{{l2Symbol}} \u2192 {{l1Symbol}}',
@@ -707,7 +708,7 @@ export default {
   labelAddAssetTitleActive: 'Add assets & Activate',
   labelFromMyL1: 'From my {{l1Symbol}} account',
   labelFromOtherL1: 'From another {{l1Symbol}} account',
-  labelBuyWithCard: 'Buy with Card',
+  labelBuyWithCard: 'On-Ramp From Fiat',
   labelFromOtherL2: 'From another {{loopringL2}} account',
   labelFromExchange: 'From an exchange',
   labelOpenInWalletApp: 'Open in wallet app/extension',
@@ -758,7 +759,7 @@ export default {
   labelMemo: 'Memo',
   labelAdvanceMint: 'Advance Create NFT',
   labelWalletTypeDes:
-    'Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ',
+    'Please confirm the address type again to ensure the assets are not mistakenly sent to the exchange address. ',
   labelWalletTypeOptions: '{{type}} Wallet',
   labelWalletTypeOtherSmart: 'Other Smart',
   labelWalletTypeLoopring: 'Loopring',
@@ -785,11 +786,11 @@ export default {
   labelExchangeOthers: 'Other Exchanges',
   labelExchangeOthersDes: '',
   labelL2toL1AddressType: 'Address Type',
-  labelConfirmBtrade: 'Confirm Block Trade Support',
+  labelConfirmBtrade: 'Confirm CEX Support',
   labelConfirmDetail:
-    '<0>Before withdrawing, please confirm with your Block Trade support that they accept deposits from smart contracts.</0>' +
-    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The Block Trade depositing address may not be able to automatically acknowledge the deposit.</1>' +
-    '<2>If the deposit does not appear at the Block Trade address within 24 hours, please contact your Block Trade support and ask they manually acknowledge the transaction.</2>',
+    '<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>' +
+    '<1>{{l2Symbol}} to {{l1Symbol}} withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>' +
+    '<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>',
   labelBtradeUnderstand: 'I understand and acknowledge the risk',
   labelMintFee: 'Create Fee',
   labelMintFeeNotEnough: 'Insufficient balance',
@@ -820,7 +821,7 @@ export default {
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
   labelForceWithdrawDes:
-    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a Block Trade address using {{loopringL2}}. Since the Block Trade does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
+    "If the recipient doesn't have an active {{loopringL2}} account, you will be able to withdraw the token from {{l2Symbol}} to {{l1ChainName}} {{l1Symbol}}. This process is usually only needed when tokens were sent to a CEX address using {{loopringL2}}. Since the CEX does not have access to the {{l2Symbol}} account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
     'This feature allows a user to move their {{l2Symbol}} tokens to the {{l1Symbol}} address. The target address must either be a wallet or exchange address',
   labelForceWithdrawConfirm1:
@@ -862,7 +863,7 @@ export default {
   labelFeeTitleList: 'Fee',
   labelInvestOverviewTitle: 'Overview',
   labelTitleOverviewToken: 'Total Investment Tokens',
-  labelInvestType_AMM: 'AMM Pool',
+  labelInvestType_AMM: 'AMM Pools',
   labelInvestType_STAKE: 'ETH Staking',
   labelInvestType_DUAL: 'Dual Investment',
   labelInvestType_STAKELRC: 'LRC Staking',
@@ -879,7 +880,7 @@ export default {
   labelWSETHDefiRisk:
     '<p>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</p>' +
     '<p>When using Lido to stake your ETH on the {{l1ChainName}} beacon chain, users will receive a token (stETH), which represents their ETH on the {{l1ChainName}} beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</p>' +
-    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>\n",
+    "<p>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</p>",
   labelRETHDefiRisk:
     '<p>Rocket Pool is the first truly decentralized {{l1ChainName}} staking pool. Rocket Pool’s liquid staking token allows anyone to earn staking rewards easily without running staking software or locking assets. Rocket Pool handles all of the {{l1ChainName}} validator operations with smart contracts on the Execution layer.</p>' +
     "<p>Acquiring and holding rETH in your wallet means that you are staking ETH. rETH's value continuously increases relative to ETH, indicating the daily stake reward received.</p>" +
@@ -1006,8 +1007,11 @@ export default {
   labelDualInvestBaseTitle: 'Invest {{symbolA}} (Sell High for {{symbolB}})',
   labelDualInvestQuoteTitle: 'Invest {{symbolA}} (Buy {{symbolB}} Low)',
   labelDualInvestDes: 'Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}',
-  labelDualCurrentPriceTip: 'Current Price is based on USDT derived from some leading exchanges.',
-  labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1>  USDT',
+  labelDualCurrentPriceTip:
+    'Current Price is based on {{symbol}} derived from some leading exchanges.',
+  labelDualCurrentPrice: '{{symbol}} Current Price:<1>{{price}}</1> {{baseSymbol}}',
+  labelDualCurrentPrice2: 'Current Price:\n <1>{{price}}</1> {{baseSymbol}}',
+
   labelDualSuccess: 'Subscription {{symbol}} Successfully',
   labelDualProcessing: 'Waiting for completion',
   labelDualProcessingDes:
@@ -1019,8 +1023,8 @@ export default {
   labelDualNoEnough: 'Insufficient balance',
   labelDualSettleDate: 'Settlement Date',
   labelDualSubDate: 'Subscription Date',
-  labelDualCurrentPrice2: 'Current {{symbol}} Price',
-  labelDualCurrentPrice3: 'Current  Price',
+  // labelDualCurrentPrice2: '{{symbol}} Current Price',
+  // labelDualCurrentPrice3: '{{symbol}} current Price',
   labelDualCurrentAPR: 'APR <1>\u2139</1>',
   labelDualCurrentAPRDes:
     'APR is refreshed in real time. We will use the lastest APR at the time you complete the subscription successfully.',
@@ -1070,19 +1074,20 @@ export default {
   labelDualBeginnerIndexPriceDes: 'Index Price is derived from some leading exchanges.',
   labelDualBeginnerLockingDes: 'Your token for investment will be locked until Settlement Date.',
   labelDualBeginnerAPR: 'APR: {{APR}}',
-  labelDualBeginnerStep1Title: 'Choose a token to sell or buy',
-  labelDualBeginnerStep2Title: 'Choose to sell or buy at desired price in the future',
+  labelDualBeginnerStep1Title: 'Step 1: Choose a token to sell or buy',
+  labelDualBeginnerStep2Title: 'Step 2: Choose to sell or buy at desired price in the future',
   labelDualBeginnerSellHigh: 'Sell {{token}} High',
   labelDualBeginnerBuyLow: 'Buy {{token}} Low',
-  labelDualBeginnerReceiveStable: 'You will receive USDC or USDT',
-  labelDualBeginnerInvestStable: 'You can invest USDC or USDT',
-  labelDualBeginnerStep3Title: 'Choose Target Price and Settlement Date',
+  labelDualBeginnerReceiveStable: 'You will receive {{list}} {{last}}',
+  labelDualBeginnerInvestStable: 'You can invest {{list}} {{last}}',
+  labelDualBeginnerLast: 'or {{last}}',
+  labelDualBeginnerStep3Title: 'Step 3: Choose Target Price and Settlement Date',
   labelDualBeginnerSellHighFor: 'Sell high for {{token}}',
   labelDualBeginnerBuyLowWith: 'Buy low with {{token}}',
 
-  labelInvestMyAmm: 'My Investment',
-  labelInvestMyDual: 'My Investment',
-  labelInvestMyDefi: 'My Investment',
+  labelInvestMyAmm: 'My Investments',
+  labelInvestMyDual: 'My Investments',
+  labelInvestMyDefi: 'My Investments',
   labelInvestMaxDual: 'Max {{value}}',
   labelDualTitle: 'Dual Investment',
   labelDualDesSuccess:
@@ -1093,7 +1098,7 @@ export default {
   labelInvestRangeDay: '{{arg}} Days',
   labelAmmExit: 'Redeem',
   labelAmmJoin: 'Subscribe',
-  labelDualPanelClose: 'Go to My Investment',
+  labelDualPanelClose: 'Go to My Investments',
   labelDualMobilePrice: '{{symbol}} price:',
   labelEditCollectionSuccess: 'Collection edit was successful',
   labelEditCollectionFailed: 'Collection edit has failed',
@@ -1101,7 +1106,7 @@ export default {
   labelEditRestCollectionBtn: 'Reset',
   labelEditCollectionERC1155: 'Edit My Collection',
   labelDualSettlementCalculator: 'Settlement Calculator',
-  labelDualSettleDateDur: 'Days Till Settlement',
+  labelDualSettleDateDur: 'Subscription Length (days)',
   labelNoInvestContent:
     'You currently have no investment assets. Start earning now with AMM, ETH Staking, or Dual Investments',
   labelImportCollection: 'Import Collection for Legacy NFT',
@@ -1242,7 +1247,7 @@ export default {
   labelL2toL2FeeWithActive: 'Fee (including activation fee)',
   labelRedPacketOpen: 'Open',
   labelRedPacketTitle: 'Red Packets',
-  labelRedPacketTypeTokens: 'Choose Tokens / NFTs',
+  labelRedPacketTypeTokens: 'Choose Tokens / NFTs / Blind Box',
   labelRedPacketChoose: 'Choose Red Packet Type',
   labelRedPacketMain: 'Input Red Packet/Send',
   labelLuckyTokenViewTypePublic: 'Public Red Packet',
@@ -1292,7 +1297,7 @@ export default {
     'If the recipient of the Red Packet also re-shares the packet, they receive half of whatever the next person receives.',
   labelLuckyRandomToken: 'Lucky Red Packet',
   labelLuckyRandomTokenDes: 'Each recipient will get a random amount of.',
-  labelLuckyCommonToken: 'Normal Red Packet',
+  labelLuckyCommonToken: 'Average Red Packet',
   labelLuckyCommonTokenDes:
     'Each recipient will receive a pre-set split of the total Red Packet shared.',
   labelL1toL2NFTAmount: 'NFT Amount',
@@ -1353,7 +1358,7 @@ export default {
   labelRedPacketsGiftsLargerThanPackets:
     'The number of Red Packets containing gifts cannot exceed the total number of Red Packets',
   labelBlindBoxNumberOverMaximun: 'Number of Blind Box exceeds maximum',
-  labelRedPacketsSplitNumber: 'Maximum split is {{value}}',
+  labelRedPacketsSplitNumber: 'The maximum number of Red Packet is {{value}}',
   labelRedPacketsSplitCommonDetail: 'Distribution per red packet: {{value}}',
   labelRedPacketsSplitLuckyDetail: 'Token amount for each Red Packet is randomized.',
   labelSendRedPacketTitle: 'Send Red Packet',
@@ -1362,10 +1367,10 @@ export default {
   labelRedPacketWaitingBlock: 'Block is not ready',
   labelShare: 'Share',
   labelRelayRedPacket: 'Relay Red Packet',
-  labelNormalRedPacket: 'Normal Red Packet',
+  labelNormalRedPacket: 'Average Red Packet',
   labelluckyRedPacket: 'Lucky Red Packet',
   labelrelayRedPacket: 'Relay Red Packet',
-  labelnormalRedPacket: 'Normal Red Packet',
+  labelnormalRedPacket: 'Average Red Packet',
   labelLuckyRedPacket: 'Lucky Red Packet',
   labelLuckyRedPacketStart: 'Starts in: {{value}}',
   labelLuckyRedPacketTimeout: 'Red Packet has been \n taken out',
@@ -1381,10 +1386,10 @@ export default {
   labelLpAmount: 'LP Amount: {{value}}',
   labelRedPacketMarketsBtn: 'Red Packet Plaza',
   labelRedPacketBtn: 'Shared',
-  labelRedPacketViewType0: 'Public',
-  labelRedPacketViewType1: 'Private',
+  labelRedPacketViewType0: 'Public Plaza',
+  labelRedPacketViewType1: 'Public QR',
   labelRedPacketViewTypeDetail0: 'public Red Packet',
-  labelRedPacketViewTypeDetail1: 'private Red Packet',
+  labelRedPacketViewTypeDetail1: 'public Red Packet',
   labelRedPacketStatusSUBMITTING: 'Submitting', // SUBMITTING = 0,
   labelRedPacketStatusNOT_EFFECTIVE: 'Not Start', // NOT_EFFECTIVE = 1,
   labelRedPacketStatusPENDING: 'In Processing', // PENDING = 2,
@@ -1469,11 +1474,11 @@ export default {
   labelLRCStakingRisk2:
     '<0>The staked LRC will be locked in {{loopringL2}}, meaning it cannot be used for other purposes. You may redeem your LRC at any time; however, doing so before the minimum Locked Duration will forfeit any accumulated reward.</0>',
   labelInvestLRCStakingTitle: 'LRC Staking',
-  labelMyInvestLRCStaking: 'My Investment',
+  labelMyInvestLRCStaking: 'My Investments',
   labelInvestLRCStakingLockAlert:
     'Your assets for investment will be locked until your redemption.',
   labelLRCStakeAPRTooltips:
-    'APR is adjusted daily based on the on-chain staking rewards; APR does not represent the actual or predicted returns in fiat currency.',
+    'APR stands for annual percentage rate, not taking into account the effect of compound interest. The value displayed here indicates the current value, while it keeps changing dynamically. ',
   labelLRCStakeAPR: 'APR <1></1>',
   labelLRCStakeEarn: 'Daily Rewards (est.) <1></1>',
   labelLRCStakeEarnTooltips:
@@ -1638,7 +1643,6 @@ export default {
   labelStopLimitFromDropsDown: 'drops down',
   labelStopLimitBehaviorAbove: 'above',
   labelStopLimitBehaviorBelow: 'below',
-
   labelStopLimitType: 'Stop-Limit / {{tradeType}}',
   labelStopLimitStopPrice: 'Stop Price',
   labelStopLimitPriceLimitPrice: 'Limit Price',
@@ -1700,7 +1704,7 @@ export default {
   labelDepositTo: 'Deposit to',
   labelReferTitle: 'Invite friends to join in \nLoopring and receive rewards',
   labelReferTitleDes:
-    'As referrer: will receive a one-year commission on fees the new referred user trades. \n As referee:  will enjoy a one-year discount on transfer fees.',
+    'As referrer: will receive a commission on fees the new referred user trades. \n As referee:  will enjoy a discount on transfer fees.',
   labelCopy: 'Copy',
   labelReferralRules: 'Reward rules',
   labelReferralMethod1: 'Method 1',
@@ -1781,10 +1785,9 @@ export default {
     '<p>CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform, where users could earn either through joining algorithmic strategy vaults or through building their own DeFi strategies using CIAN’s advanced automation tools.</p>' +
     "<p>The stETH/ETH leveraged staking strategy enables users to safely leverage stETH’s staking rewards. This strategy focuses on staking derivatives and protection/optimization tooling. By nature, this strategy is to use the user's asset as collateral to borrow ETH from lending platforms, then stake ETH in Lido to earn ETH staking interest. By utilizing tools like Flashloan, it actually adds leverage to users' ETH investment. If only there is a positive APY diff between the borrowing rate and ETH staking rate, there will be additional earnings from this strategy vs. standard ETH staking.</p>" +
     '<p>It is quite important to understand that, when using such leveraged strategy, it’s highly advised to intend on holding that position for a while. By doing so, users will give enough time for the high APY to cover their entry & exit costs.</p>\n',
-  labelDefiWithdrawFee:
-    '<p>Finally, there will be an additional 0.05% exit fee incurred, which will be charged at redemption time.</p>',
-  labelLeverageETHTitle: 'Leveraged ETH',
-  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH',
+  labelDefiWithdrawFee: '',
+  labelLeverageETHTitle: 'Leveraged ETH Staking',
+  labelLayer2HistoryleverageETHRecords: 'Leveraged ETH Staking',
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip:
     'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
@@ -1798,7 +1801,6 @@ export default {
   labelStopPriceSell: 'Limit / Sell Price',
   labelClaimallToken: 'My Rewards',
   labelConnecting: 'Connecting',
-  labelClaimallToken: 'Reward token {{symbol}}',
   labelTitleOverviewAllPrd: 'All Products',
   labelInvestDefiDes: 'Earn ETH staking rewards',
   labelInvestChoseProduct: 'Choose the product you want',
@@ -1829,28 +1831,312 @@ export default {
   labelInvestType_LEVERAGEETH: 'Leveraged ETH Staking',
   labelRewardRefresh: 'Refresh',
   labelToMyL2WidthAddress: '<0>My {{loopringL2}}</0><1>({{address}})</1>',
+  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelMarketOrderUnfilled: 'Market Order Unfilled',
-  labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
-  labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
-  labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
-  labelTimeoutAddressClick: '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
   labelRiskAgree: 'Proceed Anyway',
   labelRiskCancel: 'Cancel',
   labelExpectedSettlementPrice: 'Expected Settlement Price',
   labelCurrentMarketPrice: 'Current Market Price',
   labelPriceVariance: 'Price Variance',
   labelImpactExtraNewGreat:
-    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap Continue to confirm you understand and acknowledge the risk.',
+    'This trade will result in a loss of {{value}}% of the position’s market value. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
   labelPriceImpact: 'Price Impact',
   labelPriceImpactDes1:
     'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. If you acknowledge the risk and wish to proceed, type the <t>‘AGREE’</t> and tap ‘Proceed Anyway’ to confirm again.',
   labelPriceImpactDes2:
     'This trade will affect the pool price by more than {{value}}%，which is too high. It may result in significant slippage and potential losses. To proceed, tap ‘Proceed Anyway’ to confirm you understand and acknowledge the risk.',
+  labelCopyCodeClip: 'Referral Code Copied to Clipboard!',
+  labelDepositPending: '{{l1Symbol}} to {{l2Symbol}} Pending',
+  labelWithDrawPending: '{{l2Symbol}} to {{l1Symbol}} Pending',
+  labelContactsEditContactBtn: 'Edit Contact',
   labelLargePriceVariance: 'Large Price Variance',
   labelHighPriceImpacTitle: 'High Price Impact Detected',
+  labelTimeoutAddressClick:
+    '{{l1Symbol}} account checking request was rejected or some unknown error occurred, please <a>retry</a>',
+  labelSmallOrderAlertLine: 'Small trades (below ~$100) incur a higher fee.',
+  labelLimitImpactTitle: 'Limit taker Order Requires Confirmation',
+  labelRedPacketViewType2: 'Exclusive',
+  labelRedPacketPlazaPublic: 'Public Plaza',
+  labelRedPacketPlazaPublicDes:
+    'Everyone in the Loopring community can participate in claiming the red packet',
+  labelRedPacketQRPublic: 'Public QR',
+  labelRedPacketQRPublicDes:
+    'Anyone that knows the QR code can participate in claiming the red packet',
+  labelRedPacketExclusive: 'Exclusive Red Packet',
+  labelRedPacketExclusiveDes: 'Only users that have received the red packet can claim it',
+  labelRedPacketHaveExclusive: 'You have {{count}} exclusive Red Packets.',
+  labelRedPacketExclusiveViewDetails: 'View Details >',
+  labelRedPacketCongratulations: 'Congratulations!',
+  labelExclusiveRedpacket: 'Exclusive Red Packets',
+  labelRedpacketExclusiveReady: 'You have {{count}} exclusive Red Packets ready',
+  labelRedpacketSentMaxLimit: 'Sent / Max Limit',
+  labelRedpacketCreateNew: 'Create New Red Packet',
+  labelRedpacketGiftRedPacket: 'Count of Red Packet with Gift',
+  labelRedpacketRedPacketscount: 'Total Red Packets',
+  labelRedpacketRevealTime: 'Reveal Time',
+  labelRedpacketRecipients: 'Red Packet Recipients >',
+  labelRedpacketRecipientList: 'Recipient List',
+  labelExclusiveWhitelistDes:
+    "For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet. Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
+  labelRedpacketTextimport: 'Text import',
+  labelRedpacketContactImport: 'Contact import',
+  labelRedpacketNotificationDisplay: 'Notification Display',
+  labelRedpacketRedDotDes: 'Recipients are alerted via a badge next to the Red Packets category',
+  labelRedpacketBadge: 'Badge',
+  labelRedpacketPopUp: 'Pop-up Notification',
+  labelRedpacketPopUpTooltip:
+    "Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.",
+  labelRedpacketPopPpDes:
+    'Recipients are alerted via a prominent display that highlights the contents of the RedPacket. (Limited to whitelisted users)',
+  labelRedpacketPrepareRedPacket: 'Prepare Red Packet',
+  labelRedPacketChooseTarget: 'Select existing red packet or create a new one',
+  labelRedPacketRecipientList: 'Recipient List',
+  labelRedPacketPublicTooltip:
+    'Your Red Packet is public, and everyone can participate in claiming it.',
+  labelRedPacketPrivateTooltip: `
+    <p>Your Red Packet is private, and only the addresses you specify can claim it.</p>
+    <p>To create a new Exclusive Red Packet, please follow these steps:</p>
+    <li>1. Select the type of Red Packet</li>
+    <li>2. Specify the amount of Red Packets to be sent and the date/time for delivery</li>
+    <li>3. Designate the recipients</li>
+    <li>4. Set the Notification Display</li>
+    <p>For whitelisted users, each Red Packet can accommodate a maximum of 10,000 addresses, while standard users are allowed up to 50 addresses per Red Packet.</p>
+    <p>Whitelisted addresses include Loopring, our partners, or other verified members. If you're interested in being whitelisted, please contact us at support@loopring.io.</p>
+  `,
+  labelRedpacketExclusiveEmpty: 'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketExclusiveSelected: 'Selected: {{count}}',
+  labelRedpacketExclusiveManualEdit: 'Manual Edit',
+  labelRedpacketValidAddresses: 'Valid Addresses: {{count}}',
+  labelRedpacketTips: 'Tips',
+  labelRedpacketChangeImportTips:
+    'If you change the import method, the previously selected addresses will be erased, are you sure you want to erase them?',
+  labelRedpacketAddressesReview: 'Addresses Review',
+  labelRedpacketAddressesReviewPart1: 'The list contains {{count}} valid addresses,',
+  labelRedpacketAddressesReviewPart2: '{{count}} invalid addresses',
+  labelRedpacketAddressesReviewPart3:
+    '. To proceed, invalid addresses will be automatically removed from the list.',
+  labelRedpacketExclusiveListEmpty:
+    'Your Prepared but unaddressed red packets will be displayed here!',
+  labelRedpacketreceiptListEmpty: 'The addresses of the red packet you sent will be displayed here',
+  labelRedpacketBestwishes: 'Best wishes',
+  labelSendRedPacketTitleExclusive: 'Send Red Packet -- Exclusive',
+  labelSendRedPacketClear: 'Clear',
+  labelSendRedPacketMax: 'Max: {{count}}',
+  labelRedPacketMaxValueExceeded: 'Maximum value exceeded',
+  labelRedPacketTotal: 'Total {{count}}',
+  labelRedPacketExclusiveTag: 'Exclusive',
+  labelRedPacketClaiming: 'Claiming',
+  labelRedPacketReceiptsList: 'Red Packet Receipt >',
+  labelEOA: 'EOA',
+  labelLoopringWallet: 'Loopring',
+  labelOtherSmart: 'Other Smart',
+  labelBinance: 'Binance',
+  labelHuobi: 'Huobi',
+  labelOtherExchange: 'Other Exchange',
+  labelContactsEditContact: 'Edit Contact',
   labelLeverageETHStakingDes: 'Gain higher APY aggressively',
-  labelFeeAvailablePay: 'Available: {{available}}, Pay: {{pay}}',
   labelDownloadShared: 'Download',
   labelShareReferralCode: 'Share to',
-  labelShareMessage: "Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}"
+  labelShareMessage:
+    'Join me at Loopring and earn exclusive rewards with Loopring Referral Program! https://www.loopring.io/#/?referralcode={{code}}',
+
+  labelInvestDualAutoTitle: "What's Auto Reinvest",
+  labelDualAutoTitle: 'Auto Reinvest <1></1>',
+  labelDualAutoTitleDes:
+    'Auto Reinvest will automatically reinvest your investment and earned interest into a new term with the same Target Price once the previous term expires, continuing until you successfully buy or sell crypto. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed and your investment and earned interest will be unlocked.\n',
+  labelInvestDualAutoCheck:
+    '<p>Auto Reinvest will automatically reinvest your investment and earned interest into a new term with the same Target Price once the previous term expires, continuing until you successfully buy or sell crypto. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed and your investment and earned interest will be unlocked.</p><p> Reinvest Target Price: The Target Price at which you want to buy or sell crypto.</p><p> Longest Settlement Date: The maximum duration available for selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.</p>',
+  labelDualAutoDetail:
+    'Auto Reinvest will try to find a new product which based on the following rule at 16:00 on the settlement day.',
+  labelDualAutoDUAL_BASEPrice: 'Sell Price <1></1>',
+  labelDualAutoDUAL_CURRENCYPrice: 'Buy Price <1></1>',
+  labelDualAutoDUAL_BASEPriceDes: 'The target price at which you want to sell crypto.',
+  labelDualAutoDUAL_CURRENCYPriceDes: 'The target price at which you want to buy crypto.',
+  labelDualModifyParameter: 'Modify Parameter',
+  labelDayDisplay: '{{item}} Day(s)',
+  labelDualModifyConfirm: 'confirm',
+  labelDualAutoDurationDes:
+    'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualModifyBtn: 'Modify',
+  labelTurnOffDualAutoInvest: 'Stop Auto Invest',
+  labelDualModifyAPR: 'APR: {{value}}',
+  labelDualModifySettlementDateDes: 'Changes will take effect after the Next Settlement Date.',
+  labelDualModifySettlementDate: 'Next Settlement Date: {{date}}',
+  labelDualEditSuccess: 'Update successful!',
+  labelDualEditFailed: 'Update Failed!',
+  labelDualEditDuration: 'Modify Longest Settlement Date <1></1>',
+  labelDualEditDurationDes:
+    'The maximum duration when selecting the settlement period. Auto Reinvest will automatically match products with settlement periods that do not exceed the Longest Settlement Date.',
+  labelDualInvestGuid: 'Invest',
+  labelCoverGain: 'Covered Gain',
+  labelCoverGainDes: 'Earn interest before taking profits',
+  labelDip: 'Buy The Dip',
+  labelDipDes: 'Earn interest while waiting for your price target',
+  labelDualMerge: 'Dual Investment',
+  labelDualMergeDes: 'Select based on Token and Settlement Date',
+  labelDualChooseTokenDUAL_BASE: 'Step 1: Choose a token to sell',
+  labelDualChooseTargetPriceDUAL_BASE: 'Step 2: Choose Target Price and Settlement Date',
+  labelDualChooseTokenDUAL_CURRENCY: 'Step 1: Choose a token to buy',
+  labelDualChooseTargetPriceDUAL_CURRENCY: 'Step 2: Choose Target Price and Settlement Date',
+  labelDualTypeDualGain: 'Covered Gain',
+  labelDualTypeDualDip: 'Buy The Dip',
+  labelDualTypeDualBegin: 'Dual Investment',
+  labelDualTypeAll: 'Dual Investment',
+  labelDualAutoCancelConfirm: 'Disable Auto Reinvest',
+  labelDualAutoCancelOrder: 'Cancel',
+  labelDualAutoCancelConfirmDes:
+    'Are you sure about disable auto reinvest? If disabled, there will be no new orders after the next settlement.',
+  labelDualModifySettlementDateDialog: 'Next Settlement Date',
+  labelDefiRate: 'Rate',
+  labelDefiLido: 'Lido',
+  labelDefiRocketPool: 'Rocket Pool',
+  labelDualIsHigh: 'is significantly higher',
+  labelDualIsLow: 'is significantly lower',
+  labelDualAutoAlert:
+    "The current price of {{base}} is {{currentPrice}} {{quote}}, which  {{method}}  than the price you've set for Auto Reinvest. This may result in a lower APY for your next settlement. You can adjust the price for Auto Reinvest.",
+  labelDualAutoDuration: 'Longest Settlement Date <1></1>',
+  labelInvestDualGainTitle: 'What is Covered Gain?',
+  labelInvestDualGainGuid:
+    '<p>Covered Gain is an investment strategy to sell digital assets at your Target Price and earn interest while waiting.</p>' +
+    '<p>On the Settlement Date, there can be 2 scenarios:</p>' +
+    '<ol><li>Market Price > Target Price</li>' +
+    '<li>Market Price ≤ Target Price</li></ol>' +
+    '<h5>Market Price > Target Price</h5>' +
+    '<p>Your original investment and earned interest will be sold at the target price.</p>' +
+    '<p>This order is then closed regardless of whether "Auto Reinvest" is enabled or not.</p>' +
+    '<h5>Market Price ≤ Target Price</h5>' +
+    '<p>Your original investment and earned interest won’t be sold.</p>' +
+    '<p>If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully sell crypto at your desired price or disable the feature.</p>' +
+    '<h5>Auto Reinvest</h5>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully sell your crypto at your Target Price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell your crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelInvestDualDipTitle: 'What is Buy The Dip?',
+  labelInvestDualDipGuid:
+    '<p>Buy The Dip is an investment strategy to buy digital assets at your Target Price and earn interest while waiting.</p>' +
+    '<p>On the Settlement Date, there can be 2 scenarios: </p>' +
+    '<ol><li>Market Price > Target Price </li>' +
+    '<li>Market Price ≤ Target Price </li></ol>' +
+    '<h5>Market Price > Target Price</h5>' +
+    '<p>Your original investment and earned interest won’t be converted. Earned interest is in USDC or USDT.</p>' +
+    '<p>If you enable the “Auto Reinvest” feature, Loopring will automatically subscribe to a suitable dual investment product based on the agreed terms until you either successfully buy crypto at your desired price or disable the feature.</p>' +
+    '<h5>Market Price ≤ Target Price</h5>' +
+    '<p>Your original investment and earned interest will be converted at the Target Price.</p>' +
+    '<p>This order is then closed regardless of whether "Auto Reinvest" is enabled or not.</p>' +
+    '<h5>Auto Reinvest</h5>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelAssetDualInvests: 'Dual Investment',
+  labelTxGuardian_upgrade_contract: 'upgrade contract',
+  labelTxGuardian_approve_token: 'approve token',
+  labelContactNameExisted: 'Name already exists',
+  labelContactAddressExisted: 'Address already exists',
+  labelL1toL2ThirdPartOn: 'On-ramp Crypto',
+  labelL1toL2ThirdPartOff: 'Off-ramp Crypto',
+  labelTargetRedpacketOption1: 'Option 1',
+  labelTargetRedpacketCreateTitle:
+    'The following steps are required to create a new Exclusive Red Packet',
+  labelTargetRedpacketCreateStep1: '1. Select the type of red packet to be sent.',
+  labelTargetRedpacketCreateStep2: '2. Number of red packets to be sent/transmission time',
+  labelTargetRedpacketCreateStep3: '3. Designated Red Packet Recipients',
+  labelTargetRedpacketCreateStep4: '4. Notification display for red packet recipients',
+  labelTargetRedpacketNoRedpacket: 'You do not have an existing wallet yet',
+  labelTargetRedpacketNoRedpacketDes:
+    'If your prepared but unaddressed Red Packets will be displayed here !',
+  labelTargetRedpacketOption2: 'Option 2',
+  labelEarnVaultTitle: 'Total Vault',
+  labelDualBTC: 'ETH - WBTC Dual Investment',
+  labelDualBTCDes: 'Select based on Token and Settlement Date',
+  labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',
+  labelDualNewPriceLessThan: 'if {{base}} < {{value}} {{quote}}',
+  labelDualNewPriceLessOrEqualThan: 'if {{base}} ≤ {{value}} {{quote}}',
+  labelDualNewPriceGreaterThan: 'if {{base}} > {{value}} {{quote}}',
+  labelDualNewPriceGreaterThanOrEqual: 'if {{base}} ≥ {{value}} {{quote}}',
+  labelInputMax: 'Max',
+  labelTokenEnterDualToken: 'Amount',
+  labelTokenMaxBalance: 'Available Balance',
+  labelInvestMiniDual: 'Min {{value}}',
+  labelDualAutoSearchingDes: 'Auto reinvesting. Searching for the product...',
+  labelDualAutoInvestTip: 'Auto Reinvest Status:{{}}',
+  labelDualRetryStatusSuccess:
+    'Auto reinvested successful. A new order has been generated for you.',
+  labelDualRetryStatusError:
+    'Auto reinvest failed. Cannot find product with Buy Price of {{price}} and Longest Settlement Date of {{day}} days. ',
+  labelDualRetryStatusRetrying: 'Auto reinvesting. Searching for the product...',
+  labelDualRetryPending: 'Pending',
+  labelDualRetryTerminated: 'Terminated',
+  labelDualRetryFailed: 'Failed',
+  labelDualRetrySuccess: 'Successful',
+  labelDualRetryStatusTerminated:
+    'Auto Reinvest terminated. You successfully purchased the target token.',
+  labelInvestmentStatusSettled: 'Settled',
+  labelInvestmentStatusDelivering: 'Delivering',
+  labelInvestmentStatusSubscribe: 'Earning',
+  labelDualTxsSettlement: 'Settlement',
+  labelDualAuto: 'Auto Reinvest',
+  labelDualAssetReInvestEnable: 'Enabled',
+  labelDualDeliver: 'Settlement Price',
+  labelDualAssetReInvestDisable: 'Disabled',
+  labelUnlockErrorLine1:
+    'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
+  labelUnlockErrorLine2Part1: 'As a last resort, you can ',
+  labelUnlockErrorLine2Part2: 'Reset Loopring L2 keypair',
+  labelUnlockErrorLine2Part3:
+    '. This can be especially helpful if all other retry attempts fail, particularly when using hardware wallets.',
+  labelResetLoopringL2: 'Reset Loopring L2 keypair',
+  labelResetlockedReset1:
+    "Please note that if you have pending Dual Investment subscriptions, the L2 keypair reset won't take immediate effect. Your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
+  labelResetlockedReset2:
+    'Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.',
+  labelResetunlockedWithDual1:
+    "We’ve detected that you have an active Dual Investment subscription. As a result, the L2 keypair reset won't take effect immediately. Instead, your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
+  labelResetunlockedWithDual2:
+    'Additionally, any pending limit orders will be canceled since they are tied to the old L2 keypair.',
+  labelResetunlockedWithoutDual:
+    'Resetting the L2 keypair will cancel all pending limit orders as they tied to the old L2 keypair.',
+  labelDualAutoReinvest: 'Auto Reinvest',
+  labelInvestDualTutorialContent2:
+    '<h6>Auto Reinvest</h6>' +
+    '<p>When you enable the “Auto Reinvest” feature, Loopring will automatically reinvest your funds into a new product with the same target price when the previous product expires, continuing until you successfully buy crypto at your desired price. If there isn’t an available product within 2 hours after the previous settlement, the order will be automatically closed.</p>' +
+    '<p>Buy Price: the Target Price at which you want to buy crypto.</p>' +
+    '<p>Sell Price: the Target Price at which you want to sell crypto.</p>' +
+    "<p>Longest Settlement Date: your acceptable investment period. If no suitable products are available within this range, “Auto Reinvest” will not subscribe to any products for you, even if it's enabled.</p>",
+  labelNoticeTitle: 'Notifications',
+  labelNotificationTime: '{{time}}',
+  labelNotificationClear: 'Clear all',
+  labelNotificationReadAll: 'Mark all as read',
+  labelNotificationLabel: 'Notification',
+  labelActiveL1successfulNote: 'Active {{ethereumL1}} successful',
+  labelActiveL2successfulNote: 'Active {{loopringL2}} successful',
+  labelActivatingL1AccountNote: 'Activating {{ethereumL1}} successful',
+  labelL1ReceiveNote: 'Receive token in {{ethereumL1}}',
+  labelL1SendNote: ' Send token from {{ethereumL1}}',
+  labelL2ReceiveNote: 'Receive token in {{loopringL2}}',
+  labelL2SendNote: 'Send token from {{loopringL2}} successful',
+  labelL2DepositNote: 'Receive token in {{loopringL2}}',
+  labelL2WithdrawNote: 'Send token in {{loopringL2}}',
+  labelTotalUnRead: '{{total}} unread(s)',
+  labelReadAll: 'View all',
+  labelDualDefaultAutoTitle: 'Default Enable Auto Reinvest',
+  labelDualLongestSettlementDuration: 'Modify Longest Settlement Date',
+  labelDualLongestSettlementFixed: 'Fixed',
+  labelDualLongestSettlementAutomatic: 'Automatic',
+  labelDualSettingConfirm: 'Confirm',
+  labelLuckyTokenNormal: 'Normal',
+  labelRedPacketSendAverageTitle: 'Average Red Packet',
+  labelBlindBoxHint:
+    'Each recipient will receive a sealed Red Packet which cannot be opened until the expiration date. While some recipients will receive an NFT, others will need to try their luck next time.',
+  labelNormalRedPacketTitle: 'Normal Red Packet',
+  labelL2DualNote: 'Dual Investment Notification',
+  labelQuickInvest: 'Quick Invest',
+  labelReceiveToken: 'Receive',
+  labelETHStakingEnterPaymentToken: 'Amount',
+  labelDefiDuration: 'Duration',
+  labelFlexible: 'Flexible',
+  labelEstAPR: 'Est.APR',
+  labelTradingFeeTooltips:
+    "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
+  labelHideRead: 'Hide Read(s)',
 }

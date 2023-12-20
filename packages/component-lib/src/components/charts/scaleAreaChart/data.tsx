@@ -54,6 +54,18 @@ export const getRenderData = (
     }),
   }))
 }
+export const getAprRenderData = (
+  type: keyof typeof ChartType,
+  data?: { apy: string; createdAt: number }[],
+): { apy: string; createdAt: number }[] => {
+  if (!data || !Array.isArray(data)) return []
+  return data.map((o, _index) => ({
+    ...o,
+    sign: {
+      ...o,
+    },
+  }))
+}
 
 export interface IGetDepthDataParams {
   bidsPrices: number[]

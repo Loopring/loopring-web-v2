@@ -34,6 +34,13 @@ export const OutlinedInput = styled(MuiOutlinedInput)<OutlinedInputProps>`
 export const TextField = styled(MuiTextField)<TextFieldProps>`
   && .MuiOutlinedInput-root {
     ${({ size }) => size?.toLowerCase() === 'large' && inputHeightLarge}
+    background-color: transparent;
+  }
+  background-color: transparent;
+
+  input::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
   }
 
   .MuiInputAdornment-root {
@@ -48,9 +55,8 @@ export const TextField = styled(MuiTextField)<TextFieldProps>`
   && {
     .MuiSelect-nativeInput + svg {
       position: absolute;
-      right: 0.4rem;
-      right: ${({  size }) => size === 'large' ? 1 : 0.4}rem;
-      top: ${({ theme, size }) => size === 'large' ? 2 * theme.unit : theme.unit}px;
+      right: ${({ size }) => (size === 'large' ? 1 : 0.4)}rem;
+      top: ${({ theme, size }) => (size === 'large' ? 2 * theme.unit : theme.unit)}px;
       color: var(--color-text-secondary);
     }
 
@@ -118,8 +124,7 @@ export const IWrap = styled(Box)<
   .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
-    background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit / 2}px;
+    border-radius: ${({ theme }) => theme.unit}px;
     margin-top: ${({ theme }) => `${theme.unit / 2}px`};
     height: var(--input-height-large);
 
@@ -156,6 +161,10 @@ export const IWrap = styled(Box)<
 
     .MuiButton-label {
       justify-content: flex-start;
+    }
+    &.icon-wrap-left,
+    &.btn-wrap-left {
+      justify-content: flex-end;
     }
   }
 
@@ -235,7 +244,7 @@ export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
 
   &.icon-wrap-left > div {
     justify-content: flex-end;
-    padding-right: ${({ theme }) => (theme.unit / 2) * 3}px;
+    padding-right: ${({ theme }) => theme.unit}px;
     align-items: center;
   }
 ` as (props: BoxProps & { logoColor?: any }) => JSX.Element
@@ -272,7 +281,7 @@ export const IInput = styled(CurrencyInput)`
   color: var(--color-text-primary);
 
   ::placeholder {
-    color: var(--color-text-secondary);;
+    color: var(--color-placeholder);
   }
 
   :disabled {

@@ -4,11 +4,11 @@ import { Box } from '@mui/material'
 import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
 import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
-import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { useAccount, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
+import { useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
+import { HistoryPanel } from './HistoryPanel'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -18,13 +18,7 @@ export const AssetPage = () => {
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
-  const { account } = useAccount()
-
-  React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      walletLayer2Service.sendUserUpdate()
-    }
-  }, [])
+  const { redPackets } = useTargetRedPackets()
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
@@ -33,6 +27,7 @@ export const AssetPage = () => {
       default:
         return (
           <AssetPanel
+            showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
             assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
           />

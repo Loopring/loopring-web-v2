@@ -83,6 +83,12 @@ export enum SCENARIO {
 export type CAMPAIGNTAGCONFIG = {
   [key in SCENARIO]: CAMPAIGN_TAG[]
 }
+export type RedPacketConfig = {
+  timeRangeMaxInSecondsToken: number
+  timeRangeMaxInSecondsNFT: number
+  showNFT: boolean
+  showERC20Blindbox: boolean
+}
 export type NOTIFICATION = {
   activities: ACTIVITY[]
   activitiesInvest: ACTIVITY[]
@@ -98,15 +104,18 @@ export type NOTIFICATION = {
     // prevMonth: string;
   }
   campaignTagConfig?: CAMPAIGNTAGCONFIG
-  redPacket: {
-    timeRangeMaxInSecondsToken: number
-    timeRangeMaxInSecondsNFT: number
-    showNFT: boolean
-    showERC20Blindbox: boolean
-  }
+  redPacket: RedPacketConfig
 }
 
 export type Notify = Omit<NOTIFICATION, 'prev'>
+export type NOTIFICATIONHEADER<N> = {
+  notifyMap: Notify
+  myNotifyMap: {
+    items: N[]
+    total: number
+    unReads: number
+  }
+}
 
 // export enum SCENARIO {
 //   orderbook = "orderbook",

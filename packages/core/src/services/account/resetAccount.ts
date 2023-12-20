@@ -2,6 +2,8 @@ import { resetUserRewards } from '../../stores/userRewards/reducer'
 import { reset as resetWalletLayer1 } from '../../stores/walletLayer1/reducer'
 import { reset as resetWalletLayer2 } from '../../stores/walletLayer2/reducer'
 import { reset as resetwalletLayer2NFT } from '../../stores/walletLayer2NFT/reducer'
+import { reset as resetContacts } from '../../stores/contacts/reducer'
+
 import { resetAmount } from '../../stores/amount/reducer'
 import { store } from '../../stores'
 import { resetTokenPrices } from '../../stores/tokenPrices/reducer'
@@ -15,6 +17,7 @@ export async function resetLayer12Data() {
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer1(undefined))
   store.dispatch(resetWalletLayer2(undefined))
+    store.dispatch(resetContacts(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
   let toggle = {}
   if (
@@ -31,6 +34,8 @@ export async function resetLayer12Data() {
   }
   store.dispatch(
     updateToggleStatus({
+      chainId: store.getState().settings.defaultNetwork,
+      account: store.getState().account,
       order: { enable: true, reason: undefined },
       joinAmm: { enable: true, reason: undefined },
       exitAmm: { enable: true, reason: undefined },
@@ -62,6 +67,7 @@ export function resetLayer2Data() {
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer2(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
+    store.dispatch(resetContacts(undefined))
 }
 
 const LoopFrozenFlag = true
@@ -73,7 +79,7 @@ export async function toggleCheck(
 ) {
   if (chainId === undefined) {
     const system = store.getState().system
-    chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId
+    // chainId = (system.chainId ?? sdk.ChainId.MAINNET) as sdk.ChainId
     dexToggleUrl = system.dexToggleUrl
   }
 
@@ -82,6 +88,8 @@ export async function toggleCheck(
     myLog('account.frozen ___timer___', account.accountId)
     store.dispatch(
       updateToggleStatus({
+        // chainId:store.getState().settings.defaultNetwork,
+        // account:store.getState().account,
         order: { enable: false, reason: 'account frozen' },
         joinAmm: { enable: false, reason: 'account frozen' },
         exitAmm: { enable: false, reason: 'account frozen' },
@@ -106,7 +114,7 @@ export async function toggleCheck(
         StopLimit: { enable: false, reason: 'account frozen' },
       }),
     )
-  } else if (dexToggleUrl && chainId === sdk.ChainId.MAINNET) {
+  } else if (dexToggleUrl) {
     Promise.all([
       dexToggleUrl
         ? fetch(dexToggleUrl).then((response) => (response?.ok ? response.json() : {}))
@@ -118,6 +126,8 @@ export async function toggleCheck(
       .then(([toggle, _whiteListRes]) => {
         store.dispatch(
           updateToggleStatus({
+            chainId: store.getState().settings.defaultNetwork,
+            account,
             order: { enable: true, reason: undefined },
             joinAmm: { enable: true, reason: undefined },
             exitAmm: { enable: true, reason: undefined },

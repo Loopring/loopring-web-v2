@@ -13,6 +13,7 @@ import {
   PriceTag,
   RowConfig,
   TokenType,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { MyPoolRow, MyPoolTableProps } from './Interface'
 import styled from '@emotion/styled'
@@ -597,6 +598,10 @@ export const MyPoolTable = withTranslation('tables')(
       ]
     }
 
+    const nanToEmptyTag = (value: any, prefix: string) => {
+      return value === 'NaN' ? EmptyValueTag : prefix + value
+    }
+
     return (
       <TableStyled isMobile={isMobile} className={`${rawData?.length > 0 ? 'min-height' : ''}`}>
         {
@@ -631,14 +636,16 @@ export const MyPoolTable = withTranslation('tables')(
               {totalDollar
                 ? hideAssets
                   ? HiddenTag
-                  : PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true, floor: true },
+                  : nanToEmptyTag(
+                      getValuePrecisionThousand(
+                        sdk.toBig(totalDollar).times(forexMap[currency] ?? 0),
+                        undefined,
+                        undefined,
+                        2,
+                        true,
+                        { isFait: true, floor: true },
+                      ),
+                      PriceTag[CurrencyToTag[currency]],
                     )
                 : EmptyValueTag}
             </Typography>
@@ -709,7 +716,7 @@ export const MyPoolTable = withTranslation('tables')(
                       variant={'contained'}
                       size={'small'}
                       onClick={() => {
-                        history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                        history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
                       }}
                     >
                       {t('labelClaimBtn', { ns: 'common' })}

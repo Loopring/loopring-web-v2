@@ -17,6 +17,8 @@ import { investForks } from './invest'
 import { walletL2CollectionFork } from './walletL2Collection/saga'
 import { walletL2NFTCollectionFork } from './walletL2NFTCollection/saga'
 import { redPacketConfigsSaga } from './redPacket/saga'
+import { exclusiveRedPacketSaga } from './targetRedpackt/saga'
+import { contractsForks } from './contacts/saga'
 
 function* mySaga() {
   yield all([
@@ -38,6 +40,8 @@ function* mySaga() {
     ...amountForks,
     ...notifyForks,
     ...layer1ActionHistoryForks,
+    ...exclusiveRedPacketSaga,
+    ...contractsForks,
   ])
 }
 

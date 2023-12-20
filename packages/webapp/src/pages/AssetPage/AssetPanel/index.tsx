@@ -5,22 +5,24 @@ import styled from '@emotion/styled'
 import { AssetsTable, AssetTitle, AssetTitleProps, useSettings } from '@loopring-web/component-lib'
 
 import { StylePaper, useSystem, useTokenMap } from '@loopring-web/core'
-import { AssetPanelProps } from './hook'
+import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import MyLiquidity from '../../InvestPage/MyLiquidityPanel'
+import { MyLiquidity } from '../../InvestPage/MyLiquidityPanel'
 import { RedPacketClaimPanel } from '../../RedPacketPage/RedPacketClaimPanel'
 import {
   AssetL2TabIndex,
   AssetTabIndex,
+  CircleIcon,
   MapChainId,
+  RouterPath,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import RewardsPanel from '../RewardsPanel'
 
 const StyleTitlePaper = styled(Box)`
   width: 100%;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 
@@ -39,13 +41,15 @@ export const AssetPanel = withTranslation('common')(
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
-      onTokenLockHold,
-      tokenLockDetail,
+      // onTokenLockHold,
+      // tokenLockDetail,
     },
+    showRedpacketReddot,
     ...rest
   }: {
+    showRedpacketReddot: boolean
     assetTitleProps: AssetTitleProps
-    assetPanelProps: AssetPanelProps //AssetPanelProps;
+    assetPanelProps: AssetPanelProps
   } & WithTranslation) => {
     const container = React.useRef(null)
     const { disableWithdrawList } = useTokenMap()
@@ -54,29 +58,31 @@ export const AssetPanel = withTranslation('common')(
     const match: any = useRouteMatch('/l2assets/:assets?/:item?')
     const [currentTab, setCurrentTab] = React.useState<AssetTabIndex>(AssetTabIndex.Tokens)
     const history = useHistory()
+    const { onTokenLockHold, tokenLockDetail } = useAssetAction()
+
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
           case AssetTabIndex.Invests:
-            history.replace('/l2assets/assets/Invests')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Invests}`)
             setCurrentTab(AssetTabIndex.Invests)
             break
           case AssetTabIndex.RedPacket:
-            history.replace('/l2assets/assets/RedPacket')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)
             setCurrentTab(AssetTabIndex.RedPacket)
             break
           case AssetTabIndex.Rewards:
-            history.replace('/l2assets/assets/Rewards')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
             setCurrentTab(AssetTabIndex.Rewards)
             break
           case AssetTabIndex.Tokens:
           default:
-            history.replace('/l2assets/assets/Tokens')
+            history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Tokens}`)
             setCurrentTab(AssetTabIndex.Tokens)
             break
         }
       } else {
-        history.replace('/l2assets/assets/Tokens')
+        history.replace(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Tokens}`)
         setCurrentTab(AssetTabIndex.Tokens)
       }
     }
@@ -85,10 +91,11 @@ export const AssetPanel = withTranslation('common')(
     }, [match?.params?.item, defaultNetwork])
     const hideAssets = assetTitleProps.hideL2Assets
 
+    // myLog('assetsRawData')
     return (
       <>
         {!isMobile && (
-          <StyleTitlePaper paddingX={3} paddingY={5 / 2} className={'MuiPaper-elevation2'}>
+          <StyleTitlePaper paddingX={3} paddingY={5 / 2}>
             <AssetTitle
               {...{
                 t,
@@ -107,20 +114,42 @@ export const AssetPanel = withTranslation('common')(
           variant='scrollable'
         >
           {AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
-            if (isMobile && item == AssetTabIndex.RedPacket) {
-              return <React.Fragment key={item.toString()} />
+            if (item == AssetTabIndex.RedPacket) {
+              if (isMobile) {
+                return <React.Fragment key={item.toString()} />
+              } else {
+                return (
+                  <Tab
+                    key={item.toString()}
+                    label={
+                      <>
+                        {t(`labelAsset${item}`)}
+                        {showRedpacketReddot && (
+                          <CircleIcon
+                            sx={{
+                              position: 'absolute',
+                              top: 2,
+                              right: -0,
+                              pointerEvents: 'none' as any,
+                            }}
+                            className={'noteit'}
+                            fontSize={'large'}
+                            htmlColor={'var(--color-error)'}
+                          />
+                        )}
+                      </>
+                    }
+                    value={item}
+                  />
+                )
+              }
             } else {
               return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
             }
           })}
         </Tabs>
         {currentTab === AssetTabIndex.Tokens && (
-          <StylePaper
-            marginTop={1}
-            marginBottom={2}
-            ref={container}
-            className={'MuiPaper-elevation2'}
-          >
+          <StylePaper marginTop={1} marginBottom={2} ref={container}>
             <Box className='tableWrapper table-divide-short'>
               <AssetsTable
                 {...{
@@ -148,7 +177,13 @@ export const AssetPanel = withTranslation('common')(
         )}
         {currentTab === AssetTabIndex.Rewards && <RewardsPanel hideAssets={hideAssets} />}
         {currentTab === AssetTabIndex.Invests && (
-          <MyLiquidity className={'assetWrap'} isHideTotal={true} hideAssets={hideAssets} />
+          <MyLiquidity
+            noHeader
+            path={`${RouterPath.l2assets}/assets/Invests`}
+            className={'assetWrap'}
+            isHideTotal={true}
+            hideAssets={hideAssets}
+          />
         )}
         {!isMobile && currentTab === AssetTabIndex.RedPacket && (
           <RedPacketClaimPanel hideAssets={hideAssets} />

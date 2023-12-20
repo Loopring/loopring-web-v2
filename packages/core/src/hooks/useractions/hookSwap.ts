@@ -44,6 +44,7 @@ import {
   IBData,
   MarketType,
   myLog,
+  RouterPath,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
   SwapTradeCalcData,
@@ -82,17 +83,6 @@ export const useAlert = () => {
     step: 1,
     showWitch: '',
   })
-  // React.useEffect(()=>{
-  //
-  //   setConfirmed(state=>{
-  //     return [state[0],!isSmallOrder]
-  //   })
-  // },[isSmallOrder])
-  // const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
-  // const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
-  // const [smallOrderAlertOpen, setSmallOrderAlertOpen] = React.useState<boolean>(false)
-  // const [secondConfirmationOpen, setSecondConfirmationOpen] = React.useState<boolean>(false)
-  //
   return {
     showAlert,
     confirmed,
@@ -103,17 +93,28 @@ export const useAlert = () => {
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket()
-  const { account } = useAccount()
+  const { ammMap } = useAmmMap()
+  const { pageTradeLite } = usePageTradeLite()
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      sendSocketTopic({ [sdk.WsTopicType.account]: true })
+    if (pageTradeLite.market) {
+      sendSocketTopic({
+        [sdk.WsTopicType.ammpool]: ammMap['AMM-' + pageTradeLite.market]
+          ? [ammMap['AMM-' + pageTradeLite.market].address]
+          : [],
+        [sdk.WsTopicType.mixorder]: {
+          markets: [pageTradeLite.market],
+          level: 0,
+          count: 50,
+          snapshot: true,
+        },
+      })
     } else {
       socketEnd()
     }
     return () => {
       socketEnd()
     }
-  }, [account.readyState])
+  }, [pageTradeLite?.market])
 }
 
 export const useSwap = <
@@ -148,8 +149,6 @@ export const useSwap = <
   /** after unlock **/
   const { amountMap, getAmount, status: amountStatus } = useAmount()
   const { status: walletLayer2Status } = useWalletLayer2()
-
-  // const [isMarketInit,setIsMarketInit] =  React.useState<boolean>(true);
   const [sellMinAmt, setSellMinAmt] = React.useState<string>()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
   const [tradeCalcData, setTradeCalcData] = React.useState<CAD & { [key: string]: any }>({
@@ -157,7 +156,6 @@ export const useSwap = <
       return { ...prev, [item]: coinMap ? coinMap[item] : {} }
     }, {} as CoinMap<C>),
   } as CAD)
-
   /** redux storage **/
   const {
     pageTradeLite,
@@ -168,9 +166,7 @@ export const useSwap = <
   } = usePageTradeLite()
   /*** api prepare ***/
   // const [pair, setPair] = React.useState(realPair);
-
   const [isSwapLoading, setIsSwapLoading] = React.useState(false)
-
   /***confirm  ***/
   const [storageId, setStorageId] = React.useState<{
     orderId: number
@@ -259,7 +255,6 @@ export const useSwap = <
       setTradeData({ ...tradeDataTmp })
       history.push('/trade/lite/' + _market)
       updatePageTradeLite({ market, tradePair })
-
       myLog('hookSwap: Market change getAmount', market)
     }
   }
@@ -312,7 +307,6 @@ export const useSwap = <
       },
     })
   }
-
   // @ts-ignore
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
@@ -434,17 +428,6 @@ export const useSwap = <
             label: undefined,
             tradeBtnStatus: TradeBtnStatus.AVAILABLE,
           }
-          // if (tradeCalcData?.isNotMatchMarketPrice && !tradeCalcData?.isChecked) {
-          //   return {
-          //     label: undefined,
-          //     tradeBtnStatus: TradeBtnStatus.DISABLED,
-          //   }
-          // } else {
-          //   return {
-          //     label: undefined,
-          //     tradeBtnStatus: TradeBtnStatus.AVAILABLE,
-          //   }
-          // }
         }
       } else {
         return {
@@ -468,7 +451,6 @@ export const useSwap = <
   /*** Btn related function ***/
   const swapFunc = React.useCallback(async () => {
     let { calcTradeParams, tradeChannel, orderType, maxFeeBips } = pageTradeLite
-
     if (
       !LoopringAPI.userAPI ||
       !tokenMap ||
@@ -485,13 +467,10 @@ export const useSwap = <
 
       return
     }
-
     const sell = tradeData?.sell.belong as string
     const buy = tradeData?.buy.belong as string
-
     const sellToken = tokenMap[sell]
     const buyToken = tokenMap[buy]
-
     try {
       const request: sdk.SubmitOrderRequestV3 = {
         exchange: exchangeInfo.exchangeAddress,
@@ -514,15 +493,12 @@ export const useSwap = <
         tradeChannel,
         eddsaSignature: '',
       }
-
       myLog('submitOrder request', request)
-
       const response: { hash: string } | any = await LoopringAPI.userAPI.submitOrder(
         request,
         account.eddsaKey.sk,
         account.apiKey,
       )
-
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
         const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]
         if ((response as sdk.RESULT_INFO).code === 114002) {
@@ -549,9 +525,7 @@ export const useSwap = <
           },
           account.apiKey,
         )
-
         myLog('hookSwap:-----> resp:', resp)
-
         if (resp.orderDetail?.status !== undefined) {
           myLog('hookSwap:resp.orderDetail:', resp.orderDetail)
           switch (resp.orderDetail?.status) {
@@ -603,11 +577,7 @@ export const useSwap = <
         content: t('labelSwapFailed'),
       })
     }
-
-    // setOutput(undefined)
-
     await sdk.sleep(__SUBMIT_LOCK_TIMER__)
-
     setIsSwapLoading(false)
   }, [
     pageTradeLite,
@@ -667,7 +637,6 @@ export const useSwap = <
 
   const swapCalculatorCallback = React.useCallback(async () => {
     setIsSwapLoading(true)
-
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true })
       setIsSwapLoading(false)
@@ -676,17 +645,6 @@ export const useSwap = <
       setIsSwapLoading(false)
     } else {
       doShowAlert()
-      // if (priceLevel === PriceLevel.Lv1) {
-      //   setAlertOpen(true)
-      // } else if (priceLevel === PriceLevel.Lv2) {
-      //   setConfirmOpen(true)
-      // } else if (isSmallOrder) {
-      //   setSmallOrderAlertOpen(true)
-      // } else if (showSwapSecondConfirmation) {
-      //   setSecondConfirmationOpen(true)
-      // } else {
-      //
-      // }
     }
   }, [
     pageTradeLite.calcTradeParams,
@@ -703,7 +661,6 @@ export const useSwap = <
     btnStatus: swapBtnStatus,
     onBtnClick: onSwapClick,
     btnLabel: swapBtnI18nKey,
-    // btnStyle: tradeLimitBtnStyle,
   } = useSubmitBtn({
     availableTradeCheck,
     isLoading: isSwapLoading || (isMarketInit ?? false),
@@ -713,7 +670,7 @@ export const useSwap = <
   /*** Btn related end ***/
   const toPro = React.useCallback(() => {
     history.push({
-      pathname: `/trade/pro/${market}`,
+      pathname: `${RouterPath.pro}/${market}`,
     })
   }, [market])
 
@@ -793,9 +750,6 @@ export const useSwap = <
         calcTradeParams: {},
         priceImpactObj: undefined,
       })
-      // setFeeBips('0')
-      // setTotalFee('0')
-      // setTakerRate('0')
       setTradeCalcData((state) => {
         return {
           ...state,
@@ -811,9 +765,6 @@ export const useSwap = <
 
   useSwapSocket()
   useWalletLayer2Socket({ walletLayer2Callback })
-
-  // let { market } = sdk.getExistedMarket(marketArray, coinA, coinB);
-  // setMarket(market);
 
   /*** user Action function ***/
   //High: effect by wallet state update

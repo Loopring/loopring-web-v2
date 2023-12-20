@@ -35,6 +35,7 @@ export type AssetTitleProps = {
   hideL2Assets: boolean
   setHideL2Assets: (value: boolean) => void
   assetBtnStatus: TradeBtnStatus
+  isWebEarn?: boolean
 }
 
 export type AssetTitleMobileProps = AssetTitleProps & {
@@ -118,10 +119,11 @@ export type RedPacketDetailProps = {
   showShareBtn: boolean
   tokenSymbol?: string
   ended: boolean
-  bottomButton: 'ended' | 'share'
-  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden'
+  bottomButton: 'ended' | 'share' | 'hidden'
+  claimButton: 'claim' | 'claimed' | 'expired' | 'hidden' | 'claiming'
   onClickClaim?: () => void
   totalNumber: number
+  showReceiptListBtn: boolean
 }
 export type RedPacketBlindBoxDetailTypes =
   | 'Not Started'
@@ -211,6 +213,8 @@ export type RedPacketBlindBoxDetailProps = {
   expired: boolean
   isTokenBlindbox: boolean
   remainGiftsAmount: string
+  showReceiptListBtn: boolean
+  targets?: string[]
 }
 export type RedPacketClockProps = RedPacketDefault & {
   validSince: number

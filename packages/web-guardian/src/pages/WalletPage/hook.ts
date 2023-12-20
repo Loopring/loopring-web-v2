@@ -19,7 +19,7 @@ import {
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { GuardianStep, useSettings } from '@loopring-web/component-lib'
-import { connectProvides,AvaiableNetwork } from '@loopring-web/web3-provider'
+import { connectProvides } from '@loopring-web/web3-provider'
 import { useTranslation } from 'react-i18next'
 
 export enum TxGuardianHistoryType {
@@ -34,7 +34,7 @@ export enum TxGuardianHistoryType {
   REMOVE_GUARDIAN_WA = 59, // 35
   UNLOCK_WALLET_WA = 60, // 37
   RESET_GUARDIANS_WA = 61, // 200
-  CALL_CONTRACT_WA = 62,
+  CALL_CONTRACT_WA = 62, //201
 }
 
 export enum TxHebaoAction {
@@ -67,17 +67,8 @@ export const useHebaoMain = <
       operationLogList: [],
       guardianConfig: {},
     })
-  // const [openHebao, setOpenHebao] = React.useState<{
-  //   isShow: boolean
-  //   step: GuardianStep
-  //   options?: any
-  // }>({
-  //   isShow: false,
-  //   step: GuardianStep.LockAccount_WaitForAuth,
-  //   options: undefined,
-  // })
+
   const { clearOneItem } = layer1Store.useLayer1Store()
-  // const { chainId } = useSystem()
   const [isLoading, setIsLoading] = React.useState(false)
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -265,7 +256,13 @@ export const useAction = ({
     })
     if (LoopringAPI.walletAPI && selected && connectProvides.usedWeb3) {
       try {
-        const [{ contractType }, _chainId] = await Promise.all([
+        const [
+          {
+            // @ts-ignore
+            raw_data: { data: contractTypes },
+          },
+          _chainId,
+        ] = await Promise.all([
           LoopringAPI.walletAPI.getContractType({
             wallet: selected.address,
             network: networkName,
@@ -275,16 +272,29 @@ export const useAction = ({
 
         await callSwitchChain(_chainId)
         let isContract1XAddress: any = undefined,
-          guardianModuleAddress: any = undefined,
-          guardians: any = undefined
+          guardianModuleAddress: any = undefined
+        // guardians: any = undefined
+        let walletModule: any,
+          type = sdk.HEBAO_META_TYPE[selected.type] as unknown as sdk.HEBAO_META_TYPE
+        const contractType = contractTypes?.find(
+          (item) => item?.network.toUpperCase() === networkName,
+        )
         if (contractType && contractType.contractVersion?.startsWith('V1_')) {
+          switch (type) {
+            case sdk.HEBAO_META_TYPE.transfer:
+            case sdk.HEBAO_META_TYPE.deposit_wallet:
+            case sdk.HEBAO_META_TYPE.approve_token:
+              walletModule = guardianConfig?.supportContracts?.find((item: any) => {
+                return item.contractName === 'TRANSFER_MODULE'
+              })
+              break
+            default:
+              walletModule = guardianConfig?.supportContracts?.find((item: any) => {
+                return item.contractName === 'GUARDIAN_MODULE'
+              })
+          }
           isContract1XAddress = true
-          const walletModule = guardianConfig?.supportContracts?.find((item: any) => {
-            return item.contractName === 'GUARDIAN_MODULE'
-          })
           guardianModuleAddress = walletModule?.contractAddress
-        } else if (contractType && contractType.walletType === 0) {
-          guardians = []
         }
         const request: sdk.ApproveSignatureRequest = {
           approveRecordId: selected.id,
@@ -297,15 +307,15 @@ export const useAction = ({
         const response = await LoopringAPI.walletAPI.submitApproveSignature(
           {
             request: request,
-            guardian: selected,
+            guardian: { ...selected, type: sdk.HEBAO_META_TYPE[selected.type] as any },
             web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
             apiKey: '',
-            isHWAddr: !isFirstTime,
+            isHWAddr: false, // !isFirstTime,
             walletType: account.connectName as any,
           },
-          guardians,
+          [],
           isContract1XAddress,
           contractType?.masterCopy ?? undefined,
           guardianModuleAddress ?? undefined,
@@ -402,13 +412,10 @@ export const useAction = ({
           },
         })
       }
-      // .catch((error: any) => {
-
-      // })
     }
   }
   const handleOpenApprove = (guardian: sdk.Guardian) => {
-    if (isContractAddress && guardian.type !== 'recovery') {
+    if (isContractAddress) {
       // setNotSupportOpen(true)
       return
     }

@@ -4,16 +4,17 @@ import {
   DualChgData,
   DualWrapProps,
   useOpenModals,
+  useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CustomErrorWithCode,
   DualCalcData,
+  DualTrade,
   DualViewInfo,
   getValuePrecisionThousand,
   globalSetup,
-  IBData,
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
@@ -41,19 +42,20 @@ import { LoopringAPI, store, useAccount, useSystem, useTokenMap } from '../../in
 import { useTradeDual } from '../../stores'
 
 export const useDualTrade = <
-  T extends IBData<I>,
+  T extends DualTrade<I>,
   I,
   ACD extends DualCalcData<R>,
   R extends DualViewInfo,
 >() => {
   const refreshRef = React.useRef()
+  const { dualAuto } = useSettings()
+
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
   const { setShowAccount } = useOpenModals()
   const { marketMap: dualMarketMap } = useDualMap()
   const { account, status: accountStatus } = useAccount()
   const { setShowDual } = useOpenModals()
-
   const { toastOpen, closeToast } = useToast()
   const {
     modals: { isShowDual },
@@ -63,8 +65,9 @@ export const useDualTrade = <
   const { tradeDual, updateTradeDual, resetTradeDual } = useTradeDual()
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const {
-    toggle: { dualInvest },
+    toggle: { dualInvest, dual_reinvest },
   } = useToggle()
+
   const [[coinSellSymbol, coinBuySymbol], setSellBuySymbol] = React.useState<
     [string | undefined, string | undefined]
   >([undefined, undefined])
@@ -105,6 +108,8 @@ export const useDualTrade = <
       }
       if (index && _updateInfo.dualViewInfo) {
         _updateInfo.dualViewInfo.__raw__.index = index
+      } else if (!_updateInfo.dualViewInfo) {
+        return
       }
       if (balance) {
         _updateInfo.balance = balance
@@ -115,21 +120,31 @@ export const useDualTrade = <
       const dualMarket =
         dualMarketMap[`DUAL-${sellSymbol}-${buySymbol}`] ??
         dualMarketMap[`DUAL-${buySymbol}-${sellSymbol}`]
-      // const [calcSellSymbol, calcBuySymbol] =
-      //   sdk.DUAL_TYPE.DUAL_BASE === info.dualType
-      //     ? [info.base, info.currency]
-      //     : [info.currency, info.base];
+
       setSellBuySymbol([baseSymbol, quoteSymbol])
-      let coinSell: T =
-        tradeData && tradeData.belong === baseSymbol
-          ? tradeData
-          : _coinSell?.belong === baseSymbol
-          ? ({ ..._coinSell } as T)
-          : ({
-              balance: _updateInfo?.coinSell?.balance ?? 0,
-              tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
-              belong: baseSymbol,
-            } as T)
+      let coinSell = tradeData
+      if (tradeData && tradeData.belong === baseSymbol) {
+        // coinSell= tradeData;
+      } else if (_coinSell?.belong === baseSymbol) {
+        coinSell = {
+          ..._coinSell,
+        } as unknown as T
+      } else {
+        const isRenew =
+          _updateInfo?.coinSell?.isRenew ?? (dual_reinvest?.enable && dualAuto.auto) ? true : false
+        let calc = (_updateInfo.dualViewInfo.expireTime - Date.now()) / 86400000
+        calc = calc < 1 ? Math.ceil(calc) : Math.floor(calc)
+        const renewDuration = Number(
+          tradeDual?.coinSell?.renewDuration ?? (dualAuto.day === 'auto' ? calc : dualAuto.day),
+        )
+        coinSell = {
+          balance: _updateInfo?.coinSell?.balance ?? 0,
+          tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
+          belong: baseSymbol,
+          isRenew,
+          renewDuration,
+        } as unknown as T
+      }
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
@@ -171,6 +186,7 @@ export const useDualTrade = <
       tokenMap,
       tradeDual,
       updateTradeDual,
+      dualAuto,
     ],
   )
 
@@ -287,9 +303,10 @@ export const useDualTrade = <
             (dualPriceResponse as sdk.RESULT_INFO).message
           ) {
           }
-          if (dualInfo?.__raw__?.info) {
+          if (dualInfo?.__raw__?.info && dualPriceResponse.infos) {
             dualInfo.__raw__.info = {
               ...dualInfo.__raw__.info,
+              ...dualPriceResponse.infos[0],
             }
           }
           if (
@@ -349,6 +366,9 @@ export const useDualTrade = <
 
   useWalletLayer2Socket({ walletLayer2Callback })
   const sendRequest = React.useCallback(async () => {
+    const tradeDual = store.getState()._router_tradeDual.tradeDual
+    const account = store.getState().account
+
     try {
       setIsLoading(true)
       if (
@@ -365,6 +385,13 @@ export const useDualTrade = <
           sellTokenId: sellToken?.tokenId ?? 0,
         }
         const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+        if ((storageId as sdk.RESULT_INFO).code || (storageId as sdk.RESULT_INFO).message) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[700001]
+          throw new CustomErrorWithCode({
+            ...storageId,
+            ...errorItem,
+          } as any)
+        }
         const {
           dualType,
           productId,
@@ -372,6 +399,12 @@ export const useDualTrade = <
           // dualPrice: { dualBid },
         } = tradeDual.dualViewInfo.__raw__.info
 
+        const isRenew = tradeDual.coinSell?.isRenew
+          ? {
+              isRecursive: true,
+              maxRecurseProductDuration: Number(tradeDual?.coinSell?.renewDuration ?? 7) * 86400000,
+            }
+          : {}
         // myLog("fee", tradeDual.feeVol);
         const request: sdk.DualOrderRequest = {
           clientOrderId: '',
@@ -392,7 +425,7 @@ export const useDualTrade = <
                   tokenId: tokenMap[tradeDual.lessEarnTokenSymbol]?.tokenId ?? 0,
                   volume: tradeDual.lessEarnVol,
                 },
-          validUntil: getTimestampDaysLater(DAYS),
+          validUntil: getTimestampDaysLater(DAYS * 12),
           maxFeeBips: tradeDual.maxFeeBips,
           fillAmountBOrS: false,
           fee: tradeDual.feeVol ?? '0',
@@ -400,6 +433,7 @@ export const useDualTrade = <
           productId,
           settleRatio: tradeDual.dualViewInfo.settleRatio.replaceAll(sdk.SEP, ''), //sdk.toBig(tradeDual.dualViewInfo.settleRatio).f,
           expireTime: tradeDual.dualViewInfo.expireTime,
+          ...isRenew,
         }
         myLog('DualTrade request:', request)
         const response = await LoopringAPI.defiAPI.orderDual(
@@ -451,16 +485,7 @@ export const useDualTrade = <
     } finally {
       should15sRefresh(true)
     }
-  }, [
-    account.accountId,
-    account.apiKey,
-    account.eddsaKey.sk,
-    exchangeInfo,
-    setShowAccount,
-    setShowDual,
-    tokenMap,
-    tradeDual,
-  ])
+  }, [exchangeInfo, setShowAccount, setShowDual, tokenMap])
 
   // const isNoBalance = ;
   const onSubmitBtnClick = React.useCallback(async () => {
@@ -483,12 +508,11 @@ export const useDualTrade = <
     } else {
       return false
     }
-  }, [tokenMap, coinSellSymbol, handleOnchange])
+  }, [tokenMap, coinSellSymbol])
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
-      //
     }
   }, [accountStatus])
 
@@ -509,6 +533,7 @@ export const useDualTrade = <
       label: tradeMarketI18nKey,
       params: {},
     },
+    toggle: dual_reinvest,
     isLoading,
     tokenMap: tokenMap as any,
     onRefreshData: should15sRefresh,

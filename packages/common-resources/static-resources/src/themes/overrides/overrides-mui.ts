@@ -1,7 +1,6 @@
 import { borderFunc, pxToRem, unit } from './utils'
-import { ComponentsOverrides } from '@mui/material'
+import { ComponentsOverrides, TooltipProps } from '@mui/material'
 import { fontDefault } from '../css/global'
-import { myLog } from '../../utils'
 
 export const radius = 4
 export const checkBoxSize = 18
@@ -164,6 +163,15 @@ export const MuiSwitch = (): {
   return { styleOverrides: {} }
 }
 
+export const MuiBadge = (): {
+  styleOverrides: ComponentsOverrides['MuiBadge']
+} => {
+  return {
+    styleOverrides: {
+      fontSize: '1rem',
+    },
+  }
+}
 export const MuiButton = ({
   colorBase,
 }: any): { styleOverrides: ComponentsOverrides['MuiButton'] } => {
@@ -203,7 +211,7 @@ export const MuiButton = ({
           color: colorBase.disable,
         },
         '& .MuiButton-endIcon,& .MuiButton-startIcon': {
-          color: colorBase.buttonIcon,
+          color: 'inherit',
         },
         '&.MuiButton-sizeSmall': {
           fontSize: '1.4rem',
@@ -224,8 +232,10 @@ export const MuiButton = ({
             left: 0,
             right: 0,
             bottom: 0,
+            borderRadius: pxToRem(8),
           },
         },
+        borderRadius: pxToRem(8),
         '&.Mui-disabled': {
           backgroundColor: colorBase.defaultDisable,
           color: colorBase.textDisable,
@@ -307,7 +317,7 @@ export const MuiPaper = ({
         borderRadius: pxToRem(8),
         backgroundImage: 'none',
         backgroundColor: colorBase.popBg,
-        border:`.5px solid ${colorBase.border}`,
+        border: `.5px solid ${colorBase.border}`,
         '&.MuiPopover-paper': {
           backgroundImage: 'none',
           boxShadow: colorBase.shadowHover,
@@ -383,9 +393,7 @@ export const MuiInputLabel = ({
 export const MuiInputBase = ({
   colorBase,
   themeMode,
-  ...rest
 }: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
-  myLog('size', rest)
   return {
     styleOverrides: {
       root: {
@@ -949,16 +957,31 @@ export const MuiLinearProgress = ({ colorBase }: any) => {
 
 export const MuiTooltip = ({
   colorBase,
-}: any): { styleOverrides: ComponentsOverrides['MuiTooltip'] } => {
+}: any): {
+  styleOverrides: ComponentsOverrides['MuiTooltip']
+  defaultProps?: Partial<TooltipProps>
+} => {
   return {
+    defaultProps: {
+      arrow: true,
+    },
     styleOverrides: {
       tooltip: {
-        fontSize: fontDefault.body2,
+        fontSize: fontDefault.body1,
         fontWeight: 400,
         color: colorBase.textSecondary,
         background: colorBase.popBg,
         boxShadow: colorBase.shadowHover,
         lineHeight: '1.5em',
+        border: `0.5px solid ${colorBase.border}`,
+        padding: `${unit * 2}px`,
+        borderRadius: `${unit}px`,
+      },
+      arrow: {
+        color: colorBase.popBg,
+        '&:before': {
+          border: `0.5px solid ${colorBase.border}`,
+        },
       },
       // root: {
       //   fontSize: fontDefault.body1,

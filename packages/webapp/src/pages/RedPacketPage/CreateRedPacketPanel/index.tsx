@@ -5,8 +5,8 @@ import React from 'react'
 import {
   getIPFSString,
   StylePaper,
+  useContacts,
   useCreateRedPacket,
-  useNotify,
   useSystem,
 } from '@loopring-web/core'
 import {
@@ -16,6 +16,8 @@ import {
   NFTWholeINFO,
   RedPacketOrderData,
   TradeBtnStatus,
+  RouterPath,
+  RedPacketRouterIndex,
 } from '@loopring-web/common-resources'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 import { useTranslation } from 'react-i18next'
@@ -85,8 +87,13 @@ export const CreateRedPacketUIPanel = <
     assetsRawData,
     isShow: match?.params?.item?.toLowerCase() === 'create',
   })
-  // createRedPacketProps.disabled
 
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
+  React.useEffect(() => {
+    if (contactsErrorMessage) {
+      updateContacts()
+    }
+  }, [])
   return (
     <Box display={'flex'} flex={1} flexDirection={'column'}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginBottom={2}>
@@ -96,12 +103,17 @@ export const CreateRedPacketUIPanel = <
           size={'medium'}
           sx={{ color: 'var(--color-text-secondary)' }}
           color={'inherit'}
-          onClick={() => history.push('/redPacket/markets')}
+          onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)}
         >
           {t('labelCreateRedPacketTitle')}
         </Button>
       </Box>
-      <StylePaper flex={1} display={'flex'} justifyContent={'center'}>
+      <StylePaper
+        style={{ backgroundColor: 'var(--color-pop-bg)' }}
+        flex={1}
+        display={'flex'}
+        justifyContent={'center'}
+      >
         {assetBtnStatus === TradeBtnStatus.LOADING ? (
           <LoadingBlock />
         ) : (
@@ -123,6 +135,7 @@ export const CreateRedPacketUIPanel = <
                   }
                 />
               ) as any,
+              contacts,
             }}
           />
         )}

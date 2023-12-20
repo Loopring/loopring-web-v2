@@ -64,7 +64,7 @@ npm run storybook
 - [Web3-Provider](https://www.npmjs.com/package/@loopring-web/web3-provider)
 - [Loopring-sdk](https://www.npmjs.com/package/@loopring-web/loopring-sdk)
 - [Python](https://github.com/Loopring/hello_loopring)
-- [APIs](https://docs.loopring.io/en/)
+- [APIs](https://docs.loopring.io/)
 
 ## 🙋 Protocol & Architecture
 
@@ -80,4 +80,4 @@ npm run storybook
 
 ## Release Process
 
-alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.
+loopring.io, wallet.loopring.io, docs.loopring.io, earn.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.

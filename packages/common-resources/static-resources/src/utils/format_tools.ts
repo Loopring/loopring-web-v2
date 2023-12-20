@@ -2,7 +2,15 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util'
 import { myError } from './log_tools'
+import { getAddress } from '@ethersproject/address'
 
+export function isAddress(value: any): string | false {
+  try {
+    return getAddress(value)
+  } catch {
+    return false
+  }
+}
 export function getShowStr(
   rawVal: string | number | undefined,
   fixed: number = 2,

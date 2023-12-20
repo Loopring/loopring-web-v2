@@ -18,7 +18,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 
 const StyledPaper = styled(Box)`
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 

@@ -1,3 +1,5 @@
+import { Account } from '@loopring-web/common-resources'
+
 export type ToggleState = {
   order: { enable: boolean; reason?: string }
   joinAmm: { enable: boolean; reason?: string }
@@ -32,8 +34,15 @@ export type ToggleState = {
     orbiter: string[]
   }
   CIETHInvest: { enable: boolean; reason?: string }
+  redpacket_exclusive: { enable: boolean; reason?: string }
   [key: string]: { enable?: boolean; reason?: string; [key: string]: any }
+  dual_reinvest: { enable: boolean; reason?: string }
   whiteList: any
   // @ts-ignore
   isSupperUser: any
+}
+
+export type TogglePlayLoad = Partial<ToggleState> & {
+  account?: Account
+  chainId: any
 }

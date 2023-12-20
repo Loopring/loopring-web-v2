@@ -5,9 +5,12 @@ import {
   CircleIcon,
   DownloadIcon,
   NotificationIcon,
-  Notify,
   ProfileIcon,
   SettingIcon,
+  NOTIFICATIONHEADER,
+  ThemeType,
+  DarkIcon,
+  LightIcon,
 } from '@loopring-web/common-resources'
 import { WithTranslation } from 'react-i18next'
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks'
@@ -18,6 +21,7 @@ import { NotificationPanel } from '../../block/NotificationPanel'
 import React from 'react'
 import { DownloadPanel } from '../../block/DownloadPanel'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useSettings } from '../../../stores'
 
 export const BtnDownload = ({
   t,
@@ -62,54 +66,44 @@ export const BtnDownload = ({
     </Box>
   )
 }
-// export const BtnNetworkSwitch = ({
-//   onTestOpen,
-//   isShow = false,
-// }: {
-//   isShow: boolean;
-//   onTestOpen: (boolean: boolean) => void;
-// } & WithTranslation) => {
-//   // const [open, setOpen] = React.useState(isTaikoTest);
-//   return isShow ? (
-//     <Box>
-//       Debug:
-//       <Switch
-//         checked={isTaikoTest}
-//         color="default"
-//         onChange={(e: any) => {
-//           // setOpen(e?.target?.checked ? true : false);
-//           setIsTaikoTest(e?.target?.checked ? true : false);
-//           onTestOpen(e?.target?.checked ? true : false);
-//         }}
-//       />
-//     </Box>
-//   ) : (
-//     <></>
-//   );
-// };
-
-export const BtnNotification = ({
-  notification,
+export const BtnNotification = <N = sdk.UserNotification,>({
+  notification, //:{notifyMap,myNotifyMap},
   account,
   chainId,
+  onClickExclusiveredPacket,
+  showExclusiveRedpacket,
+  exclusiveRedpacketCount,
 }: {
-  notification: Notify
+  notification: NOTIFICATIONHEADER<N>
   account: Account
   chainId: sdk.ChainId
+  onClickExclusiveredPacket: () => void
+  showExclusiveRedpacket: boolean
+  exclusiveRedpacketCount: number
 }) => {
   const popupState = usePopupState({
     variant: 'popover',
     popupId: 'notificationPop',
   })
-  const [content] = React.useState(0)
+  const popupStateEle = bindPopper(popupState)
+  // bindHover(popupState)
   return (
     <Box position={'relative'}>
       <IconButton aria-label={'notification'} {...bindHover(popupState)}>
-        <Badge badgeContent={content}>
+        <Badge
+          sx={{ color: 'var(--color-error)' }}
+          badgeContent={
+            notification?.myNotifyMap?.total
+              ? notification.myNotifyMap.total < 999
+                ? notification.myNotifyMap.total
+                : '99+'
+              : ''
+          }
+        >
           <NotificationIcon />
         </Badge>
       </IconButton>
-      {(notification?.activities?.length ?? 0 + notification?.notifications?.length ?? 0) > 0 && (
+      {!notification?.myNotifyMap?.total && notification?.notifyMap?.notifications?.length ? (
         <CircleIcon
           sx={{
             position: 'absolute',
@@ -121,9 +115,11 @@ export const BtnNotification = ({
           fontSize={'large'}
           htmlColor={'var(--color-error)'}
         />
+      ) : (
+        <></>
       )}
       <PopoverPure
-        {...bindPopper(popupState)}
+        {...popupStateEle}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -133,7 +129,13 @@ export const BtnNotification = ({
           horizontal: 'center',
         }}
       >
-        <NotificationPanel notification={{ ...notification, account, chainId }} />
+        <NotificationPanel
+          closePop={popupStateEle.onMouseLeave as any}
+          exclusiveRedpacketCount={exclusiveRedpacketCount}
+          onClickExclusiveredPacket={onClickExclusiveredPacket}
+          showExclusiveRedpacket={showExclusiveRedpacket}
+          notification={{ ...notification, account, chainId }}
+        />
       </PopoverPure>
     </Box>
   )
@@ -196,6 +198,22 @@ export const ProfileMenu = ({ t, label, readyState, router, subMenu }: any) => {
     </Box>
   ) : (
     <></>
+  )
+}
+
+export const ColorSwitch = () => {
+  const { setTheme, themeMode } = useSettings()
+
+  const handleThemeClick = React.useCallback(
+    (_e: any) => {
+      setTheme(themeMode === ThemeType.dark ? ThemeType.light : ThemeType.dark)
+    },
+    [themeMode],
+  )
+  return (
+    <IconButton size={'large'} edge={'end'} onClick={handleThemeClick}>
+      {themeMode === ThemeType.dark ? <DarkIcon /> : <LightIcon />}
+    </IconButton>
   )
 }
 

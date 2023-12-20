@@ -2,17 +2,18 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import {
+  AlertIcon,
   ClockIcon,
   EmptyValueTag,
+  getValuePrecisionThousand,
   globalSetup,
   HiddenTag,
   MoreIcon,
-  RowConfig,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Link, Typography } from '@mui/material'
+import { Box, BoxProps, Link, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
@@ -32,7 +33,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 23% 14% 25% 6% 14% 10% 8% !important`
+        ? `--template-columns: 22% 14% auto 6% 14% 10% 10% 8% !important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -79,7 +80,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       showloading,
       showDetail,
       refresh,
+      cancelReInvest,
       hideAssets,
+      rowConfig,
       t,
     } = props
 
@@ -125,13 +128,21 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               sellSymbol,
               buySymbol,
               __raw__: {
-                order: { dualType, investmentStatus },
+                order: {
+                  dualType,
+                  // investmentStatus,
+                  settlementStatus,
+                  dualReinvestInfo
+                },
               },
             } = row
             const [base, quote] =
               dualType === DUAL_TYPE.DUAL_BASE ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
-            const showClock = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
-            //${row.sellSymbol}/${row.buySymbol}
+
+            const showClock =
+              dualReinvestInfo?.isRecursive &&
+              settlementStatus?.toUpperCase() == sdk.SETTLEMENT_STATUS.PAID &&
+              dualReinvestInfo?.retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
             return (
               <Typography
                 component={'span'}
@@ -148,20 +159,31 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                <Typography component={'span'} display={'flex'}>
-                  <Typography
-                    component={'span'}
-                    // display={"inline-flex"}
-                    color={'textPrimary'}
-                    display={'flex'}
-                    flexDirection={'column'}
-                  >
-                    {`${base}/${quote}`}
-                  </Typography>
-                  {showClock && (
-                    <Box component={'span'} marginLeft={1} display={'flex'} alignItems={'center'}>
-                      <ClockIcon />
-                    </Box>
+                <Typography component={'span'} display={'flex'} alignItems={'center'}>
+                  {showClock ? (
+                    <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
+                      <Typography
+                        component={'span'}
+                        // display={"inline-flex"}
+                        alignItems={'center'}
+                        color={'textPrimary'}
+                        display={'inline-flex'}
+                        flexDirection={'row'}
+                      >
+                        {`${base}/${quote}`}
+                        <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    <Typography
+                      component={'span'}
+                      // display={"inline-flex"}
+                      color={'textPrimary'}
+                      display={'flex'}
+                      flexDirection={'column'}
+                    >
+                      {`${base}/${quote}`}
+                    </Typography>
                   )}
                 </Typography>
               </Typography>
@@ -244,6 +266,24 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           },
         },
         {
+          key: 'Auto',
+          sortable: true,
+          name: t('labelDualAutoReinvest'),
+          formatter: ({ row }: FormatterProps<R, unknown>) => {
+            return row?.__raw__.order?.dualReinvestInfo?.isRecursive ? (
+              <Link
+                onClick={(_e) => {
+                  cancelReInvest(row)
+                }}
+              >
+                {t('labelDualAssetReInvestEnable')}
+              </Link>
+            ) : (
+              <>{t('labelDualAssetReInvestDisable')} </>
+            )
+          },
+        },
+        {
           key: 'Action',
           sortable: false,
           width: 'auto',
@@ -253,6 +293,34 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const investmentStatus = row.__raw__.order.investmentStatus
             const showRefresh = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            const dualType = row.__raw__.order?.dualType
+            const isRecursive = row.__raw__.order?.dualReinvestInfo?.isRecursive
+            const newStrike = row.__raw__.order?.dualReinvestInfo?.newStrike
+            const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice
+            const currentView = currentPrice
+              ? getValuePrecisionThousand(
+                  currentPrice,
+                  precisionForPrice ?? 6,
+                  precisionForPrice ?? 6,
+                  undefined,
+                  false,
+                )
+              : EmptyValueTag
+            let showAlert = false
+            if (isRecursive && dualType == DUAL_TYPE.DUAL_BASE) {
+              showAlert = sdk
+                .toBig(currentPrice ?? 0)
+                .div(newStrike)
+                .minus(1)
+                .lte(-0.05)
+            } else {
+              showAlert = sdk
+                .toBig(currentPrice ?? 0)
+                .div(newStrike)
+                .minus(1)
+                .gte(0.05)
+            }
+
             return showRefresh ? (
               <Link
                 onClick={(_e) => {
@@ -261,6 +329,26 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               >
                 {t('labelDualAssetRefresh')}
               </Link>
+            ) : showAlert ? (
+              <Tooltip
+                title={t('labelDualAutoAlert', {
+                  ns: 'common',
+                  base,
+                  currentPrice: currentView,
+                  quote,
+                  method:
+                    dualType == DUAL_TYPE.DUAL_BASE
+                      ? t('labelDualIsLow', { ns: 'common' })
+                      : t('labelDualIsHigh', { ns: 'common' }),
+                }).toString()}
+              >
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Link paddingRight={1 / 2} onClick={(_e) => showDetail(row)}>
+                    {t('labelDualAssetDetail')}
+                  </Link>
+                  <AlertIcon color={'warning'} />
+                </Typography>
+              </Tooltip>
             ) : (
               <Link onClick={(_e) => showDetail(row)}>{t('labelDualAssetDetail')}</Link>
             )
@@ -280,6 +368,21 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignLeft',
           headerCellClass: 'textAlignLeft',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const {
+              __raw__: {
+                order: {
+                  dualType,
+                  investmentStatus,
+                  settlementStatus,
+                  dualReinvestInfo
+                },
+              },
+            } = row
+            // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
+            const showClock =
+              dualReinvestInfo?.isRecursive &&
+              settlementStatus?.toUpperCase() == sdk.SETTLEMENT_STATUS.PAID &&
+              dualReinvestInfo?.retryStatus?.toUpperCase() === sdk.DUAL_RETRY_STATUS.RETRYING
             return (
               <Typography
                 component={'span'}
@@ -296,21 +399,16 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
+                {/*{inAuto && <ClockIcon color={'primary'} />}*/}
+                {showClock && (
+                  <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
+                    <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
+                  </Tooltip>
+                )}
               </Typography>
             )
           },
         },
-        // {
-        //   key: "Frozen",
-        //   sortable: false,
-        //   width: "auto",
-        //   cellClass: "textAlignCenter",
-        //   headerCellClass: "textAlignCenter",
-        //   name: t("labelDualAssetFrozen"),
-        //   formatter: ({ row }: FormatterProps<R, unknown>) => {
-        //     return <>{}</>;
-        //   },
-        // },
         {
           key: 'Price',
           sortable: false,
@@ -319,6 +417,26 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           cellClass: 'textAlignCenter',
           headerCellClass: 'textAlignCenter',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
+            const dualType = row.__raw__.order?.dualType
+            const newStrike = row.__raw__.order?.dualReinvestInfo?.newStrike
+            const isRecursive = row.__raw__.order?.dualReinvestInfo?.isRecursive
+            const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice ?? {}
+            const currentView = currentPrice
+              ? getValuePrecisionThousand(
+                  currentPrice,
+                  precisionForPrice ?? 6,
+                  precisionForPrice ?? 6,
+                  undefined,
+                  false,
+                )
+              : EmptyValueTag
+            let showAlert = false
+            if (isRecursive && dualType == DUAL_TYPE.DUAL_BASE) {
+              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).lte(-0.05)
+            } else {
+              showAlert = sdk.toBig(currentPrice).div(newStrike).minus(1).gte(0.05)
+            }
+
             return (
               <Box
                 className={'textAlignRight'}
@@ -327,7 +445,27 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
                 justifyContent={'center'}
               >
-                <Typography component={'span'}>{row?.strike}</Typography>
+                {showAlert ? (
+                  <Tooltip
+                    title={t('labelDualAutoAlert', {
+                      ns: 'common',
+                      base,
+                      currentPrice: currentView,
+                      quote,
+                      method:
+                        dualType == DUAL_TYPE.DUAL_BASE
+                          ? t('labelDualIsLow', { ns: 'common' })
+                          : t('labelDualIsHigh', { ns: 'common' }),
+                    }).toString()}
+                  >
+                    <Typography component={'span'}>
+                      {row?.strike}
+                      <AlertIcon color={'warning'} />
+                    </Typography>
+                  </Tooltip>
+                ) : (
+                  <Typography component={'span'}>{row?.strike}</Typography>
+                )}
                 <Typography component={'span'} variant={'body2'} color={'textSecondary'}>
                   {moment(new Date(row.expireTime)).format(YEAR_DAY_MINUTE_FORMAT)}
                 </Typography>
@@ -366,9 +504,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           sortable: false,
           cellClass: 'textAlignRight',
           headerCellClass: 'textAlignRight',
-          name: '',
-          formatter: () => {
-            return <MoreIcon cursor={'pointer'} />
+          name: 'Action',
+          formatter: ({ row }: FormatterProps<R>) => {
+            return <MoreIcon onClick={() => showDetail(row)} cursor={'pointer'} />
           },
         },
       ],
@@ -424,11 +562,11 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
     return (
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
-          currentheight={RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight}
-          onRowClick={(_index: number, row: R, c: Column<any, unknown>) => {
-            if (c.key === 'Action') return
-            showDetail(row)
-          }}
+          currentheight={
+            rawData.length ? rowConfig.rowHeaderHeight! + rawData.length * rowConfig.rowHeight! : 350
+          }
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
           sortMethod={sortMethod}
           {...{
             ...defaultArgs,

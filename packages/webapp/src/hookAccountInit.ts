@@ -12,10 +12,23 @@ import {
   redPacketHistory,
   offFaitService,
   store,
+  useContacts,
+  useNotify,
+  useSocket,
+  useTargetRedPackets,
+  useWalletLayer2Socket,
+  makeDefiInvestReward,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state })
+  const { sendSocketTopic, socketUserEnd } = useSocket()
+  const {
+    getExclusiveRedpacket,
+    status: targetRedPacketStatus,
+    statusUnset: targetRedPacketUnset,
+  } = useTargetRedPackets()
+
   const {
     updateWalletLayer1,
     status: walletLayer1Status,
@@ -37,6 +50,9 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2()
+  const { updateContacts, status: contactsStatus, statusUnset: contactsUnset } = useContacts()
+  const { getUserNotify, restUserNotify } = useNotify()
+
   const {
     updateWalletL2Collection,
     updateLegacyContracts,
@@ -61,6 +77,8 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
         case AccountStatus.ERROR_NETWORK:
+          restUserNotify()
+          socketUserEnd()
           break
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
@@ -74,10 +92,11 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             resetLayer2NFT()
             resetL2NFTCollection()
             resetL2Collection()
+            restUserNotify()
           }
+          socketUserEnd()
           break
         case AccountStatus.ACTIVATED:
-          getUserRewards()
           clearRedPacketHash()
           offFaitService.backendCheckStart()
           if (walletLayer1Status !== SagaStatus.PENDING) {
@@ -88,11 +107,23 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
           }
+          sendSocketTopic({})
+          getExclusiveRedpacket()
           updateLegacyContracts()
+          updateContacts()
+          getUserNotify()
           break
       }
     }
   }, [accountStatus, state, account.readyState])
+  useWalletLayer2Socket({
+    walletLayer2Callback: () => {
+      const account = store.getState().account
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getUserRewards()
+      }
+    },
+  })
   React.useEffect(() => {
     switch (walletLayer1Status) {
       case SagaStatus.ERROR:
@@ -117,6 +148,18 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [walletLayer2Status])
+  React.useEffect(() => {
+    switch (targetRedPacketStatus) {
+      case SagaStatus.ERROR:
+        targetRedPacketUnset()
+        break
+      case SagaStatus.DONE:
+        wallet2statusUnset()
+        break
+      default:
+        break
+    }
+  }, [targetRedPacketStatus])
 
   React.useEffect(() => {
     switch (walletL2CollectionStatus) {
@@ -167,4 +210,16 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [userRewardsStatus])
+  React.useEffect(() => {
+    switch (contactsStatus) {
+      case SagaStatus.ERROR:
+        contactsUnset()
+        break
+      case SagaStatus.DONE:
+        contactsUnset()
+        break
+      default:
+        break
+    }
+  }, [contactsStatus])
 }

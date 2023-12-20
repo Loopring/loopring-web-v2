@@ -1,21 +1,32 @@
 import { IsMobile } from '../utils'
 import { NetworkItemInfo } from '../loopring-interface'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum UpColor {
   green = 'green',
   red = 'red',
 }
-
 export const SlippageTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
 export const SlippageBtradeTolerance: Array<0.1 | 0.5 | 1 | string> = [0.1, 0.5, 1]
-
+export type RowConfigType = {
+  rowHeight?: number
+  rowHeaderHeight?: number
+  minHeight?: number
+}
 export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
+  minHeight: 350,
 }
 export const RowInvestConfig = {
   rowHeight: IsMobile.any() ? 48 : 56,
   rowHeaderHeight: IsMobile.any() ? 48 : 56,
+  minHeight: 350,
+}
+export const RowDualInvestConfig = {
+  rowHeight: IsMobile.any() ? 48 : 72,
+  rowHeaderHeight: IsMobile.any() ? 48 : 72,
+  minHeight: 350,
 }
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
@@ -35,12 +46,18 @@ export const Explorer = 'https://explorer.loopring.io/'
 export const Bridge = 'https://bridge.loopring.io/#/'
 export const ExchangeIO = 'https://loopring.io'
 export const Exchange = 'https://loopring.io/#/'
+export const ExchangePro = 'https://loopring.io/#/pro'
+export const Earnlite = 'https://earn.loopring.io/#/'
 export const WalletSite = 'https://wallet.loopring.io'
+export const LOOPRING_DOC = 'https://docs.loopring.io'
+
 export const YEAR_FROMATE = 'YYYY'
 export const DAY_FORMAT = 'MM/DD'
 export const MINUTE_FORMAT = 'HH:mm'
 export const DAY_MINUTE_FORMAT = `${DAY_FORMAT} ${MINUTE_FORMAT}`
 export const DAT_STRING_FORMAT = 'MMM DD [UTC]Z'
+export const DAT_STRING_FORMAT_S = 'MMM DD'
+
 export const SECOND_FORMAT = `${MINUTE_FORMAT}:ss`
 export const YEAR_DAY_FORMAT = `${YEAR_FROMATE}/${DAY_FORMAT}`
 export const YEAR_DAY_MINUTE_FORMAT = `${YEAR_DAY_FORMAT} ${MINUTE_FORMAT}`
@@ -78,13 +95,11 @@ export const sizeNFTConfig = (size: 'large' | 'medium' | 'small') => {
       break
   }
 }
-
 export enum TradeBtnStatus {
   AVAILABLE = 'AVAILABLE',
   DISABLED = 'DISABLED',
   LOADING = 'LOADING',
 }
-
 export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
   process.env.REACT_APP_RPC_OTHERS?.split(',') ?? []
 ).reduce(
@@ -110,7 +125,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
     return { NetworkMap, ChainTests, MapChainId, ChainIdExtends }
   },
   {
-    MapChainId: { 1: 'ETHEREUM', 5: 'GOERLI' },
+    MapChainId: { 1: 'ETHEREUM', 5: 'GOERLI', 421613: 'ARBGOERLI' },
     NetworkMap: {
       1: {
         label: 'Ethereum',
@@ -124,8 +139,14 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         isTest: true,
         walletType: 'ETHEREUM',
       },
+      // 421613: {
+      //   label: 'ARBGOERLI',
+      //   chainId: '421613',
+      //   isTest: true,
+      //   walletType: 'ETHEREUM',
+      // },
     },
-    ChainTests: [5],
+    ChainTests: [5, 421613],
     ChainIdExtends: {
       NONETWORK: 'unknown',
     },
@@ -136,19 +157,37 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
     ChainIdExtends: { [key: string]: number | string }
   },
 )
-
-// [..._NetworkMap.entries()].reduce((prev, [key, value]) => {
-//   prev[key] = value;
-//   return prev;
-// }, NetworkMap);
-// myLog("NetworkMap", NetworkMap);
-// [...MapChainIdMap.entries()].reduce((prev, [key, value]) => {
-//   prev[key] = value;
-//   return prev;
-// }, MapChainId);
 if (window) {
   // @ts-ignore
   window.__ChainIdExtends = ChainIdExtends
   // @ts-ignore
   window.__MapChainId = MapChainId
+}
+
+export const HEBAO_CONTRACT_MAP = [
+  ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
+  ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
+  ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
+  ['V1_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0],
+  ['V1_1_6', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_1_6],
+]
+
+export type ContactType = Pick<sdk.GetContactsResponse, 'contacts'>['contacts'][0]
+
+export type CoinSource = {
+  x: number
+  y: number
+  w: number
+  h: number
+  offX: number
+  offY: number
+  sourceW: number
+  sourceH: number
+  simpleName?: string
+}
+
+export enum TableFilterParams {
+  all = 'all',
+  favourite = 'favourite',
+  ranking = 'ranking',
 }

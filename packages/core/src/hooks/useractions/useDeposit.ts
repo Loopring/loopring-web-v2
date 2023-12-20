@@ -44,6 +44,7 @@ import {
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
+import Web3 from 'web3'
 
 export const useDeposit = <
   T extends {
@@ -211,7 +212,7 @@ export const useDeposit = <
         }
       }
 
-      myLog('DepositData', { ...newValue, toAddress: realToAddress })
+      // myLog('DepositData', {...newValue, toAddress: realToAddress})
       updateDepositData({ ...newValue, toAddress: realToAddress })
       return Promise.resolve()
     },
@@ -233,7 +234,7 @@ export const useDeposit = <
       }
     }
     setToAddress((state) => {
-      myLog('address update setToAddress', state, value, realToAddress, toAddressStatus)
+      // myLog('address update setToAddress', state, value, realToAddress, toAddressStatus)
       if (
         value &&
         toIsAddressCheckLoading == false &&
@@ -271,6 +272,11 @@ export const useDeposit = <
     }
     if (!depositValue.belong && walletLayer1) {
       const keys = Reflect.ownKeys(walletLayer1)
+      updateData = {
+        belong: 'ETH',
+        tradeValue: undefined,
+        balance: 0,
+      }
       for (var key in keys) {
         const keyVal = keys[key] as any
         const walletInfo = walletLayer1[keyVal]
@@ -414,7 +420,10 @@ export const useDeposit = <
                 },
               })
 
-              nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
+              nonce = await sdk.getNonce(
+                connectProvides.usedWeb3 as unknown as Web3,
+                account.accAddress,
+              )
 
               nonceInit = true
 
@@ -463,7 +472,10 @@ export const useDeposit = <
           })
 
           if (!nonceInit) {
-            nonce = await sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress)
+            nonce = await sdk.getNonce(
+              connectProvides.usedWeb3 as unknown as Web3,
+              account.accAddress,
+            )
           }
 
           myLog('before deposit:', chainId, connectName, isMetaMask)

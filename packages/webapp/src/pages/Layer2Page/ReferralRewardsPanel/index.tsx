@@ -25,7 +25,8 @@ import {
   MapChainId,
   myLog,
   ProfileIndex,
-  ProfileKey,
+  Layer2RouterID,
+  RouterPath,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -122,10 +123,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
   isActive?: boolean
   handleCopy: (selected: 'id' | 'link') => void
 }) => {
-  const {account} = useAccount()
-  const {t} = useTranslation(['common', 'layout'])
-  const {defaultNetwork, isMobile} = useSettings()
-  const network = MapChainId[ defaultNetwork ] ?? MapChainId[ 1 ]
+  const { account } = useAccount()
+  const { t } = useTranslation(['common', 'layout'])
+  const { defaultNetwork, isMobile } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [open, setOpen] = React.useState(false)
   const [images, setImages] = React.useState<CarouselItem[]>([])
   const [loading, setLoading] = React.useState(true)
@@ -136,12 +137,12 @@ const ReferHeader = <R extends ImageReferralBanner>({
     },
     lng: ['en'],
     position: {
-      code: {default: [48, 30, 230, 64, '#000000', 630, 880]},
+      code: { default: [48, 30, 230, 64, '#000000', 630, 880] },
     },
   })
-  const {btnStatus, onBtnClick, btnLabel} = useSubmitBtn({
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
     availableTradeCheck: () => {
-      return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
     },
     isLoading: loading,
     submitCallback: async () => {
@@ -163,9 +164,10 @@ const ReferHeader = <R extends ImageReferralBanner>({
             setLoading(false)
           }
         }
-      }).catch(() => {
-      setLoading(false)
-    })
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }, [])
   const renderImage = React.useCallback(
     (imageList: R) => {
@@ -215,23 +217,14 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
 
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
-          images.push({imageUrl: canvas.toDataURL(), size: [width / 2, height / 2], name: (item ?? '/').split('/')?.pop()})
+          images.push({
+            imageUrl: canvas.toDataURL(),
+            size: [width / 2, height / 2],
+            name: (item ?? '/').split('/')?.pop(),
+          })
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
-
-            setImages(images)
           }
-          // canvas.toBlob((blob) => {
-          // const a = document.createElement('a')
-          // // @ts-ignore
-          // a.download = (item ?? '/').split('/')?.pop()
-          // a.style.display = 'none'
-          // // @ts-ignore
-          // a.href = URL.createObjectURL(blob)
-          // document.body.appendChild(a)
-          // a.click()
-          // document.body.removeChild(a)
-          // }, 'image/png')
         }
       })
       setLoading(false)
@@ -297,7 +290,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
     })
   }
 
-  const {ipfsProvides} = useIPFS({
+  const { ipfsProvides } = useIPFS({
     handleSuccessUpload: () => undefined,
     handleFailedUpload: () => undefined,
   })
@@ -349,7 +342,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
         <ShareModal
           onClick={() => onDownloadImage()}
           open={open}
-          message={t("labelShareMessage", {code: account?.accountId})}
+          message={t('labelShareMessage', { code: account?.accountId })}
           loading={btnStatus === TradeBtnStatus.LOADING}
           onClose={() => setOpen(false)}
           imageList={images}
@@ -361,7 +354,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
             <Typography
               component={'h1'}
               variant={isMobile ? 'h4' : 'h2'}
-              sx={{whiteSpace: 'pre-line', wordBreak: 'break-all'}}
+              sx={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}
             >
               {t('labelReferTitle')}
             </Typography>
@@ -497,7 +490,7 @@ const ReferView = () => {
   myLog('refundData', refundData, referralsData)
   return (
     <>
-      {ProfileIndex[network]?.includes(ProfileKey.referralrewards) ? (
+      {ProfileIndex[network]?.includes(Layer2RouterID.referralrewards) ? (
         <>
           <Toast
             alertText={toastOpen?.content ?? ''}
@@ -673,7 +666,9 @@ const ReferView = () => {
                               size={'small'}
                               sx={{ marginLeft: 2 }}
                               onClick={() => {
-                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                                history.push(
+                                  `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
+                                )
                               }}
                             >
                               {t('labelClaimBtn')}
@@ -797,7 +792,7 @@ const ReferView = () => {
                             size={'small'}
                             sx={{ marginLeft: 2 }}
                             onClick={() => {
-                              history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
+                              history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
                             }}
                           >
                             {t('labelClaimBtn')}

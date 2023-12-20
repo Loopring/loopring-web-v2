@@ -1,12 +1,12 @@
 import { Subject } from 'rxjs'
-import { DepthData, getMidPrice } from '@loopring-web/loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const subject = new Subject<{
   btradeOrderbookMap: BtradeOrderbookMap<{ [key: string]: any }>
 }>()
 
 export type BtradeOrderbookMap<R> = {
-  [key in keyof R]: DepthData
+  [key in keyof R]: sdk.DepthData
 }
 // <R extends {[key:string]:any}>
 
@@ -14,7 +14,7 @@ export const btradeOrderbookService = {
   sendBtradeOrderBook: (btradeOrderbookMap: BtradeOrderbookMap<{ [key: string]: any }>) => {
     const _orderbookMap = Reflect.ownKeys(btradeOrderbookMap).reduce((pre, key) => {
       const data = btradeOrderbookMap[key as string]
-      const { bids, asks, mid_price } = getMidPrice({
+      const { bids, asks, mid_price } = sdk.getMidPrice({
         _asks: data['asks'],
         _bids: data['bids'],
       })

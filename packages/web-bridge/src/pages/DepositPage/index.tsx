@@ -76,7 +76,7 @@ export const DepositToPage = withTranslation(['common'])(
       return btnInfo
     }
     const onWalletBtnConnectClick = React.useCallback(async () => {
-      myLog(`onWalletBtnConnect click: ${account.readyState}`)
+      // myLog(`onWalletBtnConnect click: ${account.readyState}`)
       accountStaticCallBack(btnConnectL1kMap)
     }, [])
     React.useEffect(() => {

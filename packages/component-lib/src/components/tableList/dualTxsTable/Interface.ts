@@ -1,4 +1,9 @@
-import { DualViewOrder } from '@loopring-web/common-resources'
+import {
+  DualCurrentPrice,
+  DualViewOrder,
+  RowConfig,
+  RowConfigType,
+} from '@loopring-web/common-resources'
 import { DualDetailType } from '../../tradePanel'
 
 export type RawDataDualTxsItem = DualViewOrder & {
@@ -7,6 +12,7 @@ export type RawDataDualTxsItem = DualViewOrder & {
 
 export type RawDataDualAssetItem = DualViewOrder & {
   amount: string
+  currentPrice: DualCurrentPrice
 }
 
 export interface DualAssetTableProps<R> {
@@ -18,12 +24,15 @@ export interface DualAssetTableProps<R> {
   showloading: boolean
   getDualAssetList: (props: any) => Promise<void>
   showDetail: (item: R) => void
+  cancelReInvest: (item: R) => void
   refresh: (item: R) => void
   hideAssets?: boolean
   pagination?: {
     pageSize: number
     total: number
   }
+  getProduct: (item: R) => void
+  rowConfig?: typeof RowConfig
 }
 
 export interface DualTxsTableProps<R = RawDataDualTxsItem> {

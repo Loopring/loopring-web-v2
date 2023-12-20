@@ -4,9 +4,11 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
+  CoinSource,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO, AddressType, OffchainFeeReqType, OffchainNFTFeeReqType } from '@loopring-web/loopring-sdk'
-import { AmmPanelType,ToastType } from '../../../components'
+import { ToastType } from '../../../components'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum ModalType {
   transfer = 'transfer',
@@ -26,7 +28,7 @@ export type Transaction = {
 export type Contact = {
   name?: string
   address?: string
-  addressType?: AddressType
+  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
 }
 
 export interface ModalState {
@@ -64,12 +66,12 @@ export interface ModalState {
   }
   isShowConnect: ModalStatePlayLoad & {
     step: number
-    error?: RESULT_INFO
+    error?: sdk.RESULT_INFO
     info?: { [key: string]: any }
   }
   isShowAccount: ModalStatePlayLoad & {
     step: number
-    error?: RESULT_INFO
+    error?: sdk.RESULT_INFO
     // info?: { [key: string]: any };
   }
   isShowRedPacket: ModalStatePlayLoad & {
@@ -82,8 +84,20 @@ export interface ModalState {
   isShowGlobalToast: {
     isShow: boolean
     info: {
-      content: string
+      id?: string
+      messageKey?: string
+      content?: string
       type: ToastType
+    } & any
+  }
+  isShowTargetRedpacketPop: {
+    isShow: boolean
+    info: {
+      exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {
+        tokenIcon: CoinSource
+        tokenName: string
+      })[]
     }
   }
+  isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
 }

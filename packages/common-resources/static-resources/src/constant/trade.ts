@@ -191,6 +191,8 @@ export const STAKING_INVEST_LIMIT = 5
 export const PROPERTY_Value_LIMIT = 40
 export const REDPACKET_ORDER_LIMIT = 10000
 export const REDPACKET_ORDER_NFT_LIMIT = 20000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 10000
+export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
@@ -325,15 +327,14 @@ export const enum InvestMapType {
   DUAL = 'DUAL',
   STAKELRC = 'STAKELRC',
   LEVERAGEETH = 'LEVERAGEETH',
-  // BTradeInvest = "BTradeInvest",
 }
 
 export const enum InvestAssetRouter {
-  AMM = 'amm',
-  STAKE = 'stake',
+  AMM = 'ammpool',
+  STAKE = 'defi',
   DUAL = 'dual',
-  STAKELRC = 'sideStake',
-  LEVERAGEETH = 'leverageeth',
+  STAKELRC = 'stakelrc',
+  LEVERAGEETH = 'leverageETH',
   // BTradeInvest = "BTradeInvest",
 }
 
@@ -343,7 +344,6 @@ export const InvestOpenType = [
   InvestMapType.DUAL,
   InvestMapType.STAKELRC,
   InvestMapType.LEVERAGEETH,
-  // InvestMapType.BTradeInvest,
 ]
 
 export const enum InvestDuration {
@@ -398,6 +398,7 @@ export type TradeDefi<C> = {
   defiBalances?: { [key: string]: string }
   lastInput?: DeFiChgType
   withdrawFeeBips?: number
+  defaultFee: string
 }
 export type TradeStake<C> = {
   sellToken: sdk.TokenInfo
@@ -445,6 +446,7 @@ export type DualCurrentPrice = {
   base: string
   precisionForPrice: number
   currentPrice?: number
+  quoteUnit: string
 }
 export type DualViewBase = {
   apy: `${string}%`
@@ -452,9 +454,6 @@ export type DualViewBase = {
   term: string
   strike: string
   isUp: boolean
-  // targetPrice,
-  // subscribeData,
-
   expireTime: number
   currentPrice: DualCurrentPrice
   productId: string
@@ -462,8 +461,20 @@ export type DualViewBase = {
   buySymbol: string
   amount?: string
   enterTime?: number
-
-  // balance,
+  stepLength?: string
+  quote?: string
+  outSymbol?: string
+  outAmount?: string
+  side?: string
+  status?: string
+  statusColor?: string
+  maxDuration?: number
+  autoStatus?: string
+  autoIcon?: JSX.Element
+  autoContent?: string
+  newStrike?: string
+  deliveryPrice?: string | undefined
+  __raw__?: any
 }
 
 export type DualViewInfo = DualViewBase & {
@@ -527,22 +538,16 @@ export type BanxaOrder = {
 
 export const LuckyRedPacketList: LuckyRedPacketItem[] = [
   {
-    labelKey: 'labelLuckyRelayToken',
-    desKey: 'labelLuckyRelayTokenDes',
-    showInERC20: true,
-    value: {
-      value: 0,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.RELAY,
-    },
-  },
-  {
     labelKey: 'labelLuckyRandomToken',
     desKey: 'labelRedPacketsSplitLuckyDetail',
-    showInNFTS: true,
-    showInERC20: true,
-    defaultForERC20: true,
-    defaultForNFT: true,
+    tags: [
+      'showInNormal',
+      'enableInNFTS',
+      'enableInERC20',
+      'defaultForERC20',
+      'defaultForNFT',
+      'enableInBlindBox',
+    ],
     value: {
       value: 1,
       partition: sdk.LuckyTokenAmountType.RANDOM,
@@ -550,10 +555,19 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
+    labelKey: 'labelLuckyRandomToken',
+    desKey: 'labelRedPacketsSplitLuckyDetail',
+    tags: ['defaultForBlindBox', 'enableInBlindBox', 'showInBlindBox', 'defaultForFromNFT'],
+    value: {
+      value: 4,
+      partition: sdk.LuckyTokenAmountType.RANDOM,
+      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
+    },
+  },
+  {
     labelKey: 'labelLuckyCommonToken',
     desKey: 'labelLuckyCommonTokenDes',
-    showInNFTS: true,
-    showInERC20: true,
+    tags: ['showInNormal', 'showInBlindBox', 'enableInNFTS', 'enableInERC20'],
     value: {
       value: 2,
       partition: sdk.LuckyTokenAmountType.AVERAGE,
@@ -561,60 +575,13 @@ export const LuckyRedPacketList: LuckyRedPacketItem[] = [
     },
   },
   {
-    labelKey: 'labelAssetTokens',
-    desKey: '',
-    showInBlindbox: true,
-    defaultForBlindbox: true,
-    icon: sdk.SoursURL + '/images/blindboxSelectToken.png',
+    labelKey: 'labelLuckyRelayToken',
+    desKey: 'labelLuckyRelayTokenDes',
+    tags: ['showInNormal', 'showInBlindBox', 'enableInERC20', 'disabledForExclusive'],
     value: {
-      value: 4,
+      value: 0,
       partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-    toolgleWithShowERC20Blindbox: true,
-  },
-  {
-    labelKey: 'labelRedpacketNFTS',
-    desKey: '',
-    showInBlindbox: true,
-    defaultForBlindboxNotShowERC20Blindbox: true,
-    icon: sdk.SoursURL + '/images/blindboxSelectNFT.png',
-    isBlindboxNFT: true,
-    value: {
-      value: 5,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
-  {
-    labelKey: 'labelRedpacketBlindBox',
-    desKey: 'labelLuckyBlindBoxDes',
-    defaultForFromNFT: true,
-    showInFromNFT: true,
-    value: {
-      value: 6,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.BLIND_BOX,
-    },
-  },
-  {
-    labelKey: 'labelLuckyRandomToken',
-    desKey: 'labelLuckyRandomTokenDes',
-    showInFromNFT: true,
-    value: {
-      value: 7,
-      partition: sdk.LuckyTokenAmountType.RANDOM,
-      mode: sdk.LuckyTokenClaimType.COMMON,
-    },
-  },
-  {
-    labelKey: 'labelLuckyCommonToken',
-    desKey: 'labelLuckyCommonTokenDes',
-    showInFromNFT: true,
-    value: {
-      value: 8,
-      partition: sdk.LuckyTokenAmountType.AVERAGE,
-      mode: sdk.LuckyTokenClaimType.COMMON,
+      mode: sdk.LuckyTokenClaimType.RELAY,
     },
   },
 ]
@@ -685,6 +652,14 @@ export type RedPacketOrderData<I> = {
   tradeValue?: number
   fee: FeeInfo | undefined
   __request__: any
+  target?: {
+    redpacketHash: string
+    addressListString: string
+    popupChecked: boolean
+    maxSendCount: number
+    sentAddresses?: string[]
+  }
+  showNFT: boolean
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
@@ -720,4 +695,46 @@ export enum TradeBaseType {
 export type AmmHistoryItem = {
   close: number
   timeStamp: number
+}
+
+export enum DualStep {
+  ChooseType = 'ChooseType',
+  ShowBase = 'ShowBase',
+  ShowSellBuy = 'ShowSellBuy',
+  ShowQuote = 'ShowQuote',
+  ShowList = 'ShowList',
+}
+export enum DualViewType {
+  DualGain = 'DualGain',
+  DualDip = 'DualDip',
+  DualBegin = 'DualBegin',
+  DualBTC = 'DualBTC',
+  All = 'All',
+}
+export const DualGain = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_BASE' },
+]
+export const DualDip = [
+  // { step: DualStep.ChooseType, type: 'Card' },
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_CURRENCY' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualChooseTargetPriceDUAL_CURRENCY' },
+]
+export const DualBegin = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualBeginnerStep1Title' },
+  { step: DualStep.ChooseType, type: 'Tab', labelKey: 'labelDualBeginnerSellHigh' },
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
+]
+export const DualBTC = [
+  { step: DualStep.ShowBase, type: 'Tab', labelKey: 'labelDualChooseTokenDUAL_BASE' },
+  {},
+  { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
+]
+
+export enum DualInvestConfirmType {
+  USDCOnly = 'USDCOnly',
+  all = 'all',
 }

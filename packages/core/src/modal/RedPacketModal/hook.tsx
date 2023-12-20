@@ -29,6 +29,7 @@ import {
   getValuePrecisionThousand,
   myLog,
   NFTWholeINFO,
+  RouterPath,
   UIERROR_CODE,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -267,7 +268,6 @@ export function useRedPacketModal() {
           info: _info,
         })
       } else if (_info?.hash) {
-        myLog('redPacketOpenProps', _info)
         return {
           ImageEle,
           memo: _info.info.memo,
@@ -303,7 +303,6 @@ export function useRedPacketModal() {
     }
 
     if (isShow && info && step === RedPacketViewStep.OpenedPanel && _info?.hash) {
-      myLog('redPacketOpenProps', _info)
       let myAmountStr: string | undefined = undefined
       let symbol: string
       if (_info?.claimAmount) {
@@ -375,7 +374,6 @@ export function useRedPacketModal() {
       claimAmount?: string
     }
     if (isShow && info && step === RedPacketViewStep.RedPacketClock && _info?.hash) {
-      myLog('redPacketClockProps', _info)
       return {
         memo: _info.info.memo,
         amountStr,
@@ -823,14 +821,6 @@ export function useRedPacketModal() {
         detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.RELAY &&
         account.accountId !== _info.sender.accountId
 
-      const bottomButton: 'ended' | 'share' = [
-        sdk.LuckyTokenItemStatus.OVER_DUE,
-        sdk.LuckyTokenItemStatus.FAILED,
-        sdk.LuckyTokenItemStatus.COMPLETED,
-      ].includes(detail.luckyToken.status)
-        ? 'ended'
-        : 'share'
-
       let myAmountStr: string | undefined = undefined
       const relyNumber = detail.helpers?.length
       const value =
@@ -899,13 +889,25 @@ export function useRedPacketModal() {
         .isNft
         ? detail.claimStatus === sdk.ClaimRecordStatus.WAITING_CLAIM
           ? 'claim'
-          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED ||
-            detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMED
           ? 'claimed'
+          : detail.claimStatus === sdk.ClaimRecordStatus.CLAIMING
+          ? 'claiming'
           : detail.claimStatus === sdk.ClaimRecordStatus.EXPIRED
           ? 'expired'
           : 'hidden'
         : 'hidden'
+      const bottomButton: 'ended' | 'share' | 'hidden' = [
+        sdk.LuckyTokenItemStatus.OVER_DUE,
+        sdk.LuckyTokenItemStatus.FAILED,
+        sdk.LuckyTokenItemStatus.COMPLETED,
+      ].includes(detail.luckyToken.status)
+        ? claimButton === 'hidden'
+          ? 'ended'
+          : 'hidden'
+        : detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
+        ? 'hidden'
+        : 'share'
 
       return {
         redPacketType,
@@ -977,6 +979,9 @@ export function useRedPacketModal() {
             })
         },
         totalNumber: (detail as any).totalNum,
+        showReceiptListBtn:
+          account.accountId === detail.luckyToken.sender.accountId &&
+          detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
       } as RedPacketDetailProps
     } else {
       return undefined
@@ -1034,7 +1039,8 @@ export function useRedPacketModal() {
     ) {
       const shareButton: 'hidden' | 'share' =
         (blindBoxType === 'Not Started' || blindBoxType === 'Blind Box Started') &&
-        detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED
+        detail.luckyToken.status !== sdk.LuckyTokenItemStatus.COMPLETED &&
+        detail.luckyToken.type.scope !== sdk.LuckyTokenViewType.TARGET
           ? 'share'
           : 'hidden'
 
@@ -1053,7 +1059,11 @@ export function useRedPacketModal() {
             ? 'ended'
             : 'hidden'
           : 'hidden'
-        : detail.luckyToken.status === sdk.LuckyTokenItemStatus.COMPLETED
+        : [
+            sdk.LuckyTokenItemStatus.COMPLETED,
+            sdk.LuckyTokenItemStatus.FAILED,
+            sdk.LuckyTokenItemStatus.OVER_DUE,
+          ].includes(detail.luckyToken.status)
         ? 'ended'
         : 'hidden'
 
@@ -1133,7 +1143,7 @@ export function useRedPacketModal() {
             setShowRedPacket({
               isShow: false,
             })
-            history.push(`/l2assets/assets/${AssetTabIndex.RedPacket}`)
+            history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.RedPacket}`)
             return
           }
           const response = await LoopringAPI.luckTokenAPI?.getLuckTokenBalances(
@@ -1172,36 +1182,42 @@ export function useRedPacketModal() {
         //   : t("labelBlindBoxExplainationNotEnded"),
         claimButton,
         shareButton,
-        didClaimABlindBox: blinBoxDetail.blindBoxStatus !== '',
+        didClaimABlindBox:
+          blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
         wonInfo: blinBoxDetail!.luckyToken.isNft
           ? {
-              participated: blinBoxDetail.blindBoxStatus !== '',
+              participated:
+                blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount: detail.claimAmount,
               isNFT: true,
             }
           : {
-              participated: blinBoxDetail.blindBoxStatus !== '',
+              participated:
+                blinBoxDetail.blindBoxStatus !== '' && blinBoxDetail.blindBoxStatus !== 'EXPIRED',
               won: blinBoxDetail.claimAmount && toBig(blinBoxDetail.claimAmount).isGreaterThan(0),
               amount:
                 blinBoxDetail.claimAmount &&
+                tokenInfo &&
                 getValuePrecisionThousand(
-                  sdk.toBig(blinBoxDetail.claimAmount ?? '0').div('1e' + tokenInfo!.decimals),
+                  sdk.toBig(blinBoxDetail.claimAmount ?? '0').div('1e' + tokenInfo.decimals),
+                  tokenInfo.precision,
+                  tokenInfo.precision,
+                  tokenInfo.precision,
+                  false,
+                ),
+              total:
+                tokenInfo &&
+                getValuePrecisionThousand(
+                  sdk
+                    .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
+                    .div('1e' + tokenInfo!.decimals),
                   tokenInfo!.precision,
                   tokenInfo!.precision,
                   tokenInfo!.precision,
                   false,
                 ),
-              total: tokenInfo && getValuePrecisionThousand(
-                sdk
-                  .toBig(blinBoxDetail.luckyToken.tokenAmount.totalAmount)
-                  .div('1e' + tokenInfo!.decimals),
-                tokenInfo!.precision,
-                tokenInfo!.precision,
-                tokenInfo!.precision,
-                false,
-              ),
-              symbol: tokenInfo!.symbol,
+              symbol: tokenInfo?.symbol,
               isNFT: false,
             },
         handlePageChange: (page: number = 1) => {
@@ -1256,6 +1272,10 @@ export function useRedPacketModal() {
             ) +
             ' ' +
             tokenInfo?.symbol,
+        showReceiptListBtn:
+          account.accountId === detail.luckyToken.sender.accountId &&
+          detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
+        targets: (detail as any).targets,
       } as RedPacketBlindBoxDetailProps
     } else {
       return undefined

@@ -47,7 +47,7 @@ export const Properties = ({
   return (
     <Box>
       {properties.map((property, index) => (
-        <Grid container key={index} spacing={2} marginBottom={1.5}>
+        <Grid container key={index} spacing={2} marginBottom={1.5} alignItems={'center'}>
           <Property
             disabled={disabled}
             property={property}

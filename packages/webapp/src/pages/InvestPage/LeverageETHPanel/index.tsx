@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, CardContent, Grid, Typography } from '@mui/material'
+import { Box, CardContent, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { TradePanel } from './TradePanel'
 import {
@@ -12,11 +12,19 @@ import {
   ConfirmInvestDefiRisk,
   ToastType,
   useToggle,
+  useSettings,
+  MaxWidthContainer,
 } from '@loopring-web/component-lib'
-import { confirmation, useDefiMap, usePopup, useToast } from '@loopring-web/core'
+import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { BackIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { MaxWidthContainer } from '..'
+import {
+  BackIcon,
+  InvestRouter,
+  InvestType,
+  RouterPath,
+  TOAST_TIME,
+} from '@loopring-web/common-resources'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
 
 export const StyleWrapper = styled(Box)`
@@ -78,11 +86,27 @@ export const StyleCardContent = styled(CardContent)`
   }
 ` as typeof CardContent
 
+const ButtonStyled = styled(Button)`
+  background-color: var(--color-button-outlined);
+  color: var(--color-text-primary);
+  :hover {
+    background-color: var(--color-button-outlined);
+    ::before {
+      border-radius: 4px;
+    }
+  }
+`
+
 const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
-    confirmation: { confirmedLeverageETHInvest: confirmed },
+    setShowLeverageETHPopup,
+    confirmation: {
+      confirmedLeverageETHInvest: confirmed,
+      confirmationNeeded,
+      showLeverageETHPopup,
+    },
   } = confirmation.useConfirmation()
   const {
     toggle: {
@@ -90,7 +114,6 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     },
   } = useToggle()
 
-  const { confirmationNeeded, showLeverageETHPopup, setShowLeverageETHPopup } = usePopup()
   const _confirmedDefiInvest = {
     isShow: showLeverageETHPopup,
     type: 'CiETH',
@@ -98,12 +121,12 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
   }
   const setConfirmedDefiInvest = ({ isShow }: { isShow: boolean }) => {
     if (isShow) {
-      setShowLeverageETHPopup({ show: true, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: true, confirmationNeeded: true })
     } else {
-      setShowLeverageETHPopup({ show: false, confirmationNeeded: true })
+      setShowLeverageETHPopup({ isShow: false, confirmationNeeded: true })
     }
   }
-  const match: any = useRouteMatch('/invest/leverageETH/:isJoin?')
+  const match: any = useRouteMatch('/invest/leverageeth/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()
@@ -114,37 +137,52 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
     })
   }, [confirmed, enable])
   const theme = useTheme()
+  const { isMobile } = useSettings()
   return (
-    <Box display={'flex'} flexDirection={'column'} flex={1} >
+    <Box display={'flex'} flexDirection={'column'} flex={1}>
       <MaxWidthContainer
         display={'flex'}
         justifyContent={'space-between'}
-        background={'var(--color-box)'}
+        background={containerColors[0]}
+        // height={6 * theme.unit}
+        alignItems={'center'}
+        containerProps={{
+          sx: { borderBottom: '1px solid var(--color-border)' },
+        }}
+        paddingY={2}
       >
-        <Box paddingY={7}>
-          <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-            {t('labelLeverageETHStaking')}
-          </Typography>
-          <Typography marginBottom={3} color={'var(--color-text-secondary)'} variant={'h4'}>
-            {t('labelLeverageETHStakingDes')}
-          </Typography>
+        <Box width={'100%'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
           <Button
-            onClick={() => history.push('/invest/balance')}
-            sx={{ width: 18 * theme.unit }}
-            variant={'contained'}
+            startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
+            variant={'text'}
+            size={'medium'}
+            sx={{ color: 'var(--color-text-primary)' }}
+            color={'inherit'}
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
+            }
           >
-            {t('labelMyInvestLRCStaking')}
+            {t('labelBack')}
+          </Button>
+          <Button
+            onClick={() =>
+              history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+            }
+            variant={'text'}
+          >
+            {t('labelMyInvestLRCStaking')}{' '}
+            {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
           </Button>
         </Box>
-        <img src={SoursURL + 'images/earn-staking-title.svg'} />
       </MaxWidthContainer>
-      <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box-secondary)'} paddingY={5}>
+      <MaxWidthContainer minHeight={'70vh'} paddingY={5}>
         <StyleWrapper
           display={'flex'}
           flexDirection={'column'}
           justifyContent={'center'}
           alignItems={'center'}
           flex={1}
+          marginTop={6}
         >
           {marketArray?.length ? (
             // match?.params?.market && _market ? (
@@ -179,7 +217,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
             handleClose={(_e, isAgree) => {
               if (!isAgree) {
                 setConfirmedDefiInvest({ isShow: false })
-                history.push('/invest/overview')
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.Overview]}`)
               } else {
                 confirmedLeverageETHInvest()
                 setConfirmedDefiInvest({ isShow: false })

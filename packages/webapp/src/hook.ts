@@ -63,7 +63,11 @@ export function useInit() {
   } = useAccount()
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } = useTokenMap()
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap()
-  const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } = useTokenPrices()
+  const {
+    status: tokenPricesStatus,
+    getTokenPrices,
+    statusUnset: tokenPricesUnset,
+  } = useTokenPrices()
   const { status: defiMapStatus, statusUnset: defiMapStatusUnset } = useDefiMap()
   const { status: dualMapStatus, statusUnset: dualMapStatusUnset } = useDualMap()
   const { status: stakingMapStatus, statusUnset: stakingMapStatusUnset } = useStakingMap()
@@ -81,6 +85,18 @@ export function useInit() {
   const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
 
   React.useEffect(() => {
+    ConnectProvides.walletConnectClientMeta = {
+      ...ConnectProvides.walletConnectClientMeta,
+      url:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_URL ??
+        ConnectProvides.walletConnectClientMeta.url,
+      name:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_NAME ??
+        ConnectProvides.walletConnectClientMeta.name,
+      description:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_DESCRIPTION ??
+        ConnectProvides.walletConnectClientMeta.description,
+    }
     ;(async (account) => {
       if (
         account.accAddress !== '' &&
@@ -128,8 +144,7 @@ export function useInit() {
         if (account.accAddress === '' || account.connectName === ConnectProviders.Unknown) {
           resetAccount()
         }
-        const chainId =
-          account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
+        const chainId = defaultNetwork
         if (!isNoServer) {
           updateSystem({ chainId })
         }
@@ -208,6 +223,7 @@ export function useInit() {
       case SagaStatus.ERROR:
         tokenPricesUnset()
         setState('ERROR')
+        getTokenPrices()
         break
       case SagaStatus.DONE:
         tokenPricesUnset()

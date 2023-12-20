@@ -94,7 +94,7 @@ export function useQuote<C extends { [key: string]: string }>() {
 
   const socketSendTicker = React.useCallback(() => {
     sendSocketTopic({ [WsTopicType.ticker]: marketArray })
-  }, [marketArray, sendSocketTopic])
+  }, [marketArray])
 
   React.useEffect(() => {
     socketSendTicker()

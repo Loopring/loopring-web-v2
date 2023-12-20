@@ -107,6 +107,7 @@ yarn-error.log*
 openapitools.json
 *.tgz
 .idea/
+.yarn/
 testkey.txt
 
 test_datadir

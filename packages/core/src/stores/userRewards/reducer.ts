@@ -9,6 +9,7 @@ const initialState: UserRewardsStates<{ [key: string]: any }> = {
   totalClaims: {},
   rewardU: '',
   feeU: '',
+  defiAverageMap: undefined,
   status: SagaStatus.PENDING,
   errorMessage: null,
   __timer__: -1,
@@ -21,7 +22,10 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
       state.status = SagaStatus.PENDING
     },
     resetUserRewards(state, _action: PayloadAction<undefined>) {
-      state.status = SagaStatus.PENDING
+      state = {
+        ...initialState,
+        status: SagaStatus.UNSET,
+      }
     },
     getUserAMM(state, _action: PayloadAction<undefined>) {
       const { myAmmLPMap, rewardU, feeU } = makeSummaryMyAmm({
@@ -51,8 +55,16 @@ const userRewardsMapSlice: Slice<UserRewardsStates<any>> = createSlice({
     statusUnset: (state) => {
       state.status = SagaStatus.UNSET
     },
+    setDefiAverageMap(state, action: PayloadAction<{ defiAverageMap: any }>) {
+      state.defiAverageMap = action.payload.defiAverageMap
+    },
   },
 })
 export { userRewardsMapSlice }
-export const { getUserRewards, resetUserRewards, getUserRewardsStatus, statusUnset } =
-  userRewardsMapSlice.actions
+export const {
+  getUserRewards,
+  setDefiAverageMap,
+  resetUserRewards,
+  getUserRewardsStatus,
+  statusUnset,
+} = userRewardsMapSlice.actions

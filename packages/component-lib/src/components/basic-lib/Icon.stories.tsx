@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { Grid, Typography } from '@mui/material'
@@ -63,7 +63,6 @@ import {
   L2OrderIcon,
   LegacyIcon,
   LightIcon,
-  LikeIcon,
   LinkedIcon,
   LinkIcon,
   LoadingIcon,
@@ -82,7 +81,6 @@ import {
   NotificationIcon,
   OrderListIcon,
   OutputIcon,
-  PendingIcon,
   PlayIcon,
   ProfileIcon,
   ProToLiteIcon,
@@ -113,7 +111,6 @@ import {
   TrophyIcon,
   TwitterIcon,
   UnConnectIcon,
-  UnlikeIcon,
   UpIcon,
   UploadedIcon,
   VideoIcon,
@@ -132,6 +129,9 @@ import {
   RiskIcon,
   AnotherIcon,
   LinkSharedIcon,
+  ReadIcon,
+  MessageIcon,
+  GoIcon,
 } from '@loopring-web/common-resources'
 
 const Styled = styled.div`
@@ -195,7 +195,6 @@ const listIcon = [
   <ProToLiteIcon />,
   <CheckIcon />,
   <LoadingIcon />,
-  <PendingIcon />,
   <ActiveIcon />,
   <RefreshIcon />,
   <CompleteIcon />,
@@ -250,9 +249,7 @@ const listIcon = [
   <OrderListIcon />,
   <RefreshIPFSIcon />,
   <ViewMoreIcon />,
-  <LikeIcon />,
   <ZoomIcon />,
-  <UnlikeIcon />,
   <LegacyIcon />,
   <SyncIcon />,
   <FavHollowIcon />,
@@ -274,6 +271,9 @@ const listIcon = [
   <RiskIcon />,
   <AnotherIcon />,
   <LinkSharedIcon />,
+  <ReadIcon />,
+  <MessageIcon />,
+  <GoIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

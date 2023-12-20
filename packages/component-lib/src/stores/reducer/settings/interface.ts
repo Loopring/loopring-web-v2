@@ -1,4 +1,4 @@
-import { LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources'
+import { CoinSource, LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources'
 import { Layouts } from 'react-grid-layout'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -9,16 +9,6 @@ export enum PlatFormType {
 }
 
 export type PlatFormKeys = keyof typeof PlatFormType
-export type CoinSource = {
-  x: number
-  y: number
-  w: number
-  h: number
-  offX: number
-  offY: number
-  sourceW: number
-  sourceH: number
-}
 
 export interface SettingsState {
   themeMode: ThemeKeys
@@ -42,4 +32,5 @@ export interface SettingsState {
   defaultNetwork: sdk.ChainId
   referralCode: string
   isDevToggle: boolean
+  dualAuto: { auto: boolean; day: number | 'auto' }
 }

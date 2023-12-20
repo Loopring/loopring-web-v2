@@ -18,6 +18,7 @@ import {
   SoursURL,
   YEAR_DAY_MINUTE_FORMAT,
   DAY_MINUTE_FORMAT,
+  hexToRGB,
 } from '@loopring-web/common-resources'
 import QRCodeStyling from 'qr-code-styling'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -43,6 +44,7 @@ import { BoxNFT, CoinIcon, ModalCloseButtonPosition, TablePagination } from '../
 import { NFTMedia } from './nftMedia'
 import { sanitize } from 'dompurify'
 import { useTheme } from '@emotion/react'
+import { ReceiptListModal } from '../tradePanel/components/CreateRedPacketWrap'
 
 export const RedPacketBg = styled(Box)<BoxProps & { imageSrc?: string; type: string }>`
   display: flex;
@@ -230,6 +232,43 @@ export const RedPacketSize = {
   },
 }
 
+const qrCode = new QRCodeStyling({
+  type: 'svg',
+  width: 200,
+  height: 200,
+  image: `${SoursURL + 'svg/loopring.svg'}`,
+  dotsOptions: {
+    gradient: {
+      type: 'linear',
+      rotation: 45,
+      colorStops: [
+        {
+          offset: 0,
+          color: '#4169FF', // hardcode for export png
+        },
+        {
+          offset: 1,
+          color: '#000',
+        },
+      ],
+    },
+    type: 'dots',
+  },
+  backgroundOptions: {
+    color: '#ffffff', //colorConfig.bgColor
+  },
+  imageOptions: {
+    crossOrigin: 'anonymous',
+    margin: 4,
+  },
+  cornersSquareOptions: {
+    type: 'extra-rounded',
+  },
+  cornersDotOptions: {
+    type: 'square',
+  },
+})
+
 export const RedPacketQRCode = ({
   type = 'default',
   imageEleUrl,
@@ -238,42 +277,7 @@ export const RedPacketQRCode = ({
 }: RedPacketDefault & RedPacketQRCodeProps) => {
   const qrcodeRef = React.createRef<SVGGElement>()
   const ref = React.useRef()
-  const qrCode = new QRCodeStyling({
-    type: 'svg',
-    width: 200,
-    height: 200,
-    image: `${SoursURL + 'svg/loopring.svg'}`,
-    dotsOptions: {
-      gradient: {
-        type: 'linear',
-        rotation: 45,
-        colorStops: [
-          {
-            offset: 0,
-            color: '#4169FF', // hardcode for export png
-          },
-          {
-            offset: 1,
-            color: '#000',
-          },
-        ],
-      },
-      type: 'dots',
-    },
-    backgroundOptions: {
-      color: '#ffffff', //colorConfig.bgColor
-    },
-    imageOptions: {
-      crossOrigin: 'anonymous',
-      margin: 4,
-    },
-    cornersSquareOptions: {
-      type: 'extra-rounded',
-    },
-    cornersDotOptions: {
-      type: 'square',
-    },
-  })
+  
   const [qrCodeG, setQrCodeG] = React.useState<string | undefined>(undefined)
 
   const updateSvg = React.useCallback(async () => {
@@ -936,6 +940,7 @@ export const RedPacketDetail = ({
   onClickClaim,
   claimButton,
   totalNumber,
+  showReceiptListBtn
 }: RedPacketDetailProps) => {
   const { t } = useTranslation('common')
   const showLucky = detail.luckyToken.tokenAmount.remainCount == 0
@@ -951,6 +956,9 @@ export const RedPacketDetail = ({
       }}
     />
   )
+  const theme = useTheme()
+  const isTarget = detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET
+  const [showExclusiveReceipt, setShowExclusiveReceipt] = React.useState(false)
 
   return (
     <BoxStyle
@@ -978,7 +986,21 @@ export const RedPacketDetail = ({
         </Typography>
       </Box>
       <Box display={'flex'} flexDirection={'column'} alignItems={'center'} marginY={2}>
-        <Typography variant={'body1'}>{sender}</Typography>
+        <Typography marginLeft={isTarget ? 8.5 : 0} variant={'body1'}>
+          {sender}
+          {isTarget && (
+            <Typography
+              marginLeft={0.5}
+              borderRadius={1}
+              paddingX={0.5}
+              bgcolor={hexToRGB(theme.colorBase.warning, 0.5)}
+              color={'var(--color-warning)'}
+              component={'span'}
+            >
+              {t('labelRedPacketExclusiveTag')}
+            </Typography>
+          )}
+        </Typography>
         <Typography
           variant={'body2'}
           color={'var(--color-text-third)'}
@@ -995,8 +1017,9 @@ export const RedPacketDetail = ({
             lineClamp: '2',
             '-webkit-box-orient': 'vertical',
           }}
-          dangerouslySetInnerHTML={{ __html: sanitize(memo ?? '') }}
-        />
+        >
+          {memo ?? ''}{' '}
+        </Typography>
         {ImageEle}
         <Typography variant={'h3'} color={RedPacketColorConfig.default.colorTop} marginTop={1}>
           {myAmountStr ? myAmountStr : EmptyValueTag}
@@ -1117,19 +1140,40 @@ export const RedPacketDetail = ({
         </Box>
         {pageNation}
       </Box>
+      {
+        showReceiptListBtn && <Button
+          variant={'text'}
+          sx={{ fontSize: '13px' }}
+          onClick={() => {
+            setShowExclusiveReceipt(true)
+          }}
+        >
+          {t("labelRedPacketReceiptsList")}
+        </Button>
+      }
+      <ReceiptListModal
+        open={showExclusiveReceipt}
+        t={t}
+        onClose={() => setShowExclusiveReceipt(false)}
+        targets={(detail as any).targets}
+      />
       {/* {showShareBtn && ( */}
       <Box paddingX={1} display={'flex'} flexDirection={'column'}>
         {claimButton === 'claim' ? (
           <Button variant={'contained'} fullWidth onClick={onClickClaim}>
             {t('labelClaimBtn')}
           </Button>
-        ) : claimButton === 'expired' && bottomButton === 'ended' ? (
+        ) : claimButton === 'expired' && bottomButton === 'hidden' ? (
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnExpired')}
           </Button>
-        ) : claimButton === 'claimed' && bottomButton === 'ended' ? (
+        ) : claimButton === 'claimed' && bottomButton === 'hidden' ? (
           <Button variant={'contained'} fullWidth disabled>
             {t('labelClaimBtnClaimed')}
+          </Button>
+        ) : claimButton === 'claiming' && bottomButton === 'hidden' ? (
+          <Button variant={'contained'} fullWidth disabled>
+            {t('labelRedPacketClaiming')}
           </Button>
         ) : (
           <></>
@@ -1156,7 +1200,7 @@ export const RedPacketDetail = ({
             </Button>
           )
         ) : (
-          claimButton === 'hidden' && (
+          bottomButton === 'ended' && (
             <Button
               variant={'contained'}
               color={'error'}
@@ -1511,6 +1555,8 @@ export const RedPacketBlindBoxDetail = ({
   expired,
   isTokenBlindbox,
   remainGiftsAmount,
+  showReceiptListBtn,
+  targets
 }: RedPacketBlindBoxDetailProps) => {
   const { t } = useTranslation('common')
   const theme = useTheme()
@@ -1617,6 +1663,7 @@ export const RedPacketBlindBoxDetail = ({
   ) {
     return LooteryModal
   }
+  const [showExclusiveReceipt, setShowExclusiveReceipt] = React.useState(false)
 
   return (
     <BlindBoxDetailBoxStyle
@@ -2104,8 +2151,29 @@ export const RedPacketBlindBoxDetail = ({
               </>
             )}
           </Box>
+          <ReceiptListModal
+            open={showExclusiveReceipt}
+            t={t}
+            onClose={() => setShowExclusiveReceipt(false)}
+            targets={targets ?? []}
+          />
+
           {/* {(type === "Not Started" || type === "Blind Box Started") && ( */}
-          <Box marginBottom={1}>
+          <Box>
+            <Box display={'flex'} justifyContent={'center'}>
+              {showReceiptListBtn && (
+                <Button
+                  variant={'text'}
+                  sx={{ fontSize: '13px' }}
+                  onClick={() => {
+                    setShowExclusiveReceipt(true)
+                  }}
+                >
+                  {t("labelRedPacketReceiptsList")}
+                </Button>
+              )}
+            </Box>
+
             {shareButton === 'share' && (
               <Button
                 variant={'contained'}

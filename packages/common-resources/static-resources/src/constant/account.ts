@@ -71,4 +71,6 @@ export type AssetsRawDataItem = {
   name: string
   withdrawAmount?: string
   depositAmount?: string
+  precision: number
 }
+export const ContactLimit = 1500

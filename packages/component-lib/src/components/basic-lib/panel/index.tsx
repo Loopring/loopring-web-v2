@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
-import { Box, Card, CardProps, Typography } from '@mui/material'
+import { Box, Card, Typography, BoxProps, Container, IconButton } from '@mui/material'
 import { FirstPlaceIcon, SecondPlaceIcon, ThirdPlaceIcon } from '@loopring-web/common-resources'
+import React from 'react'
 
 export * from './SwitchPanel'
 export * from './SubMenu'
@@ -15,114 +16,18 @@ export const CardNFTStyled = styled(Card)`
   position: relative;
   width: var(--nft-card);
 `
-
-export const CardStyleItem = styled(Card)<
-  CardProps & {
-    contentheight?: number
-    size?: 'large' | 'medium' | 'small' | undefined
-  }
->`
-  background: var(--color-global-bg);
-  width: 100%;
-  cursor: pointer;
-  height: 0;
-  padding: 0 0 calc(100% + ${({ contentheight }) => `${contentheight ? contentheight : 80}px`});
-  position: relative;
-
-  .boxLabel {
-    overflow: hidden;
-  }
-
-  &.collection {
-    padding: 0 0 calc(140%);
-
-    .boxLabel {
-      ${({ size, theme }) =>
-        size === 'small'
-          ? `
-            padding: ${1 * theme.unit}px;
-            margin:0;
-          `
-          : `
-              .content{
-                width:60%;
-              }
-              padding: ${2 * theme.unit}px;
-              margin: ${2 * theme.unit}px;`}
-    }
-  }
-
-  &.nft-item {
-    .MuiRadio-root,
-    .MuiCheckbox-root {
-      &:hover {
-        background-color: rgba(65, 105, 255, 0.05);
-        color: var(--color-text-secondary);
-      }
-
-      &.Mui-checked {
-        box-shadow: inset 0px 0px 60px var(--color-global-bg-opacity);
-      }
-
-      position: absolute;
-      right: ${({ theme }) => theme.unit}px;
-      top: ${({ theme }) => theme.unit}px;
-      transform: scale(1.5);
-    }
-  }
-
-  &.btnCard {
-    background: var(--color-box);
-
-    .MuiCardContent-root {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-
-    &.column .MuiCardContent-root {
-      flex-direction: column;
-    }
-
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: ${({ theme }) => (3 / 2) * theme.unit}px;
-    box-shadow: none;
-    transition: none;
-    ${({ theme }) =>
-      theme.border.defaultFrame({
-        c_key: 'var(--field-opacity)',
-        d_R: 0.5,
-      })};
-
-    &.selected,
-    &:hover {
-      ${({ theme }) =>
-        theme.border.defaultFrame({
-          c_key: 'var(--color-border-select)',
-          d_R: 0.5,
-        })};
-    }
-  }
-
-  img {
-    object-fit: contain;
-  }
-` as (
-  props: CardProps & {
-    contentheight?: number
-    size?: 'large' | 'medium' | 'small' | undefined
-  },
-) => JSX.Element
+export const LoadingStyled = styled(IconButton)`
+  position: absolute;
+  z-index: 21;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 
 export const ImageUploadWrapper = styled(Box)`
   position: relative;
   width: 100%;
-  background: var(--color-box);
+  background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
 
   .MuiFormControlLabel-root {
@@ -160,5 +65,49 @@ export const PlaceComponent = ({ rank }: { rank: number }) => {
         </Typography>
       </>
     </Typography>
+  )
+}
+
+export const MaxWidthContainer = ({
+  containerProps = {},
+  ...props
+}: {
+  children: React.ReactNode
+  background?: string
+  containerProps?: BoxProps
+} & BoxProps) => {
+  const { children, background, sx, ...otherProps } = props
+  const { sx: containerPropsSX, ..._containerProps } = containerProps
+  return (
+    <Box
+      display={'flex'}
+      justifyContent={'center'}
+      sx={{ background, ...(containerPropsSX ?? {}) }}
+      {..._containerProps}
+    >
+      <Container
+        sx={{
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'column',
+        }}
+        // justifyContent={'stretch'}
+        maxWidth={'lg'}
+        className={'inner-box'}
+      >
+        <Box
+          flex={1}
+          display={'flex'}
+          flexDirection={'column'}
+          width={'100%'}
+          sx={{
+            ...sx,
+          }}
+          {...otherProps}
+        >
+          {children}
+        </Box>
+      </Container>
+    </Box>
   )
 }

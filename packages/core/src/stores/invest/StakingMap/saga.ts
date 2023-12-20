@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { getStakingMap, getStakingMapStatus, updateDefiSyncMap } from './reducer'
+import { getStakingMap, getStakingMapStatus, updateStakingSyncMap } from './reducer'
 import { store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { PayloadAction } from '@reduxjs/toolkit'
@@ -83,7 +83,7 @@ export function* stakingMapInitSaga() {
 
 export function* stakingMapSyncSaga() {
   // @ts-ignore
-  yield all([takeLatest(updateDefiSyncMap, getDefiSyncSaga)])
+  yield all([takeLatest(updateStakingSyncMap, getDefiSyncSaga)])
 }
 
 export const stakingMapFork = [fork(stakingMapInitSaga), fork(stakingMapSyncSaga)]

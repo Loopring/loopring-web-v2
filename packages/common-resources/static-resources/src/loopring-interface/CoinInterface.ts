@@ -8,6 +8,10 @@ export interface IBData<R> {
   belong: CoinKey<R>
   balance: number
   tradeValue: number | undefined
+  max?: string
+}
+export interface IBDataMax<R> extends IBData<R> {
+  max?: string
 }
 
 export interface CoinInfo<R> {
@@ -36,6 +40,7 @@ export interface FeeInfo {
   token?: string
   hasToken?: boolean
   count?: string
+  discount?: number
   __raw__: {
     fastWithDraw: string
     tokenId: number
@@ -204,8 +209,14 @@ export type DeFiSideRedeemCalcData<T, _R = RedeemInfo> = {
   coinSell: T
   stakeViewInfo: _R
 }
+export type DualTrade<R> = IBData<R> & {
+  isRenew: boolean
+  renewTargetPrice?: string
+  renewDuration?: number
+}
 
-export type DualCalcData<R, B = IBData<any>> = sdk.CalDualResult & {
+// { isRenew?: true; target; maxRecurseProductDuration: number }
+export type DualCalcData<R, B = DualTrade<any>> = sdk.CalDualResult & {
   sellToken?: sdk.TokenInfo
   buyToken?: sdk.TokenInfo
   coinSell: B
@@ -477,18 +488,7 @@ export type RedPacketSend = {
 export type LuckyRedPacketItem = {
   labelKey: string
   desKey: string
-  showInNFTS?: boolean
-  showInERC20?: boolean
-  showInBlindbox?: boolean
-  defaultForERC20?: boolean
-  defaultForNFT?: boolean
-  defaultForBlindbox?: boolean
-  defaultForBlindboxNotShowERC20Blindbox?: boolean
-  isBlindboxNFT?: boolean
-  defaultForFromNFT?: boolean
-  showInFromNFT?: boolean
-  toolgleWithShowERC20Blindbox?: boolean
-  icon?: string
+  tags?: string[],
   value: {
     value: number
     partition: sdk.LuckyTokenAmountType

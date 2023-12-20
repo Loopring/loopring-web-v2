@@ -5,14 +5,19 @@ import styled from '@emotion/styled'
 import React from 'react'
 import { useAmmMapUI } from './hook'
 
-import { Button, PoolsTable, useSettings } from '@loopring-web/component-lib'
+import { Button, PoolsTable, useSettings, MaxWidthContainer } from '@loopring-web/component-lib'
 
 import { useNotify, useSystem } from '@loopring-web/core'
-import { BackIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import {
+  AmmLogo,
+  InvestRouter,
+  InvestType,
+  RouterPath,
+  RowInvestConfig,
+} from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
-import { MaxWidthContainer } from '..'
+import { containerColors } from '..'
 import { useTheme } from '@emotion/react'
-import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -40,28 +45,37 @@ export const PoolsPanel = withTranslation('common')(
     const container = React.useRef(null)
     const history = useHistory()
     const { forexMap } = useSystem()
-    const { currency } = useSettings()
+    const { currency, isMobile } = useSettings()
     const poolTableProps = useAmmMapUI()
     const { campaignTagConfig } = useNotify().notifyMap ?? {}
     const theme = useTheme()
     return (
       <Box display={'flex'} flexDirection={'column'} flex={1}>
         <MaxWidthContainer
+          sx={{ flexDirection: 'row' }}
           display={'flex'}
           justifyContent={'space-between'}
-          background={'var(--color-box)'}
+          background={containerColors[0]}
+          height={isMobile ? 50 * theme.unit : 30 * theme.unit}
+          alignItems={'center'}
         >
           <Box paddingY={7}>
-            <Typography marginBottom={2} fontSize={'48px'} variant={'h1'}>
-              {t("labelLiquidityPageTitle")}
+            <Typography marginBottom={2} fontSize={'38px'} variant={'h1'}>
+              {t('labelLiquidityPageTitle')}
             </Typography>
-            <Button onClick={() => history.push('/invest/balance')} sx={{ width: 18 * theme.unit }} variant={'contained'}>
-              {t("labelInvestMyAmm")}
+            <Button
+              onClick={() =>
+                history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+              }
+              sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
+              variant={'contained'}
+            >
+              {t('labelInvestMyAmm')}
             </Button>
           </Box>
-          <img src={SoursURL + 'images/earn-amm-title.svg'} />
+          {!isMobile && <AmmLogo />}
         </MaxWidthContainer>
-        <MaxWidthContainer minHeight={'70vh'} background={'var(--color-box-secondary)'}>
+        <MaxWidthContainer minHeight={'70vh'} background={containerColors[1]}>
           <PoolsTable
             {...{
               ...poolTableProps,

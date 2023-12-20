@@ -12,6 +12,7 @@ import {
   SlippageTolerance,
   TRADE_TYPE,
   TradeBtnStatus,
+  AmmPanelType,
 } from '@loopring-web/common-resources'
 import {
   ammCalcData,
@@ -27,7 +28,6 @@ import { ResetPanel } from './Reset'
 import { useTranslation } from 'react-i18next'
 import {
   AmmPanel,
-  AmmPanelType,
   AmmProps,
   DepositProps,
   DualWrap,

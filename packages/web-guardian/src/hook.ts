@@ -42,7 +42,7 @@ export function useInit() {
       return SagaStatus.PENDING
     }
   })
-  const { isMobile } = useSettings()
+  const { isMobile, defaultNetwork } = useSettings()
   const theme = useTheme()
 
   const {
@@ -61,6 +61,18 @@ export function useInit() {
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
 
   React.useEffect(() => {
+    ConnectProvides.walletConnectClientMeta = {
+      ...ConnectProvides.walletConnectClientMeta,
+      url:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_URL ??
+        ConnectProvides.walletConnectClientMeta.url,
+      name:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_NAME ??
+        ConnectProvides.walletConnectClientMeta.name,
+      description:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_DESCRIPTION ??
+        ConnectProvides.walletConnectClientMeta.description,
+    }
     ;(async (account) => {
       if (
         account.accAddress !== '' &&
@@ -72,6 +84,7 @@ export function useInit() {
           await connectProvides[account.connectName]({
             account: account.accAddress,
             darkMode: theme.mode === ThemeType.dark,
+            chainId: defaultNetwork.toString(),
           })
           updateAccount({})
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {

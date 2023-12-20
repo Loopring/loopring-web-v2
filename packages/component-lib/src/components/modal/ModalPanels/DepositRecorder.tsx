@@ -16,8 +16,7 @@ import { useTheme } from '@emotion/react'
 import { useSettings } from '../../../stores'
 
 const BoxStyled = styled(Box)`
-  //background: var(--color-global-bg);
-  background:var(--color-box-hover);
+  background: var(--color-box-hover);
   position: relative;
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
@@ -129,11 +128,11 @@ export const DepositRecorder = ({
                   </Link>
                   <Typography fontSize={'inherit'} component={'span'}>
                     {txInfo.status === 'pending' ? (
-                      <WaitingIcon fontSize={'large'} />
+                      <WaitingIcon fontSize={'large'} color={'warning'} />
                     ) : txInfo.status === 'success' ? (
-                      <CompleteIcon fontSize={'large'} />
+                      <CompleteIcon fontSize={'large'} color={'success'} />
                     ) : (
-                      <WarningIcon fontSize={'large'} />
+                      <WarningIcon fontSize={'large'} color={'error'} />
                     )}
                   </Typography>
                 </Typography>

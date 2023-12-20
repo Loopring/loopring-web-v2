@@ -3,7 +3,6 @@ import React from 'react'
 import {
   ButtonComponentsMap,
   fnType,
-  headerMenuData,
   headerMenuDataMap,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
@@ -21,6 +20,7 @@ import {
   accountStaticCallBack,
   btnClickMap,
   useSelectNetwork,
+  useNotificationFunc,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
@@ -82,16 +82,16 @@ export const useHeader = () => {
   })
 
   React.useEffect(() => {
-    if ([SagaStatus.UNSET,SagaStatus.DONE].includes(accountStatus)) {
+    if ([SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)) {
       const account = store.getState().account
       setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
+        headerToolBarData[ButtonComponentsMap.WalletConnect as any] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           handleClick: onWalletBtnConnect,
           NetWorkItems,
           accountState: { account },
         }
-        headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
+        headerToolBarData[ButtonComponentsMap.ProfileMenu as any] = {
           ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
           subMenu: profile.map((item: string) => Profile[item]),
           readyState: account.readyState,
@@ -100,12 +100,15 @@ export const useHeader = () => {
       })
     }
   }, [accountStatus, account?.readyState])
-  const { notifyMap } = useNotify()
+  const { notifyMap, myNotifyMap } = useNotify()
+  // const { onReadClick } = useNotificationFunc({})
+
   return {
     headerToolBarData,
     headerMenuData: headerMenuDataMap[network],
     headerMenuLandingData,
     account,
     notifyMap,
+    myNotifyMap,
   }
 }

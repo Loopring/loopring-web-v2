@@ -19,11 +19,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       case AccountStatus.LOCKED:
       case AccountStatus.NO_ACCOUNT:
       case AccountStatus.ACTIVATED:
-        // const provideAddr = await connectProvides.usedWeb3?.eth.getAccounts();
-        if (
-          walletLayer1Status !== SagaStatus.PENDING
-          // && provideAddr[0].toLowerCase() === account.accAddress.toLowerCase()
-        ) {
+        if (walletLayer1Status !== SagaStatus.PENDING) {
           updateWalletLayer1()
           myLog('updateWalletLayer1')
         } else {
@@ -31,13 +27,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           sdk.sleep(10)
           updateWalletLayer1()
         }
-        // else {
-        //   // resetLayer1();
-        //   // updateWalletLayer1();
-        //   // myLog("sdk.sleep updateAccount");
-        //   // await sdk.sleep(10);
-        //   // updateAccount({ readyState: account.readyState });
-        // }
         break
       case AccountStatus.UN_CONNECT:
       case AccountStatus.ERROR_NETWORK:

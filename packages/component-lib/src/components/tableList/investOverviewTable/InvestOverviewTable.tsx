@@ -5,8 +5,10 @@ import { Button, CoinIcon, Column, Table } from '../../basic-lib'
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  InvestAssetRouter,
   InvestDuration,
   InvestMapType,
+  RouterPath,
   RowConfig,
   TokenType,
 } from '@loopring-web/common-resources'
@@ -38,18 +40,17 @@ const TableStyled = styled(Box)<{ isMobile?: boolean; hasContent?: boolean } & B
       justify-content: flex-end;
       align-items: center;
     }
+    & > .rdg-row {
+      border-top: 1px solid var(--color-box-hover);
+    }
 
     & > .rdg-row.child_row {
-      background-color: var(--color-global-bg);
-      border-top: 1px solid var(--color-box-hover);
-      border-left: 1px solid var(--color-box-hover);
-      border-right: 1px solid var(--color-box-hover);
-
+      border-top: none;
       .rdg-cell:first-of-type {
         margin-left: ${({ theme }) => 2 * theme.unit}px;
       }
       &:hover {
-        background-color: var(--color-global-bg);
+        background-color: transparent;
       }
     }
     & > .rdg-row.child_row:first-of-type {
@@ -105,7 +106,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
     [getFilteredData],
   )
   const tableHeight = React.useMemo(() => {
-    return (rows.length + 1) * rowConfig.rowHeight
+    return rows.length > 0 ? (rows.length + 1) * rowConfig.rowHeight : 350
   }, [rows.length, rowConfig])
   const [isDropDown, setIsDropDown] = React.useState(true)
 
@@ -222,25 +223,32 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 component={'span'}
               >
                 <Button
-                  variant={'contained'}
-                  color={'primary'}
-                  size={'small'}
+                  variant={'outlined'}
+                  size={'medium'}
                   onClick={(_e) => {
                     switch (row.type) {
                       case InvestMapType.AMM:
-                        history.push(`/invest/ammpool?search=${row.token.symbol}`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.AMM}?search=${row.token.symbol}`,
+                        )
                         return
                       case InvestMapType.STAKE:
-                        history.push(`/invest/defi/${row.token.symbol}-null/invest`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.STAKE}/${row.token.symbol}-null/invest`,
+                        )
                         return
                       case InvestMapType.DUAL:
-                        history.push(`/invest/dual/${row.token.symbol}-null`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.DUAL}/${row.token.symbol}-null`,
+                        )
                         return
                       case InvestMapType.STAKELRC:
-                        history.push(`/invest/stakelrc/${row.token.symbol}-null`)
+                        history.push(
+                          `${RouterPath.invest}/${InvestAssetRouter.STAKELRC}/${row.token.symbol}-null`,
+                        )
                         return
                       case InvestMapType.LEVERAGEETH:
-                        history.push(`/invest/leverageETH`)
+                        history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`)
                         return
                     }
                   }}
@@ -373,7 +381,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
             justifyContent={'space-between'}
             marginLeft={3}
           >
-            <Typography fontSize={"36px"} variant={'h1'}>{t('labelTitleOverviewAllPrd', { ns: 'common' })}</Typography>
+            <Typography fontSize={'36px'} variant={isMobile ? 'h3' : 'h1'}>
+              {t('labelTitleOverviewAllPrd', { ns: 'common' })}
+            </Typography>
             <TableFilterStyled>
               <Filter
                 {...{

@@ -1,36 +1,53 @@
-import { Avatar, Box, Button, IconButton, OutlinedInput, Typography } from '@mui/material'
-import styled from '@emotion/styled'
-import { InputSearch, TablePagination, Toast, ToastType } from '@loopring-web/component-lib'
-import { CopyIcon, EditIcon, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
-import { Add } from './add'
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography,
+} from '@mui/material'
+import {
+  AddressTypeTag,
+  InputSearch,
+  TablePagination,
+  Toast,
+  ToastType,
+  useSettings,
+  InitialNameAvatar,
+  MaxWidthContainer,
+} from '@loopring-web/component-lib'
+import * as sdk from '@loopring-web/loopring-sdk'
+
+import {
+  CopyIcon,
+  EditIcon,
+  getShortAddr,
+  MoreIcon,
+  TOAST_TIME,
+  ContactType,
+  NotificationIcon,
+} from '@loopring-web/common-resources'
+import { EditContact } from './add'
 import { Delete } from './delete'
 import { Send } from './send'
 import { useContact, viewHeightOffset, viewHeightRatio } from './hooks'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AddressType } from '@loopring-web/loopring-sdk'
 import React from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { ContactTransactionsPage } from './history'
+import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
+import styled from '@emotion/styled'
 
-const ContactPageStyle = styled(Box)`
-  background: var(--color-box);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  height: 85vh;
-  /* padding-bottom: 5%  */
+const StyledPaper = styled(Box)`
   width: 100%;
+  height: 100%;
+  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
-
-const Line = styled('div')`
-  border-radius: ${({ theme }) => theme.unit / 2}px;
-  height: 1px;
-  margin-top: ${({ theme }) => theme.unit * 2}px;
-  background: var(--color-divide);
-`
-
 export enum ContactL3Router {
   list = 'list',
   transactions = 'transactions',
@@ -44,181 +61,211 @@ export const ContactPage = () => {
   return <>{view}</>
 }
 
+const ActionMemo = React.memo(
+  <N = ContactType,>({
+    data,
+    onClickSend,
+    onClickDelete,
+  }: {
+    data: ContactType
+    onClickSend: (
+      contactAddress: string,
+      contactName: string,
+      addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys],
+    ) => void
+    onClickDelete: (contactAddress: string, contactName: string) => void
+  }) => {
+    const history = useHistory()
+    const { isMobile } = useSettings()
+    const { t } = useTranslation('common')
+    const popupState = usePopupState({
+      variant: 'popover',
+      popupId: 'contact-action',
+    })
+    const bindContent = bindMenu(popupState)
+    const bindAction = bindTrigger(popupState)
+
+    const items = React.useMemo(() => {
+      return <></>
+    }, [])
+    return (
+      <Grid item marginTop={1}>
+        {isMobile ? (
+          <>
+            <IconButton size={'large'} edge={'end'} {...{ ...bindAction }}>
+              <MoreIcon cursor={'pointer'} />
+            </IconButton>
+            <Popover
+              {...bindContent}
+              anchorReference='anchorEl'
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Box borderRadius={'inherit'} minWidth={110}>
+                <MenuItem
+                  onClick={() =>
+                    onClickSend(data.contactAddress, data.contactName, data.addressType)
+                  }
+                >
+                  {t('labelContactsSend')}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    history.push(
+                      '/layer2/contact/transactions?contactAddress=' + data.contactAddress,
+                    )
+                  }}
+                >
+                  {t('labelContactsTransactions')}
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onClickDelete(data.contactAddress, data.contactName)
+                  }}
+                >
+                  {t('labelContactsDeleteContactBtn')}
+                </MenuItem>
+              </Box>
+            </Popover>
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={() => onClickSend(data.contactAddress, data.contactName, data.addressType)}
+              variant={'contained'}
+              size={'small'}
+              sx={{ marginLeft: 1 }}
+            >
+              {t('labelContactsSend')}
+            </Button>
+            <Button
+              variant={'outlined'}
+              size={'medium'}
+              onClick={() => {
+                history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
+              }}
+              sx={{ marginLeft: 1 }}
+            >
+              {t('labelContactsTransactions')}
+            </Button>
+            <Button
+              variant={'outlined'}
+              size={'medium'}
+              onClick={() => {
+                onClickDelete(data.contactAddress, data.contactName)
+              }}
+              sx={{ marginLeft: 1 }}
+            >
+              {t('labelContactsDeleteContactBtn')}
+            </Button>
+          </>
+        )}
+      </Grid>
+    )
+  },
+)
 export const ContractPanel = () => {
   const {
     setAddOpen,
     addOpen,
-    addLoading,
-    submitAddContact,
-    // add,
     contacts,
     searchValue,
     onChangeSearch,
-    onClickEditing,
     onClickDelete,
-    onChangeInput,
-    onInputBlue,
+    selectAddress,
+    setSelectAddress,
     toastInfo,
-
     deleteInfo,
     onCloseDelete,
-
     submitDeleteContact,
     deleteLoading,
-
     onClickSend,
     onCloseSend,
     sendInfo,
-    onCloseToast,
-    setToastInfo,
-
+    closeToast,
+    setToast,
     pagination,
     onPageChange,
-    loading,
     showPagination,
-    // onScroll
   } = useContact()
   const { t } = useTranslation()
 
-  let totastText = ''
-  if (toastInfo.customerText) {
-    totastText = toastInfo.customerText
-  } else if (toastInfo.isSuccess) {
-    switch (toastInfo.type) {
-      case 'Add':
-        totastText = t('labelContactsAddSuccess')
-        break
-      case 'Delete':
-        totastText = t('labelContactsDeleteSuccess')
-        break
-      case 'Edit':
-        totastText = t('labelContactsEditSuccess')
-        break
-      case 'Send':
-        totastText = t('labelContactsSendSuccess')
-        break
-      case 'Copy':
-        totastText = t('labelContactsCopySuccess')
-        break
-    }
-  } else {
-    switch (toastInfo.type) {
-      case 'Add':
-        totastText = t('labelContactsAddFailed')
-        break
-      case 'Delete':
-        totastText = t('labelContactsDeleteFailed')
-        break
-      case 'Edit':
-        totastText = t('labelContactsEditFailed')
-        break
-      case 'Send':
-        totastText = t('labelContactsSendFailed')
-        break
-    }
-  }
-  const history = useHistory()
-
   const noContact = (
     <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <Typography color={'var(--color-text-third)'}>{t('labelContactsNoContact')}</Typography>
+      <Typography component={'span'} variant={'body1'} color={'var(--color-text-third)'}>
+        {t('labelContactsNoContact')}
+      </Typography>
     </Box>
   )
-  const loadingView = (
-    <Box height={'80vh'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-      <img
-        className='loading-gif'
-        alt={'loading'}
-        width='36'
-        src={`${SoursURL}images/loading-line.gif`}
-      />
-    </Box>
-  )
+
+  const { isMobile } = useSettings()
+
   const normalView = (
     <>
       <Box height={`calc(${viewHeightRatio * 100}vh - ${viewHeightOffset}px)`} overflow={'scroll'}>
         {contacts &&
           contacts.map((data) => {
-            const { editing, name, address, avatarURL, addressType } = data
             return (
               <Box
-                key={address}
+                key={data.contactAddress}
                 paddingY={2}
-                display={addressType === AddressType.OFFICIAL ? 'none' : 'flex'}
+                display={data.addressType === sdk.AddressType.OFFICIAL ? 'none' : 'flex'}
                 justifyContent={'space-between'}
               >
                 <Box display={'flex'}>
-                  <Avatar sizes={'32px'} src={avatarURL}></Avatar>
-                  <Box marginLeft={1}>
-                    {editing ? (
-                      <OutlinedInput
-                        size={'small'}
-                        value={name}
-                        onChange={(e) => {
-                          onChangeInput(address, e.target.value)
+                  <InitialNameAvatar name={data.contactName} />
+                  <Typography
+                    component={'p'}
+                    marginLeft={1}
+                    display={'flex'}
+                    flexDirection={'column'}
+                  >
+                    <Typography
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      component={'span'}
+                      paddingRight={1}
+                    >
+                      <Typography display={'inline-flex'} paddingRight={1} component={'span'}>
+                        {data.contactName}
+                      </Typography>
+                      <AddressTypeTag addressType={data.addressType} />
+                      <EditIcon
+                        sx={{
+                          paddingLeft: 1,
                         }}
-                        onBlur={() => {
-                          onInputBlue(address)
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.currentTarget.blur()
-                          }
+                        fontSize={'large'}
+                        onClick={() => {
+                          setAddOpen(true)
+                          setSelectAddress(data as ContactType)
                         }}
                       />
-                    ) : (
-                      <Typography>
-                        {name}
-                        <EditIcon onClick={() => onClickEditing(address)} />
-                      </Typography>
-                    )}
-                    <Typography>
-                      {address}
+                    </Typography>
+                    <Typography component={'span'} title={data.contactAddress}>
+                      {isMobile ? getShortAddr(data.contactAddress ?? '') : data.contactAddress}
                       <IconButton
                         onClick={() => {
-                          navigator.clipboard.writeText(address)
-                          setToastInfo({
+                          navigator.clipboard.writeText(data.contactAddress)
+                          setToast({
                             open: true,
-                            isSuccess: true,
-                            type: 'Copy',
+                            type: ToastType.success,
+                            content: t('labelContactsCopySuccess'),
                           })
                         }}
                       >
-                        <CopyIcon></CopyIcon>
+                        <CopyIcon />
                       </IconButton>
                     </Typography>
-                  </Box>
+                  </Typography>
                 </Box>
                 <Box display={'flex'}>
-                  <Box marginRight={2}>
-                    <Button
-                      onClick={() => onClickSend(address, name, addressType)}
-                      variant={'contained'}
-                      size={'small'}
-                    >
-                      {t('labelContactsSend')}
-                    </Button>
-                  </Box>
-                  <Box marginRight={2}>
-                    <Button
-                      variant={'outlined'}
-                      size={'medium'}
-                      onClick={() => {
-                        history.push('/layer2/contact/transactions?contactAddress=' + address)
-                      }}
-                    >
-                      {t('labelContactsTransactions')}
-                    </Button>
-                  </Box>
-                  <Button
-                    variant={'outlined'}
-                    size={'medium'}
-                    onClick={() => {
-                      onClickDelete(address, name)
-                    }}
-                  >
-                    {t('labelContactsDeleteContactBtn')}
-                  </Button>
+                  <ActionMemo data={data} onClickSend={onClickSend} onClickDelete={onClickDelete} />
                 </Box>
               </Box>
             )
@@ -234,23 +281,26 @@ export const ContractPanel = () => {
       )}
     </>
   )
-
   return (
-    <ContactPageStyle className={'MuiPaper-elevation2'} paddingX={4} paddingY={3}>
+    <>
       <Toast
-        alertText={totastText}
-        severity={toastInfo.isSuccess ? ToastType.success : ToastType.error}
+        alertText={toastInfo.content ?? ''}
+        severity={toastInfo?.type}
         open={toastInfo.open}
         autoHideDuration={TOAST_TIME}
-        onClose={() => onCloseToast()}
+        onClose={closeToast}
+        // onClose={closeToastL}
       />
-      <Add
-        loading={addLoading}
-        submitAddingContact={(address, name, cb) => {
-          submitAddContact(address, name, cb)
-        }}
+      <EditContact
+        isEdit={selectAddress ? { item: selectAddress } : false}
         addOpen={addOpen}
         setAddOpen={setAddOpen}
+        onClose={() => {
+          setSelectAddress(undefined)
+          setAddOpen(false)
+        }}
+        contacts={contacts}
+        setToast={setToast}
       />
       <Delete
         deleteInfo={deleteInfo}
@@ -259,8 +309,20 @@ export const ContractPanel = () => {
         loading={deleteLoading}
       />
       <Send sendInfo={sendInfo} onCloseSend={onCloseSend} />
-      <Box display={'flex'} justifyContent={'space-between'}>
-        <Typography variant={'h2'} paddingRight={2}>
+      <MaxWidthContainer
+        sx={{ flexDirection: 'row' }}
+        background={'var(--color-global-bg)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+      >
+        <Typography
+          component={'h3'}
+          variant={'h5'}
+          paddingX={5 / 2}
+          display={'inline-flex'}
+          alignItems={'center'}
+          paddingY={2}
+        >
           {t('labelContacts')}
         </Typography>
         <Box display={'flex'} alignItems={'center'}>
@@ -275,6 +337,7 @@ export const ContractPanel = () => {
               variant={'contained'}
               size={'small'}
               onClick={() => {
+                setSelectAddress(undefined)
                 setAddOpen(true)
               }}
             >
@@ -282,13 +345,27 @@ export const ContractPanel = () => {
             </Button>
           </Box>
         </Box>
-      </Box>
-      <Box className='table-divide'>
-        <Line />
-        <Box>
-          {loading ? loadingView : !contacts || contacts.length === 0 ? noContact : normalView}
-        </Box>
-      </Box>
-    </ContactPageStyle>
+      </MaxWidthContainer>
+      <Divider />
+      <MaxWidthContainer
+        background={'var(--color-pop-bg)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+        paddingY={2}
+        flexDirection={'column'}
+      >
+        <StyledPaper
+          className={'MuiPaper-elevation2'}
+          margin={0}
+          marginBottom={2}
+          paddingX={2}
+          paddingY={2}
+        >
+          <Box className='table-divide'>
+            {!contacts || contacts.length === 0 ? noContact : normalView}
+          </Box>
+        </StyledPaper>
+      </MaxWidthContainer>
+    </>
   )
 }

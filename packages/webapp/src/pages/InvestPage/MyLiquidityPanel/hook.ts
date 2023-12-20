@@ -1,5 +1,10 @@
 import React from 'react'
-import { AmmRecordRow, MyPoolRow, RawDataDefiSideStakingItem } from '@loopring-web/component-lib'
+import {
+  AmmRecordRow,
+  MyPoolRow,
+  RawDataDefiSideStakingItem,
+  RawDefiAssetsItem,
+} from '@loopring-web/component-lib'
 import {
   LoopringAPI,
   makeDefiInvestReward,
@@ -20,17 +25,16 @@ import {
   AccountStatus,
   CustomError,
   ErrorMap,
+  getValuePrecisionThousand,
   myLog,
   RowInvestConfig,
   SagaStatus,
   STAKING_INVEST_LIMIT,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { pickBy, toArray } from 'lodash'
-// import { walletServices } from "@loopring-web/web3-provider";
+import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
 
 export const useOverview = <R extends { [key: string]: any }, I extends { [key: string]: any }>({
-  dualOnInvestAsset,
   rowConfig = RowInvestConfig,
   hideSmallBalances,
 }: {
@@ -38,33 +42,26 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   dualOnInvestAsset: any //RawDataDualAssetItem[];
   rowConfig?: any
   hideSmallBalances: boolean
-}): {
-  myAmmMarketArray: AmmRecordRow<R>[]
-  summaryMyInvest: Partial<SummaryMyInvest>
-  myPoolRow: MyPoolRow<R>[]
-  showLoading: boolean
-  filter: { searchValue: string }
-  tableHeight: number
-  handleFilterChange: (props: { searchValue: string }) => void
-  stakingList: RawDataDefiSideStakingItem[]
-  getStakingList: (props: { limit?: number; offset?: number }) => Promise<void>
-  stakeShowLoading: boolean
-  stakingTotal: number
-  totalStaked: string
-  totalStakedRewards: string
-  totalLastDayPendingRewards: string
-  totalClaimableRewards: string
-  stakedSymbol: string
-} => {
+}) => {
+  const { assetsRawMap, onReceive, onSend } = useGetAssets()
   const { account, status: accountStatus } = useAccount()
-  const { status: userRewardsStatus, userRewardsMap, myAmmLPMap } = useUserRewards()
+  const {
+    status: userRewardsStatus,
+    userRewardsMap,
+    myAmmLPMap,
+    getUserRewards,
+    defiAverageMap,
+  } = useUserRewards()
   const { tokenMap } = useTokenMap()
-  const { marketCoins: defiCoinArray, marketLeverageCoins: leverageETHCoinArray } = useDefiMap()
-
+  const {
+    marketCoins: defiCoinArray,
+    marketLeverageMap: defiLeverageMap,
+    marketMap: defiMap,
+    marketLeverageCoins: leverageETHCoinArray,
+  } = useDefiMap()
   const { status: ammMapStatus, ammMap } = useAmmMap()
-  const { tokenPrices } = useTokenPrices()
+  const { status: tokenPricesStatus, tokenPrices } = useTokenPrices()
   const { marketMap: stakingMap } = useStakingMap()
-
   const [summaryMyInvest, setSummaryMyInvest] = React.useState<Partial<SummaryMyInvest>>({})
   const [filter, setFilter] = React.useState({
     searchValue: '',
@@ -106,7 +103,11 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const resetTableData = React.useCallback(
     (viewData) => {
       setMyPoolRow(viewData)
-      setTableHeight(rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight)
+      setTableHeight(
+        viewData.length > 0
+          ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
+          : 350,
+      )
     },
     [rowConfig.rowHeaderHeight, rowConfig.rowHeight],
   )
@@ -134,7 +135,15 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       resetTableData(resultData)
     }
-  }, [myAmmLPMap, filter, hideSmallBalances, resetTableData, defiCoinArray, leverageETHCoinArray])
+  }, [
+    ammMap,
+    myAmmLPMap,
+    filter,
+    hideSmallBalances,
+    resetTableData,
+    defiCoinArray,
+    leverageETHCoinArray,
+  ])
   const handleFilterChange = React.useCallback(
     (filter) => {
       setFilter(filter)
@@ -169,7 +178,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         totalCurrentInvest.stakeETHDollar += Number(
           // @ts-ignore
           (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
-            tokenPrices[defiCoinKey] ?? 0,
+            (tokenPrices ? tokenPrices[defiCoinKey] : 0),
         )
       }, [])
       resultData.forEach((item) => {
@@ -196,29 +205,48 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       })
       setShowLoading(false)
     }
-  }, [ammMap, tokenPrices, userRewardsMap, summaryDefiReward])
+  }, [
+    ammMap,
+    tokenPrices,
+    userRewardsMap,
+    summaryDefiReward,
+    leverageETHCoinArray,
+    myAmmLPMap,
+    defiCoinArray,
+    updateData,
+  ])
 
   React.useEffect(() => {
-    if (ammMapStatus === SagaStatus.UNSET && accountStatus === SagaStatus.UNSET) {
+    if (
+      ammMapStatus === SagaStatus.UNSET &&
+      accountStatus === SagaStatus.UNSET &&
+      tokenPricesStatus === SagaStatus.UNSET
+    ) {
       walletLayer2Service.sendUserUpdate()
-      const account = store.getState().account
-      if (account.readyState == AccountStatus.ACTIVATED) {
-        getStakingList({})
-        makeDefiInvestReward().then((summaryDefiReward) => {
-          if (mountedRef.current) {
-            setSummaryDefiReward(summaryDefiReward.toString())
-          }
-        })
-      }
     }
-  }, [ammMapStatus, accountStatus])
+  }, [ammMapStatus, accountStatus, tokenPricesStatus])
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
     }
-  }, [userRewardsStatus, summaryDefiReward])
-  useWalletLayer2Socket({ walletLayer2Callback })
+  }, [userRewardsStatus])
+  useWalletLayer2Socket({
+    walletLayer2Callback: async () => {
+      const account = store.getState().account
+      if (account.readyState == AccountStatus.ACTIVATED) {
+        getStakingList({})
+        await makeDefiInvestReward().then((summaryDefiReward) => {
+          if (mountedRef.current) {
+            setSummaryDefiReward(summaryDefiReward.toString())
+          }
+        })
+        getUserRewards()
+      } else {
+        walletLayer2Callback()
+      }
+    },
+  })
 
   React.useEffect(() => {
     mountedRef.current = true
@@ -301,9 +329,34 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       }
       setStakeShowLoading(false)
     },
-    [account, tokenPrices],
+    [account, tokenPrices, tokenMap, stakingMap],
   )
 
+  const reduceDefiFunc = (prev, item) => {
+    if (assetsRawMap[item]) {
+      const market = `${item}-ETH`
+      const defiInfo = {
+        ...defiMap,
+        ...defiLeverageMap,
+      }[market]
+      const precision = item.precision
+      const baseToken = 'ETH'
+      prev.push({
+        ...assetsRawMap[item],
+        market,
+        baseToken,
+        apr: Number(defiInfo.apy),
+        defiInfo,
+        average:
+          defiAverageMap &&
+          defiAverageMap[market]?.average &&
+          defiAverageMap[market]?.average !== '0'
+            ? getValuePrecisionThousand(defiAverageMap[market]?.average, precision, precision)
+            : undefined,
+      } as any)
+    }
+    return prev
+  }
   return {
     myAmmMarketArray,
     summaryMyInvest,
@@ -321,5 +374,9 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     totalLastDayPendingRewards,
     totalClaimableRewards,
     stakedSymbol,
+    onReceive,
+    onSend,
+    leverageETHAssets: leverageETHCoinArray?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
+    defiAsset: defiCoinArray?.reduce(reduceDefiFunc, [] as Array<RawDefiAssetsItem>),
   }
 }

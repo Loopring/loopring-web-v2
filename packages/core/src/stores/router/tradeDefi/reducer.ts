@@ -21,6 +21,7 @@ const initState: TradeDefi<any> = {
   },
   fee: '0',
   feeRaw: '0',
+  defaultFee: '0',
 }
 type R = { [key: string]: any }
 const initialState: TradeDefiStatus<IBData<R>> = {
@@ -57,6 +58,7 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         maxFeeBips,
         miniSellVol,
         lastInput,
+        defaultFee,
       } = action.payload
       if (market !== undefined && market !== state.tradeDefi.market && type) {
         // @ts-ignore
@@ -82,6 +84,9 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         //   _deFiCalcData.AtoB = state.tradeDefi.deFiCalcData.AtoB;
         //   _deFiCalcData.BtoA = state.tradeDefi.deFiCalcData.BtoA;
         // }
+      }
+      if (defaultFee) {
+        state.tradeDefi.defaultFee = defaultFee
       }
       if (isStoB) {
         state.tradeDefi.isStoB = isStoB

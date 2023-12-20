@@ -6,6 +6,7 @@ import {
   HideIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  RouterPath,
   subMenuLayer2,
   TradeBtnStatus,
   ViewIcon,
@@ -36,6 +37,7 @@ export const AssetTitle = withTranslation('common')(
     hideL2Assets,
     setHideL2Assets,
     assetBtnStatus,
+    isWebEarn
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory()
     const { defaultNetwork } = useSettings()
@@ -56,10 +58,17 @@ export const AssetTitle = withTranslation('common')(
               paddingRight={3}
               color={'textSecondary'}
             >
-              {t('labelAssetTitle', {
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              })}
-              {` (UID: ${accountId})`}
+              {isWebEarn ? (
+                t('labelEarnVaultTitle')
+              ) : (
+                <>
+                  {t('labelAssetTitle', {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                  })}
+                  {` (UID: ${accountId})`}
+                </>
+              )}
+
               <IconButton
                 size={'small'}
                 // color={'secondary'}
@@ -108,22 +117,22 @@ export const AssetTitle = withTranslation('common')(
             disabled={assetBtnStatus === TradeBtnStatus.LOADING}
             onClick={() => onShowSend()}
           >
-            {t('labelSendAssetBtn')}
-          </Button>
-          <Button
-            variant={'contained'}
-            size={'small'}
-            color={'primary'}
-            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
-            onClick={() => onShowReceive()}
-          >
-            {t('labelAddAssetBtn')}
+            {isWebEarn ? t('labelWithdrawBtn') : t('labelSendAssetBtn')}
           </Button>
           <Button
             variant={'outlined'}
             size={'medium'}
             color={'secondary'}
-            onClick={() => history.push('/l2assets/history')}
+            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
+            onClick={() => onShowReceive()}
+          >
+            {isWebEarn ? t('labelDeposit') : t('labelAddAssetBtn')}
+          </Button>
+          <Button
+            variant={'outlined'}
+            size={'medium'}
+            color={'secondary'}
+            onClick={() => history.push(`${RouterPath.l2records}`)}
           >
             {t('labelTransactions')}
           </Button>
@@ -256,7 +265,7 @@ export const AssetTitleMobile = ({
               variant={'outlined'}
               size={'medium'}
               color={'secondary'}
-              onClick={() => history.push('/l2assets/history')}
+              onClick={() => history.push(`${RouterPath.l2records}`)}
             >
               {t('labelTransactions')}
             </Button>

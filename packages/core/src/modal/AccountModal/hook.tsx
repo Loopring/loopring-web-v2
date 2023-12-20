@@ -137,9 +137,13 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  InvestRouter,
+  InvestType,
   L1L2_NAME_DEFINED,
   MapChainId,
+  NFTSubRouter,
   NFTWholeINFO,
+  RouterPath,
   SendAssetList,
   SendAssetListMap,
   SendNFTAssetList,
@@ -191,6 +195,7 @@ export function useAccountModalForUI({
   assetsRawData,
   isLayer1Only = false,
   depositProps,
+  isWebEarn,
   ...rest
 }: {
   t: any
@@ -199,6 +204,7 @@ export function useAccountModalForUI({
   depositProps: DepositProps<any, any>
   account: Account
   assetsRawData: AssetsRawDataItem[]
+  isWebEarn?: boolean
   // onClose?: any;
 }) {
   const { chainInfos, updateDepositHash, clearDepositHash } = onchainHashInfo.useOnChainInfo()
@@ -227,6 +233,9 @@ export function useAccountModalForUI({
     nftDeployValue,
     transferValue,
     withdrawValue,
+    resetTransferData,
+    resetWithdrawData,
+    resetDepositData,
     forceWithdrawValue,
     claimValue,
   } = useModalData()
@@ -437,6 +446,8 @@ export function useAccountModalForUI({
   }, [account.accAddress, chainInfos?.depositHashes])
   const { setShowLayerSwapNotice, setShowAnotherNetworkNotice } = useOpenModals()
 
+  const disbaleList = account.isInCounterFactualStatus ? [AddAssetList.FromMyL1.key] : undefined
+
   const addAssetList: AddAssetItem[] = React.useMemo(
     () =>
       AddAssetListMap[network].map((item: string) => {
@@ -456,6 +467,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetDepositData()
+                }
                 setShowDeposit({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
@@ -619,6 +633,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetTransferData()
+                }
                 setShowTransfer({
                   isShow: true,
                   symbol: isShowAccount?.info?.symbol,
@@ -633,6 +650,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetWithdrawData()
+                }
                 setShowWithdraw({
                   isShow: true,
                   info: { isToMyself: true },
@@ -648,6 +668,9 @@ export function useAccountModalForUI({
                   isShow: false,
                   info: { lastFailed: undefined },
                 })
+                if (isShowAccount?.info?.symbol) {
+                  resetWithdrawData()
+                }
                 setShowWithdraw({
                   isShow: true,
                   info: { isToMyself: false },
@@ -816,6 +839,7 @@ export function useAccountModalForUI({
             addAssetList={addAssetList}
             allowTrade={allowTrade}
             isNewAccount={depositProps.isNewAccount}
+            disbaleList={disbaleList}
           />
         ),
       },
@@ -898,6 +922,7 @@ export function useAccountModalForUI({
               addressShort,
               etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
               mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
+              hideVIPlevel: isWebEarn ? true : false
             }}
           />
         ),
@@ -1197,7 +1222,7 @@ export function useAccountModalForUI({
               },
               callback: () => {
                 setShowAccount({ isShow: false })
-                history.push('/nft/depositNFT')
+                history.push(`${RouterPath.nft}/${NFTSubRouter.depositNFT}`)
               },
             }}
             {...{
@@ -1318,9 +1343,11 @@ export function useAccountModalForUI({
               callback: () => {
                 setShowAccount({ isShow: false })
                 if (isShowAccount.info?.lastStep === LAST_STEP.nftMint) {
-                  history.push(`/nft/mintNFT/${isShowAccount.info?.collection?.contractAddress}`)
+                  history.push(
+                    `${RouterPath.nft}/${NFTSubRouter.mintNFT}/${isShowAccount.info?.collection?.contractAddress}`,
+                  )
                 } else {
-                  history.push('/nft/mintNFTAdvance')
+                  history.push(`${RouterPath.nft}/${NFTSubRouter.mintNFTAdvance}`)
                 }
               },
             }}
@@ -2684,7 +2711,7 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-              setShowActiveAccount({ isShow: true, info: { isReset: true } })
+              setShowActiveAccount({ isShow: true, info: { isReset: true, confirmationType: 'lockedReset' } })
             }}
             {...{
               ...rest,
@@ -2961,8 +2988,14 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: 'labelDualPanelClose',
               callback: (_e: any) => {
-                setShowAccount({ isShow: false })
-                history.push('/invest/balance')
+                if (isWebEarn) {
+                  setShowAccount({ isShow: false })
+                  history.push('/l2assets/assets/Invests')
+                } else {
+                  setShowAccount({ isShow: false })
+                  history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
+                }
+                
               },
             }}
             {...{
@@ -3166,6 +3199,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     nftWithdrawValue,
     setShowActiveAccount,
+    disbaleList,
   ])
 
   const currentModal = accountList[isShowAccount.step]

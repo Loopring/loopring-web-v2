@@ -4,14 +4,21 @@ import {
   StylePaper,
   useAccount,
   useSystem,
+  useTargetRedPackets,
   useToast,
+  useTokenMap,
   useWalletLayer2,
 } from '@loopring-web/core'
 import {
+  CoinIcons,
+  Modal,
+  NftImageStyle,
   RedPacketClaimTable,
+  RedPacketViewStep,
   Toast,
   ToastType,
   TransactionTradeViews,
+  useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
@@ -24,16 +31,31 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import {
   CloseIcon,
   RecordTabIndex,
+  RedPacketColorConfig,
   RedPacketIcon,
-  RowConfig,
   SagaStatus,
   TOAST_TIME,
+  TokenType,
+  RouterPath,
+  RedPacketRouterIndex,
 } from '@loopring-web/common-resources'
+import { LuckyTokenClaimType, LuckyTokenItemForReceive, SoursURL } from '@loopring-web/loopring-sdk'
+import styled from '@emotion/styled'
+import { useTheme } from '@emotion/react'
+
+const RedPacktButton = styled(Button)`
+  background: ${RedPacketColorConfig.default.btnColor};
+  :hover {
+    background: ${RedPacketColorConfig.default.btnColor};
+    opacity: 0.7;
+  }
+`
 
 export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) => {
   const container = React.useRef<HTMLDivElement>(null)
@@ -71,6 +93,22 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
+  const {
+    redPackets: exclusiveRedPackets,
+    setShowRedPacketsPopup
+  } = useTargetRedPackets()
+  const { setShowRedPacket, setShowTargetRedpacketPop } = useOpenModals()
+
+  const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
+    setShowRedPacketsPopup(false)
+    setShowRedPacket({
+      isShow: true,
+      info: {
+        ...redpacket,
+      },
+      step: RedPacketViewStep.OpenPanel,
+    })
+  }, [])
   React.useEffect(() => {
     LoopringAPI.luckTokenAPI
       ?.getLuckTokenClaimHistory(
@@ -98,6 +136,9 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
         setBlindboxBalance(response.totalNum)
       })
   }, [])
+  const theme = useTheme()
+  const { coinJson } = useSettings()
+  const { idIndex } = useTokenMap()
   return (
     <Box
       flex={1}
@@ -121,7 +162,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           variant={'text'}
           target='_self'
           rel='noopener noreferrer'
-          href={`/#/l2assets/history/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.redPacket}`}
+          href={`/#${RouterPath.l2records}/${RecordTabIndex.Transactions}?types=${TransactionTradeViews.redPacket}`}
         >
           {t('labelTransactionsLink')}
         </Button>
@@ -131,12 +172,42 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
           size={'small'}
           // sx={{ color: "var(--color-text-secondary)" }}
           color={'primary'}
-          onClick={() => history.push('/redPacket/markets')}
+          onClick={() => history.push(`${RouterPath.redPacket}/${RedPacketRouterIndex.markets}`)}
         >
           {t('labelRedPacketMarketsBtn')}
         </Button>
       </Box>
       <StylePaper ref={container} flex={1} display={'flex'} flexDirection={'column'}>
+        {exclusiveRedPackets && exclusiveRedPackets.length > 0 && (
+          <Box paddingX={2} paddingY={1} bgcolor={'var(--color-box-hover)'} borderRadius={0.5}>
+            <Typography>
+              {t('labelRedPacketHaveExclusive', { count: exclusiveRedPackets.length })}{' '}
+              <Button
+                onClick={() => {
+                  setShowTargetRedpacketPop({
+                    isShow: true,
+                    info: {
+                      exclusiveRedPackets: exclusiveRedPackets.map(redpacket => {
+                        return {
+                          ...redpacket,
+                          tokenName: 
+                            redpacket.isNft
+                            ? (redpacket.nftTokenInfo?.metadata?.base.name ?? '')
+                            : idIndex[redpacket.tokenId],
+                          tokenIcon: coinJson[idIndex[redpacket.tokenId ?? 0]] 
+                        }
+                      })
+                    }
+                  })
+                  // setShowRedPacketsPopup(true)
+                }}
+                variant={'text'}
+              >
+                {t('labelRedPacketExclusiveViewDetails')}
+              </Button>{' '}
+            </Typography>
+          </Box>
+        )}
         <Box className='tableWrapper table-divide-short'>
           <RedPacketClaimTable
             {...{
@@ -191,6 +262,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
             />
           </DialogContent>
         </Dialog>
+        
       </StylePaper>
       <Toast
         alertText={toastOpen?.content ?? ''}

@@ -18,8 +18,9 @@ export const makeDualViewItem = (
   market: sdk.DefiMarketInfo,
 ): DualViewInfo => {
   const { expireTime, strike, ratio, profit, dualType } = info
-  const { precisionForPrice } = market
-  myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
+  // @ts-ignore
+  const { precisionForPrice, stepLength } = market
+  // myLog('makeDualViewItem', expireTime, strike, ratio, dualType)
   const [base, quote] =
     dualType.toUpperCase() === DUAL_TYPE.DUAL_BASE
       ? [sellSymbol, buySymbol]
@@ -31,22 +32,6 @@ export const makeDualViewItem = (
     .div((expireTime - Date.now()) / 86400000)
     .times(36500) // year APY
   const term = moment().to(new Date(expireTime), true)
-
-  myLog('dual', {
-    apy: getValuePrecisionThousand(apy, 2, 2, 2, true) + '%',
-    settleRatio, //targetPrice
-    term,
-    productId: info.productId,
-    expireTime,
-    currentPrice: {
-      base,
-      quote,
-      precisionForPrice,
-      currentPrice: index.index,
-    },
-    sellSymbol,
-    buySymbol,
-  })
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
     settleRatio,
@@ -60,9 +45,11 @@ export const makeDualViewItem = (
       quote,
       precisionForPrice,
       currentPrice: Number(index.index),
+      quoteUnit: quote, //quote index.quote,
     },
     sellSymbol,
     buySymbol,
+    stepLength,
     __raw__: {
       info,
       index,
@@ -95,7 +82,7 @@ export const makeDualOrderedItem = (
     .div((expireTime - createdAt) / 86400000)
     .times(36500) // year APY
   const term = moment().to(new Date(expireTime), true)
-  const { precisionForPrice } = market
+  const { precisionForPrice, stepLength } = market ?? {}
 
   return {
     apy: (getValuePrecisionThousand(apy, 2, 2, 2, true) + '%') as any,
@@ -106,11 +93,13 @@ export const makeDualOrderedItem = (
     productId,
     enterTime: createdAt,
     expireTime,
+    stepLength,
     currentPrice: {
       precisionForPrice,
       base,
       quote,
-      currentPrice: currentPrice ?? 0,
+      currentPrice: currentPrice ?? {},
+      quoteUnit: quote, //quote index.quote,
     },
     sellSymbol,
     buySymbol,

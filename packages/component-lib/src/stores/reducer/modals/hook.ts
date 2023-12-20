@@ -12,7 +12,6 @@ import {
   setShowDeposit,
   setShowDual,
   setShowExportAccount,
-  setShowFeeSelect,
   setShowFeeSetting,
   setShowGlobalToast,
   setShowIFrame,
@@ -29,10 +28,12 @@ import {
   setShowSideStakingRedeem,
   setShowSupport,
   setShowSwap,
+  setShowTargetRedpacketPop,
   setShowTradeIsFrozen,
   setShowTransfer,
   setShowWithdraw,
   setShowWrongNetworkGuide,
+  setShowETHStakingApr,
 } from './reducer'
 
 import React from 'react'
@@ -42,10 +43,12 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
+  CoinSource,
 } from '@loopring-web/common-resources'
-import { OffchainFeeReqType, OffchainNFTFeeReqType, RESULT_INFO } from '@loopring-web/loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { ToggleState } from '../toggle'
-import { AmmPanelType, ToastType } from '../../../components'
+import { ToastType } from '../../../components'
 
 export const useOpenModals = () => {
   const dispatch = useDispatch()
@@ -213,7 +216,7 @@ export const useOpenModals = () => {
       (
         state: ModalStatePlayLoad & {
           step?: number
-          error?: RESULT_INFO
+          error?: sdk.RESULT_INFO
           info?: { [key: string]: any }
         },
       ) => dispatch(setShowAccount(state)),
@@ -243,7 +246,7 @@ export const useOpenModals = () => {
       (
         state: ModalStatePlayLoad & {
           step?: number
-          error?: RESULT_INFO
+          error?: sdk.RESULT_INFO
           info?: { [key: string]: any }
         },
       ) => dispatch(setShowConnect(state)),
@@ -283,10 +286,27 @@ export const useOpenModals = () => {
       (state: {
         isShow: boolean
         info: {
-          content: string
+          content?: string
           type: ToastType
+          messageKey?: string
         }
       }) => dispatch(setShowGlobalToast(state)),
+      [dispatch],
+    ),
+    setShowTargetRedpacketPop: React.useCallback(
+      (state: {
+        isShow: boolean
+        info: {
+          exclusiveRedPackets?: (sdk.LuckyTokenItemForReceive & {
+            tokenIcon: CoinSource
+            tokenName: string
+          })[]
+        }
+      }) => dispatch(setShowTargetRedpacketPop(state)),
+      [dispatch],
+    ),
+    setShowETHStakingApr: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowETHStakingApr(state)),
       [dispatch],
     ),
   }

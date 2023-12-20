@@ -1,52 +1,69 @@
 import styled from '@emotion/styled'
-import { Avatar, Box, Card, CardContent, Typography } from '@mui/material'
+import { Avatar, Box, CardContent, Tab, Tabs, Typography } from '@mui/material'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
-import { useDualHook } from './hook'
 import {
   CoinIcon,
   CoinIcons,
   DualTable,
   useOpenModals,
   useSettings,
-  CardStyleItem,
+  TickCardStyleItem,
 } from '@loopring-web/component-lib'
 import { useDualMap, useSystem, useTokenMap } from '@loopring-web/core'
-import { getValuePrecisionThousand, SoursURL, TokenType } from '@loopring-web/common-resources'
+import {
+  DualGain,
+  DualDip,
+  DualBegin,
+  DualViewType,
+  getValuePrecisionThousand,
+  SoursURL,
+  TokenType,
+  DualBTC,
+} from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { DUAL_TYPE } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
-import { maxBy, minBy, values } from 'lodash'
-
-const WhiteCircleText = styled(Box)`
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  height: ${({ theme }) => theme.unit * 3}px;
-  width: ${({ theme }) => theme.unit * 3}px;
-  border-radius: ${({ theme }) => theme.unit * 1.5}px;
-  border: ${({ theme }) => `2px solid ${theme.colorBase.textPrimary}`};
-  border-color: ${({ theme }) => theme.colorBase.textPrimary};
-`
+import React from 'react'
+import _ from 'lodash'
+import { useRouteMatch } from 'react-router-dom'
 
 const WrapperStyled = styled(Box)`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
+  .MuiTab-root.Mui-selected,
+  .MuiTab-root:hover {
+    &:after {
+      visibility: hidden;
+    }
+  }
+  .mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-box);
+    border-radius: ${({ theme }) => theme.unit}px;
+  }
 `
+export const ViewStepType = {
+  [DualViewType.DualGain]: DualGain,
+  [DualViewType.DualDip]: DualDip,
+  [DualViewType.DualBegin]: DualBegin,
+  [DualViewType.DualBTC]: DualBTC,
+}
 
 export const BeginnerMode: any = withTranslation('common')(
   ({
     t,
-    setConfirmDualInvest,
+    dualListProps,
+    viewType,
   }: WithTranslation & {
-    setConfirmDualInvest: (state: any) => void
+    dualListProps: any
+    viewType: DualViewType
   }) => {
-    const { tradeMap, marketMap } = useDualMap()
+    const viewStepType = ViewStepType[viewType]
+    const theme = useTheme()
+    const { tradeMap } = useDualMap()
     const { coinJson } = useSettings()
     const { forexMap } = useSystem()
-    const { tokenMap, idIndex } = useTokenMap()
+    const { tokenMap } = useTokenMap()
     const { setShowDual } = useOpenModals()
     const {
       pairASymbol,
@@ -55,7 +72,7 @@ export const BeginnerMode: any = withTranslation('common')(
       dualProducts,
       currentPrice,
       market,
-
+      baseTokenList,
       step1SelectedToken,
       step2BuyOrSell,
       step3Token,
@@ -63,239 +80,300 @@ export const BeginnerMode: any = withTranslation('common')(
       onSelectStep2BuyOrSell,
       onSelectStep3Token,
       isDualBalanceSufficient,
-    } = useDualHook({ setConfirmDualInvest })
+    } = dualListProps
     const { isMobile } = useSettings()
-
+    const { marketArray } = useDualMap()
+    const tokenList: any[] = Object.values(baseTokenList ?? {})?.sort((a: any, b: any) =>
+      a?.tokenName?.toString().localeCompare(b?.tokenName?.toString()),
+    )
     const dualType =
       step2BuyOrSell === 'Sell' ? sdk.DUAL_TYPE.DUAL_BASE : sdk.DUAL_TYPE.DUAL_CURRENCY
-    const tokenList = Reflect.ownKeys(tradeMap ?? {})
-      .filter(
-        (tokenName) => tokenName !== 'USDT' && tokenName !== 'USDC' && tokenName !== 'OLDUSDC',
-      )
-      .sort((a, b) => a.toString().localeCompare(b.toString()))
-      .map((tokenName) => {
-        const list = values(marketMap)
-          .flatMap((x) => {
-            const baseToken = idIndex[x.baseTokenId]
-            const quoteToken = idIndex[x.quoteTokenId]
-            return [
-              {
-                token: baseToken,
-                // @ts-ignore
-                apyInfo: x.baseTokenApy,
-              },
-              {
-                token: quoteToken,
-                // @ts-ignore
-                apyInfo: x.quoteTokenApy,
-              },
-            ]
-          })
-          .filter((x) => x.token === tokenName.toString())
-        const min = minBy(list, (x) => {
-          return Number(x.apyInfo && x.apyInfo.min)
-        })
-        const max = maxBy(list, (x) => {
-          return Number(x.apyInfo && x.apyInfo.max)
-        })
-        return {
-          tokenName,
-          minAPY: min?.apyInfo.min,
-          maxAPY: max?.apyInfo.max,
-          logo: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
-        }
-      })
-    // marketMap[]
-    const step3Tokens = step1SelectedToken ? tradeMap[step1SelectedToken].tokenList : []
-    const theme = useTheme()
-    const showStep2 = step1SelectedToken !== undefined
-    const showStep3 = step2BuyOrSell !== undefined
-    const showTable = step3Token !== undefined
+    const step3Ref = React.useRef(null)
+    const tableRef = React.useRef(null)
+    const quoteList = _.cloneDeep(tradeMap[step1SelectedToken ?? '']?.tokenList ?? [])
+    // const last = quoteList.pop()
+    const scroolStep3ToMiddle = () => {
+      setTimeout(() => {
+        const element = step3Ref.current as any
+        const elementRect = element.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - window.innerHeight / 2
+        window.scrollTo(0, middle)
+      }, 100)
+    }
+    const scroolTableToMiddle = () => {
+      setTimeout(() => {
+        const element = tableRef.current as any
+        const elementRect = element.getBoundingClientRect()
+        const absoluteElementTop = elementRect.top + window.pageYOffset
+        const middle = absoluteElementTop - window.innerHeight / 2
+        window.scrollTo(0, middle)
+      }, 100)
+    }
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+      <WrapperStyled display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
         <Box marginBottom={5}>
-          <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-            <WhiteCircleText>1</WhiteCircleText>
-            <Typography marginLeft={1}>{t('labelDualBeginnerStep1Title')}</Typography>
+          <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+            {t(viewStepType[0].labelKey)}
           </Typography>
-          <Box display={'flex'} flexDirection={'row'}>
-            {tokenList.map(({ tokenName, minAPY, maxAPY, logo }) => {
-              const selected = step1SelectedToken === tokenName
-
+          <Tabs
+            value={step1SelectedToken}
+            onChange={(_event, value) => onSelectStep1Token(value)}
+            aria-label='l2-history-tabs'
+            variant='scrollable'
+            sx={{
+              display: 'flex',
+              flexWrap: 'nowrap',
+            }}
+          >
+            {tokenList?.map(({ tokenName, minAPY, maxAPY }: any) => {
               return (
-                <Box marginRight={2} key={logo}>
-                  <CardStyleItem
-                    className={
-                      selected ? 'btnCard dualInvestCard selected' : 'btnCard dualInvestCard '
-                    }
-                    onClick={() => onSelectStep1Token(tokenName.toString())}
-                  >
-                    <CardContent sx={{ alignItems: 'center' }}>
-                      <Typography component={'span'} display={'inline-flex'}>
-                        <CoinIcon
-                          size={32}
-                          symbol={typeof tokenName === 'string' ? tokenName : ''}
-                        />
-                      </Typography>
-                      <Typography paddingLeft={1}>
-                        <Typography
-                          color={
-                            selected ? theme.colorBase.textPrimary : theme.colorBase.textSecondary
-                          }
-                        >
-                          {tokenName.toString()}
+                <Tab
+                  value={tokenName}
+                  key={tokenName}
+                  label={
+                    <TickCardStyleItem
+                      selected={tokenName == step1SelectedToken}
+                      className={'dualInvestCard btnCard'}
+                      sx={{
+                        minWidth: isMobile ? '180px' : '280px',
+                      }}
+                    >
+                      <CardContent>
+                        <Typography component={'span'} display={'inline-flex'}>
+                          <CoinIcon
+                            size={32}
+                            symbol={typeof tokenName === 'string' ? tokenName : ''}
+                          />
                         </Typography>
-                        <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
-                          {t('labelDualBeginnerAPR', {
-                            APR:
-                              !minAPY && !maxAPY
-                                ? '--'
-                                : minAPY === maxAPY || !minAPY || !maxAPY
-                                ? `${getValuePrecisionThousand(
-                                    Number(minAPY) * 100,
-                                    2,
-                                    2,
-                                    2,
-                                    true,
-                                  )}%`
-                                : `${getValuePrecisionThousand(
-                                    Number(minAPY) * 100,
-                                    2,
-                                    2,
-                                    2,
-                                    true,
-                                  )}% - ${getValuePrecisionThousand(
-                                    Number(maxAPY) * 100,
-                                    2,
-                                    2,
-                                    2,
-                                    true,
-                                  )}%`,
-                          })}
+                        <Typography paddingLeft={1} display={'flex'} flexDirection={'column'}>
+                          <Typography component={'span'} textAlign={'left'} variant={'subtitle1'}>
+                            {tokenName?.toString()}
+                          </Typography>
+                          <Typography
+                            component={'span'}
+                            variant={'body2'}
+                            color={theme.colorBase.textSecondary}
+                          >
+                            {t('labelDualBeginnerAPR', {
+                              APR:
+                                !minAPY && !maxAPY
+                                  ? '--'
+                                  : minAPY === maxAPY || !minAPY || !maxAPY
+                                  ? `${getValuePrecisionThousand(
+                                      Number(minAPY) * 100,
+                                      2,
+                                      2,
+                                      2,
+                                      true,
+                                    )}%`
+                                  : `${getValuePrecisionThousand(
+                                      Number(minAPY) * 100,
+                                      2,
+                                      2,
+                                      2,
+                                      true,
+                                    )}% - ${getValuePrecisionThousand(
+                                      Number(maxAPY) * 100,
+                                      2,
+                                      2,
+                                      2,
+                                      true,
+                                    )}%`,
+                            })}
+                          </Typography>
                         </Typography>
-                      </Typography>
-                    </CardContent>
-                  </CardStyleItem>
-                </Box>
+                      </CardContent>
+                    </TickCardStyleItem>
+                  }
+                />
               )
             })}
-          </Box>
+          </Tabs>
         </Box>
 
-        {showStep2 && (
+        {step1SelectedToken !== undefined && viewType === DualViewType.DualBegin && (
           <Box marginBottom={5}>
-            <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-              <WhiteCircleText>2</WhiteCircleText>
-              <Typography marginLeft={1}>{t('labelDualBeginnerStep2Title')}</Typography>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+              {t('labelDualBeginnerStep2Title')}
             </Typography>
             <Box display={'flex'} flexDirection={'row'}>
               <Box marginRight={2}>
-                <CardStyleItem
+                <TickCardStyleItem
                   className={
                     step2BuyOrSell === 'Sell'
                       ? 'btnCard dualInvestCard selected'
                       : 'btnCard dualInvestCard '
                   }
-                  onClick={() => onSelectStep2BuyOrSell('Sell')}
+                  selected={step2BuyOrSell === 'Sell'}
+                  onClick={() => {
+                    onSelectStep2BuyOrSell('Sell')
+                    scroolStep3ToMiddle()
+                  }}
+                  width={'310px'}
                 >
-                  <CardContent sx={{ alignItems: 'center' }}>
+                  <CardContent
+                  // sx={{
+                  //   alignItems: 'center',
+                  //   // paddingX: 3,
+                  //   // paddingY: 2,
+                  //   // '&:last-child': { paddingY: 2 },
+                  // }}
+                  >
                     <Typography component={'span'} display={'inline-flex'}>
                       <Avatar alt={'sell-high'} src={SoursURL + '/svg/sell-high.svg'} />
                     </Typography>
                     <Typography paddingLeft={1}>
-                      <Typography
-                        color={
-                          step2BuyOrSell === 'Sell'
-                            ? theme.colorBase.textPrimary
-                            : theme.colorBase.textSecondary
-                        }
-                      >
+                      <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'}>
                         {t('labelDualBeginnerSellHigh', {
                           token: step1SelectedToken,
                         })}
                       </Typography>
                       <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
-                        {t('labelDualBeginnerReceiveStable')}
+                        {t('labelDualBeginnerReceiveStable', {
+                          ...(quoteList?.length > 1
+                            ? {
+                                last: t('labelDualBeginnerLast', {
+                                  last: quoteList[quoteList.length - 1],
+                                }),
+                                list: [...quoteList.slice(0, quoteList.length - 1)].join(', '),
+                              }
+                            : {
+                                last: '',
+                                list: [...quoteList].join(', '),
+                              }),
+                        })}
                       </Typography>
                     </Typography>
                   </CardContent>
-                </CardStyleItem>
+                </TickCardStyleItem>
               </Box>
               <Box marginLeft={2}>
-                <CardStyleItem
+                <TickCardStyleItem
                   className={
                     step2BuyOrSell === 'Buy'
                       ? 'btnCard dualInvestCard selected'
                       : 'btnCard dualInvestCard '
                   }
-                  onClick={() => onSelectStep2BuyOrSell('Buy')}
+                  selected={step2BuyOrSell === 'Buy'}
+                  onClick={() => {
+                    onSelectStep2BuyOrSell('Buy')
+                    scroolStep3ToMiddle()
+                  }}
+                  width={'310px'}
                 >
-                  <CardContent sx={{ alignItems: 'center' }}>
+                  <CardContent
+                  // sx={{
+                  //   alignItems: 'center',
+                  //   // paddingX: 3,
+                  //   // paddingY: 2,
+                  //   // '&:last-child': { paddingY: 2 },
+                  // }}
+                  >
                     <Typography component={'span'} display={'inline-flex'}>
                       <Avatar alt={'buy-low'} src={SoursURL + '/svg/buy-low.svg'} />
                     </Typography>
                     <Typography paddingLeft={1}>
-                      <Typography
-                        color={
-                          step2BuyOrSell === 'Buy'
-                            ? theme.colorBase.textPrimary
-                            : theme.colorBase.textSecondary
-                        }
-                      >
+                      <Typography color={theme.colorBase.textPrimary} variant={'subtitle1'}>
                         {t('labelDualBeginnerBuyLow', {
                           token: step1SelectedToken,
                         })}
                       </Typography>
                       <Typography variant={'body2'} color={theme.colorBase.textSecondary}>
-                        {t('labelDualBeginnerInvestStable')}
+                        {t('labelDualBeginnerInvestStable', {
+                          ...(quoteList?.length > 1
+                            ? {
+                                last: t('labelDualBeginnerLast', {
+                                  last: quoteList[quoteList.length - 1],
+                                }),
+                                list: [...quoteList.slice(0, quoteList.length - 1)].join(', '),
+                              }
+                            : {
+                                last: '',
+                                list: [...quoteList].join(', '),
+                              }),
+                        })}
                       </Typography>
                     </Typography>
                   </CardContent>
-                </CardStyleItem>
+                </TickCardStyleItem>
               </Box>
             </Box>
           </Box>
         )}
 
-        {showStep3 && (
-          <Box marginBottom={2}>
-            <Typography marginBottom={2} display={'flex'} variant={'h5'}>
-              <WhiteCircleText>3</WhiteCircleText>
-              <Typography marginLeft={1}>{t('labelDualBeginnerStep3Title')}</Typography>
+        {step1SelectedToken !== undefined && step2BuyOrSell !== undefined && (
+          <Box ref={step3Ref} marginBottom={2}>
+            <Typography marginBottom={2} display={'flex'} variant={'h4'}>
+              {t(viewStepType[2].labelKey)}
             </Typography>
-            <Box display={'flex'} flexDirection={'row'}>
-              {step3Tokens.map((token) => {
+
+            <Tabs
+              value={step3Token}
+              onChange={(_event, value) => {
+                if (isLoading) return
+                onSelectStep3Token(value)
+                scroolTableToMiddle()
+              }}
+              aria-label='l2-history-tabs'
+              variant='scrollable'
+              sx={{
+                display: 'flex',
+                flexWrap: 'nowrap',
+              }}
+            >
+              {tradeMap[step1SelectedToken ?? '']?.quoteList?.map((token) => {
                 return (
-                  <Box marginRight={2} key={token}>
-                    <CardStyleItem
-                      className={
-                        step3Token === token
-                          ? 'btnCard dualInvestCard selected'
-                          : 'btnCard dualInvestCard '
-                      }
-                      onClick={() => onSelectStep3Token(token)}
-                    >
-                      <CardContent sx={{ alignItems: 'center' }}>
-                        <Typography component={'span'} display={'inline-flex'}>
-                          <CoinIcon size={20} symbol={token} />
-                        </Typography>
-                        <Typography paddingLeft={1}>
-                          {step2BuyOrSell === 'Buy'
-                            ? t('labelDualBeginnerBuyLowWith', { token: token })
-                            : t('labelDualBeginnerSellHighFor', {
-                                token: token,
-                              })}
-                        </Typography>
-                      </CardContent>
-                    </CardStyleItem>
-                  </Box>
+                  <Tab
+                    value={token}
+                    key={token}
+                    label={
+                      <TickCardStyleItem
+                        selected={step3Token == token}
+                        className={'dualInvestCard btnCard'}
+                        sx={{
+                          minWidth: isMobile ? '180px' : '280px',
+                        }}
+                      >
+                        <CardContent
+                          sx={{
+                            alignItems: 'center',
+                            paddingX: 3,
+                            paddingY: 2,
+                            '&:last-child': { paddingY: 2 },
+                          }}
+                        >
+                          <Typography component={'span'} display={'inline-flex'}>
+                            <CoinIcon size={32} symbol={token} />
+                          </Typography>
+                          <Typography
+                            color={theme.colorBase.textPrimary}
+                            variant={'subtitle1'}
+                            paddingLeft={1}
+                          >
+                            {step2BuyOrSell === 'Buy'
+                              ? t('labelDualBeginnerBuyLowWith', { token: token })
+                              : t('labelDualBeginnerSellHighFor', {
+                                  token: token,
+                                })}
+                          </Typography>
+                        </CardContent>
+                      </TickCardStyleItem>
+                    }
+                  />
                 )
               })}
-            </Box>
+            </Tabs>
           </Box>
         )}
-        {showTable && (
-          <WrapperStyled marginTop={1} flex={1} flexDirection={'column'}>
+        {step3Token !== undefined && step1SelectedToken !== undefined && (
+          <Box
+            className={'mainContent'}
+            ref={tableRef}
+            marginTop={1}
+            flex={1}
+            flexDirection={'column'}
+          >
             {pairASymbol && pairBSymbol && market && (
               <Box
                 display={'flex'}
@@ -390,6 +468,9 @@ export const BeginnerMode: any = withTranslation('common')(
                               { floor: true },
                             ),
                           symbol: currentPrice.base,
+                          baseSymbol: /USD/gi.test(currentPrice.quoteUnit ?? '')
+                            ? 'USDT'
+                            : currentPrice.quoteUnit,
                         }}
                       >
                         LRC Current price:
@@ -400,7 +481,7 @@ export const BeginnerMode: any = withTranslation('common')(
                           paddingLeft={1}
                         >
                           price
-                        </Typography>{' '}
+                        </Typography>
                         :
                       </Trans>
                     ) : (
@@ -459,9 +540,9 @@ export const BeginnerMode: any = withTranslation('common')(
                 }}
               />
             </Box>
-          </WrapperStyled>
+          </Box>
         )}
-      </Box>
+      </WrapperStyled>
     )
   },
 )

@@ -1,20 +1,25 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box, Tab, Tabs } from '@mui/material'
+import { Box, Divider, Modal, Tab, Tabs, Typography } from '@mui/material'
 import {
   AmmTable,
   BtradeSwapTable,
   Button,
+  CoinIcons,
   DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
+  ModalCloseButton,
   OrderHistoryTable,
+  SwitchPanelStyled,
   Toast,
   ToastType,
   TradeTable,
   TransactionTable,
   useSettings,
   useToggle,
+  DualDes,
+  ButtonStyle,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,
@@ -44,13 +49,20 @@ import {
   RowConfig,
   TOAST_TIME,
   TabOrderIndex,
+  TokenType,
+  DualViewBase,
+  RouterPath,
+  InvestAssetRouter,
+  DualViewType,
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useDualAsset } from './useDualAsset'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
   const { search } = useLocation()
-  const { isMobile, defaultNetwork } = useSettings()
+  const { isMobile, defaultNetwork, coinJson } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
     toggle: { StopLimit },
@@ -117,6 +129,10 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     getDualTxList,
     dualMarketMap,
     dualTotal,
+    refreshDualDetail,
+    dualDetail,
+    openDualDetail,
+    onDualClose,
   } = useDualTransaction(setToastOpen)
   const {
     sideStakingList,
@@ -198,12 +214,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-        <Box
-          marginTop={2}
-          marginLeft={2}
-          display={'flex'}
-          sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}
-        >
+        <Box marginTop={2} display={'flex'} sx={isMobile ? { maxWidth: 'calc(100vw - 32px)' } : {}}>
           <Tabs
             value={currentTab}
             onChange={(_event, value) => handleTabChange(value)}
@@ -309,21 +320,111 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               idIndex={idIndex}
             />
           ) : currentTab === RecordTabIndex.DualRecords ? (
-            <DualTxsTable
-              rawData={dualList}
-              getDualTxList={getDualTxList}
-              pagination={{
-                pageSize: pageSize + 2,
-                total: dualTotal,
-              }}
-              dualMarketMap={dualMarketMap}
-              showloading={showDualLoading}
-              tokenMap={tokenMap}
-              idIndex={idIndex}
-              {...{
-                ...rest,
-              }}
-            />
+            <>
+              <Modal
+                open={openDualDetail}
+                onClose={onDualClose}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+              >
+                <SwitchPanelStyled width={'var(--modal-width)'}>
+                  <ModalCloseButton onClose={onDualClose} t={t} />
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'flex-start'}
+                    alignSelf={'stretch'}
+                    marginTop={-4}
+                    justifyContent={'stretch'}
+                  >
+                    <Typography
+                      display={'flex'}
+                      flexDirection={'row'}
+                      component={'header'}
+                      alignItems={'center'}
+                      height={'var(--toolbar-row-height)'}
+                      paddingX={3}
+                    >
+                      <Typography component={'span'} display={'inline-flex'}>
+                        {/* eslint-disable-next-line react/jsx-no-undef */}
+                        <CoinIcons
+                          type={TokenType.dual}
+                          size={32}
+                          tokenIcon={[
+                            coinJson[dualDetail?.dualViewInfo?.sellSymbol ?? ''],
+                            coinJson[dualDetail?.dualViewInfo?.buySymbol ?? ''],
+                          ]}
+                        />
+                      </Typography>
+                      <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
+                        {`${dualDetail?.dualViewInfo?.sellSymbol} / ${dualDetail?.dualViewInfo?.buySymbol}`}
+                      </Typography>
+                    </Typography>
+                    <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                  </Box>
+
+                  {dualDetail && dualDetail.dualViewInfo && (
+                    <Box
+                      flex={1}
+                      paddingY={2}
+                      width={'100%'}
+                      display={'flex'}
+                      flexDirection={'column'}
+                      sx={
+                        isMobile
+                          ? {
+                              maxHeight: 'initial',
+                              overflowY: 'initial',
+                            }
+                          : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                      }
+                    >
+                      <DualDes
+                        isOrder={true}
+                        dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
+                        currentPrice={dualDetail.dualViewInfo.currentPrice}
+                      />
+                      <Box paddingX={2}>
+                        <ButtonStyle
+                          fullWidth
+                          variant={'contained'}
+                          size={'medium'}
+                          color={'primary'}
+                          onClick={() => {
+                            history.push(
+                              `${RouterPath.invest}/${InvestAssetRouter.DUAL}/${
+                                dualDetail?.currentPrice?.base
+                              }-${dualDetail?.currentPrice?.quoteUnit}?viewType=${
+                                dualDetail.dualViewInfo.dualType === sdk.DUAL_TYPE.DUAL_BASE
+                                  ? DualViewType.DualGain
+                                  : DualViewType.DualDip
+                              }`,
+                            )
+                          }}
+                        >
+                          {t('labelQuickInvest')}
+                        </ButtonStyle>
+                      </Box>
+                    </Box>
+                  )}
+                </SwitchPanelStyled>
+              </Modal>
+              <DualTxsTable
+                rawData={dualList}
+                getDualTxList={getDualTxList}
+                pagination={{
+                  pageSize: pageSize + 2,
+                  total: dualTotal,
+                }}
+                dualMarketMap={dualMarketMap}
+                showloading={showDualLoading}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
+                {...{
+                  ...rest,
+                }}
+              />
+            </>
           ) : currentTab === RecordTabIndex.Orders ? (
             <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
               <Box marginBottom={2} marginLeft={3}>
@@ -465,4 +566,4 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   )
 })
 
-export default HistoryPanel
+export { HistoryPanel, useDualAsset }

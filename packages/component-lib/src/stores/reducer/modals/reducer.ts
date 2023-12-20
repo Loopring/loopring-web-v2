@@ -6,9 +6,11 @@ import {
   DualViewInfo,
   NFTWholeINFO,
   TradeNFT,
+  AmmPanelType,
+  CoinSource,
 } from '@loopring-web/common-resources'
-import { RESULT_INFO } from '@loopring-web/loopring-sdk'
-import { AmmPanelType, ToastType } from '../../../components'
+import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
+import { ToastType } from '../../../components'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
@@ -52,6 +54,8 @@ const initialState: ModalState = {
     claimType: undefined,
   },
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
+  isShowTargetRedpacketPop: { isShow: false, info: {} },
+  isShowETHStakingApr: { isShow: false, symbol: undefined },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -64,6 +68,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean
         info: {
           content: string
+          messageKey: string
           type: ToastType
         }
       }>,
@@ -249,8 +254,9 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       }
     },
     setShowResetAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload
+      const { isShow, info } = action.payload
       state.isShowResetAccount.isShow = isShow
+      state.isShowResetAccount.info = info
     },
     setShowActiveAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow, info } = action.payload
@@ -369,7 +375,39 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
         symbol,
       }
-    }
+    },
+    setShowTargetRedpacketPop(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          info: {
+            exclusiveRedPackets?: (LuckyTokenItemForReceive & {
+              tokenIcon: CoinSource
+              tokenName: string
+            })[]
+          }
+        }
+      >,
+    ) {
+      const {
+        isShow,
+        info: { exclusiveRedPackets },
+      } = action.payload
+      state.isShowTargetRedpacketPop = {
+        isShow,
+        info: {
+          exclusiveRedPackets,
+        },
+      }
+    },
+    setShowETHStakingApr(state, action: PayloadAction<ModalStatePlayLoad & { symbol?: string }>) {
+      const { isShow, symbol, info } = action.payload
+      state.isShowETHStakingApr = {
+        isShow,
+        symbol,
+        info,
+      }
+    },
   },
 })
 export const {
@@ -403,6 +441,7 @@ export const {
   setNFTMetaNotReady,
   setShowSideStakingRedeem,
   setShowAnotherNetworkNotice,
-  setShowFeeSelect,
   setShowGlobalToast,
+  setShowTargetRedpacketPop,
+  setShowETHStakingApr,
 } = modalsSlice.actions

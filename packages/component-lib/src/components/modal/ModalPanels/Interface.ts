@@ -20,6 +20,7 @@ export type AccountBaseProps = {
   onSwitch?: any
   onCopy?: any
   onViewQRCode?: any
+  hideVIPlevel?: boolean
 } & Account
 
 export enum AccountStep {
@@ -219,6 +220,7 @@ export interface AddAssetProps {
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean }
   }
+  disbaleList?: string[]
 }
 
 export interface SendAssetProps {
