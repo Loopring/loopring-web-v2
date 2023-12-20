@@ -23,15 +23,15 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
   let _activeInfo: any = undefined,
     vaultLayer2,
     vaultAccountInfo,
+    userBalances,
     history,
     wait
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
-    let promise: any[] = []
-
-    // @ts-ignore
+    let promise: any[] = [
+      LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey),
+      LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey),
+    ]
     try {
-      promise.push(LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey))
-
       if (activeInfo && activeInfo.hash && activeInfo.isInActive) {
         promise.push(
           LoopringAPI.vaultAPI.getVaultGetOperationByHash(
@@ -43,7 +43,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
           ),
         )
       }
-      ;[vaultAccountInfo, history] = await Promise.all(promise)
+      ;[vaultAccountInfo, { userBalances }, history] = await Promise.all(promise)
       if (
         (vaultAccountInfo as sdk.RESULT_INFO).code ||
         (vaultAccountInfo as sdk.RESULT_INFO).message
@@ -89,7 +89,8 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
         vaultLayer2 = vaultAccountInfo.userAssets.reduce((prev, item) => {
-          prev[vaultIdIndex[item.tokenId]] = item
+          debugger
+          prev[vaultIdIndex[item.tokenId]] = { ...item, locked: userBalances[item.tokenId]?.locked }
           return prev
         }, {} as VaultLayer2Map<R>)
       }
