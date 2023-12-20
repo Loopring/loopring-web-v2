@@ -237,7 +237,13 @@ export const useVaultSwapExtends = ({
             onClick={() => {
               onBorrowClick()
             }}
-            loading={!getDisabled && btnBorrowStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+            loading={
+              !getDisabled &&
+              tradeCalcData.step === 'borrow' &&
+              btnBorrowStatus === TradeBtnStatus.LOADING
+                ? 'true'
+                : 'false'
+            }
             disabled={
               getDisabled ||
               tradeCalcData.step == 'swap' ||

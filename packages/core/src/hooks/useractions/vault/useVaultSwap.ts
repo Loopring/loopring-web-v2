@@ -871,7 +871,15 @@ export const useVaultSwap = <
       ) {
         const vaultAsset = (vaultLayer2 && vaultLayer2[_sellToken]) ?? 0
         const countBig = sdk.toBig(vaultAsset?.total ?? 0).minus(vaultAsset?.locked ?? 0)
-        const borrowVol = sdk.toBig(tradeCalcData?.volumeSell).minus(countBig ?? 0)
+        const borrowVol = sdk
+          .toBig(
+            sdk
+              .toBig(tradeCalcData?.volumeSell)
+              .minus(countBig ?? 0)
+              .div('1e' + vaultToken.decimals)
+              .toFixed(vaultToken.vaultTokenAmounts.qtyStepScale, 1),
+          )
+          .times('1e' + vaultToken.decimals)
         const vaultBorrowRequest: sdk.VaultBorrowRequest = {
           accountId: account.accountId,
           token: {
@@ -1357,8 +1365,16 @@ export const useVaultSwap = <
         } else {
           minimumReceived = undefined
         }
-        borrowVol = sdk.toBig(calcDexOutput?.sellVol ?? 0).minus(countBig ?? 0)
-        isRequiredBorrow = borrowVol?.gt(0) ? true : false
+        borrowVol = sdk
+          .toBig(
+            sdk
+              .toBig(calcDexOutput?.sellVol ?? 0)
+              .minus(countBig ?? 0)
+              .div('1e' + sellToken.decimals)
+              .toFixed(sellToken.vaultTokenAmounts?.qtyStepScale),
+          )
+          .times('1e' + sellToken.decimals)
+        isRequiredBorrow = borrowVol.gt(0) ? true : false
         let _tradeCalcData: any = {
           minimumReceived,
           maxFeeBips,
