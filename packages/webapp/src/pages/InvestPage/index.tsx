@@ -1,11 +1,18 @@
 import { useRouteMatch } from 'react-router-dom'
 
-import { Box, BoxProps, Container, Typography } from '@mui/material'
+import { Box, Modal, Typography } from '@mui/material'
 
 import { useTranslation, withTranslation } from 'react-i18next'
-import { ComingSoonPanel, ConfirmInvestLRCStakeRisk, useToggle } from '@loopring-web/component-lib'
+import {
+  ComingSoonPanel,
+  ConfirmInvestLRCStakeRisk,
+  ModalCloseButton,
+  SwitchPanelStyled,
+  useToggle,
+  ModifySetting,
+} from '@loopring-web/component-lib'
 import React from 'react'
-import { confirmation, usePopup, ViewAccountTemplate } from '@loopring-web/core'
+import { confirmation, ViewAccountTemplate } from '@loopring-web/core'
 import { MyLiquidity } from './MyLiquidityPanel'
 import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
@@ -13,7 +20,7 @@ import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
 import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
-import { InvestRouter, InvestType } from '@loopring-web/common-resources'
+import { InvestType, RouterPath, InvestRouter } from '@loopring-web/common-resources'
 
 export const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 
@@ -83,22 +90,26 @@ export const DefiTitle = () => {
     </Typography>
   )
 }
-
+const InvestRouterMatch = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
-  let match: any = useRouteMatch('/invest/:item?')
-  const { confirmedLRCStakeInvest: confirmedLRCInvestFun } = confirmation.useConfirmation()
+    let match: any = useRouteMatch(InvestRouterMatch)
+  let { t } = useTranslation()
+  const {
+    confirmedLRCStakeInvest: confirmedLRCInvestFun,
+    setShowLRCStakePopup: setConfirmedLRCStakeInvestInvest,
+    setShowAutoDefault,
+    confirmation: {
+      showLRCStakePopup: confirmedLRCStakeInvest,
+      confirmationNeeded,
+      showAutoDefault,
+    },
+  } = confirmation.useConfirmation()
   const {
     toggle: { CIETHInvest },
   } = useToggle()
 
-  const {
-    showLRCStakignPopup: confirmedLRCStakeInvest,
-    setShowLRCStakignPopup: setConfirmedLRCStakeInvestInvest,
-    confirmationNeeded,
-  } = usePopup()
-
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    (InvestRouter.includes(match?.params?.item)
+        (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
       ? InvestType[match?.params?.item]
       : InvestType.Overview) as any,
     // InvestType.Overview
@@ -161,12 +172,24 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-
+      <Modal
+        open={showAutoDefault}
+        onClose={() => setShowAutoDefault(false)}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <SwitchPanelStyled width={'var(--modal-width)'}>
+          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
+            <ModalCloseButton onClose={() => setShowAutoDefault(false)} t={t} />
+            <ModifySetting onClose={() => setShowAutoDefault(false)} />
+          </Box>
+        </SwitchPanelStyled>
+      </Modal>
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest({ show: false, confirmationNeeded: false })
+          setConfirmedLRCStakeInvestInvest({isShow: false, confirmationNeeded: false })
           if (!isAgree) {
             // history.goBack()
           } else {

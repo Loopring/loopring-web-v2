@@ -1,11 +1,6 @@
-import { useDefiMap, useDefiTrade, usePopup } from '@loopring-web/core'
+import { confirmation, useDefiMap, useDefiTrade } from '@loopring-web/core'
 import { DEFI_ADVICE_MAP, MarketType, myLog } from '@loopring-web/common-resources'
-import {
-  ConfirmDefiNOBalance,
-  DeFiWrap,
-  LoadingBlock,
-  useSettings,
-} from '@loopring-web/component-lib'
+import { ConfirmDefiNOBalance, DeFiWrap, LoadingBlock } from '@loopring-web/component-lib'
 import { Box } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -33,24 +28,21 @@ export const DeFiTradePanel = ({
     setConfirmShowNoBalance,
     confirmShowLimitBalance,
     setConfirmShowLimitBalance,
+    isLeverageETH: false,
   })
-
-  const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
-
-  const styles = isMobile
-    ? { flex: 1, background: 'var(--color-box-third)' }
-    : { width: 'var(--swap-box-width)', background: 'var(--color-box-third)' }
   const { t } = useTranslation()
-  const { setShowRETHStakignPopup, setShowWSTETHStakignPopup, setShowLeverageETHPopup } = usePopup()
-
+  const { setShowRETHStakePopup, setShowWSTETHStakePopup } = confirmation.useConfirmation()
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (
         <Box
           className={'hasLinerBg'}
           display={'flex'}
-          style={styles}
+          sx={{
+            width: 'var(--modal-width)',
+            background: 'var(--color-box-third)',
+          }}
           justifyContent={'center'}
           padding={5 / 2}
           bgcolor={'var(--color-box-third)'}
@@ -58,11 +50,11 @@ export const DeFiTradePanel = ({
           <DeFiWrap
             market={market}
             isJoin={isJoin}
-            setShowRETHStakignPopup={setShowRETHStakignPopup}
-            setShowWSTETHStakignPopup={setShowWSTETHStakignPopup}
+            setShowRETHStakePopup={setShowRETHStakePopup}
+            setShowWSTETHStakePopup={setShowWSTETHStakePopup}
             // setShowLeverageETHPopup={setShowLeverageETHPopup}
             type={DEFI_ADVICE_MAP[tokenBase].project}
-            title={market === 'WSTETH-ETH' ? t('labelDefiLido') : t('labelDefiRocketPool')}
+            title={DEFI_ADVICE_MAP[tokenBase].project}
             {...(deFiWrapProps as any)}
           />
         </Box>

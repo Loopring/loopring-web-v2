@@ -4,6 +4,7 @@ import {
   DualChgData,
   DualWrapProps,
   useOpenModals,
+  useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
 import {
@@ -12,7 +13,6 @@ import {
   DualCalcData,
   DualTrade,
   DualViewInfo,
-  DualViewType,
   getValuePrecisionThousand,
   globalSetup,
   myLog,
@@ -23,7 +23,6 @@ import {
 } from '@loopring-web/common-resources'
 
 import {
-  confirmation,
   DAYS,
   getTimestampDaysLater,
   makeDualViewItem,
@@ -41,34 +40,22 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 import { LoopringAPI, store, useAccount, useSystem, useTokenMap } from '../../index'
 import { useTradeDual } from '../../stores'
-import { useLocation } from 'react-router-dom'
 
 export const useDualTrade = <
   T extends DualTrade<I>,
   I,
   ACD extends DualCalcData<R>,
   R extends DualViewInfo,
->({
-  setConfirmDualAutoInvest,
-}: {
-  setConfirmDualAutoInvest: (state: boolean) => void
-}) => {
-  const { search } = useLocation()
-  const searchParams = new URLSearchParams(search)
-  const viewType = searchParams.get('viewType')
+>() => {
   const refreshRef = React.useRef()
+  const { dualAuto } = useSettings()
+
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
   const { setShowAccount } = useOpenModals()
   const { marketMap: dualMarketMap } = useDualMap()
   const { account, status: accountStatus } = useAccount()
   const { setShowDual } = useOpenModals()
-  const {
-    confirmation: {
-      // confirmedDualInvest,
-      confirmDualAutoInvest,
-    },
-  } = confirmation.useConfirmation()
   const { toastOpen, closeToast } = useToast()
   const {
     modals: { isShowDual },
@@ -121,6 +108,8 @@ export const useDualTrade = <
       }
       if (index && _updateInfo.dualViewInfo) {
         _updateInfo.dualViewInfo.__raw__.index = index
+      } else if (!_updateInfo.dualViewInfo) {
+        return
       }
       if (balance) {
         _updateInfo.balance = balance
@@ -133,19 +122,29 @@ export const useDualTrade = <
         dualMarketMap[`DUAL-${buySymbol}-${sellSymbol}`]
 
       setSellBuySymbol([baseSymbol, quoteSymbol])
-      let coinSell: T =
-        tradeData && tradeData.belong === baseSymbol
-          ? tradeData
-          : _coinSell?.belong === baseSymbol
-          ? ({
-              ..._coinSell,
-            } as unknown as T)
-          : ({
-              balance: _updateInfo?.coinSell?.balance ?? 0,
-              tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
-              belong: baseSymbol,
-              isRenew: _updateInfo?.coinSell?.isRenew ?? dual_reinvest?.enable ? true : false,
-            } as unknown as T)
+      let coinSell = tradeData
+      if (tradeData && tradeData.belong === baseSymbol) {
+        // coinSell= tradeData;
+      } else if (_coinSell?.belong === baseSymbol) {
+        coinSell = {
+          ..._coinSell,
+        } as unknown as T
+      } else {
+        const isRenew =
+          _updateInfo?.coinSell?.isRenew ?? (dual_reinvest?.enable && dualAuto.auto) ? true : false
+        let calc = (_updateInfo.dualViewInfo.expireTime - Date.now()) / 86400000
+        calc = calc < 1 ? Math.ceil(calc) : Math.floor(calc)
+        const renewDuration = Number(
+          tradeDual?.coinSell?.renewDuration ?? (dualAuto.day === 'auto' ? calc : dualAuto.day),
+        )
+        coinSell = {
+          balance: _updateInfo?.coinSell?.balance ?? 0,
+          tradeValue: _updateInfo?.coinSell?.tradeValue ?? undefined,
+          belong: baseSymbol,
+          isRenew,
+          renewDuration,
+        } as unknown as T
+      }
       const existedMarket = sdk.getExistedMarket(marketArray, baseSymbol, quoteSymbol)
       if (account.readyState == AccountStatus.ACTIVATED && existedMarket) {
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
@@ -187,6 +186,7 @@ export const useDualTrade = <
       tokenMap,
       tradeDual,
       updateTradeDual,
+      dualAuto,
     ],
   )
 
@@ -513,7 +513,6 @@ export const useDualTrade = <
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET) {
       walletLayer2Callback()
-      //
     }
   }, [accountStatus])
 

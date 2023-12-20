@@ -34,11 +34,10 @@ export function* closeSocket() {
       } else {
         socket = {
           [sdk.WsTopicType.account]: true,
-          //TODO: after Notification Socket
-          // [sdk.WsTopicType.notification]: {
-          //   address: account.accAddress,
-          //   network: networkWallet,
-          // },
+          [sdk.WsTopicType.notification]: {
+            address: account.accAddress,
+            network: networkWallet,
+          },
         }
         // SocketUserMap
         yield getSocket({
@@ -60,8 +59,7 @@ export function* closeUserSocket() {
   try {
     if ((window as any).loopringSocket) {
       delete socket[sdk.WsTopicType.account]
-      //TODO: after Notification Socket
-      // delete socket[sdk.WsTopicType.notification]
+      delete socket[sdk.WsTopicType.notification]
       yield getSocket({
         socket,
       })
@@ -94,11 +92,10 @@ export function* sendMessage({ payload }: { payload: { socket: SocketMap } }) {
         userSocket = {
           ...userSocket,
           [sdk.WsTopicType.account]: true,
-          //TODO: after Notification Socket
-          // [sdk.WsTopicType.notification]: {
-          //   address: account.accAddress,
-          //   network: networkWallet,
-          // },
+          [sdk.WsTopicType.notification]: {
+            address: account.accAddress,
+            network: networkWallet,
+          },
         }
       }
       yield getSocket({

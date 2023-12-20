@@ -20,6 +20,7 @@ import {
   accountStaticCallBack,
   btnClickMap,
   useSelectNetwork,
+  useNotificationFunc,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
@@ -100,6 +101,8 @@ export const useHeader = () => {
     }
   }, [accountStatus, account?.readyState])
   const { notifyMap, myNotifyMap } = useNotify()
+  // const { onReadClick } = useNotificationFunc({})
+
   return {
     headerToolBarData,
     headerMenuData: headerMenuDataMap[network],

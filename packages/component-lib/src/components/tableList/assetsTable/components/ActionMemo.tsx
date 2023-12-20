@@ -26,14 +26,14 @@ const GridStyled = styled(Grid)`
 export type ActionProps = {
   tokenValue: any
   allowTrade?: any
-  market: `${string}-${string}`
+  market?: `${string}-${string}`
   isLp: boolean
   isDefi: boolean
   isInvest: boolean
   onSend: (token: string, isToL1: boolean) => void
   onReceive: (token: string) => void
 
-  getMarketArrayListCallback: (token: string) => string[]
+  getMarketArrayListCallback?: (token: string) => string[]
   isLeverageETH: boolean
   isWebEarn?: boolean
 }
@@ -81,7 +81,9 @@ const ActionPopContent = React.memo(
     ]
     const marketList = isLp
       ? []
-      : getMarketArrayListCallback(market).filter((pair) => {
+      : getMarketArrayListCallback &&
+        market &&
+        getMarketArrayListCallback(market).filter((pair) => {
           const [first, last] = pair.split('-')
           if (first === 'USDT' || last === 'USDT') {
             return true
@@ -160,7 +162,7 @@ const ActionPopContent = React.memo(
             </>
           )
         ) : (
-          marketList.map((pair) => {
+          marketList?.map((pair) => {
             const formattedPair = pair.replace('-', ' / ')
             return (
               <MenuItem
@@ -197,7 +199,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     // onShowTransfer,
     // onShowWithdraw,
     isLeverageETH,
-    isWebEarn
+    isWebEarn,
   } = props
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
@@ -218,7 +220,13 @@ const ActionMemo = React.memo((props: ActionProps) => {
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const coins = LEVERAGE_ETH_CONFIG.coins[network]
   return (
-    <GridStyled container spacing={1} justifyContent={isWebEarn ? 'flex-end' : 'space-between'} alignItems={'center'}>
+    <GridStyled
+      container
+      spacing={1}
+      justifyContent={isWebEarn ? 'flex-end' : 'space-between'}
+      alignItems={'center'}
+      flexWrap={'nowrap'}
+    >
       {isMobile ? (
         <>
           {((!isLp && allowTrade?.order?.enable) || isLp || isDefi || isLeverageETH) && (
@@ -230,34 +238,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
       ) : (
         <>
           <Box display={'flex'}>
-            {isLeverageETH ? (
-              <>
-                <Grid item>
-                  <Button
-                    variant={'text'}
-                    size={'small'}
-                    color={'primary'}
-                    onClick={() => {
-                      history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}`)
-                    }}
-                  >
-                    {t('labelDefiInvest')}
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant={'text'}
-                    size={'small'}
-                    color={'primary'}
-                    onClick={() => {
-                      history.push(`${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/redeem`)
-                    }}
-                  >
-                    {t('labelDefiRedeem')}
-                  </Button>
-                </Grid>
-              </>
-            ) : isInvest ? (
+            {isInvest ? (
               <>
                 <Grid item>
                   <Button

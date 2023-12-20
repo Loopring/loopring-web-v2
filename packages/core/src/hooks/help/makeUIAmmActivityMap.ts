@@ -428,7 +428,7 @@ const getMyAmmInfo = <C>({ ammInfo, ammUserReward }: any) => {
     ;[, coinA, coinB] = ammInfo.market.match(/(\w+)(-\w+)?/i)
   }
   let balanceA, balanceB, balanceU
-  const { walletMap } = makeWalletLayer2(false)
+  const { walletMap } = makeWalletLayer2({ needFilterZero: false })
 
   if (walletMap && walletMap['LP-' + ammInfo.market] && ammInfo.totalLPToken) {
     // @ts-ignore
