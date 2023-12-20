@@ -21,6 +21,7 @@ import {
   useSubmitBtn,
   useSystem,
   useTokenMap,
+  useUserRewards,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from '../../index'
@@ -415,6 +416,7 @@ export const useAmmJoin = ({
 
   const walletLayer2Callback = React.useCallback(async () => {
     updateJoinFee()
+    // getUserRewards()
     const account = store.getState().account
     if (ammInfo?.market && account.readyState === AccountStatus.ACTIVATED) {
       const baseT = tokenMap[ammInfo.coinA]

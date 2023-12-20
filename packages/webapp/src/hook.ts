@@ -85,6 +85,18 @@ export function useInit() {
   const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
 
   React.useEffect(() => {
+    ConnectProvides.walletConnectClientMeta = {
+      ...ConnectProvides.walletConnectClientMeta,
+      url:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_URL ??
+        ConnectProvides.walletConnectClientMeta.url,
+      name:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_NAME ??
+        ConnectProvides.walletConnectClientMeta.name,
+      description:
+        process?.env?.REACT_APP_WALLETCONNECTCLIENTMETA_DESCRIPTION ??
+        ConnectProvides.walletConnectClientMeta.description,
+    }
     ;(async (account) => {
       if (
         account.accAddress !== '' &&
@@ -132,8 +144,7 @@ export function useInit() {
         if (account.accAddress === '' || account.connectName === ConnectProviders.Unknown) {
           resetAccount()
         }
-        const chainId =
-          account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
+        const chainId = defaultNetwork
         if (!isNoServer) {
           updateSystem({ chainId })
         }

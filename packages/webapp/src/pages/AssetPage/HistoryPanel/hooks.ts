@@ -30,7 +30,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DUAL_TYPE, GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
+import { GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import {
   AccountStatus,
   BTRDE_PRE,
@@ -41,10 +41,13 @@ import {
   SDK_ERROR_MAP_TO_UI,
   TradeStatus,
   TradeTypes,
+  RouterPath,
+  RecordTabIndex,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useDualAsset } from './useDualAsset'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -779,29 +782,47 @@ export const useOrderList = ({
 
 export const useDualTransaction = <R extends RawDataDualTxsItem>(
   setToastOpen: (props: any) => void,
+  path = RouterPath.l2records,
 ) => {
   const { t } = useTranslation(['error'])
-
+  const match: any = useRouteMatch(`${path}/:tab/`)
+  const { search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const history = useHistory()
   const {
     account: { accountId, apiKey },
   } = useAccount()
-
+  const {
+    refresh: refreshDualDetail,
+    detail: dualDetail,
+    open: openDualDetail,
+    setOpen: setDualOpen,
+  } = useDualAsset()
+  const onClose = () => {
+    searchParams.delete('show')
+    history.replace({
+      pathname: `${path}/${RecordTabIndex.DualRecords}`,
+      search: searchParams.toString(),
+    })
+    setDualOpen(false)
+  }
   const [dualList, setDualList] = React.useState<R[]>([])
   const { idIndex } = useTokenMap()
   const [dualTotal, setDualTotal] = React.useState(0)
   const { marketMap: dualMarketMap } = useDualMap()
-  // const [pagination, setDualPagination] = React.useState<{
-  //   pageSize: number;
-  //   total: number;
-  // }>({
-  //   pageSize: Limit,
-  //   total: 0,
-  // });
   const [showLoading, setShowLoading] = React.useState(true)
 
   const getDualTxList = React.useCallback(
     async ({ start, end, offset, settlementStatus, investmentStatus, dualTypes, limit }: any) => {
       setShowLoading(true)
+      if (
+        searchParams?.get('show') == 'detail' &&
+        match?.params?.tab == RecordTabIndex.DualRecords &&
+        searchParams?.has('hash')
+      ) {
+        let hash = searchParams.get('hash')
+        refreshDualDetail(hash ?? '', true)
+      }
       if (LoopringAPI.defiAPI && accountId && apiKey) {
         const response = await LoopringAPI.defiAPI.getDualTransactions(
           {
@@ -836,7 +857,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == DUAL_TYPE.DUAL_BASE
+                item.dualType == sdk.DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],
@@ -875,6 +896,10 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
   )
 
   return {
+    refreshDualDetail,
+    dualDetail,
+    openDualDetail,
+    onDualClose: onClose,
     // page,
     dualList,
     showLoading,
@@ -1093,7 +1118,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         sellStr: item.fromAmount,
         buyFStr: item.toFAmount && item.toFAmount !== '0' ? item.toFAmount : undefined,
         buyStr: item.toAmount,
-        convertStr: `1${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
+        convertStr: `1 ${item.price.from} \u2248 ${item.price.value} ${item.price.key}`,
         // @ts-ignore
         feeStr: item?.feeAmount == 0 ? undefined : item?.feeAmount,
         settledToAmount: item.settledToAmount,

@@ -12,6 +12,22 @@ import {
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
+import {
+  AmmIcon,
+  BlockTradeIcon,
+  CreateNFTIcon,
+  DualInvestIcon,
+  ETHStakingIcon,
+  FiatIcon,
+  LRCStakingIcon,
+  LeverageETHIcon,
+  MyCollectionIcon,
+  MyNFTIcon,
+  OrderBookIcon,
+  OverviewIcon,
+  StopLimitIcon,
+  SwapIcon,
+} from '../svg/dropdownLogo'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -254,6 +270,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       id: 'lite',
       i18nKey: 'labelClassic',
       description: 'labelClassicDescription',
+      icon: SwapIcon,
     },
     router: { path: RouterPath.lite + '/${pair}' },
   },
@@ -262,6 +279,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       id: 'pro',
       i18nKey: 'labelAdvanced',
       description: 'labelAdvancedDescription',
+      icon: OrderBookIcon,
     },
     router: { path: RouterPath.pro + '/${pair}' },
   },
@@ -270,6 +288,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       id: 'stopLimit',
       i18nKey: 'labelStopLimit',
       description: 'labelStopLimitDescription',
+      icon: StopLimitIcon,
     },
     router: { path: RouterPath.stoplimit + '/${pair}' },
   },
@@ -278,6 +297,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       id: 'btrade',
       i18nKey: 'labelBtradeTrade',
       description: 'labelBtradeTradeDescription',
+      icon: BlockTradeIcon,
     },
     router: { path: RouterPath.btrade + '/${pair}' },
   },
@@ -287,6 +307,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       id: 'fiat',
       i18nKey: 'labelFiat',
       description: 'labelFiatDescription',
+      icon: FiatIcon,
     },
     router: { path: RouterPath.fiat },
   },
@@ -367,6 +388,7 @@ export const subMenuInvest = [
       id: 'overview',
       i18nKey: 'labelInvestOverview',
       description: 'labelInvestOverviewDes',
+      icon: OverviewIcon,
     },
   },
   {
@@ -376,6 +398,7 @@ export const subMenuInvest = [
       id: 'dual',
       i18nKey: 'labelInvestDual',
       description: 'labelInvestDualDes',
+      icon: DualInvestIcon,
     },
   },
   {
@@ -385,6 +408,7 @@ export const subMenuInvest = [
       id: 'defi',
       i18nKey: 'labelInvestDefi',
       description: 'labelInvestDefiDes',
+      icon: ETHStakingIcon,
     },
   },
   {
@@ -394,6 +418,7 @@ export const subMenuInvest = [
       id: 'leverageeth',
       i18nKey: 'labelInvestLeverageETH',
       description: 'labelInvestLeverageETHDes',
+      icon: LeverageETHIcon,
     },
   },
   {
@@ -403,6 +428,7 @@ export const subMenuInvest = [
       id: 'ammpool',
       i18nKey: 'labelInvestAmm',
       description: 'labelInvestAmmDes',
+      icon: AmmIcon,
     },
   },
   {
@@ -412,6 +438,7 @@ export const subMenuInvest = [
       id: 'stackonesided',
       i18nKey: 'labelInvestStakeLRC',
       description: 'labelInvestStakeLRCDes',
+      icon: LRCStakingIcon,
     },
   },
 ]
@@ -445,15 +472,6 @@ export const DEFI_CONFIG = {
     ARBGOERLI: ['RETH-ETH'],
   },
 }
-
-export const DUAL_CONFIG = {
-  products: {
-    TAIKO: [] as string[],
-    ETHEREUM: ['PIONEX'],
-    GOERLI: ['PIONEX'],
-    ARBGOERLI: ['PIONEX'],
-  },
-}
 export const LEVERAGE_ETH_CONFIG = {
   coins: {
     TAIKO: [] as string[],
@@ -473,7 +491,22 @@ export const LEVERAGE_ETH_CONFIG = {
     GOERLI: ['LIDO'],
     ARBGOERLI: ['LIDO'],
   },
+  MARKETS: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['CIETH-ETH'],
+    GOERLI: ['WSTETH-ETH'],
+    ARBGOERLI: ['WSTETH-ETH'],
+  },
   // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
+}
+
+export const DUAL_CONFIG = {
+  products: {
+    TAIKO: [] as string[],
+    ETHEREUM: ['PIONEX'],
+    GOERLI: ['PIONEX'],
+    ARBGOERLI: ['PIONEX'],
+  },
 }
 
 export const subMenuNFT = {
@@ -485,6 +518,7 @@ export const subMenuNFT = {
         id: 'assetsNFT',
         i18nKey: 'labelMyAssetsNFT',
         description: 'labelMyAssetsNFTDes',
+        icon: MyNFTIcon,
       },
     },
     {
@@ -494,6 +528,7 @@ export const subMenuNFT = {
         id: 'mintNFT',
         i18nKey: 'labelMintNFT',
         description: 'labelMintNFTDes',
+        icon: CreateNFTIcon,
       },
     },
     {
@@ -503,6 +538,7 @@ export const subMenuNFT = {
         id: 'collection',
         i18nKey: 'labelMyCollection',
         description: 'labelMyCollectionDes',
+        icon: MyCollectionIcon,
       },
     },
   ],
@@ -698,10 +734,6 @@ export const defiRETHAdvice: InvestAdvice = {
   market: 'RETH-ETH',
 }
 
-export const DEFI_ADVICE_MAP = {
-  WSTETH: defiWSTETHAdvice,
-  RETH: defiRETHAdvice,
-}
 export const dualAdvice: InvestAdvice = {
   type: InvestMapType.DUAL,
   router: `${RouterPath.invest}/${InvestAssetRouter.DUAL}`,
@@ -728,8 +760,13 @@ export const leverageETHAdvice: InvestAdvice = {
   titleI18n: 'labelInvestLeverageETH',
   desI18n: 'labelInvestLeverageETHDes',
   enable: true,
-  project: 'CIETH Pool',
+  project: 'Leveraged ETH Staking',
   market: 'CIETH-ETH',
+}
+export const DEFI_ADVICE_MAP = {
+  WSTETH: defiWSTETHAdvice,
+  RETH: defiRETHAdvice,
+  CIETH: leverageETHAdvice,
 }
 
 export enum RecordTabIndex {

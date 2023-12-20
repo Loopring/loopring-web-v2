@@ -1,5 +1,6 @@
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
+  InvestAssetRouter,
   MapChainId,
   RecordTabIndex,
   RouterPath,
@@ -9,8 +10,9 @@ import { useHistory } from 'react-router-dom'
 import React from 'react'
 import { LoopringAPI } from '../../api_wrapper'
 import { TOASTOPEN, ToastType, useSettings } from '@loopring-web/component-lib'
-import { useAccount } from '../../stores'
+import { useAccount, useNotify } from '../../stores'
 import { useTranslation } from 'react-i18next'
+
 export const useNotificationFunc = <R extends sdk.UserNotification>({
   setToastOpen,
 }: {
@@ -19,6 +21,7 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
   const { account } = useAccount()
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
+  const { getUserNotify } = useNotify()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const networkWallet: sdk.NetworkWallet = [
     sdk.NetworkWallet.ETHEREUM,
@@ -55,6 +58,7 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
             content: 'error : ' + errorItem ? t(errorItem.messageKey) : (error as any)?.message,
           })
       }
+      getUserNotify()
     },
     [account.accAddress],
   )
@@ -73,6 +77,7 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
         throw response
       } else {
       }
+      getUserNotify()
     } catch (error) {
       let errorItem
       if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
@@ -103,6 +108,7 @@ export const useNotificationFunc = <R extends sdk.UserNotification>({
         throw response
       } else {
       }
+      getUserNotify()
     } catch (error) {
       let errorItem
       if (typeof (error as sdk.RESULT_INFO)?.code === 'number') {
@@ -133,12 +139,12 @@ export const useNotification = <R extends sdk.UserNotification>({
   onReadClick: (index: number, rest: any) => void
 }) => {
   const history = useHistory()
-  const { messageType } = rest
+  const { messageType, redirectionContext } = rest
   let ele: any = {
     i18nKey: '',
     active: undefined,
   }
-
+  const params = JSON.parse(redirectionContext ? redirectionContext : '{}')
   switch (messageType) {
     case sdk.NotificationMessageType.L1_CREATED:
       ele.i18nKey = 'labelActiveL1successfulNote' //Active L1 Account successful
@@ -189,9 +195,60 @@ export const useNotification = <R extends sdk.UserNotification>({
         history.push(`${RouterPath.l2records}/${RecordTabIndex.Transactions}`)
       }
       break
+    case sdk.NotificationMessageType.DUAL_SETTLED:
+      ele.i18nKey = 'labelL2DualNote'
+      ele.active = () => {
+        onReadClick(index, rest)
+        history.push(
+          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${params.hash} &show=detail`,
+        )
+      }
+      break
+    case sdk.NotificationMessageType.DUAL_RECURES_ORDER_SWAP:
+      ele.i18nKey = 'labelL2DualNote'
+      ele.active = () => {
+        onReadClick(index, rest)
+        history.push(
+          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${params.hash} &show=detail`,
+        )
+      }
+      break
+    case sdk.NotificationMessageType.DUAL_RECURES_RETRY_FAILED:
+      ele.i18nKey = 'labelL2DualNote'
+      ele.active = () => {
+        onReadClick(index, rest)
+        history.push(
+          `${RouterPath.l2records}/${RecordTabIndex.DualRecords}?hash=${params.hash} &show=detail`,
+        )
+      }
+      break
+    case sdk.NotificationMessageType.DUAL_RECURES_RETRY_SUCCESS:
+      ele.i18nKey = 'labelL2DualNote'
+      ele.active = () => {
+        onReadClick(index, rest)
+        history.push(
+          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${params.hash} &show=detail`,
+        )
+      }
+      break
+    case 54:
+      ele.i18nKey = 'labelL2DualNote'
+      ele.active = () => {
+        onReadClick(index, rest)
+        history.push(
+          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${params.hash} &show=detail`,
+        )
+      }
+      break
     default:
       ele.i18nKey = 'labelNotificationLabel'
-      ele.active = undefined
+      ele.active = () => {
+        onReadClick(index, rest)
+        history.push(
+          `${RouterPath.investBalance}/${InvestAssetRouter.DUAL}?hash=${params.hash} &show=detail`,
+        )
+      }
+
       break
   }
   return ele

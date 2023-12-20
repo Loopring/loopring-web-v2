@@ -43,6 +43,7 @@ export const DualWrap = <
   isBeginnerMode,
   dualProducts,
   toggle,
+  setShowAutoDefault,
   ...rest
 }: DualWrapProps<T, I, DUAL> & {
   isBeginnerMode: boolean
@@ -196,16 +197,13 @@ export const DualWrap = <
         : EmptyValueTag,
     [dualCalcData],
   )
-  const calc =
-    (dualCalcData?.dualViewInfo?.expireTime -
-      (dualCalcData?.dualViewInfo?.enterTime ? dualCalcData?.dualViewInfo.enterTime : Date.now())) /
-    86400000
-  const renewDuration =
-    !dualCalcData?.coinSell?.renewDuration && dualCalcData?.dualViewInfo
-      ? calc < 1
-        ? Math.ceil(calc)
-        : Math.floor(calc)
-      : dualCalcData.coinSell?.renewDuration ?? 0
+
+  // const renewDuration =
+  //   !dualCalcData?.coinSell?.renewDuration && dualCalcData?.dualViewInfo
+  //     ? calc < 1
+  //       ? Math.ceil(calc)
+  //       : Math.floor(calc)
+  //     : dualCalcData.coinSell?.renewDuration ?? 0
 
   const inputView = displayMode !== DualDisplayMode.beginnerModeStep2 && (
     <Grid
@@ -278,11 +276,10 @@ export const DualWrap = <
               }
               coinSell={{
                 ...dualCalcData.coinSell,
-                renewDuration,
                 renewTargetPrice: dualCalcData?.dualViewInfo?.__raw__?.info?.strike,
               }}
+              setShowAutoDefault={setShowAutoDefault}
               currentPrice={dualCalcData.dualViewInfo.currentPrice}
-              tokenMap={tokenMap}
               lessEarnTokenSymbol={dualCalcData.lessEarnTokenSymbol}
               greaterEarnTokenSymbol={dualCalcData.greaterEarnTokenSymbol}
               lessEarnView={lessEarnView}

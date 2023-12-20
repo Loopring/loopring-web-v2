@@ -174,31 +174,48 @@ export const NotificationItem = React.memo(
     onReadClick,
     className = '',
     size = 'large',
+    noAction = false,
     ...rest
   }: sdk.UserNotification & {
     index: number
     className?: string
+    noAction?: boolean
     size?: 'small' | 'medium' | 'large'
-    onReadClick: (index: number, rest: any) => void
+    onReadClick?: (index: number, rest: any) => void
   }) => {
     const { message, createAt } = rest
     const { defaultNetwork } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { t } = useTranslation()
-    const ele = useNotification({ index, onReadClick, ...rest })
+    const { onReadClick: defaultOnRead } = useNotificationFunc({})
+    const ele = useNotification({
+      index,
+      onReadClick: defaultOnRead,
+      ...rest,
+    })
+    const _onReadIconClick = onReadClick ? onReadClick : defaultOnRead
     return (
       <BoxStyle display={'flex'} justifyContent={'stretch'} paddingY={1} className={className}>
         <Box position={'relative'} marginRight={2}>
-          {!rest.read ? (
-            <IconButton size={size} onClick={() => onReadClick(index, rest)}>
-              <MessageIcon htmlColor={'var(--color-text-secondary)'} />
-            </IconButton>
-          ) : (
-            <MessageIcon fontSize={size} htmlColor={'var(--color-text-third)'} />
-          )}
+          <IconButton
+            disabled={rest.read}
+            color={'secondary'}
+            size={size}
+            onClick={() => {
+              _onReadIconClick(index, rest)
+            }}
+          >
+            <MessageIcon color={'inherit'} />
+          </IconButton>
           {!rest.read && <Typography className={'point'} component={'i'} display={'block'} />}
         </Box>
-        <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'flex-start'}>
+        <Box
+          onClick={() => noAction && onReadClick && onReadClick(index, rest)}
+          flex={1}
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'flex-start'}
+        >
           <Typography variant={'body1'} color={'textSecondary'}>
             {t(ele.i18nKey, {
               l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
@@ -208,7 +225,7 @@ export const NotificationItem = React.memo(
               ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
             })}
           </Typography>
-          {ele.active ? (
+          {!noAction && ele.active ? (
             <Link
               variant={'body1'}
               color={'textPrimary'}
@@ -224,13 +241,7 @@ export const NotificationItem = React.memo(
               <ConvertToIcon fontSize={'medium'} color={'inherit'} />
             </Link>
           ) : (
-            <Typography
-              onClick={() => onReadClick(index, rest)}
-              variant={'body1'}
-              color={'textPrimary'}
-              marginTop={1}
-              className={'message'}
-            >
+            <Typography variant={'body1'} color={'textPrimary'} marginTop={1} className={'message'}>
               {message}
             </Typography>
           )}

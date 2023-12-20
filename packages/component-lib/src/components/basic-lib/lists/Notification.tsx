@@ -131,6 +131,7 @@ const NotificationListItemStyled = styled(ListItem)<
 
 export const NotificationListItem = (
   props: Partial<NOTIFICATION_ITEM> & {
+    closePop?: () => void
     account?: Account
     chainId: sdk.ChainId
   },
@@ -149,6 +150,7 @@ export const NotificationListItem = (
     link,
     linkParam,
     chainId,
+    closePop,
   } = props
   return (
     <NotificationListItemStyled
@@ -190,6 +192,7 @@ export const NotificationListItem = (
           window.open(`${link}${hasParamTag ? '' : '?'}` + `${params}`, '_blank')
           window.opener = null
         }
+        closePop && closePop()
       }}
       className={`notification`}
     >

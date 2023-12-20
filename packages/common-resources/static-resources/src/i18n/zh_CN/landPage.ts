@@ -64,8 +64,9 @@ export default {
   labelNavWallet: 'Wallet',
   labelNavLanuch: 'View Dapps',
   labelLoopringSmartWallet: 'Loopring Smart Wallet',
-  labelLoopringSmartWalletDes: 'Your Gateway to Ethereum, DeFi, NFTs, and <br/>Financial Freedom',
-  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer2</1>",
+  labelLoopringSmartWalletDes:
+    "Ethereum's most secure wallet, fully integrated with advanced trading functionality and innovative Earn products, unlocking the true potential of Layer 2.",
+  labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer 2</1>",
   labelGatewayToEthereum:
     'Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom.\n Fast, Low-cost, & Secure',
   labelTitleLite: 'Loopring Earn',
@@ -87,17 +88,17 @@ export default {
   labelFeatureDes8: 'Loopring Layer2',
   labelFeatureDes8_2: 'Crypto exchange on the go',
   labelGo: 'Go',
-  labelTitleLiteDes:
-    'Access the best DeFi Strategy just like the pros! Simply deposit stETH, and Instadapp Lite will put it to work for you using the most popular DeFi protocols.',
+  labelTitleLiteDes: 'Access the most innovative structural products brought to the DeFi world.',
   labelInvestStakeLRCDes:
-    'The staked LRC will be locked in Looping L2, meaning it cannot be used for other purposes',
+    'Lock your LRC for a minimum duration to earn interest and redeem at any time.',
   labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield.',
   labelInvestLeverageETHDes:
-    'CIAN protocol is a liquid staking derivatives (“LSD”) focused yield strategy platform.',
+    "Boost your earnings with CIAN protocol's leveraged ETH staking strategy.",
   labelInvestDefiDes: 'Earn steady income while holding! Stake ETH to accumulate daily rewards.',
-  labelInvestAmmDes: 'Trade Smarter, Not Harder! while maintaining full custody of your assets!',
+  labelInvestAmmDes:
+    'Participate in farming pools; earn additional protocol fee incentives for HOT pools.',
   labelProductsTitleDes: 'A wide variety of trading tools to choose from',
-  labelProductsTitle: 'Our Core Products',
+  labelProductsTitle: 'Trading Products',
   labelSpotDes: 'Full access to all trading tools',
   labelSpot: 'Spot',
   labelSwapDes: 'Intuitive trading interface',
@@ -108,10 +109,10 @@ export default {
   labelFiat: 'Fiat',
   labelNFTCollections: 'Manage and Display Your NFT Collections',
   labelNFTCollectionsDes:
-    'In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.',
+    'Collaborate on a strategic plan to integrate \n NFTs into your ecosystem',
   labelRedPackets: 'Red Packets',
   labelRedPacketsDes:
     'Explore the various use cases of our revolutionary Red Packets! Send token or NFT gifts directly or gamify the experience with blind boxes.',
-  labelEndProductTitle: 'Earn Product',
+  labelEndProductTitle: 'Earn Products',
   labelEndProductTitleDes: 'Choose from a variety of financial products',
 }
