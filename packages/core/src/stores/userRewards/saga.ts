@@ -92,7 +92,7 @@ const getUserRewardsApi = async () => {
                   (prev, _history) => {
                     return {
                       sellTokenVol: prev.sellTokenVol.plus(_history.sellToken.volume),
-                      buyTokenVol: prev.buyTokenVol.plus(_history.sellToken.volume),
+                      buyTokenVol: prev.buyTokenVol.plus(_history.buyToken.volume),
                       feeVol: prev.feeVol.plus(_history.fee.volume),
                     }
                   },
