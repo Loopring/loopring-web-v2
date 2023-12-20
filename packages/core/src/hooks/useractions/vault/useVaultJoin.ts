@@ -516,7 +516,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   }
   const walletAllowMap =
     (joinTokenMap &&
-      Reflect.ownKeys(joinTokenMap).reduce((prev, key: string) => {
+      Reflect.ownKeys(joinTokenMap).reduce((prev, key) => {
         const token = vaultTokenMap[key.toString()]
         const symbol = idIndex[token.tokenId]
         // as sdk.VaultToken
@@ -636,7 +636,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       tradeValue: data.tradeData?.tradeValue,
     }
     myLog('walletInfo', walletInfo)
-    // debugger
     if (tokenSymbol) {
       updateVaultJoin({
         ...vaultJoinData,

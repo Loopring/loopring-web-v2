@@ -89,7 +89,6 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
         vaultLayer2 = vaultAccountInfo.userAssets.reduce((prev, item) => {
-          debugger
           prev[vaultIdIndex[item.tokenId]] = { ...item, locked: userBalances[item.tokenId]?.locked }
           return prev
         }, {} as VaultLayer2Map<R>)
