@@ -12,23 +12,6 @@ import {
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
-import {
-  AmmIcon,
-  BlockTradeIcon,
-  CreateNFTIcon,
-  DualInvestIcon,
-  ETHStakingIcon,
-  FiatIcon,
-  LRCStakingIcon,
-  LeverageETHIcon,
-  MyCollectionIcon,
-  MyNFTIcon,
-  OrderBookIcon,
-  OverviewIcon,
-  StopLimitIcon,
-  SwapIcon,
-} from '../svg/dropdownLogo'
-
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
 export const SoursURL = 'https://static.loopring.io/assets/'
