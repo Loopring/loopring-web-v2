@@ -1,5 +1,7 @@
 import { SwapTradeData } from '../../Interface'
+import { useTheme } from '@emotion/react'
 import {
+  AlertIcon,
   BtradeTradeCalcData,
   BtradeType,
   CoinInfo,
@@ -7,6 +9,7 @@ import {
   defaultSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
+  hexToRGB,
   IBData,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -56,16 +59,19 @@ export const SwapTradeWrap = <
   tradeCalcData,
   tokenSellProps,
   tokenBuyProps,
+  BtnEle,
   ...rest
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
+  const theme = useTheme()
   const sellRef = React.useRef()
   const buyRef = React.useRef()
   const history = useHistory()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true)
-  const buySymbol = tradeCalcData?.belongBuyAlice ?? tradeData.buy?.belong
-  const sellSymbol = tradeCalcData?.belongSellAlice ?? tradeData.sell?.belong
+
+  const buySymbol = (tradeCalcData as any)?.belongBuyAlice ?? tradeData?.buy?.belong
+  const sellSymbol = (tradeCalcData as any)?.belongSellAlice ?? tradeData?.sell?.belong
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       setIsStoB(!_isStoB)
@@ -419,6 +425,39 @@ export const SwapTradeWrap = <
       {!isL2Swap ? (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+            {(tradeCalcData as any)?.isVault && (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t('labelTobeBorrowedtips', {
+                    rate: userTakerRate,
+                    value: tradeCostMin,
+                  }).toString()}
+                  placement={'top'}
+                >
+                  <Typography
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('labelTobeBorrowed')}
+                  </Typography>
+                </Tooltip>
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  {tradeCalcData && tradeCalcData.borrowVol
+                    ? `${tradeCalcData.borrowStr} ${sellSymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+                    : EmptyValueTag}
+                </Typography>
+              </Grid>
+            )}
             <Grid
               container
               justifyContent={'space-between'}
@@ -618,7 +657,27 @@ export const SwapTradeWrap = <
       )}
 
       <Grid item alignSelf={'stretch'}>
-        <Grid item>
+        {(tradeCalcData as any)?.isVault && BtnEle ? (
+          <>
+            {(tradeCalcData as any)?.showHasBorrow && (
+              <Typography
+                marginY={1}
+                width={'100%'}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelVaultActiveLoanAlert')}
+              </Typography>
+            )}
+            {BtnEle}
+          </>
+        ) : (
           <ButtonStyle
             variant={'contained'}
             size={'large'}
@@ -636,7 +695,7 @@ export const SwapTradeWrap = <
           >
             {label}
           </ButtonStyle>
-        </Grid>
+        )}
       </Grid>
       {isL2Swap && (tradeCalcData as any)?.isShowBtradeAllow && (
         <Grid

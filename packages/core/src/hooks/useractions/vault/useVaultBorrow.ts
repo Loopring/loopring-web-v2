@@ -45,9 +45,7 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
 ) => {
   const {
     invest: {
-      vaultMap: {
-        tokenMap: { vaultTokenMap, coinMap: vaultCoinMap },
-      },
+      vaultMap: { tokenMap: vaultTokenMap, coinMap: vaultCoinMap },
     },
   } = store.getState()
   let supportData: any = {
@@ -66,7 +64,7 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
     const borrowToken = vaultTokenMap[tradeData.belong]
     const orderAmounts = borrowToken.orderAmounts
     const minBorrowVol = BigNumber.max(
-      orderAmounts.dust,
+      // orderAmounts.dust,
       //@ts-ignore
       borrowToken?.vaultTokenAmounts?.minLoanAmount,
     )

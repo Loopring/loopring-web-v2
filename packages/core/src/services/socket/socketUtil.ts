@@ -2,7 +2,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { walletLayer2Service } from './services/walletLayer2Service'
 import { tickerService } from './services/tickerService'
 import { ammPoolService } from './services/ammPoolService'
-import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources'
+import { CustomError, ErrorMap, globalSetup, myLog } from '@loopring-web/common-resources'
 import { LoopringAPI, notificationService, SocketMap, SocketUserMap } from '../../index'
 import { bookService } from './services/bookService'
 import { orderbookService } from './services/orderbookService'
@@ -11,6 +11,7 @@ import { mixorderService } from './services/mixorderService'
 import { mixtradeService } from './services/mixtradeService'
 import { btradeOrderbookService } from './services/btradeOrderbookService'
 import { l2CommonService } from './services/l2CommonService'
+import * as _ from 'lodash'
 
 export type SocketEvent = (e: any, ...props: any[]) => any
 
@@ -221,6 +222,19 @@ export class LoopringSocket {
   get ws(): WebSocket | undefined {
     return this._ws
   }
+  private sendMeassage = _.throttle(
+    ({ topics, apiKey }) => {
+      if (!this.isConnectSocket()) {
+        this.socketConnect({ topics, apiKey }).catch(() => {
+          throw new CustomError(ErrorMap.SOCKET_ERROR)
+        })
+      } else {
+        this._ws?.send(this.makeTopics(topics, apiKey))
+      }
+    },
+    globalSetup.wait,
+    { trailing: true },
+  )
 
   public socketSendMessage = async ({
     socket,
@@ -238,12 +252,7 @@ export class LoopringSocket {
         this._socketKeyMap = socket
         const { topics } = this.makeMessageArray({ socket })
         myLog('makeMessageArray', socket, topics)
-
-        if (!this.isConnectSocket()) {
-          await this.socketConnect({ topics, apiKey })
-        } else {
-          this._ws?.send(this.makeTopics(topics, apiKey))
-        }
+        this.sendMeassage({ topics, apiKey })
         return true
       } else {
         if (!this.isConnectSocket()) {
@@ -257,7 +266,6 @@ export class LoopringSocket {
   }
   public socketClose = async () => {
     let ws: WebSocket | undefined = this._ws
-
     return new Promise((reolve) => {
       if (ws) {
         ws.onclose = function (e) {

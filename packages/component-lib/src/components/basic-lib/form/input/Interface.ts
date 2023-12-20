@@ -5,7 +5,7 @@ import { XOR } from '../../../../types/lib'
 export type defaultProps<T, R, I> = {
   label: string | JSX.Element
   noBalance: string
-  subLabel?: string
+
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>
   placeholderText?: string
   allowDecimals?: boolean
@@ -37,7 +37,8 @@ export type defaultProps<T, R, I> = {
     { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
   >,
   { isShowCoinInfo: false }
->
+> &
+  XOR<{ subLabel?: string }, { subEle: JSX.Element }>
 
 export type InputButtonProps<T, R, I> = defaultProps<T, R, I> & {
   inputData?: T | undefined

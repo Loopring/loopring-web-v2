@@ -25,6 +25,7 @@ export type TradeVault = {
   sellMaxL2AmtInfo?: string
   sellMaxAmtInfo?: string
   lastStepAt: 'sell' | 'buy' | undefined
+  isRequiredBorrow: boolean
   sellUserOrderInfo?: undefined | null | sdk.OrderInfo
   buyUserOrderInfo?: undefined | null | sdk.OrderInfo
   minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>

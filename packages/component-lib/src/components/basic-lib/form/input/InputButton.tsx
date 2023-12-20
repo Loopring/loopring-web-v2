@@ -46,6 +46,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     tokenType,
     tokenImageKey = undefined,
     belongAlice = undefined,
+    subEle,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -165,7 +166,9 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
           </Typography>
         </Grid>
         <Grid item xs={9} className={'sub-label'}>
-          {subLabel && belong ? (
+          {subEle ? (
+            subEle
+          ) : subLabel && belong ? (
             <Typography
               fontSize={'inherit'}
               className={

@@ -9,8 +9,10 @@ import {
   useVaultSwap,
 } from '@loopring-web/core'
 import {
+  ButtonStyle,
   Modal,
   SwapPanel,
+  SwitchData,
   Toast,
   useOpenModals,
   VaultExitPanel,
@@ -27,6 +29,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useVaultSwapExtends } from './VaultSwapExtends'
 
 export const ModalVaultWrap = () => {
   const { t } = useTranslation()
@@ -61,7 +64,26 @@ export const ModalVaultWrap = () => {
     isSwapLoading,
     market,
     isMobile,
+    disabled,
+    vaultBorrowSubmit,
+    btnBorrowStatus,
+    onBorrowClick,
+    borrowBtnI18nKey,
+    // isSwapLoading,
   } = useVaultSwap({ path: 'vault' })
+  const { BtnEle, maxEle } = useVaultSwapExtends({
+    tradeCalcData,
+    swapBtnI18nKey,
+    swapBtnStatus,
+    onSwapClick,
+    isSwapLoading,
+    disabled,
+    handleSwapPanelEvent,
+    tradeData,
+    btnBorrowStatus,
+    onBorrowClick,
+    borrowBtnI18nKey,
+  })
   const { vaultRepayProps, vaultBorrowProps, vaultLoanType, handleTabChange } = useVaultLoan()
   return (
     <>
@@ -106,49 +128,65 @@ export const ModalVaultWrap = () => {
           setShowVaultSwap({ isShow: false })
         }}
         content={
-          <SwapPanel
-            _width={'var(--modal-width)'}
-            classWrapName={'vaultSwap'}
-            titleI8nKey={'labelVaultSwap'}
-            tokenBuyProps={{
-              tokenImageKey: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
-              belongAlice: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
-              tokenType: TokenType.vault,
-              disableInputValue: isMarketInit,
-              disabled: isSwapLoading || isMarketInit,
-              decimalsLimit: tradeCalcData.buyPrecision,
-            }}
-            tokenSellProps={{
-              tokenImageKey: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
-              belongAlice: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
-              tokenType: TokenType.vault,
-              disableInputValue: isMarketInit,
-              disabled: isSwapLoading || isMarketInit,
-              placeholderText:
-                tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
-                  ? t('labelBtradeSwapMiniMax', {
-                      minValue: tradeCalcData.sellMinAmtStr,
-                      maxValue: tradeCalcData.sellMaxAmtStr,
-                    })
-                  : t('labelBtradeSwapMini', {
-                      minValue: tradeCalcData.sellMinAmtStr,
-                    }),
-            }}
-            {...{
-              campaignTagConfig,
-              tradeCalcData,
-              tradeData: tradeData as any,
-              onSwapClick,
-              swapBtnI18nKey,
-              swapBtnStatus,
-              handleSwapPanelEvent,
-              should15sRefresh,
-              refreshRef,
-              tradeVault,
-              market,
-              isMobile,
-            }}
-          />
+          tradeData && (
+            // @ts-ignore
+            <SwapPanel
+              _width={'var(--modal-width)'}
+              classWrapName={'vaultSwap'}
+              titleI8nKey={'labelVaultSwap'}
+              tokenBuyProps={{
+                tokenImageKey: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
+                belongAlice: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
+                tokenType: TokenType.vault,
+                disableInputValue: isMarketInit,
+                disabled: isSwapLoading || isMarketInit,
+                decimalsLimit: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision,
+                allowDecimals: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision
+                  ? true
+                  : false,
+              }}
+              BtnEle={BtnEle}
+              tokenSellProps={{
+                decimalsLimit:
+                  vaultTokenMao[tradeData?.sell?.belong?.toString() ?? '']?.vaultTokenAmounts
+                    ?.qtyStepScale,
+                allowDecimals: vaultTokenMao[tradeData?.sell?.belong?.toString() ?? '']
+                  ?.vaultTokenAmounts?.qtyStepScale
+                  ? true
+                  : false,
+                tokenImageKey: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
+                belongAlice: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
+                tokenType: TokenType.vault,
+                subEle: maxEle,
+                subLabel: undefined,
+                disableInputValue: isMarketInit,
+                disabled: isSwapLoading || isMarketInit,
+                placeholderText:
+                  tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
+                    ? t('labelBtradeSwapMiniMax', {
+                        minValue: tradeCalcData.sellMinAmtStr,
+                        maxValue: tradeCalcData.sellMaxAmtStr,
+                      })
+                    : t('labelBtradeSwapMini', {
+                        minValue: tradeCalcData.sellMinAmtStr,
+                      }),
+              }}
+              {...{
+                campaignTagConfig,
+                tradeCalcData,
+                tradeData: tradeData as any,
+                onSwapClick,
+                swapBtnI18nKey,
+                swapBtnStatus,
+                handleSwapPanelEvent,
+                should15sRefresh,
+                refreshRef,
+                tradeVault,
+                market,
+                isMobile,
+              }}
+            />
+          )
         }
       />
       <Modal
