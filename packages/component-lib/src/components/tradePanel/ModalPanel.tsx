@@ -324,7 +324,18 @@ export const ModalPanel = <
           />
         }
       />
-
+      {/*<Modal*/}
+      {/*  open={isShowDeposit.isShow}*/}
+      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
+      {/*  content={*/}
+      {/*    <DepositGroup*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        ...depositGroupProps,*/}
+      {/*      }}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
       <Modal
         open={isShowNFTTransfer.isShow}
         contentClassName={'trade-wrap'}
@@ -417,6 +428,13 @@ export const ModalPanel = <
           />
         }
       />
+      {/*<Modal*/}
+      {/*  open={isShowDeposit.isShow}*/}
+      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
+      {/*  content={*/}
+      {/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
+      {/*  }*/}
+      {/*/>*/}
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() => setShowResetAccount({ ...isShowResetAccount, isShow: false })}

@@ -16,7 +16,7 @@ import {
 } from '@loopring-web/component-lib'
 import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { BackIcon, SatkingLogo, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
+import { BackIcon, TOAST_TIME } from '@loopring-web/common-resources'
 import { MaxWidthContainer, containerColors } from '..'
 import { useTheme } from '@emotion/react'
 

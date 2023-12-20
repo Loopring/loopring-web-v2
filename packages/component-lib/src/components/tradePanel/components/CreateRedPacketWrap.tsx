@@ -2198,7 +2198,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       ...showChangeTips,
                       contactImportCaches: undefined,
                       previousInputType: undefined,
-                      confirmCallBack: undefined
+                      confirmCallBack: undefined,
                     })
                     onClickSend()
                   }}
@@ -2470,7 +2470,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                         ...showChangeTips,
                         contactImportCaches: undefined,
                         previousInputType: undefined,
-                        confirmCallBack: undefined
+                        confirmCallBack: undefined,
                       })
                       onClickSend()
                     }

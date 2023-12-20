@@ -19,12 +19,10 @@ import {
   BackIcon,
   defiRETHAdvice,
   defiWSTETHAdvice,
-  DualInvestmentLogo,
   hexToRGB,
   Info2Icon,
   MarketType,
   SatkingLogo,
-  SoursURL,
   TOAST_TIME,
   UpColor,
 } from '@loopring-web/common-resources'

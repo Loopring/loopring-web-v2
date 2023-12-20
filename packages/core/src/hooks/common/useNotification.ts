@@ -231,7 +231,7 @@ export const useNotification = <R extends sdk.UserNotification>({
         )
       }
       break
-    case sdk.NotificationMessageType.D:
+    case sdk.NotificationMessageType.DUAL_PRICE_ALERT:
       ele.i18nKey = 'labelL2DualNote'
       ele.active = () => {
         onReadClick(index, rest)

@@ -252,7 +252,6 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
-// @ts-ignore
 export type RootState = ReturnType<typeof reducer>
 export const persistor = persistStore(store)
 
