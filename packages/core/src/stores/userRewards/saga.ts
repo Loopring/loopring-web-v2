@@ -89,20 +89,18 @@ const getUserRewardsApi = async () => {
                 )
                 .slice(0, defiNum)
                 .map((_history) => {
-                  const price = sdk
-                    .toBig(_history.sellToken.volume)
-                    .div(sdk.toBig(_history.buyToken.volume).minus(_history.fee.volume))
-
-                  priceTotal = priceTotal.plus(price)
                   return {
-                    sellToken: _history.sellToken,
-                    buyToken: _history.buyToken,
-                    price: price.toString(),
+                    sellTokenVol: sdk.toBig(_history.sellToken.volume).plus(prev.sellTokenVol),
+                    buyTokenVol: sdk.toBig(_history.buyToken.volume).plus(prev.buyTokenVol),
+                    feeVol: sdk.toBig(_history.fee.volume).plus(prev.feeVol),
                   }
                 })
+              const price = sdk
+                .toBig(_value.sellTokenVol.volume)
+                .div(sdk.toBig(_value.buyTokenVol.volume).minus(_value.feeVol.volume))
               prev[item] = {
                 list: _value,
-                average: priceTotal.div(_value?.length ? _value?.length : 1).toString(),
+                average: price.toString(),
                 priceTotal: priceTotal.toString(),
               }
               return prev
