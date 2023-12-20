@@ -88,13 +88,20 @@ const getUserRewardsApi = async () => {
                     _history.action == sdk?.DefiAction?.Deposit.toUpperCase(),
                 )
                 .slice(0, defiNum)
-                .map((_history) => {
-                  return {
-                    sellTokenVol: sdk.toBig(_history.sellToken.volume).plus(prev.sellTokenVol),
-                    buyTokenVol: sdk.toBig(_history.buyToken.volume).plus(prev.buyTokenVol),
-                    feeVol: sdk.toBig(_history.fee.volume).plus(prev.feeVol),
-                  }
-                })
+                .reduce(
+                  (prev, _history) => {
+                    return {
+                      sellTokenVol: prev.sellTokenVol.plus(_history.sellToken.volume),
+                      buyTokenVol: prev.buyTokenVol.plus(_history.sellToken.volume),
+                      feeVol: prev.feeVol.plus(_history.fee.volume),
+                    }
+                  },
+                  {
+                    sellTokenVol: sdk.toBig(0),
+                    buyTokenVol: sdk.toBig(0),
+                    feeVol: sdk.toBig(0),
+                  },
+                )
               const price = sdk
                 .toBig(_value.sellTokenVol)
                 .div(sdk.toBig(_value.buyTokenVol).minus(_value.feeVol))
