@@ -2140,8 +2140,6 @@ export default {
   labelHideRead: 'Hide Read(s)',
   labelUpdateContactsNext: 'Go to Update Contact',
   labelENSAddressMismatch: 'ENS & Address Mismatch',
-  labelL2DualNote: 'Dual Investment Notification',
-  labelQuickInvest: 'Quick Invest',
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
@@ -2331,5 +2329,8 @@ export default {
   labelStep1Borrow: 'STEP1: Borrow',
   labelStep2Swap: 'STEP2: Swap',
   labelVaultSwapCancel:
-    'You are borrowing tokens. Are you sure you want to change the token pair or exit the trade?',
+    'You are borrowing tokens. \nAre you sure you want to change the token pair or exit the trade?',
+  labelAgree: 'I know',
+  labelTradeVaultMiniBorrow:
+    'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
 }

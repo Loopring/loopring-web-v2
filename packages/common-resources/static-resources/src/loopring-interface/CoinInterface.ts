@@ -100,7 +100,6 @@ export type TradeCalcData<T> = {
   feeTakerRate?: number
   tradeCost?: string
   lastStepAt?: 'sell' | 'buy'
-
   totalQuota: string
   minimumConverted: string | undefined
 } & (

@@ -75,15 +75,19 @@ export const useVaultSwapExtends = ({
       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }
     if (borrowBtnI18nKey) {
-      const key = borrowBtnI18nKey.split('|')
+      let key = borrowBtnI18nKey.split('|')
       if (key) {
+        const i18nKey = key.shift()
         return t(
-          key[0],
-          key && key[1]
-            ? {
-                arg: key[1],
-                ...keyParams,
-              }
+          i18nKey,
+          key?.length
+            ? key.reduce(
+                (prev, item, index) => {
+                  prev[`arg${index ? index : ''}`] = item
+                  return prev
+                },
+                { ...keyParams },
+              )
             : {
                 ...keyParams,
               },
@@ -231,7 +235,7 @@ export const useVaultSwapExtends = ({
             sx={{
               height: 'var(--row-height)',
             }}
-            variant={tradeCalcData.borrowVol != 0 ? 'contained' : 'outlined'}
+            variant={'contained'}
             size={'medium'}
             color={'primary'}
             onClick={() => {
@@ -260,7 +264,7 @@ export const useVaultSwapExtends = ({
             sx={{
               height: 'var(--row-height)',
             }}
-            variant={tradeCalcData.borrowVol != 0 ? 'outlined' : 'contained'}
+            variant={'contained'}
             size={'medium'}
             color={'primary'}
             onClick={() => {

@@ -65,7 +65,45 @@ import {
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
-
+const makeVaultSell = (sellSymbol: string) => {
+  const {
+    tokenMap: { idIndex: erc20IdIndex },
+    invest: {
+      vaultMap: { tokenMap: vaultTokenMap },
+    },
+    vaultLayer2: { vaultLayer2 },
+  } = store.getState()
+  if (sellSymbol) {
+    const vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
+    const sellToken = vaultTokenMap[sellSymbol]
+    const orderAmounts = sellToken.orderAmounts
+    const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + sellToken.decimals)
+    const vaultAsset = (vaultLayer2 && vaultLayer2[sellSymbol]) ?? 0
+    const countBig = sdk.toBig(vaultAsset?.total ?? 0).minus(vaultAsset?.locked ?? 0)
+    const count = sdk
+      .toBig(countBig)
+      .div('1e' + sellToken.decimals)
+      .toFixed(sellToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
+    const borrowAvailable = sdk
+      .toBig(
+        BigNumber.min(totalQuote, (vaultAvaiable2Map && vaultAvaiable2Map[sellSymbol]?.count) ?? 0),
+      )
+      .toFixed(sellToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
+    const balance = sdk
+      .toBig(count ?? 0)
+      .plus(borrowAvailable)
+      .toString()
+    return {
+      borrowAvailable,
+      count,
+      countBig,
+      balance,
+      erc20Symbol: erc20IdIndex[sellToken.tokenId],
+    }
+  } else {
+    return {}
+  }
+}
 const useVaultTradeSocket = () => {
   const { tradeVault, updateTradeVault } = useTradeVault()
   const { sendSocketTopic, socketEnd } = useSocket()
@@ -239,35 +277,20 @@ export const useVaultSwap = <
       if (account.readyState === AccountStatus.ACTIVATED && vaultLayerStatus === SagaStatus.UNSET) {
         if (!Object.keys(tradeCalcData?.walletMap ?? {}).length) {
           walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
-          vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
         }
         walletMap = tradeCalcData?.walletMap as WalletMap<any>
       }
 
-      const count = (walletMap && walletMap[coinA]?.count) ?? 0
-      const borrowAvailable = (vaultAvaiable2Map && vaultAvaiable2Map[coinA]?.count) ?? 0
       const tradeDataTmp: any = {
         sell: {
           belong: coinA,
           tradeValue: undefined,
-          count,
-          borrowAvailable,
-          balance: sdk
-            .toBig(count ?? 0)
-            .plus(borrowAvailable)
-            .toString(),
-          erc20Symbol: erc20IdIndex[tokenMap[coinA].tokenId],
+          ...makeVaultSell(coinA),
         },
         buy: {
           belong: coinB,
           tradeValue: undefined,
-          count: (walletMap && walletMap[coinB]?.count) ?? 0,
-          borrowAvailable: (vaultAvaiable2Map && vaultAvaiable2Map[coinB]?.count) ?? 0,
-          balance: sdk
-            .toBig((walletMap && walletMap[coinB]?.count) ?? 0)
-            .plus((vaultAvaiable2Map && vaultAvaiable2Map[coinB]?.count) ?? 0)
-            .toString(),
-          erc20Symbol: erc20IdIndex[tokenMap[coinB].tokenId],
+          ...makeVaultSell(coinB),
         },
       }
 
@@ -457,53 +480,46 @@ export const useVaultSwap = <
       tradeBtnStatus: TradeBtnStatus
       label: string | undefined
     } => {
-      if (!tokenMap && !tokenPrices) {
+      if (!tokenMap && !tokenPrices && tradeData?.sell) {
         return {
           label: undefined,
           tradeBtnStatus: TradeBtnStatus.DISABLED,
         }
       }
       const {
-        tradeCalcData: { supportBorrowData, belongSellAlice, ...tradeCalcData },
-        sellMinAmtInfo,
-        sellMaxAmtInfo: _sellMaxAmtInfo,
-      } = store.getState()._router_tradeVault.tradeVault
+        _router_tradeVault: {
+          tradeVault: {
+            tradeCalcData: { supportBorrowData, ...tradeCalcData },
+            sellMinAmtInfo,
+            sellMaxAmtInfo: _sellMaxAmtInfo,
+            isRequiredBorrow,
+          },
+        },
+        account,
+      } = store.getState()
       const sellToken = tokenMap[tradeData?.sell.belong as string]
       const buyToken = tokenMap[tradeData?.buy.belong as string]
-      const account = store.getState().account
-
-      if (!sellToken || !buyToken || !tradeCalcData) {
+      const belongSellAlice = erc20IdIndex[sellToken?.tokenId]
+      if (!sellToken || !buyToken || !tradeCalcData || !supportBorrowData) {
         return {
           label: undefined,
           tradeBtnStatus: TradeBtnStatus.DISABLED,
         }
       }
-      const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-      const vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
-      const count = (walletMap && walletMap[sellToken.symbol]?.count) ?? 0
-      const borrowAvailable = (vaultAvaiable2Map && vaultAvaiable2Map[sellToken.symbol]?.count) ?? 0
-      let validAmt = !!(
-        tradeCalcData?.volumeSell &&
-        sellMinAmtInfo &&
-        sdk
-          .toBig(tradeCalcData?.volumeSell)
-          .gte(sdk.toBig(sellMinAmtInfo).times('1e' + sellToken.decimals))
-      )
+      const { minBorrowAmount, minBorrowVol } = supportBorrowData ?? {}
+      const { borrowAvailable, count, tradeValue } = tradeData?.sell
+      const borrowVol = tradeCalcData.borrowVol
+      let validAmt = !!(tradeValue && sellMinAmtInfo && sdk.toBig(tradeValue).gte(sellMinAmtInfo))
       let sellMaxAmtInfo = BigNumber.min(
-        sdk.toBig(count).plus(borrowAvailable),
+        sdk.toBig(count ?? 0).plus(borrowAvailable ?? 0),
         _sellMaxAmtInfo ?? 0,
       ).toString()
       const notEnough = sdk
-        .toBig(count)
-        .plus(borrowAvailable)
+        .toBig(count ?? 0)
+        .plus(borrowAvailable ?? 0)
         .lt(tradeData?.sell?.tradeValue ?? 0)
 
-      const sellExceed = sellMaxAmtInfo
-        ? sdk
-            .toBig(sellMaxAmtInfo)
-            .times('1e' + sellToken.decimals)
-            .lt(tradeCalcData.volumeSell ?? 0)
-        : false
+      const sellExceed = sellMaxAmtInfo ? sdk.toBig(sellMaxAmtInfo).lt(tradeValue ?? 0) : false
 
       if (sellExceed) {
         validAmt = false
@@ -530,6 +546,40 @@ export const useVaultSwap = <
             const maxOrderSize = tradeCalcData.sellMaxAmtStr + ' ' + belongSellAlice
             return {
               label: `labelLimitMax| ${maxOrderSize}`,
+              tradeBtnStatus: TradeBtnStatus.DISABLED,
+            }
+          } else if (
+            isRequiredBorrow &&
+            tradeCalcData?.step == 'edit' &&
+            sdk.toBig(minBorrowVol).gt(borrowVol)
+          ) {
+            return {
+              label: `labelTradeVaultMiniBorrow|${
+                getValuePrecisionThousand(
+                  sdk.toBig(minBorrowAmount ?? 0), //.div("1e" + sellToken.decimals),
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  false,
+                  { floor: false, isAbbreviate: true },
+                ) +
+                ' ' +
+                belongSellAlice
+              }|${
+                getValuePrecisionThousand(
+                  sdk
+                    .toBig(minBorrowAmount)
+                    .plus(count ?? 0)
+                    .toString(), //.div("1e" + sellToken.decimals),
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  sellToken.vaultTokenAmounts?.qtyStepScale,
+                  false,
+                  { floor: false, isAbbreviate: true },
+                ) +
+                ' ' +
+                belongSellAlice
+              }`,
               tradeBtnStatus: TradeBtnStatus.DISABLED,
             }
           } else if (!validAmt) {
@@ -583,6 +633,12 @@ export const useVaultSwap = <
       tradeVault.maxFeeBips,
       tradeData?.sell.tradeValue,
       tradeData?.buy.tradeValue,
+      tradeData?.sell.count,
+      tradeData?.sell.balance,
+      tradeData?.sell.borrowAvailable,
+      tradeCalcData?.step,
+      tradeCalcData?.supportBorrowData?.maxBorrowVol,
+      tradeCalcData?.isRequiredBorrow,
       isSwapLoading,
       isMarketInit,
     ],
@@ -924,7 +980,7 @@ export const useVaultSwap = <
     onBtnClick: onSwapClick,
     btnLabel: swapBtnI18nKey,
   } = useSubmitBtn({
-    availableTradeCheck: () => availableTradeCheck({ isSwapBtn: true }),
+    availableTradeCheck,
     isLoading: !!isMarketInit,
     submitCallback: vaultSwapSubmit,
   })
@@ -934,7 +990,7 @@ export const useVaultSwap = <
     onBtnClick: onBorrowClick,
     btnLabel: borrowBtnI18nKey,
   } = useSubmitBtn({
-    availableTradeCheck: () => availableTradeCheck({ isBorrowBtn: true }),
+    availableTradeCheck,
     isLoading: !!isMarketInit,
     submitCallback: vaultBorrowSubmit,
   })
@@ -1109,40 +1165,17 @@ export const useVaultSwap = <
         setTradeCalcData(_tradeCalcData)
         // @ts-ignore
         setTradeData((state) => {
-          const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
-          const vaultAvaiable2Map = makeVaultAvaiable2({}).vaultAvaiable2Map
-          const count = (walletMap && walletMap[_tradeCalcData?.coinSell ?? '']?.count) ?? 0
-          const borrowAvailable =
-            (vaultAvaiable2Map && vaultAvaiable2Map[_tradeCalcData?.coinSell ?? '']?.count) ?? 0
           return {
             ...(state ?? {}),
             sell: {
               belong: _tradeCalcData.coinSell,
               tradeValue: undefined,
-              count,
-              borrowAvailable,
-              balance: sdk
-                .toBig(count ?? 0)
-                .plus(borrowAvailable)
-                .toString(),
-              erc20Symbol: erc20IdIndex[tokenMap[_tradeCalcData.coinSell as string].tokenId],
+              ...makeVaultSell(_tradeCalcData?.coinSell?.toString() ?? ''),
             },
             buy: {
               belong: _tradeCalcData.coinBuy,
               tradeValue: undefined,
-              count: (walletMap && walletMap[_tradeCalcData.coinBuy as string]?.count) ?? 0,
-              borrowAvailable:
-                (vaultAvaiable2Map && vaultAvaiable2Map[_tradeCalcData.coinBuy as string]?.count) ??
-                0,
-              balance: sdk
-                .toBig((walletMap && walletMap[_tradeCalcData.coinBuy as string]?.count) ?? 0)
-                .plus(
-                  (vaultAvaiable2Map &&
-                    vaultAvaiable2Map[_tradeCalcData.coinBuy as string]?.count) ??
-                    0,
-                )
-                .toString(),
-              erc20Symbol: erc20IdIndex[tokenMap[_tradeCalcData.coinBuy as string].tokenId],
+              ...makeVaultSell(_tradeCalcData?.coinBuy?.toString() ?? ''),
             },
           }
         })
@@ -1271,12 +1304,11 @@ export const useVaultSwap = <
         if (chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress]?.length) {
           showHasBorrow = true
         }
-        const count = (walletMap && walletMap[sellToken.symbol]?.count) ?? 0
-        const borrowAvailable =
-          (vaultAvaiable2Map && vaultAvaiable2Map[sellToken.symbol]?.count) ?? 0
-        const vaultAsset = (vaultLayer2 && vaultLayer2[coinA]) ?? 0
-        const countBig = sdk.toBig(vaultAsset?.total ?? 0).minus(vaultAsset?.locked ?? 0)
-        _tradeData.sell.balance = sdk.toBig(count).plus(borrowAvailable)
+        const { countBig, ...vaultSellRest } = makeVaultSell(sellToken.symbol)
+        _tradeData.sell = {
+          ..._tradeData.sell,
+          ...vaultSellRest,
+        }
         if (amountVol && l2Amount) {
           const sellDeepStr =
             sdk
@@ -1400,7 +1432,6 @@ export const useVaultSwap = <
             { isAbbreviate: true },
           ),
           sellMaxAmtStr: undefined,
-
           totalQuota: totalQuote,
           // l1Pool: poolToVol,
           l2Pool: getValuePrecisionThousand(
@@ -1416,7 +1447,17 @@ export const useVaultSwap = <
           supportBorrowData,
           showHasBorrow,
         }
+        let _edit = {}
 
+        setTradeData((state) => ({
+          ...state,
+          ..._tradeData,
+          sell: {
+            ...state?.sell,
+            ..._tradeData?.sell,
+            ...makeVaultSell(state?.sell?.belong),
+          },
+        }))
         setTradeCalcData((state) => {
           const [mid_price, _mid_price_convert] = calcDexOutput
             ? [
@@ -1445,24 +1486,23 @@ export const useVaultSwap = <
             ? mid_price
             : _mid_price_convert
           // step,
-          let _edit = {}
-          switch (state.step) {
-            case 'edit':
-              _edit = {
-                isRequiredBorrow,
-                borrowVol: borrowVol?.gt(0) ? borrowVol.toString() : 0,
-                borrowStr: getValuePrecisionThousand(
-                  borrowVol?.gt(0) ? borrowVol.div('1e' + sellToken.decimals) : 0,
-                  sellToken.vaultTokenAmounts?.qtyStepScale,
-                  sellToken.vaultTokenAmounts?.qtyStepScale,
-                  sellToken.vaultTokenAmounts?.qtyStepScale,
-                  false,
-                  { isAbbreviate: true },
-                ),
-              }
-              break
-            default:
+
+          if (['edit', '', undefined].includes(state.step)) {
+            _edit = {
+              step: 'edit',
+              isRequiredBorrow,
+              borrowVol: borrowVol?.gt(0) ? borrowVol.toString() : 0,
+              borrowStr: getValuePrecisionThousand(
+                borrowVol?.gt(0) ? borrowVol.div('1e' + sellToken.decimals) : 0,
+                sellToken.vaultTokenAmounts?.qtyStepScale,
+                sellToken.vaultTokenAmounts?.qtyStepScale,
+                sellToken.vaultTokenAmounts?.qtyStepScale,
+                false,
+                { isAbbreviate: true },
+              ),
+            }
           }
+
           _tradeCalcData = {
             ...state,
             ..._tradeCalcData,
@@ -1481,37 +1521,20 @@ export const useVaultSwap = <
             ),
             lastStepAt: type,
           }
+          updateTradeVault({
+            info: info,
+            market: market as any,
+            totalFee: totalFee,
+            totalFeeRaw: totalFeeRaw?.toString(),
+            lastStepAt: type,
+            sellMinAmtInfo: sellMinAmtInfo as any,
+            sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
+            sellMaxAmtInfo: sellMaxAmtInfo as any,
+            tradeCalcData: _tradeCalcData,
+            isRequiredBorrow,
+            maxFeeBips,
+          })
           return _tradeCalcData
-        })
-
-        setTradeData((state) => ({
-          ...state,
-          ..._tradeData,
-          sell: {
-            ...state?.sell,
-            ..._tradeData?.sell,
-            count,
-            balance: sdk
-              .toBig(count ?? 0)
-              .plus(borrowAvailable)
-              .toString(),
-            borrowAvailable,
-            erc20Symbol: erc20IdIndex[tokenMap[sellToken.symbol].tokenId],
-          },
-        }))
-
-        updateTradeVault({
-          info: info,
-          market: market as any,
-          totalFee: totalFee,
-          totalFeeRaw: totalFeeRaw?.toString(),
-          lastStepAt: type,
-          sellMinAmtInfo: sellMinAmtInfo as any,
-          sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
-          sellMaxAmtInfo: sellMaxAmtInfo as any,
-          tradeCalcData: _tradeCalcData,
-          isRequiredBorrow,
-          maxFeeBips,
         })
       }
     },
@@ -1577,19 +1600,11 @@ export const useVaultSwap = <
           walletMap,
         }
       })
-      const count = walletMap ? walletMap[tradeCalcData.coinSell]?.count : 0
-      const borrowAvailable =
-        (vaultAvaiable2Map && vaultAvaiable2Map[tradeCalcData.coinSell]?.count) ?? 0
       reCalculateDataWhenValueChange(
         {
           sell: {
             belong: tradeCalcData.coinSell,
-            count,
-            borrowAvailable,
-            balance: sdk
-              .toBig(count ?? 0)
-              .plus(borrowAvailable)
-              .toString(),
+            ...makeVaultSell(tradeCalcData.coinSell),
           },
           buy: { belong: tradeCalcData.coinBuy },
         },

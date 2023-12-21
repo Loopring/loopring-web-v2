@@ -3207,7 +3207,7 @@ export const VaultSwapCancel = withTranslation('common', {
         <DialogContent>
           <DialogContentText id='alert-dialog-slide-description'>
             <Trans i18nKey={'labelVaultSwapCancel'}>
-              You are borrowing tokens. Are you sure you want to change the token pair or exit the
+              You are borrowing tokens.\n Are you sure you want to change the token pair or exit the
               trade?
             </Trans>
           </DialogContentText>
@@ -3215,7 +3215,7 @@ export const VaultSwapCancel = withTranslation('common', {
         <DialogActions>
           <DialogActions>
             <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}>
-              {t('labelCancel')}
+              {t('labelNo')}
             </Button>
             <Button
               variant={'contained'}
@@ -3225,7 +3225,7 @@ export const VaultSwapCancel = withTranslation('common', {
               }}
               color={'primary'}
             >
-              {t('labelAgree')}
+              {t('labelYes')}
             </Button>
           </DialogActions>
         </DialogActions>
