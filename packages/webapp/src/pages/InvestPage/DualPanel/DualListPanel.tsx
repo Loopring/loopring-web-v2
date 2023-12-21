@@ -348,9 +348,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
   const { status: dualStatus, getDualMap } = useDualMap()
   const [confirmDualAutoInvest, setConfirmDualAutoInvest] = React.useState(false)
   const dualListProps = useDualHook()
-  const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade({
-    setConfirmDualAutoInvest,
-  })
+  const { dualTradeProps, dualToastOpen, closeDualToast } = useDualTrade()
   const { onSelectStep1Token } = dualListProps
   React.useEffect(() => {
     if (dualStatus === SagaStatus.ERROR) {

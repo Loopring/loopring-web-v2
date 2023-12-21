@@ -1,7 +1,6 @@
 import { borderFunc, pxToRem, unit } from './utils'
 import { ComponentsOverrides, TooltipProps } from '@mui/material'
 import { fontDefault } from '../css/global'
-import { myLog } from '../../utils'
 
 export const radius = 4
 export const checkBoxSize = 18
@@ -164,6 +163,15 @@ export const MuiSwitch = (): {
   return { styleOverrides: {} }
 }
 
+export const MuiBadge = (): {
+  styleOverrides: ComponentsOverrides['MuiBadge']
+} => {
+  return {
+    styleOverrides: {
+      fontSize: '1rem',
+    },
+  }
+}
 export const MuiButton = ({
   colorBase,
 }: any): { styleOverrides: ComponentsOverrides['MuiButton'] } => {
@@ -203,7 +211,7 @@ export const MuiButton = ({
           color: colorBase.disable,
         },
         '& .MuiButton-endIcon,& .MuiButton-startIcon': {
-          color: colorBase.buttonIcon,
+          color: 'inherit',
         },
         '&.MuiButton-sizeSmall': {
           fontSize: '1.4rem',
@@ -385,7 +393,6 @@ export const MuiInputLabel = ({
 export const MuiInputBase = ({
   colorBase,
   themeMode,
-  ...rest
 }: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
   return {
     styleOverrides: {

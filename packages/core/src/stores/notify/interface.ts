@@ -8,7 +8,7 @@ export type NotifyStates = {
   notifyMap: Notify | undefined
   myNotifyMap: {
     items: sdk.UserNotification[]
-    total: number
-    unReads: number
+    total: number | undefined
+    unReads: number | undefined
   }
 } & StateBase

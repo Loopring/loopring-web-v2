@@ -104,6 +104,7 @@ export const ModalDualPanel = withTranslation('common')(
       confirmDualInvest: confirmDualInvestFun,
       confirmDualDipInvest: confirmDualDipInvestFun,
       confirmDualGainInvest: confirmDualGainInvestFun,
+      setShowAutoDefault,
     } = confirmation.useConfirmation()
 
     return (
@@ -195,7 +196,10 @@ export const ModalDualPanel = withTranslation('common')(
                   : { maxHeight: 'var(--lage-modal-height)', overflowY: 'scroll' }
               }
             >
-              <DualWrap isBeginnerMode={isBeginnerMode} {...{ ...rest, ...dualTradeProps }} />
+              <DualWrap
+                isBeginnerMode={isBeginnerMode}
+                {...{ ...rest, ...dualTradeProps, setShowAutoDefault }}
+              />
             </Box>
             <Toast
               alertText={dualToastOpen?.content ?? ''}

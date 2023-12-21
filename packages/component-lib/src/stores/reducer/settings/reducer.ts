@@ -36,6 +36,7 @@ const initialState: SettingsState = {
   defaultNetwork: ChainId.MAINNET,
   referralCode: '',
   isDevToggle: false,
+  dualAuto: { auto: true, day: 'auto' },
 }
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
@@ -51,7 +52,6 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
         state.referralCode = ''
       }
     },
-
     setDefaultNetwork(state, action: PayloadAction<sdk.ChainId>) {
       state.defaultNetwork = action.payload
     },
@@ -143,47 +143,6 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
         ...action.payload,
       }
       state.proLayout = result
-      // state.proLayout = {
-      //     'xlg': result.xlg,
-      //     'lg': result.lg,
-      //     'md': result.md.reduce((pre, item) => [...pre, item.i === 'market2' ? {
-      //         i: 'market2',
-      //         x: 0,
-      //         y: 0,
-      //         w: 0,
-      //         h: 0,
-      //         minW: 0,
-      //         minH: 0
-      //     } : item], [] as Layout[]),
-      //     'sm': result.sm.reduce((pre, item) => [...pre, item.i === 'market2' ? {
-      //         i: 'market2',
-      //         x: 0,
-      //         y: 0,
-      //         w: 0,
-      //         h: 0,
-      //         minW: 0,
-      //         minH: 0
-      //     } : item], [] as Layout[]),
-      //     'xs': result.xs.reduce((pre, item) => [...pre, item.i === 'market2' ? {
-      //         i: 'market2',
-      //         x: 0,
-      //         y: 0,
-      //         w: 0,
-      //         h: 0,
-      //         minW: 0,
-      //         minH: 0
-      //     } : item], [] as Layout[]),
-      //     'xxs': result.xxs.reduce((pre, item) => [...pre, item.i === 'market2' ? {
-      //         i: 'market2',
-      //         x: 0,
-      //         y: 0,
-      //         w: 0,
-      //         h: 0,
-      //         minW: 0,
-      //         minH: 0
-      //     } : item], [] as Layout[]),
-      // }
-      // myLog(action.payload,state.proLayout )
     },
     setStopLimitLayouts(state, action: PayloadAction<Layouts>) {
       // localStore.setItem('UpColor',action.payload)
@@ -196,12 +155,14 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
     setSwapSecondConfirmation(state, action: PayloadAction<boolean>) {
       state.swapSecondConfirmation = action.payload
     },
+    setDualDefault(state, action: PayloadAction<{ auto: boolean; day: number | 'auto' }>) {
+      state.dualAuto = action.payload
+    },
   },
 })
 export const {
   setLayouts,
   setStopLimitLayouts,
-  setIsTaikoTest,
   setTheme,
   setLanguage,
   setPlatform,
@@ -219,5 +180,6 @@ export const {
   setDefaultNetwork,
   setReferralCode,
   setIsDevToggle,
+  setDualDefault,
 } = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

@@ -26,11 +26,13 @@ export const NotificationPanel = ({
   onClickExclusiveredPacket,
   showExclusiveRedpacket,
   exclusiveRedpacketCount,
+  closePop,
 }: {
   notification: NOTIFICATIONHEADER<any> & { chainId: number; account }
   onClickExclusiveredPacket: () => void
   showExclusiveRedpacket: boolean
   exclusiveRedpacketCount: number
+  closePop?: () => void
 }) => {
   const { t } = useTranslation()
   const history = useHistory()
@@ -64,60 +66,69 @@ export const NotificationPanel = ({
       maxHeight={600}
       sx={{ overflowY: 'scroll' }}
       alignItems={'center'}
+
       // paddingBottom={1}
     >
-      {/*//TODO: after Notification Socket*/}
-      {/*{myNotifyMap?.total !== undefined && (*/}
-      {/*  <>*/}
-      {/*    <Typography*/}
-      {/*      alignSelf={'stretch'}*/}
-      {/*      sx={{ background: 'var(--field-opacity)' }}*/}
-      {/*      borderRadius={1 / 2}*/}
-      {/*      padding={1}*/}
-      {/*      display={'inline-flex'}*/}
-      {/*      alignItems={'center'}*/}
-      {/*      justifyContent={'space-between'}*/}
-      {/*    >*/}
-      {/*      <Typography component={'span'}>*/}
-      {/*        {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}*/}
-      {/*      </Typography>*/}
-      {/*      <Link href={`/#${RouterPath.layer2}/${Layer2RouterID.notification}`} color={'primary'}>*/}
-      {/*        {t('labelReadAll')}*/}
-      {/*      </Link>*/}
-      {/*    </Typography>*/}
-      {/*    {myNotifyMap?.total ? (*/}
-      {/*      <Box paddingX={1} display={'flex'} width={330} alignItems={'center'}>*/}
-      {/*        <Grid container spacing={1 / 2} margin={0}>*/}
-      {/*          {myNotifyMap?.items?.reduce((prev, ele, index) => {*/}
-      {/*            if (index < 3) {*/}
-      {/*              prev.push(*/}
-      {/*                <Grid item key={ele?.id} xs={12}>*/}
-      {/*                  <NotificationItem*/}
-      {/*                    {...ele}*/}
-      {/*                    size={'small'}*/}
-      {/*                    className={'headerItem'}*/}
-      {/*                    index={index}*/}
-      {/*                    onReadClick={() => {*/}
-      {/*                      history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)*/}
-      {/*                    }}*/}
-      {/*                  />*/}
-      {/*                  <Divider sx={{ marginY: 1 }} />*/}
-      {/*                </Grid>,*/}
-      {/*              )*/}
-      {/*            }*/}
-      {/*            return prev*/}
-      {/*          }, [])}*/}
-      {/*        </Grid>*/}
-      {/*      </Box>*/}
-      {/*    ) : (*/}
-      {/*      <Divider*/}
-      {/*        sx={{ paddingY: showExclusiveRedpacket || hasActivities || hasNotifications ? 1 : 0 }}*/}
-      {/*      />*/}
-      {/*    )}*/}
-      {/*  </>*/}
-      {/*)}*/}
+      {myNotifyMap?.total !== undefined && (
+        <>
+          <Typography
+            alignSelf={'stretch'}
+            sx={{ background: 'var(--field-opacity)' }}
+            borderRadius={1 / 2}
+            padding={1}
+            display={'inline-flex'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+            minWidth={300}
+          >
+            <Typography component={'span'}>
+              {t('labelTotalUnRead', { total: myNotifyMap?.total ?? 0 })}
+            </Typography>
+            <Link
+              onClick={() => {
+                history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)
+                closePop && closePop()
+              }}
+              color={'primary'}
+            >
+              {t('labelReadAll')}
+            </Link>
+          </Typography>
+          {myNotifyMap?.total ? (
+            <Box paddingX={1} display={'flex'} width={330} alignItems={'center'}>
+              <Grid container spacing={1 / 2} margin={0}>
+                {myNotifyMap?.items?.reduce((prev, ele, index) => {
+                  if (index < 3) {
+                    prev.push(
+                      <Grid item key={ele?.id} xs={12}>
+                        <NotificationItem
+                          {...ele}
+                          size={'small'}
+                          className={'headerItem'}
+                          index={index}
+                          noAction={true}
+                          onReadClick={() => {
+                            history.push(`${RouterPath.layer2}/${Layer2RouterID.notification}`)
+                            closePop && closePop()
+                          }}
+                        />
+                        <Divider sx={{ marginY: 1 }} />
+                      </Grid>,
+                    )
+                  }
+                  return prev
+                }, [])}
+              </Grid>
+            </Box>
+          ) : (
+            <Divider
+              sx={{ paddingY: showExclusiveRedpacket || hasActivities || hasNotifications ? 1 : 0 }}
+            />
+          )}
+        </>
+      )}
 
-      {showExclusiveRedpacket || hasActivities || hasNotifications ? (
+      {!!(showExclusiveRedpacket || hasActivities || hasNotifications) && (
         <>
           <Box
             component={'section'}
@@ -128,7 +139,10 @@ export const NotificationPanel = ({
           >
             {showExclusiveRedpacket && (
               <Box
-                onClick={() => onClickExclusiveredPacket()}
+                onClick={() => {
+                  onClickExclusiveredPacket()
+                  closePop && closePop()
+                }}
                 sx={{
                   backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,
                   backgroundSize: 'contain',
@@ -174,7 +188,13 @@ export const NotificationPanel = ({
             </>
           )}
         </>
-      ) : (
+      )}
+      {!(
+        myNotifyMap?.items?.length ||
+        showExclusiveRedpacket ||
+        hasActivities ||
+        hasNotifications
+      ) && (
         <Box margin={2}>
           <EmptyDefault
             height={`calc(100% - var(--header-row-height))`}

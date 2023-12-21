@@ -43,6 +43,7 @@ import _ from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
   assetsRawData: R[]
+  assetsRawMap: { [key: string]: R }
   hideL2Assets: any
   onSend: any
   onReceive: any
@@ -62,7 +63,12 @@ export const useGetAssets = (): AssetPanelProps & {
   assetTitleMobileExtendProps: any
 } => {
   // const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({})
-  const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
+  const [{ assetsRawData, assetsRawMap }, setAssetsRawData] = React.useState<{
+    assetsRawData: AssetsRawDataItem[]
+    assetsRawMap: {
+      [key: string]: AssetsRawDataItem
+    }
+  }>({ assetsRawData: [], assetsRawMap: {} })
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
   const { account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
@@ -107,114 +113,121 @@ export const useGetAssets = (): AssetPanelProps & {
       !!tokenPriceList.length
     ) {
       let totalAssets = sdk.toBig(0)
-      let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
-        let item: any = undefined
-        const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key)
-        // tokenInfo
-        if (walletMap && walletMap[key]) {
-          let tokenInfo = {
-            token: key,
-            detail: walletMap[key],
-          }
-          let tokenValueDollar = sdk.toBig(0)
-          const withdrawAmount = volumeToCountAsBigNumber(
-            tokenInfo.token,
-            tokenInfo.detail?.detail?.pending?.withdraw ?? 0,
-          )
-          const depositAmount = volumeToCountAsBigNumber(
-            tokenInfo.token,
-            tokenInfo.detail?.detail?.pending?.deposit ?? 0,
-          )
+      let data = Object.keys(tokenMap ?? {}).reduce(
+        (pre, key, _index) => {
+          let item: any = undefined
+          const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key)
+          // tokenInfo
+          if (walletMap && walletMap[key]) {
+            let tokenInfo = {
+              token: key,
+              detail: walletMap[key],
+            }
+            let tokenValueDollar = sdk.toBig(0)
+            const withdrawAmount = volumeToCountAsBigNumber(
+              tokenInfo.token,
+              tokenInfo.detail?.detail?.pending?.withdraw ?? 0,
+            )
+            const depositAmount = volumeToCountAsBigNumber(
+              tokenInfo.token,
+              tokenInfo.detail?.detail?.pending?.deposit ?? 0,
+            )
 
-          const totalAmount = volumeToCountAsBigNumber(
-            tokenInfo.token,
-            tokenInfo.detail?.detail?.total ?? 0,
-          )
-            ?.plus(depositAmount || 0)
-            .plus(withdrawAmount || 0)
-          // ?.plus(depositAmount || 0)
-          // .plus(withdrawAmount || 0)
-          const price = tokenPrices?.[tokenInfo.token] || 0
-          if (totalAmount && price) {
-            tokenValueDollar = totalAmount?.times(price)
-          }
-          const isSmallBalance = tokenValueDollar.lt(1)
-          const lockedAmount = volumeToCountAsBigNumber(
-            tokenInfo.token,
-            tokenInfo.detail?.detail?.locked ?? 0,
-          )
-          const frozenAmount = lockedAmount?.plus(withdrawAmount || 0).plus(depositAmount || 0)
-          item = {
-            token: {
-              type: isDefi
-                ? TokenType.defi
-                : tokenInfo.token.split('-')[0] === 'LP'
-                ? TokenType.lp
-                : TokenType.single,
-              value: tokenInfo.token,
-            },
-            // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
-            amount: totalAmount?.toString() || EmptyValueTag,
-            // available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
-            available: Number(tokenInfo.detail?.count) || EmptyValueTag,
-            // locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
-            locked: frozenAmount?.toString() || EmptyValueTag,
-            smallBalance: isSmallBalance,
-            tokenValueDollar: tokenValueDollar.toString(),
-            name: tokenInfo.token,
-            withdrawAmount: withdrawAmount?.toString(),
-            depositAmount: depositAmount?.toString(),
-          }
-        } else {
-          item = {
-            token: {
-              type: isDefi
-                ? TokenType.defi
-                : key.split('-')[0] === 'LP'
-                ? TokenType.lp
-                : TokenType.single,
-              value: key,
-            },
-            amount: EmptyValueTag,
-            available: EmptyValueTag,
-            locked: 0,
-            smallBalance: true,
-            tokenValueDollar: 0,
-            name: key,
-            tokenValueYuan: 0,
-            withdrawAmount: 0,
-            depositAmount: 0,
-          }
-        }
-        if (item) {
-          const token = item.token.value
-          let precision = 0
-          if (token.split('-').length === 3 && ammMap) {
-            const rawList = token.split('-')
-            rawList.splice(0, 1, 'AMM')
-            const ammToken = rawList.join('-')
-            precision =
-              ammMap[ammToken]?.precisions?.amount ?? tokenMap[item.token.value]?.precision ?? 0
+            const totalAmount = volumeToCountAsBigNumber(
+              tokenInfo.token,
+              tokenInfo.detail?.detail?.total ?? 0,
+            )
+              ?.plus(depositAmount || 0)
+              .plus(withdrawAmount || 0)
+            // ?.plus(depositAmount || 0)
+            // .plus(withdrawAmount || 0)
+            const price = tokenPrices?.[tokenInfo.token] || 0
+            if (totalAmount && price) {
+              tokenValueDollar = totalAmount?.times(price)
+            }
+            const isSmallBalance = tokenValueDollar.lt(1)
+            const lockedAmount = volumeToCountAsBigNumber(
+              tokenInfo.token,
+              tokenInfo.detail?.detail?.locked ?? 0,
+            )
+            const frozenAmount = lockedAmount?.plus(withdrawAmount || 0).plus(depositAmount || 0)
+            item = {
+              token: {
+                type: isDefi
+                  ? TokenType.defi
+                  : tokenInfo.token.split('-')[0] === 'LP'
+                  ? TokenType.lp
+                  : TokenType.single,
+                value: tokenInfo.token,
+              },
+              // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
+              amount: totalAmount?.toString() || EmptyValueTag,
+              // available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
+              available: Number(tokenInfo.detail?.count) || EmptyValueTag,
+              // locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
+              locked: frozenAmount?.toString() || EmptyValueTag,
+              smallBalance: isSmallBalance,
+              tokenValueDollar: tokenValueDollar.toString(),
+              name: tokenInfo.token,
+              withdrawAmount: withdrawAmount?.toString(),
+              depositAmount: depositAmount?.toString(),
+            }
           } else {
-            precision = tokenMap[item.token.value].precision
+            item = {
+              token: {
+                type: isDefi
+                  ? TokenType.defi
+                  : key.split('-')[0] === 'LP'
+                  ? TokenType.lp
+                  : TokenType.single,
+                value: key,
+              },
+              amount: EmptyValueTag,
+              available: EmptyValueTag,
+              locked: 0,
+              smallBalance: true,
+              tokenValueDollar: 0,
+              name: key,
+              tokenValueYuan: 0,
+              withdrawAmount: 0,
+              depositAmount: 0,
+            }
           }
-          pre.push({
-            ...item,
-            precision: precision,
+          if (item) {
+            const token = item.token.value
+            let precision = 0
+            if (token.split('-').length === 3 && ammMap) {
+              const rawList = token.split('-')
+              rawList.splice(0, 1, 'AMM')
+              const ammToken = rawList.join('-')
+              precision =
+                ammMap[ammToken]?.precisions?.amount ?? tokenMap[item.token.value]?.precision ?? 0
+            } else {
+              precision = tokenMap[item.token.value].precision
+            }
+            item.precision = precision
+            pre.assetsRawMap[key] = item
+            pre.assetsRawData.push(item)
+            totalAssets = totalAssets.plus(
+              sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0),
+            )
+            // totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
+          }
+          pre?.assetsRawData.sort((a, b) => {
+            const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
+            const deltaAmount = sdk.toBig(b.amount).minus(a.amount).toNumber()
+            const deltaName = b.token.value < a.token.value ? 1 : -1
+            return deltaDollar !== 0 ? deltaDollar : deltaAmount !== 0 ? deltaAmount : deltaName
           })
-          totalAssets = totalAssets.plus(
-            sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0),
-          )
-          // totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
-        }
-        pre?.sort((a, b) => {
-          const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
-          const deltaAmount = sdk.toBig(b.amount).minus(a.amount).toNumber()
-          const deltaName = b.token.value < a.token.value ? 1 : -1
-          return deltaDollar !== 0 ? deltaDollar : deltaAmount !== 0 ? deltaAmount : deltaName
-        })
-        return pre
-      }, [] as Array<any>)
+          return pre
+        },
+        { assetsRawData: [], assetsRawMap: {} } as {
+          assetsRawData: AssetsRawDataItem[]
+          assetsRawMap: {
+            [key: string]: AssetsRawDataItem
+          }
+        },
+      )
       setAssetsRawData(data)
       setTotalAsset(totalAssets.toString())
     }
@@ -304,6 +317,7 @@ export const useGetAssets = (): AssetPanelProps & {
     allowTrade,
     setHideL2Assets,
     setHideLpToken,
+    assetsRawMap,
     setHideSmallBalances,
     themeMode,
     getTokenRelatedMarketArray,

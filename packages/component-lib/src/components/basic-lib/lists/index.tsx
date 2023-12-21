@@ -180,6 +180,7 @@ export const CardStyleItem = styled(Card)<
         d_R: 0.5,
       })};
 
+    .Mui-selected &,
     &.selected,
     &:hover {
       ${({ theme }) =>

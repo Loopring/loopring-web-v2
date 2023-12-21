@@ -1,10 +1,4 @@
-import {
-  LoopringAPI,
-  notificationService,
-  useAccount,
-  useNotificationFunc,
-  useNotify,
-} from '@loopring-web/core'
+import { LoopringAPI, useAccount, useNotificationFunc, useNotify } from '@loopring-web/core'
 import React from 'react'
 import { MapChainId, SDK_ERROR_MAP_TO_UI } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -13,16 +7,12 @@ import { useTranslation } from 'react-i18next'
 
 export const useNotification = <R extends sdk.UserNotification>({
   setToastOpen,
-  page,
-  pageSize,
 }: {
   setToastOpen: (state: any) => void
   page: number
   pageSize: number
-  // pageSize: number
 }) => {
   const { t } = useTranslation()
-
   const { myNotifyMap, getUserNotify } = useNotify()
   const [rawData, setRawData] = React.useState<R[]>([])
   const [total, setTotal] = React.useState<number>(0)

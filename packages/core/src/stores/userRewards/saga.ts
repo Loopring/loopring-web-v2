@@ -1,12 +1,24 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects'
-import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
+import {
+  getUserRewards,
+  getUserRewardsStatus,
+  resetUserRewards,
+  setDefiAverageMap,
+} from './reducer'
 
 import { LoopringAPI, makeClaimRewards, makeSummaryMyAmm, store } from '../../index'
-import { AccountStatus } from '@loopring-web/common-resources'
+import {
+  AccountStatus,
+  DEFI_CONFIG,
+  LEVERAGE_ETH_CONFIG,
+  MapChainId,
+} from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 
+const defiNum = 10
 const getUserRewardsApi = async () => {
   const { accountId, apiKey, readyState } = store.getState().account
+
   if (LoopringAPI.ammpoolAPI && LoopringAPI.userAPI && accountId) {
     let ammUserRewardMap = {},
       _totalClaims = [],
@@ -48,6 +60,63 @@ const getUserRewardsApi = async () => {
         result = makeSummaryMyAmm({
           userRewardsMap: ammUserRewardMap,
         })
+        const { marketArray, marketLeverageArray } = store.getState().invest.defiMap
+        const { defaultNetwork } = store.getState().settings
+        const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
+        LoopringAPI.defiAPI
+          .getDefiDepositList(
+            // .getDefiTransaction(
+            {
+              accountId,
+              number: defiNum,
+              markets: [...marketArray, ...marketLeverageArray],
+              types: [...DEFI_CONFIG.products[network], ...LEVERAGE_ETH_CONFIG.products[network]],
+            } as any,
+            apiKey,
+          )
+          .then((response) => {
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+              return {}
+            }
+            const defiAverageMap = [...marketArray, ...marketLeverageArray].reduce((prev, item) => {
+              let priceTotal = sdk.toBig(0)
+              const _value = (response as any).transactions
+                ?.filter(
+                  (_history) =>
+                    item === _history.market &&
+                    _history.action == sdk?.DefiAction?.Deposit.toUpperCase(),
+                )
+                .slice(0, defiNum)
+                .reduce(
+                  (prev, _history) => {
+                    return {
+                      sellTokenVol: prev.sellTokenVol.plus(_history.sellToken.volume),
+                      buyTokenVol: prev.buyTokenVol.plus(_history.buyToken.volume),
+                      feeVol: prev.feeVol.plus(_history.fee.volume),
+                    }
+                  },
+                  {
+                    sellTokenVol: sdk.toBig(0),
+                    buyTokenVol: sdk.toBig(0),
+                    feeVol: sdk.toBig(0),
+                  },
+                )
+              const price = sdk
+                .toBig(_value.sellTokenVol)
+                .div(sdk.toBig(_value.buyTokenVol).minus(_value.feeVol))
+              prev[item] = {
+                list: _value,
+                average: price.toString(),
+                priceTotal: priceTotal.toString(),
+              }
+              return prev
+            }, {})
+            store.dispatch(setDefiAverageMap({ defiAverageMap }))
+          })
+          .catch((error) => {
+            throw error
+          })
       }
       const totalClaims = makeClaimRewards(_totalClaims ?? [])
       let __timer__ = (() => {

@@ -3,12 +3,12 @@ import React from 'react'
 import styled from '@emotion/styled'
 import {
   ammAdvice,
-  BlockTradeIcon,
+  BlockTradeLandIcon,
   defiAdvice,
   SpotIcon,
-  SwapIcon,
+  SwapLandIcon,
   dualAdvice,
-  FiatIcon,
+  FiatLandIcon,
   fnType,
   GoIcon,
   leverageETHAdvice,
@@ -255,7 +255,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     href={`#${RouterPath.lite}`}
                     className='menuItem'
                     variant={'text'}
-                    startIcon={<SwapIcon />}
+                    startIcon={<SwapLandIcon />}
                   >
                     <Box display={'flex'} flexDirection={'column'}>
                       <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
@@ -274,7 +274,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     href={`#${RouterPath.btrade}`}
                     className='menuItem'
                     variant={'text'}
-                    startIcon={<BlockTradeIcon />}
+                    startIcon={<BlockTradeLandIcon />}
                   >
                     <Box display={'flex'} flexDirection={'column'}>
                       <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
@@ -293,7 +293,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     href={`#${RouterPath.fiat}`}
                     className='menuItem'
                     variant={'text'}
-                    startIcon={<FiatIcon />}
+                    startIcon={<FiatLandIcon />}
                   >
                     <Box display={'flex'} flexDirection={'column'}>
                       <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
