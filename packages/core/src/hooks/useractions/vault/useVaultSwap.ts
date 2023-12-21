@@ -199,9 +199,7 @@ export const useVaultSwap = <
     setShowAccount,
     setShowVaultSwap,
   } = useOpenModals()
-  const { defaultNetwork } = useSettings()
   const { chainInfos, updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
-
   const { vaultAccountInfo } = useVaultLayer2()
   // //High: No not Move!!!!!!
   //@ts-ignore
@@ -309,9 +307,6 @@ export const useVaultSwap = <
       )
       let _tradeCalcData = {},
         showHasBorrow = false
-      if (chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress]?.length) {
-        showHasBorrow = true
-      }
       setTradeCalcData((state) => {
         _tradeCalcData = {
           ...state,
@@ -371,6 +366,10 @@ export const useVaultSwap = <
       resetMarket(`${isShowVaultSwap?.symbol ?? '#null'}-#null`, 'sell')
     } else {
       resetTradeVault()
+      setIsSwapLoading(false)
+      if (market) {
+        resetMarket(market as any, 'sell')
+      }
       setIsMarketStatus({ market: undefined })
       if (borrowHash?.current?.hash) {
         updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
@@ -1000,8 +999,8 @@ export const useVaultSwap = <
     if (market) {
       getVaultMap()
       callPairDetailInfoAPIs()
-      if (chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress]?.length) {
-        chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress].forEach(({ hash }) => {
+      if (chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
+        chainInfos.vaultBorrowHashes[account.accAddress].forEach(({ hash }) => {
           const { account } = store.getState()
           LoopringAPI?.vaultAPI
             .getVaultGetOperationByHash(
@@ -1301,7 +1300,7 @@ export const useVaultSwap = <
           erc20Symbol: erc20IdIndex[tokenMap[sellToken.symbol].tokenId],
         } as unknown as VaultBorrowTradeData)
         const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
-        if (chainInfos[defaultNetwork]?.vaultBorrowHashes[account.accAddress]?.length) {
+        if (chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
           showHasBorrow = true
         }
         const { countBig, ...vaultSellRest } = makeVaultSell(sellToken.symbol)

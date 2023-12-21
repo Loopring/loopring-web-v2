@@ -127,7 +127,11 @@ export const ModalVaultWrap = () => {
         contentClassName={'vault-wrap'}
         open={isShowVaultSwap.isShow}
         onClose={() => {
-          setShowVaultSwap({ isShow: false })
+          if ((tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== 'edit') {
+            setOpenCancel(true)
+          } else {
+            setShowVaultSwap({ isShow: false })
+          }
         }}
         content={
           tradeData ? (
