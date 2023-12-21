@@ -16,6 +16,7 @@ import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import {
   DAT_STRING_FORMAT,
+  DAT_STRING_FORMAT_S,
   EmptyValueTag,
   MINT_STRING_FORMAT,
 } from '@loopring-web/common-resources'
@@ -43,7 +44,8 @@ const TrendChart = ({
   showTooltip = true,
   showArea = true,
   quoteSymbol,
-  showXAxis = false,
+  showXAxis = true,
+  showYAxis = true,
   isHeadTailCompare = false,
   isDailyTrend = false,
   handleMoveOut = undefined,
@@ -58,9 +60,7 @@ const TrendChart = ({
   const [priceTrend, setPriceTrend] = useState<'up' | 'down'>(
     renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down',
   )
-  // current chart xAxis index
   const [currentIndex, setCurrentIndex] = useState(-1)
-
   const trendColor =
     upColor === 'green'
       ? priceTrend === 'up'
@@ -183,8 +183,8 @@ const TrendChart = ({
     }
     return (
       <g transform={`translate(${x}, ${y})`}>
-        <text x={0} y={0} dy={16} fontSize={12} textAnchor='start' fill='#A1A7BB'>
-          {isDailyTrend ? moment(payload.value).format(DAT_STRING_FORMAT) : payload.value}
+        <text x={0} y={0} dy={16} fontSize={12} textAnchor='end' fill={theme.colorBase.textThird}>
+          {moment(payload.value).format(DAT_STRING_FORMAT_S)}
         </text>
       </g>
     )
@@ -226,25 +226,43 @@ const TrendChart = ({
           </linearGradient>
         </defs>
         <XAxis
-          hide={!showXAxis && !isDailyTrend}
-          dataKey={isDailyTrend ? 'timeStamp' : 'date'}
-          interval={isDailyTrend ? 5 : 8}
-          axisLine={isDailyTrend}
-          tickLine={isDailyTrend}
+          hide={!showXAxis}
+          dataKey={'timeStamp'}
+          tickCount={8}
+          axisLine={true}
+          tickLine={true}
           tick={customTick}
-          stroke={'var(--color-text-secondary)'}
+          stroke={theme.colorBase.textThird}
         />
         <YAxis
-          hide={true}
-          tickFormatter={undefined}
-          domain={
-            isDailyTrend
-              ? (getDynamicYAxisDomain() as any)
-              : [
-                  (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
-                  (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
-                ]
-          }
+          dataKey='close'
+          orientation={'right'}
+          hide={!showYAxis}
+          axisLine={false}
+          domain={getDynamicYAxisDomain() as any}
+          width={1}
+          tickCount={8}
+          label={{
+            value: 'close',
+            fontSize: 14,
+            textAnchor: 'end',
+            fill: theme.colorBase.textThird,
+            position: 'insideTopRight',
+            transform: 'translate(0, 0)',
+          }}
+          tickFormatter={(value, index) => {
+            // const valueList = renderData.map((o) => o.close)
+            // const min = Math.min(...valueList)
+            // const max = Math.max(...valueList)
+            return index == 0 || index >= 5 ? '' : value
+          }}
+          tick={{
+            fill: theme.colorBase.textThird,
+            fontSize: 12,
+            textAnchor: 'start',
+            width: 34,
+            transform: 'translate(-60, 0)',
+          }}
           /* tickFormatter={convertValue} */
           stroke={'var(--color-text-secondary)'}
         />

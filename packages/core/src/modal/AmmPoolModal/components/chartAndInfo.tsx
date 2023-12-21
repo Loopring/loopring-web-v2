@@ -129,6 +129,8 @@ export const ChartAndInfoPanel = ({
       {ammInfo.market ? (
         <>
           <Box
+            paddingTop={2}
+            paddingX={2}
             width={'100%'}
             // height={"60%"}
             height={'calc(var(--swap-box-height) - 262px)'}

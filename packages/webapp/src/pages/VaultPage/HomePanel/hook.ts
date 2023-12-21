@@ -135,8 +135,8 @@ export const useVaultMarket = <
                   marketCap,
                 ] = trend
                 return {
-                  close: price,
-                  timeStamp: timestamp,
+                  close: Number(price).toFixed(2),
+                  timeStamp: Number(timestamp),
                   timestamp,
                   price,
                   volume24H,

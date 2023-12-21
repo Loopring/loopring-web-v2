@@ -57,4 +57,5 @@ export interface TGItemData {
 
 export type ToggleButtonGroupProps = MuToggleButtonGroupProps & {
   value: Array<string | number> | string | number
+  className?: string
 } & XOR<{ tgItemJSXs: TGItemJSXInterface[] }, { data: TGItemData[] }> // & { handleChange: (event: MouseEvent|InputEvent, newValue: string) => void }

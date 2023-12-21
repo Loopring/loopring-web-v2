@@ -197,6 +197,7 @@ export const SlippagePanel = ({
       display={'flex'}
     >
       <ToggleButtonGroup
+        className={'slippage'}
         exclusive
         {...{ ...rest, tgItemJSXs: toggleData, value: value, size: 'small' }}
         onChange={_handleChange}

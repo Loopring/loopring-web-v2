@@ -2333,4 +2333,5 @@ export default {
   labelAgree: 'I know',
   labelTradeVaultMiniBorrow:
     'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
+  labelVaultTradeSimpleBtn: 'Trade',
 }

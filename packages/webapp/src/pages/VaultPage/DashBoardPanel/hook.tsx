@@ -20,6 +20,7 @@ import {
   useSettings,
   VaultAssetsTableProps,
   Transaction,
+  setShowVaultJoin,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -43,10 +44,10 @@ import _ from 'lodash'
 import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
-import { useRouteMatch } from 'react-router-dom'
+import { useLocation, useRouteMatch } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 
-const VaultPath = `${RouterPath.vault}/:item`
+const VaultPath = `${RouterPath.vault}/:item/:method`
 
 export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   vaultAccountInfo: _vaultAccountInfo,
@@ -60,6 +61,8 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
 } => {
   let match: any = useRouteMatch(VaultPath)
   const history = useHistory()
+  const { search, pathname } = useLocation()
+  const searchParams = new URLSearchParams(search)
   const { t } = useTranslation(['common'])
 
   const {
@@ -171,6 +174,24 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             des: '',
             title: '',
           })
+          if (match?.params?.method) {
+            switch (match?.params?.method) {
+              case VaultAction.VaultJoin:
+                onJoinPop({})
+                // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
+                break
+              case VaultAction.VaultExit:
+                onRedeemPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+              case VaultAction.VaultLoan:
+                onBorrowPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+              case VaultAction.VaultSwap:
+                onSwapPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+            }
+            history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+          }
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
@@ -196,7 +217,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         })
       }
     }
-  }, [vaultAccountInfoStatus, match?.params?.item])
+  }, [vaultAccountInfoStatus, match?.params?.item, match?.params?.method])
   const dialogBtn = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -355,8 +376,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         // tokenMap: erc20TokenMap,
         idIndex: erc20IdIndex,
       },
-      // tokenPrices: { tokenPrices },
-      // tokenPrices: { tokenPrices },
+
       invest: {
         vaultMap: { tokenMap, idIndex: vaultIdIndex, tokenPrices },
       },

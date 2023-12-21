@@ -1,4 +1,5 @@
 import {
+  makeVaultLayer2,
   store,
   useAccount,
   useL2CommonSocket,

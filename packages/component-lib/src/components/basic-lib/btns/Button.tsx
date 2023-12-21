@@ -113,67 +113,61 @@ export function ScrollTop({
 }
 
 export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
-  ${({ theme, size }) =>
-    size !== 'small'
-      ? `
+  background: var(--color-button-outlined);
+  &.slippage {
+    background: none;
+    .MuiToggleButton-sizeSmall {
       background: var(--color-box);
-      padding: ${theme.unit / 2}px;
-      padding-right: ${theme.unit / 4}px;
-      box-shadow: var(--shadow3);
-  `
-      : ``};
+      height: 2.4rem;
+      font-size: 1.2rem;
+      margin-right: ${({ theme }) => theme.unit}px;
+      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-border)' })};
+      color: var(--color-text-secondary);
 
-  .MuiToggleButton-sizeSmall {
-    background: var(--color-box);
-    height: 2.4rem;
-    font-size: 1.2rem;
-    margin-right: ${({ theme }) => theme.unit}px;
-    border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-border)' })};
-    color: var(--color-text-secondary);
+      &:not(:first-of-type),
+      &:not(:last-child) {
+        border-color: var(--color-border);
+      }
 
-    &:not(:first-of-type),
-    &:not(:last-child) {
-      border-color: var(--color-border);
-    }
-
-    &:hover {
-      //backgroundColor: var(--color-box);
-      // color: var(--color-primary);
-      color: var(--color-text-button-select);
-      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })};
-      background: var(--color-box);
-      // &:not(:last-child), &:not(:first-of-type) {
-      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
-      // }
-
-      &.Mui-selected,
-      &.Mui-selected {
-        //background: var(--opacity);
-        background: var(--color-box);
+      &:hover {
+        //backgroundColor: var(--color-box);
         // color: var(--color-primary);
         color: var(--color-text-button-select);
+        border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })};
+        background: var(--color-box);
+        // &:not(:last-child), &:not(:first-of-type) {
+        border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
+        // }
+
+        &.Mui-selected,
+        &.Mui-selected {
+          //background: var(--opacity);
+          background: var(--color-box);
+          // color: var(--color-primary);
+          color: var(--color-text-button-select);
+          border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
+          /* border: ${({ theme }) =>
+            theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })}; */
+        }
+      }
+
+      &.Mui-disabled {
+        //background ;
+        background: var(--opacity);
+        color: var(--color-disable);
+        border: 1px dashed var(--color-border);
+      }
+
+      &.Mui-selected,
+      &.Mui-selected + &.Mui-selected {
+        // color: var(--color-primary);
+        color: var(--color-text-button-select) !important;
+        background: var(--color-box) !important;
+        //background:  var(--color-disable);
         border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
         /* border: ${({ theme }) =>
           theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })}; */
       }
-    }
-
-    &.Mui-disabled {
-      //background ;
-      background: var(--opacity);
-      color: var(--color-disable);
-      border: 1px dashed var(--color-border);
-    }
-
-    &.Mui-selected,
-    &.Mui-selected + &.Mui-selected {
-      // color: var(--color-primary);
-      color: var(--color-text-button-select) !important;
-      background: var(--color-box) !important;
-      //background:  var(--color-disable);
-      border: ${({ theme }) => theme.border.borderConfig({ c_key: 'var(--color-primary)' })};
-      /* border: ${({ theme }) =>
-        theme.border.borderConfig({ c_key: 'var(--color-border-hover)' })}; */
     }
   }
 ` as typeof MuToggleButtonGroup
@@ -188,16 +182,8 @@ export const ToggleButtonGroup = withTranslation('common')(
     data,
     exclusive,
     onChange,
+    className,
   }: { t: TFunction } & ToggleButtonGroupProps) => {
-    const _handleChange = React.useCallback(
-      (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
-        // setValue(value)
-        if (onChange) {
-          onChange(_e, value)
-        }
-      },
-      [],
-    )
     if (data) {
       tgItemJSXs = data.map(({ value, key, disabled }) => {
         return { value, JSX: t(key), tlabel: t(key), disabled }
@@ -208,7 +194,8 @@ export const ToggleButtonGroup = withTranslation('common')(
         size={size}
         value={value}
         exclusive={exclusive}
-        onChange={_handleChange}
+        onChange={onChange}
+        className={className}
       >
         {tgItemJSXs?.map(({ value, JSX, tlabel, disabled, key, notWrap }: TGItemJSXInterface) =>
           notWrap ? (

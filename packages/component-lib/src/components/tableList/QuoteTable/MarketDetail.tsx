@@ -11,12 +11,14 @@ import {
   SoursURL,
   SvgSize,
   TokenType,
+  myLog,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { CoinIcons } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
 import { QuoteTableChangedCell } from './QuoteTable'
+import { ToggleButtonGroup } from '../../basic-lib'
 
 enum TradingInterval {
   hr1 = 'hr1',
@@ -71,15 +73,12 @@ export const MarketDetail = ({
   // const [data, setData] = React.useState([])
   const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
   const [trend, setTrend] = React.useState<AmmHistoryItem[] | undefined>([])
-  const handleTimeIntervalChange = React.useCallback(
-    (timeInterval: TradingInterval) => {
-      setTimeInterval(timeInterval)
-      if (trends?.length) {
-        setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
-      }
-    },
-    [trends],
-  )
+  const handleTimeIntervalChange = (timeInterval: TradingInterval) => {
+    setTimeInterval(timeInterval)
+    if (trends?.length) {
+      setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
+    }
+  }
 
   React.useEffect(() => {
     if (isShow && !isLoading) {
@@ -97,6 +96,7 @@ export const MarketDetail = ({
       >
         <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
           <Typography
+            paddingLeft={1}
             component={'span'}
             display={'inline-flex'}
             width={
@@ -174,28 +174,46 @@ export const MarketDetail = ({
             src={`${SoursURL}images/loading-line.gif`}
           />
         ) : (
-          <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
+          <ScaleAreaChart
+            showXAxis={true}
+            showYAxis={true}
+            type={ChartType.Trend}
+            data={trend}
+            quoteSymbol={'USDT'}
+          />
         )}
       </Box>
-      <Grid container spacing={1} marginRight={1} minWidth={296} justifyContent={'center'}>
-        {timeIntervalData.map((item) => {
-          const { id, i18nKey } = item
-          return (
-            <Grid key={id} item>
-              <Link
-                marginTop={1}
-                variant={'body2'}
-                style={{
-                  color:
-                    id === timeInterval ? 'var(--color-text-primary)' : 'var(--color-text-third)',
-                }}
-                onClick={() => handleTimeIntervalChange(id)}
-              >
-                {t(i18nKey)}
-              </Link>
-            </Grid>
-          )
-        })}
+      <Grid
+        container
+        spacing={1}
+        marginRight={1}
+        minWidth={296}
+        justifyContent={'center'}
+        marginTop={1}
+      >
+        {/*<ToggleButtonGroup*/}
+        {/*  exclusive*/}
+        {/*  {...{ ...rest, tgItemJSXs: toggleData, value: value, size: 'small' }}*/}
+        {/*  onChange={_handleChange}*/}
+        {/*/>*/}
+        <ToggleButtonGroup
+          size={'medium'}
+          exclusive
+          {...{
+            ...t,
+            value: timeInterval,
+            onChange: (_, value) => {
+              handleTimeIntervalChange(value)
+            },
+            data: timeIntervalData.map((item) => {
+              return {
+                value: item.id,
+                JSX: t('i18nKey'),
+                key: item.id,
+              }
+            }),
+          }}
+        />
       </Grid>
       <Box
         display={'flex'}
@@ -278,7 +296,7 @@ export const MarketDetail = ({
         width={'100%'}
         marginTop={2}
         paddingX={2}
-        paddingTop={1}
+        paddingY={1}
         borderRadius={1 / 2}
         sx={{
           background: 'var(--field-opacity)',
@@ -375,7 +393,7 @@ export const MarketDetail = ({
         width={'100%'}
         marginTop={2}
         paddingX={2}
-        paddingTop={1}
+        paddingY={1}
         borderRadius={1 / 2}
         sx={{
           background: 'var(--field-opacity)',

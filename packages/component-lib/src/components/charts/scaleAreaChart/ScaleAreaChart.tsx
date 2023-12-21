@@ -24,6 +24,7 @@ export interface ScaleAreaChartProps {
   showArea?: boolean
   quoteSymbol?: string
   showXAxis?: boolean
+  showYAxis?: boolean
   isHeadTailCompare?: boolean
   marketPrecision?: number
   isDailyTrend?: boolean
