@@ -38,7 +38,6 @@ export function useOpenRedpacket() {
       })
     } else {
       try {
-        
         if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
           let response = await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
             request: {
