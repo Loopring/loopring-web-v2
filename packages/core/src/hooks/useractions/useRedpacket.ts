@@ -6,6 +6,7 @@ import { LuckyTokenItemStatus } from '@loopring-web/loopring-sdk'
 import { store, useAccount, useSystem, useTargetRedPackets } from '../../stores'
 import { CustomError, ErrorMap, UIERROR_CODE } from '@loopring-web/common-resources'
 
+
 export function useOpenRedpacket() {
   const { setShowRedPacket, setShowAccount } = useOpenModals()
   const { chainId } = useSystem()
@@ -37,12 +38,14 @@ export function useOpenRedpacket() {
       })
     } else {
       try {
+        
         if (_info.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
           let response = await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimBlindBox({
             request: {
               hash: _info?.hash,
               claimer: account.accAddress,
               referrer: _info.isShouldSharedRely && _info?.referrer ? _info?.referrer : '',
+              serialNo: _info.serialNo
             },
             eddsaKey: account.eddsaKey.sk,
             apiKey: account.apiKey,
@@ -61,11 +64,13 @@ export function useOpenRedpacket() {
             },
           })
         } else {
+          
           let response = await LoopringAPI.luckTokenAPI?.sendLuckTokenClaimLuckyToken({
             request: {
               hash: _info?.hash,
               claimer: account.accAddress,
               referrer: _info.isShouldSharedRely && _info?.referrer ? _info?.referrer : '',
+              serialNo: _info.serialNo
             },
             eddsaKey: account.eddsaKey.sk,
             apiKey: account.apiKey,

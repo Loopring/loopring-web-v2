@@ -633,6 +633,7 @@ export function useRedPacketModal() {
                       hash: _info.hash,
                       claimer: account.accAddress,
                       referrer: '',
+                      serialNo: _info.serialNo
                     },
                     eddsaKey: account.eddsaKey.sk,
                     apiKey: account.apiKey,
