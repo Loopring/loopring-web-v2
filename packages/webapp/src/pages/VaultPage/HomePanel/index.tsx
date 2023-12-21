@@ -22,6 +22,7 @@ import {
   ModalCloseButton,
   useSettings,
   SwitchPanelStyled,
+  useOpenModals,
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -47,7 +48,9 @@ export const VaultHomePanel = ({
   const { t } = useTranslation()
   const { vaultAccountInfo, activeInfo } = useVaultLayer2()
   const { tokenMap: vaultTokenMap, tokenPrices } = useVaultMap()
-
+  const {
+    modals: { isShowConfirmedVault, isShowVaultJoin },
+  } = useOpenModals()
   const history = useHistory()
   const tableRef = React.useRef<HTMLDivElement>()
   const { marketProps: vaultMarketProps, detail, setShowDetail } = useVaultMarket({ tableRef })
@@ -146,7 +149,10 @@ export const VaultHomePanel = ({
           <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
         </Container>
       </Box>
-      <Modal open={detail?.isShow} onClose={() => setShowDetail({ isShow: false })}>
+      <Modal
+        open={detail?.isShow && !isShowConfirmedVault?.isShow && !isShowVaultJoin?.isShow}
+        onClose={() => setShowDetail({ isShow: false })}
+      >
         <SwitchPanelStyled width={'var(--modal-width)'}>
           <ModalCloseButton t={t} onClose={(_e: any) => setShowDetail({ isShow: false } as any)} />
           <Box
@@ -329,7 +335,10 @@ export const VaultHomePanel = ({
                 >
                   <Button
                     size={'medium'}
-                    onClick={onJoinPop}
+                    onClick={() => {
+                      setShowDetail({ isShow: false })
+                      onJoinPop({})
+                    }}
                     loading={'false'}
                     variant={'contained'}
                     sx={{ minWidth: 'var(--walletconnect-width)' }}

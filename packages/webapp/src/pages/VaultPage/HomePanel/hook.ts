@@ -31,7 +31,7 @@ export const useVaultMarket = <
 
   const [detail, setShowDetail] = React.useState<{
     isShow: boolean
-    isLoading: boolean
+    isLoading?: boolean
     row?: R
     detail?: { tokenInfo: Partial<sdk.DatacenterTokenInfo & sdk.TokenInfo>; trends: any }
   }>({
