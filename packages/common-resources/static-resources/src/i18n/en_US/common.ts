@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { TradeBtnStatus } from '../../constant'
+
 export default {
   labelErrorTitle: 'Error Detail: ',
   labelNoContent: 'No Content',
@@ -2334,4 +2336,6 @@ export default {
   labelTradeVaultMiniBorrow:
     'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
   labelVaultTradeSimpleBtn: 'Trade',
+  labelBorrowing: 'Borrowing {{symbol}}',
+  labelBorrowed: 'Borrowed {{symbol}}',
 }

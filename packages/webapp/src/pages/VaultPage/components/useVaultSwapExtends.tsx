@@ -8,6 +8,8 @@ import {
   myLog,
   TradeBtnStatus,
   DirectionTag,
+  WaitingIcon,
+  CompleteIcon,
 } from '@loopring-web/common-resources'
 import { Box, Grid, Link, Tooltip, Typography } from '@mui/material'
 import { ButtonStyle, CoinIcons, SwapType, useSettings } from '@loopring-web/component-lib'
@@ -192,7 +194,7 @@ export const useVaultSwapExtends = ({
   const BtnEle = React.useMemo(() => {
     return tradeCalcData?.isRequiredBorrow ? (
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <Typography
             variant={'body2'}
             component={'span'}
@@ -217,6 +219,37 @@ export const useVaultSwapExtends = ({
             </Typography>
           </Typography>
         </Grid>
+        <Grid item xs={6} display={'flex'} justifyContent={'flex-end'}>
+          {tradeCalcData.step === 'borrow' && btnBorrowStatus === TradeBtnStatus.LOADING && (
+            <Typography
+              variant={'body2'}
+              component={'span'}
+              color={'var(--color-warning)'}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
+              <WaitingIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
+              {t('labelBorrowing', {
+                symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
+              })}
+            </Typography>
+          )}
+          {tradeCalcData.step === 'swap' && (
+            <Typography
+              variant={'body2'}
+              component={'span'}
+              color={'var(--color-success)'}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
+              <CompleteIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
+              {t('labelBorrowed', {
+                symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
+              })}
+            </Typography>
+          )}
+        </Grid>
+
         {labelBorrow && (
           <Grid item xs={12}>
             <Typography
@@ -230,6 +263,7 @@ export const useVaultSwapExtends = ({
             </Typography>
           </Grid>
         )}
+
         <Grid item xs={6}>
           <ButtonStyle
             sx={{
