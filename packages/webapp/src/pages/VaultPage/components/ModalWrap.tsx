@@ -9,10 +9,8 @@ import {
   useVaultSwap,
 } from '@loopring-web/core'
 import {
-  ButtonStyle,
   Modal,
   SwapPanel,
-  SwitchData,
   Toast,
   useOpenModals,
   VaultExitPanel,
@@ -46,7 +44,10 @@ export const ModalVaultWrap = () => {
     setShowNoVaultAccount,
   } = useOpenModals()
   const { vaultAccountInfo } = useVaultLayer2()
-  const [openCancel, setOpenCancel] = React.useState(false)
+  const [{ openCancel, shouldClose }, setOpenCancel] = React.useState({
+    openCancel: false,
+    shouldClose: false,
+  })
   const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
   const {
@@ -66,12 +67,10 @@ export const ModalVaultWrap = () => {
     market,
     isMobile,
     disabled,
-    vaultBorrowSubmit,
     btnBorrowStatus,
     onBorrowClick,
     borrowBtnI18nKey,
     cancelBorrow,
-    // isSwapLoading,
   } = useVaultSwap({ path: 'vault' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -128,7 +127,7 @@ export const ModalVaultWrap = () => {
         open={isShowVaultSwap.isShow}
         onClose={() => {
           if ((tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== 'edit') {
-            setOpenCancel(true)
+            setOpenCancel({ openCancel: false, shouldClose: true })
           } else {
             setShowVaultSwap({ isShow: false })
           }
@@ -152,7 +151,7 @@ export const ModalVaultWrap = () => {
                   : false,
               }}
               onCancelClick={() => {
-                setOpenCancel(true)
+                setOpenCancel({ openCancel: true, shouldClose: false })
               }}
               BtnEle={BtnEle}
               tokenSellProps={{
@@ -226,9 +225,9 @@ export const ModalVaultWrap = () => {
       <VaultSwapCancel
         open={openCancel}
         handleClose={(_, isAgree) => {
-          setOpenCancel(false)
+          setOpenCancel({ openCancel: false, shouldClose: false })
           if (isAgree) {
-            cancelBorrow()
+            cancelBorrow(shouldClose)
           }
         }}
       />

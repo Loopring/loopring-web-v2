@@ -1639,12 +1639,15 @@ export const useVaultSwap = <
     btnBorrowStatus,
     onBorrowClick,
     borrowBtnI18nKey,
-    cancelBorrow: () => {
+    cancelBorrow: (shouldClose = false) => {
       if (borrowHash?.current?.hash && account) {
         updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
       }
       setIsSwapLoading(false)
       resetMarket(market as any, 'sell')
+      if (shouldClose) {
+        setShowVaultSwap({ isShow: false })
+      }
     },
   }
 }
