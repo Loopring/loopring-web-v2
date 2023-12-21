@@ -511,7 +511,6 @@ export const ModalPanel = <
           <TargetRedpacketWrap
             exclusiveRedPackets={isShowTargetRedpacketPop.info.exclusiveRedPackets}
             onClickOpenExclusive={(redpacket) => {
-              debugger
               setShowTargetRedpacketPop({ isShow: false, info: {} })
               setShowRedPacket({
                 isShow: true,
