@@ -61,7 +61,7 @@ export const MarketDetail = ({
   timeIntervalData = TimeMarketIntervalData,
 }: {
   tokenInfo
-  isLoading: boolean
+  isLoading?: boolean
   trends: any
   isShow: boolean
   forexMap: ForexMap
