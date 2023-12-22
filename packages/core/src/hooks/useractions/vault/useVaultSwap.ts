@@ -49,6 +49,7 @@ import {
   onchainHashInfo,
   reCalcStoB,
   store,
+  updateVaultTrade,
   useAccount,
   useL2CommonSocket,
   usePairMatch,
@@ -79,7 +80,7 @@ const makeVaultSell = (sellSymbol: string) => {
     const orderAmounts = sellToken.orderAmounts
     const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + sellToken.decimals)
     const vaultAsset = (vaultLayer2 && vaultLayer2[sellSymbol]) ?? 0
-    const countBig = sdk.toBig(vaultAsset?.total ?? 0).minus(vaultAsset?.locked ?? 0)
+    const countBig = sdk.toBig(vaultAsset?.l2balance ?? 0).minus(vaultAsset?.locked ?? 0)
     const count = sdk
       .toBig(countBig)
       .div('1e' + sellToken.decimals)
@@ -447,21 +448,30 @@ export const useVaultSwap = <
     if (tradeCalcData.step == VaultSwapStep.Swap) {
       const {
         _router_tradeVault: {
-          tradeVault: {
-            tradeCalcData: { coinSell, ...tradeCalcData },
-          },
+          tradeVault: { tradeCalcData },
         },
       } = store.getState()
-      if (coinSell && tradeCalcData.volumeSell) {
-        const { countBig } = makeVaultSell(coinSell)
+      if (tradeCalcData?.coinSell && tradeCalcData?.volumeSell) {
+        const { countBig } = makeVaultSell(tradeCalcData.coinSell)
         if (sdk.toBig(countBig ?? 0).gte(tradeCalcData.volumeSell ?? 0)) {
+          myLog(
+            `VaultSwapStep.Swaping ${tradeCalcData?.coinSell}`,
+            countBig.toString(),
+            tradeCalcData.volumeSell.toString(),
+          )
           setTradeCalcData((state) => {
-            return {
+            const newState = {
               ...state,
               step: VaultSwapStep.Swaping,
             }
+            updateVaultTrade({
+              ...newState,
+            })
+            sendRequest()
+            return {
+              ...newState,
+            }
           })
-          sendRequest()
         }
       }
     }
