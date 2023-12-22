@@ -384,7 +384,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     { maxWait: 1000, leading: false, trailing: true },
   )
   const initAddresss = () => {
-    setRealAddr({ realAddr: '', ens: '' })
+    setRealAddr({ realAddr: '', ens: '', isENSWrong: false })
     setAddrStatus(AddressError.NoError)
     setCheckAddaccountId(undefined)
     setIsLoopringAddress(false)
