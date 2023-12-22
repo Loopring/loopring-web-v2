@@ -406,17 +406,17 @@ export const useVaultSwap = <
         )
         .then(({ operation }) => {
           if (sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED == operation?.status) {
-              clearTimeout(borrowHash.current?.timer)
-              borrowHash.current = null
-              l2CommonService.sendUserUpdate()
-              // setIsSwapLoading(false)
-              setTradeCalcData((state) => {
-                return {
-                  ...state,
-                  step: VaultSwapStep.Swap,
-                }
-              })
-            } else if (sdk.VaultOperationStatus.VAULT_STATUS_FAILED == operation?.status) {
+            clearTimeout(borrowHash.current?.timer)
+            borrowHash.current = null
+            l2CommonService.sendUserUpdate()
+            // setIsSwapLoading(false)
+            setTradeCalcData((state) => {
+              return {
+                ...state,
+                step: VaultSwapStep.Swap,
+              }
+            })
+          } else if (sdk.VaultOperationStatus.VAULT_STATUS_FAILED == operation?.status) {
             clearTimeout(borrowHash.current?.timer)
             borrowHash.current = null
             l2CommonService.sendUserUpdate()
