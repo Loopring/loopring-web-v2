@@ -27,6 +27,7 @@ import {
   useSettings,
   WithdrawPanel,
   WithdrawProps,
+  EditContact,
 } from '../..'
 import {
   Account,
@@ -35,7 +36,6 @@ import {
   IBData,
   TRADE_TYPE,
   TradeNFT,
-  myLog,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
@@ -141,6 +141,7 @@ export const ModalPanel = <
   activeAccountProps,
   collectionAdvanceProps,
   sideStackRedeemProps,
+  contactAddProps,
   assetsData,
   account,
   baseURL,
@@ -148,6 +149,7 @@ export const ModalPanel = <
 }: {
   _width?: number | string
   _height?: number | string
+  contactAddProps: any
   transferProps: TransferProps<T, I>
   withdrawProps: WithdrawProps<T, I>
   baseURL: string
@@ -185,6 +187,7 @@ export const ModalPanel = <
     setShowSideStakingRedeem,
     setShowTargetRedpacketPop,
     setShowRedPacket,
+    setShowEditContact,
     // setShowDual,
   } = useOpenModals()
 
@@ -205,8 +208,8 @@ export const ModalPanel = <
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
+    isShowEditContact,
   } = modals
-
   const theme = useTheme()
   return (
     <>
@@ -463,7 +466,6 @@ export const ModalPanel = <
           />
         }
       />
-
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? 'Action'}
@@ -520,6 +522,22 @@ export const ModalPanel = <
                 step: RedPacketViewStep.OpenPanel,
               })
             }}
+          />
+        }
+      />
+      <Modal
+        // maxWidth={'md'}
+        open={isShowEditContact.isShow}
+        onClose={() => {
+          setShowEditContact({ isShow: false, info: {} })
+        }}
+        content={
+          <EditContact
+            {...{
+              ...contactAddProps,
+            }}
+            // contacts={isShowAccount.info?.contacts}
+            // setToast={setToast}
           />
         }
       />
