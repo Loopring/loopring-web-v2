@@ -200,6 +200,7 @@ export const useVaultSwap = <
     modals: { isShowVaultSwap },
     setShowAccount,
     setShowVaultSwap,
+    setShowGlobalToast,
   } = useOpenModals()
   const { chainInfos, updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
   const { vaultAccountInfo } = useVaultLayer2()
@@ -376,6 +377,7 @@ export const useVaultSwap = <
       if (borrowHash?.current?.hash) {
         updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
       }
+      setToastOpen({ open: false, content: '', type: ToastType.info, step: '' })
     }
     return () => {
       if (borrowHash?.current?.hash) {
@@ -404,31 +406,45 @@ export const useVaultSwap = <
         )
         .then(({ operation }) => {
           if (sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED == operation?.status) {
+              clearTimeout(borrowHash.current?.timer)
+              borrowHash.current = null
+              l2CommonService.sendUserUpdate()
+              // setIsSwapLoading(false)
+              setTradeCalcData((state) => {
+                return {
+                  ...state,
+                  step: VaultSwapStep.Swap,
+                }
+              })
+            } else if (sdk.VaultOperationStatus.VAULT_STATUS_FAILED == operation?.status) {
             clearTimeout(borrowHash.current?.timer)
             borrowHash.current = null
             l2CommonService.sendUserUpdate()
-            // setIsSwapLoading(false)
-            setTradeCalcData((state) => {
-              return {
-                ...state,
-                step: VaultSwapStep.Swap,
-              }
-            })
-          } else if (sdk.VaultOperationStatus.VAULT_STATUS_FAILED == operation?.status) {
-            clearTimeout(borrowHash.current?.timer)
-            borrowHash.current = null
-            l2CommonService.sendUserUpdate()
-            setToastOpen({
-              open: true,
-              type: ToastType.error,
-              content: t('labelVaultBorrowFailed'),
-            })
             setIsSwapLoading(false)
+            handleSwapPanelEvent(
+              {
+                type: 'sell',
+                tradeData: {
+                  ...tradeData,
+                  sell: {
+                    ...tradeData?.sell,
+                    tradeValue: tradeData?.sell?.count,
+                  },
+                },
+              },
+              SwapType.SELL_SELECTED,
+            )
             setTradeCalcData((state) => {
               return {
                 ...state,
                 step: VaultSwapStep.Edit,
               }
+            })
+            setToastOpen({
+              open: true,
+              type: ToastType.error,
+              content: t('labelVaultBorrowFailed'),
+              step: VaultSwapStep.Borrow,
             })
           } else {
             borrowHash.current = {
@@ -887,9 +903,16 @@ export const useVaultSwap = <
       setToastOpen({
         open: true,
         type: ToastType.error,
-        content: t('labelVaultTradeFailed') + t(error.messageKey, { ns: 'error' }),
+        content: t('labelVaultTradeFailed') + ' ' + t(error.messageKey, { ns: 'error' }),
+        step: VaultSwapStep.Swap,
       })
     }
+    setTradeCalcData((state) => {
+      return {
+        ...state,
+        step: VaultSwapStep.Edit,
+      }
+    })
     setIsSwapLoading(false)
   }, [
     tradeVault,
@@ -933,7 +956,7 @@ export const useVaultSwap = <
         vaultLayer2
       ) {
         const vaultAsset = (vaultLayer2 && vaultLayer2[_sellToken]) ?? 0
-        const countBig = sdk.toBig(vaultAsset?.total ?? 0).minus(vaultAsset?.locked ?? 0)
+        const countBig = sdk.toBig(vaultAsset?.l2balance ?? 0).minus(vaultAsset?.locked ?? 0)
         const borrowVol = sdk
           .toBig(
             sdk
@@ -977,9 +1000,16 @@ export const useVaultSwap = <
       setToastOpen({
         open: true,
         type: ToastType.error,
-        content: t('labelVaultBorrowFailed') + t(error.messageKey, { ns: 'error' }),
+        content: t('labelVaultBorrowFailed') + ' ' + t(error.messageKey, { ns: 'error' }),
+        step: VaultSwapStep.Borrow,
       })
       setIsSwapLoading(false)
+      setTradeCalcData((state) => {
+        return {
+          ...state,
+          step: VaultSwapStep.Edit,
+        }
+      })
     }
   }
 
@@ -1113,6 +1143,7 @@ export const useVaultSwap = <
     const { tradeData: _tradeData } = swapData
     myLog('useVaultSwap: resetSwap', swapType, _tradeData)
     const depth = store.getState()._router_tradeVault.tradeVault.depth
+    setToastOpen({ open: false, content: '', type: ToastType.info, step: '' })
     switch (swapType) {
       case SwapType.SEll_CLICK:
       case SwapType.BUY_CLICK:
@@ -1235,10 +1266,9 @@ export const useVaultSwap = <
         myLog('useVaultSwap:', market, depth?.symbol)
       } catch (error: any) {
         myLog('useVaultSwap:', error, 'go to LRC-ETH')
-        setToastOpen({
-          open: true,
-          content: 'error: resetMarket',
-          type: ToastType.error,
+        setShowGlobalToast({
+          isShow: true,
+          info: { content: 'error: resetMarket', type: ToastType.error },
         })
         resetMarket(market, 'sell')
       }

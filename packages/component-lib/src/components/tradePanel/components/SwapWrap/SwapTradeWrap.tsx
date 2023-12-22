@@ -1,7 +1,5 @@
 import { SwapTradeData } from '../../Interface'
-import { useTheme } from '@emotion/react'
 import {
-  AlertIcon,
   BtradeTradeCalcData,
   BtradeType,
   CoinInfo,
@@ -9,7 +7,6 @@ import {
   defaultSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
-  hexToRGB,
   IBData,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -64,7 +61,6 @@ export const SwapTradeWrap = <
   BtnEle,
   ...rest
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
-  const theme = useTheme()
   const sellRef = React.useRef()
   const buyRef = React.useRef()
   const history = useHistory()
@@ -664,25 +660,7 @@ export const SwapTradeWrap = <
 
       <Grid item alignSelf={'stretch'}>
         {(tradeCalcData as any)?.isVault && BtnEle ? (
-          <>
-            {(tradeCalcData as any)?.showHasBorrow && (
-              <Typography
-                marginY={1}
-                width={'100%'}
-                variant={'body1'}
-                component={'span'}
-                padding={1}
-                display={'inline-flex'}
-                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                borderRadius={2}
-                color={'var(--color-text-button)'}
-              >
-                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
-                {t('labelVaultActiveLoanAlert')}
-              </Typography>
-            )}
-            {BtnEle}
-          </>
+          <>{BtnEle}</>
         ) : (
           <ButtonStyle
             variant={'contained'}

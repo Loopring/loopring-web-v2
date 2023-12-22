@@ -11,10 +11,14 @@ import {
   CompleteIcon,
   VaultSwapStep,
   ToastType,
+  hexToRGB,
+  AlertIcon,
+  ErrorIcon,
 } from '@loopring-web/common-resources'
 import { Box, Grid, Link, Tooltip, Typography, Stepper, StepLabel, Step } from '@mui/material'
 import { ButtonStyle, SwapType, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from '@emotion/react'
 enum ActiveStep {
   Edit = 0,
   Borrow = 0,
@@ -199,9 +203,48 @@ export const useVaultSwapExtends = ({
       </Box>
     )
   }, [tradeData])
+  const theme = useTheme()
+
   const BtnEle = React.useMemo(() => {
     return (
       <Grid container spacing={2}>
+        {toastOpen?.type == ToastType.error && toastOpen?.step == VaultSwapStep.Borrow ? (
+          <Grid item xs={12}>
+            <Typography
+              marginY={1}
+              width={'100%'}
+              variant={'body1'}
+              component={'span'}
+              padding={1}
+              display={'inline-flex'}
+              bgcolor={hexToRGB(theme.colorBase.error, 0.2)}
+              borderRadius={2}
+              color={'var(--color-text-button)'}
+            >
+              <ErrorIcon color={'error'} sx={{ marginRight: 1 / 2 }} />
+              {t('labelVaultActiveLoanError', { symbol: tradeCalcData.belongSellAlice, value: '' })}
+            </Typography>
+          </Grid>
+        ) : (
+          (tradeCalcData as any)?.showHasBorrow && (
+            <Grid item xs={12}>
+              <Typography
+                marginY={1}
+                width={'100%'}
+                variant={'body1'}
+                component={'span'}
+                padding={1}
+                display={'inline-flex'}
+                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                borderRadius={2}
+                color={'var(--color-text-button)'}
+              >
+                <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+                {t('labelVaultActiveLoanAlert')}
+              </Typography>
+            </Grid>
+          )
+        )}
         <>
           {tradeCalcData?.isRequiredBorrow && (
             <>
@@ -217,7 +260,10 @@ export const useVaultSwapExtends = ({
                     return (
                       <Step key={label}>
                         <StepLabel
-                          error={toastOpen.type == ToastType.error && value == tradeCalcData.step}
+                          error={
+                            toastOpen.type == ToastType.error &&
+                            toastOpen.step == tradeCalcData.step
+                          }
                         >
                           {label}
                         </StepLabel>

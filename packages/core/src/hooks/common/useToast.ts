@@ -9,10 +9,12 @@ export const useToast = (): TOSTOBJECT => {
   })
 
   const closeToast = React.useCallback(() => {
-    setToastOpen({
-      open: false,
-      content: '',
-      type: ToastType.info,
+    setToastOpen((state) => {
+      return {
+        ...state,
+        content: '',
+        open: false,
+      }
     })
   }, [setToastOpen])
 

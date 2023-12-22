@@ -2340,4 +2340,6 @@ export default {
   labelBorrowed: 'Borrowed {{symbol}}',
   labelBorrowSwap: 'Borrow & Swap',
   labelVaultTradeInsufficient: 'Insufficient quota',
+  labelVaultActiveLoanError:
+    'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
 }
