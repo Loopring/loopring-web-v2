@@ -193,7 +193,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
           }
         } else if (
-          [sdk.VaultAccountStatus.IN_RDEEM].includes(vaultAccountInfo?.accountStatus as any)
+          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
           setShowNoVaultAccount({
             isShow: true,

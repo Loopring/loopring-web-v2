@@ -72,7 +72,7 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
     const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
     const maxBorrowAmt = sdk
       .toBig(BigNumber.min(totalQuote, tradeData.count))
-      .toFixed(borrowToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
+      .toFixed(borrowToken?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN)
     const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
     const tradeValue = tradeData.tradeValue
     // const = tradeData ? tradeData.count : 0

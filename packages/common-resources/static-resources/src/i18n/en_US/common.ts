@@ -2339,4 +2339,5 @@ export default {
   labelBorrowing: 'Borrowing {{symbol}}',
   labelBorrowed: 'Borrowed {{symbol}}',
   labelBorrowSwap: 'Borrow & Swap',
+  labelVaultTradeInsufficient: 'Insufficient quota',
 }
