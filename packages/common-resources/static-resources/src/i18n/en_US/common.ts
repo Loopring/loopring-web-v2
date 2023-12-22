@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import { TradeBtnStatus } from '../../constant'
-
 export default {
   labelErrorTitle: 'Error Detail: ',
   labelNoContent: 'No Content',
