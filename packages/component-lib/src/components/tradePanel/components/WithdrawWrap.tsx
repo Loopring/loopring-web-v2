@@ -43,6 +43,7 @@ export const WithdrawWrap = <
   C extends FeeInfo,
 >({
   t,
+  title,
   disabled,
   walletMap,
   tradeData,
@@ -214,8 +215,10 @@ export const WithdrawWrap = <
             whiteSpace={'pre'}
             marginRight={1}
           >
-            {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
-            (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
+            {title
+              ? title
+              : (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
+                (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'
               ? t('labelL2ToL1DeployTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
               : isToMyself
               ? t('labelL2ToMyL1Title', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
@@ -289,7 +292,7 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={'stretch'} position={'relative'}>
+      <Grid item alignSelf={'stretch'} position={'relative'} className={'address-wrap'}>
         {!isToMyself ? (
           <>
             <TextField
@@ -437,7 +440,7 @@ export const WithdrawWrap = <
         </Box>
       </Grid>
       {!isToMyself && (
-        <Grid item alignSelf={'stretch'} position={'relative'}>
+        <Grid item alignSelf={'stretch'} position={'relative'} className={'address-type-wrap'}>
           <FullAddressType
             detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}
@@ -447,7 +450,7 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      <Grid item alignSelf={'stretch'} position={'relative'}>
+      <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (

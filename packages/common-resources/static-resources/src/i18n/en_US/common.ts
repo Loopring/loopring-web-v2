@@ -2173,7 +2173,6 @@ export default {
   labelVaultType: 'Type',
   labelVaultTypeOpenPosition: 'Open Position',
   labelVaultStatus: 'Status',
-
   labelVaultJoinStatus: '{{status}} {{percentage}}',
   labelVaultTradeStatus: '{{status}} {{percentage}}',
   labelVaultCollateral: 'Collateral',
