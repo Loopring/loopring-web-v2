@@ -440,7 +440,7 @@ export const WithdrawWrap = <
         </Box>
       </Grid>
       {!isToMyself && (
-        <Grid item alignSelf={'stretch'} position={'relative'}>
+        <Grid item alignSelf={'stretch'} position={'relative'} className={'address-type-wrap'}>
           <FullAddressType
             detectedWalletType={detectedWalletType}
             selectedValue={sureIsAllowAddress}

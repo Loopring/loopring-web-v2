@@ -290,7 +290,6 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
   const { nftDeployProps } = useNFTDeploy()
-
   const { contactAddProps } = useContactAdd()
   const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),

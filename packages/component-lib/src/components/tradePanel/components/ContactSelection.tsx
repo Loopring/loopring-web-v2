@@ -109,13 +109,6 @@ const CloseIconStyled = styled(CloseIcon)`
 // OutlinedInput
 type ContactSelectionProps = {
   onSelect: (address: string) => void
-  // contacts:
-  //   | {
-  //       name: string
-  //       address: string
-  //       addressType: AddressType
-  //     }[]
-  //   | undefined
   scrollHeight: string
 } & Pick<sdk.GetContactsResponse, 'contacts'>
 export const ContactSelection = (props: ContactSelectionProps) => {

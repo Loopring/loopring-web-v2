@@ -2138,13 +2138,14 @@ export default {
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelHideRead: 'Hide Read(s)',
-  labelUpdateContactsNext: 'Go to Update Contact',
-  labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
   labelContactENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
+  
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
@@ -2291,7 +2292,7 @@ export default {
   labelFailed: 'Failed',
   labelVAULT_COLLATERAL: 'Vault Collateral',
   labelTokenVaultDes:
-    '{{symbol}} in Vault is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
+    '{{vSymbol}} is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
   labelTokenWebsite: 'website',
   labelTokenContractAddress: 'Token Contract Address',
   labelTokenSupply: 'Token Supply',
@@ -2341,3 +2342,4 @@ export default {
   labelVaultActiveLoanError:
     'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
 }
+
