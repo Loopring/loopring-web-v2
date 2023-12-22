@@ -19,6 +19,7 @@ enum ActiveStep {
   Edit = 0,
   Borrow = 0,
   Swap = 1,
+  Swaping = 1,
 }
 
 export const useVaultSwapExtends = ({
@@ -241,7 +242,7 @@ export const useVaultSwapExtends = ({
                       })}
                     </Typography>
                   )}
-                {tradeCalcData.step === VaultSwapStep.Swap && (
+                {[VaultSwapStep.Swap, VaultSwapStep.Swaping].includes(tradeCalcData.step) && (
                   <Typography
                     variant={'body2'}
                     component={'span'}
