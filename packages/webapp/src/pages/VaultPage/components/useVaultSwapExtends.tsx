@@ -7,13 +7,19 @@ import {
   MapChainId,
   myLog,
   TradeBtnStatus,
-  DirectionTag,
   WaitingIcon,
   CompleteIcon,
+  VaultSwapStep,
+  ToastType,
 } from '@loopring-web/common-resources'
-import { Box, Grid, Link, Tooltip, Typography } from '@mui/material'
-import { ButtonStyle, CoinIcons, SwapType, useSettings } from '@loopring-web/component-lib'
+import { Box, Grid, Link, Tooltip, Typography, Stepper, StepLabel, Step } from '@mui/material'
+import { ButtonStyle, SwapType, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
+enum ActiveStep {
+  Edit = 0,
+  Borrow = 0,
+  Swap = 1,
+}
 
 export const useVaultSwapExtends = ({
   tradeCalcData,
@@ -24,9 +30,10 @@ export const useVaultSwapExtends = ({
   handleSwapPanelEvent,
   tradeData,
   isSwapLoading,
-  btnBorrowStatus,
-  onBorrowClick,
-  borrowBtnI18nKey,
+  // btnBorrowStatus,
+  // onBorrowClick,
+  // borrowBtnI18nKey,
+  toastOpen,
 }) => {
   const { t } = useTranslation()
   const { defaultNetwork, coinJson } = useSettings()
@@ -66,8 +73,8 @@ export const useVaultSwapExtends = ({
         ...keyParams,
       })
     }
-  }, [swapBtnI18nKey, network, tradeCalcData])
-  const labelBorrow = React.useMemo(() => {
+  }, [swapBtnI18nKey, network, tradeCalcData, t])
+  const labelBorrowError = React.useMemo(() => {
     const keyParams = {
       layer2: L1L2_NAME_DEFINED[network].layer2,
       l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
@@ -76,8 +83,8 @@ export const useVaultSwapExtends = ({
       l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }
-    if (borrowBtnI18nKey) {
-      let key = borrowBtnI18nKey.split('|')
+    if (swapBtnI18nKey) {
+      let key = swapBtnI18nKey.split('|')
       if (key) {
         const i18nKey = key.shift()
         return t(
@@ -95,14 +102,14 @@ export const useVaultSwapExtends = ({
               },
         )
       } else {
-        return t(borrowBtnI18nKey, {
+        return t(swapBtnI18nKey, {
           ...keyParams,
         })
       }
     } else {
       return ''
     }
-  }, [borrowBtnI18nKey, network, tradeCalcData])
+  }, [swapBtnI18nKey, network, tradeCalcData])
 
   const getDisabled =
     disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined
@@ -192,155 +199,99 @@ export const useVaultSwapExtends = ({
     )
   }, [tradeData])
   const BtnEle = React.useMemo(() => {
-    return tradeCalcData?.isRequiredBorrow ? (
+    return (
       <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Typography
-            variant={'body2'}
-            component={'span'}
-            color={'textSecondary'}
-            display={'inline-flex'}
-            alignItems={'center'}
-          >
-            <Typography
-              variant={'inherit'}
-              component={'span'}
-              color={tradeCalcData.step == 'swap' ? 'inherit' : 'textPrimary'}
-            >
-              {t('labelStep1Borrow')}
-            </Typography>
-            {' ' + DirectionTag + ' '}
-            <Typography
-              variant={'inherit'}
-              component={'span'}
-              color={tradeCalcData.step == 'swap' ? 'textPrimary' : 'inherit'}
-            >
-              {t('labelStep2Swap')}
-            </Typography>
-          </Typography>
-        </Grid>
-        <Grid item xs={6} display={'flex'} justifyContent={'flex-end'}>
-          {tradeCalcData.step === 'borrow' && btnBorrowStatus === TradeBtnStatus.LOADING && (
-            <Typography
-              variant={'body2'}
-              component={'span'}
-              color={'var(--color-warning)'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              <WaitingIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
-              {t('labelBorrowing', {
-                symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
-              })}
-            </Typography>
+        <>
+          {tradeCalcData?.isRequiredBorrow && (
+            <>
+              <Grid item xs={7}>
+                <Stepper activeStep={Number(ActiveStep[tradeCalcData.step])}>
+                  {[
+                    { label: t('labelStep1Borrow'), value: VaultSwapStep.Borrow },
+                    {
+                      label: t('labelStep2Swap'),
+                      value: VaultSwapStep.Swap,
+                    },
+                  ].map(({ label, value }) => {
+                    return (
+                      <Step key={label}>
+                        <StepLabel
+                          error={toastOpen.type == ToastType.error && value == tradeCalcData.step}
+                        >
+                          {label}
+                        </StepLabel>
+                      </Step>
+                    )
+                  })}
+                </Stepper>
+              </Grid>
+              <Grid item xs={5} display={'flex'} justifyContent={'flex-end'}>
+                {tradeCalcData.step === VaultSwapStep.Borrow &&
+                  swapBtnStatus === TradeBtnStatus.LOADING && (
+                    <Typography
+                      variant={'body2'}
+                      component={'span'}
+                      color={'var(--color-warning)'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <WaitingIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
+                      {t('labelBorrowing', {
+                        symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
+                      })}
+                    </Typography>
+                  )}
+                {tradeCalcData.step === VaultSwapStep.Swap && (
+                  <Typography
+                    variant={'body2'}
+                    component={'span'}
+                    color={'var(--color-success)'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <CompleteIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
+                    {t('labelBorrowed', {
+                      symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
+                    })}
+                  </Typography>
+                )}
+              </Grid>
+              {labelBorrowError && (
+                <Grid item xs={12}>
+                  <Typography
+                    variant={'body2'}
+                    component={'span'}
+                    color={'error'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    {labelBorrowError}
+                  </Typography>
+                </Grid>
+              )}
+            </>
           )}
-          {tradeCalcData.step === 'swap' && (
-            <Typography
-              variant={'body2'}
-              component={'span'}
-              color={'var(--color-success)'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              <CompleteIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
-              {t('labelBorrowed', {
-                symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
-              })}
-            </Typography>
-          )}
-        </Grid>
-
-        {labelBorrow && (
-          <Grid item xs={12}>
-            <Typography
-              variant={'body2'}
-              component={'span'}
-              color={'error'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              {labelBorrow}
-            </Typography>
-          </Grid>
-        )}
-
-        <Grid item xs={6}>
+        </>
+        <Grid item xs={12}>
           <ButtonStyle
-            sx={{
-              height: 'var(--row-height)',
-            }}
             variant={'contained'}
-            size={'medium'}
-            color={'primary'}
-            onClick={() => {
-              onBorrowClick()
-            }}
-            loading={
-              !getDisabled &&
-              tradeCalcData.step === 'borrow' &&
-              btnBorrowStatus === TradeBtnStatus.LOADING
-                ? 'true'
-                : 'false'
-            }
-            disabled={
-              getDisabled ||
-              tradeCalcData.step == 'swap' ||
-              btnBorrowStatus === TradeBtnStatus.DISABLED ||
-              btnBorrowStatus === TradeBtnStatus.LOADING
-            }
-            fullWidth={true}
-          >
-            {t('labelVaultBorrowBtn')}
-          </ButtonStyle>
-        </Grid>
-        <Grid item xs={6}>
-          <ButtonStyle
-            sx={{
-              height: 'var(--row-height)',
-            }}
-            variant={'contained'}
-            size={'medium'}
+            size={'large'}
             color={'primary'}
             onClick={() => {
               onSwapClick()
             }}
-            loading={
-              !getDisabled &&
-              tradeCalcData.step === 'swap' &&
-              swapBtnStatus === TradeBtnStatus.LOADING
-                ? 'true'
-                : 'false'
-            }
+            loading={!getDisabled && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
             disabled={
               getDisabled ||
-              tradeCalcData.step !== 'swap' ||
               swapBtnStatus === TradeBtnStatus.DISABLED ||
               swapBtnStatus === TradeBtnStatus.LOADING
             }
             fullWidth={true}
           >
-            {t('labelVaultSwapBtn')}
+            {tradeCalcData?.isRequiredBorrow ? t('labelBorrowSwap') : label}
           </ButtonStyle>
         </Grid>
       </Grid>
-    ) : (
-      <ButtonStyle
-        variant={'contained'}
-        size={'large'}
-        color={'primary'}
-        onClick={() => {
-          onSwapClick()
-        }}
-        loading={!getDisabled && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-        disabled={
-          getDisabled ||
-          swapBtnStatus === TradeBtnStatus.DISABLED ||
-          swapBtnStatus === TradeBtnStatus.LOADING
-        }
-        fullWidth={true}
-      >
-        {label}
-      </ButtonStyle>
     )
   }, [swapBtnStatus, onSwapClick, getDisabled, label])
   return {

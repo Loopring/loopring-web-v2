@@ -61,7 +61,6 @@ export const useVaultRepay = <
     if (tradeData?.belong) {
       const vaultToken = vaultTokenMap[tradeData.belong as any]
       const borrowed = tradeData.borrowed
-      const orderAmounts = vaultToken.orderAmounts
       let minRepayVol = BigNumber.max(
         // orderAmounts.dust,
         //@ts-ignore

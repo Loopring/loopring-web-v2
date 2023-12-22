@@ -2338,4 +2338,5 @@ export default {
   labelVaultTradeSimpleBtn: 'Trade',
   labelBorrowing: 'Borrowing {{symbol}}',
   labelBorrowed: 'Borrowed {{symbol}}',
+  labelBorrowSwap: 'Borrow & Swap',
 }

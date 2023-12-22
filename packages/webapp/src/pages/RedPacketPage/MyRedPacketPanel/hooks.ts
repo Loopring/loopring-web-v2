@@ -41,7 +41,6 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
   const { idIndex, coinMap, tokenMap } = useTokenMap()
   const [myRedPacketRecordTotal, setMyRedPacketRecordTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
-  // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
   const getMyRedPacketRecordTxList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
       setShowLoading(true)
@@ -153,7 +152,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
     if (resposne?.detail.luckyToken.type.mode === sdk.LuckyTokenClaimType.BLIND_BOX) {
       if (
         resposne?.detail.luckyToken.status === sdk.LuckyTokenItemStatus.PENDING &&
-        (resposne?.raw_data as any).blindBoxStatus === '' && 
+        (resposne?.raw_data as any).blindBoxStatus === '' &&
         resposne?.detail.luckyToken.type.scope !== sdk.LuckyTokenViewType.TARGET
       ) {
         setShowRedPacket({
@@ -228,7 +227,6 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
   const { idIndex, coinMap, tokenMap } = useTokenMap()
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
-  // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const getRedPacketReceiveList = React.useCallback(
     async ({ offset, limit, filter }: any) => {
@@ -406,7 +404,6 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
   const { idIndex, coinMap, tokenMap } = useTokenMap()
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
-  // let match: any = useRouteMatch("/redPacket/records/?:item/?:type");
 
   const getRedPacketReceiveList = React.useCallback(
     async ({ offset, limit, filter }: any) => {

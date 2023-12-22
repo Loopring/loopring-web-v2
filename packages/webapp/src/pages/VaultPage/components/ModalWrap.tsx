@@ -25,6 +25,7 @@ import {
   TRADE_TYPE,
   VaultAction,
   VaultLoanType,
+  VaultSwapStep,
 } from '@loopring-web/common-resources'
 import { useVaultSwapExtends } from './useVaultSwapExtends'
 import { useTranslation } from 'react-i18next'
@@ -67,9 +68,6 @@ export const ModalVaultWrap = () => {
     market,
     isMobile,
     disabled,
-    btnBorrowStatus,
-    onBorrowClick,
-    borrowBtnI18nKey,
     cancelBorrow,
   } = useVaultSwap({ path: 'vault' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
@@ -81,9 +79,7 @@ export const ModalVaultWrap = () => {
     disabled,
     handleSwapPanelEvent,
     tradeData,
-    btnBorrowStatus,
-    onBorrowClick,
-    borrowBtnI18nKey,
+    toastOpen,
   })
   const { vaultRepayProps, vaultBorrowProps, vaultLoanType, handleTabChange } = useVaultLoan()
   return (
@@ -126,7 +122,10 @@ export const ModalVaultWrap = () => {
         contentClassName={'vault-wrap'}
         open={isShowVaultSwap.isShow}
         onClose={() => {
-          if ((tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== 'edit') {
+          if (
+            (tradeCalcData as any)?.isVault &&
+            (tradeCalcData as any).step !== VaultSwapStep.Edit
+          ) {
             setOpenCancel({ openCancel: false, shouldClose: true })
           } else {
             setShowVaultSwap({ isShow: false })

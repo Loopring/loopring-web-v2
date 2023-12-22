@@ -1,4 +1,4 @@
-import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
+import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes, VaultSwapStep } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import React from 'react'
@@ -164,7 +164,7 @@ export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 
   isRequiredBorrow: boolean
   borrowVol: string
   borrowStr: string
-  step: 'edit' | 'borrow' | 'swap'
+  step: VaultSwapStep
 }
 
 export type TradeCalcProData<T> = {

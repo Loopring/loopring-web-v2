@@ -19,6 +19,7 @@ import {
   SwapExchangeIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
+  VaultSwapStep,
   VaultTradeCalcData,
 } from '@loopring-web/common-resources'
 import { Trans, WithTranslation } from 'react-i18next'
@@ -394,7 +395,7 @@ export const SwapTradeWrap = <
           <></>
         )}
 
-        {(tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== 'edit' && (
+        {(tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== VaultSwapStep.Edit && (
           <Box className={'cover'} onClick={onCancelClick} />
         )}
       </Grid>

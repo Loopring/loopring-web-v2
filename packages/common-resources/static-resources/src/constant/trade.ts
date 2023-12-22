@@ -781,3 +781,10 @@ export enum VaultAction {
   VaultLoan = 'VaultLoan',
   VaultSwap = 'VaultSwap',
 }
+
+export enum VaultSwapStep {
+  Edit = 'Edit',
+  Borrow = 'Borrow',
+  Swap = 'Swap',
+  Swaping = 'Swaping',
+}

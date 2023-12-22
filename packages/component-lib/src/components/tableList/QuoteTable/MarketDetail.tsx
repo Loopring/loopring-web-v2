@@ -11,7 +11,7 @@ import {
   SoursURL,
   SvgSize,
   TokenType,
-  myLog,
+  VaultSwapStep,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { CoinIcons } from '../assetsTable'
@@ -50,7 +50,6 @@ enum TimeMarketIntervalDataIndex {
   w1,
   m1,
 }
-
 export const MarketDetail = ({
   tokenInfo,
   trends,

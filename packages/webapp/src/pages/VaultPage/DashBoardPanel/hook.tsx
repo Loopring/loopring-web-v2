@@ -47,7 +47,7 @@ import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { useLocation, useRouteMatch } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 
-const VaultPath = `${RouterPath.vault}/:item/:method`
+const VaultPath = `${RouterPath.vault}/:item/:method?`
 
 export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   vaultAccountInfo: _vaultAccountInfo,
@@ -193,7 +193,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
           }
         } else if (
-          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+          [sdk.VaultAccountStatus.IN_RDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
           setShowNoVaultAccount({
             isShow: true,
