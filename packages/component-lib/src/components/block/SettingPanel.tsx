@@ -36,10 +36,6 @@ const BoxStyle = styled(Box)`
 ` as typeof Box
 
 export const BtnCurrency = ({ t, currency, label, handleChange }: any) => {
-  // const { currency } = useSettings()
-  // const [state, setState] = React.useState<string>(
-  //   currency === Currency.usd ? Currency.usd : Currency.cny,
-  // )
   const _handleChange = React.useCallback(
     (event: SelectChangeEvent<any>) => {
       // setState(event.target.value)
@@ -55,7 +51,7 @@ export const BtnCurrency = ({ t, currency, label, handleChange }: any) => {
       IconComponent={DropDownIcon}
       labelId='language-selected'
       id='language-selected'
-      value={currency}
+      value={currency?.toUpperCase()}
       autoWidth
       onChange={_handleChange}
     >
@@ -218,7 +214,7 @@ export const SettingPanel = withTranslation(['common', 'layout'], {
                 ...rest,
                 handleChange: handleOnLanguageChange,
               }}
-            ></BtnLanguage>
+            />
           </Grid>
         </Grid>
       </Grid>
