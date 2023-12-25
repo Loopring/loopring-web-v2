@@ -6,7 +6,7 @@ import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { store, useAccount, useTargetRedPackets, ViewAccountTemplate, walletLayer2Service } from '@loopring-web/core'
+import { useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
 import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { MaxWidthContainer } from '../InvestPage'
@@ -16,6 +16,8 @@ export const subMenu = subMenuLayer2
 
 export const AssetPage = () => {
   let match: any = useRouteMatch('/l2assets/:item')
+  const { forexMap } = useSystem()
+
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
@@ -23,14 +25,18 @@ export const AssetPage = () => {
   const layer2Router = React.useMemo(() => {
     switch (selected.toLowerCase()) {
       case 'history':
-        return <MaxWidthContainer marginTop={5}><HistoryPanel /></MaxWidthContainer> 
+        return (
+          <MaxWidthContainer marginTop={5}>
+            <HistoryPanel />
+          </MaxWidthContainer>
+        )
       case 'assets':
       default:
         return (
           <AssetPanel
             showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
-            assetPanelProps={{...assetPanelProps, assetBtnStatus}}
+            assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
           />
         )
     }
@@ -50,7 +56,8 @@ export const AssetPage = () => {
             <AssetTitleMobile
               assetBtnStatus={assetBtnStatus}
               isWebEarn={true}
-              {...{...assetTitleProps, ...assetTitleMobileExtendProps}}
+              forexMap={forexMap}
+              {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
           )}
           {layer2Router}
