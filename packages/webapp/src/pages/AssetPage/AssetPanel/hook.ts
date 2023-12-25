@@ -209,9 +209,7 @@ export const useGetAssets = (): AssetPanelProps & {
             item.precision = precision
             pre.assetsRawMap[key] = item
             pre.assetsRawData.push(item)
-            totalAssets = totalAssets.plus(
-              sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0),
-            )
+            totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar))
             // totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
           }
           pre?.assetsRawData.sort((a, b) => {

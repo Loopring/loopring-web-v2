@@ -29,16 +29,30 @@ export type WithdrawTypes = {
   [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard'
 }
 
-export type PriceTagType = '$' | '￥'
+// export type PriceTagType = '$' | '￥'
 
 export enum CurrencyToTag {
-  usd = 'Dollar',
-  cny = 'Yuan',
+  USD = 'USD',
+  CNY = 'CNY',
+  JPY = 'JPY',
+  AUD = 'AUD',
+  CAD = 'CAD',
+  HKD = 'HKD',
+  EUR = 'EUR',
+  KRW = 'KRW',
+  GBP = 'GBP',
 }
 
 export enum PriceTag {
-  Dollar = '$',
-  Yuan = '￥',
+  USD = '$',
+  CNY = '￥',
+  JPY = '¥',
+  AUD = 'A$',
+  CAD = 'C$',
+  HKD = 'HKD',
+  EUR = '€',
+  KRW = '₩',
+  GBP = '£',
 }
 
 export enum TradeTypes {
@@ -324,7 +338,7 @@ export type AddressItemType<T> = {
 export const defaultSlipage = 0.1
 export const defaultBlockTradeSlipage = 0.1
 
-export type ForexMap<C = sdk.Currency> = { [k in keyof C]?: number }
+export type ForexMap<C = CurrencyToTag> = { [k in keyof C]?: number }
 
 export const enum InvestMapType {
   Token = 'Token',

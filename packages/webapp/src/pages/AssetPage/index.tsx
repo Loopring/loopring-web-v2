@@ -5,11 +5,8 @@ import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
 import { RouterPath } from '@loopring-web/common-resources'
 
 import React from 'react'
-import {
-  useTargetRedPackets,
-  ViewAccountTemplate,
-} from '@loopring-web/core'
-import {  useGetAssets } from './AssetPanel/hook'
+import { useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
+import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { HistoryPanel } from './HistoryPanel'
 
@@ -18,6 +15,8 @@ export const l2assetsRouter = `${RouterPath.l2assets}/:item`
 export const AssetPage = () => {
   let match: any = useRouteMatch(l2assetsRouter)
   const selected = match?.params.item ?? 'assets'
+  const { forexMap } = useSystem()
+
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
   const { redPackets } = useTargetRedPackets()
@@ -49,6 +48,7 @@ export const AssetPage = () => {
         >
           {isMobile && (
             <AssetTitleMobile
+              forexMap={forexMap}
               assetBtnStatus={assetBtnStatus}
               {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
             />
