@@ -13,6 +13,7 @@ import {
   MapChainId,
   myLog,
   TokenPriceBase,
+  CurrencyToTag,
 } from '@loopring-web/common-resources'
 import { statusUnset as accountStatusUnset } from '../account/reducer'
 import { getAmmMap, initAmmMap } from '../Amm/AmmMap/reducer'
@@ -299,7 +300,7 @@ const should15MinutesUpdateDataGroup = async (
   chainId: sdk.ChainId,
 ): Promise<{
   gasPrice: number | undefined
-  forexMap: ForexMap<sdk.Currency>
+  forexMap: ForexMap
 }> => {
   // const { defaultNetwork } = store.getState().settings
   const network = MapChainId[chainId] ?? MapChainId[1]
@@ -310,13 +311,13 @@ const should15MinutesUpdateDataGroup = async (
     //   chainId === sdk.ChainId.GOERLI
     //     ? '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a'
     //     : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
-    const promiseArray = Reflect.ownKeys(sdk.Currency).map((key, index) => {
+    const promiseArray = Object.keys(CurrencyToTag).map((key, index) => {
       if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
         indexUSD = index
       }
       return (
         LoopringAPI?.walletAPI?.getLatestTokenPrices({
-          currency: key.toString().toUpperCase(),
+          currency: CurrencyToTag[key].toString(),
           tokens: tokenAddress,
         }) ?? Promise.resolve({ tokenPrices: null })
       )
@@ -326,15 +327,14 @@ const should15MinutesUpdateDataGroup = async (
       LoopringAPI.exchangeAPI.getGasPrice(),
       ...promiseArray,
     ])
-    const baseUsd = restForexs[indexUSD].tokenPrices[tokenAddress]
-    const forexMap: ForexMap<sdk.Currency> = Reflect.ownKeys(sdk.Currency).reduce<
-      ForexMap<sdk.Currency>
-    >((prev, key, index) => {
+    const baseUsd = restForexs[indexUSD].tokenPrices[tokenAddress] ?? 1
+    const forexMap: ForexMap = Object.keys(CurrencyToTag).reduce<ForexMap>((prev, key, index) => {
       if (restForexs[index] && key && restForexs[index].tokenPrices) {
-        prev[key] = restForexs[index].tokenPrices[tokenAddress] / baseUsd
+        // @ts-ignore
+        prev[CurrencyToTag[key]] = Number(restForexs[index].tokenPrices[tokenAddress] / baseUsd)
       }
       return prev
-    }, {} as ForexMap<sdk.Currency>)
+    }, {} as ForexMap)
 
     return {
       gasPrice,
