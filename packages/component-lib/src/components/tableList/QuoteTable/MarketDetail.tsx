@@ -80,6 +80,13 @@ export const MarketDetail = ({
     },
     [trends],
   )
+  const priceCall = React.useCallback(
+    (price: any) => {
+      const priceStr = sdk.toBig(price ?? 0).times(forexMap[currency])
+      return getValuePrecisionThousand(priceStr, 5, 4, 2, false, { isFait: true, floor: true })
+    },
+    [forexMap, currency],
+  )
 
   React.useEffect(() => {
     if (isShow && !isLoading) {
@@ -142,8 +149,7 @@ export const MarketDetail = ({
           alignItems={'flex-end'}
         >
           <Typography component={'span'} display={'inline-flex'}>
-            {PriceTag[CurrencyToTag[currency]] +
-              tokenInfo.price * (forexMap[currency]?.toFixed(2) ?? 0)}
+            {PriceTag[CurrencyToTag[currency]] + priceCall(tokenInfo.price)}
           </Typography>
           <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
             {typeof tokenInfo.percentChange24H !== 'undefined'
