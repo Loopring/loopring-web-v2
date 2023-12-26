@@ -70,16 +70,21 @@ export const useVaultBorrow = <
     }
     if (tradeData?.belong) {
       const borrowToken = vaultTokenMap[tradeData.belong]
-      const orderAmounts = borrowToken.orderAmounts
+      // const orderAmounts = borrowToken.orderAmounts
       const minBorrowVol = BigNumber.max(
-        orderAmounts.dust,
+        // orderAmounts.dust,
         //@ts-ignore
         borrowToken?.vaultTokenAmounts?.minLoanAmount,
       )
       const minBorrowAmt = minBorrowVol.div('1e' + borrowToken.decimals)
-      const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
+      // const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
       const maxBorrowAmt = sdk
-        .toBig(BigNumber.min(totalQuote, tradeData.count))
+        .toBig(
+          BigNumber.min(
+            // totalQuote, // Infinite
+            tradeData.count,
+          ),
+        )
         .toFixed(borrowToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
       const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
       const tradeValue = tradeData.tradeValue
@@ -101,7 +106,7 @@ export const useVaultBorrow = <
         ),
         maxBorrowVol: maxBorrowVol.toString(),
         minBorrowVol: minBorrowVol.toString(),
-        maxQuote: orderAmounts.maximum,
+        // maxQuote: orderAmounts.maximum,
         borrowVol: sdk
           .toBig(tradeValue ?? 0)
           .times('1e' + borrowToken.decimals)
@@ -120,7 +125,7 @@ export const useVaultBorrow = <
         ),
         balance: maxBorrowAmt,
         borrowAmt: tradeValue ?? 0,
-        totalQuote: totalQuote.toString(),
+        // totalQuote: totalQuote.toString(),
         coinInfoMap: vaultCoinMap,
       }
     }
