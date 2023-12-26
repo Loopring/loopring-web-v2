@@ -92,7 +92,7 @@ export const makeVaultLayer2 = <
       const vaultAsset: sdk.VaultBalance = item
       const symbol = idIndex[item.tokenId]
       const vaultToken = tokenMap[symbol]
-      const countBig = sdk.toBig(vaultAsset.total).minus(vaultAsset?.locked ?? 0)
+      const countBig = sdk.toBig(vaultAsset.l2balance).minus(vaultAsset?.locked ?? 0)
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
