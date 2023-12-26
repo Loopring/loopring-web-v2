@@ -152,10 +152,11 @@ export const makeVaultAvaiable2 = <
       const vaultToken = tokenMap[vaultSymbol]
       const status = vaultToken?.vaultTokenAmounts?.status?.toString(2)
       if (status[0] == '1' && status[3] == '1') {
-        const borrowed = sdk
+        let borrowed = sdk
           .toBig((vaultLayer2 && vaultLayer2[vaultSymbol]?.borrowed) ?? 0)
           .div('1e' + vaultToken.decimals)
           .toFixed(vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision, 0)
+        borrowed = parseFloat(borrowed) == 0 ? 0 : borrowed
         let walletCoin = {
           erc20Symbol,
           belongAlice: erc20Symbol,
