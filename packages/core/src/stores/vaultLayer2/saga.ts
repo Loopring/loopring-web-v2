@@ -53,9 +53,10 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       if (
         (history &&
           history?.raw_data?.operation?.status &&
-          ['VAULT_STATUS_EARNING', sdk.VaultOperationStatus.VAULT_STATUS_FAILED].includes(
-            history?.operation?.status?.toUpperCase() ?? '',
-          )) ||
+          [
+            sdk.VaultOperationStatus.VAULT_STATUS_EARNING,
+            sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
+          ].includes(history?.operation?.status?.toUpperCase() ?? '')) ||
         [sdk.VaultAccountStatus.IN_STAKING, sdk.VaultAccountStatus.IN_REDEEM].includes(
           vaultAccountInfo.accountStatus,
         )
@@ -89,7 +90,11 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
         vaultLayer2 = vaultAccountInfo.userAssets.reduce((prev, item) => {
-          prev[vaultIdIndex[item.tokenId]] = { ...item, locked: userBalances[item.tokenId]?.locked }
+          prev[vaultIdIndex[item.tokenId]] = {
+            ...item,
+            locked: userBalances[item.tokenId]?.locked,
+            l2balance: userBalances[item.tokenId]?.total,
+          }
           return prev
         }, {} as VaultLayer2Map<R>)
       }
