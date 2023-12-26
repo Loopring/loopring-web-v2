@@ -1,6 +1,7 @@
 import { BIGO, store } from '../../index'
 import { AccountStatus, CoinKey, WalletCoin, WalletMap } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
+import BigNumber from 'bignumber.js'
 
 export const VaultBorrowFault = 1
 
@@ -85,7 +86,7 @@ export const makeVaultLayer2 = <
     vaultLayer2Map = vaultAccountInfo?.userAssets.reduce((prev, item) => {
       const vaultAsset: sdk.VaultBalance = item
       const symbol = idIndex[item.tokenId]
-      const countBig = sdk.toBig(vaultAsset.total) //.minus(sdk.toBig(locked))
+      const countBig = sdk.toBig(vaultAsset.total).minus(vaultAsset?.locked ?? 0)
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
@@ -153,7 +154,10 @@ export const makeVaultAvaiable2 = <
                 .toBig(maxBorrowableOfUsdt ?? 0)
                 .div(price ? price : 1)
                 .times(fault)
-                .toFixed(vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision, 0)
+                .toFixed(
+                  vaultToken?.vaultTokenAmounts?.qtyStepScale ?? vaultToken.precision,
+                  BigNumber.ROUND_DOWN,
+                )
             : 0,
         }
         prev[item] = {
