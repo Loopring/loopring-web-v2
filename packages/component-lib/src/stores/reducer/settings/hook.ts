@@ -58,7 +58,7 @@ export function useSettings(): SettingsState & {
   const settings: SettingsState = useSelector((state: any) => state.settings)
   const dispatch = useDispatch()
   return {
-    ...settings,
+    ...({ ...settings, currency: settings?.currency?.toUpperCase() } as SettingsState),
     setReferralCode: React.useCallback(
       (value: string) => dispatch(setReferralCode(value)),
       [dispatch],
