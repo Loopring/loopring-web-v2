@@ -57,6 +57,12 @@ export function useSettings(): SettingsState & {
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings)
   const dispatch = useDispatch()
+  React.useEffect(() => {
+    if (['usd', 'cny'].includes(settings.currency)) {
+      dispatch(setCurrency(settings?.currency?.toUpperCase()))
+    }
+  }, [])
+
   return {
     ...settings,
     setReferralCode: React.useCallback(
