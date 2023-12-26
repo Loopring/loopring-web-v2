@@ -342,7 +342,7 @@ const should15MinutesUpdateDataGroup = async (
     }
   }
   return {
-    forexMap: {} as ForexMap<sdk.Currency>,
+    forexMap: {} as ForexMap,
     gasPrice: undefined,
   }
 }
