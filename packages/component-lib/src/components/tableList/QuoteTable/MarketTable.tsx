@@ -140,6 +140,16 @@ export const MarketTable = withTranslation('tables')(
       //     dispatch(addFavoriteMarket(pair))
       //   }
       // }
+      const priceCall = React.useCallback(
+        (price: any) => {
+          const priceStr = sdk.toBig(price ?? 0).times(forexMap[currency])
+          return getValuePrecisionThousand(priceStr, 5, 4, 2, false, {
+            isFait: true,
+            floor: true,
+          })
+        },
+        [forexMap, currency],
+      )
       const getColumnMode = React.useCallback((): Column<R, unknown>[] => {
         const basicRender = [
           {
@@ -202,8 +212,6 @@ export const MarketTable = withTranslation('tables')(
             cellClass: 'textAlignRight',
             sortable: true,
             formatter: ({ row }: any) => {
-              const price = row.price
-
               return (
                 <Typography
                   className='rdg-cell-value'
@@ -212,8 +220,7 @@ export const MarketTable = withTranslation('tables')(
                   whiteSpace={isMobile ? 'pre-line' : 'pre'}
                   justifyContent={isMobile ? 'flex-end' : 'flex-start'}
                 >
-                  {PriceTag[CurrencyToTag[currency]] +
-                    price * (forexMap[currency]?.toFixed(2) ?? 0)}
+                  {PriceTag[CurrencyToTag[currency]] + priceCall(row.price)}
                 </Typography>
               )
             },
