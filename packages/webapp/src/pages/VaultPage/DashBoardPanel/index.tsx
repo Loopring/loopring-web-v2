@@ -464,7 +464,7 @@ export const VaultDashBoardPanel = ({
                       className={`vaultBtn  ${isMobile ? 'isMobile' : ''}`}
                       fullWidth
                       endIcon={<ConvertToIcon fontSize={'medium'} color={'inherit'} />}
-                      onClick={(e) => {
+                      onClick={(_e) => {
                         onActionBtnClick(VaultAction.VaultSwap)
                       }}
                     >
