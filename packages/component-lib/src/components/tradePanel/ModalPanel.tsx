@@ -43,6 +43,7 @@ import styled from '@emotion/styled'
 import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
 import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
+import {TransferNFTBurn} from "./components";
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -186,6 +187,7 @@ export const ModalPanel = <
   nftDeployProps,
   resetProps,
   claimProps,
+	  nftBurnProps,
   activeAccountProps,
   collectionAdvanceProps,
   sideStackRedeemProps,
@@ -198,6 +200,7 @@ export const ModalPanel = <
   _width?: number | string
   _height?: number | string
   contactAddProps: any
+	nftBurnProps: TransferProps<T, I>
   transferProps: TransferProps<T, I>
   withdrawProps: WithdrawProps<T, I>
   baseURL: string
@@ -326,7 +329,7 @@ export const ModalPanel = <
       />
 
       <Modal
-        open={isShowNFTTransfer.isShow}
+				open={isShowNFTTransfer.isShow && !isShowNFTTransfer.info?.isBurn}
         contentClassName={'trade-wrap'}
         onClose={() => setShowNFTTransfer({ isShow: false })}
         content={
@@ -394,29 +397,47 @@ export const ModalPanel = <
               ...nftDeployProps,
               assetsData,
             }}
-            // onBack={() => {
-            //   setShowNFTDeploy({ isShow: false });
-            //   // setShowNFTWithdraw({isShow:false});
-            //   // setShowAccount({isShow:false,step:AccountStep.SendNFTGateway})
-            // }}
-          />
-        }
+					/>
+				}
+			/>
+			<Modal
+				open={isShowDeposit.isShow}
+				contentClassName={'trade-wrap'}
+				onClose={() => setShowDeposit({isShow: false})}
+				content={
+					<DepositPanel
+						{...{
+							...rest,
+							_width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+							_height: 'auto',
+							...depositProps,
+						}}
+					/>
+				}
+			/>
       />
-      <Modal
-        open={isShowDeposit.isShow}
-        contentClassName={'trade-wrap'}
-        onClose={() => setShowDeposit({ isShow: false })}
-        content={
-          <DepositPanel
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: 'auto',
-              ...depositProps,
-            }}
-          />
-        }
-      />
+			<Modal
+				open={isShowNFTTransfer.isShow && isShowNFTTransfer.info?.isBurn}
+				contentClassName={'trade-wrap'}
+				onClose={() => setShowNFTTransfer({isShow: false})}
+				content={
+					<Box width={`var(--modal-width)`} marginBottom={5 / 2}>
+						<TransferNFTBurn
+							{...{
+								...rest,
+								...nftBurnProps,
+							}}
+						/>
+					</Box>
+				}
+			/>
+			{/*<Modal*/}
+			{/*  open={isShowDeposit.isShow}*/}
+			{/*  onClose={() => setShowDeposit({ isShow: false })}*/}
+			{/*  content={*/}
+			{/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
+			{/*  }*/}
+			{/*/>*/}
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() => setShowResetAccount({ ...isShowResetAccount, isShow: false })}

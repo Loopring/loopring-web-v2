@@ -1,4 +1,4 @@
-import { Box, BoxProps, Typography } from '@mui/material'
+import {Box, BoxProps, Divider, Typography} from '@mui/material'
 import styled from '@emotion/styled'
 import { useTranslation } from 'react-i18next'
 import {
@@ -13,7 +13,6 @@ import { FeeSelectProps, Modal } from '../../../components/tradePanel'
 import { CoinIcon } from '../../../components/basic-lib'
 import { OffchainFeeReqType, toBig } from '@loopring-web/loopring-sdk'
 
-const BoxStyled = styled(Box)`` as typeof Box
 
 const OptionStyled = styled(Box)<{ checked?: boolean; disabled?: boolean }>`
   border: 1px solid;
@@ -144,19 +143,24 @@ export const FeeSelect = (props: FeeSelectProps) => {
           onClose()
         }}
         content={
-          <BoxStyled
-            flex={1}
-            display={'flex'}
-            alignItems={'center'}
-            justifyContent={'space-between'}
-            flexDirection={'column'}
-            width={'var(--modal-width)'}
-          >
-            <Typography marginBottom={3} variant={'h3'}>
-              {t('labelFee')}
+          <Box
+             marginTop={'-40px'}
+             width={'var(--modal-width)'}>
+            <Typography
+              component={'header'}
+              height={'var(--toolbar-row-height)'}
+              display={'flex'}
+              paddingX={3}
+              justifyContent={'flex-start'}
+              flexDirection={'row'}
+              alignItems={'center'}
+            >
+              <Typography variant={'h4'} component={'span'} display={'inline-flex'} color={'textPrimary'}>
+	              {t('labelFee')}
+              </Typography>
             </Typography>
-
-            <Box width={'100%'} paddingX={5} marginBottom={10}>
+            <Divider />
+            <Box width={'100%'}  marginY={3} paddingX={3} >
               {withdrawInfos && (
                 <Box marginBottom={3} display={'flex'}>
                   {Object.keys(withdrawInfos.types).map((key) => {
@@ -222,7 +226,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
                 )
               })}
             </Box>
-          </BoxStyled>
+          </Box>
         }
       />
     </>

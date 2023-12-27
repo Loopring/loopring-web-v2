@@ -124,6 +124,12 @@ import {
   useSettings,
   TOASTOPEN,
   setShowGlobalToast,
+	NFTBurn_Failed,
+	NFTBurn_First_Method_Denied,
+	NFTBurn_In_Progress,
+	NFTBurn_Success,
+	NFTBurn_User_Denied,
+	NFTBurn_WaitForAuth,
   SendFromContact,
   VaultTrade_Success,
   VaultTrade_Failed,
@@ -186,7 +192,8 @@ import {
   useCreateRedPacket,
   useExportAccount,
   useForceWithdraw,
-  useModalData,
+	useModalData,
+	useNFTBurn,
   useNFTDeploy,
   useNFTMintAdvance,
   useNFTTransfer,
@@ -289,8 +296,8 @@ export function useAccountModalForUI({
   const { transferProps } = useTransfer()
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
+	const { nftBurnProps } = useNFTBurn()
   const { nftDeployProps } = useNFTDeploy()
-
   const { contactAddProps } = useContactAdd()
   const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
@@ -954,7 +961,7 @@ export function useAccountModalForUI({
               addressShort,
               etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
               mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
-              hideVIPlevel: isWebEarn ? true : false,
+              hideVIPlevel: isWebEarn ? true : false
             }}
           />
         ),
@@ -2496,6 +2503,106 @@ export function useAccountModalForUI({
           />
         ),
       },
+			//Burn
+			[AccountStep.NFTBurn_WaitForAuth]: {
+				view: (
+					<NFTBurn_WaitForAuth
+						providerName={account.connectName as ConnectProviders}
+						{...{
+							...rest,
+							account,
+							t,
+						}}
+					/>
+				),
+			},
+			[AccountStep.NFTBurn_First_Method_Denied]: {
+				view: (
+					<NFTBurn_First_Method_Denied
+						btnInfo={{
+							btnTxt: 'labelTryAnother',
+							callback: () => {
+								nftTransferProps.onTransferClick(nftTransferValue as any, false)
+							},
+						}}
+						{...{
+							...rest,
+							account,
+							t,
+						}}
+					/>
+				),
+			},
+			[AccountStep.NFTBurn_User_Denied]: {
+				view: (
+					<NFTBurn_User_Denied
+						btnInfo={{
+							btnTxt: 'labelRetry',
+							callback: () => {
+								nftTransferProps.onTransferClick(nftTransferValue as any)
+							},
+						}}
+						{...{
+							...rest,
+							account,
+							t,
+						}}
+					/>
+				),
+			},
+			[AccountStep.NFTBurn_In_Progress]: {
+				view: (
+					<NFTBurn_In_Progress
+						{...{
+							...rest,
+							account,
+							t,
+						}}
+					/>
+				),
+			},
+			[AccountStep.NFTBurn_Success]: {
+				view: (
+					<NFTBurn_Success
+						btnInfo={closeBtnInfo()}
+						{...{
+							...rest,
+							account,
+							link: isShowAccount?.info?.hash
+								? {
+									name: 'Txn Hash',
+									url: isShowAccount?.info?.hash,
+								}
+								: undefined,
+							t,
+						}}
+					/>
+				),
+			},
+			[AccountStep.NFTBurn_Failed]: {
+				view: (
+					<NFTBurn_Failed
+						btnInfo={closeBtnInfo({
+							closeExtend: () => {
+								setShowAccount({
+									...isShowAccount,
+									isShow: false,
+									info: {
+										...isShowAccount.info,
+										lastFailed: LAST_STEP.nftTransfer,
+									},
+								})
+							},
+						})}
+						{...{
+							...rest,
+							account,
+							error: isShowAccount.error,
+							t,
+						}}
+					/>
+				),
+			},
 
       // withdraw
       [AccountStep.NFTWithdraw_WaitForAuth]: {
@@ -2743,10 +2850,7 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-              setShowActiveAccount({
-                isShow: true,
-                info: { isReset: true, confirmationType: 'lockedReset' },
-              })
+              setShowActiveAccount({ isShow: true, info: { isReset: true, confirmationType: 'lockedReset' } })
             }}
             {...{
               ...rest,
@@ -3030,6 +3134,7 @@ export function useAccountModalForUI({
                   setShowAccount({ isShow: false })
                   history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
                 }
+                
               },
             }}
             {...{
@@ -3364,6 +3469,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
+		nftBurnProps,
     claimProps,
     depositProps,
     resetProps,
