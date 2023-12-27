@@ -1,4 +1,4 @@
-import {Box, BoxProps, Divider, Typography} from '@mui/material'
+import { Box, BoxProps, Divider, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useTranslation } from 'react-i18next'
 import {
@@ -12,7 +12,6 @@ import {
 import { FeeSelectProps, Modal } from '../../../components/tradePanel'
 import { CoinIcon } from '../../../components/basic-lib'
 import { OffchainFeeReqType, toBig } from '@loopring-web/loopring-sdk'
-
 
 const OptionStyled = styled(Box)<{ checked?: boolean; disabled?: boolean }>`
   border: 1px solid;
@@ -143,9 +142,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
           onClose()
         }}
         content={
-          <Box
-             marginTop={'-40px'}
-             width={'var(--modal-width)'}>
+          <Box marginTop={'-40px'} width={'var(--modal-width)'}>
             <Typography
               component={'header'}
               height={'var(--toolbar-row-height)'}
@@ -155,12 +152,17 @@ export const FeeSelect = (props: FeeSelectProps) => {
               flexDirection={'row'}
               alignItems={'center'}
             >
-              <Typography variant={'h4'} component={'span'} display={'inline-flex'} color={'textPrimary'}>
-	              {t('labelFee')}
+              <Typography
+                variant={'h4'}
+                component={'span'}
+                display={'inline-flex'}
+                color={'textPrimary'}
+              >
+                {t('labelFee')}
               </Typography>
             </Typography>
             <Divider />
-            <Box width={'100%'}  marginY={3} paddingX={3} >
+            <Box width={'100%'} marginY={3} paddingX={3}>
               {withdrawInfos && (
                 <Box marginBottom={3} display={'flex'}>
                   {Object.keys(withdrawInfos.types).map((key) => {
