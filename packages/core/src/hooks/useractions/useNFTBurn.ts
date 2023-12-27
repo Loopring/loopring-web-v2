@@ -1,9 +1,7 @@
 import React from 'react'
 
 import * as sdk from '@loopring-web/loopring-sdk'
-
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-
 import {
   AccountStep,
   SwitchData,
@@ -15,7 +13,7 @@ import {
   CoinMap,
   Explorer,
   LIVE_FEE_TIMES,
-  myLog,
+  myLog, SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
   TradeNFT,
@@ -45,6 +43,7 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useContacts } from '../../stores'
 import Web3 from 'web3'
+import {useTranslation} from "react-i18next";
 
 export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
   const {
@@ -62,11 +61,10 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
       },
     },
   } = useOpenModals()
-
+  const { t } = useTranslation()
   const { tokenMap, totalCoinMap } = useTokenMap()
   const { account } = useAccount()
   const { exchangeInfo, chainId, baseURL } = useSystem()
-
   const { updateWalletLayer2 } = useWalletLayer2()
 
   const { nftTransferValue, updateNFTWithdrawData, updateNFTTransferData } =
@@ -75,10 +73,6 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
   const history = useHistory()
   const { search, pathname } = useLocation()
   const searchParams = new URLSearchParams(search)
-
-  // const [chargeFeeTransferList, setChargeFeeTransferList] = React.useState([
-  //   false,
-  // ]);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -109,19 +103,7 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
     //   [feeWithActive]
     // ),
   })
-
-
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
-  const handleOnMemoChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const nftTransferValue = store.getState()._router_modalData.nftTransferValue
-      updateNFTTransferData({
-        ...nftTransferValue,
-        memo: e.target.value,
-      })
-    },
-    [updateNFTTransferData],
-  )
   const checkBtnStatus = React.useCallback(() => {
     if (
       tokenMap &&
@@ -168,20 +150,14 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
       checkFeeIsEnough()
       return
     }
-    if (contactsErrorMessage) {
-      updateContacts()
-    }
     checkFeeIsEnough({ isRequiredAPI: true, intervalTime: LIVE_FEE_TIMES })
-    // checkActiveFeeIsEnough({
-    //   isRequiredAPI: true,
-    //   // intervalTime: LIVE_FEE_TIMES,
-    // });
     if (nftTransferValue.nftData) {
       updateNFTTransferData({
         balance: sdk
           .toBig(nftTransferValue.total ?? 0)
           .minus(nftTransferValue.locked ?? 0)
           .toNumber(),
+        memo:'Burn',
         belong: nftTransferValue.name as any,
         tradeValue: undefined,
         fee: feeInfo,
@@ -193,6 +169,7 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
         balance: 0,
         tradeValue: 0,
         address: '*',
+        memo:'Burn',
       })
     }
 
@@ -211,7 +188,7 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
   ])
 
   React.useEffect(() => {
-    if (isShow || info?.isShowLocal) {
+    if (isShow || info?.isBurn) {
       updateWalletLayer2()
       resetDefault()
     } else {
@@ -425,9 +402,10 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
             },
             apiKey,
           )
-
-          //TODO get Address
-          const realAddr = await LoopringAPI.nftAPI?.getAvailableBroker();
+          const  {result:realAddr} = await LoopringAPI.nftAPI?.getUserNFTBurnAddress({accountId,tokenId:nftTransferValue.tokenId});
+          if(!realAddr){
+            throw {code:UIERROR_CODE.ERROR_ADDRESS_BURN_NFT}
+          }
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
@@ -446,13 +424,12 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
               amount: fee.toString(), // TEST: fee.toString(),
             },
             validUntil: getTimestampDaysLater(DAYS),
-            memo: nftTransferValue.memo,
+            memo: 'Burn',
           }
-
           myLog('nftBurn req:', req)
-
           processRequest(req, isFirstTime)
         } catch (e: any) {
+          const errorItem = SDK_ERROR_MAP_TO_UI[(e)?.code ?? UIERROR_CODE.UNKNOWN]??  SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN]
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTBurn_Failed,
@@ -460,8 +437,8 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
               symbol: nftTransferValue?.name,
             },
             error: {
-              code: UIERROR_CODE.UNKNOWN,
-              msg: e?.message,
+              code:(e)?.code ?? UIERROR_CODE.UNKNOWN,
+              message: t(errorItem.messageKey,{ ns: 'error' },),
             },
           })
         }
@@ -521,8 +498,8 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
     [lastRequest, processRequest, setShowAccount],
   )
 
-  const nftTBurnProps: TransferProps<R, T> = {
-    handleOnMemoChange,
+  const nftBurnProps: TransferProps<R, T> = {
+    handleOnMemoChange:()=>{},
     memo: nftTransferValue.memo ?? '',
     type: TRADE_TYPE.NFT,
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.nftTransfer,
@@ -530,6 +507,7 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,
+    transferI18nKey: t('labelL2NFTBurnBtn'),
     onTransferClick,
     handleFeeChange,
     feeInfo,
@@ -550,7 +528,7 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
   }  as unknown as TransferProps<R, T>
 
   return {
-    nftTBurnProps,
+    nftBurnProps,
     retryBtn,
     // cancelNFTTransfer,
   }

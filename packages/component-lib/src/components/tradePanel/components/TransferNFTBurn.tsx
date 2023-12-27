@@ -1,11 +1,12 @@
 import {Trans, useTranslation} from 'react-i18next'
 import React from 'react'
 import {
-	Box, Divider,
+	Box,
+	Divider,
 	Grid,
 	Typography,
 } from '@mui/material'
-import {bindHover} from 'material-ui-popup-state/es'
+import {bindHover} from 'material-ui-popup-state'
 import {bindPopper, usePopupState} from 'material-ui-popup-state/hooks'
 import {
 	FeeInfo, GET_IPFS_STRING,
@@ -15,48 +16,56 @@ import {
 	MapChainId,
 	NFTWholeINFO, TRADE_TYPE,
 	TradeBtnStatus,
+	myLog
 } from '@loopring-web/common-resources'
 import {
 	Button,
 	FeeSelect,
-	InputSize, TransferProps,
+	InputSize, SwitchData, TransferProps,
 } from '../../index'
 import {PopoverPure} from '../..'
 import {NFTInput} from './BasicANFTTrade'
 import {useSettings} from '../../../stores'
-import {useBasicTrade} from "./hook/BasicACoinPanelHook";
+import styled from "@emotion/styled";
 
+const BoxStyle = styled(Box)`
+  .coinInput-wrap,
+  .btnInput-wrap,
+  .MuiOutlinedInput-root {
+    background: var(--field-opacity);
+    border-color: var(--opacity);
+
+    :hover {
+      border-color: var(--color-border-hover);
+    }
+  }
+`
 export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>(
-{
-   type=TRADE_TYPE.NFT,
-   transferBtnStatus,
-   disabled,
-   walletMap,
-   handleFeeChange,
-   chargeFeeTokenList,
-   feeInfo,
-   isFeeNotEnough,
-   onTransferClick,
-   transferI18nKey,
-   ...rest
- }: TransferProps<T, I, C> &
 	{
-	getIPFSString: GET_IPFS_STRING,
-	assetsData: any[]
-}) => {
-	const { switchData:{tradeData},..._event } = useBasicTrade({
-		...rest,
+		type = TRADE_TYPE.NFT,
+		transferBtnStatus,
+		disabled,
 		walletMap,
-		coinMap:{},
-		type,
-	} as any)
+		handleFeeChange,
+		chargeFeeTokenList,
+		feeInfo,
+		isFeeNotEnough,
+		onTransferClick,
+		transferI18nKey,
+		tradeData,
+		handlePanelEvent,
+		...rest
+	}: TransferProps<T, I, C> &
+		{
+			getIPFSString: GET_IPFS_STRING,
+			assetsData: any[]
+		}) => {
 	const {t} = useTranslation()
 	const inputBtnRef = React.useRef()
 	const {defaultNetwork} = useSettings()
 	const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
-	// addressType
-
+	myLog('Burn tradeData',tradeData)
 	const inputButtonDefaultProps = {
 		label: t('labelL2toL2EnterToken'),
 		size: InputSize.middle,
@@ -78,18 +87,18 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 		}
 	}
 	return (
-		<Box
-		     width={'var(--modal-width)'}>
+		<BoxStyle
+			width={'var(--modal-width)'} className={'transfer-wrap'}>
 			<Typography
 				component={'header'}
-				height={'var(--toolbar-row-padding)'}
+				height={'calc(var(--toolbar-row-height) - 16px)'}
 				display={'flex'}
 				paddingX={3}
 				justifyContent={'flex-start'}
 				flexDirection={'row'}
 				alignItems={'center'}
 			>
-				<Typography variant={'h4'} component={'span'} display={'inline-flex'} color={'textPrimary'} >
+				<Typography variant={'h5'} component={'span'} display={'inline-flex'} color={'textPrimary'}>
 					{t('labelL2NFTBurnTitle', {
 						loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
 					})}
@@ -97,9 +106,9 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 				<Info2Icon
 					{...bindHover(popupState)}
 					sx={{
-						marginLeft:1
+						marginLeft: 1
 					}}
-					fontSize={'large'}
+					fontSize={'medium'}
 					htmlColor={'var(--color-text-third)'}
 				/>
 			</Typography>
@@ -132,8 +141,8 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 					</Trans>
 				</Typography>
 			</PopoverPure>
-			<Divider />
-			<Grid container 
+			<Divider/>
+			<Grid container
 			      marginY={3}
 			      paddingX={3}
 			      spacing={2}>
@@ -141,18 +150,20 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 					<NFTInput
 						{...({
 							...rest,
-							..._event,
 							t,
 							getIPFSString: rest?.getIPFSString ?? (() => '' as any),
 							disabled,
 							walletMap,
 							tradeData,
+							onChangeEvent:async (_index: 0 | 1, { to, tradeData }: SwitchData<T>) => {
+								handlePanelEvent &&	handlePanelEvent({ to, tradeData }, `Tobutton` as any)
+							},
 							inputNFTDefaultProps: {...inputButtonDefaultProps, label: '', size: InputSize.middle},
 							inputNFTRef: inputBtnRef,
 						} as any)}
 					/>
 				</Grid>
-				<Grid item xs={12}  alignSelf={'stretch'} position={'relative'}>
+				<Grid item xs={12} alignSelf={'stretch'} position={'relative'}>
 					{!chargeFeeTokenList?.length ? (
 						<Typography>{t('labelFeeCalculating')}</Typography>
 					) : (
@@ -175,7 +186,7 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 						</>
 					)}
 				</Grid>
-				<Grid item xs={12}  alignSelf={'stretch'} paddingBottom={0}>
+				<Grid item xs={12} alignSelf={'stretch'} paddingBottom={0}>
 					<Button
 						fullWidth
 						variant={'contained'}
@@ -194,6 +205,6 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 					</Button>
 				</Grid>
 			</Grid>
-		</Box>
+		</BoxStyle>
 	)
 }

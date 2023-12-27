@@ -143,6 +143,7 @@ export const NFTBurn_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t('labelWaitForAuth'),
+    title: 'labelL2NFTBurnTitle',
   }
   return <TransferBase {...propsPatch} {...props} />
 }
@@ -199,6 +200,7 @@ export const NFTBurn_Failed = (props: PanelProps) => {
       l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }),
+    title: 'labelL2NFTBurnTitle',
   }
   return <TransferBase {...propsPatch} {...props} />
 }

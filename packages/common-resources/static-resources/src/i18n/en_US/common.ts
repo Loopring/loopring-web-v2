@@ -2140,6 +2140,7 @@ export default {
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelHideRead: 'Hide Read(s)',
   labelL2NFTBurnTitle:"Burn NFT",
-  labelL2NFTBurnTip: ''
+  labelL2NFTBurnBtn:"Burn NFT",
+  labelL2NFTBurnTip: 'TODO'
 
 }

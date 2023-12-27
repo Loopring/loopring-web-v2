@@ -85,4 +85,5 @@ export default {
   labelContactsEditFailed: 'Edit Contact Failed',
   labelContactsSendFailed: 'Send Failed',
   errorOrderFailed: 'Order status Failed',
+  errorAddressBurnNft:"Oops! Something went wrong on checking burn avaiable"
 }
