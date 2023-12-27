@@ -208,8 +208,7 @@ export const makeVaultRepay = <
       vaultMap: { tokenMap, idIndex: vaultIdIndex, tokenPrices },
     },
   } = store.getState()
-  //@ts-ignore
-  const { maxBorrowableOfUsdt, accountStatus, userAssets } = vaultAccountInfo ?? {}
+  const { accountStatus, userAssets } = vaultAccountInfo ?? {}
   if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
     let vaultAvaiable2Map: WalletMap<C> | undefined = userAssets?.reduce((prev, item) => {
       const vaultSymbol = vaultIdIndex[item?.tokenId ?? '']

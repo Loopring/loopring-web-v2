@@ -8,7 +8,6 @@ import {
   useSystem,
   useWalletLayer2,
   VaultAccountInfoStatus,
-  volumeToCountAsBigNumber,
   WalletConnectL2Btn,
 } from '@loopring-web/core'
 import {
@@ -28,7 +27,6 @@ import {
   globalSetup,
   L1L2_NAME_DEFINED,
   MapChainId,
-  myLog,
   RouterPath,
   SagaStatus,
   SoursURL,
@@ -246,7 +244,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             </Typography>
           </Box>
         )
-        break
       case AccountStatus.ERROR_NETWORK:
         return (
           <Box
@@ -263,7 +260,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             </Typography>
           </Box>
         )
-        break
       case AccountStatus.ACTIVATED:
         if (sdk.VaultAccountStatus.IN_REDEEM === vaultAccountInfo?.accountStatus) {
           return (
@@ -297,11 +293,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
                 setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
                 onJoinPop(true)
               }}
-              loading={'false'}
               variant={'contained'}
               fullWidth={true}
               sx={{ minWidth: 'var(--walletconnect-width)' }}
-              // @ts-ignore
               loading={(joinBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false') as any}
               disabled={
                 joinBtnStatus === TradeBtnStatus.DISABLED ||
@@ -354,7 +348,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             </Button>
           )
         }
-        break
       default:
         break
     }
@@ -377,7 +370,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       },
 
       invest: {
-        vaultMap: { tokenMap, idIndex: vaultIdIndex, tokenPrices },
+        vaultMap: { tokenMap,  tokenPrices },
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: false }).vaultLayer2Map ?? {}
@@ -388,7 +381,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     ) {
       let totalAssets = sdk.toBig(0)
       let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
-        let item: any = undefined
+        let item: any
         // tokenInfo
         let tokenInfo = {
           ...tokenMap[key],
@@ -437,7 +430,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           }
         }
         if (item) {
-          const token = item.token.value
           let precision = tokenMap[item.token.value].precision
 
           pre.push({
@@ -464,10 +456,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
   React.useEffect(() => {
     if (
-      showNoVaultAccount === true &&
+      showNoVaultAccount &&
       vaultAccountInfoStatus === SagaStatus.UNSET &&
-      vaultAccountInfo?.accountStatus &&
-      walletL2Status === SagaStatus.UNSET &&
+      vaultAccountInfo?.accountStatus && walletL2Status === SagaStatus.UNSET &&
       whichBtn &&
       vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
     ) {

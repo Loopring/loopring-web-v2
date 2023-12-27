@@ -173,7 +173,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         setViewData(resultData.slice(0, pageSize * page))
         // resetTableData(resultData)
       },
-      [rawData, filter, hideSmallBalances, pageSize],
+			[rawData, hideSmallBalances, pageSize, filter.searchValue, setTotal, setViewData],
     )
 
     React.useEffect(() => {
