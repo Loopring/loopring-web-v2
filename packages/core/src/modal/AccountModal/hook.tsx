@@ -399,9 +399,6 @@ export function useAccountModalForUI({
           if (props?.closeExtend) {
             props?.closeExtend(e)
           }
-          // if (onClose) {
-          //   onClose(e);
-          // }
         },
       }
     },
@@ -796,11 +793,6 @@ export function useAccountModalForUI({
               callback: () => {
                 setShouldShow(false)
                 setShowAccount({ isShow: false })
-
-                // if (props?.closeExtend) {
-                //   props?.closeExtend(e);
-                // }
-                // banxaService.openOldOne();
               },
               btnTxt: t('labelBanxaContinuous'),
             }}
@@ -961,7 +953,7 @@ export function useAccountModalForUI({
               addressShort,
               etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
               mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
-              hideVIPlevel: isWebEarn ? true : false
+							hideVIPlevel: isWebEarn ? true : false
             }}
           />
         ),
@@ -1506,13 +1498,6 @@ export function useAccountModalForUI({
               info: {
                 ...isShowAccount.info,
               },
-              // link: isShowAccount?.info?.hash
-              //   ? {
-              //     name: "Txn Hash",
-              //     url: isShowAccount?.info?.hash,
-              //   }
-              //   : undefined,
-
               t,
             }}
           />
@@ -1818,9 +1803,6 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        // onBack: () => {
-        //   setShowAccount({ isShow: false });
-        // },
       },
 
       // ClaimWithdraw
@@ -2850,7 +2832,7 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-              setShowActiveAccount({ isShow: true, info: { isReset: true, confirmationType: 'lockedReset' } })
+							setShowActiveAccount({isShow: true, info: {isReset: true, confirmationType: 'lockedReset'}})
             }}
             {...{
               ...rest,
@@ -3134,7 +3116,6 @@ export function useAccountModalForUI({
                   setShowAccount({ isShow: false })
                   history.push(`${RouterPath.invest}/${InvestRouter[InvestType.MyBalance]}`)
                 }
-                
               },
             }}
             {...{
@@ -3491,8 +3472,6 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    contactAddProps,
-    // checkActiveStatusProps,
-    // dualToastOpen,
-  }
+    contactAddProps
+	}
 }
