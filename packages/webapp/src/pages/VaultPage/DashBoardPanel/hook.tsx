@@ -6,7 +6,6 @@ import {
   store,
   useAccount,
   useSystem,
-  useTokenPrices,
   useWalletLayer2,
   VaultAccountInfoStatus,
   volumeToCountAsBigNumber,
@@ -19,7 +18,6 @@ import {
   useOpenModals,
   useSettings,
   VaultAssetsTableProps,
-  Transaction,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -361,13 +359,11 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         vaultMap: { tokenMap, idIndex: vaultIdIndex, tokenPrices },
       },
     } = store.getState()
-    const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
+    const walletMap = makeVaultLayer2({ needFilterZero: false }).vaultLayer2Map ?? {}
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&
       !!Object.keys(walletMap ?? {}).length
-      // &&
-      // !!tokenPriceList.length
     ) {
       let totalAssets = sdk.toBig(0)
       let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
@@ -384,24 +380,16 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             detail: walletMap[key],
             erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
-          let tokenValueDollar = sdk.toBig(0)
-
-          const totalAmount = volumeToCountAsBigNumber(
-            tokenInfo.erc20Symbol,
-            tokenInfo.detail?.detail?.total ?? 0,
-          )
-          const price = tokenPrices?.[tokenInfo.symbol] || 0
-          if (totalAmount && price) {
-            tokenValueDollar = totalAmount?.times(price)
-          }
+          const totalAmount = sdk.toBig(tokenInfo.detail?.asset ??0)
+          const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
           const isSmallBalance = tokenValueDollar.lt(1)
           item = {
             token: {
               type: TokenType.vault,
               value: tokenInfo.token,
             },
-            amount: totalAmount?.toString() || EmptyValueTag,
-            available: Number(tokenInfo.detail?.count) || EmptyValueTag,
+            amount: totalAmount?.toString(),
+            available: tokenInfo?.detail?.count??0,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
@@ -414,8 +402,8 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               type: TokenType.vault,
               value: key,
             },
-            amount: EmptyValueTag,
-            available: EmptyValueTag,
+            amount: 0,
+            available: 0,
             locked: 0,
             smallBalance: true,
             tokenValueDollar: 0,

@@ -91,8 +91,8 @@ export const makeVaultLayer2 = <
     vaultLayer2Map = vaultAccountInfo?.userAssets.reduce((prev, item) => {
       const symbol = idIndex[item.tokenId]
       const vaultToken = tokenMap[symbol]
-      const vaultAsset=(vaultLayer2 &&  vaultLayer2[symbol]) ??item
-      const countBig = sdk.toBig(vaultAsset?.l2balance ?? vaultAsset?.total).minus(vaultAsset?.locked ?? 0)
+      const vaultAsset=(vaultLayer2 &&  vaultLayer2[symbol]) ??{}
+      const countBig = sdk.toBig(vaultAsset?.l2balance ?? 0).minus(vaultAsset?.locked ?? 0)
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
@@ -103,6 +103,7 @@ export const makeVaultLayer2 = <
           belongAlice: erc20Symbol,
           erc20Symbol,
           belong: symbol,
+          asset:  sdk.toBig(item?.total??0).div('1e' + vaultToken.decimals).toFixed( vaultToken.precision, BigNumber.ROUND_DOWN),
           count: countBig
             .div('1e' + vaultToken.decimals)
             .toFixed(vaultToken.qtyStepScale ?? vaultToken.precision, BigNumber.ROUND_DOWN),

@@ -578,7 +578,7 @@ export const VaultDashBoardPanel = ({
                                 l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
                                 ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
                               }}
-                            ></Trans>
+                            />
                           </Typography>
 
                           <>{dialogBtn}</>
