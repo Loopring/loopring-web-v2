@@ -9,27 +9,17 @@ import {
   SwitchData,
   TransferProps,
   useOpenModals,
-  useSettings,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
-  AddressError,
   CoinMap,
-  CurrencyToTag,
-  EmptyValueTag,
-  EXCHANGE_TYPE,
   Explorer,
-  FeeInfo,
-  getValuePrecisionThousand,
   LIVE_FEE_TIMES,
   myLog,
-  PriceTag,
-  SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
   TradeNFT,
   UIERROR_CODE,
-  WALLET_TYPE,
 } from '@loopring-web/common-resources'
 
 import {
@@ -42,25 +32,21 @@ import {
   LoopringAPI,
   store,
   useAccount,
-  useAddressCheck,
   useBtnStatus,
   useChargeFees,
   useModalData,
   useSystem,
   useTokenMap,
-  useTokenPrices,
   useWalletLayer2,
   useWalletLayer2WithNFTSocket,
-  volumeToCountAsBigNumber,
   walletLayer2Service,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
-import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useContacts } from '../../stores'
 import Web3 from 'web3'
 
-export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
+export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
   const {
     setShowAccount,
     setShowNFTTransfer,
@@ -78,26 +64,18 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   } = useOpenModals()
 
   const { tokenMap, totalCoinMap } = useTokenMap()
-  const { account, status: accountStatus } = useAccount()
-  const { exchangeInfo, chainId, baseURL, forexMap } = useSystem()
-  const { currency } = useSettings()
-  const { tokenPrices } = useTokenPrices()
+  const { account } = useAccount()
+  const { exchangeInfo, chainId, baseURL } = useSystem()
 
   const { updateWalletLayer2 } = useWalletLayer2()
 
   const { nftTransferValue, updateNFTWithdrawData, updateNFTTransferData } =
     useModalData()
 
-
   const history = useHistory()
   const { search, pathname } = useLocation()
   const searchParams = new URLSearchParams(search)
 
-  const [sureItsLayer2, setSureItsLayer2] = React.useState<WALLET_TYPE | EXCHANGE_TYPE | undefined>(
-    undefined,
-  )
-
-  const [feeWithActive, setFeeWithActive] = React.useState(false)
   // const [chargeFeeTransferList, setChargeFeeTransferList] = React.useState([
   //   false,
   // ]);
@@ -111,15 +89,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     // requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    requestType: feeWithActive
-      ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
-      : sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
     updateData:
       // React.useCallback(
       ({ fee, requestType }) => {
-        let _requestType = feeWithActive
-          ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
-          : sdk.OffchainNFTFeeReqType.NFT_TRANSFER
+        let _requestType = sdk.OffchainNFTFeeReqType.NFT_TRANSFER
         if (_requestType === requestType) {
           const nftTransferValue = store.getState()._router_modalData.nftTransferValue
           updateNFTTransferData({
@@ -136,33 +110,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     // ),
   })
 
-  const {
-    chargeFeeTokenList: activeAccountFeeList,
-    checkFeeIsEnough: checkActiveFeeIsEnough,
-    // resetIntervalTime: resetActiveIntervalTime,
-  } = useChargeFees({
-    isActiveAccount: true,
-    requestType: undefined as any,
-  })
-  const {
-    address,
-    realAddr,
-    setAddress,
-    addrStatus,
-    isActiveAccount,
-    isActiveAccountFee,
-    isLoopringAddress,
-    isAddressCheckLoading,
-    isSameAddress,
-    isContractAddress,
-    loopringSmartWalletVersion,
-  } = useAddressCheck()
-
-  React.useEffect(() => {
-    if (loopringSmartWalletVersion?.isLoopringSmartWallet && sureItsLayer2 === undefined) {
-      setSureItsLayer2(WALLET_TYPE.Loopring)
-    }
-  }, [loopringSmartWalletVersion?.isLoopringSmartWallet])
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
   const handleOnMemoChange = React.useCallback(
@@ -182,12 +129,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       nftTransferValue?.tradeValue &&
       chargeFeeTokenList.length &&
       !isFeeNotEnough.isFeeNotEnough &&
-      !isSameAddress &&
-      sureItsLayer2 &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
-      sdk.toBig(nftTransferValue.tradeValue).lte(Number(nftTransferValue.balance) ?? 0) &&
-      (addrStatus as AddressError) === AddressError.NoError &&
-      realAddr
+      sdk.toBig(nftTransferValue.tradeValue).lte(Number(nftTransferValue.balance) ?? 0)
     ) {
       enableBtn()
       myLog('enableBtn')
@@ -201,10 +144,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     nftTransferValue.balance,
     chargeFeeTokenList.length,
     isFeeNotEnough?.isFeeNotEnough,
-    isSameAddress,
-    sureItsLayer2,
-    addrStatus,
-    realAddr,
+
     disableBtn,
     enableBtn,
   ])
@@ -212,11 +152,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   React.useEffect(() => {
     checkBtnStatus()
   }, [
-    address,
-    addrStatus,
-    sureItsLayer2,
     isFeeNotEnough.isFeeNotEnough,
-    isSameAddress,
     nftTransferValue.tradeValue,
     nftTransferValue.fee,
   ])
@@ -249,7 +185,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         belong: nftTransferValue.name as any,
         tradeValue: undefined,
         fee: feeInfo,
-        address: address ? address : '*',
       })
     } else {
       updateNFTTransferData({
@@ -260,11 +195,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         address: '*',
       })
     }
-    if (contactAddress) {
-      setAddress(contactAddress)
-    } else {
-      setAddress('')
-    }
+
   }, [
     info?.isRetry,
     contactsErrorMessage,
@@ -277,8 +208,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     updateContacts,
     updateNFTTransferData,
     feeInfo,
-    address,
-    setAddress,
   ])
 
   React.useEffect(() => {
@@ -287,27 +216,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       resetDefault()
     } else {
       resetIntervalTime()
-      checkActiveFeeIsEnough({
-        isRequiredAPI: true,
-        requestType: undefined as any,
-      })
     }
     return () => {
       resetIntervalTime()
-      setAddress('')
-      checkActiveFeeIsEnough({
-        isRequiredAPI: true,
-        requestType: undefined as any,
-      })
     }
   }, [isShow, info?.isShowLocal])
-
-  React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-      // myLog('useEffect nftTransferValue.address:', nftTransferValue.address)
-      setAddress(nftTransferValue.address ? nftTransferValue.address : '')
-    }
-  }, [setAddress, nftTransferValue.address, accountStatus, account.readyState])
 
   const { checkHWAddr, updateHW } = useWalletInfo()
 
@@ -352,11 +265,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           // setIsConfirmTransfer(false);
           setShowAccount({
             isShow: true,
-            step: AccountStep.NFTTransfer_In_Progress,
+            step: AccountStep.NFTBurn_In_Progress,
           })
           setShowAccount({
             isShow: true,
-            step: AccountStep.NFTTransfer_Success,
+            step: AccountStep.NFTBurn_Success,
             info: {
               symbol: nftTransferValue.name,
               hash:
@@ -393,7 +306,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
           if (
             store.getState().modals.isShowAccount.isShow &&
-            store.getState().modals.isShowAccount.step == AccountStep.NFTTransfer_Success
+            store.getState().modals.isShowAccount.step == AccountStep.NFTBurn_Success
           ) {
             setShowAccount({ isShow: false })
             searchParams.delete('detail')
@@ -407,7 +320,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             setLastRequest({ request })
             setShowAccount({
               isShow: true,
-              step: AccountStep.NFTTransfer_First_Method_Denied,
+              step: AccountStep.NFTBurn_First_Method_Denied,
               info: {
                 symbol: nftTransferValue.name,
               },
@@ -418,21 +331,19 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             setLastRequest({ request })
             setShowAccount({
               isShow: true,
-              step: AccountStep.NFTTransfer_User_Denied,
+              step: AccountStep.NFTBurn_User_Denied,
             })
             break
           default:
             if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
               checkFeeIsEnough({
                 isRequiredAPI: true,
-                requestType: feeWithActive
-                  ? sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT
-                  : sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+                requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
               })
             }
             setShowAccount({
               isShow: true,
-              step: AccountStep.NFTTransfer_Failed,
+              step: AccountStep.NFTBurn_Failed,
               info: {
                 symbol: nftTransferValue.name,
               },
@@ -467,7 +378,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       history,
       pathname,
       checkFeeIsEnough,
-      feeWithActive,
     ],
   )
 
@@ -495,7 +405,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         try {
           setShowAccount({
             isShow: true,
-            step: AccountStep.NFTTransfer_WaitForAuth,
+            step: AccountStep.NFTBurn_WaitForAuth,
           })
           const feeToken = tokenMap[nftTransferValue.fee.belong]
           const feeRaw = nftTransferValue.fee.feeRaw ?? nftTransferValue.fee.__raw__?.feeRaw ?? 0
@@ -516,19 +426,21 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             apiKey,
           )
 
+          //TODO get Address
+          const realAddr = await LoopringAPI.nftAPI?.getAvailableBroker();
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
             fromAddress: accAddress,
             toAccountId: 0,
-            toAddress: realAddr ? realAddr : address,
+            toAddress: realAddr,
             storageId: storageId?.offchainId,
             token: {
               tokenId: nftTransferValue.tokenId,
               nftData: nftTransferValue.nftData,
               amount: tradeValue.toString(),
             },
-            payPayeeUpdateAccount: !isActiveAccountFee && feeWithActive,
+            payPayeeUpdateAccount: false,
             maxFee: {
               tokenId: feeToken.tokenId,
               amount: fee.toString(), // TEST: fee.toString(),
@@ -537,13 +449,13 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             memo: nftTransferValue.memo,
           }
 
-          myLog('nftTransfer req:', req)
+          myLog('nftBurn req:', req)
 
           processRequest(req, isFirstTime)
         } catch (e: any) {
           setShowAccount({
             isShow: true,
-            step: AccountStep.NFTTransfer_Failed,
+            step: AccountStep.NFTBurn_Failed,
             info: {
               symbol: nftTransferValue?.name,
             },
@@ -562,11 +474,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
       tokenMap,
       exchangeInfo,
       setShowAccount,
-      realAddr,
-      address,
       processRequest,
-      isActiveAccountFee,
-      feeWithActive,
     ],
   )
   // const activeFee = React.useMemo(() => {
@@ -574,40 +482,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   //   //   (item: any) => item.belong == feeInfo.belong
   //   // );
   // }, [feeInfo, activeAccountFeeList]);
-  const activeAccountPrice = React.useMemo(() => {
-    if (
-      realAddr !== '' &&
-      !isActiveAccount &&
-      activeAccountFeeList.length &&
-      activeAccountFeeList[0] &&
-      tokenPrices &&
-      activeAccountFeeList[0].feeRaw
-    ) {
-      const feeInfo: FeeInfo = activeAccountFeeList[0]
-      const feeU: any =
-        volumeToCountAsBigNumber(feeInfo.belong, feeInfo.feeRaw ?? 0)?.times(
-          tokenPrices[feeInfo.belong],
-        ) ?? undefined
-      return feeU && currency && forexMap[currency]
-        ? '～' +
-            PriceTag[CurrencyToTag[currency]] +
-            getValuePrecisionThousand(
-              // @ts-ignore
-              feeU * forexMap[currency],
-              2,
-              2,
-              2,
-              true,
-              { floor: true },
-            )
-        : EmptyValueTag
-    } else {
-      return
-    }
-    // return activeAccountFeeList?.find(
-    //   (item: any) => item.belong == feeInfo.belong
-    // );
-  }, [realAddr, isActiveAccount, activeAccountFeeList, tokenPrices, currency, forexMap])
   const handlePanelEvent = React.useCallback(
     async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
       return new Promise<void>((res: any) => {
@@ -635,119 +509,35 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     [updateNFTTransferData],
   )
 
-  React.useEffect(() => {
-    if (realAddr !== '' && isActiveAccount === false) {
-      checkActiveFeeIsEnough({
-        isRequiredAPI: true,
-        requestType: 'TRANSFER_ACTIVE',
-      })
-    }
-  }, [isActiveAccount, realAddr])
 
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
       setShowAccount({
         isShow: true,
-        step: AccountStep.NFTTransfer_WaitForAuth,
+        step: AccountStep.NFTBurn_WaitForAuth,
       })
       processRequest(lastRequest, !isHardwareRetry)
     },
     [lastRequest, processRequest, setShowAccount],
   )
-  React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
-    if (isShow === false) {
-      setSureItsLayer2(undefined)
-    } else if (addressType !== undefined) {
-      const found = addressType ? addressToExWalletMapFn(addressType) : undefined
-      setSureItsLayer2(found)
-    }
-  }, [realAddr, isShow, contacts])
-  const nftTransferProps: TransferProps<R, T> = {
+
+  const nftTBurnProps: TransferProps<R, T> = {
     handleOnMemoChange,
     memo: nftTransferValue.memo ?? '',
     type: TRADE_TYPE.NFT,
-    addressDefault: address,
-    realAddr,
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.nftTransfer,
-    handleSureItsLayer2: (sure: WALLET_TYPE | EXCHANGE_TYPE) => {
-      const found = exWalletToAddressMapFn(sure)!
-      const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      if (!account.isContractAddress && contact) {
-        LoopringAPI.contactAPI?.updateContact(
-          {
-            contactAddress: realAddr,
-            isHebao: !!(account.isContractAddress || account.isCFAddress),
-            accountId: account.accountId,
-            addressType: found,
-            contactName: contact.contactName,
-          },
-          account.apiKey,
-        )
-        updateContacts()
-      }
-      setSureItsLayer2(sure)
-    },
-    // isConfirmTransfer,
-    sureItsLayer2,
     tradeData: { ...nftTransferValue } as unknown as R,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,
     onTransferClick,
     handleFeeChange,
-    addrStatus,
     feeInfo,
     chargeFeeTokenList,
-    activeAccountPrice,
-    // activeAccountFeeList,
-    // chargeFeeTransferList,
     isFeeNotEnough,
     handlePanelEvent,
-    isLoopringAddress,
     baseURL,
     getIPFSString,
-    isSameAddress,
-    isAddressCheckLoading,
-    handleOnAddressChange: (value: any) => {
-      checkActiveFeeIsEnough({
-        isRequiredAPI: true,
-        requestType: undefined as any,
-      })
-      setAddress((state) => {
-        if (state !== value || '') {
-          // flag = true;
-          setFeeWithActive((state) => {
-            if (state !== false) {
-              checkFeeIsEnough({
-                isRequiredAPI: true,
-                requestType: sdk.OffchainFeeReqType.TRANSFER,
-              })
-            }
-            return false
-          })
-        }
-        return value || ''
-      })
-    },
-    feeWithActive,
-    isActiveAccount,
-    isActiveAccountFee,
-    handleOnFeeWithActive: (value: boolean) => {
-      setFeeWithActive(value)
-      if (value && !isActiveAccountFee) {
-        checkFeeIsEnough({
-          isRequiredAPI: true,
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER_AND_UPDATE_ACCOUNT,
-        })
-      } else {
-        checkFeeIsEnough({
-          isRequiredAPI: true,
-          requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-        })
-      }
-    },
-    isSmartContractAddress: isContractAddress,
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
       ? {
@@ -756,14 +546,11 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
           addressType: contactAddressType!,
         }
       : undefined,
-    loopringSmartWalletVersion,
     contacts,
-  }
-  // const cancelNFTTransfer = () => {
-  //   resetDefault();
-  // };
+  }  as unknown as TransferProps<R, T>
+
   return {
-    nftTransferProps,
+    nftTBurnProps,
     retryBtn,
     // cancelNFTTransfer,
   }

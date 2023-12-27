@@ -11,6 +11,7 @@ import {
   WalletMap,
 } from '@loopring-web/common-resources'
 import React from 'react'
+import {NFTBurn_User_Denied} from "./Transfer";
 
 export type AccountBaseProps = {
   level?: string
@@ -133,6 +134,13 @@ export enum AccountStep {
   NFTTransfer_In_Progress,
   NFTTransfer_Success,
   NFTTransfer_Failed,
+
+  NFTBurn_WaitForAuth,
+  NFTBurn_First_Method_Denied,
+  NFTBurn_User_Denied,
+  NFTBurn_In_Progress,
+  NFTBurn_Success,
+  NFTBurn_Failed,
 
   NFTWithdraw_WaitForAuth,
   NFTWithdraw_First_Method_Denied,

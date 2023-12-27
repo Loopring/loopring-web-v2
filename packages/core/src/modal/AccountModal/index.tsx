@@ -55,6 +55,7 @@ export const ModalAccountInfo = withTranslation('common')(
       setOpenQRCode,
       account,
       collectionAdvanceProps,
+      nftBurnProps,
       transferProps,
       withdrawProps,
       nftTransferProps,
@@ -157,6 +158,7 @@ export const ModalAccountInfo = withTranslation('common')(
               ...nftTransferProps,
             } as any
           }
+          nftBurnProps={nftBurnProps}
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
           claimProps={claimProps as any}
