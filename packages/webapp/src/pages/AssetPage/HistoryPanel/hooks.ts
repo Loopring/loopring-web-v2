@@ -1421,12 +1421,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
-                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}/${
-                      order?.fillAmountS === order?.amountS ? '' : _amountSStr
+                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}${
+                      order?.fillAmountS === order?.amountS ? '' : '/' + _amountSStr
                     }  ${vSymbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    }/${
-                      order?.fillAmountS === order?.amountS ? '' : _amountBStr
+                    }${
+                      order?.fillAmountS === order?.amountS ? '' : '/' + _amountBStr
                     } ${vSymbolB};\n ${t('labelPrice')}: ${price}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:

@@ -320,9 +320,10 @@ export const ContractPanel = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }
                                 />
                               </Typography>
                               <Typography component={'span'} title={data.contactAddress}>
-                                {isMobile
-                                  ? getShortAddr(data.contactAddress ?? '')
-                                  : data.contactAddress}
+                                {(data?.ens ? `${data?.ens} / ` : '') +
+                                  (isMobile
+                                    ? getShortAddr(data.contactAddress ?? '')
+                                    : data.contactAddress)}
                                 <IconButton
                                   onClick={() => {
                                     navigator.clipboard.writeText(data.contactAddress)
