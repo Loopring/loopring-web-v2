@@ -298,7 +298,7 @@ export const RewardsTable = withTranslation(['tables', 'common'])(
           },
         },
       ],
-      [hideAssets],
+      [hideAssets, forexMap, currency],
     )
 
     const defaultArgs: any = {
