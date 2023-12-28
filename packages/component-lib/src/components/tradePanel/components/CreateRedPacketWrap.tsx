@@ -1987,9 +1987,6 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                               ? selectedAddresses.filter((addr) => addr !== contact.contactAddress)
                               : [contact.contactAddress, ...selectedAddresses]
                             setSelectedAddresses(newSelectedAddresses)
-                            // if (newSelectedAddresses.length <= maximumTargetsLength) {
-                            //   setSelectedAddresses(newSelectedAddresses)
-                            // }
                           }}
                           checked={
                             selectedAddresses.find((addr) => addr === contact.contactAddress)
@@ -2355,7 +2352,7 @@ export const TargetRedpacktInputAddressStep = withTranslation()(
                       },
                     })
                   } else {
-                    setSelectedAddresses(showChangeTips.contactImportCaches ?? [])
+                    setSelectedAddresses([])
                     setShowContactModal(true)
                   }
                 }}
