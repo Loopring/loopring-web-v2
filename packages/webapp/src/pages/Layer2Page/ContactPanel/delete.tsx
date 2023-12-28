@@ -1,5 +1,3 @@
-// import { Dialog } from "@mui/material";
-
 import React from 'react'
 import {
   Box,
@@ -11,8 +9,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material'
-import { Contact } from './hooks'
-import { CloseIcon, LoadingIcon } from '@loopring-web/common-resources'
+import { CloseIcon, LoadingIcon, Contact } from '@loopring-web/common-resources'
 import { TextField } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
 import { useTranslation } from 'react-i18next'

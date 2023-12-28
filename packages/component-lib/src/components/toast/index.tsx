@@ -5,18 +5,13 @@ import {
   GoodIcon,
   InfoIcon,
   SnackbarMessage,
+  ToastType,
 } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import React from 'react'
 import { VendorIconItem } from '../tradePanel'
 
-export enum ToastType {
-  success = 'success',
-  error = 'error',
-  warning = 'warning',
-  info = 'info',
-}
 export type TOASTOPEN = {
   open: boolean
   content: JSX.Element | string
@@ -143,3 +138,5 @@ export const NoticePanelSnackBar = ({
     </>
   )
 }
+
+export { ToastType }

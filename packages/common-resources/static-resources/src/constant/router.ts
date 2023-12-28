@@ -8,10 +8,25 @@ import {
   RewardIcon,
   SecurityIcon,
   VipIcon,
+  AmmIcon,
+  BlockTradeIcon,
+  CreateNFTIcon,
+  DualInvestIcon,
+  ETHStakingIcon,
+  FiatIcon,
+  LRCStakingIcon,
+  LeverageETHIcon,
+  MyCollectionIcon,
+  MyNFTIcon,
+  OrderBookIcon,
+  OverviewIcon,
+  StopLimitIcon,
+  SwapIcon,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
+
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
 export const SoursURL = 'https://static.loopring.io/assets/'
@@ -1057,6 +1072,8 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'TAIKO',
     ethereumL1: 'TAIKO',
     loopringLayer2: 'Loopring Layer 3',
+    L1Token: 'ETH',
+    L2Token: 'TAIKO',
   },
   ETHEREUM: {
     layer2: 'Layer 2',
@@ -1066,6 +1083,8 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'L1',
     ethereumL1: 'Ethereum L1',
     loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
   },
   GOERLI: {
     layer2: 'Layer 2',
@@ -1075,6 +1094,8 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'L1',
     ethereumL1: 'Ethereum L1',
     loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
   },
   ARBGOERLI: {
     layer2: 'Layer 2',
@@ -1084,5 +1105,7 @@ export const L1L2_NAME_DEFINED = {
     l1Symbol: 'L1',
     ethereumL1: 'Ethereum L1',
     loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
   },
 }

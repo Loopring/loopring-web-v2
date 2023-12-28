@@ -133,7 +133,7 @@ const persistedLocalStoreReducer = persistReducer<
   }>
 >(persistLocalStoreConfig, localStoreReducer)
 
-const reducer = combineReducers({
+export const initReduce = {
   account: persistedAccountReducer,
   socket: socketSlice.reducer,
   settings: persistedSettingReducer,
@@ -167,10 +167,10 @@ const reducer = combineReducers({
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
-})
+}
 
 export const store = configureStore({
-  reducer,
+  reducer: combineReducers(initReduce),
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
   middleware: [
     ...getDefaultMiddleware({
@@ -183,6 +183,7 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   enhancers: [reduxBatch],
 })
+
 export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
   let firebase_app
   switch (process.env.REACT_APP_NAME) {
