@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.8.14",
+    "@loopring-web/loopring-sdk": "4.1.0-test",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "1.4.15",
     "@mui/lab": "5.0.0-alpha.45",
@@ -214,6 +214,7 @@
     "https-browserify": "^1.0.0",
     "lerna": "^7.1.5",
     "node-sass": "^9.0.0",
+    "path-browserify": "^1.0.1",
     "prettier": "2.8.8",
     "process": "^0.11.10",
     "react-app-rewire-alias": "^0.2.0",

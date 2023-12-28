@@ -86,7 +86,9 @@ module.exports = function ({env}) {
                     "util": require.resolve("util"),
                     "buffer": require.resolve("buffer"),
                     "timers": require.resolve("timers-browserify"),
-                    'process/browser': require.resolve('process/browser')
+                    'process/browser': require.resolve('process/browser'),
+                    "path": require.resolve("path-browserify"),
+                    "fs": false,
                     // "fs": require.resolve('browserify-fs'),
                 })
                 config.node = {global: true}

@@ -59,7 +59,6 @@ import { LoopringAPI } from '../../../api_wrapper'
 import { useToast } from '../../../hooks'
 import { sanitize } from 'dompurify'
 import { StylePaper } from '../../../component'
-import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
@@ -604,7 +603,7 @@ export const NFTDetail = withTranslation('common')(
                 </Box>
                 {!!(
                   popItem.isCounterFactualNFT &&
-                  popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+                  popItem.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
                   popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
                 ) && (
                   <Box marginLeft={1} className={isMobile ? 'isMobile' : ''} width={'36%'}>
@@ -732,7 +731,7 @@ export const NFTDetail = withTranslation('common')(
                     href={
                       Explorer +
                       `nft/${popItem.minter?.toLowerCase()}-${
-                        NFTType[popItem.nftType ?? 0]
+                        sdk.NFTType[popItem.nftType ?? 0]
                       }-${popItem.tokenAddress?.toLowerCase()}-${popItem.nftId?.toLowerCase()}-${
                         popItem.royaltyPercentage
                       }`
@@ -762,7 +761,7 @@ export const NFTDetail = withTranslation('common')(
                     target='_blank'
                     rel='noopener noreferrer'
                     href={
-                      popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
+                      popItem.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
                         ? `${Explorer}collections/${popItem.tokenAddress}?a=${popItem.nftId}`
                         : `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
                     }
