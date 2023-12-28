@@ -184,7 +184,7 @@ export const SendFromContact = (
     isENSWrong: boolean
   } & Contact,
 ) => {
-  const [selected, setSelected] = React.useState(SendAssetList.SendAssetToOtherL1.key)
+  const [selected, setSelected] = React.useState(SendAssetList.SendAssetToL2.key)
   const { defaultNetwork } = useSettings()
   const { setShowTransfer, setShowWithdraw, setShowEditContact } = useOpenModals()
   const { status: contactStatus } = useContacts()
@@ -223,7 +223,7 @@ export const SendFromContact = (
         })
         break
     }
-  }, [])
+  }, [selected, contact])
   const geUpdateContact = (_e) => {
     setShowEditContact({
       isShow: true,
