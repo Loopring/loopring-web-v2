@@ -58,7 +58,7 @@ export const BtnCurrency = ({ t, currency, label, handleChange }: any) => {
       {Object.keys(CurrencyToTag).map((item) => {
         return (
           <OutlineSelectItem value={CurrencyToTag[item]} key={item}>
-            {PriceTag[CurrencyToTag[item]]} {item}
+            {item} - {PriceTag[CurrencyToTag[item]]}
           </OutlineSelectItem>
         )
       })}

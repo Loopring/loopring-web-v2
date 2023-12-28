@@ -34,7 +34,7 @@ const initialState: SettingsState = {
   proLayout: layoutConfigs[0].layouts,
   stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
-  defaultNetwork: NetworkMap['ETHEREUM'],
+  defaultNetwork: NetworkMap['ETHEREUM']?.chainId ?? 1,
   referralCode: '',
   isDevToggle: false,
   dualAuto: { auto: true, day: 'auto' },

@@ -1187,8 +1187,6 @@ export const useSwap = <
               .div('1e' + tokenMap[_tradeData['sell'].belong as string].decimals)
               .toString(),
           )
-          // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
-          // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
         }
         const calcTradeParams = sdk.getOutputAmount({
           input: input.toString(),

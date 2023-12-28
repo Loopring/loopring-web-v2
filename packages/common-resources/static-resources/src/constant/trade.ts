@@ -43,7 +43,7 @@ export enum CurrencyToTag {
 
 export enum PriceTag {
   USD = '$',
-  CNY = '￥',
+  CNY = '¥',
   JPY = '¥',
   AUD = 'A$',
   CAD = 'C$',
