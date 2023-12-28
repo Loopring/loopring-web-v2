@@ -220,6 +220,7 @@ export function useRedPacketModal() {
               ?.getLuckTokenDetail(
                 {
                   hash: _info.hash,
+                  serialNo: _info.serialNo,
                 },
                 account.apiKey,
               )
@@ -237,6 +238,7 @@ export function useRedPacketModal() {
               ?.getLuckTokenDetail(
                 {
                   hash: _info.hash,
+                  serialNo: _info.serialNo,
                 },
                 account.apiKey,
               )
@@ -415,6 +417,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit,
               offset,
               // fromId: 0,
@@ -548,6 +551,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit: RedPacketNFTDetailLimit,
               offset,
               // fromId: 0,
@@ -680,6 +684,7 @@ export function useRedPacketModal() {
                   {
                     accountId: account.accountId,
                     hash: _info.hash,
+                    serialNo: _info.serialNo,
                     limit,
                     offset,
                     // fromId: 0,
@@ -756,6 +761,7 @@ export function useRedPacketModal() {
         {
           account: account.accountId,
           hash: info.hash,
+          serialNo: info.serialNo,
           fromId: 0,
           showHelper: true,
         } as any,

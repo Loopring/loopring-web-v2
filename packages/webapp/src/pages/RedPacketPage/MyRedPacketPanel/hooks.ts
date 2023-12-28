@@ -161,6 +161,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.OpenPanel,
         })
@@ -170,6 +171,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.BlindBoxDetail,
         })
@@ -185,6 +187,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.OpenPanel,
         })
@@ -194,6 +197,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.DetailPanel,
         })
@@ -328,6 +332,7 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
+          serialNo: item.claim.serialNo
         },
       })
     } else {
@@ -336,6 +341,7 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
         step: RedPacketViewStep.DetailPanel,
         info: {
           ...item.luckyToken,
+          serialNo: item.claim.serialNo
         },
       })
     }
@@ -488,6 +494,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
         ...item.luckyToken,
+        serialNo: item.claim.serialNo
       },
     })
   }
