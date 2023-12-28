@@ -102,6 +102,7 @@ export const AssetPanel = withTranslation('common')(
                 ...rest,
                 ...assetTitleProps,
                 assetBtnStatus,
+                forexMap,
               }}
             />
           </StyleTitlePaper>

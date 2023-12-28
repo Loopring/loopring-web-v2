@@ -1,4 +1,10 @@
-import { CoinSource, LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources'
+import {
+  CoinSource,
+  CurrencyToTag,
+  LanguageKeys,
+  ThemeKeys,
+  UpColor,
+} from '@loopring-web/common-resources'
 import { Layouts } from 'react-grid-layout'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -14,7 +20,7 @@ export interface SettingsState {
   themeMode: ThemeKeys
   language: LanguageKeys
   platform: PlatFormKeys
-  currency: sdk.Currency
+  currency: CurrencyToTag
   upColor: keyof typeof UpColor
   slippage: number | 'N'
   coinJson: {
