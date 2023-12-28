@@ -85,9 +85,13 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
     setBtnLoading({ loading: true, index })
     let isENSWrong = false
     if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
-      const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(data.ens)
-      if (ensAddr?.toLowerCase() !== data?.contactAddress?.toLowerCase()) {
-        isENSWrong = true
+      try {
+        const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(data.ens)
+        if (ensAddr?.toLowerCase() !== data?.contactAddress?.toLowerCase()) {
+          isENSWrong = true
+        }
+      } catch (e) {
+        console.log('error: ens->address ignore', e)
       }
     }
     // geUpdateContact,

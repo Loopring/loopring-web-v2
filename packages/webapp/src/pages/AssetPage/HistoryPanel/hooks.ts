@@ -465,7 +465,10 @@ export const useOrderList = ({
     async ({
       isScroll,
       ...props
-    }: Omit<sdk.GetOrdersRequest, 'accountId'> & { isScroll?: boolean; extraOrderTypes?: string }) => {
+    }: Omit<sdk.GetOrdersRequest, 'accountId'> & {
+      isScroll?: boolean
+      extraOrderTypes?: string
+    }) => {
       setShowLoading(true)
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         const userOrders = await LoopringAPI.userAPI.getOrders(
@@ -840,7 +843,7 @@ export const useDualTransaction = <R extends RawDataDualTxsItem>(
                 (item.tokenInfoOrigin.market ?? 'dual-').match(/(dual-)?(\w+)-(\w+)/i) ?? []
 
               let [sellTokenSymbol, buyTokenSymbol] =
-                item.dualType == sdk.DUAL_TYPE.DUAL_BASE
+                item.dualType === sdk.DUAL_TYPE.DUAL_BASE
                   ? [
                       coinA ?? idIndex[item.tokenInfoOrigin.tokenIn],
                       coinB ?? idIndex[item.tokenInfoOrigin.tokenOut],

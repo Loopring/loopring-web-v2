@@ -1,12 +1,16 @@
-import { Box, CardContent, Tooltip, Typography, Divider, Tab, Tabs } from '@mui/material'
+import { Box, CardContent, Divider, Tab, Tabs, Tooltip, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { MenuBtnStyled } from '../../styled'
 import { SendAssetProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import {
+  AlertIcon,
   AnotherIcon,
   BackIcon,
+  Contact,
   ExchangeAIcon,
+  fontDefault,
+  hexToRGB,
   IncomingIcon,
   Info2Icon,
   L1L2_NAME_DEFINED,
@@ -14,17 +18,15 @@ import {
   L2l2Icon,
   MapChainId,
   OutputIcon,
-  AlertIcon,
+  SagaStatus,
   SendAssetList,
-  hexToRGB,
-  Contact,
-  fontDefault,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings, useToggle } from '../../../stores'
 
 import { Button, CoinIcon, TickCardStyleItem } from '../../basic-lib'
 import React from 'react'
 import { useTheme } from '@emotion/react'
+import { store, useContacts } from '@loopring-web/core'
 
 const BoxStyled = styled(Box)`` as typeof Box
 
@@ -177,19 +179,22 @@ const BoxStyle = styled(Box)`
   }
 `
 
-export const SendFromContact = ({
-  // contacts,
-  isENSWrong,
-  ...contact
-}: {
-  isENSWrong
-} & Contact) => {
+export const SendFromContact = (
+  props: {
+    isENSWrong: boolean
+  } & Contact,
+) => {
   const [selected, setSelected] = React.useState(SendAssetList.SendAssetToOtherL1.key)
   const { defaultNetwork } = useSettings()
   const { setShowTransfer, setShowWithdraw, setShowEditContact } = useOpenModals()
+  const { status: contactStatus } = useContacts()
+  const [contact, setContact] = React.useState({
+    isENSWrong: props?.isENSWrong,
+    ...props,
+  })
+
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const theme = useTheme()
-
   const submit = React.useCallback(() => {
     // : Contact, network: 'SendToOtherL1'| 'SendTOL2', onClose: () => void
     switch (selected) {
@@ -224,11 +229,28 @@ export const SendFromContact = ({
       isShow: true,
       info: {
         ...contact,
-        isENSWrong,
       },
     })
   }
   const { t } = useTranslation()
+  React.useEffect(() => {
+    if (contactStatus == SagaStatus.UNSET && contact.isENSWrong) {
+      const { contacts } = store.getState().contacts
+      setContact((state) => {
+        const _contact = contacts?.find(
+          (contact) =>
+            contact.contactAddress?.toLowerCase() === state?.contactAddress?.toLowerCase(),
+        )
+        if (contact.isENSWrong && !_contact.ens) {
+          return {
+            ...state,
+            isENSWrong: false,
+          }
+        }
+        return state
+      })
+    }
+  }, [contactStatus])
   return (
     <>
       <Box
@@ -300,7 +322,7 @@ export const SendFromContact = ({
                 {contact?.ens}
               </Typography>
             </Box>
-            {isENSWrong && (
+            {contact.isENSWrong && (
               <Button
                 variant={'contained'}
                 sx={{
@@ -393,13 +415,13 @@ export const SendFromContact = ({
         >
           <Box alignSelf={'stretch'} paddingX={3}>
             <Button
-              disabled={isENSWrong}
+              disabled={contact.isENSWrong}
               onClick={submit}
               variant={'contained'}
               size={'medium'}
               fullWidth
             >
-              {t(isENSWrong ? 'labelENSAddressMismatch' : 'labelContactsNext')}
+              {t(contact.isENSWrong ? 'labelENSAddressMismatch' : 'labelContactsNext')}
             </Button>
           </Box>
         </Box>
