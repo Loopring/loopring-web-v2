@@ -98,8 +98,6 @@ export const EditContact = ({
         alignItems={'flex-start'}
         alignSelf={'stretch'}
         marginTop={-4}
-        maxWidth={'var(--modal-width)'}
-        width={'var(--modal-width)'}
         //   height={}
         //   : `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
         // _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
@@ -121,11 +119,12 @@ export const EditContact = ({
       </Box>
       <BoxStyle
         flex={1}
+        maxWidth={'var(--modal-width)'}
+        width={'var(--modal-width)'}
         display={'flex'}
         alignItems={'center'}
         flexDirection={'column'}
         paddingBottom={4}
-        width={'100%'}
         paddingX={3}
       >
         {isEdit && isENSWrong && (
