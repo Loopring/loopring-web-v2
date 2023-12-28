@@ -1401,13 +1401,19 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     precisionB = vTokenB.precision
                     vSymbol = vToken.symbol
                     vSymbolB = vTokenB.symbol
+
                     fillAmountS = sdk.toBig(order.fillAmountS ?? 0).div('1e' + vToken.decimals)
                     fillAmountB = sdk.toBig(order.fillAmountB ?? 0).div('1e' + vTokenB.decimals)
-                    fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
                     fillAmountSStr = getValuePrecisionThousand(fillAmountS, precision, precision)
+                    fillAmountBStr = getValuePrecisionThousand(fillAmountB, precisionB, precisionB)
+                    const _amountS = sdk.toBig(order.amountS ?? 0).div('1e' + vToken.decimals)
+                    const _amountB = sdk.toBig(order.amountB ?? 0).div('1e' + vTokenB.decimals)
+                    const _amountSStr = getValuePrecisionThousand(_amountS, precision, precision)
+                    const _amountBStr = getValuePrecisionThousand(_amountB, precisionB, precisionB)
+
                     percentage = sdk
                       .toBig(order?.fillAmountS ?? 0)
-                      .div(amountS ?? 1)
+                      .div(order?.amountS ?? 1)
                       .times(100)
                       .toFixed(2)
                     feeStr = getValuePrecisionThousand(
@@ -1415,12 +1421,15 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
+                    _amountSStr
 
-                    mainContentRender = `${
-                      fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag
+                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}/${
+                      order?.fillAmountS === order?.amountS ? '' : _amountSStr
                     }  ${vSymbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    } ${vSymbolB}; ${t('labelPrice')}: ${price}`
+                    }/${
+                      order?.fillAmountS === order?.amountS ? '' : _amountBStr
+                    } ${vSymbolB};\n ${t('labelPrice')}: ${price}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout

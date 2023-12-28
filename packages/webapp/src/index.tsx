@@ -22,7 +22,6 @@ if (process.env.REACT_APP_VER) {
 }
 // @ts-ignore
 window.global = window
-
 function onLongPress(element: any, callback: () => void) {
   let timer: NodeJS.Timeout | -1 = -1
 

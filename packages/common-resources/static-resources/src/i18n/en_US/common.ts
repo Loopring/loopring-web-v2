@@ -2344,5 +2344,4 @@ export default {
   labelL2NFTBurnBtn: 'Burn NFT',
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
-
 }
