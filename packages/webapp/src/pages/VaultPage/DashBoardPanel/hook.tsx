@@ -43,7 +43,6 @@ import { useRouteMatch } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 
 const VaultPath = `${RouterPath.vault}/:item`
-
 export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
@@ -349,15 +348,11 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       // tokenPrices: { tokenPrices },
       // tokenPrices: { tokenPrices },
       invest: {
-        vaultMap: { tokenMap,  tokenPrices },
+        vaultMap: { tokenMap, tokenPrices },
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: false }).vaultLayer2Map ?? {}
-    if (
-      tokenMap &&
-      !!Object.keys(tokenMap).length &&
-      !!Object.keys(walletMap ?? {}).length
-    ) {
+    if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(walletMap ?? {}).length) {
       let totalAssets = sdk.toBig(0)
       let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
         let item: any
@@ -373,7 +368,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             detail: walletMap[key],
             erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
-          const totalAmount = sdk.toBig(tokenInfo.detail?.asset ??0)
+          const totalAmount = sdk.toBig(tokenInfo.detail?.asset ?? 0)
           const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
           const isSmallBalance = tokenValueDollar.lt(1)
           item = {
@@ -382,7 +377,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               value: tokenInfo.token,
             },
             amount: totalAmount?.toString(),
-            available: tokenInfo?.detail?.count??0,
+            available: tokenInfo?.detail?.count ?? 0,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
@@ -434,7 +429,8 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     if (
       showNoVaultAccount &&
       vaultAccountInfoStatus === SagaStatus.UNSET &&
-      vaultAccountInfo?.accountStatus && walletL2Status === SagaStatus.UNSET &&
+      vaultAccountInfo?.accountStatus &&
+      walletL2Status === SagaStatus.UNSET &&
       whichBtn &&
       vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
     ) {
