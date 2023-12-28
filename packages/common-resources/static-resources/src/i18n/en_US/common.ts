@@ -2143,6 +2143,12 @@ export default {
   labelSendToContact: 'Send to',
   labelContactENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
+  labelL2NFTBurnTitle: 'Burn NFT',
+  labelL2NFTBurnBtn: 'Burn NFT',
+  labelL2NFTBurnTip:
+    'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
@@ -2314,6 +2320,5 @@ export default {
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
-  labelUpdateContactsNext: 'Go to Update Contact',
-  labelENSAddressMismatch: 'ENS & Address Mismatch',
+
 }

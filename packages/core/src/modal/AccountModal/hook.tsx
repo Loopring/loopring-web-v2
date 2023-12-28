@@ -125,6 +125,12 @@ import {
   TOASTOPEN,
   setShowGlobalToast,
   SendFromContact,
+  NFTBurn_Failed,
+  NFTBurn_First_Method_Denied,
+  NFTBurn_In_Progress,
+  NFTBurn_Success,
+  NFTBurn_User_Denied,
+  NFTBurn_WaitForAuth,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -172,6 +178,7 @@ import {
   useExportAccount,
   useForceWithdraw,
   useModalData,
+  useNFTBurn,
   useNFTDeploy,
   useNFTMintAdvance,
   useNFTTransfer,
@@ -274,6 +281,7 @@ export function useAccountModalForUI({
   const { transferProps } = useTransfer()
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
+  const { nftBurnProps } = useNFTBurn()
   const { nftDeployProps } = useNFTDeploy()
 
   const { contactAddProps } = useContactAdd()
@@ -2481,6 +2489,106 @@ export function useAccountModalForUI({
           />
         ),
       },
+      //Burn
+      [AccountStep.NFTBurn_WaitForAuth]: {
+        view: (
+          <NFTBurn_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_First_Method_Denied]: {
+        view: (
+          <NFTBurn_First_Method_Denied
+            btnInfo={{
+              btnTxt: 'labelTryAnother',
+              callback: () => {
+                nftTransferProps.onTransferClick(nftTransferValue as any, false)
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_User_Denied]: {
+        view: (
+          <NFTBurn_User_Denied
+            btnInfo={{
+              btnTxt: 'labelRetry',
+              callback: () => {
+                nftTransferProps.onTransferClick(nftTransferValue as any)
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_In_Progress]: {
+        view: (
+          <NFTBurn_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_Success]: {
+        view: (
+          <NFTBurn_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: 'Txn Hash',
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_Failed]: {
+        view: (
+          <NFTBurn_Failed
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.nftTransfer,
+                  },
+                })
+              },
+            })}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
 
       // withdraw
       [AccountStep.NFTWithdraw_WaitForAuth]: {
@@ -3229,6 +3337,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
+    nftBurnProps,
     claimProps,
     depositProps,
     resetProps,

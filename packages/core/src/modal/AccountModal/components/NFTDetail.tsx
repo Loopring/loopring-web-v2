@@ -34,7 +34,9 @@ import {
   UIERROR_CODE,
   FavSolidIcon,
   FavHollowIcon,
-  SoursURL,
+  BurnIcon,
+  RedPacketIcon,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import {
@@ -57,9 +59,10 @@ import { LoopringAPI } from '../../../api_wrapper'
 import { useToast } from '../../../hooks'
 import { sanitize } from 'dompurify'
 import { StylePaper } from '../../../component'
-import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router-dom'
+import { useTheme } from '@emotion/react'
+
 enum NFTDetailTab {
   Detail = 'Detail',
   Property = 'Property',
@@ -67,6 +70,7 @@ enum NFTDetailTab {
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg-opacity);
+
   img {
     object-fit: contain;
   }
@@ -119,6 +123,8 @@ export const NFTDetail = withTranslation('common')(
   } & WithTranslation) => {
     const { isMobile } = useSettings()
     const { chainId } = useSystem()
+    const theme = useTheme()
+
     const { account } = useAccount()
     const [iconLoading, setIconLoading] = React.useState(false)
     const {
@@ -134,6 +140,7 @@ export const NFTDetail = withTranslation('common')(
     const {
       setShowNFTDetail,
       setShowAccount,
+      setShowNFTTransfer,
       setShowNFTDeploy,
       setShowTradeIsFrozen,
       modals: { isShowNFTDetail },
@@ -571,11 +578,12 @@ export const NFTDetail = withTranslation('common')(
                 justifyContent={'left'}
                 marginBottom={isMobile ? 2 : 5}
                 paddingRight={3}
+                alignItems={'center'}
               >
-                <Box className={isMobile ? 'isMobile' : ''} width={'45%'}>
+                <Box className={isMobile ? 'isMobile' : ''} width={'36%'}>
                   <Button
                     variant={'contained'}
-                    size={'small'}
+                    size={'medium'}
                     fullWidth
                     onClick={() =>
                       isKnowNFTNoMeta
@@ -595,13 +603,13 @@ export const NFTDetail = withTranslation('common')(
                 </Box>
                 {!!(
                   popItem.isCounterFactualNFT &&
-                  popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+                  popItem.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
                   popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
                 ) && (
-                  <Box marginLeft={'2%'} className={isMobile ? 'isMobile' : ''} width={'45%'}>
+                  <Box marginLeft={1} className={isMobile ? 'isMobile' : ''} width={'36%'}>
                     <Button
                       variant={'contained'}
-                      size={'small'}
+                      size={'medium'}
                       fullWidth
                       onClick={() =>
                         deployNFT.enable
@@ -619,18 +627,39 @@ export const NFTDetail = withTranslation('common')(
                     </Button>
                   </Box>
                 )}
-                <img
-                  style={{
-                    cursor: 'pointer',
-                    width: '32px',
-                    height: '32px',
-                    marginLeft: '2%',
-                  }}
-                  onClick={() => {
-                    history.push(`/redPacket/create?nftDatas=${popItem.nftData}`)
-                  }}
-                  src={SoursURL + '/images/redpacket_logo.png'}
-                />
+                <Box marginLeft={2}>
+                  <IconButton
+                    size={'large'}
+                    onClick={() => {
+                      history.push(`${RouterPath.redPacket}/create?nftDatas=${popItem.nftData}`)
+                    }}
+                    style={{
+                      height: 40,
+                      width: 40,
+                      background: '#F26666',
+                      borderRadius: theme.unit,
+                    }}
+                  >
+                    <RedPacketIcon htmlColor={'var(--color-white)'} />
+                  </IconButton>
+                </Box>
+                <Box marginLeft={2}>
+                  <IconButton
+                    size={'large'}
+                    style={{
+                      height: 40,
+                      width: 40,
+                      background: 'var(--color-divide)',
+                      borderRadius: theme.unit,
+                    }}
+                    title={t('labelL2NFTBurnBtn')}
+                    onClick={() => {
+                      setShowNFTTransfer({ isShow: true, info: { isBurn: true, ...popItem } })
+                    }}
+                  >
+                    <BurnIcon htmlColor={'var(--color-white)'} />
+                  </IconButton>
+                </Box>
               </Box>
             </Grid>
           </Grid>
@@ -702,7 +731,7 @@ export const NFTDetail = withTranslation('common')(
                     href={
                       Explorer +
                       `nft/${popItem.minter?.toLowerCase()}-${
-                        NFTType[popItem.nftType ?? 0]
+                        sdk.NFTType[popItem.nftType ?? 0]
                       }-${popItem.tokenAddress?.toLowerCase()}-${popItem.nftId?.toLowerCase()}-${
                         popItem.royaltyPercentage
                       }`
@@ -732,7 +761,7 @@ export const NFTDetail = withTranslation('common')(
                     target='_blank'
                     rel='noopener noreferrer'
                     href={
-                      popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
+                      popItem.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
                         ? `${Explorer}collections/${popItem.tokenAddress}?a=${popItem.nftId}`
                         : `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
                     }
