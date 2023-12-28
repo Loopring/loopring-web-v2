@@ -1421,8 +1421,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
-                    _amountSStr
-
                     mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}/${
                       order?.fillAmountS === order?.amountS ? '' : _amountSStr
                     }  ${vSymbol} ${DirectionTag} ${
