@@ -519,7 +519,6 @@ export const ModalPanel = <
           />
         }
       />
-
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? 'Action'}

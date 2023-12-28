@@ -92,7 +92,7 @@ export const DefiTitle = () => {
 }
 const InvestRouterMatch = `${RouterPath.invest}/:item?`
 export const InvestPage = withTranslation('common', { withRef: true })(() => {
-    let match: any = useRouteMatch(InvestRouterMatch)
+  let match: any = useRouteMatch(InvestRouterMatch)
   let { t } = useTranslation()
   const {
     confirmedLRCStakeInvest: confirmedLRCInvestFun,
@@ -109,11 +109,11 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
   } = useToggle()
 
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-        (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
-            ? InvestType[match?.params?.item]
-            : InvestType.Overview) as any,
-        // InvestType.Overview
-    )
+    (InvestRouter.find((item) => item.toLowerCase() === match?.params?.item?.toLowerCase())
+      ? InvestType[match?.params?.item]
+      : InvestType.Overview) as any,
+    // InvestType.Overview
+  )
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false)
   React.useEffect(() => {
     switch (match?.params.item) {
@@ -189,7 +189,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}
         handleClose={(_e, isAgree) => {
-          setConfirmedLRCStakeInvestInvest({isShow: false, confirmationNeeded: false })
+          setConfirmedLRCStakeInvestInvest({ isShow: false, confirmationNeeded: false })
           if (!isAgree) {
             // history.goBack()
           } else {

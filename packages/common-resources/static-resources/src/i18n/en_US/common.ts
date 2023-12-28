@@ -2138,12 +2138,6 @@ export default {
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelHideRead: 'Hide Read(s)',
-  labelL2NFTBurnTitle: 'Burn NFT',
-  labelL2NFTBurnBtn: 'Burn NFT',
-  labelL2NFTBurnTip:
-    'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
-  labelUpdateContactsNext: 'Go to Update Contact',
-  labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
@@ -2320,6 +2314,8 @@ export default {
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelVaultActiveLoanAlert:
     'You currently have an active loan order in progress. This may affect the available tokens for trading. Please proceed with caution.',
   labelVaultSwapBorrowTip: 'Max is sum of Available and Borrowable tokens',
@@ -2344,4 +2340,9 @@ export default {
   labelVaultTradeInsufficient: 'Insufficient quota',
   labelVaultActiveLoanError:
     'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
+  labelL2NFTBurnTitle: 'Burn NFT',
+  labelL2NFTBurnBtn: 'Burn NFT',
+  labelL2NFTBurnTip:
+    'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
+
 }

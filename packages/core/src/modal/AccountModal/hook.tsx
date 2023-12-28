@@ -876,14 +876,9 @@ export function useAccountModalForUI({
         view: (
           <SendFromContact
             {...(isShowAccount?.info as any)}
-            // isENSWrong={.isENSWrong}
-            // sendInfo={isShowAccount?.info}
           />
-        ),
-        // onBack: () => {
-        //   setShowAccount({ isShow: false })
-        // },
-      },
+        )
+      } ,
       [AccountStep.SendNFTGateway]: {
         view: (
           <SendNFTAsset
@@ -953,7 +948,7 @@ export function useAccountModalForUI({
               addressShort,
               etherscanLink: rest.etherscanBaseUrl + 'address/' + account.accAddress,
               mainBtn: account.readyState === AccountStatus.ACTIVATED ? lockBtn : unlockBtn,
-							hideVIPlevel: isWebEarn ? true : false
+              hideVIPlevel: isWebEarn ? true : false,
             }}
           />
         ),
@@ -2832,7 +2827,10 @@ export function useAccountModalForUI({
                   }
                 }
               setShowAccount({ isShow: false })
-							setShowActiveAccount({isShow: true, info: {isReset: true, confirmationType: 'lockedReset'}})
+              setShowActiveAccount({
+                isShow: true,
+                info: { isReset: true, confirmationType: 'lockedReset' },
+              })
             }}
             {...{
               ...rest,
