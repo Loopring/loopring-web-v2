@@ -155,7 +155,9 @@ export const CardStyleItem = styled(Card)<
 
   &.btnCard {
     background: var(--color-box);
-
+    .MuiCardContent-root {
+      padding: ${({ theme }) => theme.unit}px;
+    }
     .MuiCardContent-root {
       display: flex;
       flex-direction: row;
@@ -188,6 +190,9 @@ export const CardStyleItem = styled(Card)<
           c_key: 'var(--color-border-select)',
           d_R: 0.5,
         })};
+      &:after {
+        display: none;
+      }
     }
   }
 
@@ -198,6 +203,7 @@ export const CardStyleItem = styled(Card)<
     padding: ${({ theme }) => theme.unit}px;
     height: 54px;
   }
+
   &.MuiPaper-root.dualInvestCard {
     padding: 0;
     background: var(--color-box);
