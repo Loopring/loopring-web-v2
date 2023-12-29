@@ -84,6 +84,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
     redPacketReceiveList: redPacketReceiveList_BlindBox,
     redPacketReceiveTotal: redPacketReceiveTotal_BlindBox,
     onItemClick: onReceiveItemClick_BlindBox,
+    onItemClickOpen: onReceiveItemClickOpen_BlindBox,
   } = useMyRedPacketBlindBoxReceiveTransaction({
     setToastOpen,
     // showActionableRecords
@@ -356,6 +357,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
           >
             <RedPacketBlindBoxReceiveTable
               onItemClick={onReceiveItemClick_BlindBox}
+              onItemClickOpen={onReceiveItemClickOpen_BlindBox}
               showloading={showloadingReceive_BlindBox}
               forexMap={forexMap}
               etherscanBaseUrl={etherscanBaseUrl}
