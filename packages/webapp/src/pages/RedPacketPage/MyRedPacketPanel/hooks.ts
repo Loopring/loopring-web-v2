@@ -502,7 +502,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
   
   const onItemClickOpen = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
     if (LoopringAPI.luckTokenAPI && accountId) {
-      const response = await LoopringAPI.luckTokenAPI.sendLuckTokenClaimBlindBox({
+      const response = await LoopringAPI.luckTokenAPI.sendLuckTokenClaimLuckyToken({
         request: {
           hash: item.luckyToken.hash,
           serialNo: item.claim.serialNo,
