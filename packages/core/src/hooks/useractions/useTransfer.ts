@@ -172,7 +172,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         sdk.toBig(transferValue.balance ?? 0).times('1e' + sellToken.decimals),
       )
       const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      const ensHasCheck = contact?.ens ? contact.ens && ens && !isENSWrong : true
+      const ensHasCheck = (contact?.ens || ens) && !isENSWrong
       if (
         tradeValue &&
         chargeFeeTokenList.length &&
