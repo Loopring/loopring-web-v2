@@ -223,7 +223,8 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         sdk.AddressType.EXCHANGE_HUOBI,
         sdk.AddressType.EXCHANGE_COINBASE,
         sdk.AddressType.CONTRACT,
-      ].concat(checkLayer2Status ? [sdk.AddressType.EOA] : [])
+        sdk.AddressType.EOA
+      ]
       if (found && listNoCheckRequired.includes(found.addressType)) {
         let ens = '',
           isENSWrong = false
