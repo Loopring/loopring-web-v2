@@ -500,7 +500,14 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
     })
   }
   
-  const onItemClickOpen = async (item: sdk.LuckyTokenBlindBoxItemReceive) => {
+  const onItemClickOpen = async (
+    item: sdk.LuckyTokenBlindBoxItemReceive,
+    pageInfo?: {
+      offset: number
+      limit: number
+      filter: any
+    },
+  ) => {
     if (LoopringAPI.luckTokenAPI && accountId) {
       const response = await LoopringAPI.luckTokenAPI.sendLuckTokenClaimLuckyToken({
         request: {
@@ -510,7 +517,7 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
           referrer: '',
         },
         apiKey,
-        eddsaKey: eddsaKey.sk
+        eddsaKey: eddsaKey.sk,
       })
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
         setShowAccount({
@@ -518,8 +525,8 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
           step: AccountStep.ClaimWithdraw_Failed,
           error: {
             code: (response as sdk.RESULT_INFO).code,
-            message: (response as sdk.RESULT_INFO).message
-          }
+            message: (response as sdk.RESULT_INFO).message,
+          },
         })
         return
       }
@@ -528,11 +535,11 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
-          serialNo: item.claim.serialNo
+          serialNo: item.claim.serialNo,
         },
       })
+      getRedPacketReceiveList(pageInfo)
     }
-    
   }
   return {
     onItemClick,
