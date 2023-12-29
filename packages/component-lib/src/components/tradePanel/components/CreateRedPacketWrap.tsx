@@ -930,6 +930,7 @@ export const CreateRedPacketStepType = withTranslation()(
         ? !item.tags?.includes('disabledForExclusive')
         : true,
     )
+    myLog('tradeData.type?.mode', tradeData.type?.mode)
     return (
       <RedPacketBoxStyle
         className={isMobile ? 'mobile redPacket' : ''}
@@ -980,16 +981,15 @@ export const CreateRedPacketStepType = withTranslation()(
                 tradeData.type?.mode === sdk.LuckyTokenClaimType.BLIND_BOX ? 'BlindBox' : 'Normal'
               }
               onChange={(_event, value) => {
-                handleOnDataChange({
-                  ...tradeData,
-                  type: {
-                    ...tradeData.type,
-                    mode:
-                      value === 'Normal'
-                        ? sdk.LuckyTokenClaimType.COMMON
-                        : sdk.LuckyTokenClaimType.BLIND_BOX,
-                  },
-                })
+                const found = value === 'Normal'
+                  ? LuckyRedPacketList.find((config) =>
+                  config.tags?.includes('enableInNFTS') && config.value.partition === sdk.LuckyTokenAmountType.RANDOM,
+                )
+                  : LuckyRedPacketList.find((config) =>
+                  config.value.partition === sdk.LuckyTokenAmountType.RANDOM &&
+                  config.value.mode === sdk.LuckyTokenClaimType.BLIND_BOX
+                ) 
+                onSelecteValue!(found!)
               }}
               aria-label='l2-history-tabs'
               variant='scrollable'
