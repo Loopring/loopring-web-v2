@@ -147,7 +147,7 @@ export function useRedPacketModal() {
       }
     }
     return ''
-  }, [info?.tokenId, info?.tokenAmount])
+  }, [info?.tokenId, info?.tokenAmount, isShow, info])
   const amountClaimStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount: string
