@@ -177,7 +177,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         sdk.toBig(withdrawValue.balance ?? 0).times('1e' + withdrawT.decimals),
       )
       const contact = contacts?.find((x) => x.contactAddress === realAddr)
-      const ensHasCheck = contact?.ens ? contact.ens && ens && !isENSWrong : true
+      const ensHasCheck = (contact?.ens || ens) 
+        ? !isENSWrong 
+        : true
       if (
         tradeValue &&
         !exceedPoolLimit &&

@@ -184,7 +184,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   )
   const checkBtnStatus = React.useCallback(() => {
     const contact = contacts?.find((x) => x.contactAddress === realAddr)
-    const ensHasCheck = contact?.ens ? contact.ens && ens && !isENSWrong : true
+    const ensHasCheck = (contact?.ens || ens) 
+        ? !isENSWrong 
+        : true
     if (
       tokenMap &&
       nftTransferValue.fee?.belong &&
