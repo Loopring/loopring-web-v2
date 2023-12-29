@@ -540,6 +540,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit: 500,
               offset: 0,
               showHelper: true,
@@ -573,6 +574,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit: RedPacketBlindBoxLimit,
               offset,
             } as any,
@@ -1249,6 +1251,7 @@ export function useRedPacketModal() {
               {
                 accountId: account.accountId,
                 hash: _info.hash,
+                serialNo: _info.serialNo,
                 limit: RedPacketBlindBoxLimit,
                 offset: (page - 1) * RedPacketBlindBoxLimit,
               } as any,
