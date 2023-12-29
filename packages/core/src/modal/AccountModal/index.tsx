@@ -9,10 +9,16 @@ import {
   ToastType,
   useOpenModals,
   ETHStakingDetail,
+  AccountStep,
 } from '@loopring-web/component-lib'
 import { useStakingAprTrend, useSystem } from '@loopring-web/core'
 import { useAccountModalForUI } from './hook'
-import { Account, AssetsRawDataItem, TOAST_TIME } from '@loopring-web/common-resources'
+import {
+  Account,
+  AssetsRawDataItem,
+  SendAssetList,
+  TOAST_TIME,
+} from '@loopring-web/common-resources'
 
 export const ModalAccountInfo = withTranslation('common')(
   ({
@@ -124,6 +130,15 @@ export const ModalAccountInfo = withTranslation('common')(
             onBack: () => {
               if (transferProps.isFromContact) {
                 setShowTransfer({ isShow: false })
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.SendAssetFromContact,
+                  info: {
+                    ...transferProps.contact,
+                    isENSWrong: false,
+                    select: SendAssetList.SendAssetToL2.key,
+                  },
+                })
               } else {
                 setShowTransfer({ isShow: false })
                 onBackSend()
@@ -138,6 +153,15 @@ export const ModalAccountInfo = withTranslation('common')(
               : () => {
                   if (withdrawProps.isFromContact) {
                     setShowWithdraw({ isShow: false })
+                    setShowAccount({
+                      isShow: true,
+                      step: AccountStep.SendAssetFromContact,
+                      info: {
+                        ...withdrawProps.contact,
+                        isENSWrong: false,
+                        select: SendAssetList.SendAssetToOtherL1.key,
+                      },
+                    })
                   } else {
                     setShowWithdraw({ isShow: false })
                     onBackSend()

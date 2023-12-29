@@ -34,6 +34,7 @@ import {
   CollectionMeta,
   FeeInfo,
   IBData,
+  SendAssetList,
   TRADE_TYPE,
   TradeNFT,
 } from '@loopring-web/common-resources'
@@ -536,6 +537,21 @@ export const ModalPanel = <
             {...{
               ...contactAddProps,
             }}
+            onBack={
+              isShowEditContact?.info?.from === AccountStep.SendAssetFromContact
+                ? () => {
+                    setShowAccount({
+                      isShow: true,
+                      step: AccountStep.SendAssetFromContact,
+                      info: {
+                        ...contactAddProps?.isEdit?.item,
+                        select: SendAssetList.SendAssetToOtherL1.key,
+                      },
+                    })
+                    setShowEditContact({ isShow: false, info: {} })
+                  }
+                : undefined
+            }
             // contacts={isShowAccount.info?.contacts}
             // setToast={setToast}
           />

@@ -751,11 +751,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSmartContractAddress: isContractAddress,
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
-      ? {
-          address: contactAddress,
-          name: contactName!,
-          addressType: contactAddressType!,
-        }
+      ? contacts?.find((x) => x.contactAddress === contactAddress)
       : undefined,
     loopringSmartWalletVersion,
     isENSWrong,

@@ -1,7 +1,7 @@
 import { Box, CardContent, Divider, Tab, Tabs, Tooltip, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { MenuBtnStyled } from '../../styled'
-import { SendAssetProps } from './Interface'
+import { AccountStep, SendAssetProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import {
   AlertIcon,
@@ -182,11 +182,12 @@ const BoxStyle = styled(Box)`
 export const SendFromContact = (
   props: {
     isENSWrong: boolean
+    selected: string
   } & Contact,
 ) => {
-  const [selected, setSelected] = React.useState(SendAssetList.SendAssetToL2.key)
+  const [selected, setSelected] = React.useState(props?.selected ?? SendAssetList.SendAssetToL2.key)
   const { defaultNetwork } = useSettings()
-  const { setShowTransfer, setShowWithdraw, setShowEditContact } = useOpenModals()
+  const { setShowTransfer, setShowWithdraw, setShowEditContact, setShowAccount } = useOpenModals()
   const { status: contactStatus } = useContacts()
   const [contact, setContact] = React.useState({
     isENSWrong: props?.isENSWrong,
@@ -204,11 +205,8 @@ export const SendFromContact = (
           address: contact.contactAddress,
           name: contact.contactName,
           addressType: contact.addressType,
-          // symbol: 'ETH',
-          // info: {
-          //   onCloseCallBack: onClose,
-          // },
         })
+        setShowAccount({ isShow: false })
         break
       case SendAssetList.SendAssetToL2.key:
         setShowTransfer({
@@ -216,11 +214,8 @@ export const SendFromContact = (
           address: contact.contactAddress,
           name: contact.contactName,
           addressType: contact.addressType,
-          // symbol: 'ETH',
-          // info: {
-          //   onCloseCallBack: onClose,
-          // },
         })
+        setShowAccount({ isShow: false })
         break
     }
   }, [selected, contact])
@@ -229,8 +224,10 @@ export const SendFromContact = (
       isShow: true,
       info: {
         ...contact,
+        from: AccountStep.SendAssetFromContact,
       },
     })
+    setShowAccount({ isShow: false })
   }
   const { t } = useTranslation()
   React.useEffect(() => {

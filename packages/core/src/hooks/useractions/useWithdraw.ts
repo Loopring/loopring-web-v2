@@ -52,14 +52,7 @@ import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/co
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: {
-        symbol,
-        isShow,
-        info,
-        address: contactAddress,
-        name: contactName,
-        addressType: contactAddressType,
-      },
+      isShowWithdraw: { symbol, isShow, info, address: contactAddress },
     },
     setShowAccount,
     setShowWithdraw,
@@ -395,6 +388,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     return () => {
       resetIntervalTime()
       _checkFeeIsEnough.cancel()
+      setAddress('')
     }
   }, [isShow, accountStatus])
 
@@ -782,11 +776,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
-      ? ({
-          address: contactAddress,
-          name: contactName!,
-          addressType: contactAddressType!,
-        } as any)
+      ? contacts?.find((x) => x.contactAddress === contactAddress)
       : undefined,
     loopringSmartWalletVersion,
     contacts,
