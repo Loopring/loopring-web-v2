@@ -4199,10 +4199,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.8.13":
-  version "3.8.13"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.8.13.tgz#1127484eed85c00537bf91dfd291df58d7fd999f"
-  integrity sha512-zjWodR6kUrhqx/vD4qCVS9zoExBOmDUDvhXtnJGdYkIlEh7cHoOnLIxJqdKxcV+uheYWr3xGYUCdPSesUFgcqw==
+"@loopring-web/loopring-sdk@3.8.15":
+  version "3.8.15"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.8.15.tgz#379511ffc28fc738718f2d3999c49cb5f6b29090"
+  integrity sha512-AED2SvpKewBfqFFtYsJduzqEPYoV/FBOiLvc4A0equp7fnJ5usKnOohWXElLgqbI048Q5IxNSrhkEq4WB7i8kQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -24097,11 +24097,6 @@ path-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.1.tgz#e6c4ddd7ed3aa27c68a20cc4e50e1a4ee83bbc4a"
   integrity sha512-BapA40NHICOS+USX9SN4tyhq+A2RrN/Ws5F0Z5aMHDp98Fl86lX8Oti8B7uN93L4Ifv4fHOEA+pQw87gmMO/lQ==
-
-path-browserify@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
-  integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==
 
 path-dirname@^1.0.0:
   version "1.0.2"

@@ -557,7 +557,10 @@ export const CreateRedPacketPanel = <
             handleOnDataChange({
               target: {
                 ...tradeData.target,
-                addressListString: addressList.join(';\n'),
+                addressListString: [
+                  ...(tradeData.target?.addressListString ? tradeData.target.addressListString.split(';\n') : []),
+                  ...addressList
+                ].join(';\n'),
               },
             } as any)
           }}

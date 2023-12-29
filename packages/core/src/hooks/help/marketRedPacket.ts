@@ -41,7 +41,7 @@ export const getUserReceiveList = (
         : ''
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.accountId === item.claimer.accountId && champion.amount === item.amount,
+      isMax: prev.find(item => item.isMax) ? false : champion?.accountId === item.claimer.accountId && champion.amount === item.amount,
       rawData: item,
     }
     return [...prev, redPacketDetailItem]
@@ -78,7 +78,7 @@ export const getUserNFTReceiveList = (
         : ''
       ).toString(),
       createdAt: item.createdAt,
-      isMax: champion?.amount == item.amount,
+      isMax: prev.find(item => item.isMax) ? false : champion?.amount == item.amount,
       rawData: item,
     }
     return [...prev, redPacketDetailItem]

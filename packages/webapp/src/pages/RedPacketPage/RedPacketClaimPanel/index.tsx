@@ -81,34 +81,25 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
     showLoading: showNFTLoading,
     getClaimNFTRedPacket,
   } = useClaimNFTRedPacket({ setToastOpen })
-
+  const {
+    redPackets: exclusiveRedPackets,
+    setShowRedPacketsPopup
+  } = useTargetRedPackets()
   React.useEffect(() => {
     if (getClaimRedPacket && walletLayer2Status === SagaStatus.UNSET) {
       getClaimRedPacket()
     }
-  }, [walletLayer2Status])
+  }, [walletLayer2Status, exclusiveRedPackets?.length])
 
   const { account } = useAccount()
   const [totalLuckyTokenNFTBalance, setTotalLuckyTokenNFTBalance] = React.useState(
     undefined as number | undefined,
   )
   const [blindboxBalance, setBlindboxBalance] = React.useState(undefined as number | undefined)
-  const {
-    redPackets: exclusiveRedPackets,
-    setShowRedPacketsPopup
-  } = useTargetRedPackets()
+
+  
   const { setShowRedPacket, setShowTargetRedpacketPop } = useOpenModals()
 
-  const onClickOpenExclusive = React.useCallback((redpacket: LuckyTokenItemForReceive) => {
-    setShowRedPacketsPopup(false)
-    setShowRedPacket({
-      isShow: true,
-      info: {
-        ...redpacket,
-      },
-      step: RedPacketViewStep.OpenPanel,
-    })
-  }, [])
   React.useEffect(() => {
     LoopringAPI.luckTokenAPI
       ?.getLuckTokenClaimHistory(
@@ -135,7 +126,7 @@ export const RedPacketClaimPanel = ({ hideAssets }: { hideAssets?: boolean }) =>
       .then((response) => {
         setBlindboxBalance(response.totalNum)
       })
-  }, [])
+  }, [exclusiveRedPackets?.length]) // if open exclusiveRedPacket then refresh
   const theme = useTheme()
   const { coinJson } = useSettings()
   const { idIndex } = useTokenMap()

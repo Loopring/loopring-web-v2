@@ -84,6 +84,7 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
       isUnclaimed,
       page,
       setPage,
+      onItemClickOpen
     } = props
     const updateData = _.debounce(async ({ page = 1, filter = {} }: any) => {
       await getRedPacketReceiveList({
@@ -265,7 +266,18 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
             return (
               <Box display={'flex'} flexDirection={'column'} alignItems={'end'}>
-                <Button size={'small'} onClick={(_e) => {}} variant={'text'}>
+                <Button size={'small'} onClick={(_e) => {
+                  _e.stopPropagation()
+                  onItemClickOpen(row.rawData, {
+                    offset: (page - 1) * (pagination?.pageSize ?? 10),
+                    limit: pagination?.pageSize ?? 10,
+                    filter: {
+                      statuses: showActionableRecords
+                        ? [0] // 0 is for sdk.BlindBoxStatus.NOT_OPENED
+                        : undefined,
+                    },
+                  })
+                }} variant={'text'}>
                   {t('labelRedPacketOpen', { ns: 'common' })}
                 </Button>
                 <Typography>
@@ -409,7 +421,18 @@ export const RedPacketBlindBoxReceiveTable = withTranslation(['tables', 'common'
             return <>{t('labelBlindBoxExpired')}</>
           } else if (row.rawData.claim.status === sdk.BlindBoxStatus.NOT_OPENED) {
             return (
-              <Button size={'small'} onClick={(_e) => {}} variant={'text'}>
+              <Button size={'small'} onClick={(_e) => {
+                _e.stopPropagation()
+                onItemClickOpen(row.rawData, {
+                  offset: (page - 1) * (pagination?.pageSize ?? 10),
+                  limit: pagination?.pageSize ?? 10,
+                  filter: {
+                    statuses: showActionableRecords
+                      ? [0] // 0 is for sdk.BlindBoxStatus.NOT_OPENED
+                      : undefined,
+                  },
+                })
+              }} variant={'text'}>
                 {t('labelRedPacketOpen', { ns: 'common' })}
               </Button>
             )

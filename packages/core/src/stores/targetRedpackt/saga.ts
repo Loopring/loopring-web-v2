@@ -16,8 +16,8 @@ const getExclusiveRedPacketAPI = async (): Promise<{
         clearTimeout(__timer__)
       }
       return setTimeout(() => {
-        store.dispatch(getExclusiveRedpacketStatus({}))
-      }, 1000 * 60 * 30)
+        store.dispatch(getExclusiveRedpacket({}))
+      }, 1000 * 60 * 5)
     })(__timer__)
     const account = store.getState().account
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenUserLuckyTokenTargets(
