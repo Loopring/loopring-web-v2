@@ -9,10 +9,11 @@ import {
   ThemeKeys,
   ThemeType,
   UpColor,
+  CurrencyToTag,
+  NetworkMap,
 } from '@loopring-web/common-resources'
 import moment from 'moment'
 import { Slice } from '@reduxjs/toolkit/src/createSlice'
-import { ChainId, Currency } from '@loopring-web/loopring-sdk'
 import { Layouts } from 'react-grid-layout'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -20,7 +21,7 @@ const initialState: SettingsState = {
   themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
   language: i18n.language as LanguageKeys, //localStore.getItem('LanguageKey')?localStore.getItem('LanguageKey') as LanguageKeys: i18n.language as LanguageKeys,
   platform: PlatFormType.desktop,
-  currency: Currency.usd, //localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.usd,
+  currency: CurrencyToTag.USD, //localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.usd,
   upColor: UpColor.green, //localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
   coinJson: {},
   slippage: 'N',
@@ -33,7 +34,7 @@ const initialState: SettingsState = {
   proLayout: layoutConfigs[0].layouts,
   stopLimitLayout: stopLimitLayoutConfigs[0].layouts,
   swapSecondConfirmation: true,
-  defaultNetwork: ChainId.MAINNET,
+  defaultNetwork: NetworkMap['ETHEREUM']?.chainId ?? 1,
   referralCode: '',
   isDevToggle: false,
   dualAuto: { auto: true, day: 'auto' },
@@ -105,9 +106,13 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
     setPlatform(state, action: PayloadAction<keyof typeof PlatFormType>) {
       state.platform = action.payload
     },
-    setCurrency(state, action: PayloadAction<Currency>) {
-      // localStore.setItem('Currency',action.payload)
-      state.currency = action.payload
+    setCurrency(state, action: PayloadAction<CurrencyToTag>) {
+      if (['usd', 'cyn'].includes(action.payload)) {
+        // @ts-ignore
+        state.currency = action?.payload?.toUpperCase()
+      } else {
+        state.currency = action.payload
+      }
     },
     setUpColor(state, action: PayloadAction<keyof typeof UpColor>) {
       // localStore.setItem('UpColor',action.payload)

@@ -75,14 +75,6 @@ export const ModalAccountL1Info = withTranslation('common')(
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-
-        {/*<ModalPanel*/}
-        {/*  baseURL={baseURL}*/}
-        {/*  assetsData={assetsRawData}*/}
-        {/*  account={account}*/}
-        {/*  {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}*/}
-        {/*/>*/}
-
         <Toast
           alertText={t('labelCopyAddClip')}
           open={copyToastOpen}

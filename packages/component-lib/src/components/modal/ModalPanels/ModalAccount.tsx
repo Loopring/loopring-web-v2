@@ -27,6 +27,7 @@ export const ModalAccount = withTranslation('common', { withRef: true })(
 
     return (
       <Modal
+        sx={{ zIndex: 2001 }}
         open={open}
         onClose={onClose}
         aria-labelledby='modal-modal-title'
@@ -43,6 +44,7 @@ export const ModalAccount = withTranslation('common', { withRef: true })(
               <Box
                 display={step === index ? 'flex' : 'none'}
                 alignItems={'stretch'}
+                flexDirection={'column'}
                 height={panel.height ? panel.height : 'var(--modal-height)'}
                 width={panel.width ? panel.width : 'var(--modal-width)'}
                 key={index}

@@ -13,46 +13,46 @@ import {
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
-  CoinMap,
-  Explorer,
-  IBData,
-  myLog,
-  SagaStatus,
-  UIERROR_CODE,
-  WalletMap,
   AddressError,
-  WALLET_TYPE,
-  LIVE_FEE_TIMES,
-  SUBMIT_PANEL_AUTO_CLOSE,
-  FeeInfo,
-  PriceTag,
+  CoinMap,
   CurrencyToTag,
-  getValuePrecisionThousand,
   EmptyValueTag,
-  TRADE_TYPE,
   EXCHANGE_TYPE,
+  Explorer,
+  FeeInfo,
+  getValuePrecisionThousand,
+  IBData,
+  LIVE_FEE_TIMES,
+  myLog,
+  PriceTag,
+  SagaStatus,
+  SUBMIT_PANEL_AUTO_CLOSE,
+  TRADE_TYPE,
+  UIERROR_CODE,
+  WALLET_TYPE,
+  WalletMap,
 } from '@loopring-web/common-resources'
 
 import {
   BIGO,
   DAYS,
   getTimestampDaysLater,
-  LoopringAPI,
-  makeWalletLayer2,
-  useBtnStatus,
-  useWalletLayer2Socket,
-  walletLayer2Service,
-  useSystem,
-  useTokenMap,
-  useAccount,
-  useChargeFees,
-  useModalData,
-  store,
   isAccActivated,
   LAST_STEP,
-  volumeToCountAsBigNumber,
-  useTokenPrices,
+  LoopringAPI,
+  makeWalletLayer2,
+  store,
+  useAccount,
   useAddressCheck,
+  useBtnStatus,
+  useChargeFees,
+  useModalData,
+  useSystem,
+  useTokenMap,
+  useTokenPrices,
+  useWalletLayer2Socket,
+  volumeToCountAsBigNumber,
+  walletLayer2Service,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
@@ -62,6 +62,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals()
 
   const {
+    setShowEditContact,
     modals: {
       isShowTransfer: {
         symbol,
@@ -78,7 +79,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const { exchangeInfo, chainId, forexMap } = useSystem()
   const { currency } = useSettings()
   const { tokenPrices } = useTokenPrices()
-  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
+  const {
+    contacts,
+    status: contactStatus,
+    errorMessage: contactsErrorMessage,
+    updateContacts,
+  } = useContacts()
 
   const { transferValue, updateTransferData, resetTransferData } = useModalData()
 
@@ -148,6 +154,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isContractAddress,
     loopringSmartWalletVersion,
     reCheck,
+    isENSWrong,
+    ens,
   } = useAddressCheck(true)
 
   React.useEffect(() => {
@@ -160,13 +168,20 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
       const sellToken = tokenMap[transferValue.belong]
       const tradeValue = sdk.toBig(transferValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
-
+      const isEnough = tradeValue.lte(
+        sdk.toBig(transferValue.balance ?? 0).times('1e' + sellToken.decimals),
+      )
+      const contact = contacts?.find((x) => x.contactAddress === realAddr)
+      const ensHasCheck = (contact?.ens || ens) 
+        ? !isENSWrong 
+        : true
       if (
         tradeValue &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough.isFeeNotEnough &&
         !isSameAddress &&
-        // !isAddressCheckLoading &&
+        ensHasCheck &&
+        isEnough &&
         sureItsLayer2 &&
         transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
@@ -177,6 +192,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         return
       }
     }
+
     disableBtn()
   }, [
     realAddr,
@@ -190,6 +206,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     address,
     addrStatus,
     enableBtn,
+    contacts,
   ])
 
   React.useEffect(() => {
@@ -336,7 +353,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               request,
               web3: connectProvides.usedWeb3 as any,
               chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProviders[ connectName ] ??
+              walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -619,11 +636,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       LoopringAPI.contactAPI
         ?.updateContact(
           {
-            contactAddress: realAddr,
+            ...contact,
             isHebao: !!(account.isContractAddress || account.isCFAddress),
             accountId: account.accountId,
             addressType: found,
-            contactName: contact.contactName,
           },
           account.apiKey,
         )
@@ -636,13 +652,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   }
   React.useEffect(() => {
     const { contacts } = store.getState().contacts
-    const addressType = contacts?.find(
+    const contact = contacts?.find(
       (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
-    )?.addressType
+    )
     if (isShow === false) {
       setSureItsLayer2(undefined)
-    } else if (addressType !== undefined) {
-      const found = addressType ? addressToExWalletMapFn(addressType) : undefined
+    } else if (contact?.addressType !== undefined) {
+      const found = contact.addressType ? addressToExWalletMapFn(contact.addressType) : undefined
       setSureItsLayer2((state) => {
         if (state !== found) {
           return found
@@ -651,7 +667,15 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         }
       })
     }
-  }, [realAddr, isShow])
+    if (
+      isShow &&
+      contactStatus == SagaStatus.UNSET &&
+      contact &&
+      realAddr?.toLowerCase() == contact?.contactAddress?.toLowerCase()
+    ) {
+      reCheck()
+    }
+  }, [realAddr, isShow, contactStatus])
 
   const transferProps: TransferProps<any, any> = {
     contacts,
@@ -729,13 +753,23 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSmartContractAddress: isContractAddress,
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
-      ? {
-          address: contactAddress,
-          name: contactName!,
-          addressType: contactAddressType!,
-        }
+      ? contacts?.find((x) => x.contactAddress === contactAddress)
       : undefined,
     loopringSmartWalletVersion,
+    isENSWrong,
+    geUpdateContact: () => {
+      if (isENSWrong) {
+        const contact = contacts?.find((x) => x.contactAddress === realAddr)
+        setShowEditContact({
+          isShow: true,
+          info: {
+            ...contact,
+            isENSWrong,
+          },
+        })
+      }
+    },
+    ens,
     // contacts,
   }
 

@@ -92,7 +92,7 @@ export const MyPoolTable = withTranslation('tables')(
     handleDeposit,
     hideSmallBalances = false,
     setHideSmallBalances,
-    currency = sdk.Currency.usd,
+    currency = CurrencyToTag.USD,
     showloading,
     tableHeight,
     tokenMap,
@@ -744,7 +744,7 @@ export const MyPoolTable = withTranslation('tables')(
           sortDefaultKey={'liquidity'}
           generateRows={(rawData) => rawData}
           generateColumns={({ columnsRaw }) => columnsRaw as Column<any, any>[]}
-          sortMethod={(sortedRows: MyPoolRow<any>[], sortColumn: string) => {
+          sortMethod={(sortedRows: R[], sortColumn: string) => {
             switch (sortColumn) {
               case 'liquidity':
                 sortedRows = sortedRows.sort((a, b) => {

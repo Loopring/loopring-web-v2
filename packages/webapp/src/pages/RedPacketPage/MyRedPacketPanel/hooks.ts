@@ -16,6 +16,7 @@ import {
   TokenType,
 } from '@loopring-web/common-resources'
 import {
+  AccountStep,
   RawDataRedPacketReceivesItem,
   RawDataRedPacketRecordsItem,
   RedPacketViewStep,
@@ -161,6 +162,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.OpenPanel,
         })
@@ -170,6 +172,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.BlindBoxDetail,
         })
@@ -185,6 +188,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.OpenPanel,
         })
@@ -194,6 +198,7 @@ export const useMyRedPacketRecordTransaction = <R extends RawDataRedPacketRecord
           info: {
             ...item,
             hash: item.hash,
+            serialNo: item.serialNo
           },
           step: RedPacketViewStep.DetailPanel,
         })
@@ -328,6 +333,7 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
         step: RedPacketViewStep.BlindBoxDetail,
         info: {
           ...item.luckyToken,
+          serialNo: item.claim.serialNo
         },
       })
     } else {
@@ -336,6 +342,7 @@ export const useMyRedPacketReceiveTransaction = <R extends RawDataRedPacketRecei
         step: RedPacketViewStep.DetailPanel,
         info: {
           ...item.luckyToken,
+          serialNo: item.claim.serialNo
         },
       })
     }
@@ -397,11 +404,11 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
   const { t } = useTranslation(['error'])
 
   const {
-    account: { accountId, apiKey },
+    account: { accountId, apiKey, eddsaKey, accAddress },
   } = useAccount()
 
   const [redPacketReceiveList, setRedPacketReceiveList] = React.useState<R[]>([])
-  const { setShowRedPacket } = useOpenModals()
+  const { setShowRedPacket, setShowAccount } = useOpenModals()
 
   const { idIndex, coinMap, tokenMap } = useTokenMap()
   const [redPacketReceiveTotal, setRedPacketReceiveTotal] = React.useState(0)
@@ -488,11 +495,55 @@ export const useMyRedPacketBlindBoxReceiveTransaction = <R extends RawDataRedPac
       step: RedPacketViewStep.BlindBoxDetail,
       info: {
         ...item.luckyToken,
+        serialNo: item.claim.serialNo
       },
     })
   }
+  
+  const onItemClickOpen = async (
+    item: sdk.LuckyTokenBlindBoxItemReceive,
+    pageInfo?: {
+      offset: number
+      limit: number
+      filter: any
+    },
+  ) => {
+    if (LoopringAPI.luckTokenAPI && accountId) {
+      const response = await LoopringAPI.luckTokenAPI.sendLuckTokenClaimLuckyToken({
+        request: {
+          hash: item.luckyToken.hash,
+          serialNo: item.claim.serialNo,
+          claimer: accAddress,
+          referrer: '',
+        },
+        apiKey,
+        eddsaKey: eddsaKey.sk,
+      })
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.ClaimWithdraw_Failed,
+          error: {
+            code: (response as sdk.RESULT_INFO).code,
+            message: (response as sdk.RESULT_INFO).message,
+          },
+        })
+        return
+      }
+      setShowRedPacket({
+        isShow: true,
+        step: RedPacketViewStep.BlindBoxDetail,
+        info: {
+          ...item.luckyToken,
+          serialNo: item.claim.serialNo,
+        },
+      })
+      getRedPacketReceiveList(pageInfo)
+    }
+  }
   return {
     onItemClick,
+    onItemClickOpen,
     redPacketReceiveList,
     showLoading,
     getRedPacketReceiveList,

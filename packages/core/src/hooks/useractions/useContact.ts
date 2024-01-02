@@ -1,44 +1,25 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
+import { Contact, NetworkMap, SDK_ERROR_MAP_TO_UI, ToastType } from '@loopring-web/common-resources'
+import { store, useAccount, useContacts } from '../../stores'
 import {
-  LoopringAPI,
-  store,
-  useAccount,
-  useContacts,
-  useToast,
-  volumeToCount,
-  volumeToCountAsBigNumber,
-} from '@loopring-web/core'
-import {
+  AccountStep,
   RawDataTransactionItem,
-  ToastType,
   TransactionStatus,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
-import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation } from 'react-i18next'
-import { NetworkMap, SDK_ERROR_MAP_TO_UI, ContactType } from '@loopring-web/common-resources'
+import { connectProvides } from '@loopring-web/web3-provider'
+import { useToast } from '../common'
+import { LoopringAPI } from '../../api_wrapper'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { useLocation } from 'react-router-dom'
+import { volumeToCount, volumeToCountAsBigNumber } from '../help'
 
-export type Contact = {
-  name: string
-  address: string
-  addressType?: (typeof sdk.AddressType)[sdk.AddressTypeKeys]
-  // id: string
-}
-type Network = 'L1' | 'L2'
 const RowHeight = 78
-export const viewHeightRatio = 0.85
-export const viewHeightOffset = 130
-const checkIsHebao = (accountAddress: string) =>
-  LoopringAPI.walletAPI!.getWalletType({
-    wallet: accountAddress,
-  }).then((walletType) => {
-    return walletType?.walletType?.loopringWalletContractVersion !== ''
-  })
 
-export const useContact = () => {
-  const [addOpen, setAddOpen] = React.useState(false)
+export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) => {
+  // const [addOpen, setAddOpen] = React.useState(false)
   const [deleteInfo, setDeleteInfo] = React.useState({
     open: false,
     selected: undefined as Contact | undefined,
@@ -48,21 +29,19 @@ export const useContact = () => {
     selected: undefined as Contact | undefined,
   })
   const [searchValue, setSearchValue] = React.useState('')
-  const {
-    account: { accountId, apiKey, accAddress, isContractAddress, isCFAddress },
-  } = useAccount()
   const { defaultNetwork } = useSettings()
+  const { setShowAccount, setShowEditContact } = useOpenModals()
+  const [btnLoading, setBtnLoading] = React.useState<{ index: number; loading: boolean }>({
+    loading: false,
+    index: 0,
+  })
+
   // const cachedForAccountId = useSelector((state: RootState) => state.contacts.currentAccountId)
   const { t } = useTranslation()
-  const [tableHeight] = useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
-  const [page, setPage] = useState(1)
+  const [tableHeight] = React.useState(window.innerHeight * viewHeightRatio - viewHeightOffset)
+  const [page, setPage] = React.useState(1)
   const pageSize = Math.floor(tableHeight / RowHeight)
-  const {
-    contacts,
-    status: contactStatus,
-    errorMessage: contactsErrorMessage,
-    updateContacts,
-  } = useContacts()
+  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
   const total = contacts?.length
   const pagination = total
     ? {
@@ -78,7 +57,7 @@ export const useContact = () => {
       updateContacts()
     }
   }, [])
-  const [selectAddress, setSelectAddress] = React.useState<ContactType | undefined>(undefined)
+  // const [selectAddress, setSelectAddress] = React.useState<ContactType | undefined>(undefined)
 
   const onChangeSearch = React.useCallback((input: string) => {
     setSearchValue(input)
@@ -102,19 +81,31 @@ export const useContact = () => {
     })
   }, [])
 
-  const onClickSend = React.useCallback(
-    (address: string, name: string, addressType: (typeof sdk.AddressType)[sdk.AddressTypeKeys]) => {
-      setSendInfo({
-        open: true,
-        selected: {
-          address,
-          name,
-          addressType,
-        },
-      })
-    },
-    [],
-  )
+  const onClickSend = React.useCallback(async (data: Contact, index: number) => {
+    setBtnLoading({ loading: true, index })
+    let isENSWrong = false
+    if (data.contactAddress && data.ens && connectProvides.usedWeb3) {
+      try {
+        const ensAddr = await connectProvides?.usedWeb3.eth?.ens?.getAddress(data.ens)
+        if (ensAddr?.toLowerCase() !== data?.contactAddress?.toLowerCase()) {
+          isENSWrong = true
+        }
+      } catch (e) {
+        console.log('error: ens->address ignore', e)
+      }
+    }
+    // geUpdateContact,
+
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.SendAssetFromContact,
+      info: {
+        ...data,
+        isENSWrong,
+      },
+    })
+    setBtnLoading({ loading: false, index })
+  }, [])
   const onCloseSend = React.useCallback(() => {
     setSendInfo({
       open: false,
@@ -136,7 +127,7 @@ export const useContact = () => {
   }, [])
   const showPagination = total !== undefined && searchValue === ''
   const submitDeleteContact = React.useCallback(
-    async (address: string, name: string) => {
+    async (address: string, _name: string) => {
       setDeleteLoading(true)
       const { accountId, apiKey, isContractAddress, isCFAddress } = store.getState().account
       const response = await LoopringAPI.contactAPI?.deleteContact(
@@ -183,8 +174,8 @@ export const useContact = () => {
               contact.contactName.toLowerCase().includes(searchValue.toLowerCase())
             )
           })),
-    selectAddress,
-    setSelectAddress,
+    // selectAddress,
+    // setSelectAddress,
     onChangeSearch,
     onClearSearch,
     searchValue,
@@ -196,60 +187,14 @@ export const useContact = () => {
     onCloseDelete,
     submitDeleteContact,
     deleteLoading,
-
-    addOpen,
-    setAddOpen,
-    // addLoading,
-    // submitAddContact,
-
+    setShowEditContact,
     onClickSend,
     onCloseSend,
     sendInfo,
-
     pagination,
     onPageChange,
-    // loading,
     showPagination,
-    // onScroll
-  }
-}
-
-export const useContactSend = () => {
-  const [sendNetwork, setSendNetwork] = React.useState('L2' as Network)
-  const { setShowTransfer, setShowWithdraw } = useOpenModals()
-  const submitSendingContact = React.useCallback(
-    (contact: Contact, network: Network, onClose: () => void) => {
-      if (network === 'L1') {
-        setShowWithdraw({
-          isShow: true,
-          address: contact.address,
-          name: contact.name,
-          addressType: contact.addressType,
-          // symbol: 'ETH',
-          info: {
-            onCloseCallBack: onClose,
-          },
-        })
-      } else {
-        setShowTransfer({
-          isShow: true,
-          address: contact.address,
-          name: contact.name,
-          addressType: contact.addressType,
-          // symbol: 'ETH',
-          info: {
-            onCloseCallBack: onClose,
-          },
-        })
-      }
-    },
-    [],
-  )
-
-  return {
-    submitSendingContact,
-    sendNetwork,
-    setSendNetwork,
+    btnLoading,
   }
 }
 
@@ -269,9 +214,9 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
   } = useAccount()
   const { tokenMap } = store.getState().tokenMap
   const { t } = useTranslation(['error'])
-  const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
-  const [txsTotal, setTxsTotal] = useState(0)
-  const [showLoading, setShowLoading] = useState(false)
+  const [txs, setTxs] = React.useState<RawDataTransactionItem[]>([])
+  const [txsTotal, setTxsTotal] = React.useState(0)
+  const [showLoading, setShowLoading] = React.useState(false)
   const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
 
@@ -287,7 +232,7 @@ export function useContractRecord(setToastOpen: (state: any) => void) {
       : TransactionStatus.failed
   }
 
-  const getUserTxnList = useCallback(
+  const getUserTxnList = React.useCallback(
     async ({ tokenSymbol, start, end, limit, offset }: TxsFilterProps) => {
       // const address = routeMatch.params[0];
       const tokenId = tokenSymbol ? tokenMap[tokenSymbol!].tokenId : undefined

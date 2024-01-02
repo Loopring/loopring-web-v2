@@ -23,6 +23,7 @@ import {
 } from './reducer'
 import { PlatFormType, SettingsState } from './interface'
 import {
+  CurrencyToTag,
   LanguageKeys,
   LanguageType,
   ThemeKeys,
@@ -30,16 +31,14 @@ import {
   UpColor,
 } from '@loopring-web/common-resources'
 import React from 'react'
-import * as sdk from '@loopring-web/loopring-sdk'
-import { Currency } from '@loopring-web/loopring-sdk'
 import { Layouts } from 'react-grid-layout'
 
 export function useSettings(): SettingsState & {
   setPlatform(value: keyof typeof PlatFormType): void
   setTheme(value: ThemeKeys): void
-  setDefaultNetwork(value: sdk.ChainId): void
+  setDefaultNetwork(value: 1 | 5 | number): void
   setUpColor(value: keyof typeof UpColor): void
-  setCurrency(value: Currency): void
+  setCurrency(value: CurrencyToTag): void
   setLanguage(value: LanguageKeys): void
   setSlippage(value: 'N' | number): void
   setCoinJson(value: any): void
@@ -58,6 +57,12 @@ export function useSettings(): SettingsState & {
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings)
   const dispatch = useDispatch()
+  React.useEffect(() => {
+    if (['usd', 'cny'].includes(settings.currency)) {
+      dispatch(setCurrency(settings?.currency?.toUpperCase()))
+    }
+  }, [])
+
   return {
     ...settings,
     setReferralCode: React.useCallback(
@@ -80,7 +85,10 @@ export function useSettings(): SettingsState & {
       (value: keyof typeof PlatFormType) => dispatch(setPlatform(value)),
       [dispatch],
     ),
-    setCurrency: React.useCallback((value: Currency) => dispatch(setCurrency(value)), [dispatch]),
+    setCurrency: React.useCallback(
+      (value: CurrencyToTag) => dispatch(setCurrency(value)),
+      [dispatch],
+    ),
     setUpColor: React.useCallback(
       (value: keyof typeof UpColor) => dispatch(setUpColor(value)),
       [dispatch],

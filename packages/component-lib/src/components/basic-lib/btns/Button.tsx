@@ -14,6 +14,8 @@ import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { BackIcon, CloseIcon, QRIcon, SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
+import { SxProps } from '@mui/system'
+import { Theme } from '@mui/material/styles'
 
 const loadingSvg = SoursURL + 'svg/loading.svg'
 
@@ -309,13 +311,15 @@ export const ModalBackButton = ({
   t,
   marginTop = '-24px',
   marginLeft = 1.5,
+  sx,
 }: {
   onBack?: () => void
   marginTop?: number | string
   marginLeft?: number | string
+  sx?: SxProps<Theme>
 } & Partial<WithTranslation>) => {
   return (
-    <Box alignSelf={'flex-start'} marginTop={marginTop} marginLeft={marginLeft}>
+    <Box alignSelf={'flex-start'} marginTop={marginTop} marginLeft={marginLeft} sx={sx}>
       <IconButton
         className={'back-btn'}
         size={'large'}

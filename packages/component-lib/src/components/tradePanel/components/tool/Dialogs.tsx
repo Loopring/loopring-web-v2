@@ -250,7 +250,7 @@ export const RiskComponent = ({
 }
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
-    z-index: 1900;
+    z-index: 2002;
   }
   .MuiList-root {
     list-style: inside;

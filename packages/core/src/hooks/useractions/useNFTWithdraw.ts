@@ -9,6 +9,7 @@ import {
   Explorer,
   LIVE_FEE_TIMES,
   myLog,
+  SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
   TradeNFT,
@@ -42,7 +43,7 @@ import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useContacts } from '../../stores'
-import Web3 from 'web3';
+import Web3 from 'web3'
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -53,7 +54,14 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     setShowNFTWithdraw,
     setShowNFTDetail,
     setShowAccount,
+    setShowEditContact,
   } = useOpenModals()
+  const {
+    updateContacts,
+    contacts,
+    errorMessage: contactsErrorMessage,
+    status: contactStatus,
+  } = useContacts()
 
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
   const { account } = useAccount()
@@ -104,7 +112,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isCFAddress,
     isContract1XAddress,
     isAddressCheckLoading,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
+    reCheck,
+    isENSWrong,
+    ens,
   } = useAddressCheck()
 
   React.useEffect(() => {
@@ -115,7 +126,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
 
   const isNotAvailableAddress = isContract1XAddress ? 'isContract1XAddress' : undefined
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus()
+
   const checkBtnStatus = React.useCallback(() => {
+    const contact = contacts?.find((x) => x.contactAddress === realAddr)
+    const ensHasCheck = (contact?.ens || ens) 
+        ? !isENSWrong 
+        : true
     if (
       tokenMap &&
       nftWithdrawValue?.fee?.belong &&
@@ -126,6 +142,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       (addrStatus as AddressError) === AddressError.NoError &&
       !isFeeNotEnough.isFeeNotEnough &&
       !isNotAvailableAddress &&
+      ensHasCheck &&
       (info?.isToMyself || sureIsAllowAddress) &&
       realAddr
     ) {
@@ -135,6 +152,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     }
     disableBtn()
   }, [
+    contacts,
     tokenMap,
     nftWithdrawValue.fee?.belong,
     nftWithdrawValue.fee?.feeRaw,
@@ -161,7 +179,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isNotAvailableAddress,
     sureIsAllowAddress,
   ])
-  const {updateContacts, contacts, errorMessage: contactsErrorMessage} = useContacts()
 
   const walletLayer2Callback = React.useCallback(() => {
     checkFeeIsEnough()
@@ -246,7 +263,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
               chainId: chainId === 'unknown' ? 1 : chainId,
-              walletType: (ConnectProviders[ connectName ] ??
+              walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -493,12 +510,23 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     [lastRequest, processRequest, setShowAccount],
   )
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
+    const { contacts } = store.getState().contacts
+    const contact = contacts?.find(
+      (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
+    )
     if (!isShow) {
       setSureIsAllowAddress(undefined)
-    } else if (addressType !== undefined) {
-      const found = addressType ? addressToExWalletMapFn(addressType) : undefined
+    } else if (contact?.addressType !== undefined) {
+      const found = contact.addressType ? addressToExWalletMapFn(contact.addressType) : undefined
       setSureIsAllowAddress(found)
+    }
+    if (
+      isShow &&
+      contactStatus == SagaStatus.UNSET &&
+      contact &&
+      realAddr?.toLowerCase() == contact?.contactAddress?.toLowerCase()
+    ) {
+      reCheck()
     }
   }, [realAddr, isShow, contacts])
   const nftWithdrawProps: WithdrawProps<any, any> = {
@@ -514,11 +542,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
-              contactAddress: realAddr,
+              ...contact,
               isHebao: !!(account.isContractAddress || account.isCFAddress),
               accountId: account.accountId,
               addressType: found,
-              contactName: contact.contactName,
             },
             account.apiKey,
           )
@@ -555,8 +582,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         handleNFTWithdraw(tradeData, realAddr ? realAddr : address)
       }
     },
-    handleWithdrawTypeChange: () => {
-    },
+    handleWithdrawTypeChange: () => {},
     handlePanelEvent: async (data: SwitchData<R>) => {
       return new Promise((res: any) => {
         if (data.to === 'button') {
@@ -586,7 +612,21 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     isFeeNotEnough,
     isLoopringAddress: true,
     contacts,
-    loopringSmartWalletVersion
+    loopringSmartWalletVersion,
+    isENSWrong,
+    geUpdateContact: () => {
+      if (isENSWrong) {
+        const contact = contacts?.find((x) => x.contactAddress === realAddr)
+        setShowEditContact({
+          isShow: true,
+          info: {
+            ...contact,
+            isENSWrong,
+          },
+        })
+      }
+    },
+    ens,
   } as unknown as WithdrawProps<any, any>
 
   return {
