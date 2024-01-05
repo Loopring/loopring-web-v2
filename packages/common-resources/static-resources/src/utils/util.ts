@@ -180,10 +180,11 @@ export const getValuePrecisionThousand = (
         .toLocaleString('en-US', { minimumFractionDigits: 2 })
     } else {
       if (floor === true) {
-        result = getFloatFloor(result, 6)
+        result = toBig(result).sd(minDigit ?? 6, BigNumber.ROUND_DOWN) //getFloatFloor(result, precision ?? 6)
       }
       if (floor === false) {
-        result = getFloatCeil(result, 6)
+        result = toBig(result).sd(minDigit ?? 6, BigNumber.ROUND_CEIL)
+        // result = getFloatCeil(result, precision ?? 6)
       }
       return toBig(result).toNumber().toLocaleString('en-US', { minimumFractionDigits: 6 })
     }

@@ -11,17 +11,18 @@ import {
 } from '@mui/material'
 import React from 'react'
 import {
+  CurrencyToTag,
   DropDownIcon,
   GrowIcon,
   i18n,
   LanguageType,
+  PriceTag,
   ThemeType,
   UpColor,
 } from '@loopring-web/common-resources'
 import { OutlineSelect, OutlineSelectItem, RadioGroupStyle } from '../basic-lib'
 import { Trans, WithTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../stores'
-import { Currency } from '@loopring-web/loopring-sdk'
 
 const StyledSwitch = styled(Switch)`
   margin: 0;
@@ -35,12 +36,9 @@ const BoxStyle = styled(Box)`
 ` as typeof Box
 
 export const BtnCurrency = ({ t, currency, label, handleChange }: any) => {
-  const [state, setState] = React.useState<string>(
-    currency === Currency.usd ? Currency.usd : Currency.cny,
-  )
   const _handleChange = React.useCallback(
     (event: SelectChangeEvent<any>) => {
-      setState(event.target.value)
+      // setState(event.target.value)
       if (handleChange) {
         handleChange(event.target.value)
       }
@@ -53,12 +51,18 @@ export const BtnCurrency = ({ t, currency, label, handleChange }: any) => {
       IconComponent={DropDownIcon}
       labelId='language-selected'
       id='language-selected'
-      value={state}
+      value={currency?.toUpperCase()}
       autoWidth
       onChange={_handleChange}
     >
-      <OutlineSelectItem value={Currency.usd}>$ {t('labelUSDollar')}</OutlineSelectItem>
-      <OutlineSelectItem value={Currency.cny}>¥ {t('labelCNYYuan')}</OutlineSelectItem>
+      {Object.keys(CurrencyToTag).map((item) => {
+        return (
+          <OutlineSelectItem value={CurrencyToTag[item]} key={item}>
+            {item} - {PriceTag[CurrencyToTag[item]]}
+          </OutlineSelectItem>
+        )
+      })}
+      {/*<OutlineSelectItem value={Currency.cny}>¥ {t('labelCNYYuan')}</OutlineSelectItem>*/}
     </OutlineSelect>
   )
 }
@@ -210,7 +214,7 @@ export const SettingPanel = withTranslation(['common', 'layout'], {
                 ...rest,
                 handleChange: handleOnLanguageChange,
               }}
-            ></BtnLanguage>
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -248,7 +252,7 @@ export const SettingPanel = withTranslation(['common', 'layout'], {
                 label: 'currencySetting',
                 handleChange: handleOnCurrencyChange,
               }}
-            ></BtnCurrency>
+            />
           </Grid>
         </Grid>
       </Grid>

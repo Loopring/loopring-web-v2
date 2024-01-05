@@ -11,6 +11,7 @@ import {
   TradeBtnStatus,
   ViewIcon,
 } from '@loopring-web/common-resources'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { useTranslation, withTranslation, WithTranslation } from 'react-i18next'
 import { AssetTitleMobileProps, AssetTitleProps } from './Interface'
 import styled from '@emotion/styled'
@@ -37,10 +38,11 @@ export const AssetTitle = withTranslation('common')(
     hideL2Assets,
     setHideL2Assets,
     assetBtnStatus,
-    isWebEarn
+    isWebEarn,
+    forexMap,
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory()
-    const { defaultNetwork } = useSettings()
+    const { defaultNetwork, currency } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     return (
       <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
@@ -93,7 +95,14 @@ export const AssetTitle = withTranslation('common')(
             {!hideL2Assets ? (
               <Typography component={'span'} variant={'h1'}>
                 {assetInfo.totalAsset
-                  ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2, 2, true, { floor: true })
+                  ? getValuePrecisionThousand(
+                      sdk.toBig(assetInfo.totalAsset).times(forexMap[currency] ?? 0),
+                      2,
+                      2,
+                      2,
+                      true,
+                      { floor: true },
+                    )
                   : '0.00'}
               </Typography>
             ) : (

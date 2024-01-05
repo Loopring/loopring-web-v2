@@ -100,7 +100,7 @@ const NotificationListItemStyled = styled(ListItem)<
 >`
   cursor: pointer;
   height: var(--notification-activited-heigth);
-  width: calc(var(--notification-activited-heigth) * 327 / 80);
+  width: calc(var(--notification-activited-heigth) * 343 / 80);
   overflow: hidden;
   padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit}px;
   background-color: var(--opacity);

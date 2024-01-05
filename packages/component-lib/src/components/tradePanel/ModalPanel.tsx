@@ -27,12 +27,14 @@ import {
   useSettings,
   WithdrawPanel,
   WithdrawProps,
+  EditContact,
 } from '../..'
 import {
   Account,
   CollectionMeta,
   FeeInfo,
   IBData,
+  SendAssetList,
   TRADE_TYPE,
   TradeNFT,
 } from '@loopring-web/common-resources'
@@ -142,6 +144,7 @@ export const ModalPanel = <
   activeAccountProps,
   collectionAdvanceProps,
   sideStackRedeemProps,
+  contactAddProps,
   assetsData,
   account,
   baseURL,
@@ -150,6 +153,7 @@ export const ModalPanel = <
   _width?: number | string
   _height?: number | string
   nftBurnProps: TransferProps<T, I>
+  contactAddProps: any
   transferProps: TransferProps<T, I>
   withdrawProps: WithdrawProps<T, I>
   baseURL: string
@@ -187,6 +191,7 @@ export const ModalPanel = <
     setShowSideStakingRedeem,
     setShowTargetRedpacketPop,
     setShowRedPacket,
+    setShowEditContact,
     // setShowDual,
   } = useOpenModals()
 
@@ -207,8 +212,8 @@ export const ModalPanel = <
     isShowClaimWithdraw,
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
+    isShowEditContact,
   } = modals
-
   const theme = useTheme()
   return (
     <>
@@ -469,7 +474,6 @@ export const ModalPanel = <
           />
         }
       />
-
       <InformationForAccountFrozen
         open={isShowTradeIsFrozen.isShow}
         type={isShowTradeIsFrozen.type ?? 'Action'}
@@ -526,6 +530,37 @@ export const ModalPanel = <
                 step: RedPacketViewStep.OpenPanel,
               })
             }}
+          />
+        }
+      />
+      <Modal
+        // maxWidth={'md'}
+        open={isShowEditContact.isShow}
+        onClose={() => {
+          setShowEditContact({ isShow: false, info: {} })
+        }}
+        content={
+          <EditContact
+            {...{
+              ...contactAddProps,
+            }}
+            onBack={
+              isShowEditContact?.info?.from === AccountStep.SendAssetFromContact
+                ? () => {
+                    setShowAccount({
+                      isShow: true,
+                      step: AccountStep.SendAssetFromContact,
+                      info: {
+                        ...contactAddProps?.isEdit?.item,
+                        select: SendAssetList.SendAssetToOtherL1.key,
+                      },
+                    })
+                    setShowEditContact({ isShow: false, info: {} })
+                  }
+                : undefined
+            }
+            // contacts={isShowAccount.info?.contacts}
+            // setToast={setToast}
           />
         }
       />

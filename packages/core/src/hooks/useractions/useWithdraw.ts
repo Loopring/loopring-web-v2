@@ -52,25 +52,22 @@ import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/co
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: {
-        symbol,
-        isShow,
-        info,
-        address: contactAddress,
-        name: contactName,
-        addressType: contactAddressType,
-      },
+      isShowWithdraw: { symbol, isShow, info, address: contactAddress },
     },
     setShowAccount,
     setShowWithdraw,
+    setShowEditContact,
   } = useOpenModals()
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId } = useSystem()
-  const { contacts, errorMessage: contactsErrorMessage, updateContacts } = useContacts()
-
+  const {
+    contacts,
+    errorMessage: contactsErrorMessage,
+    updateContacts,
+    status: contactStatus,
+  } = useContacts()
   const { withdrawValue, updateWithdrawData, resetWithdrawData } = useModalData()
-
   const [walletMap2, setWalletMap2] = React.useState(
     makeWalletLayer2({ needFilterZero: true, _isToL1: true }).walletMap ?? ({} as WalletMap<R>),
   )
@@ -138,6 +135,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isLoopringAddress,
     isAddressCheckLoading,
     loopringSmartWalletVersion,
+    reCheck,
+    isENSWrong,
+    ens,
   } = useAddressCheck(false)
 
   React.useEffect(() => {
@@ -166,19 +166,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         tradeValue.gt(0) &&
         withdrawT.fastWithdrawLimit &&
         tradeValue.gte(withdrawT.fastWithdrawLimit)
-      // const isFeeSame = withdrawValue.fee?.belong === withdrawValue.belong;
       const isEnough = tradeValue.lte(
         sdk.toBig(withdrawValue.balance ?? 0).times('1e' + withdrawT.decimals),
       )
-      // const withFeeEnough = isFeeSame
-      //   ? tradeValue
-      //       .plus(withdrawValue.fee?.feeRaw ?? 0)
-      //       .lte(
-      //         sdk
-      //           .toBig(withdrawValue.balance ?? 0)
-      //           .times("1e" + withdrawT.decimals)
-      //       )
-      //   : isEnough;
+      const contact = contacts?.find((x) => x.contactAddress === realAddr)
+      const ensHasCheck = (contact?.ens || ens) 
+        ? !isENSWrong 
+        : true
       if (
         tradeValue &&
         !exceedPoolLimit &&
@@ -192,6 +186,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         withdrawValue.tradeValue &&
         realAddr &&
         isEnough &&
+        ensHasCheck &&
         (info?.isToMyself || sureIsAllowAddress) &&
         [AddressError.NoError, AddressError.IsNotLoopringContract].includes(addrStatus)
       ) {
@@ -213,9 +208,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         setIsFastWithdrawAmountLimit(true)
         return
       }
-      // else if (isFeeSame && !withFeeEnough) {
-      //   setWithdrawI18nKey(`labelL2toL1BtnExceedWithFee`);
-      // }
       setIsFastWithdrawAmountLimit(false)
     }
     disableBtn()
@@ -236,6 +228,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     sureIsAllowAddress,
     addrStatus,
     enableBtn,
+    isENSWrong,
+    contacts,
   ])
 
   React.useEffect(() => {
@@ -396,6 +390,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     return () => {
       resetIntervalTime()
       _checkFeeIsEnough.cancel()
+      setAddress('')
     }
   }, [isShow, accountStatus])
 
@@ -669,14 +664,25 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   )
 
   React.useEffect(() => {
-    const addressType = contacts?.find((x) => x.contactAddress === realAddr)?.addressType
+    const { contacts } = store.getState().contacts
+    const contact = contacts?.find(
+      (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
+    )
     if (isShow === false) {
       setSureIsAllowAddress(undefined)
-    } else if (addressType !== undefined) {
-      const found = addressType ? addressToExWalletMapFn(addressType) : undefined
+    } else if (contact?.addressType !== undefined) {
+      const found = contact.addressType ? addressToExWalletMapFn(contact.addressType) : undefined
       setSureIsAllowAddress(found)
     }
-  }, [realAddr, isShow, contacts])
+    if (
+      isShow &&
+      contactStatus == SagaStatus.UNSET &&
+      contact &&
+      realAddr?.toLowerCase() == contact?.contactAddress?.toLowerCase()
+    ) {
+      reCheck()
+    }
+  }, [realAddr, isShow, contactStatus])
 
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
@@ -708,11 +714,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         LoopringAPI.contactAPI
           ?.updateContact(
             {
-              contactAddress: realAddr,
+              ...contact,
               isHebao: !!(account.isContractAddress || account.isCFAddress),
               accountId: account.accountId,
               addressType: found,
-              contactName: contact.contactName,
             },
             account.apiKey,
           )
@@ -773,14 +778,24 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     isFromContact: contactAddress ? true : false,
     contact: contactAddress
-      ? ({
-          address: contactAddress,
-          name: contactName!,
-          addressType: contactAddressType!,
-        } as any)
+      ? contacts?.find((x) => x.contactAddress === contactAddress)
       : undefined,
     loopringSmartWalletVersion,
     contacts,
+    isENSWrong,
+    geUpdateContact: () => {
+      if (isENSWrong) {
+        const contact = contacts?.find((x) => x.contactAddress === realAddr)
+        setShowEditContact({
+          isShow: true,
+          info: {
+            ...contact,
+            isENSWrong,
+          },
+        })
+      }
+    },
+    ens,
   }
 
   return {

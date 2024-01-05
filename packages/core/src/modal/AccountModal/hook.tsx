@@ -130,6 +130,7 @@ import {
   NFTBurn_Success,
   NFTBurn_User_Denied,
   NFTBurn_WaitForAuth,
+  SendFromContact,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -172,6 +173,7 @@ import {
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useContacts,
   useCreateRedPacket,
   useExportAccount,
   useForceWithdraw,
@@ -196,6 +198,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useHistory } from 'react-router-dom'
 import { ImportRedPacket } from './components/QRCodeScanner'
 import { useClaimConfirm } from '../../hooks/useractions/useClaimConfirm'
+import { useContactAdd } from '../../hooks/useractions/useContactAdd'
 
 export function useAccountModalForUI({
   t,
@@ -280,6 +283,8 @@ export function useAccountModalForUI({
   const { nftTransferProps } = useNFTTransfer()
   const { nftBurnProps } = useNFTBurn()
   const { nftDeployProps } = useNFTDeploy()
+
+  const { contactAddProps } = useContactAdd()
   const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
   })
@@ -860,6 +865,18 @@ export function useAccountModalForUI({
             allowTrade={allowTrade}
           />
         ),
+      },
+      [AccountStep.SendAssetFromContact]: {
+        view: (
+          <SendFromContact
+            {...(isShowAccount?.info as any)}
+            // isENSWrong={.isENSWrong}
+            // sendInfo={isShowAccount?.info}
+          />
+        ),
+        // onBack: () => {
+        //   setShowAccount({ isShow: false })
+        // },
       },
       [AccountStep.SendNFTGateway]: {
         view: (
@@ -3342,6 +3359,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
+    contactAddProps,
     // checkActiveStatusProps,
     // dualToastOpen,
   }
