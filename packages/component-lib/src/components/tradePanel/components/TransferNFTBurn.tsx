@@ -193,7 +193,7 @@ export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
 						size={'medium'}
 						color={'primary'}
 						onClick={() => {
-							onTransferClick({...tradeData, memo: "Burn"} as unknown as T)
+							onTransferClick({...tradeData} as unknown as T)
 						}}
 						loading={!getDisabled && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
 						disabled={

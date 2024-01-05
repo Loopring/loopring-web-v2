@@ -250,7 +250,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         tradeValue: undefined,
         fee: feeInfo,
         address: address ? address : '*',
-        meme: '',
       })
     } else {
       updateNFTTransferData({
@@ -258,7 +257,6 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
         belong: '',
         balance: 0,
         tradeValue: 0,
-        meme: '',
         address: '*',
       })
     }

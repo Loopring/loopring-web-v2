@@ -157,7 +157,6 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
           .toBig(nftTransferValue.total ?? 0)
           .minus(nftTransferValue.locked ?? 0)
           .toNumber(),
-        memo:'Burn',
         belong: nftTransferValue.name as any,
         tradeValue: undefined,
         fee: feeInfo,
@@ -169,7 +168,6 @@ export const useNFTBurn = <R extends TradeNFT<T, any>, T>() => {
         balance: 0,
         tradeValue: 0,
         address: '*',
-        memo:'Burn',
       })
     }
 
