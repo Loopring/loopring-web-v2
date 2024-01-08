@@ -4914,10 +4914,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@loopring-web/loopring-sdk@3.8.14":
-  version "3.8.14"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.8.14.tgz#b95736056635271c9ad1e61f6ff112e259711b23"
-  integrity sha512-dIXC6s/EFV6sii9k8r4qiCBeC+oT9AzgoOk34noCBzuFPyBmwZ9hs9GQsdJM9dBYCL3cEcNHO8+p9uUR0+YPew==
+"@loopring-web/loopring-sdk@3.8.15":
+  version "3.8.15"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.8.15.tgz#379511ffc28fc738718f2d3999c49cb5f6b29090"
+  integrity sha512-AED2SvpKewBfqFFtYsJduzqEPYoV/FBOiLvc4A0equp7fnJ5usKnOohWXElLgqbI048Q5IxNSrhkEq4WB7i8kQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -12720,9 +12720,9 @@ caniuse-lite@^1.0.30001541:
   integrity sha512-NTt0DNoKe958Q0BE0j0c1V9jbUzhBxHIEJy7asmGrpE0yG63KTV7PLHPnK2E1O9RsQrQ081I3NLuXGS6zht3cw==
 
 caniuse-lite@^1.0.30001565:
-  version "1.0.30001572"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001572.tgz#1ccf7dc92d2ee2f92ed3a54e11b7b4a3041acfa0"
-  integrity sha512-1Pbh5FLmn5y4+QhNyJE9j3/7dK44dGB83/ZMjv/qJk86TvDbjk0LosiZo0i0WB0Vx607qMX9jYrn1VLHCkN4rw==
+  version "1.0.30001571"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001571.tgz#4182e93d696ff42930f4af7eba515ddeb57917ac"
+  integrity sha512-tYq/6MoXhdezDLFZuCO/TKboTzuQ/xR5cFdgXPfDtM7/kchBO3b4VWghE/OAi/DV7tTdhmLjZiZBZi1fA/GheQ==
 
 capture-exit@^2.0.0:
   version "2.0.0"

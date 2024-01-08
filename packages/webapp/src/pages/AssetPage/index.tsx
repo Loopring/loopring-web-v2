@@ -6,7 +6,7 @@ import { RouterPath } from '@loopring-web/common-resources'
 
 import React from 'react'
 import { useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
-import {  useGetAssets } from './AssetPanel/hook'
+import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { HistoryPanel } from './HistoryPanel'
 

@@ -154,7 +154,7 @@ export const useNotification = <R extends sdk.UserNotification>({
       ele.i18nKey = 'labelActiveL2successfulNote' //Active L2 Account successful
       ele.active = undefined
       break
-    case 12: //sdk.NotificationMessageType.L1_CREATING:
+    case sdk.NotificationMessageType.L1_CREATING:
       ele.i18nKey = 'labelActivatingL1AccountNote' //Active L2 Account successful
       ele.active = undefined
       break
@@ -231,7 +231,7 @@ export const useNotification = <R extends sdk.UserNotification>({
         )
       }
       break
-    case sdk.NotificationMessageType.D:
+    case sdk.NotificationMessageType.DUAL_PRICE_ALERT:
       ele.i18nKey = 'labelL2DualNote'
       ele.active = () => {
         onReadClick(index, rest)

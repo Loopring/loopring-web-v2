@@ -217,7 +217,7 @@ export const RedPacketClaimTable = withTranslation(['tables', 'common'])(
           },
         },
       ]
-    }, [history, t, hideAssets])
+    }, [history, t, hideAssets, currency])
 
     const NFTrow = {
       token: {

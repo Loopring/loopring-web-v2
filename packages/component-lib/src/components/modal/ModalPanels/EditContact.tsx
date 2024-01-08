@@ -12,7 +12,7 @@ import {
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { Box, Divider, IconButton, InputAdornment, Typography } from '@mui/material'
-import { Button, TextField } from '../../basic-lib'
+import { Button, ModalBackButton, TextField } from '../../basic-lib'
 import { FullAddressType } from '../../tradePanel'
 import styled from '@emotion/styled'
 import { useTheme } from '@emotion/react'
@@ -47,6 +47,7 @@ export const EditContact = ({
   submitContact,
   isENSWrong,
   btnLabel,
+  onBack,
 }) => {
   const { t } = useTranslation(['common'])
   const { defaultNetwork } = useSettings()
@@ -103,18 +104,29 @@ export const EditContact = ({
         // _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
         justifyContent={'stretch'}
       >
-        <Typography
-          display={'flex'}
+        <Box
+          display={'inline-flex'}
           flexDirection={'row'}
           component={'header'}
           alignItems={'center'}
           height={'var(--toolbar-row-height)'}
           paddingX={3}
         >
+          {onBack ? (
+            <ModalBackButton
+              sx={{ alignSelf: 'center' }}
+              marginTop={0}
+              marginLeft={-2}
+              onBack={onBack}
+              t={t}
+            />
+          ) : (
+            <></>
+          )}
           <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
             {isEdit ? t('labelContactsEditContact') : t('labelContactsAddContact')}
           </Typography>
-        </Typography>
+        </Box>
         <Divider style={{ marginTop: '-1px', width: '100%' }} />
       </Box>
       <BoxStyle

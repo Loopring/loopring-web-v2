@@ -123,6 +123,10 @@ export interface RedPacketBlindBoxReceiveTableProps<R, C = sdk.Currency> {
     item: sdk.LuckyTokenBlindBoxItemReceive,
     pageInfo?: { offset: number; limit: number; filter: any },
   ) => any
+  onItemClickOpen: (
+    item: sdk.LuckyTokenBlindBoxItemReceive,
+    pageInfo?: { offset: number; limit: number; filter: any },
+  ) => any
   getRedPacketReceiveList: (props: any) => void
   showActionableRecords: boolean
   isUnclaimed?: boolean

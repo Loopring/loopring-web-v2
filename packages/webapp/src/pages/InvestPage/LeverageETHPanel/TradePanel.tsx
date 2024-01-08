@@ -47,7 +47,7 @@ export const TradePanel = ({
   const { isMobile } = useSettings()
   const [, tokenBase] = market.match(/(\w+)-(\w+)/i) ?? []
 
- const { setShowLeverageETHPopup } = confirmation.useConfirmation()
+  const { setShowLeverageETHPopup } = confirmation.useConfirmation()
   return (
     <>
       {deFiWrapProps.deFiCalcData ? (

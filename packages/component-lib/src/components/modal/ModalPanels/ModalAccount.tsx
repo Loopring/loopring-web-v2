@@ -27,6 +27,7 @@ export const ModalAccount = withTranslation('common', { withRef: true })(
 
     return (
       <Modal
+        sx={{ zIndex: 2001 }}
         open={open}
         onClose={onClose}
         aria-labelledby='modal-modal-title'

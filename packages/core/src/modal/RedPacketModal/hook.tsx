@@ -147,7 +147,7 @@ export function useRedPacketModal() {
       }
     }
     return ''
-  }, [info?.tokenId, info?.tokenAmount])
+  }, [info?.tokenId, info?.tokenAmount, isShow, info])
   const amountClaimStr = React.useMemo(() => {
     const _info = info as sdk.LuckyTokenItemForReceive & {
       claimAmount: string
@@ -220,6 +220,7 @@ export function useRedPacketModal() {
               ?.getLuckTokenDetail(
                 {
                   hash: _info.hash,
+                  serialNo: _info.serialNo,
                 },
                 account.apiKey,
               )
@@ -237,6 +238,7 @@ export function useRedPacketModal() {
               ?.getLuckTokenDetail(
                 {
                   hash: _info.hash,
+                  serialNo: _info.serialNo,
                 },
                 account.apiKey,
               )
@@ -415,6 +417,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit,
               offset,
               // fromId: 0,
@@ -537,6 +540,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit: 500,
               offset: 0,
               showHelper: true,
@@ -548,6 +552,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit: RedPacketNFTDetailLimit,
               offset,
               // fromId: 0,
@@ -569,6 +574,7 @@ export function useRedPacketModal() {
             {
               accountId: account.accountId,
               hash: _info.hash,
+              serialNo: _info.serialNo,
               limit: RedPacketBlindBoxLimit,
               offset,
             } as any,
@@ -633,6 +639,7 @@ export function useRedPacketModal() {
                       hash: _info.hash,
                       claimer: account.accAddress,
                       referrer: '',
+                      serialNo: _info.serialNo
                     },
                     eddsaKey: account.eddsaKey.sk,
                     apiKey: account.apiKey,
@@ -679,6 +686,7 @@ export function useRedPacketModal() {
                   {
                     accountId: account.accountId,
                     hash: _info.hash,
+                    serialNo: _info.serialNo,
                     limit,
                     offset,
                     // fromId: 0,
@@ -755,6 +763,7 @@ export function useRedPacketModal() {
         {
           account: account.accountId,
           hash: info.hash,
+          serialNo: info.serialNo,
           fromId: 0,
           showHelper: true,
         } as any,
@@ -1242,6 +1251,7 @@ export function useRedPacketModal() {
               {
                 accountId: account.accountId,
                 hash: _info.hash,
+                serialNo: _info.serialNo,
                 limit: RedPacketBlindBoxLimit,
                 offset: (page - 1) * RedPacketBlindBoxLimit,
               } as any,
