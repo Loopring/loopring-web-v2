@@ -650,7 +650,7 @@ export const NFTDetail = withTranslation('common')(
                     style={{
                       height: 40,
                       width: 40,
-                      background: 'var(--color-divide)',
+                      background: 'var(--color-global-bg)',
                       borderRadius: theme.unit,
                     }}
                     title={t('labelL2NFTBurnBtn')}
@@ -658,7 +658,7 @@ export const NFTDetail = withTranslation('common')(
                       setShowNFTTransfer({ isShow: true, info: { isBurn: true, ...popItem } })
                     }}
                   >
-                    <BurnIcon htmlColor={'var(--color-white)'} />
+                    <BurnIcon htmlColor={theme.mode === 'dark' ? 'var(--color-white)' : 'var(--color-black)'} />
                   </IconButton>
                 </Box>
               </Box>
