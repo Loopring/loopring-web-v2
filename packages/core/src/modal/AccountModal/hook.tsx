@@ -2258,6 +2258,106 @@ export function useAccountModalForUI({
           />
         ),
       },
+      [AccountStep.NFTBurn_WaitForAuth]: {
+        view: (
+          <NFTBurn_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_First_Method_Denied]: {
+        view: (
+          <NFTBurn_First_Method_Denied
+            btnInfo={{
+              btnTxt: 'labelTryAnother',
+              callback: () => {
+                nftTransferProps.onTransferClick(nftTransferValue as any, false)
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_User_Denied]: {
+        view: (
+          <NFTBurn_User_Denied
+            btnInfo={{
+              btnTxt: 'labelRetry',
+              callback: () => {
+                nftTransferProps.onTransferClick(nftTransferValue as any)
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_In_Progress]: {
+        view: (
+          <NFTBurn_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_Success]: {
+        view: (
+          <NFTBurn_Success
+            btnInfo={closeBtnInfo()}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: 'Txn Hash',
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTBurn_Failed]: {
+        view: (
+          <NFTBurn_Failed
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.nftTransfer,
+                  },
+                })
+              },
+            })}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
 
       // withdraw
       [AccountStep.Withdraw_WaitForAuth]: {
