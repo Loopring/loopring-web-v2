@@ -6,7 +6,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { utils } from 'ethers'
+import { utils, providers } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError, myLog, isAddress } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../api_wrapper'
@@ -175,10 +175,11 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        realAddr = await web3.eth?.ens?.getAddress(address).catch((_e: any) => {
+        const provider = connectProvides?.usedProvide && new providers.Web3Provider(connectProvides.usedProvide as any)
+        realAddr = provider ? (await provider.resolveName(address).then(addr => addr ? addr : '').catch((_e: any) => {
           addressErr = AddressError.InvalidAddr
           return ''
-        })
+        })) : ''
         if (realAddr && addressErr == AddressError.NoError) {
           ens = address
         }
