@@ -146,7 +146,7 @@ export const NotificationPanel = ({
                 sx={{
                   backgroundImage: `url(${SoursURL + 'images/target_pop_bg.png'})`,
                   backgroundSize: 'contain',
-                  width: '330px',
+                  width: '343px',
                   height: '77px',
                   borderRadius: 2,
                   paddingLeft: 3.5,

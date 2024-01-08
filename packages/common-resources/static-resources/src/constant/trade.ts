@@ -23,7 +23,9 @@ export type WithdrawType =
   | sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
 
 export type WithdrawTypes = {
+  // @ts-ignore
   [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: 'Fast'
+  // @ts-ignore
   [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard'
 }
 
@@ -194,6 +196,7 @@ export const HiddenTag = '*****'
 export const DEAULT_NFTID_STRING =
   '0x0000000000000000000000000000000000000000000000000000000000000000'
 export const MINT_LIMIT = 100000
+export const SUBMIT_PANEL_CHECK = 1000
 export const SUBMIT_PANEL_AUTO_CLOSE = 8000
 export const SUBMIT_PANEL_QUICK_AUTO_CLOSE = 3000
 export const SUBMIT_PANEL_DOUBLE_QUICK_AUTO_CLOSE = 1000
@@ -208,6 +211,8 @@ export const REDPACKET_ORDER_NFT_LIMIT = 20000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 10000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
+
+export const VAULT_MAKET_REFRESH = 60000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
   image: 'image',
@@ -674,6 +679,7 @@ export type RedPacketOrderData<I> = {
     sentAddresses?: string[]
   }
   showNFT: boolean
+  type: any
 } & Partial<IBData<I>> &
   Partial<NFTWholeINFO> &
   Partial<sdk.LuckyTokenItemForSendV3>
@@ -709,6 +715,16 @@ export enum TradeBaseType {
 export type AmmHistoryItem = {
   close: number
   timeStamp: number
+}
+export enum LocalStorageConfigKey {
+  tokenMap = 'tokenMap',
+  ammpools = 'ammpools',
+  markets = 'markets',
+  btradeMarkets = 'btradeMarkets',
+  vaultMarkets = 'vaultMarkets',
+  vaultTokenMap = 'vaultTokenMap',
+  exchangeInfo = 'exchangeInfo',
+  disableWithdrawTokenList = 'disableWithdrawTokenList',
 }
 
 export enum DualStep {
@@ -748,7 +764,33 @@ export const DualBTC = [
   { step: DualStep.ShowQuote, type: 'Tab', labelKey: 'labelDualBeginnerStep3Title' },
 ]
 
+export type VaultMarketExtends = { enabled: boolean | 'isFormLocal' } & Omit<
+  sdk.VaultMarket,
+  'enabled'
+> & {
+    vaultMarket: string
+    originalBaseSymbol: string
+    originalQuoteSymbol: string
+  }
+
+export enum VaultLoanType {
+  Borrow = 'Borrow',
+  Repay = 'Repay',
+}
+
+export enum AmmPanelType {
+  Join = 0,
+  Exit = 1,
+}
+
 export enum DualInvestConfirmType {
   USDCOnly = 'USDCOnly',
   all = 'all',
+}
+
+export enum VaultAction {
+  VaultJoin = 'VaultJoin',
+  VaultExit = 'VaultExit',
+  VaultLoan = 'VaultLoan',
+  VaultSwap = 'VaultSwap',
 }

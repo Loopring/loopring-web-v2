@@ -1,32 +1,25 @@
-import {Trans, useTranslation} from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import React from 'react'
+import { Box, Divider, Grid, Typography } from '@mui/material'
+import { bindHover } from 'material-ui-popup-state'
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
 import {
-	Box,
-	Divider,
-	Grid,
-	Typography,
-} from '@mui/material'
-import {bindHover} from 'material-ui-popup-state'
-import {bindPopper, usePopupState} from 'material-ui-popup-state/hooks'
-import {
-	FeeInfo, GET_IPFS_STRING,
-	IBData,
-	Info2Icon,
-	L1L2_NAME_DEFINED,
-	MapChainId,
-	NFTWholeINFO, TRADE_TYPE,
-	TradeBtnStatus,
-	myLog
+  FeeInfo,
+  GET_IPFS_STRING,
+  IBData,
+  Info2Icon,
+  L1L2_NAME_DEFINED,
+  MapChainId,
+  NFTWholeINFO,
+  TRADE_TYPE,
+  TradeBtnStatus,
+  myLog,
 } from '@loopring-web/common-resources'
-import {
-	Button,
-	FeeSelect,
-	InputSize, SwitchData, TransferProps,
-} from '../../index'
-import {PopoverPure} from '../..'
-import {NFTInput} from './BasicANFTTrade'
-import {useSettings} from '../../../stores'
-import styled from "@emotion/styled";
+import { Button, FeeSelect, InputSize, SwitchData, TransferProps } from '../../index'
+import { PopoverPure } from '../..'
+import { NFTInput } from './BasicANFTTrade'
+import { useSettings } from '../../../stores'
+import styled from '@emotion/styled'
 
 const BoxStyle = styled(Box)`
   .coinInput-wrap,
@@ -40,43 +33,41 @@ const BoxStyle = styled(Box)`
     }
   }
 `
-export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>(
-	{
-		type = TRADE_TYPE.NFT,
-		transferBtnStatus,
-		disabled,
-		walletMap,
-		handleFeeChange,
-		chargeFeeTokenList,
-		feeInfo,
-		isFeeNotEnough,
-		onTransferClick,
-		transferI18nKey,
-		tradeData,
-		handlePanelEvent,
-		...rest
-	}: TransferProps<T, I, C> &
-		{
-			getIPFSString: GET_IPFS_STRING,
-			assetsData: any[]
-		}) => {
-	const {t} = useTranslation()
-	const inputBtnRef = React.useRef()
-	const {defaultNetwork} = useSettings()
-	const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+export const TransferNFTBurn = <T extends IBData<I> & Partial<NFTWholeINFO>, I, C extends FeeInfo>({
+  type = TRADE_TYPE.NFT,
+  transferBtnStatus,
+  disabled,
+  walletMap,
+  handleFeeChange,
+  chargeFeeTokenList,
+  feeInfo,
+  isFeeNotEnough,
+  onTransferClick,
+  transferI18nKey,
+  tradeData,
+  handlePanelEvent,
+  ...rest
+}: TransferProps<T, I, C> & {
+  getIPFSString: GET_IPFS_STRING
+  assetsData: any[]
+}) => {
+  const { t } = useTranslation()
+  const inputBtnRef = React.useRef()
+  const { defaultNetwork } = useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
-	myLog('Burn tradeData',tradeData)
-	const inputButtonDefaultProps = {
-		label: t('labelL2toL2EnterToken'),
-		size: InputSize.middle,
-	}
+  myLog('Burn tradeData', tradeData)
+  const inputButtonDefaultProps = {
+    label: t('labelL2toL2EnterToken'),
+    size: InputSize.middle,
+  }
 
-	const [showFeeModal, setShowFeeModal] = React.useState(false)
+  const [showFeeModal, setShowFeeModal] = React.useState(false)
 
-	const popupState = usePopupState({
-		variant: 'popover',
-		popupId: `popupId-transfer`,
-	})
+  const popupState = usePopupState({
+    variant: 'popover',
+    popupId: `popupId-transfer`,
+  })
 
 	const getDisabled = React.useMemo(() => {
 		return disabled || transferBtnStatus === TradeBtnStatus.DISABLED

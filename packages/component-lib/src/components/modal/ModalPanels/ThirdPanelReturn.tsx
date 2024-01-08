@@ -83,7 +83,7 @@ export const ThirdPanelReturn = ({
   )
 }
 
-const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
+const BoxStyle = styled(Box)<BoxProps & { ismobile: boolean | undefined }>`
   .way-content > div:first-of-type {
     position: relative;
     font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -120,7 +120,7 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
     `}
     padding-left: 0;
     padding-right: 0;
-` as (props: BoxProps & { isMobile: boolean | undefined }) => JSX.Element
+` as (props: BoxProps & { ismobile: boolean | undefined }) => JSX.Element
 
 export const ContinuousBanxaOrder = ({
   // _title,
@@ -155,7 +155,7 @@ export const ContinuousBanxaOrder = ({
         alignItems={'center'}
         justifyContent={'space-between'}
         flexDirection={'column'}
-        isMobile={isMobile}
+        ismobile={isMobile}
       >
         <Typography
           component={'h3'}

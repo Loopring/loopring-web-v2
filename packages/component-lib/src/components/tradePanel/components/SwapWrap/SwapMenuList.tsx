@@ -9,6 +9,7 @@ export function SwapMenuList<T extends IBData<I>, I, TCD extends TradeCalcData<I
   onChangeEvent,
   tradeCalcData,
   swapData,
+  tokenType,
   ...rest
 }: SwapMenuListProps<T, TCD> & WithTranslation) {
   const selected: string | undefined = swapData.tradeData[swapData.type].belong
@@ -31,6 +32,7 @@ export function SwapMenuList<T extends IBData<I>, I, TCD extends TradeCalcData<I
   return (
     <TradeMenuList
       {...{
+        tokenType,
         nonZero: false,
         sorted: true,
         ...rest,

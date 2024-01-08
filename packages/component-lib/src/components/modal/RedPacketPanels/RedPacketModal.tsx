@@ -38,9 +38,6 @@ export const ModalRedPacket = withTranslation('common', { withRef: true })(
     ...rest
   }: ModalRedPacketProps & WithTranslation) => {
     const theme = useTheme()
-    // console.log('isEmpty(panelList[step].view.props', isEmpty(panelList[step].view.props))
-    // console.log('isEmpty(panelList[step].view.props', panelList[step].view.props)
-
     return (
       <Modal
         open={open}

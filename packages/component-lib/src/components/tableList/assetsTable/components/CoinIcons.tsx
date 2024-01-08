@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Box, BoxProps, styled, Typography } from '@mui/material'
-import { CoinInfo, SoursURL, TokenType, CoinSource } from '@loopring-web/common-resources'
-import { AvatarCoin } from '../../../basic-lib'
+import { CoinInfo, CoinSource, SoursURL, TokenType } from '@loopring-web/common-resources'
+import { AvatarCoin, VaultTag } from '../../../basic-lib'
 import { useSettings } from '../../../../stores'
 
 const BoxStyle = styled(Box)<BoxProps & { size: number }>`
@@ -9,6 +9,9 @@ const BoxStyle = styled(Box)<BoxProps & { size: number }>`
     return `
     .logo-icon.dual:last-child {
       transform: scale(0.6) translate(${size / 6}px, ${size / 6}px);
+    }
+    .logo-icon.vault:last-child {
+      transform: bottom;
     }
     `
   }}
@@ -43,7 +46,12 @@ export const CoinIcons = React.memo(
 
     const [coinAInfo, coinBInfo] = tokenIcon
     return (
-      <BoxStyle display={'flex'} justifyContent={'center'} size={size}>
+      <BoxStyle
+        display={'flex'}
+        justifyContent={'center'}
+        size={size}
+        alignItems={[TokenType.vault].includes(type) ? 'flex-end' : 'initial'}
+      >
         <Box
           className={`logo-icon ${type}`}
           display={'flex'}
@@ -82,6 +90,29 @@ export const CoinIcons = React.memo(
             />
           )}
         </Box>
+        {[TokenType.vault].includes(type) && (
+          <Box
+            className={`logo-icon ${type}`}
+            display={'flex'}
+            height={'var(--btn-icon-size-small)'}
+            position={'relative'}
+            zIndex={24}
+            left={-12}
+            width={'var(--btn-icon-size-small)'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            width={size}
+          >
+            <VaultTag
+              style={{
+                height: size,
+                width: size,
+                transformOrigin: 'bottom',
+                transform: `scale(${2 / 3})`,
+              }}
+            />
+          </Box>
+        )}
         {coinBInfo || [TokenType.dual, TokenType.lp].includes(type) ? (
           <Box
             className={`logo-icon ${type}`}

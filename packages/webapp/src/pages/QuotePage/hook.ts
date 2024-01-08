@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 import { QuoteTableRawDataItem } from '@loopring-web/component-lib'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
 
-import { myLog, RowConfig, SagaStatus } from '@loopring-web/common-resources'
+import { RowConfig, SagaStatus, TableFilterParams } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import {
   favoriteMarket as favoriteMarketReducer,
@@ -106,11 +106,6 @@ export function useQuote<C extends { [key: string]: string }>() {
   return {
     tickList,
   }
-}
-
-export enum TableFilterParams {
-  all = 'all',
-  favourite = 'favourite',
 }
 
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {

@@ -2319,4 +2319,32 @@ export default {
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
   labelUpdateContactsNext: 'Go to Update Contact',
   labelENSAddressMismatch: 'ENS & Address Mismatch',
+  labelVaultActiveLoanAlert:
+    'You currently have an active loan order in progress. This may affect the available tokens for trading. Please proceed with caution.',
+  labelVaultSwapBorrowTip: 'Max is sum of Available and Borrowable tokens',
+  labelVaultSwapBorrow: 'Max:',
+  labelVaultSwapHoldTip:
+    'When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
+  labelVaultSwapHold: 'Holding:',
+  labelTobeBorrowedtips:
+    'When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
+  labelTobeBorrowed: 'To be Borrowed',
+  labelStep1Borrow: 'STEP1: Borrow',
+  labelStep2Swap: 'STEP2: Swap',
+  labelVaultSwapCancel:
+    'You are borrowing tokens. \nAre you sure you want to change the token pair or exit the trade?',
+  labelAgree: 'I know',
+  labelTradeVaultMiniBorrow:
+    'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
+  labelVaultTradeSimpleBtn: 'Trade',
+  labelBorrowing: 'Borrowing {{symbol}}',
+  labelBorrowed: 'Borrowed {{symbol}}',
+  labelBorrowSwap: 'Borrow & Swap',
+  labelVaultTradeInsufficient: 'Insufficient quota',
+  labelVaultActiveLoanError:
+    'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
+  labelL2NFTBurnTitle: 'Burn NFT',
+  labelL2NFTBurnBtn: 'Burn NFT',
+  labelL2NFTBurnTip:
+    'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
 }

@@ -14,6 +14,7 @@ import { useFocusRef } from '../hooks'
 import { IInput, ISBtn, IWrap } from './style'
 import { CoinIcon } from './Default'
 import { sanitize } from 'dompurify'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
@@ -40,6 +41,10 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     isHideError = false,
     fullwidth = false,
     loading = false,
+    disableBelong = false,
+    className,
+    tokenType,
+    tokenImageKey,
   }: // isAllowBalanceClick
   InputButtonProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -141,7 +146,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   // formatValue(sValue)
 
   return (
-    <IWrap component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
+    <IWrap className={className} component={'div'} ref={ref} size={size} fullWidth={fullwidth}>
       <Grid
         container
         component={'div'}
@@ -194,7 +199,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             endIcon={
               <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
             }
-            disabled={disabled}
+            disabled={disabled || disableBelong}
           >
             {belong ? (
               <Grid container align-items={'center'} display={'flex'}>
@@ -208,7 +213,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                     alignItems={'center'}
                     justifyContent={'center'}
                   >
-                    <CoinIcon symbol={belong} />
+                    <CoinIcon
+                      tokenImageKey={tokenImageKey ?? undefined}
+                      symbol={belong}
+                      type={tokenType ?? undefined}
+                    />
                   </Grid>
                 )}
                 {!isShowCoinIcon && CoinIconElement && (
@@ -261,7 +270,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             value={typeof sValue === 'undefined' ? '' : sValue}
             allowNegativeValue={false}
             decimalSeparator='.'
-            groupSeparator=','
+            groupSeparator={sdk.SEP}
             name={name}
             disabled={!(!disabled || belong) || disableInputValue || loading}
             placeholder={placeholderText}

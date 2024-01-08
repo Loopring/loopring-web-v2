@@ -79,6 +79,7 @@ export enum SCENARIO {
   AMM = 'AMM',
   FIAT = 'FIAT',
   SWAP = 'SWAP',
+  VAULT = 'VAULT',
 }
 export type CAMPAIGNTAGCONFIG = {
   [key in SCENARIO]: CAMPAIGN_TAG[]

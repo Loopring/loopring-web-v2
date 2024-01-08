@@ -521,12 +521,6 @@ export const IPFSSourceUpload = ({
                   rel='noopener noreferrer'
                   href={value.fullSrc}
                 >
-                  {/*<NftImage*/}
-                  {/*  alt={value?.file?.name}*/}
-                  {/*  title={value.cid}*/}
-                  {/*  onError={() => undefined}*/}
-                  {/*  src={value.localSrc}*/}
-                  {/*/>*/}
                   {value && value.fullSrc ? (
                     <MediaSVGToggle
                       url={value.fullSrc ?? ''}
@@ -561,12 +555,6 @@ export const IPFSSourceUpload = ({
                     width: '100%',
                   }}
                 >
-                  {/*<UploadedIcon*/}
-                  {/*  sx={{*/}
-                  {/*    height: "50% !important",*/}
-                  {/*    width: "50% !important",*/}
-                  {/*  }}*/}
-                  {/*/>*/}
                   <Typography color={'inherit'} component={'span'} marginTop={1}>
                     Successfully Uploaded
                   </Typography>
@@ -595,7 +583,6 @@ export const IPFSSourceUpload = ({
                 error={isFileTooLarge}
               >
                 <input {...getInputProps()} />
-                {/*<img alt={"ipfs"} height={36} src={SoursURL + "svg/ipfs.svg"} />*/}
                 <Typography
                   variant={'h6'}
                   textAlign='center'

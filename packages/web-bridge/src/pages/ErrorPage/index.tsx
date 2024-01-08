@@ -10,9 +10,6 @@ const StyleBox = styled(Box)`
   background-size: contain;
   background-position: bottom;
   white-space: pre-wrap;
-  //h2{
-  //  position: relative;
-  //}
 ` as typeof Box
 
 export const ErrorPage = ({ messageKey }: ErrorObject) => {

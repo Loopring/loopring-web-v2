@@ -130,6 +130,28 @@ import {
   NFTBurn_Success,
   NFTBurn_User_Denied,
   NFTBurn_WaitForAuth,
+	// NFTBurn_Failed,
+	// NFTBurn_First_Method_Denied,
+	// NFTBurn_In_Progress,
+	// NFTBurn_Success,
+	// NFTBurn_User_Denied,
+	// NFTBurn_WaitForAuth,
+  // SendFromContact,
+  VaultTrade_Success,
+  VaultTrade_Failed,
+  VaultTrade_In_Progress,
+  VaultJoin_Success,
+  VaultJoin_Failed,
+  VaultJoin_In_Progress,
+  VaultRedeem_Success,
+  VaultRedeem_Failed,
+  VaultRedeem_In_Progress,
+  VaultBorrow_Success,
+  VaultBorrow_Failed,
+  VaultBorrow_In_Progress,
+  VaultRepay_Success,
+  VaultRepay_Failed,
+  VaultRepay_In_Progress,
   SendFromContact,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
@@ -177,8 +199,8 @@ import {
   useCreateRedPacket,
   useExportAccount,
   useForceWithdraw,
-  useModalData,
-  useNFTBurn,
+	useModalData,
+	useNFTBurn,
   useNFTDeploy,
   useNFTMintAdvance,
   useNFTTransfer,
@@ -281,9 +303,8 @@ export function useAccountModalForUI({
   const { transferProps } = useTransfer()
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
-  const { nftBurnProps } = useNFTBurn()
+	const { nftBurnProps } = useNFTBurn()
   const { nftDeployProps } = useNFTDeploy()
-
   const { contactAddProps } = useContactAdd()
   const { stakeWrapProps } = useStakeTradeExit({
     setToastOpen: (info: TOASTOPEN) => setShowGlobalToast({ isShow: info.open, info: { ...info } }),
@@ -385,9 +406,6 @@ export function useAccountModalForUI({
           if (props?.closeExtend) {
             props?.closeExtend(e)
           }
-          // if (onClose) {
-          //   onClose(e);
-          // }
         },
       }
     },
@@ -782,11 +800,6 @@ export function useAccountModalForUI({
               callback: () => {
                 setShouldShow(false)
                 setShowAccount({ isShow: false })
-
-                // if (props?.closeExtend) {
-                //   props?.closeExtend(e);
-                // }
-                // banxaService.openOldOne();
               },
               btnTxt: t('labelBanxaContinuous'),
             }}
@@ -870,14 +883,9 @@ export function useAccountModalForUI({
         view: (
           <SendFromContact
             {...(isShowAccount?.info as any)}
-            // isENSWrong={.isENSWrong}
-            // sendInfo={isShowAccount?.info}
           />
-        ),
-        // onBack: () => {
-        //   setShowAccount({ isShow: false })
-        // },
-      },
+        )
+      } ,
       [AccountStep.SendNFTGateway]: {
         view: (
           <SendNFTAsset
@@ -1492,13 +1500,6 @@ export function useAccountModalForUI({
               info: {
                 ...isShowAccount.info,
               },
-              // link: isShowAccount?.info?.hash
-              //   ? {
-              //     name: "Txn Hash",
-              //     url: isShowAccount?.info?.hash,
-              //   }
-              //   : undefined,
-
               t,
             }}
           />
@@ -1804,9 +1805,6 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        // onBack: () => {
-        //   setShowAccount({ isShow: false });
-        // },
       },
 
       // ClaimWithdraw
@@ -2489,106 +2487,7 @@ export function useAccountModalForUI({
           />
         ),
       },
-      //Burn
-      [AccountStep.NFTBurn_WaitForAuth]: {
-        view: (
-          <NFTBurn_WaitForAuth
-            providerName={account.connectName as ConnectProviders}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.NFTBurn_First_Method_Denied]: {
-        view: (
-          <NFTBurn_First_Method_Denied
-            btnInfo={{
-              btnTxt: 'labelTryAnother',
-              callback: () => {
-                nftTransferProps.onTransferClick(nftTransferValue as any, false)
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.NFTBurn_User_Denied]: {
-        view: (
-          <NFTBurn_User_Denied
-            btnInfo={{
-              btnTxt: 'labelRetry',
-              callback: () => {
-                nftTransferProps.onTransferClick(nftTransferValue as any)
-              },
-            }}
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.NFTBurn_In_Progress]: {
-        view: (
-          <NFTBurn_In_Progress
-            {...{
-              ...rest,
-              account,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.NFTBurn_Success]: {
-        view: (
-          <NFTBurn_Success
-            btnInfo={closeBtnInfo()}
-            {...{
-              ...rest,
-              account,
-              link: isShowAccount?.info?.hash
-                ? {
-                    name: 'Txn Hash',
-                    url: isShowAccount?.info?.hash,
-                  }
-                : undefined,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.NFTBurn_Failed]: {
-        view: (
-          <NFTBurn_Failed
-            btnInfo={closeBtnInfo({
-              closeExtend: () => {
-                setShowAccount({
-                  ...isShowAccount,
-                  isShow: false,
-                  info: {
-                    ...isShowAccount.info,
-                    lastFailed: LAST_STEP.nftTransfer,
-                  },
-                })
-              },
-            })}
-            {...{
-              ...rest,
-              account,
-              error: isShowAccount.error,
-              t,
-            }}
-          />
-        ),
-      },
+			//Burn
 
       // withdraw
       [AccountStep.NFTWithdraw_WaitForAuth]: {
@@ -3273,6 +3172,126 @@ export function useAccountModalForUI({
         ),
         height: 'auto',
       },
+      [AccountStep.VaultTrade_Success]: {
+        view: (
+          <VaultTrade_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultTrade_Failed]: {
+        view: (
+          <VaultTrade_Failed
+            btnInfo={undefined}
+            {...{
+              t,
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultTrade_In_Progress]: {
+        view: (
+          <VaultTrade_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultJoin_Success]: {
+        view: (
+          <VaultJoin_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultJoin_Failed]: {
+        view: (
+          <VaultJoin_Failed
+            btnInfo={undefined}
+            {...{
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              t,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultJoin_In_Progress]: {
+        view: (
+          <VaultJoin_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_Success]: {
+        view: (
+          <VaultRedeem_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRedeem_Failed]: {
+        view: (
+          <VaultRedeem_Failed
+            btnInfo={undefined}
+            {...{
+              info: isShowAccount?.info,
+              symbol: isShowAccount?.info?.symbol,
+              value: isShowAccount?.info?.value,
+              error: isShowAccount.error,
+              t,
+              ...rest,
+            }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_In_Progress]: {
+        view: (
+          <VaultRedeem_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultBorrow_Success]: {
+        view: (
+          <VaultBorrow_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultBorrow_Failed]: {
+        view: (
+          <VaultBorrow_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultBorrow_In_Progress]: {
+        view: (
+          <VaultBorrow_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultRepay_Success]: {
+        view: (
+          <VaultRepay_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRepay_Failed]: {
+        view: (
+          <VaultRepay_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultRepay_In_Progress]: {
+        view: (
+          <VaultRepay_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
     })
   }, [
     activeAccountProps,
@@ -3337,7 +3356,7 @@ export function useAccountModalForUI({
     nftWithdrawProps,
     transferProps,
     withdrawProps,
-    nftBurnProps,
+		nftBurnProps,
     claimProps,
     depositProps,
     resetProps,
@@ -3359,8 +3378,6 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    contactAddProps,
-    // checkActiveStatusProps,
-    // dualToastOpen,
-  }
+    contactAddProps
+	}
 }

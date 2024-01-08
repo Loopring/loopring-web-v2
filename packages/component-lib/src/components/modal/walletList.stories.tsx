@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import React from 'react'
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Box, Button, Grid } from '@mui/material'
@@ -42,7 +42,12 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
   return (
     <>
       <Grid item xs={3}>
-        <WalletConnectBtn accountState={accountState} handleClick={() => undefined}  NetWorkItems={<></>} isShowOnUnConnect/>
+        <WalletConnectBtn
+          accountState={accountState}
+          handleClick={() => undefined}
+          NetWorkItems={<></>}
+          isShowOnUnConnect
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -52,7 +57,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             account: { ...account, readyState: AccountStatus.NO_ACCOUNT },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -62,7 +68,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             account: { ...account, readyState: AccountStatus.DEPOSITING },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -72,7 +79,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             account: { ...account, readyState: AccountStatus.NOT_ACTIVE },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -82,7 +90,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             account: { ...account, readyState: AccountStatus.ACTIVATED },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -92,7 +101,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             account: { ...account, readyState: AccountStatus.ERROR_NETWORK },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -102,7 +112,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             account: { ...account, readyState: AccountStatus.LOCKED },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -116,7 +127,8 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             },
           }}
           handleClick={() => undefined}
-          NetWorkItems={<></>}/>
+          NetWorkItems={<></>}
+        />
       </Grid>
     </>
   )

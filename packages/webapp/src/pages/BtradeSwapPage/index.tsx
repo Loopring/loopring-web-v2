@@ -98,6 +98,7 @@ const Content = withTranslation('common')(({ ...rest }: WithTranslation) => {
           swapBtnI18nKey={swapBtnI18nKey}
           swapBtnStatus={swapBtnStatus}
           setToastOpen={setToastOpen}
+          hideSecondConfirmation
           {...{ handleSwapPanelEvent, ...rest }}
         />
       ) : (

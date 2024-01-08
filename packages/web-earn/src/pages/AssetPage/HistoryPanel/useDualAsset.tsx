@@ -195,7 +195,9 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
         if (dualReinvestInfo?.isRecursive) {
           content = 'labelDualAssetReInvestEnable'
         } else if (
-          dualReinvestInfo.onceRecursive && settlementStatus === sdk.SETTLEMENT_STATUS.PAID && tokenIn !== tokenOut
+          dualReinvestInfo.onceRecursive &&
+          settlementStatus === sdk.SETTLEMENT_STATUS.PAID &&
+          tokenIn !== tokenOut
         ) {
           icon = <WaitingIcon color={'primary'} sx={{ paddingLeft: 1 / 2 }} />
           status = 'labelDualRetryStatusTerminated'
@@ -548,7 +550,6 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     [accountId, apiKey, setToastOpen, t, dualMarketMap, idIndex, tokenMap],
   )
   const [dualProducts, setDualProducts] = React.useState<DualViewInfo[]>([])
-  // TODO:
   const getProduct = async (detail) => {
     if (detail && detail.dualViewInfo) {
       const { marketMap: dualMarketMap } = store.getState().invest.dualMap

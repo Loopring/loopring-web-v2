@@ -314,7 +314,6 @@ export const DefiStakingTxTable = withTranslation(['tables', 'common'])(
                 </Typography>
                 <Typography component={'span'} display={'inline'}>
                   {row.productId}
-                  {/*+ "/" + getShortAddr(row.hash)*/}
                 </Typography>
               </Typography>
             )

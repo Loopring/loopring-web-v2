@@ -15,6 +15,7 @@ import {
   RowConfig,
   SoursURL,
   LayoutConfigInfo,
+  RouterPath,
 } from '@loopring-web/common-resources'
 import { ChartView, OrderTableView, Toolbar } from './panel'
 import { boxLiner, useSettings } from '@loopring-web/component-lib'
@@ -147,7 +148,7 @@ export const StopLimitPage = withTranslation('common')(<Config extends LayoutCon
     (currentLayout: Layout[], allLayouts?: Layouts, defaultlayouts?: Layouts) => {
       if (defaultlayouts) {
         setStopLimitLayouts(defaultlayouts)
-        history.push('/loading')
+        history.push(RouterPath.loading)
         setTimeout(() => {
           history.go(-1)
         }, 0)
@@ -187,7 +188,13 @@ export const StopLimitPage = withTranslation('common')(<Config extends LayoutCon
     ),
   }
   return (
-    <Box bgcolor={'var(--color-box-third)'} display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
+    <Box
+      bgcolor={'var(--color-box-third)'}
+      display={'block'}
+      margin={'0 auto'}
+      width={'100%'}
+      position={'relative'}
+    >
       {market ? (
         <ResponsiveGridLayout
           className='layout'

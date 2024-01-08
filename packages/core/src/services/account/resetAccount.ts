@@ -3,6 +3,7 @@ import { reset as resetWalletLayer1 } from '../../stores/walletLayer1/reducer'
 import { reset as resetWalletLayer2 } from '../../stores/walletLayer2/reducer'
 import { reset as resetwalletLayer2NFT } from '../../stores/walletLayer2NFT/reducer'
 import { reset as resetContacts } from '../../stores/contacts/reducer'
+import { reset as resetVaultLayer2 } from '../../stores/vaultLayer2/reducer'
 
 import { resetAmount } from '../../stores/amount/reducer'
 import { store } from '../../stores'
@@ -17,7 +18,8 @@ export async function resetLayer12Data() {
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer1(undefined))
   store.dispatch(resetWalletLayer2(undefined))
-    store.dispatch(resetContacts(undefined))
+  store.dispatch(resetVaultLayer2(undefined))
+  store.dispatch(resetContacts(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
   let toggle = {}
   if (
@@ -66,8 +68,9 @@ export function resetLayer2Data() {
   store.dispatch(resetAmount(undefined))
   store.dispatch(resetUserRewards(undefined))
   store.dispatch(resetWalletLayer2(undefined))
+  store.dispatch(resetVaultLayer2(undefined))
   store.dispatch(resetwalletLayer2NFT(undefined))
-    store.dispatch(resetContacts(undefined))
+  store.dispatch(resetContacts(undefined))
 }
 
 const LoopFrozenFlag = true
@@ -88,20 +91,15 @@ export async function toggleCheck(
     myLog('account.frozen ___timer___', account.accountId)
     store.dispatch(
       updateToggleStatus({
-        // chainId:store.getState().settings.defaultNetwork,
-        // account:store.getState().account,
         order: { enable: false, reason: 'account frozen' },
         joinAmm: { enable: false, reason: 'account frozen' },
         exitAmm: { enable: false, reason: 'account frozen' },
         transfer: { enable: false, reason: 'account frozen' },
         transferNFT: { enable: false, reason: 'account frozen' },
-        // deposit: { enable: false, reason: "account frozen" },
-        // depositNFT: { enable: false, reason: "account frozen" },
         withdraw: { enable: false, reason: 'account frozen' },
         withdrawNFT: { enable: false, reason: 'account frozen' },
         mintNFT: { enable: true, reason: 'account frozen' },
         deployNFT: { enable: false, reason: 'account frozen' },
-        //forceWithdraw: { enable: false, reason: "account frozen" },
         defiInvest: { enable: false, reason: 'account frozen' },
         WSTEHTInvest: { enable: false, reason: 'account frozen' },
         RETHInvest: { enable: false, reason: 'account frozen' },

@@ -57,7 +57,6 @@ export const Filter = withTranslation('tables', { withRef: true })(
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} lg={4}>
-          {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
           <DateRangePicker
             value={filterDate}
             onChange={(date: any) => {

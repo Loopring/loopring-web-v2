@@ -8,7 +8,6 @@ import { SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
 // ${({theme}) => boxLiner({theme})}
 const StyleBox = styled(Box)`
-  //background: var(--color-mask);
   ${({ theme }) => boxLiner({ theme })}
 
   position: absolute;
@@ -30,8 +29,6 @@ export const LoadingPage = () => {
   const { t } = useTranslation('layout')
   return (
     <>
-      {/*<Container>*/}
-      {/*style={{height: '100%' }}*/}
       <StyleBox
         flex={1}
         display={'flex'}

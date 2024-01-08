@@ -157,14 +157,11 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })(
                   >
                     {txHash}
                   </EthHshStyled>
-                  {/* <a target={'_blank'} href={`${etherscanBaseUrl}tx/${txHash}`}>
-                        {txHash}</a> */}
                 </InfoValueStyled>
               </GridItemStyled>
             )}
             <GridItemStyled item>
               <TypographyStyled>{t('labelTxnDetailStatus')}</TypographyStyled>
-              {/* <StatusStyled status={status}>{status.toUpperCase()}</StatusStyled> */}
               <StatusStyled status={status}>{renderStatus}</StatusStyled>
             </GridItemStyled>
             <GridItemStyled item>

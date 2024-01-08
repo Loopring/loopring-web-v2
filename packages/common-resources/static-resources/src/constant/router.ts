@@ -22,6 +22,8 @@ import {
   OverviewIcon,
   StopLimitIcon,
   SwapIcon,
+  VaultHomeIcon,
+  VaultDashboardIcon,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
@@ -61,6 +63,8 @@ export enum RouterPath {
   invest = '/invest',
   investBalance = '/invest/balance',
   vault = '/vault',
+  //404? loading
+  loading = '/loading',
 }
 
 export enum InvestType {
@@ -311,6 +315,32 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
 ]
 
+export enum VaultKey {
+  VAULT_HOME = 'vaultHome',
+  VAULT_DASHBOARD = 'vaultDashboard',
+}
+
+export let vaultItemData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: VaultKey.VAULT_HOME,
+      i18nKey: 'labelVaultHome',
+      description: 'labelVaultHomeDes',
+      icon: VaultHomeIcon,
+    },
+    router: { path: RouterPath.vault + '' },
+  },
+  {
+    label: {
+      id: VaultKey.VAULT_DASHBOARD,
+      i18nKey: 'labelVaultDashboard',
+      description: 'labelVaultDashboardDes',
+      icon: VaultDashboardIcon,
+    },
+    router: { path: RouterPath.vault + `/${VaultKey.VAULT_DASHBOARD}` },
+  },
+]
+
 export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
@@ -348,16 +378,6 @@ export const subMenuLayer2 = {
       },
     },
   ],
-  // transactionsGroup: [
-  //   {
-  //     icon: L2HistoryIcon,
-  //     router: { path: "/layer2/history" },
-  //     label: {
-  //       id: "history",
-  //       i18nKey: "labelHistory",
-  //     },
-  //   },
-  // ],
   profileGroup: [
     {
       icon: ProfileIcon,
@@ -682,6 +702,16 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: 'vault',
+      i18nKey: 'labelVault',
+      description: 'labelVaultDescription',
+    },
+    router: { path: `${RouterPath.vault}` },
+    status: HeaderMenuTabStatus.default,
+    child: vaultItemData,
+  },
+  {
+    label: {
       id: 'NFT',
       i18nKey: 'labelNFT',
     },
@@ -778,12 +808,9 @@ export enum RecordTabIndex {
   BtradeSwapRecords = 'BtradeSwapRecords',
   StopLimitRecords = 'StopLimitRecords',
   leverageETHRecords = 'leverageETHRecords',
+  VaultRecords = 'VaultRecords',
 }
 
-export enum AmmPanelType {
-  Join = 0,
-  Exit = 1,
-}
 export enum AssetTabIndex {
   Tokens = 'Tokens',
   Invests = 'Invests',
@@ -892,6 +919,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
     RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
   ],
   ARBGOERLI: [
     RecordTabIndex.Transactions,
@@ -1005,6 +1033,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+    // RouterMainKey.vault,
   ],
   GOERLI: [
     RouterMainKey.lite,
@@ -1019,6 +1048,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.vault,
   ],
   ARBGOERLI: [
     RouterMainKey.lite,

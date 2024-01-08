@@ -38,6 +38,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
     coinPrecision = 6,
     CoinIconElement,
     tokenType,
+    tokenImageKey,
   }: // coinIcon,
   InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,
@@ -45,7 +46,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
   const { t } = useTranslation('common')
   const { balance, belong, tradeValue, max } = (inputData ? inputData : {}) as IBData<C>
   // myLog("InputCoin", balance, belong, tradeValue);
-  const { isMobile, coinJson } = useSettings()
+  const { isMobile } = useSettings()
 
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined,
@@ -170,7 +171,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
           wrap={'nowrap'}
           alignItems={'stretch'}
           alignContent={'stretch'}
-          marginBottom={2}
+          marginBottom={size == 'small' ? 1 : 2}
         >
           <Grid
             order={order === 'left' ? 1 : 2}
@@ -227,7 +228,11 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
                   alignItems={'center'}
                   justifyContent={order === 'left' ? 'flex-start' : 'center'}
                 >
-                  <CoinIcon symbol={belong} type={tokenType ?? undefined} />
+                  <CoinIcon
+                    tokenImageKey={tokenImageKey ?? undefined}
+                    symbol={belong}
+                    type={tokenType ?? undefined}
+                  />
                 </Grid>
               )}
               {!isShowCoinIcon && CoinIconElement && (
@@ -251,7 +256,7 @@ function _InputMaxCoin<T extends IBDataMax<C>, C, I extends CoinInfo<C>>(
                 </Typography>
               </Grid>
             </CoinWrap>
-            <Divider sx={{ order: 2 }} orientation={'vertical'} />
+            <Divider sx={{ order: 2, marginX: 1 / 2 }} orientation={'vertical'} />
             <Link
               order={order === 'left' ? 3 : 1}
               component={'span'}

@@ -14,7 +14,6 @@ export type CardProps = {
   describe: string
 }
 const BoxStyle = styled(animated.div)`
-  //width: 400px !important;
   svg {
     fill: ${({ theme }: any) => theme.colorBase.textPrimary};
 
