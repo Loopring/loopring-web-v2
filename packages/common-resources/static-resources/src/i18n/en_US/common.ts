@@ -2140,7 +2140,6 @@ export default {
   labelHideRead: 'Hide Read(s)',
   labelL2NFTBurnTitle:"Burn NFT",
   labelL2NFTBurnBtn:"Burn NFT",
-  labelL2NFTBurnTip: 'TODO',
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
@@ -2343,8 +2342,7 @@ export default {
   labelVaultTradeInsufficient: 'Insufficient quota',
   labelVaultActiveLoanError:
     'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
-  labelL2NFTBurnTitle: 'Burn NFT',
-  labelL2NFTBurnBtn: 'Burn NFT',
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
+  labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
 }
