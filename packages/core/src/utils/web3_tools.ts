@@ -175,15 +175,35 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        console.log('providerproviderprovider,usedProvide', connectProvides?.usedProvide)
         const provider = connectProvides?.usedProvide && new providers.Web3Provider(connectProvides.usedProvide as any)
-        console.log('providerproviderprovider', provider)
-        realAddr = provider ? (await provider.resolveName(address).then(addr => addr ? addr : '').catch((_e: any) => {
-          console.log('providerproviderprovider,catch', _e)
-          addressErr = AddressError.InvalidAddr
-          return ''
-        })) : ''
-        console.log('providerproviderprovider,realAddr', realAddr)
+        // @ts-ignore
+        if (connectProvides?.usedProvide?.isWalletConnect) {
+          const network = await provider?.getNetwork()
+          const jsonPRCProvider = new providers.JsonRpcProvider(
+            network?.chainId === 1
+              ? process.env.REACT_APP_RPC_URL_1
+              : process.env.REACT_APP_RPC_URL_5,
+          )
+          realAddr = await jsonPRCProvider
+            .resolveName(address)
+            .then((addr) => (addr ? addr : ''))
+            .catch((_e: any) => {
+              addressErr = AddressError.InvalidAddr
+              return ''
+            })
+        } else {
+          realAddr = provider
+            ? await provider
+                .resolveName(address)
+                .then((addr) => (addr ? addr : ''))
+                .catch((_e: any) => {
+                  addressErr = AddressError.InvalidAddr
+                  return ''
+                })
+            : ''
+        }
+
+        
         if (realAddr && addressErr == AddressError.NoError) {
           ens = address
         }
