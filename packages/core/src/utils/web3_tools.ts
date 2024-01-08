@@ -175,15 +175,11 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        console.log('providerproviderprovider,usedProvide', connectProvides?.usedProvide)
         const provider = connectProvides?.usedProvide && new providers.Web3Provider(connectProvides.usedProvide as any)
-        console.log('providerproviderprovider', provider)
         realAddr = provider ? (await provider.resolveName(address).then(addr => addr ? addr : '').catch((_e: any) => {
-          console.log('providerproviderprovider,catch', _e)
           addressErr = AddressError.InvalidAddr
           return ''
         })) : ''
-        console.log('providerproviderprovider,realAddr', realAddr)
         if (realAddr && addressErr == AddressError.NoError) {
           ens = address
         }
