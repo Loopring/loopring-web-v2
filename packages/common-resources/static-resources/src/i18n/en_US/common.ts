@@ -2141,6 +2141,6 @@ export default {
   labelHideRead: 'Hide Read(s)',
   labelL2NFTBurnTitle:"Burn NFT",
   labelL2NFTBurnBtn:"Burn NFT",
-  labelL2NFTBurnTip: 'TODO'
-
+  labelL2NFTBurnTip: 'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution',
+  labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
 }

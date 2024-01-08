@@ -178,7 +178,7 @@ export const NFTBurn_In_Progress = (props: PanelProps) => {
 export const NFTBurn_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
-    describe1: props.t('labelL2toL2Success', {
+    describe1: props.t('labelL2NFTBurSuccess', {
       symbol: sanitize(props.symbol ?? 'NFT').toString(),
       value: props.value,
     }),
