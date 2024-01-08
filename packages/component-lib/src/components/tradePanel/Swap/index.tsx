@@ -66,6 +66,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     setToastOpen,
     titleI8nKey = 'swapTitle',
     scenario = SCENARIO.SWAP,
+    hideSecondConfirmation,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
     let history = useHistory()
@@ -265,7 +266,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             onSlippageChangeCallBack(slippage, customSlippage)
                           }}
                         />
-                        <Grid
+                        {!hideSecondConfirmation && <Grid
                           container
                           justifyContent={'space-between'}
                           direction={'row'}
@@ -298,7 +299,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             }}
                             checked={swapSecondConfirmation !== false}
                           />
-                        </Grid>
+                        </Grid>}
                       </Box>
                     </PopoverStyled>
                   </Typography>

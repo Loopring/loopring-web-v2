@@ -106,7 +106,7 @@ const TrendChart = ({
         return (
           <TooltipStyled>
             <Typography component={'div'} variant={'body1'}>
-              {moment(timeStamp).format(DAT_STRING_FORMAT)}
+              {moment.unix(timeStamp / 1000).format(DAT_STRING_FORMAT)}
             </Typography>
             <Box display={'flex'}>
               <Typography component={'span'} variant={'body1'}>
@@ -151,7 +151,7 @@ const TrendChart = ({
               </Box>
             )}
             <Typography component={'div'} fontSize={12}>
-              {moment(timeStamp).format(MINT_STRING_FORMAT)}
+              {moment.unix(timeStamp / 1000).format(MINT_STRING_FORMAT)}
             </Typography>
           </TooltipStyled>
         )

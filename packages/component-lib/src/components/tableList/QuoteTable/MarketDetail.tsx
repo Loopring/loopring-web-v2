@@ -69,7 +69,7 @@ export const MarketDetail = ({
   const { t } = useTranslation()
   const { coinJson, currency, upColor } = useSettings()
   // const [data, setData] = React.useState([])
-  const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
+  const [timeInterval, setTimeInterval] = React.useState(TradingInterval.d1)
   const [trend, setTrend] = React.useState<AmmHistoryItem[] | undefined>([])
   const handleTimeIntervalChange = React.useCallback(
     (timeInterval: TradingInterval) => {
@@ -90,7 +90,7 @@ export const MarketDetail = ({
 
   React.useEffect(() => {
     if (isShow && !isLoading) {
-      handleTimeIntervalChange(TradingInterval.hr1)
+      handleTimeIntervalChange(TradingInterval.d1)
     }
   }, [isShow, isLoading])
   return tokenInfo?.symbol ? (

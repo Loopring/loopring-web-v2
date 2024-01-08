@@ -121,36 +121,34 @@ export const useVaultMarket = <
             ...row,
             // symbol: row.symbol,
           },
-          trends: [
-            ...quoteTokenTrends?.map((item) => {
-              return item?.list?.map((trend) => {
-                const [
-                  timestamp,
-                  price,
-                  volume24H,
-                  volumeChange24H,
-                  percentChange1H,
-                  percentChange24H,
-                  percentChange7D,
-                  percentChange30D,
-                  marketCap,
-                ] = trend
-                return {
-                  close: price,
-                  timeStamp: timestamp,
-                  timestamp,
-                  price,
-                  volume24H,
-                  volumeChange24H,
-                  percentChange1H,
-                  percentChange24H,
-                  percentChange7D,
-                  percentChange30D,
-                  marketCap,
-                }
-              })
-            }),
-          ] as any,
+          trends: quoteTokenTrends?.map((item) => {
+            return item?.list?.map((trend) => {
+              const [
+                timestamp,
+                price,
+                volume24H,
+                volumeChange24H,
+                percentChange1H,
+                percentChange24H,
+                percentChange7D,
+                percentChange30D,
+                marketCap,
+              ] = trend
+              return {
+                close: price,
+                timeStamp: timestamp,
+                timestamp,
+                price,
+                volume24H,
+                volumeChange24H,
+                percentChange1H,
+                percentChange24H,
+                percentChange7D,
+                percentChange30D,
+                marketCap,
+              }
+            })
+          }) as any,
         },
       })
     } catch (e) {

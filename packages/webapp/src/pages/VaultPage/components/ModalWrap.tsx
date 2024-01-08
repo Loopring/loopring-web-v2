@@ -132,20 +132,19 @@ export const ModalVaultWrap = () => {
                       minValue: tradeCalcData.sellMinAmtStr,
                     }),
             }}
-            {...{
-              campaignTagConfig,
-              tradeCalcData,
-              tradeData: tradeData as any,
-              onSwapClick,
-              swapBtnI18nKey,
-              swapBtnStatus,
-              handleSwapPanelEvent,
-              should15sRefresh,
-              refreshRef,
-              tradeVault,
-              market,
-              isMobile,
-            }}
+            campaignTagConfig={campaignTagConfig}
+            tradeCalcData={tradeCalcData as any}
+            tradeData={tradeData as any}
+            onSwapClick={onSwapClick}
+            swapBtnI18nKey={swapBtnI18nKey}
+            swapBtnStatus={swapBtnStatus}
+            handleSwapPanelEvent={handleSwapPanelEvent}
+            should15sRefresh={should15sRefresh}
+            refreshRef={refreshRef}
+            tradeVault={tradeVault}
+            market={market}
+            isMobile={isMobile}
+            hideSecondConfirmation
           />
         }
       />
