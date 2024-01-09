@@ -186,7 +186,13 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
           )
           realAddr = await jsonPRCProvider
             .resolveName(address)
-            .then((addr) => (addr ? addr : ''))
+            .then((addr) => {
+              if (addr) {
+                return addr
+              } else {
+                throw 'no result'
+              }
+            })
             .catch((_e: any) => {
               addressErr = AddressError.InvalidAddr
               return ''
@@ -195,7 +201,13 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
           realAddr = provider
             ? await provider
                 .resolveName(address)
-                .then((addr) => (addr ? addr : ''))
+                .then((addr) => {
+                  if (addr) {
+                    return addr
+                  } else {
+                    throw 'no result'
+                  }
+                })
                 .catch((_e: any) => {
                   addressErr = AddressError.InvalidAddr
                   return ''
