@@ -65,6 +65,7 @@ export interface PanelProps {
   errorOptions?: any
   updateDepositHash?: any
   className?: string
+  legacyTitleStyle?: boolean
 
   [key: string]: any
 }
@@ -109,6 +110,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
     errorOptions,
     className,
     link,
+    legacyTitleStyle,
   }: PanelProps) => {
     const isLoading = iconType === IconType.LoadingIcon
 
@@ -197,7 +199,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
       return <></>
     }, [providerName])
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
-    const { defaultNetwork } = useSettings()
+    const { defaultNetwork, isMobile } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
     return (
@@ -210,31 +212,54 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
           marginTop={-4}
           justifyContent={'stretch'}
         >
-          <Typography
-            display={'flex'}
-            flexDirection={'row'}
-            component={'header'}
-            alignItems={'center'}
-            height={'var(--toolbar-row-height)'}
-            paddingX={3}
-          >
-            {typeof title !== 'string' ? (
-              title
-            ) : (
-              <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
-                {t(title, {
-                  layer2: L1L2_NAME_DEFINED[network].layer2,
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                  loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
-                })}
+          {legacyTitleStyle ? (
+            <Typography
+              textAlign={'center'}
+              width={'100%'}
+              marginTop={5}
+              component={'h3'}
+              variant={isMobile ? 'h4' : 'h3'}
+              whiteSpace={'pre'}
+            >
+              {t(title as string, {
+                layer2: L1L2_NAME_DEFINED[network].layer2,
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+              })}
+            </Typography>
+          ) : (
+            <>
+              <Typography
+                display={'flex'}
+                flexDirection={'row'}
+                component={'header'}
+                alignItems={'center'}
+                height={'var(--toolbar-row-height)'}
+                paddingX={3}
+              >
+                {typeof title !== 'string' ? (
+                  title
+                ) : (
+                  <Typography component={'span'} display={'inline-flex'} color={'textPrimary'}>
+                    {t(title, {
+                      layer2: L1L2_NAME_DEFINED[network].layer2,
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                      loopringLayer2: L1L2_NAME_DEFINED[network].loopringLayer2,
+                    })}
+                  </Typography>
+                )}
               </Typography>
-            )}
-          </Typography>
-          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+              <Divider style={{ marginTop: '-1px', width: '100%' }} />
+            </>
+          )}
         </Box>
         <BoxStyle
           flex={1}
@@ -624,7 +649,7 @@ export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
     title: 'labelSendRedPacketTitle',
   }
-  return <BasicPanel {...propsPatch} {...props} />
+  return <BasicPanel legacyTitleStyle  {...propsPatch} {...props} />
 }
 
 export const RedPacketOpenBase = (props: PanelProps) => {
