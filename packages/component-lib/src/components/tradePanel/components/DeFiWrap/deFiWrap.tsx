@@ -14,6 +14,7 @@ import {
   RecordTabIndex,
   ReverseIcon,
   RouterPath,
+  TokenType,
   TradeBtnStatus,
   UpColor,
 } from '@loopring-web/common-resources'
