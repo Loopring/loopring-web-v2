@@ -74,7 +74,7 @@ export function usePairInit({ ammInfo }: { ammInfo: AmmDetailStore<any> }) {
           poolAddress: ammInfo.address,
           pooled: [
             {
-              tokenId: tokenMap[ammInfo.coinA],
+              tokenId: tokenMap[ammInfo.coinA].tokenId,
               volume: ammInfo.tokens?.pooled[0] ?? 0,
             },
             {
