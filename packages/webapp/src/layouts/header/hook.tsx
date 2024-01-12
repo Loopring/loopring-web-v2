@@ -23,7 +23,7 @@ import {
   useNotificationFunc,
 } from '@loopring-web/core'
 
-import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
@@ -101,11 +101,14 @@ export const useHeader = () => {
     }
   }, [accountStatus, account?.readyState])
   const { notifyMap, myNotifyMap } = useNotify()
-  // const { onReadClick } = useNotificationFunc({})
-
+  const toggle = useToggle()
+  const showVault = toggle.toggle.VaultInvest.enable || toggle.toggle.isSupperUser
+  const headerMenuData = headerMenuDataMap[network].filter((menu) =>
+    showVault ? true : menu.label.id !== 'vault',
+  )
   return {
     headerToolBarData,
-    headerMenuData: headerMenuDataMap[network],
+    headerMenuData,
     headerMenuLandingData,
     account,
     notifyMap,
