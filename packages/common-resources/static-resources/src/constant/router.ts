@@ -933,6 +933,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
     RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
   ],
 }
 
@@ -1034,7 +1035,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.nft,
     RouterMainKey.invest,
-    // RouterMainKey.vault,
+    RouterMainKey.vault,
   ],
   GOERLI: [
     RouterMainKey.lite,
