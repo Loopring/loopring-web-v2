@@ -907,6 +907,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.SideStakingRecords,
     RecordTabIndex.BtradeSwapRecords,
     RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
   ],
   GOERLI: [
     RecordTabIndex.Transactions,
