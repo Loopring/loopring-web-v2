@@ -304,10 +304,19 @@ export const useAction = ({
           signature: '',
           network: networkName,
         }
+        const _selected = selected.signedRequest.wallet
+          ? selected
+          : {
+              ...selected,
+              signedRequest: {
+                ...selected.signedRequest,
+                wallet: selected.wallet,
+              },
+            }
         const response = await LoopringAPI.walletAPI.submitApproveSignature(
           {
             request: request,
-            guardian: { ...selected, type: sdk.HEBAO_META_TYPE[selected.type] as any },
+            guardian: { ..._selected, type: sdk.HEBAO_META_TYPE[_selected.type] as any },
             web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
