@@ -147,7 +147,7 @@ const TradeDes2 = (props: PanelProps) => {
             width={`calc(100% - ${9 * theme.unit}px)`}
             bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
             borderRadius={2}
-            color={'var(--color-text-button)'}
+            color={'var(--color-text-primary)'}
           >
             <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
             {props.t('labelVaultPendingDes')}
@@ -295,7 +295,7 @@ const JoinDes2 = (props: PanelProps) => {
             width={`calc(100% - ${9 * theme.unit}px)`}
             bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
             borderRadius={2}
-            color={'var(--color-text-button)'}
+            color={'var(--color-text-primary)'}
           >
             <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
             {props.t('labelVaultPendingDes')}
@@ -504,7 +504,7 @@ export const RedeemDes2 = (
           width={`calc(100% - ${9 * theme.unit}px)`}
           bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
           borderRadius={2}
-          color={'var(--color-text-button)'}
+          color={'var(--color-text-primary)'}
         >
           <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
           {props.t('labelVaultPendingDes')}
@@ -645,7 +645,7 @@ export const BorrowDes2 = (
             width={`calc(100% - ${9 * theme.unit}px)`}
             bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
             borderRadius={2}
-            color={'var(--color-text-button)'}
+            color={'var(--color-text-primary)'}
           >
             <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
             {props.t('labelVaultPendingDes')}
@@ -788,7 +788,7 @@ export const RepayDes2 = (
           width={`calc(100% - ${9 * theme.unit}px)`}
           bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
           borderRadius={2}
-          color={'var(--color-text-button)'}
+          color={'var(--color-text-primary)'}
         >
           <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
           {props.t('labelVaultPendingDes')}
