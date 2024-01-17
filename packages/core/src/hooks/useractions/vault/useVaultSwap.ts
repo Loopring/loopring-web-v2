@@ -351,7 +351,7 @@ export const useVaultSwap = <
     )
     const sellExceed = sellMaxAmtInfo
       ? sdk
-          .toBig(sellMaxAmtInfo)
+          .toBig(sellMaxAmtInfo.toString())
           .times('1e' + sellToken.decimals)
           .lt(tradeCalcData.volumeSell ?? 0)
       : false
