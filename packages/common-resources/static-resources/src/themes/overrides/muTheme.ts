@@ -155,7 +155,9 @@ export const getTheme = (themeMode: ThemeKeys, _isMobile = false): LoopringTheme
         color: colorBase.textSecondary,
       },
     },
-    // shadows:,
+    zIndex: {
+      tooltip: 2002,
+    },
     components: {
       MuiCard: MuiCard({ colorBase }),
       MuiCardContent: MuiCardContent(),
