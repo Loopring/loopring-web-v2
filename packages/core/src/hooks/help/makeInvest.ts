@@ -107,15 +107,9 @@ export const makeVault = (
     // tokenMap:erc20TokenMap
   } = store.getState().tokenMap
   if (vaultTokenMap && vaultMarkets && erc20IdIndex) {
-    let { tokensMap, coinMap, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
+    let { tokensMap, coinMap, idIndex, addressIndex } = sdk.makeMarket(vaultTokenMap as any)
     let erc20Array = [],
       erc20Map = {}
-    let idIndex: sdk.LoopringMap<string> = {}
-    if (vaultTokenMap instanceof Array) {
-      vaultTokenMap.forEach((item) => {
-        idIndex[item?.vaultTokenId] = item.symbol
-      })
-    }
 
     const reformat: VaultMarketExtends[] = vaultMarkets.reduce((prev, ele) => {
       if (/-/gi.test(ele.market) && ele.enabled) {
