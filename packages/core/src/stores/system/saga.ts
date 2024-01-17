@@ -144,9 +144,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       }),
     )
     store.dispatch(initAmmMap({ ammpools, chainId }))
-    try {
-      store.dispatch(updateVaultSyncMap(makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')))
-    } catch (e) {}
+    store.dispatch(updateVaultSyncMap(makeVault(_vaultTokenMap, _vaultMarkets, 'isFormLocal')))
     ;(function (btradeMarkets) {
       if (btradeMarkets) {
         const {
