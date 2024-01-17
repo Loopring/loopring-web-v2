@@ -19,6 +19,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
     },
     vaultLayer2: { __timer__ },
   } = store.getState()
+  console.log('vaultIdIndex', vaultIdIndex)
   // const { idIndex: vaultIdIndex } = store.getState().vaultMap
   let _activeInfo: any = undefined,
     vaultLayer2,
@@ -102,7 +103,6 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       throw error
     }
   }
-
   return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, __timer__ }
 }
 export function* getPostsSaga({

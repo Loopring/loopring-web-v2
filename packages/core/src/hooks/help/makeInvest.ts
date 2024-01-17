@@ -8,6 +8,7 @@ import { DepartmentRow, RowInvest } from '@loopring-web/component-lib'
 import { InvestTokenTypeMap, store, btradeReducer } from '../../stores'
 import { LoopringAPI } from '../../api_wrapper'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { uniq } from 'lodash'
 
 export const makeInvestRow = <R extends RowInvest>(
   investTokenTypeMap: InvestTokenTypeMap,
@@ -151,8 +152,19 @@ export const makeVault = (
       markets: marketMap,
       pairs,
       marketArr: marketArray,
-      tokenArr: marketCoins,
-    } = sdk.makeMarkets({ markets: reformat })
+      // tokenArr: marketCoins,
+    } = sdk.makeMarketsWithIdIndex({ 
+      markets: reformat, 
+    },undefined,
+    idIndex)
+    const marketCoins = uniq(
+      reformat.map(market => {
+        return [market.baseTokenId, market.quoteTokenId]
+      }).flat().map(id => idIndex[id])
+    ) 
+    
+    // marketCoins
+    // marketCoins = reformat.map
     let tokenMap: any = tokensMap
     const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
       const tradePairs = pairs[key as string]?.tokenList?.sort()

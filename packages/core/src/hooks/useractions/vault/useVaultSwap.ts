@@ -155,6 +155,7 @@ export const useVaultSwap = <
 
   const { status: vaultLayerStatus } = useVaultLayer2()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
+  
   const [tradeCalcData, setTradeCalcData] = React.useState<Partial<CAD>>({
     lockedNotification: true,
     isVault: true,
@@ -162,6 +163,8 @@ export const useVaultSwap = <
       return { ...prev, [item]: coinMap ? coinMap[item] : {} }
     }, {} as CoinMap<C>),
   } as any)
+  console.log('vault', 'tradeData', tradeData)
+  console.log('vault', 'tradeCalcData', tradeCalcData)
 
   /** redux storage **/
   const {
@@ -204,7 +207,7 @@ export const useVaultSwap = <
         if (!Object.keys(tradeCalcData?.walletMap ?? {}).length) {
           walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
         }
-        walletMap = tradeCalcData?.walletMap as WalletMap<any>
+        // walletMap = tradeCalcData?.walletMap as WalletMap<any>
       }
       const tradeDataTmp: any = {
         sell: {
@@ -735,6 +738,7 @@ export const useVaultSwap = <
   }, [tradeVault.depth, account.readyState, market])
 
   const vaultLayer2Callback = React.useCallback(async () => {
+    debugger
     if (account.readyState === AccountStatus.ACTIVATED) {
       refreshWhenDepthUp()
     } else {
@@ -1187,7 +1191,18 @@ export const useVaultSwap = <
   )
   const refreshWhenDepthUp = React.useCallback(() => {
     const { depth, lastStepAt, tradePair, market } = tradeVault
-
+    console.log('vault tradeCalcData refreshWhenDepthUp1', (depth && depth.symbol === market) ||
+    (tradeData &&
+      lastStepAt &&
+      tradeCalcData.coinSell === tradeData['sell'].belong &&
+      tradeCalcData.coinBuy === tradeData['buy'].belong &&
+      tradeData[lastStepAt].tradeValue &&
+      tradeData[lastStepAt].tradeValue !== 0))
+    console.log('vault tradeCalcData refreshWhenDepthUp2', depth &&
+    tradeCalcData.coinSell &&
+    tradeCalcData.coinBuy &&
+    (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
+      `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market))
     if (
       (depth && depth.symbol === market) ||
       (tradeData &&
