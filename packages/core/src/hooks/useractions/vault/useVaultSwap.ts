@@ -53,6 +53,7 @@ import {
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
+  VaultMapStates,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
@@ -723,7 +724,10 @@ export const useVaultSwap = <
       sellToken: _sellToken,
       buyToken: _buyToken,
     } = store.getState()._router_tradeVault.tradeVault
-    if (depth && new RegExp(market ?? '').test(depth?.symbol)) {
+    const {
+      marketMap
+    } = store.getState().invest.vaultMap as VaultMapStates
+    if (depth && market && marketMap[market].vaultMarket === depth?.symbol) {
       refreshWhenDepthUp()
       setIsMarketStatus((state) => {
         return {
@@ -1187,7 +1191,6 @@ export const useVaultSwap = <
   )
   const refreshWhenDepthUp = React.useCallback(() => {
     const { depth, lastStepAt, tradePair, market } = tradeVault
-
     if (
       (depth && depth.symbol === market) ||
       (tradeData &&
