@@ -152,7 +152,6 @@ export const makeVault = (
       markets: marketMap,
       pairs,
       marketArr: marketArray,
-      // tokenArr: marketCoins,
     } = sdk.makeMarketsWithIdIndex({ 
       markets: reformat, 
     },undefined,
@@ -162,9 +161,6 @@ export const makeVault = (
         return [market.baseTokenId, market.quoteTokenId]
       }).flat().map(id => idIndex[id])
     ) 
-    
-    // marketCoins
-    // marketCoins = reformat.map
     let tokenMap: any = tokensMap
     const tradeMap = Reflect.ownKeys(pairs ?? {}).reduce((prev, key) => {
       const tradePairs = pairs[key as string]?.tokenList?.sort()

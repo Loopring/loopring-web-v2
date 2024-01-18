@@ -53,6 +53,7 @@ import {
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
+  VaultMapStates,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
@@ -354,7 +355,7 @@ export const useVaultSwap = <
     )
     const sellExceed = sellMaxAmtInfo
       ? sdk
-          .toBig(sellMaxAmtInfo)
+          .toBig(sellMaxAmtInfo.toString())
           .times('1e' + sellToken.decimals)
           .lt(tradeCalcData.volumeSell ?? 0)
       : false
@@ -726,7 +727,10 @@ export const useVaultSwap = <
       sellToken: _sellToken,
       buyToken: _buyToken,
     } = store.getState()._router_tradeVault.tradeVault
-    if (depth && new RegExp(market ?? '').test(depth?.symbol)) {
+    const {
+      marketMap
+    } = store.getState().invest.vaultMap as VaultMapStates
+    if (depth && market && marketMap[market].vaultMarket === depth?.symbol) {
       refreshWhenDepthUp()
       setIsMarketStatus((state) => {
         return {
@@ -1191,18 +1195,6 @@ export const useVaultSwap = <
   )
   const refreshWhenDepthUp = React.useCallback(() => {
     const { depth, lastStepAt, tradePair, market } = tradeVault
-    console.log('vault tradeCalcData refreshWhenDepthUp1', (depth && depth.symbol === market) ||
-    (tradeData &&
-      lastStepAt &&
-      tradeCalcData.coinSell === tradeData['sell'].belong &&
-      tradeCalcData.coinBuy === tradeData['buy'].belong &&
-      tradeData[lastStepAt].tradeValue &&
-      tradeData[lastStepAt].tradeValue !== 0))
-    console.log('vault tradeCalcData refreshWhenDepthUp2', depth &&
-    tradeCalcData.coinSell &&
-    tradeCalcData.coinBuy &&
-    (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
-      `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market))
     if (
       (depth && depth.symbol === market) ||
       (tradeData &&
