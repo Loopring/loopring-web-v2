@@ -590,6 +590,7 @@ export const VaultJoinBase = (
     <BasicPanel
       className={'vaultJoin'}
       {...{ title: props.title ?? 'labelValueJoinTitle', ...props }}
+      legacyTitleStyle={false}
     />
   )
 }
@@ -600,6 +601,7 @@ export const VaultExitBase = (props: PanelProps & { showTitle: boolean }) => {
     <BasicPanel
       className={'vaultExit'}
       title={showTitle ? 'labelVaultExitTitle' : undefined}
+      legacyTitleStyle={false}
       {...props}
     />
   )
@@ -615,6 +617,7 @@ export const VaultBorrowBase = (
     <BasicPanel
       className={'vaultBorrow'}
       title={showTitle ? 'labelVaultBorrowTitle' : undefined}
+      legacyTitleStyle={false}
       {...props}
     />
   )
@@ -630,6 +633,7 @@ export const VaultRepayBase = (
     <BasicPanel
       className={'vaultRepay'}
       title={showTitle ? 'labelVaultRepayTitle' : undefined}
+      legacyTitleStyle={false}
       {...props}
     />
   )
@@ -641,6 +645,7 @@ export const VaultTradeBase = (props: PanelProps & { showTitle: boolean }) => {
     <BasicPanel
       className={'vaultTrade'}
       title={showTitle ? 'labelVaultTradeTitle' : undefined}
+      legacyTitleStyle={false}
       {...props}
     />
   )
