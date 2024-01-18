@@ -100,8 +100,8 @@ export const useHebaoMain = <
                   if (
                     layer1ActionHistory &&
                     layer1ActionHistory[defaultNetwork] &&
-                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock] &&
-                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock][
+                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][
                       props.address
                     ] &&
                     props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
@@ -111,7 +111,7 @@ export const useHebaoMain = <
                     clearOneItem({
                       chainId: defaultNetwork as sdk.ChainId,
                       uniqueId: props.address,
-                      domain: Layer1Action?.GuardianLock,
+                      domain: Layer1Action.GuardianLock,
                     })
                   }
 
