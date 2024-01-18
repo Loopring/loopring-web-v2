@@ -50,7 +50,6 @@ const getVaultMapApi = async () => {
               }),
             )
           }
-          // debugger
           return tokenListRaw.map(token => ({
             ...token,
             type: 'Vault'

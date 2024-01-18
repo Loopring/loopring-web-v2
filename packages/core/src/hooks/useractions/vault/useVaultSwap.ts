@@ -742,7 +742,6 @@ export const useVaultSwap = <
   }, [tradeVault.depth, account.readyState, market])
 
   const vaultLayer2Callback = React.useCallback(async () => {
-    debugger
     if (account.readyState === AccountStatus.ACTIVATED) {
       refreshWhenDepthUp()
     } else {
