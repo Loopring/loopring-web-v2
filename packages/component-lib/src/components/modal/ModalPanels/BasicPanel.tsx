@@ -110,7 +110,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
     errorOptions,
     className,
     link,
-    legacyTitleStyle,
+    legacyTitleStyle = true,
   }: PanelProps) => {
     const isLoading = iconType === IconType.LoadingIcon
 
@@ -649,7 +649,7 @@ export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
     title: 'labelSendRedPacketTitle',
   }
-  return <BasicPanel legacyTitleStyle  {...propsPatch} {...props} />
+  return <BasicPanel {...propsPatch} {...props} />
 }
 
 export const RedPacketOpenBase = (props: PanelProps) => {

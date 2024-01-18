@@ -174,8 +174,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
-    toggle: { BTradeInvest, StopLimit },
+    toggle: { BTradeInvest, StopLimit, VaultInvest, isSupperUser },
   } = useToggle()
+  const vaultEnabled = VaultInvest.enable || isSupperUser
 
   React.useEffect(() => {
     if (searchParams.has('theme')) {
@@ -332,7 +333,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
             {state === 'PENDING' && tickerMap ? (
               <LoadingBlock />
-            ) : RouterAllowIndex[network]?.includes(RouterMainKey.vault) ? (
+            ) : vaultEnabled && RouterAllowIndex[network]?.includes(RouterMainKey.vault) ? (
               <VaultPage />
             ) : (
               <ErrorPage {...ErrorMap.TRADE_404} />
