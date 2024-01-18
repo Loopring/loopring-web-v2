@@ -53,6 +53,7 @@ import {
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
+  VaultMapStates,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
@@ -155,6 +156,7 @@ export const useVaultSwap = <
 
   const { status: vaultLayerStatus } = useVaultLayer2()
   const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
+  
   const [tradeCalcData, setTradeCalcData] = React.useState<Partial<CAD>>({
     lockedNotification: true,
     isVault: true,
@@ -162,6 +164,8 @@ export const useVaultSwap = <
       return { ...prev, [item]: coinMap ? coinMap[item] : {} }
     }, {} as CoinMap<C>),
   } as any)
+  console.log('vault', 'tradeData', tradeData)
+  console.log('vault', 'tradeCalcData', tradeCalcData)
 
   /** redux storage **/
   const {
@@ -204,7 +208,7 @@ export const useVaultSwap = <
         if (!Object.keys(tradeCalcData?.walletMap ?? {}).length) {
           walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map
         }
-        walletMap = tradeCalcData?.walletMap as WalletMap<any>
+        // walletMap = tradeCalcData?.walletMap as WalletMap<any>
       }
       const tradeDataTmp: any = {
         sell: {
@@ -351,7 +355,7 @@ export const useVaultSwap = <
     )
     const sellExceed = sellMaxAmtInfo
       ? sdk
-          .toBig(sellMaxAmtInfo)
+          .toBig(sellMaxAmtInfo.toString())
           .times('1e' + sellToken.decimals)
           .lt(tradeCalcData.volumeSell ?? 0)
       : false
@@ -723,7 +727,10 @@ export const useVaultSwap = <
       sellToken: _sellToken,
       buyToken: _buyToken,
     } = store.getState()._router_tradeVault.tradeVault
-    if (depth && new RegExp(market ?? '').test(depth?.symbol)) {
+    const {
+      marketMap
+    } = store.getState().invest.vaultMap as VaultMapStates
+    if (depth && market && marketMap[market].vaultMarket === depth?.symbol) {
       refreshWhenDepthUp()
       setIsMarketStatus((state) => {
         return {
@@ -735,6 +742,7 @@ export const useVaultSwap = <
   }, [tradeVault.depth, account.readyState, market])
 
   const vaultLayer2Callback = React.useCallback(async () => {
+    debugger
     if (account.readyState === AccountStatus.ACTIVATED) {
       refreshWhenDepthUp()
     } else {
@@ -1187,7 +1195,6 @@ export const useVaultSwap = <
   )
   const refreshWhenDepthUp = React.useCallback(() => {
     const { depth, lastStepAt, tradePair, market } = tradeVault
-
     if (
       (depth && depth.symbol === market) ||
       (tradeData &&

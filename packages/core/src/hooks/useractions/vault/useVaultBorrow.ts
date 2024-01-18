@@ -83,7 +83,7 @@ export const useVaultBorrow = <
           BigNumber.min(
             // totalQuote, // Infinite
             tradeData.count,
-          ),
+          ).toString(),
         )
         .toFixed(borrowToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
       const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
@@ -99,7 +99,7 @@ export const useVaultBorrow = <
         ),
         minBorrowAmount: minBorrowAmt?.toString(),
         minBorrowStr: getValuePrecisionThousand(
-          minBorrowAmt ?? 0,
+          minBorrowAmt?.toString() ?? 0,
           borrowToken.precision,
           borrowToken.precision,
           undefined,

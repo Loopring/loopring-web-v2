@@ -50,7 +50,12 @@ const getVaultMapApi = async () => {
               }),
             )
           }
-          return tokenListRaw
+          // debugger
+          return tokenListRaw.map(token => ({
+            ...token,
+            type: 'Vault'
+          }))
+          
         }
       }),
       LoopringAPI.vaultAPI.getVaultMarkets().then((response) => {
