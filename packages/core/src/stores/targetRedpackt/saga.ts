@@ -15,6 +15,7 @@ const getExclusiveRedPacketAPI = async (): Promise<{
       clearInterval(getExclusiveRedPacketAPIInterval)
     }
     getExclusiveRedPacketAPIInterval = setInterval(() => {
+      console.log('getExclusiveRedpacket4')
       store.dispatch(getExclusiveRedpacket({}))
     }, 1000 * 60 * 5)
 
