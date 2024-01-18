@@ -123,7 +123,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
             updateWalletL2Collection({ page: 1 })
           }
           sendSocketTopic({})
-          console.log('getExclusiveRedpacket1')
           getExclusiveRedpacket()
           updateLegacyContracts()
           updateContacts()

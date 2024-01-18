@@ -91,7 +91,6 @@ export function useOpenRedpacket() {
             },
           })
         }
-        console.log('getExclusiveRedpacket2')
         getExclusiveRedpacket()
       } catch (error: any) {
         if (error?.code === UIERROR_CODE.ERROR_REDPACKET_CLAIMED) {

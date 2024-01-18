@@ -317,7 +317,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       store.dispatch(getStakingMap(undefined))
       store.dispatch(getBtradeMap(undefined))
       store.dispatch(getVaultMap(undefined))
-      console.log('getExclusiveRedpacket3')
       store.dispatch(getExclusiveRedpacket(undefined))
       defiAllAsync()
       yield take('vaultMap/getVaultMapStatus')
