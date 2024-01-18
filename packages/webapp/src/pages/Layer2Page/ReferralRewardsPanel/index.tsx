@@ -1,9 +1,18 @@
 import styled from '@emotion/styled'
-import { Box, Container, Grid, InputAdornment, Link, Tab, Tabs, Typography } from '@mui/material'
+import {
+  Box,
+  BoxProps,
+  Container,
+  Grid,
+  InputAdornment,
+  Link,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useAccount, useIPFS, useSubmitBtn, useToast } from '@loopring-web/core'
-
+import { useAccount, useSubmitBtn, useToast } from '@loopring-web/core'
 import {
   AccountStatus,
   AssetTabIndex,
@@ -12,12 +21,11 @@ import {
   Exchange,
   ExchangeIO,
   L1L2_NAME_DEFINED,
+  Layer2RouterID,
   LinkSharedIcon,
   MapChainId,
   myLog,
   ProfileIndex,
-  Layer2RouterID,
-  RouterPath,
   SoursURL,
   TOAST_TIME,
   TradeBtnStatus,
@@ -26,15 +34,12 @@ import {
 } from '@loopring-web/common-resources'
 import {
   Button,
-  CarouselItem,
   ReferralsTable,
   RefundTable,
-  ShareModal,
   Toast,
   ToastType,
   useSettings,
   OutlinedInput,
-  BoxBannerStyle,
 } from '@loopring-web/component-lib'
 import { useReferralsTable, useRefundTable } from './hook'
 import { useHistory } from 'react-router-dom'
@@ -54,6 +59,43 @@ const BoxStyled = styled(Box)`
     }
   }
 `
+export const BoxBannerStyle = styled(Box)<
+  BoxProps & { backGroundUrl?: string | number; direction?: 'left' | 'right' }
+>`
+  background-color: var(--color-box);
+
+  .bg:after {
+    display: block;
+    content: '';
+    float: ${({ direction }) => direction};
+    width: 35%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-image: url('${({ backGroundUrl }) => backGroundUrl}');
+  }
+
+  &.mobile .bg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &:after {
+      opacity: 0.08;
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  }
+` as (
+  props: BoxProps & {
+    backGroundUrl?: string | number
+    direction?: 'left' | 'right'
+  },
+) => JSX.Element
 
 enum ReferStep {
   method1 = 0,
@@ -82,9 +124,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
   const { t } = useTranslation(['common', 'layout'])
   const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const [open, setOpen] = React.useState(false)
-  const [images, setImages] = React.useState<CarouselItem[]>([])
-  const [loading, setLoading] = React.useState(true)
   const [imageList, setImageList] = React.useState<R>({
     // @ts-ignore
     referralBanners: {
@@ -95,33 +134,15 @@ const ReferHeader = <R extends ImageReferralBanner>({
       code: { default: [48, 30, 230, 64, '#000000', 630, 880] },
     },
   })
-  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
-    availableTradeCheck: () => {
-      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
-    },
-    isLoading: loading,
-    submitCallback: async () => {
-      setOpen(true)
-      // Carousel
-      // onDownloadImage();
-    },
-  })
   // const [images, setImages] = React.useState<JSX.Element[]>([]);
   React.useEffect(() => {
     fetch(`${url_path}/referral/information.json`)
       .then((response) => response.json())
       .then((result) => {
         if (result.referralBanners) {
-          try {
-            setImageList(result)
-            renderImage(result)
-          } catch (error) {
-            setLoading(false)
-          }
+          setImageList(result)
+          renderImage(result)
         }
-      })
-      .catch(() => {
-        setLoading(false)
       })
   }, [])
   const renderImage = React.useCallback(
@@ -172,17 +193,25 @@ const ReferHeader = <R extends ImageReferralBanner>({
           context.fillText(labelCode, lebelCodeX, lebelCodeY)
 
           // myLog('imageUrl createObjectURL', canvas.toDataURL())
-          images.push({
-            imageUrl: canvas.toDataURL(),
-            size: [width / 2, height / 2],
-            name: (item ?? '/').split('/')?.pop(),
-          })
+          images.push({ imageUrl: canvas.toDataURL(), size: [width / 2, height / 2] })
           if (index + 1 == imageList?.referralBanners?.en?.length) {
             myLog('imageList', images)
+
+            // setImages(images)
           }
+          // canvas.toBlob((blob) => {
+          // const a = document.createElement('a')
+          // // @ts-ignore
+          // a.download = (item ?? '/').split('/')?.pop()
+          // a.style.display = 'none'
+          // // @ts-ignore
+          // a.href = URL.createObjectURL(blob)
+          // document.body.appendChild(a)
+          // a.click()
+          // document.body.removeChild(a)
+          // }, 'image/png')
         }
       })
-      setLoading(false)
     },
     [imageList, account],
   )
@@ -244,10 +273,14 @@ const ReferHeader = <R extends ImageReferralBanner>({
       }
     })
   }
-
-  const { ipfsProvides } = useIPFS({
-    handleSuccessUpload: () => undefined,
-    handleFailedUpload: () => undefined,
+  const { btnStatus, onBtnClick, btnLabel } = useSubmitBtn({
+    availableTradeCheck: () => {
+      return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
+    },
+    isLoading: false,
+    submitCallback: async () => {
+      onDownloadImage()
+    },
   })
 
   const label = React.useMemo(() => {
@@ -294,16 +327,6 @@ const ReferHeader = <R extends ImageReferralBanner>({
       direction={'right'}
     >
       <Container>
-        <ShareModal
-          onClick={() => onDownloadImage()}
-          open={open}
-          message={t('labelShareMessage', { code: account?.accountId })}
-          loading={btnStatus === TradeBtnStatus.LOADING}
-          onClose={() => setOpen(false)}
-          imageList={images}
-          ipfsProvides={ipfsProvides}
-          link={ExchangeIO + `?referralcode=${account?.accountId}`}
-        />
         <Box className={'bg'} marginY={3} display={'flex'}>
           <Box width={isMobile ? '100%' : '65%'}>
             <Typography
@@ -353,6 +376,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
                     value={account.accountId}
                     disabled={true}
                     fullWidth={true}
+                    // onChange={(event: any) => {}}
                     startAdornment={
                       <InputAdornment position='start'>
                         <Typography
@@ -366,6 +390,7 @@ const ReferHeader = <R extends ImageReferralBanner>({
                         >
                           #
                         </Typography>
+                        {/*<LinkIcon color={"inherit"} />*/}
                       </InputAdornment>
                     }
                     endAdornment={
@@ -390,9 +415,14 @@ const ReferHeader = <R extends ImageReferralBanner>({
               >
                 {label}
               </Button>
-
+              {/*{image.map((item, index) => (*/}
+              {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
+              {/*))}*/}
               <Box sx={{ display: 'block' }} height={0} width={0} overflow={'hidden'}>
                 <canvas className={'canvas'} />
+                {/*{images.map((item, index) => (*/}
+                {/*  <React.Fragment key={index}>{item}</React.Fragment>*/}
+                {/*))}*/}
               </Box>
             </Box>
           </Box>
@@ -614,9 +644,7 @@ const ReferView = () => {
                               size={'small'}
                               sx={{ marginLeft: 2 }}
                               onClick={() => {
-                                history.push(
-                                  `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
-                                )
+                                history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
                               }}
                             >
                               {t('labelClaimBtn')}
@@ -740,7 +768,7 @@ const ReferView = () => {
                             size={'small'}
                             sx={{ marginLeft: 2 }}
                             onClick={() => {
-                              history.push(`${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`)
+                              history.push(`/l2assets/assets/${AssetTabIndex.Rewards}`)
                             }}
                           >
                             {t('labelClaimBtn')}
