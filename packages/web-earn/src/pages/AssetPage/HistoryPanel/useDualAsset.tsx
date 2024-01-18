@@ -390,7 +390,7 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
     onEditDualClick,
   } = useDualEdit({
     refresh: (item, dontCloseModal?: boolean) => {
-      refresh(item as any)
+      refresh((item as any).hash)
       !dontCloseModal && setOpen(false)
     },
   })
