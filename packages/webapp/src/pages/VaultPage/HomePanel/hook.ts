@@ -7,7 +7,7 @@ import {
   RowConfigType,
   SagaStatus,
   TickerNew,
-  VAULT_MAKET_REFRESH,
+  VAULT_MARKET_REFRESH,
   VaultKey,
 } from '@loopring-web/common-resources'
 import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring-web/core'
@@ -176,7 +176,7 @@ export const useVaultMarket = <
     }
     autoRefresh.current = setTimeout(() => {
       autoReCalc()
-    }, VAULT_MAKET_REFRESH)
+    }, VAULT_MARKET_REFRESH)
   }, [])
   React.useEffect(() => {
     autoReCalc()
