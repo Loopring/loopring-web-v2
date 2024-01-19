@@ -991,6 +991,8 @@ export function useRedPacketModal() {
         showReceiptListBtn:
           account.accountId === detail.luckyToken.sender.accountId &&
           detail.luckyToken.type.scope === sdk.LuckyTokenViewType.TARGET,
+        showShareBtn: false,
+        ended: false
       } as RedPacketDetailProps
     } else {
       return undefined
@@ -1125,7 +1127,8 @@ export function useRedPacketModal() {
             showMultiplier: detail.luckyToken.isNft,
             showLuckiest:
               detail.luckyToken.tokenAmount.remainAmount == '0' &&
-              detail.champion?.accountId === claim.claimer.accountId,
+              detail.champion?.accountId === claim.claimer.accountId &&
+              detail.champion?.amount === claim.amount,
           }
         }),
         // to change

@@ -91,7 +91,9 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   } = useContacts()
   const { updateWalletLayer2 } = useWalletLayer2()
 
-  const { nftTransferValue, updateNFTWithdrawData, updateNFTTransferData } = useModalData()
+  const { nftTransferValue, updateNFTWithdrawData, updateNFTTransferData } =
+    useModalData()
+
 
   const history = useHistory()
   const { search, pathname } = useLocation()

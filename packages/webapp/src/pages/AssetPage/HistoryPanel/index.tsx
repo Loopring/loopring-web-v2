@@ -20,6 +20,8 @@ import {
   useToggle,
   DualDes,
   ButtonStyle,
+  VaultTxTable,
+  VaultCloseDetail,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,
@@ -40,6 +42,7 @@ import {
   useGetTrades,
   useGetTxs,
   useOrderList,
+  useVaultTransaction,
 } from './hooks'
 import {
   BackIcon,
@@ -58,6 +61,7 @@ import {
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { useDualAsset } from './useDualAsset'
 import * as sdk from '@loopring-web/loopring-sdk'
+export const l2assetsRouter = `${RouterPath.l2records}/:tab/:orderTab?`
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -67,7 +71,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const {
     toggle: { StopLimit },
   } = useToggle()
-  const match: any = useRouteMatch('/l2assets/:history/:tab/:orderTab?')
+  const match: any = useRouteMatch(l2assetsRouter)
   const [pageSize, setPageSize] = React.useState(0)
   const [currentTab, setCurrentTab] = React.useState<RecordTabIndex>(() => {
     let item = match?.params?.tab ?? RecordTabIndex.Transactions
@@ -80,6 +84,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { totalCoinMap, tokenMap, idIndex, marketArray } = useTokenMap()
   const { ammMap } = useAmmMap()
+  const { etherscanBaseUrl } = useSystem()
 
   const {
     txs: txTableData,
@@ -148,7 +153,16 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   } = useGetLeverageETHRecord(setToastOpen)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
-  const { etherscanBaseUrl } = useSystem()
+  const {
+    getVaultOrderList,
+    vaultOrderData,
+    totalNum: vaultTotal,
+    showLoading: showVaultLoaning,
+    onItemClick: onVaultDetail,
+    vaultCloseDetail,
+    openVaultDetail,
+    onVaultDetailClose,
+  } = useVaultTransaction(setToastOpen)
   const {
     getBtradeOrderList,
     btradeOrderData,
@@ -167,7 +181,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const handleTabChange = React.useCallback(
     (value: RecordTabIndex, _pageSize?: number) => {
       setCurrentTab(value)
-      history.replace(`/l2assets/history/${value}?${search.replace('?', '')}`)
+      history.replace(`${RouterPath.l2records}/${value}?${search.replace('?', '')}`)
     },
     [history, search],
   )
@@ -557,6 +571,72 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               tokenMap={tokenMap}
               idIndex={idIndex}
             />
+          ) : currentTab === RecordTabIndex.VaultRecords ? (
+            <>
+              <Modal
+                open={openVaultDetail}
+                onClose={onVaultDetailClose}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+              >
+                <SwitchPanelStyled width={'var(--modal-width)'}>
+                  <ModalCloseButton onClose={onVaultDetailClose} t={t} />
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'flex-start'}
+                    alignSelf={'stretch'}
+                    marginTop={-4}
+                    justifyContent={'stretch'}
+                  >
+                    <Typography
+                      display={'flex'}
+                      flexDirection={'row'}
+                      component={'header'}
+                      alignItems={'center'}
+                      height={'var(--toolbar-row-height)'}
+                      paddingX={3}
+                    >
+                      <Typography component={'span'} display={'inline-flex'}>
+                        {t('labelCloseOutDetail')}
+                      </Typography>
+                    </Typography>
+                    <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                  </Box>
+                  <Box
+                    flex={1}
+                    paddingY={2}
+                    width={'100%'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    sx={
+                      isMobile
+                        ? {
+                            maxHeight: 'initial',
+                            overflowY: 'initial',
+                          }
+                        : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                    }
+                  >
+                    {vaultCloseDetail && <VaultCloseDetail vaultCloseDetail={vaultCloseDetail} />}
+                  </Box>
+                </SwitchPanelStyled>
+              </Modal>
+              <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
+                <VaultTxTable
+                  {...{
+                    showloading: showVaultLoaning,
+                    getOrderList: getVaultOrderList,
+                    rawData: vaultOrderData,
+                    onItemClick: onVaultDetail,
+                  }}
+                  pagination={{
+                    pageSize: pageSize,
+                    total: vaultTotal,
+                  }}
+                />
+              </Box>
+            </>
           ) : (
             <></>
           )}

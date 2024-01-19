@@ -228,9 +228,11 @@ export const banxaService = {
   banxaEnd: ({ reason, data }: { reason: OrderENDReason; data: any }) => {
     store.dispatch(resetTransferBanxaData(undefined))
     const parentsNode: any = window.document.querySelector('#iframeBanxaTarget')
+    parentsNode.style = 'display: none'
     const items = parentsNode?.getElementsByTagName('iframe')
-    if (items && items[0]) {
-      ;[].slice.call(items).forEach((item) => parentsNode.removeChild(item))
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
+      item && item.parentNode.removeChild(item)
     }
     subject.next({
       status: BanxaCheck.OrderEnd,

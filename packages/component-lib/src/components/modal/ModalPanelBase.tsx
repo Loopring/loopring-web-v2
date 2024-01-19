@@ -58,7 +58,6 @@ export const InProgressBasic = ({
         flexDirection={'column'}
         marginBottom={2}
       >
-        {/*<LoadingIcon color={'primary'} style={{width: 72, height: 72}}/>*/}
         <img
           className='loading-gif'
           alt={'loading'}

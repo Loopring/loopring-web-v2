@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react'
 
 import { Box, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
@@ -14,7 +14,6 @@ export const Tags: Story<ButtonProps> = withTranslation()(({}: WithTranslation &
   return (
     <>
       <Styled>
-        {/*<MemoryRouter initialEntries={['/']}>*/}
         <h4>Tags</h4>
         <Box>
           <Grid
@@ -30,7 +29,6 @@ export const Tags: Story<ButtonProps> = withTranslation()(({}: WithTranslation &
           </Grid>
         </Box>
       </Styled>
-      {/*</MemoryRouter>*/}
     </>
   )
 }) as Story<ButtonProps>

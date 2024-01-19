@@ -61,7 +61,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
     } else if (match?.params?.item === 'addLegacyCollection') {
       history.push(`${RouterPath.nft}/${NFTSubRouter.importLegacyCollection}/${match?.params?.id}`)
     }
-  }, [account.readyState, accountStatus, history, match.params.id, match.params.item])
+  }, [account.readyState, accountStatus, history, match?.params?.id, match?.params?.item])
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&

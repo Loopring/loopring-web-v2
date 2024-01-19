@@ -102,7 +102,7 @@ export const WalletValidationInfo = ({
                       i18nKey={'labelWalletSignType'}
                       tOptions={{ type: t('labelTxGuardian_' + guardian.type) }}
                     >
-                      Request for {guardian.type?.replace('_', ' ').toUpperCase() ?? 'Unknown'}
+                      Request for {guardian?.type?.replace('_', ' ').toUpperCase() ?? 'Unknown'}
                     </Trans>
                   </Typography>
                   <Typography variant={'body1'}>

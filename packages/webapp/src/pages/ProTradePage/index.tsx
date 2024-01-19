@@ -14,6 +14,7 @@ import {
   layoutConfigs,
   myLog,
   ResizeIcon,
+  RouterPath,
   RowConfig,
   SoursURL,
 } from '@loopring-web/common-resources'
@@ -120,7 +121,6 @@ export const OrderbookPage = withTranslation('common')(<Config extends LayoutCon
             alignItems={'center'}
             justifyContent={'center'}
           >
-            {/*<LoadingIcon />*/}
             <img
               className='loading-gif'
               alt={'loading'}
@@ -207,7 +207,7 @@ export const OrderbookPage = withTranslation('common')(<Config extends LayoutCon
     (currentLayout: Layout[], allLayouts?: Layouts, defaultlayouts?: Layouts) => {
       if (defaultlayouts) {
         setLayouts(defaultlayouts)
-        history.push('/loading')
+        history.push(RouterPath.loading)
         setTimeout(() => {
           history.go(-1)
         }, 0)
@@ -274,7 +274,13 @@ export const OrderbookPage = withTranslation('common')(<Config extends LayoutCon
     ),
   }
   return (
-    <Box bgcolor={'var(--color-box-third)'} display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
+    <Box
+      bgcolor={'var(--color-box-third)'}
+      display={'block'}
+      margin={'0 auto'}
+      width={'100%'}
+      position={'relative'}
+    >
       {market ? (
         <ResponsiveGridLayout
           className='layout'
@@ -347,7 +353,6 @@ export const OrderbookPage = withTranslation('common')(<Config extends LayoutCon
           alignItems={'center'}
           justifyContent={'center'}
         >
-          {/*<LoadingIcon />*/}
           <img
             className='loading-gif'
             alt={'loading'}

@@ -33,17 +33,11 @@ const ContentWrapperStyled = styled(Box)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: ${({ theme }) => theme.unit * 37.5}px;
-  // min-width: ${({ theme }) => theme.unit * 87.5}px;
-  // height: 60%;
   max-height: ${({ theme }) => theme.unit * 30}px;
   background-color: var(--color-box);
   box-shadow: 0 ${({ theme }) => theme.unit / 2}px ${({ theme }) => theme.unit / 2}px
     rgba(0, 0, 0, 0.25);
-  // padding: 0 ${({ theme }) => theme.unit * 1}px;
   border-radius: ${({ theme }) => theme.unit / 2}px;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
 `
 
 type ClickHandler = {

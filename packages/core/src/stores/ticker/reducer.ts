@@ -15,7 +15,7 @@ const tickerMapSlice: Slice = createSlice({
   reducers: {
     resetTicker(state) {
       if (state.__timer__ !== -1) {
-        clearInterval(state.__timer__)
+        clearTimeout(state.__timer__)
         state.__timer__ = -1
       }
       state.tickerMap = {}

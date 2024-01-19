@@ -19,7 +19,7 @@ import {
   TradeCalcProData,
   TradeProType,
 } from '@loopring-web/common-resources'
-import { Box, Icon, Tab, Tooltip, Typography } from '@mui/material'
+import { Box, Icon, Tab, Tooltip } from '@mui/material'
 import { TabsStyle } from '../components/Styled'
 import { useCommon } from './hookCommon'
 import { Button } from './../../index'
@@ -45,12 +45,11 @@ const BoxStyle = styled(Box)`
       z-index: 2;
     }
   }
-  .limit-price{
+  .limit-price {
     .MuiGrid-grid-xs-3 {
       z-index: 2;
     }
   }
-
 ` as typeof Box
 export const StopLimitTrade = withTranslation('common', { withRef: true })(
   <

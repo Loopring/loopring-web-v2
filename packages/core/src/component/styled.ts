@@ -10,14 +10,11 @@ export const StylePaper = styled(Box)`
   flex: 1;
   background: var(--color-box-third);
   border-radius: ${({ theme }) => theme.unit}px;
-  // padding: ${({ theme }) => 3 * theme.unit}px  0;
   margin-bottom: ${({ theme }) => 2 * theme.unit}px;
   .title {
     font-size: ${({ theme }) => theme.unit * 3}px;
-    //line-height: 19px;
     margin-left: ${({ theme }) => 3 * theme.unit}px;
     margin-top: ${({ theme }) => 3 * theme.unit}px;
-    // margin-bottom: ${({ theme }) => 2 * theme.unit}px;
   }
 
   .tableWrapper {
@@ -84,15 +81,8 @@ export const TableProWrapStyled = styled(Box)`
       .rdg-header-row {
         border-radius: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit}px 0 0;
         background: var(--color-pop-bg) !important;
-
-        // .rdg-cell:last-of-type {
-        //   padding-right: 0;
-        // }
       }
     }
-    // .rdg-row .rdg-cell:last-of-type {
-    //   padding-right: 0 !important;
-    // }
   }
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })};
   &.fixed {

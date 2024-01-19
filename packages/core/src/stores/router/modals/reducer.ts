@@ -21,6 +21,7 @@ import {
   RedPacketOrderType,
   TRADE_TYPE,
   TradeNFT,
+  // VaultJoinData,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../../api_wrapper'
@@ -110,6 +111,13 @@ const initialClaimState: ClaimData = {
   __request__: undefined,
 } as any
 
+// const initialJoinVault: VaultJoinData = {
+//   belong: undefined as any,
+//   tradeValue: 0,
+//   balance: 0,
+//   __request__: undefined,
+// } as any
+
 const initialDepositState: DepositData = {
   belong: undefined,
   tradeValue: 0,
@@ -167,6 +175,7 @@ const initialState: ModalDataStatus = {
   forceWithdrawValue: { ...initialForceWithdrawState },
   redPacketOrder: { ...initialRedPacketState },
   claimValue: { ...initialClaimState },
+  // joinVault: { ...initialJoinVault },
 }
 
 const modalDataSlice: Slice<ModalDataStatus> = createSlice({
@@ -294,7 +303,6 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       }>,
     ) {
       state.lastStep = LAST_STEP.default
-      _action?.payload.type
       state.redPacketOrder = {
         ...(_action?.payload?.type === RedPacketOrderType.NFT
           ? initialRedPacketNFTState
@@ -307,6 +315,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default
       state.claimValue = { ...initialClaimState }
     },
+    // resetJoinVault(state) {
+    //   state.lastStep = LAST_STEP.default
+    //   state.joinVault = { ...initialJoinVault }
+    // },
     updateActiveAccountData(state, action: PayloadAction<Partial<ActiveAccountData>>) {
       const { chargeFeeList, walletLayer2, isFeeNotEnough, referral, ...rest } = action.payload
       state.lastStep = LAST_STEP.default
@@ -598,10 +610,6 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         target,
         ...rest,
       } as RedPacketOrderData<any>
-      // state.redPacketOrder = {
-      //   ...state.redPacketOrder,
-      //   ...rest,
-      // };
     },
     updateClaimData(state, action: PayloadAction<ClaimData>) {
       state.lastStep = LAST_STEP.claim
@@ -614,12 +622,30 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       } as ClaimData
     },
+
+    // updateJoinVault(state, action: PayloadAction<VaultJoinData>) {
+    //   state.lastStep = LAST_STEP.claim
+    //   const { balance, tradeValue, belong, ...rest } = action.payload
+    //   state.joinVault = {
+    //     ...state.joinVault,
+    //     balance: balance === undefined || balance >= 0 ? balance : state.redPacketOrder.balance,
+    //     belong,
+    //     tradeValue,
+    //     ...rest,
+    //   } as VaultJoinData
+    // },
   },
 })
 
 export { modalDataSlice }
 
 export const {
+  // joinVault,
+  // updateJoinVault,
+  // resetJoinVault,
+  // exitVault,
+  // updateExitVault,
+  // reseExitVault,
   updateForceWithdrawData,
   updateActiveAccountData,
   updateWithdrawData,

@@ -132,7 +132,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                   dualType,
                   // investmentStatus,
                   settlementStatus,
-                  dualReinvestInfo
+                  dualReinvestInfo,
                 },
               },
             } = row
@@ -152,7 +152,6 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
               >
                 <Typography component={'span'} display={'inline-flex'}>
-                  {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={TokenType.dual}
                     size={24}
@@ -370,12 +369,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const {
               __raw__: {
-                order: {
-                  dualType,
-                  investmentStatus,
-                  settlementStatus,
-                  dualReinvestInfo
-                },
+                order: { dualType, investmentStatus, settlementStatus, dualReinvestInfo },
               },
             } = row
             // const inAuto = investmentStatus === sdk.LABEL_INVESTMENT_STATUS.PROCESSING
@@ -392,14 +386,12 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
               >
                 <Typography component={'span'} display={'inline-flex'}>
-                  {/* eslint-disable-next-line react/jsx-no-undef */}
                   <CoinIcons
                     type={TokenType.dual}
                     size={24}
                     tokenIcon={[coinJson[row.sellSymbol], coinJson[row.buySymbol]]}
                   />
                 </Typography>
-                {/*{inAuto && <ClockIcon color={'primary'} />}*/}
                 {showClock && (
                   <Tooltip title={t('labelDualRetryStatusRetrying').toString()}>
                     <ClockIcon sx={{ marginLeft: 1 }} color={'warning'} />
@@ -563,7 +555,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       <TableWrapperStyled isMobile={isMobile}>
         <TableStyled
           currentheight={
-            rawData.length ? rowConfig.rowHeaderHeight! + rawData.length * rowConfig.rowHeight! : 350
+            rawData.length
+              ? rowConfig.rowHeaderHeight! + rawData.length * rowConfig.rowHeight!
+              : 350
           }
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}

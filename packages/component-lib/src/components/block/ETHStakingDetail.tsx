@@ -10,8 +10,9 @@ import {
 import moment from 'moment'
 import TrendAprChart from '../charts/scaleAreaChart/APRChart'
 import { useSettings } from '../../stores'
+import React, { useEffect } from 'react'
 
-export const ETHStakingDetail = ({ symbol, trends, defiInfo }: any) => {
+export const ETHStakingDetail = ({ symbol, trends, defiInfo: _defiInfo }: any) => {
   myLog('trends', trends)
   const [, baseSymbol] = symbol.match(/(\w+)-(\w+)/i)
   const { upColor } = useSettings()
@@ -19,6 +20,17 @@ export const ETHStakingDetail = ({ symbol, trends, defiInfo }: any) => {
     upColor === UpColor.green
       ? ['var(--color-success)', 'var(--color-error)']
       : ['var(--color-error)', 'var(--color-success)']
+  const [defiInfo, setDefiInfo] = React.useState(undefined as undefined | {
+    apy: string,
+    timestamp:  number
+  })
+  useEffect(() => {
+    setDefiInfo({
+      apy: _defiInfo?.apy,
+      timestamp: Date.now()
+    })
+  }, [_defiInfo])
+  
   return symbol ? (
     <>
       <Box
@@ -53,7 +65,7 @@ export const ETHStakingDetail = ({ symbol, trends, defiInfo }: any) => {
             {(defiInfo?.apy?.toString().charAt(0) == '-' ? '' : '+') + defiInfo?.apy + '%' + ' APR'}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-third)'}>
-            {moment().format(YEAR_DAY_MINUTE_FORMAT)}
+            {moment(defiInfo.timestamp).format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Box>
       )}
@@ -79,7 +91,12 @@ export const ETHStakingDetail = ({ symbol, trends, defiInfo }: any) => {
               src={`${SoursURL}images/loading-line.gif`}
             />
           ) : (
-            <TrendAprChart type={ChartType.Trend} data={trends} showXAxis />
+            <TrendAprChart type={ChartType.Trend} data={trends} showXAxis handleMove={(props) => {
+              setDefiInfo({
+                apy: props.apy,
+                timestamp: props.createdAt 
+              })
+            }}/>
           )}
         </Box>
       </Box>

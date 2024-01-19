@@ -23,6 +23,14 @@ export const fontDefault = {
   body1: '1.4rem',
   body2: '1.2rem',
 }
+export enum SvgSize {
+  svgSize = 14,
+  svgSizeMedium = 16,
+  svgSizeCover = 32,
+  svgSizeLarge = 24,
+  svgSizeHuge2 = 40,
+  svgSizeHuge = 48,
+}
 
 export const refreshTime = 15
 export const colorBase = ({ theme }: any) => css`
@@ -137,9 +145,6 @@ export const scrollbarDefault = ({ theme }: any) => css`
   .MuiPaper-elevation4 {
     box-shadow: var(--shadow-header);
   }
-
-  //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
-  // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase.textHint};}
   ::-webkit-scrollbar-track {
     background-color: ${theme.colorBase.box};
     border-radius: 3px;
@@ -186,7 +191,6 @@ export const globalCss = ({ theme }: any) => css`
     -webkit-box-sizing: border-box; /* Safari */
     font-family: Roboto, Helvetica, Arial, '华文细黑', 'Microsoft YaHei', '微软雅黑', SimSun, '宋体',
       Heiti, '黑体', sans-serif;
-    //font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
   }
 
@@ -245,7 +249,6 @@ export const globalCss = ({ theme }: any) => css`
     --desktop-min-width: 1024px;
     --btn-Input-small-height: 32px;
     --btn-medium-height: 40px;
-    //--btn-max-width: 160px;
     --btn-min-width: 100px;
     --coin-min-width: 80px;
     --datePicker-width: 320px;
@@ -256,18 +259,17 @@ export const globalCss = ({ theme }: any) => css`
     --header-menu-icon-large: 28px;
     --list-menu-coin-size: 24px;
     --slippage-pop-width: 308px;
-    //--slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 20px;
     --btn-icon-size-medium: 24px;
     --btn-icon-size-large: 28px;
     --btn-icon-size: 36px;
-    --svg-size: 14px;
-    --svg-size-medium: 16px;
-    --svg-size-cover: 32px;
-    --svg-size-large: 24px;
-    --svg-size-huge2: 40px;
-    --svg-size-huge: 48px;
+    --svg-size: ${SvgSize.svgSize}px;
+    --svg-size-medium: ${SvgSize.svgSizeMedium}px;
+    --svg-size-cover: ${SvgSize.svgSizeCover}px;
+    --svg-size-large: ${SvgSize.svgSizeLarge}px;
+    --svg-size-huge2: ${SvgSize.svgSizeHuge2}px;
+    --svg-size-huge: ${SvgSize.svgSizeHuge}px;
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
@@ -306,7 +308,7 @@ export const globalCss = ({ theme }: any) => css`
     --input-height-huge: 56px;
     --dual-type-width: 320px;
     --min-height: 350px;
-
+    --input-height-swap: 86px;
     @media only screen and (max-width: 768px) {
       --modal-width: var(--modal-min-width);
       --lage-modal-width: 460px;

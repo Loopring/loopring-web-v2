@@ -44,6 +44,7 @@ import styled from '@emotion/styled'
 import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
 import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
+import { TransferNFTBurn } from './components'
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -57,10 +58,68 @@ const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | stri
     margin-top: -26px;
   }
 
+  > .vault-wrap {
+    .vaultSwap {
+      .MuiToolbar-root {
+        > .MuiTypography-root:first-of-type {
+          align-self: flex-end;
+          font-size: ${({ theme }) => theme.fontDefault.h5};
+          padding: 0 ${({ theme }) => 3 * theme.unit}px;
+          margin-bottom: ${({ theme }) => 1.5 * theme.unit}px;
+        }
+
+        > .toolButton {
+          height: 100%;
+          align-items: center;
+        }
+
+        .MuiTypography-root {
+          height: auto;
+        }
+
+        margin-bottom: ${({ theme }) => 2 * theme.unit}px;
+        border-bottom: var(--color-divide) 1px solid;
+
+        .record {
+          visibility: hidden;
+        }
+      }
+    }
+
+    margin-top: -32px;
+
+    .MuiToolbar-root {
+      height: 48px;
+      padding: 0;
+    }
+
+    .toolbarTitle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+  }
+
   .trade-panel {
     position: relative;
     height: ${({ _height }) =>
       _height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'auto'};
+
+    &.valut-load {
+      padding: 0;
+      border: 0;
+
+      .react-swipeable-view-container {
+        & > div {
+          padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px 0px;
+        }
+      }
+    }
 
     .react-swipeable-view-container {
       & > div {
@@ -106,19 +165,20 @@ export const Modal = withTranslation('common')(
         <BoxStyle
           style={{ boxShadow: '24' }}
           {...{
-            _width: `var(--modal-width)`,
+            _width: _width ?? `var(--modal-width)`,
             _height: _height,
           }}
         >
           <Box display={'flex'} width={'100%'} flexDirection={'column'}>
             <ModalCloseButton onClose={onClose} {...rest} />
-            {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
           </Box>
-          <Box className={contentClassName} maxWidth={isMobile ? '350px' : 'inherit'}>
+          <Box
+            className={contentClassName}
+            maxWidth={isMobile ? 'var(--modal-min-width)' : 'inherit'}
+          >
             {content}
           </Box>
         </BoxStyle>
-        {/*</>*/}
       </MuiModal>
     )
   },
@@ -139,6 +199,7 @@ export const ModalPanel = <
   nftDeployProps,
   resetProps,
   claimProps,
+  nftBurnProps,
   activeAccountProps,
   collectionAdvanceProps,
   sideStackRedeemProps,
@@ -150,6 +211,7 @@ export const ModalPanel = <
 }: {
   _width?: number | string
   _height?: number | string
+  nftBurnProps: TransferProps<T, I>
   contactAddProps: any
   transferProps: TransferProps<T, I>
   withdrawProps: WithdrawProps<T, I>
@@ -277,20 +339,9 @@ export const ModalPanel = <
           />
         }
       />
-      {/*<Modal*/}
-      {/*  open={isShowDeposit.isShow}*/}
-      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
-      {/*  content={*/}
-      {/*    <DepositGroup*/}
-      {/*      {...{*/}
-      {/*        ...rest,*/}
-      {/*        ...depositGroupProps,*/}
-      {/*      }}*/}
-      {/*    />*/}
-      {/*  }*/}
-      {/*/>*/}
+
       <Modal
-        open={isShowNFTTransfer.isShow}
+        open={isShowNFTTransfer.isShow && !isShowNFTTransfer.info?.isBurn}
         contentClassName={'trade-wrap'}
         onClose={() => setShowNFTTransfer({ isShow: false })}
         content={
@@ -358,11 +409,6 @@ export const ModalPanel = <
               ...nftDeployProps,
               assetsData,
             }}
-            // onBack={() => {
-            //   setShowNFTDeploy({ isShow: false });
-            //   // setShowNFTWithdraw({isShow:false});
-            //   // setShowAccount({isShow:false,step:AccountStep.SendNFTGateway})
-            // }}
           />
         }
       />
@@ -381,13 +427,21 @@ export const ModalPanel = <
           />
         }
       />
-      {/*<Modal*/}
-      {/*  open={isShowDeposit.isShow}*/}
-      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
-      {/*  content={*/}
-      {/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
-      {/*  }*/}
-      {/*/>*/}
+      <Modal
+        open={isShowNFTTransfer.isShow && isShowNFTTransfer.info?.isBurn}
+        contentClassName={'trade-wrap'}
+        onClose={() => setShowNFTTransfer({ isShow: false })}
+        content={
+          <Box width={`var(--modal-width)`} marginBottom={5 / 2}>
+            <TransferNFTBurn
+              {...{
+                ...rest,
+                ...(nftBurnProps as any),
+              }}
+            />
+          </Box>
+        }
+      />
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() => setShowResetAccount({ ...isShowResetAccount, isShow: false })}

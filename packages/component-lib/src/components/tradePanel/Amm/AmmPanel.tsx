@@ -240,7 +240,6 @@ export const AmmPanel = withTranslation('common', { withRef: true })(
                   propsBExtends,
                 }}
               />
-              {/*{panelList[0].element}*/}
             </Box>
           )}
           {ammType === AmmPanelType.Exit && (
@@ -273,29 +272,6 @@ export const AmmPanel = withTranslation('common', { withRef: true })(
               />
             </Box>
           )}
-
-          {/*<SwipeableViewsStyled*/}
-          {/*  axis={theme.direction === "rtl" ? "x-reverse" : "x"}*/}
-          {/*  index={ammType}*/}
-          {/*  {...{*/}
-          {/*    _height: "auto",*/}
-          {/*    _width: "auto",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  {panelList.map((panel, index) => {*/}
-          {/*    return (*/}
-          {/*      <Grid*/}
-          {/*        item*/}
-          {/*        justifyContent={"space-evenly"}*/}
-          {/*        alignItems={"stretch"}*/}
-          {/*        height={"100%"}*/}
-          {/*        key={index}*/}
-          {/*      >*/}
-          {/*        {panel.element}*/}
-          {/*      </Grid>*/}
-          {/*    );*/}
-          {/*  })}*/}
-          {/*</SwipeableViewsStyled>*/}
         </Box>
       </WrapStyle>
     )

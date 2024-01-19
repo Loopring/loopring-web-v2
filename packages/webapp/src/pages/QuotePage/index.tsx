@@ -31,14 +31,6 @@ export const QuotePage = withTranslation('common')(({ t, ...rest }: WithTranslat
       bgcolor={'var(--color-box-third)'}
       borderRadius={2}
     >
-      {/*<Button*/}
-      {/*  onClick={() => {*/}
-      {/*    onTest();*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  test button*/}
-      {/*</Button>*/}
-
       <TableWrapStyled
         ref={tableRef as any}
         paddingBottom={1}

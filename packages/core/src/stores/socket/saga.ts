@@ -17,9 +17,6 @@ export function* closeSocket() {
       account,
     } = store.getState()
     if ((window as any).loopringSocket) {
-      // const { socket } = yield call(getEndSocket)
-      // function* getEndSocket() {
-
       const network = MapChainId[defaultNetwork] ?? MapChainId[1]
       const networkWallet: sdk.NetworkWallet = [
         sdk.NetworkWallet.ETHEREUM,

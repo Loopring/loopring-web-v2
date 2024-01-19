@@ -23,7 +23,7 @@ import { changeShowModel } from '../stores/account/reducer'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
-})(({ t, btnLabelProps = {}, btnClickMapProps = {}, className }: any) => {
+})(({ t, btnLabelProps = {}, btnClickMapProps = {}, className, size = 'large' }: any) => {
   const { status: accountStatus, account } = useAccount()
   const { defaultNetwork } = useSettings()
 
@@ -50,7 +50,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
   return (
     <Button
       variant={'contained'}
-      size={'large'}
+      size={size}
       color={'primary'}
       fullWidth={true}
       style={{ maxWidth: '280px' }}

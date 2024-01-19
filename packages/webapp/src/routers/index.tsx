@@ -1,6 +1,6 @@
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import React from 'react'
-import { Box, Container, Link } from '@mui/material'
+import { Box, Container, Link, Snackbar, Typography } from '@mui/material'
 import Header from 'layouts/header'
 import { QuotePage } from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
@@ -19,6 +19,7 @@ import {
   useSystem,
   useTicker,
   useTokenMap,
+  useVaultMap,
   NoticePop,
 } from '@loopring-web/core'
 import { LoadingPage } from '../pages/LoadingPage'
@@ -57,7 +58,7 @@ import { RedPacketPage } from '../pages/RedPacketPage'
 import { useTranslation } from 'react-i18next'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
-
+import { VaultPage } from '../pages/VaultPage'
 const ContentWrap = ({
   children,
   state,
@@ -166,13 +167,16 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const { tickerMap } = useTicker()
+  const { tokenMap: vaultTokenMap } = useVaultMap()
+
   const { marketArray } = useTokenMap()
   const { setTheme, defaultNetwork, setReferralCode } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
   const {
-    toggle: { BTradeInvest, StopLimit },
+    toggle: { BTradeInvest, StopLimit, VaultInvest, isSupperUser },
   } = useToggle()
+  const vaultEnabled = VaultInvest.enable || isSupperUser
 
   React.useEffect(() => {
     if (searchParams.has('theme')) {
@@ -183,12 +187,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       setReferralCode(value ? value : '')
     }
   }, [location.search])
-
-  // React.useEffect(() => {
-  //   if (state === SagaStatus.ERROR) {
-  //     window.location.replace(`${window.location.origin}/#/error`)
-  //   }
-  // }, [state])
   if (searchParams.has('___OhTrustDebugger___')) {
     // @ts-ignore
     setMyLog(true)
@@ -259,23 +257,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NotifyMarkdownPage />
           </Container>
         </Route>
-        {/*<Route exact path='/investrule/:path'>*/}
-        {/*  {searchParams && searchParams.has('noheader') ? (*/}
-        {/*    <></>*/}
-        {/*  ) : (*/}
-        {/*    <Header isHideOnScroll={true} isLandPage />*/}
-        {/*  )}*/}
-        {/*  <Container*/}
-        {/*    maxWidth='lg'*/}
-        {/*    style={{*/}
-        {/*      display: 'flex',*/}
-        {/*      flexDirection: 'column',*/}
-        {/*      flex: 1,*/}
-        {/*    }}*/}
-        {/*  >*/}
-        {/*    <InvestMarkdownPage />*/}
-        {/*  </Container>*/}
-        {/*</Route>*/}
         <Route exact path={['/document', '/race-event', '/notification', '/investrule']}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <ErrorPage messageKey={'error404'} />
@@ -345,6 +326,18 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.layer2, RouterPath.layer2 + '/*']}>
           <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
             <Layer2Page />
+          </ContentWrap>
+        </Route>
+
+        <Route exact path={[RouterPath.vault, RouterPath.vault + '/*']}>
+          <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
+            {state === 'PENDING' && tickerMap ? (
+              <LoadingBlock />
+            ) : vaultEnabled && RouterAllowIndex[network]?.includes(RouterMainKey.vault) ? (
+              <VaultPage />
+            ) : (
+              <ErrorPage {...ErrorMap.TRADE_404} />
+            )}
           </ContentWrap>
         </Route>
         <Route exact path={[RouterPath.nft, RouterPath.nft + '/*']}>

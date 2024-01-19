@@ -112,7 +112,6 @@ export const {
   confirmedLRCStakeInvest,
   confirmDualDipInvest,
   confirmDualGainInvest,
-  // confirmDualInvest,
   confirmDualAutoInvest,
   confirmDualInvestV2,
   confirmedBtradeSwap,

@@ -266,8 +266,11 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`
 
 export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const match: any = useRouteMatch(InvestRouterMatch)
+
   const { marketArray } = useDefiMap()
 
   const {
@@ -302,9 +305,6 @@ export const DeFiPanel: any = withTranslation('common')(({ t }: WithTranslation 
     }
   }
 
-  const match: any = useRouteMatch(
-    `${RouterPath.invest}/${InvestAssetRouter.STAKE}/:market?/:isJoin?`,
-  )
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()

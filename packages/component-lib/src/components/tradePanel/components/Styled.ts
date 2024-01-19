@@ -44,9 +44,6 @@ export const IconClearStyled = styled(IconButton)`
 export const IconButtonStyled = styled(IconButton)`
   .MuiToolbar-root &.MuiButtonBase-root {
     svg {
-      //font-size: ${({ theme }) => theme.fontDefault.h4};
-      //height: var(--btn-icon-size-small);
-      //width: var(--btn-icon-size-small);
     }
 
     &.outlined {
@@ -100,8 +97,6 @@ const cssAutoRefresh = (_props: any) => css`
   }
 
   @keyframes container {
-    //0% { background-image:}
-    //5% { background-image: none }
     25% {
       transform: translate3d(0, -50%, 0);
       width: 0.5em;
@@ -200,7 +195,17 @@ export const CountDownStyled = styled(Box)`
 
 export const ButtonStyle = styled(Button)`
   font-size: 1.6rem;
-` as typeof Button
+  &.MuiButton-root.Mui-disabled {
+  ${({ loading }) => {
+    return (
+      loading === 'true' &&
+      ` &.vaultInProcessing{
+           &::after{  
+           
+           }
+         }`
+    )
+  }}` as typeof Button
 
 export const TabsStyle = styled(Tabs)`
   &&.trade-tabs {
@@ -244,10 +249,6 @@ export const TabsStyle = styled(Tabs)`
         &.trade-tab-speed:after {
           background-color: var(--color-error);
           mask-size: cover;
-          //<svg width="17" height="28" viewBox="0 0 17 28" fill="none" >
-          //<path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" fill="#00BBA8"/>
-          //</svg>
-
           mask-image: url('data:image/svg+xml,\
            <svg width="17" height="28" viewBox="0 0 17 28" fill="white" xmlns="http://www.w3.org/2000/svg">\
            <path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" />\
@@ -297,7 +298,6 @@ export const GridWrapStyle = styled(Grid)`
       left: 0;
       right: 0;
       bottom: 0;
-      //background-color:  var(--field-opacity);
       background: url(${loadingGif}) no-repeat 50% 50%;
       background-size: 80px;
     }

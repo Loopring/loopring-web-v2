@@ -13,6 +13,7 @@ import {
   OrderListIcon,
   RecordTabIndex,
   ReverseIcon,
+  RouterPath,
   TokenType,
   TradeBtnStatus,
   UpColor,
@@ -273,9 +274,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             <IconButtonStyled
               onClick={() => {
                 if (isLeverageETH) {
-                  history.push('/l2assets/history/leverageETHRecords')
+                  history.push(`${RouterPath.l2records}/leverageETHRecords`)
                 } else {
-                  history.push(`/l2assets/history/${RecordTabIndex.DefiRecords}?market=${market}`)
+                  history.push(
+                    `${RouterPath.l2records}/${RecordTabIndex.DefiRecords}?market=${market}`,
+                  )
                 }
               }}
               sx={{ backgroundColor: 'var(--field-opacity)' }}
@@ -289,13 +292,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         </Box>
       </Box>
       <Divider sx={{ width: '100%', marginY: 1 }} />
-      <Box
-        flexDirection={'column'}
-        display={'flex'}
-        alignSelf={'stretch'}
-        alignItems={'stretch'}
-        // borderBottom={'1px solid var(--color-border)'}
-      >
+      <Box flexDirection={'column'} display={'flex'} alignSelf={'stretch'} alignItems={'stretch'}>
         <InputCoinStyled
           ref={coinSellRef}
           disabled={getDisabled}

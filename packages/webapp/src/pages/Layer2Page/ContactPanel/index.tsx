@@ -136,7 +136,9 @@ const ActionMemo = React.memo(
               variant={'outlined'}
               size={'medium'}
               onClick={() => {
-                history.push('/layer2/contact/transactions?contactAddress=' + data.contactAddress)
+                history.push(
+                  `${RouterPath.layer2}/contact/transactions?contactAddress=${data.contactAddress}`,
+                )
               }}
               sx={{ marginLeft: 1 }}
             >

@@ -4,7 +4,7 @@ import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { LoopringAPI, useAccount, useTokenMap, useWalletLayer2 } from '@loopring-web/core'
-import { getValuePrecisionThousand, SoursURL } from '@loopring-web/common-resources'
+import { getValuePrecisionThousand, SoursURL ,RouterPath} from '@loopring-web/common-resources'
 import { MaxWidthContainer, useSettings, VipPanel as VipView } from '@loopring-web/component-lib'
 import { useGetVIPInfo } from './hooks'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -197,7 +197,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({ t }: WithTransl
 
   const handleTradeLinkClick = React.useCallback(() => {
     if (history) {
-      history.push('/trade/lite/LRC-ETH')
+      history.push(`${RouterPath.lite}/LRC-ETH`)
     }
   }, [history])
 

@@ -8,6 +8,7 @@ import { layer1ActionHistorySlice } from './layer1Store'
 import { NFTHashInfoSlice } from './nftRefresh'
 import { redPacketHistorySlice } from './redPacket'
 import { offRampHistorySlice } from './offRamp'
+import { favoriteVaultMarketSlice } from './favoriteVaultMarket'
 
 export const localStoreReducer = combineReducers({
   favoriteMarket: favoriteMarketSlice.reducer,
@@ -19,10 +20,12 @@ export const localStoreReducer = combineReducers({
   nftHashInfos: NFTHashInfoSlice.reducer,
   redPacketHistory: redPacketHistorySlice.reducer,
   offRampHistory: offRampHistorySlice.reducer,
+  favoriteVaultMarket: favoriteVaultMarketSlice.reducer,
 })
 
 export * as confirmation from './confirmation'
 export * as favoriteMarket from './favoriteMarket'
+export * as favoriteVaultMarket from './favoriteVaultMarket'
 export * as layer1Store from './layer1Store'
 export * as onchainHashInfo from './onchainHashInfo'
 export * as nftRefresh from './nftRefresh'

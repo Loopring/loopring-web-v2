@@ -6,7 +6,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
-import { utils } from 'ethers'
+import { utils, providers } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError, myLog, isAddress } from '@loopring-web/common-resources'
 import { LoopringAPI } from '../api_wrapper'
@@ -175,10 +175,47 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        realAddr = await web3.eth?.ens?.getAddress(address).catch((_e: any) => {
-          addressErr = AddressError.InvalidAddr
-          return ''
-        })
+        const provider = connectProvides?.usedProvide && new providers.Web3Provider(connectProvides.usedProvide as any)
+        // @ts-ignore
+        if (connectProvides?.usedProvide?.isWalletConnect) {
+          const network = await provider?.getNetwork()
+          const jsonPRCProvider = new providers.JsonRpcProvider(
+            network?.chainId === 1
+              ? process.env.REACT_APP_RPC_URL_1
+              : process.env.REACT_APP_RPC_URL_5,
+          )
+          realAddr = await jsonPRCProvider
+            .resolveName(address)
+            .then((addr) => {
+              if (addr) {
+                return addr
+              } else {
+                throw 'no result'
+              }
+            })
+            .catch((_e: any) => {
+              addressErr = AddressError.InvalidAddr
+              return ''
+            })
+        } else {
+          realAddr = provider
+            ? await provider
+                .resolveName(address)
+                .then((addr) => {
+                  if (addr) {
+                    return addr
+                  } else {
+                    throw 'no result'
+                  }
+                })
+                .catch((_e: any) => {
+                  addressErr = AddressError.InvalidAddr
+                  return ''
+                })
+            : ''
+        }
+
+        
         if (realAddr && addressErr == AddressError.NoError) {
           ens = address
         }

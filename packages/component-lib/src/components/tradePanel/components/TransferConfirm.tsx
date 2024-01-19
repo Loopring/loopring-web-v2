@@ -1,3 +1,4 @@
+
 import { WithTranslation } from 'react-i18next'
 import { Box, Grid, Typography } from '@mui/material'
 import {
@@ -100,16 +101,6 @@ export const TransferConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
           {walletList.find((item) => item.value === sureItsLayer2)?.label}
         </Typography>
       </Grid>
-      {/*{feeWithActive && (*/}
-      {/*  <Grid item xs={12}>*/}
-      {/*    <Typography color={"var(--color-text-third)"} variant={"body1"}>*/}
-      {/*      {t("labelL2toL2IsActiveAccount")}*/}
-      {/*    </Typography>*/}
-      {/*    <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>*/}
-      {/*      {feeInfo?.fee + " "} {feeInfo?.belong}*/}
-      {/*    </Typography>*/}
-      {/*  </Grid>*/}
-      {/*)}*/}
       <Grid item xs={12}>
         <Typography color={'var(--color-text-third)'} variant={'body1'}>
           {feeWithActive

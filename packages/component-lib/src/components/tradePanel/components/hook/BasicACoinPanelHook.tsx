@@ -107,6 +107,8 @@ export const useBasicTrade = <
     //Data, panel and function
     onChangeEvent,
     index,
-    switchData,
+    switchData: {
+      ...switchData,
+    },
   }
 }

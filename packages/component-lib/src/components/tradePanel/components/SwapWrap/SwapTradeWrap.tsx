@@ -2,13 +2,10 @@ import { SwapTradeData } from '../../Interface'
 import {
   BtradeTradeCalcData,
   BtradeType,
-  // CheckBoxIcon,
-  // CheckedIcon,
   CoinInfo,
   CoinMap,
   defaultSlipage,
   EmptyValueTag,
-  ExchangeIcon,
   getValuePrecisionThousand,
   IBData,
   Info2Icon,
@@ -16,24 +13,35 @@ import {
   MapChainId,
   myLog,
   ReverseIcon,
+  SwapExchangeIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
+  VaultTradeCalcData,
 } from '@loopring-web/common-resources'
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Grid, Tooltip, Typography, Link, Tab } from '@mui/material'
 import { InputButton } from '../../../basic-lib'
-
 import { SwapTradeProps } from './Interface'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle, IconButtonStyled, TabsStyle } from '../Styled'
 import { useHistory } from 'react-router-dom'
+import styled from '@emotion/styled'
 
+const GridStyle = styled(Grid)`
+  .buyInput {
+    margin-top: ${({ theme }) => 1 * theme.unit}px;
+  }
+
+  .iconChange {
+    top: var(--input-height-swap);
+    transform: translateY(-50%);
+  }
+`
 export const SwapTradeWrap = <
   T extends IBData<I>,
   I,
-  TCD extends BtradeTradeCalcData<I>,
-  SCD extends SwapTradeCalcData<I>,
+  TCD extends BtradeTradeCalcData<I> | VaultTradeCalcData<I> | SwapTradeCalcData<I>,
 >({
   t,
   onChangeEvent,
@@ -49,7 +57,7 @@ export const SwapTradeWrap = <
   tokenSellProps,
   tokenBuyProps,
   ...rest
-}: SwapTradeProps<T, I, TCD | SCD> & WithTranslation) => {
+}: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef()
   const buyRef = React.useRef()
   const history = useHistory()
@@ -145,12 +153,16 @@ export const SwapTradeWrap = <
     handleOnClick,
     ...rest,
   } as any
-  // const popupState = usePopupState({
-  //   variant: "popover",
-  //   popupId: "slippagePop",
-  // });
   const label = React.useMemo(() => {
     myLog(swapBtnI18nKey, 'swapBtnI18nKey useMemo')
+    const keyParams = {
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+    }
     if (swapBtnI18nKey) {
       const key = swapBtnI18nKey.split('|')
       if (key) {
@@ -159,59 +171,44 @@ export const SwapTradeWrap = <
           key && key[1]
             ? {
                 arg: key[1],
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                ...keyParams,
               }
             : {
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                ...keyParams,
               },
         )
       } else {
         return t(swapBtnI18nKey, {
-          layer2: L1L2_NAME_DEFINED[network].layer2,
-          l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          ...keyParams,
         })
       }
     } else {
-      return t(tradeCalcData.isBtrade ? `labelBtradeSwapBtn` : `swapBtn`, {
-        layer2: L1L2_NAME_DEFINED[network].layer2,
-        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      const label = (tradeCalcData as any)?.isBtrade
+        ? `labelBtradeSwapBtn`
+        : (tradeCalcData as any)?.isVault
+        ? `labelVaultSwapBtn`
+        : `swapBtn`
+      return t(label, {
+        ...keyParams,
       })
     }
-  }, [t, swapBtnI18nKey, tradeCalcData.isBtrade, network])
+  }, [t, swapBtnI18nKey, network, tradeCalcData])
   const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
-
+  const isL2Swap = !((tradeCalcData as any)?.isBtrade || (tradeCalcData as any)?.isVault)
   const convertStr = _isStoB
     ? `1 ${tradeData.sell?.belong} \u2248 ${
-        tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
+        tradeCalcData.StoB && tradeCalcData.StoB !== 'NaN' ? tradeCalcData.StoB : EmptyValueTag
       } ${tradeData.buy?.belong}`
     : `1 ${tradeData.buy?.belong} \u2248 ${
-        tradeCalcData.BtoS && tradeCalcData.BtoS != 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
+        tradeCalcData.BtoS && tradeCalcData.BtoS !== 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
       } ${tradeData.sell?.belong}`
-  const priceImpactColor = (tradeCalcData as SCD)?.priceImpactColor
-    ? (tradeCalcData as SCD).priceImpactColor
+  const priceImpactColor = (tradeCalcData as any)?.priceImpactColor
+    ? (tradeCalcData as any).priceImpactColor
     : 'textPrimary'
   const priceImpact =
-    (tradeCalcData as SCD)?.priceImpact !== undefined
+    (tradeCalcData as any)?.priceImpact !== undefined
       ? getValuePrecisionThousand(
-          (tradeCalcData as SCD).priceImpact,
+          (tradeCalcData as any).priceImpact,
           undefined,
           undefined,
           2,
@@ -240,7 +237,7 @@ export const SwapTradeWrap = <
   const { isMobile } = useSettings()
 
   return (
-    <Grid
+    <GridStyle
       className={tradeCalcData ? 'trade-panel' : 'trade-panel loading'}
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
@@ -251,7 +248,7 @@ export const SwapTradeWrap = <
       flex={isMobile ? '1' : 'initial'}
       height={'100%'}
     >
-      {tradeCalcData.isBtrade && (
+      {(tradeCalcData as any)?.isBtrade && (
         <Box
           className={'tool-bar'}
           display={'flex'}
@@ -269,7 +266,7 @@ export const SwapTradeWrap = <
                     ...tradeData,
                     btradeType: value,
                   } as SwapTradeData<T>,
-                  type: (tradeCalcData as unknown as SCD)?.lastStepAt ?? 'sell',
+                  type: (tradeCalcData as unknown as any)?.lastStepAt ?? 'sell',
                   to: 'button',
                 })
               }
@@ -290,7 +287,7 @@ export const SwapTradeWrap = <
       )}
       <Grid
         item
-        marginTop={tradeCalcData.isBtrade ? 1 : 3}
+        marginTop={!isL2Swap ? 1 : 3}
         display={'flex'}
         alignSelf={'stretch'}
         justifyContent={'flex-start'}
@@ -302,6 +299,8 @@ export const SwapTradeWrap = <
         <InputButton<any, I, CoinInfo<I>>
           ref={sellRef}
           disabled={getDisabled()}
+          className={'swapWrap'}
+          order={'left'}
           {...{
             ...propsSell,
             isHideError: true,
@@ -313,11 +312,11 @@ export const SwapTradeWrap = <
           }}
         />
         <Box
+          className={'iconChange'}
           alignSelf={'center'}
           marginY={1}
           position={'absolute'}
           zIndex={99}
-          top={60}
           sx={{
             boxSizing: 'border-box',
             border: '3px solid var(--color-box)',
@@ -334,17 +333,20 @@ export const SwapTradeWrap = <
             onClick={covertOnClick}
             aria-label={t('tokenExchange')}
           >
-            <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
+            <SwapExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
           </IconButtonStyled>
         </Box>
 
         <InputButton<any, I, CoinInfo<I>>
           ref={buyRef}
           disabled={getDisabled()}
+          className={'swapWrap buyInput'}
+          order={'left'}
           {...{
             ...propsBuy,
             // maxAllow:false,
             isHideError: true,
+
             inputData: tradeData ? tradeData.buy : ({} as any),
             coinMap:
               tradeCalcData && tradeCalcData.coinInfoMap
@@ -352,7 +354,7 @@ export const SwapTradeWrap = <
                 : ({} as CoinMap<I, CoinInfo<I>>),
           }}
         />
-        {tradeCalcData.isBtrade ? (
+        {!isL2Swap ? (
           <Typography
             variant={'body1'}
             display={'inline-flex'}
@@ -412,167 +414,8 @@ export const SwapTradeWrap = <
           )}
         </Typography>
       </Grid>
-      {!tradeCalcData.isBtrade && (
-        <>
-          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Tooltip
-                title={t('labelSwapFeeTooltips', {
-                  rate: userTakerRate,
-                  value: tradeCostMin,
-                }).toString()}
-                placement={'top'}
-              >
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('labelTradingFeeEst')}
-                </Typography>
-              </Tooltip>
-              <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {fee}
-              </Typography>
-            </Grid>
 
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Tooltip title={t('labelSwapPriceImpactTooltips').toString()} placement={'top'}>
-                <Typography
-                  display={'inline-flex'}
-                  component={'span'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapPriceImpact')}
-                </Typography>
-              </Tooltip>
-              <Typography component={'p'} color={priceImpactColor} variant='body2'>
-                {priceImpact}
-              </Typography>
-            </Grid>
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
-
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('labelSwapMinConverted')}
-                </Typography>
-              </Tooltip>
-              <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                {minimumConverted}
-              </Typography>
-            </Grid>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              height={24}
-            >
-              <Tooltip title={t('labelSwapToleranceTooltips').toString()} placement={'top'}>
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('swapTolerance')}
-                </Typography>
-              </Tooltip>
-
-              <Typography component={'p'} variant='body2'>
-                {tradeCalcData
-                  ? (tradeData.slippage
-                      ? tradeData.slippage
-                      : tradeCalcData.slippage
-                      ? tradeCalcData.slippage
-                      : defaultSlipage) + '%'
-                  : EmptyValueTag}
-              </Typography>
-            </Grid>
-          </Grid>
-          {/*{(tradeCalcData as SCD).isNotMatchMarketPrice && (*/}
-          {/*  <Grid item marginBottom={1}>*/}
-          {/*    <MuiFormControlLabel*/}
-          {/*      sx={{ alignItems: 'flex-start' }}*/}
-          {/*      control={*/}
-          {/*        <Checkbox*/}
-          {/*          checked={(tradeCalcData as SCD)?.isChecked ? true : false}*/}
-          {/*          onChange={() => {*/}
-          {/*            onChangeEvent(0, {*/}
-          {/*              tradeData: {*/}
-          {/*                ...tradeData,*/}
-          {/*                isChecked: !(tradeCalcData as SCD)?.isChecked,*/}
-          {/*              } as SwapTradeData<T>,*/}
-          {/*              type: (tradeCalcData as SCD)?.lastStepAt ?? 'sell',*/}
-          {/*              to: 'button',*/}
-          {/*            })*/}
-          {/*          }}*/}
-          {/*          checkedIcon={<CheckedIcon />}*/}
-          {/*          icon={<CheckBoxIcon />}*/}
-          {/*          color='default'*/}
-          {/*        />*/}
-          {/*      }*/}
-          {/*      label={*/}
-          {/*        <Typography variant={'body2'}>*/}
-          {/*          <Trans*/}
-          {/*            i18nKey={'labelExpectSettlementPrice'}*/}
-          {/*            interpolation={{ escapeValue: false }}*/}
-          {/*            tOptions={{*/}
-          {/*              symbolSell: tradeData.sell?.belong,*/}
-          {/*              symbolBuy: tradeData.buy?.belong,*/}
-          {/*              stob: tradeCalcData.StoB,*/}
-          {/*              marketPrice: (tradeCalcData as SCD).marketPrice,*/}
-          {/*              marketRatePrice: (tradeCalcData as SCD).marketRatePrice,*/}
-          {/*            }}*/}
-          {/*          >*/}
-          {/*            The expected settlement price from this order is symbol = value, while the*/}
-          {/*            current market price from a trusted oracle is symbol= marketPrice. There is*/}
-          {/*            marketRatePrice% variance observed. Please acknowledge the risk if you still*/}
-          {/*            want to continue.*/}
-          {/*          </Trans>*/}
-          {/*        </Typography>*/}
-          {/*      }*/}
-          {/*    />*/}
-          {/*  </Grid>*/}
-          {/*)}*/}
-        </>
-      )}
-
-      {tradeCalcData.isBtrade && (
+      {!isL2Swap ? (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
             <Grid
@@ -604,9 +447,6 @@ export const SwapTradeWrap = <
                 {fee}
               </Typography>
             </Grid>
-
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
-
             <Grid
               container
               justifyContent={'space-between'}
@@ -663,6 +503,117 @@ export const SwapTradeWrap = <
             </Grid>
           </Grid>
         </>
+      ) : (
+        <>
+          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Tooltip
+                title={t('labelSwapFeeTooltips', {
+                  rate: userTakerRate,
+                  value: tradeCostMin,
+                }).toString()}
+                placement={'top'}
+              >
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {' ' + t('labelTradingFeeEst')}
+                </Typography>
+              </Tooltip>
+              <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                {fee}
+              </Typography>
+            </Grid>
+
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Tooltip title={t('labelSwapPriceImpactTooltips').toString()} placement={'top'}>
+                <Typography
+                  display={'inline-flex'}
+                  component={'span'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {' ' + t('swapPriceImpact')}
+                </Typography>
+              </Tooltip>
+              <Typography component={'p'} color={priceImpactColor} variant='body2'>
+                {priceImpact}
+              </Typography>
+            </Grid>
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Tooltip title={t('labelSwapMinConvertedTooltip').toString()} placement={'top'}>
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {' ' + t('labelSwapMinConverted')}
+                </Typography>
+              </Tooltip>
+              <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                {minimumConverted}
+              </Typography>
+            </Grid>
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              height={24}
+            >
+              <Tooltip title={t('labelSwapToleranceTooltips').toString()} placement={'top'}>
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
+                >
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {' ' + t('swapTolerance')}
+                </Typography>
+              </Tooltip>
+
+              <Typography component={'p'} variant='body2'>
+                {tradeCalcData
+                  ? (tradeData.slippage
+                      ? tradeData.slippage
+                      : tradeCalcData.slippage
+                      ? tradeCalcData.slippage
+                      : defaultSlipage) + '%'
+                  : EmptyValueTag}
+              </Typography>
+            </Grid>
+          </Grid>
+        </>
       )}
 
       <Grid item alignSelf={'stretch'}>
@@ -686,7 +637,7 @@ export const SwapTradeWrap = <
           </ButtonStyle>
         </Grid>
       </Grid>
-      {!tradeCalcData.isBtrade && tradeCalcData.isShowBtradeAllow && (
+      {isL2Swap && (tradeCalcData as any)?.isShowBtradeAllow && (
         <Grid
           item
           marginTop={3}
@@ -728,6 +679,6 @@ export const SwapTradeWrap = <
           </Typography>
         </Grid>
       )}
-    </Grid>
+    </GridStyle>
   )
 }

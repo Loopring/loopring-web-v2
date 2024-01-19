@@ -33,11 +33,19 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
       type,
       walletMap,
     })
+    // const _onChangeEvent = _.debounce((_index: 0 | 1, { to, tradeData }: SwitchData<T>) => {
+    //   onChangeEvent(_index, { to, tradeData })
+    // }, globalSetup.wait)
 
     const [panelIndex, setPanelIndex] = React.useState(index + 1)
     const handleConfirm = (index: number) => {
       setPanelIndex(index)
     }
+    // React.useEffect(() => {
+    //   return () => {
+    //     _onChangeEvent.cancel()
+    //   }
+    // }, [])
     // const hanleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1)
@@ -128,7 +136,6 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
       toolBarItem: React.useMemo(
         () => (
           <>
-            {/* {(onBack && !isFromContact ) ? ( */}
             {onBack ? (
               <ModalBackButton
                 marginTop={0}

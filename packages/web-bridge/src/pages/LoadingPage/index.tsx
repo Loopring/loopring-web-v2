@@ -8,7 +8,6 @@ import { SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
 // ${({theme}) => boxLiner({theme})}
 const StyleBox = styled(Box)`
-  //background: var(--color-mask);
   ${({ theme }) => boxLiner({ theme })}
 
   position: absolute;

@@ -29,6 +29,7 @@ import { tickerMapSlice } from './ticker/reducer'
 import { systemSlice } from './system/reducer'
 import { walletLayer1Slice } from './walletLayer1/reducer'
 import { walletLayer2Slice } from './walletLayer2/reducer'
+import { vaultLayer2Slice } from './vaultLayer2/reducer'
 import { socketSlice } from './socket'
 import { userRewardsMapSlice } from './userRewards/reducer'
 import { amountMapSlice } from './amount/reducer'
@@ -39,7 +40,6 @@ import { walletLayer2NFTSlice } from './walletLayer2NFT/reducer'
 import { redPacketConfigsSlice } from './redPacket/reducer'
 import { localStoreReducer } from './localStore'
 import { getAnalytics } from 'firebase/analytics'
-
 import {
   ChainHashInfos,
   firebaseBridgeConfig,
@@ -56,17 +56,17 @@ import { WalletInfo } from './localStore/walletInfo'
 
 import {
   modalDataSlice,
-  pageAmmPoolSlice,
   pageTradeLiteSlice,
-  pageTradeProSlice,
   redeemStakeSlice,
   tradeStakeSlice,
+  tradeVaultSlice,
+  tradeDefiSlice,
+  tradeDualSlice,
+  pageTradeProSlice,
+  pageAmmPoolSlice,
 } from './router'
 import { firebaseReducer, ReactReduxFirebaseProviderProps } from 'react-redux-firebase'
 import firebase from 'firebase/compat/app'
-import { tradeDefiSlice } from './router/tradeDefi'
-import { tradeDualSlice } from './router/tradeDual'
-
 import { investReducer } from './invest'
 import { walletL2CollectionSlice } from './walletL2Collection/reducer'
 import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
@@ -105,6 +105,10 @@ const perisitWalletLayer2SessionStoreConfig = persistReducer(
   { key: 'walletLayer2', storage: storageSession, timeout: DEFAULT_TIMEOUT },
   walletLayer2Slice.reducer,
 )
+const perisitVaultLayer2SessionStoreConfig = persistReducer(
+  { key: 'vaultLayer2', storage: storageSession, timeout: DEFAULT_TIMEOUT },
+  vaultLayer2Slice.reducer,
+)
 const perisitWalletLayer1SessionStoreConfig = persistReducer(
   { key: 'walletLayer1', storage: storageSession, timeout: DEFAULT_TIMEOUT },
   walletLayer1Slice.reducer,
@@ -130,6 +134,7 @@ const persistedLocalStoreReducer = persistReducer<
     nftHashInfos: NFTHashInfos
     redPacketHistory: RedPacketHashInfos
     offRampHistory: OffRampHashInfos
+    favoriteVaultMarket: FavoriteMarketStates
   }>
 >(persistLocalStoreConfig, localStoreReducer)
 
@@ -148,6 +153,7 @@ export const initReduce = {
   tokenPrices: perisitTokenPricesSessionStoreConfig,
   walletLayer2: perisitWalletLayer2SessionStoreConfig,
   walletLayer1: perisitWalletLayer1SessionStoreConfig,
+  vaultLayer2: perisitVaultLayer2SessionStoreConfig,
   tickerMap: perisitTickerMapSessionStoreConfig,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletL2Collection: walletL2CollectionSlice.reducer,
@@ -167,6 +173,7 @@ export const initReduce = {
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
+  _router_tradeVault: tradeVaultSlice.reducer,
 }
 
 export const store = configureStore({
@@ -244,7 +251,7 @@ sagaMiddleware.run(mySaga, store.dispatch)
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 //@ts-ignore
-export type RootState = ReturnType<typeof reducer>
+export type RootState = ReturnType<typeof initReduce>
 export const persistor = persistStore(store)
 
 // persistor.persist()
@@ -267,7 +274,7 @@ export * from './walletLayer2'
 export * from './walletLayer2NFT'
 export * from './walletL2Collection'
 export * from './walletL2NFTCollection'
-
+export * from './vaultLayer2'
 export * from './invest'
 export * from './contacts'
 export * from './targetRedpackt'
