@@ -56,7 +56,14 @@ export const ModalWallet = withTranslation('common', { withRef: true })(
           >
             {panelList.map((panel, index) => {
               return (
-                <Box flex={1} display={'flex'} alignItems={'stretch'} key={index}>
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  flex={1}
+                  key={index}
+                >
                   {panel.view}
                 </Box>
               )
