@@ -79,7 +79,7 @@ export function useRefundTable<R = RefundRow>(setToastOpen: (state: any) => void
     const account = store.getState().account
     if (accountStatus === SagaStatus.UNSET && account.readyState == AccountStatus.ACTIVATED) {
       LoopringAPI.userAPI
-        ?.getReferStatistic<sdk.ReferStatistic>(
+        ?.geReferStatistic<sdk.ReferStatistic>(
           {
             accountId: accountId.toString(),
             reason: sdk.GetReferStatisticReason.Recommender,
@@ -208,7 +208,7 @@ export function useReferralsTable<R = ReferralsRow>(setToastOpen: (state: any) =
     const account = store.getState().account
     if (accountStatus === SagaStatus.UNSET && account.readyState == AccountStatus.ACTIVATED) {
       LoopringAPI.userAPI
-        ?.getReferStatistic<sdk.ReferStatistic>(
+        ?.geReferStatistic<sdk.ReferStatistic>(
           {
             accountId: accountId.toString(),
             reason: sdk.GetReferStatisticReason.Invited,

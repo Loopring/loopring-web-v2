@@ -4,21 +4,20 @@ import { getExclusiveRedpacket, getExclusiveRedpacketStatus } from './reducer'
 import { store, LoopringAPI } from '../../index'
 import { LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
 import { TargetRedPacketStates } from './interface'
-
+var getExclusiveRedPacketAPIInterval: any
 const getExclusiveRedPacketAPI = async (): Promise<{
   data: object | undefined
   __timer__: NodeJS.Timer | -1
 }> => {
   let { __timer__ } = store.getState().targetRedpacket.__timer__
   if (LoopringAPI.luckTokenAPI) {
-    __timer__ = ((__timer__) => {
-      if (__timer__ && __timer__ !== -1) {
-        clearTimeout(__timer__)
-      }
-      return setTimeout(() => {
-        store.dispatch(getExclusiveRedpacket({}))
-      }, 1000 * 60 * 5)
-    })(__timer__)
+    if (getExclusiveRedPacketAPIInterval) {
+      clearInterval(getExclusiveRedPacketAPIInterval)
+    }
+    getExclusiveRedPacketAPIInterval = setInterval(() => {
+      store.dispatch(getExclusiveRedpacket({}))
+    }, 1000 * 60 * 5)
+
     const account = store.getState().account
     const response = await LoopringAPI.luckTokenAPI?.getLuckTokenUserLuckyTokenTargets(
       {
@@ -36,9 +35,6 @@ const getExclusiveRedPacketAPI = async (): Promise<{
       __timer__,
     }
   } else {
-    if (__timer__ && __timer__ !== -1) {
-      clearTimeout(__timer__)
-    }
     throw 'err'
     // return { data: undefined,, __timer__: -1 }
   }

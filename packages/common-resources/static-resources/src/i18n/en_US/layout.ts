@@ -140,4 +140,9 @@ export default {
   labelDashBoard: 'Dashboard',
   labelRecord: 'Records',
   labelHome: 'Loopring Pro',
+  labelVaultDes: '',
+  labelVaultHome: 'Home',
+  labelVaultHomeDes: 'Third-party funds to trade',
+  labelVaultDashboard: 'Dashboard',
+  labelVaultDashboardDes: 'Loan & trade freely',
 }

@@ -19,6 +19,7 @@ import { confirmation, useDefiMap, useToast } from '@loopring-web/core'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import {
   BackIcon,
+  InvestAssetRouter,
   InvestRouter,
   InvestType,
   RouterPath,
@@ -96,8 +97,11 @@ const ButtonStyled = styled(Button)`
     }
   }
 `
+const InvestRouterMatch = `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}/:isJoin?`
 
 const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation & {}) => {
+  const match: any = useRouteMatch(InvestRouterMatch)
+
   const { marketLeverageArray: marketArray } = useDefiMap()
   const {
     confirmedLeverageETHInvest,
@@ -126,7 +130,6 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
       setShowLeverageETHPopup({ isShow: false, confirmationNeeded: true })
     }
   }
-  const match: any = useRouteMatch('/invest/leverageeth/:isJoin?')
   const [serverUpdate, setServerUpdate] = React.useState(false)
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const history = useHistory()

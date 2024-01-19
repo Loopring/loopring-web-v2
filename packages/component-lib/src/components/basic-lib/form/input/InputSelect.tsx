@@ -55,12 +55,10 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
   })
 
   React.useEffect(() => {
-    ;() => {
-      setValue({
-        selected: '',
-        focusOnInput: false,
-      })
-    }
+    setValue({
+      selected: '',
+      focusOnInput: false,
+    })
   }, [selected])
   return (
     <>

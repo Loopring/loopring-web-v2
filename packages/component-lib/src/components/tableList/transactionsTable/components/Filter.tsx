@@ -156,8 +156,6 @@ export const Filter = withTranslation('tables', { withRef: true })(
             >
               {t('labelFilterReset')}
             </Button>
-            {/* <Button variant={'contained'} size={'small'} color={'primary'}
-                            onClick={handleSearch}>{t('Search')}</Button> */}
           </StyledBtnBox>
         </Grid>
       </Grid>

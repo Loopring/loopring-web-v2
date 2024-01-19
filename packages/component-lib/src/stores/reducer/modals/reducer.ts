@@ -7,11 +7,13 @@ import {
   NFTWholeINFO,
   TradeNFT,
   AmmPanelType,
+  VaultLoanType,
+  VaultAction,
   CoinSource,
   Contact,
+  ToastType,
 } from '@loopring-web/common-resources'
 import { RESULT_INFO, LuckyTokenItemForReceive } from '@loopring-web/loopring-sdk'
-import { ToastType } from '../../../components'
 
 const initialState: ModalState = {
   isShowGlobalToast: {
@@ -58,6 +60,12 @@ const initialState: ModalState = {
   isShowSideStakingRedeem: { isShow: false, symbol: undefined },
   isShowTargetRedpacketPop: { isShow: false, info: {} },
   isShowETHStakingApr: { isShow: false, symbol: undefined },
+  isShowVaultExit: { isShow: false },
+  isShowVaultJoin: { isShow: false },
+  isShowVaultSwap: { isShow: false },
+  isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
+  isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
+  isShowConfirmedVault: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -424,6 +432,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         info,
       }
     },
+    setShowVaultExit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+      state.isShowVaultExit = { ...action.payload }
+    },
+    setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+      state.isShowVaultJoin = { ...action.payload }
+    },
+    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+      state.isShowVaultSwap = { ...action.payload }
+    },
+    setShowVaultLoan(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Transaction & { type: string }>,
+    ) {
+      state.isShowVaultLoan = { ...action.payload }
+    },
+    setShowNoVaultAccount(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & { whichBtn: VaultAction | undefined }>,
+    ) {
+      state.isShowNoVaultAccount = { ...action.payload }
+    },
+    setShowConfirmedVault(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowConfirmedVault = { ...action.payload }
+    },
   },
 })
 export const {
@@ -459,6 +491,12 @@ export const {
   setShowAnotherNetworkNotice,
   setShowGlobalToast,
   setShowTargetRedpacketPop,
-  setShowETHStakingApr,
   setShowEditContact,
+  setShowETHStakingApr,
+  setShowVaultExit,
+  setShowVaultJoin,
+  setShowVaultSwap,
+  setShowVaultLoan,
+  setShowNoVaultAccount,
+  setShowConfirmedVault,
 } = modalsSlice.actions

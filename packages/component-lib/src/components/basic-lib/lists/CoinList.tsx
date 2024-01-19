@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
 import styled from '@emotion/styled'
 import { CoinItemProps, CoinMenuProps } from './Interface'
-import { CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources'
+import { CoinInfo, CoinKey, TokenType, WalletCoin } from '@loopring-web/common-resources'
 import { Virtuoso } from 'react-virtuoso'
 import { CoinIcon } from '../form'
 import { EmptyDefault } from '../empty'
@@ -25,6 +25,8 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
     selected = null,
     listProps = {},
     height = '100px',
+    tokenType,
+    className,
     ...rest
   }: CoinMenuProps<C, I> & WithTranslation,
   _ref: React.Ref<HTMLUListElement>,
@@ -96,7 +98,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
       {list.length ? (
         <Virtuoso<{ walletCoin: WalletCoin<C>; key: string }>
           data={list}
-          className={'coin-menu'}
+          className={`coin-menu ${className}`}
           style={{ minHeight: '210px', flex: 1 }}
           ref={virtuoso}
           initialTopMostItemIndex={rowIndex}
@@ -104,6 +106,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
             let { walletCoin, key } = item //list[ index ];
             return (
               <CoinItem<C>
+                tokenType={tokenType}
                 key={index}
                 {...{
                   coinInfo: coinMap[key] ?? ({} as CoinInfo<C>),
@@ -145,6 +148,7 @@ const StyledCoinItem = styled(ListItem)`
     box-sizing: border-box;
     padding-left: ${({ theme }) => (theme.unit / 2) * 5}px;
     padding-right: ${({ theme }) => (theme.unit / 2) * 5}px;
+    align-items: center;
   }
 
   &.Mui-selected,
@@ -187,10 +191,12 @@ export const CoinItem = React.memo(
         select,
         itemKey,
         handleListItemClick,
+        tokenType,
+        contentEle,
       }: CoinItemProps<C> & WithTranslation,
       ref: React.ForwardedRef<any>,
     ) => {
-      const { simpleName } = coinInfo
+      const { simpleName, erc20Symbol } = coinInfo
 
       return (
         <StyledCoinItem
@@ -201,20 +207,30 @@ export const CoinItem = React.memo(
           onClick={(event: React.MouseEvent) => handleListItemClick(event, itemKey)}
         >
           <ListItemIcon>
-            <CoinIcon symbol={simpleName} size={24} lpSize={24} />
+            <CoinIcon
+              type={tokenType}
+              tokenImageKey={tokenType == TokenType.vault ? erc20Symbol ?? simpleName : undefined}
+              symbol={simpleName}
+              size={24}
+              lpSize={24}
+            />
           </ListItemIcon>
           <ListItemText
             primary={simpleName}
             secondary={
               <>
-                <Typography
-                  sx={{ display: 'block' }}
-                  component='span'
-                  color='textSecondary'
-                  variant={'h5'}
-                >
-                  {walletCoin.count}
-                </Typography>
+                {contentEle ? (
+                  contentEle({ ele: { ...walletCoin } })
+                ) : (
+                  <Typography
+                    sx={{ display: 'block' }}
+                    component='span'
+                    color='textSecondary'
+                    variant={'h5'}
+                  >
+                    {walletCoin.count}
+                  </Typography>
+                )}
               </>
             }
           />

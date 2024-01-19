@@ -80,7 +80,6 @@ const RiskStyle = styled(Dialog)`
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        // padding: ${({ theme }) => 1 * theme.unit}px ${({ theme }) => 2 * theme.unit}px;
       }
     }
   }
@@ -2013,7 +2012,7 @@ export const ConfirmInvestDualGainRisk = withTranslation('common')(
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <DialogContentText id='alert-dialog-slide-description'>
+          <Box>
             <Trans
               i18nKey={'labelInvestDualGainGuid'}
               tOptions={{
@@ -2094,7 +2093,7 @@ export const ConfirmInvestDualGainRisk = withTranslation('common')(
                 for you, even if it's enabled.
               </p>
             </Trans>
-          </DialogContentText>
+          </Box>
           <MuiFormControlLabel
             control={
               <Checkbox
@@ -3092,6 +3091,93 @@ export const ConfirmStopLimitRisk = withTranslation('common')(
             color={'primary'}
           >
             {t('labelStopLimitConfirm')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  },
+)
+export const ConfirmVaultRisk = withTranslation('common')(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean
+    handleClose: (event: any, isAgree?: boolean) => void
+  }) => {
+    const [agree, setAgree] = React.useState(false)
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false)
+      }
+    }, [open])
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle> {t(`labelVaultTitleRisk`)}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-defiRisk2'>
+            <Trans
+              i18nKey={`labelVaultRiskDes`}
+              components={{
+                p: (
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    component={'span'}
+                    variant={'body1'}
+                    display={'block'}
+                    marginBottom={1}
+                    color={'textSecondary'}
+                  />
+                ),
+                h6: (
+                  <Typography
+                    component={'h6'}
+                    whiteSpace={'pre-line'}
+                    variant={'h5'}
+                    display={'block'}
+                    marginBottom={1}
+                    marginTop={1}
+                    fontWeight='600'
+                    color={'textPrimary'}
+                  />
+                ),
+                li: <li style={{ display: 'list', listStyle: 'inside' }} />,
+                ul: <ol style={{ listStyle: 'decimal', paddingLeft: 24 }} />,
+              }}
+            />
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state)
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+            }
+            label={t('labelLRCStakingAgree')}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={'contained'}
+            size={'small'}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true)
+            }}
+            color={'primary'}
+          >
+            {t('labelIKnow')}
           </Button>
         </DialogActions>
       </Dialog>

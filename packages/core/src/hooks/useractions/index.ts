@@ -30,3 +30,8 @@ export * from './useDualEdit'
 export * from './useContactAdd'
 export * from './useContact'
 export * from './useStakingAprTrend'
+export * from './useNFTBurn'
+export * from './vault'
+export * from './useContactAdd'
+export * from './useContact'
+

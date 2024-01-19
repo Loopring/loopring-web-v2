@@ -260,7 +260,7 @@ export const useVendor = () => {
 
   const closeBanxa = () => {
     // @ts-ignore
-    var parentsNode: undefined | HTMLElement = window.document.getElementById('iframeBanxaTarget')
+    var parentsNode: undefined | HTMLElement = window.document.getElementById('#iframeBanxaTarget')
     if (parentsNode && parentsNode.style) {
       // @ts-ignore
       parentsNode.style.display = 'none'
@@ -332,7 +332,7 @@ export const useVendor = () => {
           // showBanxa();
           break
         case BanxaCheck.OrderEnd:
-          // myLog("subscription Banxa", props.status, props.data);
+          // myLog("subscription Banxa", props. status:t(status), props.data);
           if (props?.data?.reason === OrderENDReason.BanxaNotReady) {
             setShowTradeIsFrozen({
               isShow: true,

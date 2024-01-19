@@ -59,7 +59,6 @@ const TableStyled = styled(Box)<
     }
 
     .rdg-header-row {
-      // background-color: inherit !important;
     }
 
     .textAlignRight {

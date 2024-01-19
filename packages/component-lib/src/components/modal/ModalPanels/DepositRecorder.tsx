@@ -105,7 +105,6 @@ export const DepositRecorder = ({
                   fontSize={'h5'}
                   paddingY={1 / 2}
                 >
-                  {/*{depoistView}*/}
                   <Link
                     fontSize={'inherit'}
                     alignItems={'center'}

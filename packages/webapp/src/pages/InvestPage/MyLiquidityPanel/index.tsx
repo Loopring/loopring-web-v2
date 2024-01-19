@@ -101,7 +101,7 @@ const MyLiquidity: any = withTranslation('common')(
     const sideStakeRef = React.useRef(null)
     const { ammActivityMap } = useAmmActivityMap()
     const { forexMap } = useSystem()
-    const { tokenMap, idIndex } = useTokenMap()
+    const { tokenMap, disableWithdrawList, idIndex } = useTokenMap()
     const { tokenPrices } = useTokenPrices()
     const { redeemItemClick } = useStakeRedeemClick()
     const { marketMap: dualMarketMap, status: dualMarketMapStatus } = useDualMap()
@@ -167,7 +167,6 @@ const MyLiquidity: any = withTranslation('common')(
       // dualList,
     })
     const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
-    myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
       if (
@@ -686,6 +685,7 @@ const MyLiquidity: any = withTranslation('common')(
                     )}
                     <AssetsDefiTable
                       {...{
+                        disableWithdrawList,
                         onReceive,
                         onSend,
                         rawData: defiAsset,
@@ -743,6 +743,7 @@ const MyLiquidity: any = withTranslation('common')(
                     )}
                     <AssetsDefiTable
                       {...{
+                        disableWithdrawList,
                         onReceive,
                         onSend,
                         rawData: leverageETHAssets,

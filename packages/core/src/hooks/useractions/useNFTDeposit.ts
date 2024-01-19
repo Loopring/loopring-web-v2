@@ -33,6 +33,7 @@ import {
   depositServices,
   DepositCommands,
   BIGO,
+  waitForTx,
 } from '../../index'
 
 import { connectProvides } from '@loopring-web/web3-provider'
@@ -249,7 +250,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             step: AccountStep.NFTDeposit_Approve_WaitForAuth,
           })
           try {
-            await LoopringAPI.nftAPI.approveNFT({
+            const tx = await LoopringAPI.nftAPI.approveNFT({
               web3,
               from: account.accAddress,
               depositAddress: exchangeInfo?.exchangeAddress,
@@ -262,6 +263,8 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
               nftType: nftDepositValue.nftType as unknown as sdk.NFTType,
               sendByMetaMask: true,
             })
+            
+            await waitForTx(web3, tx.result);
           } catch (error: any) {
             if (error instanceof Error) {
               throw {

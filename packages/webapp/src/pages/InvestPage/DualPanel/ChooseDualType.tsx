@@ -88,17 +88,6 @@ export const ChooseDualType = ({
             >
               <SwapSettingIcon htmlColor={'var(--color-text-primary)'} />
             </IconButtonStyled>
-            {/* <Button*/}
-            {/*   onClick={() => {*/}
-            {/*   window.open(`${LOOPRING_DOCUMENT}dual_investment_tutorial_en.md`, '_blank')*/}
-            {/*   window.opener = null*/}
-            {/* }}*/}
-            {/*   sx={{ marginLeft: 1.5, height: 40 }}*/}
-            {/*   variant={'outlined'}*/}
-            {/*   color={'inherit'}*/}
-            {/*   >*/}
-            {/*     {t('labelInvestDualTutorial')}*/}
-            {/*</Button>*/}
           </Box>
         </Box>
         {!isMobile && <DualInvestmentLogo />}

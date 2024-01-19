@@ -32,6 +32,7 @@ import {
   useAccount,
   usePageTradePro,
   useTokenMap,
+  ViewAccountTemplate,
   volumeToCount,
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
@@ -39,230 +40,231 @@ import {
 import { HeaderHeight } from '../../index'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
-  const { status: accountStatus, account } = useAccount()
-  const [label, setLabel] = React.useState('')
-  const { defaultNetwork } = useSettings()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
-    [fnType.NO_ACCOUNT]: [
-      function () {
-        return `depositAndActiveBtn`
-      },
-    ],
-    [fnType.ERROR_NETWORK]: [
-      function () {
-        return `labelWrongNetwork`
-      },
-    ],
-  })
-
-  React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET) {
-      setLabel(accountStaticCallBack(_btnLabel))
-    }
-  }, [accountStatus, account.readyState, i18n.language])
-  const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {})
-  const BtnConnect = React.useMemo(() => {
-    return (
-      <Button
-        style={{ height: 28, fontSize: '1.4rem' }}
-        variant={'contained'}
-        size={'small'}
-        color={'primary'}
-        onClick={() => {
-          accountStaticCallBack(_btnClickMap, [])
-        }}
-      >
-        {t(label, {
-          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-        })}
-      </Button>
-    )
-  }, [label])
-  const viewTemplate = React.useMemo(() => {
-    switch (account.readyState) {
-      case AccountStatus.UN_CONNECT:
-        return (
-          <Box
-            flex={1}
-            height={'100%'}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            <Typography
-              lineHeight={1.5}
-              paddingX={2}
-              color={'text.primary'}
-              marginBottom={2}
-              variant={'body1'}
-              textOverflow={'ellipsis'}
-              whiteSpace={'pre-line'}
-              textAlign={'center'}
-              overflow={'hidden'}
-              display={'flex'}
-              sx={{ wordBreak: 'break-word', lineClamp: 4 }}
-            >
-              {t('describeTitleConnectToWallet', {
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              })}
-            </Typography>
-            {BtnConnect}
-          </Box>
-        )
-
-        break
-      case AccountStatus.LOCKED:
-        return (
-          <Box
-            flex={1}
-            height={'100%'}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            <Typography
-              lineHeight={2}
-              paddingX={2}
-              color={'text.primary'}
-              marginBottom={2}
-              variant={'body1'}
-              whiteSpace={'pre-line'}
-              textAlign={'center'}
-            >
-              {t('describeTitleLocked')}
-            </Typography>
-            {BtnConnect}
-          </Box>
-        )
-        break
-      case AccountStatus.NO_ACCOUNT:
-        return (
-          <Box
-            flex={1}
-            height={'100%'}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            <Typography
-              lineHeight={2}
-              paddingX={2}
-              color={'text.primary'}
-              marginBottom={2}
-              variant={'body1'}
-              whiteSpace={'pre-line'}
-              textAlign={'center'}
-            >
-              {t('describeTitleNoAccount', {
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              })}
-            </Typography>
-            {BtnConnect}
-          </Box>
-        )
-        break
-      case AccountStatus.NOT_ACTIVE:
-        return (
-          <Box
-            flex={1}
-            height={'100%'}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            <Typography
-              lineHeight={2}
-              paddingX={2}
-              color={'text.primary'}
-              marginBottom={2}
-              variant={'body1'}
-              whiteSpace={'pre-line'}
-              textAlign={'center'}
-            >
-              {t('describeTitleNotActive', {
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              })}
-            </Typography>
-            {BtnConnect}
-          </Box>
-        )
-        break
-      case AccountStatus.DEPOSITING:
-        return (
-          <Box
-            flex={1}
-            height={'100%'}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            <Typography
-              lineHeight={2}
-              paddingX={2}
-              color={'text.primary'}
-              marginBottom={2}
-              variant={'body1'}
-              whiteSpace={'pre-line'}
-              textAlign={'center'}
-            >
-              {t('describeTitleOpenAccounting', {
-                layer2: L1L2_NAME_DEFINED[network].layer2,
-                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              })}
-            </Typography>
-            {BtnConnect}
-          </Box>
-        )
-        break
-      case AccountStatus.ERROR_NETWORK:
-        return (
-          <Box
-            flex={1}
-            height={'100%'}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            flexDirection={'column'}
-          >
-            <Typography
-              lineHeight={2}
-              paddingX={2}
-              color={'text.primary'}
-              marginBottom={2}
-              variant={'body1'}
-              whiteSpace={'pre-line'}
-              textAlign={'center'}
-            >
-              {t('describeTitleOnErrorNetwork', {
-                connectName: account.connectName,
-              })}
-            </Typography>
-          </Box>
-        )
-        break
-      default:
-        break
-    }
-  }, [t, account.readyState, BtnConnect])
-  return <>{viewTemplate}</>
-
-  // const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
-  //     [ fnType.ACTIVATED ]: [swapCalculatorCallback]
-  // })
-})
+// const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
+//   const { status: accountStatus, account } = useAccount()
+//   const [label, setLabel] = React.useState('')
+//   const { defaultNetwork } = useSettings()
+//   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+//   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
+//     [fnType.NO_ACCOUNT]: [
+//       function () {
+//         return `depositAndActiveBtn`
+//       },
+//     ],
+//     [fnType.ERROR_NETWORK]: [
+//       function () {
+//         return `labelWrongNetwork`
+//       },
+//     ],
+//   })
+//
+//   React.useEffect(() => {
+//     if (accountStatus === SagaStatus.UNSET) {
+//       setLabel(accountStaticCallBack(_btnLabel))
+//     }
+//   }, [accountStatus, account.readyState, i18n.language])
+//   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {})
+//   const BtnConnect = React.useMemo(() => {
+//     return (
+//       <Button
+//         style={{ height: 28, fontSize: '1.4rem' }}
+//         variant={'contained'}
+//         size={'small'}
+//         color={'primary'}
+//         onClick={() => {
+//           accountStaticCallBack(_btnClickMap, [])
+//         }}
+//       >
+//         {t(label, {
+//           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+//           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+//           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+//           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+//         })}
+//       </Button>
+//     )
+//   }, [label])
+//   const viewTemplate = React.useMemo(() => {
+//     switch (account.readyState) {
+//       case AccountStatus.UN_CONNECT:
+//         return (
+//           <Box
+//             flex={1}
+//             height={'100%'}
+//             display={'flex'}
+//             justifyContent={'center'}
+//             alignItems={'center'}
+//             flexDirection={'column'}
+//           >
+//             <Typography
+//               lineHeight={1.5}
+//               paddingX={2}
+//               color={'text.primary'}
+//               marginBottom={2}
+//               variant={'body1'}
+//               textOverflow={'ellipsis'}
+//               whiteSpace={'pre-line'}
+//               textAlign={'center'}
+//               overflow={'hidden'}
+//               display={'flex'}
+//               sx={{ wordBreak: 'break-word', lineClamp: 4 }}
+//             >
+//               {t('describeTitleConnectToWallet', {
+//                 layer2: L1L2_NAME_DEFINED[network].layer2,
+//                 l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+//               })}
+//             </Typography>
+//             {BtnConnect}
+//           </Box>
+//         )
+//
+//         break
+//       case AccountStatus.LOCKED:
+//         return (
+//           <Box
+//             flex={1}
+//             height={'100%'}
+//             display={'flex'}
+//             justifyContent={'center'}
+//             alignItems={'center'}
+//             flexDirection={'column'}
+//           >
+//             <Typography
+//               lineHeight={2}
+//               paddingX={2}
+//               color={'text.primary'}
+//               marginBottom={2}
+//               variant={'body1'}
+//               whiteSpace={'pre-line'}
+//               textAlign={'center'}
+//             >
+//               {t('describeTitleLocked')}
+//             </Typography>
+//             {BtnConnect}
+//           </Box>
+//         )
+//         break
+//       case AccountStatus.NO_ACCOUNT:
+//         return (
+//           <Box
+//             flex={1}
+//             height={'100%'}
+//             display={'flex'}
+//             justifyContent={'center'}
+//             alignItems={'center'}
+//             flexDirection={'column'}
+//           >
+//             <Typography
+//               lineHeight={2}
+//               paddingX={2}
+//               color={'text.primary'}
+//               marginBottom={2}
+//               variant={'body1'}
+//               whiteSpace={'pre-line'}
+//               textAlign={'center'}
+//             >
+//               {t('describeTitleNoAccount', {
+//                 layer2: L1L2_NAME_DEFINED[network].layer2,
+//                 l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+//               })}
+//             </Typography>
+//             {BtnConnect}
+//           </Box>
+//         )
+//         break
+//       case AccountStatus.NOT_ACTIVE:
+//         return (
+//           <Box
+//             flex={1}
+//             height={'100%'}
+//             display={'flex'}
+//             justifyContent={'center'}
+//             alignItems={'center'}
+//             flexDirection={'column'}
+//           >
+//             <Typography
+//               lineHeight={2}
+//               paddingX={2}
+//               color={'text.primary'}
+//               marginBottom={2}
+//               variant={'body1'}
+//               whiteSpace={'pre-line'}
+//               textAlign={'center'}
+//             >
+//               {t('describeTitleNotActive', {
+//                 layer2: L1L2_NAME_DEFINED[network].layer2,
+//                 l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+//               })}
+//             </Typography>
+//             {BtnConnect}
+//           </Box>
+//         )
+//         break
+//       case AccountStatus.DEPOSITING:
+//         return (
+//           <Box
+//             flex={1}
+//             height={'100%'}
+//             display={'flex'}
+//             justifyContent={'center'}
+//             alignItems={'center'}
+//             flexDirection={'column'}
+//           >
+//             <Typography
+//               lineHeight={2}
+//               paddingX={2}
+//               color={'text.primary'}
+//               marginBottom={2}
+//               variant={'body1'}
+//               whiteSpace={'pre-line'}
+//               textAlign={'center'}
+//             >
+//               {t('describeTitleOpenAccounting', {
+//                 layer2: L1L2_NAME_DEFINED[network].layer2,
+//                 l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+//               })}
+//             </Typography>
+//             {BtnConnect}
+//           </Box>
+//         )
+//         break
+//       case AccountStatus.ERROR_NETWORK:
+//         return (
+//           <Box
+//             flex={1}
+//             height={'100%'}
+//             display={'flex'}
+//             justifyContent={'center'}
+//             alignItems={'center'}
+//             flexDirection={'column'}
+//           >
+//             <Typography
+//               lineHeight={2}
+//               paddingX={2}
+//               color={'text.primary'}
+//               marginBottom={2}
+//               variant={'body1'}
+//               whiteSpace={'pre-line'}
+//               textAlign={'center'}
+//             >
+//               {t('describeTitleOnErrorNetwork', {
+//                 connectName: account.connectName,
+//               })}
+//             </Typography>
+//           </Box>
+//         )
+//         break
+//       default:
+//         break
+//     }
+//   }, [t, account.readyState, BtnConnect])
+//
+//   return <>{viewTemplate}</>
+//
+//   // const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
+//   //     [ fnType.ACTIVATED ]: [swapCalculatorCallback]
+//   // })
+// })
 const AssetsValue = React.memo(({ symbol }: { symbol: string }) => {
   const {
     pageTradePro: {
@@ -324,24 +326,6 @@ const UnLookView = React.memo(
     const tokenAIcon: any = coinJson[coinA]
     const tokenBIcon: any = coinJson[coinB]
     const { setShowAccount } = useOpenModals()
-    // const walletMap = tradeCalcProData && tradeCalcProData.walletMap ? tradeCalcProData.walletMap : {};
-
-    // const onShowDeposit = React.useCallback(
-    //   (token?: any) => {
-    //     setShowDeposit({ isShow: true, symbol: token });
-    //   },
-    //   [setShowDeposit]
-    // );
-    // const onShowWithdraw = React.useCallback((token?: any) => {
-    //     showWithdraw({isShow: true, symbol: token})
-    // }, [showWithdraw])
-    // const onShowTransfer = React.useCallback(
-    //   (token?: any) => {
-    //     setShowTransfer({ isShow: true, symbol: token });
-    //   },
-    //   [setShowTransfer]
-    // );
-    // myLog("assetBtnStatus", assetBtnStatus);
 
     return (
       <Box paddingBottom={2}>
@@ -451,8 +435,6 @@ const UnLookView = React.memo(
               <Typography variant={'body1'}>{coinB}</Typography>
             </Box>
             <AssetsValue symbol={coinB} />
-
-            {/*<Typography variant={'body1'}>{walletMap[ coinB ] ? walletMap[ coinB ]?.count : 0}</Typography>*/}
           </Box>
           <Box
             display={'flex'}
@@ -510,15 +492,21 @@ export const WalletInfo = withTranslation(['common', 'layout'])(
       market: MarketType
     } & WithTranslation,
   ) => {
-    const { account } = useAccount()
     return (
-      <>
-        {account.readyState === AccountStatus.ACTIVATED ? (
-          <UnLookView {...props} />
-        ) : (
-          <OtherView {...props} />
-        )}
-      </>
+      <Box
+        paddingX={2}
+        flex={1}
+        display={'flex'}
+        justifyContent={'stretch'}
+        flexDirection={'column'}
+        alignItems={'center'}
+      >
+        <ViewAccountTemplate
+          className={'inBlock'}
+          size={'medium'}
+          activeViewTemplate={<UnLookView {...props} />}
+        />
+      </Box>
     )
   },
 )

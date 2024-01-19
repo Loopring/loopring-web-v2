@@ -343,7 +343,6 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
         xExtents={xExtents}
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
       >
-        {/*// @ts-ignore */}
         <Chart
           id={chartId++}
           height={chartHeight}

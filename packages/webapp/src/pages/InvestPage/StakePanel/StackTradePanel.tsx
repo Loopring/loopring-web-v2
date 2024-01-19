@@ -57,7 +57,6 @@ export const StackTradePanel = ({
     confirmation: { confirmedLRCStakeInvest },
   } = confirmation.useConfirmation()
   const { toggle } = useToggle()
-
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { t } = useTranslation()
   const history = useHistory()
