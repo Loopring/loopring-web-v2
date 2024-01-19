@@ -212,7 +212,7 @@ export const EXCLUSIVE_REDPACKET_ORDER_LIMIT_WHITELIST = 10000
 export const EXCLUSIVE_REDPACKET_ORDER_LIMIT = 50
 export const BLINDBOX_REDPACKET_LIMIT = 10000
 
-export const VAULT_MAKET_REFRESH = 60000
+export const VAULT_MARKET_REFRESH = 60000
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: 'name',
   image: 'image',
