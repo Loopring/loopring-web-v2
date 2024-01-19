@@ -164,8 +164,6 @@ export const useVaultSwap = <
       return { ...prev, [item]: coinMap ? coinMap[item] : {} }
     }, {} as CoinMap<C>),
   } as any)
-  console.log('vault', 'tradeData', tradeData)
-  console.log('vault', 'tradeCalcData', tradeCalcData)
 
   /** redux storage **/
   const {

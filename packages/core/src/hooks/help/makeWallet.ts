@@ -86,11 +86,6 @@ export const makeVaultLayer2 = <
     tokenMap: { idIndex: erc20IdIndex }, // 
   } = store.getState()
   const { readyState } = store.getState().account
-  console.log('vaultLayer2: vaultAccountInfo', vaultAccountInfo)
-  console.log('vaultLayer2', vaultLayer2)
-  console.log('vaultLayer2: idIndex', idIndex)
-  console.log('vaultLayer2: tokenMap', idIndex)
-  console.log('vaultLayer2: needFilterZero', needFilterZero)
   // vaultAccountInfo
   let vaultLayer2Map: WalletMap<C> | undefined
   if (vaultAccountInfo?.userAssets) {
@@ -99,7 +94,6 @@ export const makeVaultLayer2 = <
       const vaultToken = tokenMap[symbol]
       const vaultAsset=(vaultLayer2 &&  vaultLayer2[symbol]) ?? {}
       const countBig = sdk.toBig(vaultAsset?.l2balance ?? 0).minus(vaultAsset?.locked ?? 0)
-      console.log('vaultLayer2: inner', symbol, symbol, vaultAsset, countBig.toString())
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
@@ -119,7 +113,6 @@ export const makeVaultLayer2 = <
       }
     }, {} as WalletMap<C>)
   }
-  console.log('vaultLayer2: vaultLayer2Map', vaultLayer2Map)
   
   if (readyState === AccountStatus.ACTIVATED) {
     return { vaultLayer2Map }

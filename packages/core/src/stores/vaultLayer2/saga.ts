@@ -19,7 +19,6 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
     },
     vaultLayer2: { __timer__ },
   } = store.getState()
-  console.log('vaultIdIndex', vaultIdIndex)
   // const { idIndex: vaultIdIndex } = store.getState().vaultMap
   let _activeInfo: any = undefined,
     vaultLayer2,
