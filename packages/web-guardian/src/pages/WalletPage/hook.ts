@@ -100,8 +100,8 @@ export const useHebaoMain = <
                   if (
                     layer1ActionHistory &&
                     layer1ActionHistory[defaultNetwork] &&
-                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock] &&
-                    layer1ActionHistory[defaultNetwork][Layer1Action?.GuardianLock][
+                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock] &&
+                    layer1ActionHistory[defaultNetwork][Layer1Action.GuardianLock][
                       props.address
                     ] &&
                     props.lockStatus === sdk.HEBAO_LOCK_STATUS.CREATED
@@ -111,7 +111,7 @@ export const useHebaoMain = <
                     clearOneItem({
                       chainId: defaultNetwork as sdk.ChainId,
                       uniqueId: props.address,
-                      domain: Layer1Action?.GuardianLock,
+                      domain: Layer1Action.GuardianLock,
                     })
                   }
 
@@ -304,10 +304,19 @@ export const useAction = ({
           signature: '',
           network: networkName,
         }
+        const _selected = selected.signedRequest.wallet
+          ? selected
+          : {
+              ...selected,
+              signedRequest: {
+                ...selected.signedRequest,
+                wallet: selected.wallet,
+              },
+            }
         const response = await LoopringAPI.walletAPI.submitApproveSignature(
           {
             request: request,
-            guardian: { ...selected, type: sdk.HEBAO_META_TYPE[selected.type] as any },
+            guardian: { ..._selected, type: sdk.HEBAO_META_TYPE[_selected.type] as any },
             web3: connectProvides.usedWeb3 as any,
             chainId: _chainId,
             eddsaKey: '',
