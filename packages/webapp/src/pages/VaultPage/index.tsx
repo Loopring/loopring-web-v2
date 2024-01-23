@@ -80,11 +80,6 @@ export const VaultPage = () => {
     setShowConfirmedVault,
     modals: { isShowConfirmedVault },
   } = useOpenModals()
-  // const {
-  //   // confirmedVault,
-  //   setShowConfirmedVault,
-  //   confirmation: { confirmedVault },
-  // } = confirmation.useConfirmation()
 
   const [error, setError] = React.useState(false)
   React.useEffect(() => {

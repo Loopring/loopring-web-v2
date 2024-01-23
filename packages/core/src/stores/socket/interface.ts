@@ -1,9 +1,16 @@
+/* eslint-disable  @typescript-eslint/ban-types */
+/* tslint:disable  @typescript-eslint/ban-types */
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export type TickerSocket = string
 export type SocketUserMap = {
   [sdk.WsTopicType.account]?: boolean
   [sdk.WsTopicType.notification]?: {
+    address: string
+    network: sdk.NetworkWallet
+  }
+  // @ts-ignore
+  [sdk.WsTopicType.l2Common]?: {
     address: string
     network: sdk.NetworkWallet
   }

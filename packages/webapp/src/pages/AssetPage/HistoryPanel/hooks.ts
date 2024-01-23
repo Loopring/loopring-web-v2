@@ -1435,7 +1435,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     tokenBSymbol = erc20B.symbol
                     //@ts-ignore
                     // vTokenB = vaultTokenMap[vaultIdIndex[tokenB ?? '']]
-                    amount = sdk.toBig(amountB ?? 0).div('1e' + erc20B.decimals)
+                    amount = sdk.toBig(amountB ?? 0).div('1e' + erc20B?.decimals ?? 0)
                     //@ts-ignore
                     precision = erc20B.precision
                     fillAmountB =
@@ -1462,8 +1462,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   vTokenB,
                   operateType,
                   symbolB,
+                  vSymbolB,
                   feeStr,
                   feeTokenSymbol: feeToken?.symbol,
+                  feeErc20Symbol: erc20SymbolB,
                   erc20SymbolB,
                   erc20Symbol,
                   mainContentRender,

@@ -99,6 +99,8 @@ export const EditContact = ({
         alignItems={'flex-start'}
         alignSelf={'stretch'}
         marginTop={-4}
+        maxWidth={'var(--modal-width)'}
+        width={'var(--modal-width)'}
         //   height={}
         //   : `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
         // _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,

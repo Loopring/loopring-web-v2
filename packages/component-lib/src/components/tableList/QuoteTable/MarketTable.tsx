@@ -189,7 +189,7 @@ export const MarketTable = withTranslation('tables')(
                   )}
                   <CoinIcons type={row?.type} tokenIcon={tokenIcon} />
                   <Typography marginLeft={1 / 2} component={'span'}>
-                    {row.symbol}
+                    {symbol}
                   </Typography>
                   &nbsp;
                   {campaignTagConfig && (

@@ -4,6 +4,7 @@ import React from 'react'
 import { VaultLoanType } from '@loopring-web/common-resources'
 import { useVaultRepay } from './useVaultRepay'
 import { useVaultBorrow } from './useVaultBorrow'
+import { useL2CommonSocket } from '../../../services'
 
 export const useVaultLoan = () => {
   const {
@@ -23,6 +24,8 @@ export const useVaultLoan = () => {
       // const withdrawValue =
     }
   }, [isShow])
+  useL2CommonSocket({})
+
   return {
     vaultRepayProps: useVaultRepay(),
     vaultBorrowProps: useVaultBorrow(),

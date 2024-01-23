@@ -17,6 +17,8 @@ import {
   useOpenModals,
   useSettings,
   VaultAssetsTableProps,
+  Transaction,
+  setShowVaultJoin,
 } from '@loopring-web/component-lib'
 import {
   AccountStatus,
@@ -39,10 +41,11 @@ import _ from 'lodash'
 import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
-import { useRouteMatch } from 'react-router-dom'
+import { useLocation, useRouteMatch } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 
-const VaultPath = `${RouterPath.vault}/:item`
+const VaultPath = `${RouterPath.vault}/:item/:method?`
+
 export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
@@ -55,6 +58,8 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
 } => {
   let match: any = useRouteMatch(VaultPath)
   const history = useHistory()
+  const { search, pathname } = useLocation()
+  const searchParams = new URLSearchParams(search)
   const { t } = useTranslation(['common'])
 
   const {
@@ -166,6 +171,24 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             des: '',
             title: '',
           })
+          if (match?.params?.method) {
+            switch (match?.params?.method) {
+              case VaultAction.VaultJoin:
+                onJoinPop({})
+                // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
+                break
+              case VaultAction.VaultExit:
+                onRedeemPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+              case VaultAction.VaultLoan:
+                onBorrowPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+              case VaultAction.VaultSwap:
+                onSwapPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+            }
+            history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+          }
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
@@ -191,7 +214,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         })
       }
     }
-  }, [vaultAccountInfoStatus, match?.params?.item])
+  }, [vaultAccountInfoStatus, match?.params?.item, match?.params?.method])
   const dialogBtn = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -345,14 +368,17 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         // tokenMap: erc20TokenMap,
         idIndex: erc20IdIndex,
       },
-      // tokenPrices: { tokenPrices },
-      // tokenPrices: { tokenPrices },
+
       invest: {
-        vaultMap: { tokenMap, tokenPrices },
+        vaultMap: { tokenMap,  tokenPrices },
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: false }).vaultLayer2Map ?? {}
-    if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(walletMap ?? {}).length) {
+    if (
+      tokenMap &&
+      !!Object.keys(tokenMap).length &&
+      !!Object.keys(walletMap ?? {}).length
+    ) {
       let totalAssets = sdk.toBig(0)
       let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
         let item: any
@@ -362,6 +388,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           token: key,
           erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
         }
+        const erc20Symbol = erc20IdIndex[tokenMap[key].tokenId]
         if (walletMap && walletMap[key]) {
           tokenInfo = {
             ...tokenInfo,
@@ -374,14 +401,15 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           item = {
             token: {
               type: TokenType.vault,
-              value: tokenInfo.token,
+              value: key,
+              belongAlice: erc20Symbol,
             },
             amount: totalAmount?.toString(),
-            available: tokenInfo?.detail?.count ?? 0,
+            available: tokenInfo?.detail?.count??0,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
-            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+            erc20Symbol,
           }
         } else {
           item = {
@@ -389,6 +417,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             token: {
               type: TokenType.vault,
               value: key,
+              belongAlice: erc20Symbol,
             },
             amount: 0,
             available: 0,
@@ -397,7 +426,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             tokenValueDollar: 0,
             name: key,
             tokenValueYuan: 0,
-            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+            erc20Symbol,
           }
         }
         if (item) {
@@ -429,8 +458,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     if (
       showNoVaultAccount &&
       vaultAccountInfoStatus === SagaStatus.UNSET &&
-      vaultAccountInfo?.accountStatus &&
-      walletL2Status === SagaStatus.UNSET &&
+      vaultAccountInfo?.accountStatus && walletL2Status === SagaStatus.UNSET &&
       whichBtn &&
       vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
     ) {

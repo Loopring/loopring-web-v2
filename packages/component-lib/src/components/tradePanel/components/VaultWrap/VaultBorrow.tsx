@@ -52,6 +52,7 @@ export const VaultBorrowWrap = <
         })
       : '0.00',
     tokenImageKey: vaultBorrowData?.tradeData?.erc20Symbol,
+    belongAlice: vaultBorrowData?.tradeData?.erc20Symbol,
   }
   const label = React.useMemo(() => {
     if (vaultBorrowBtnI18nKey) {

@@ -81,6 +81,7 @@ export type TxInfo = {
 
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] }
+  vaultBorrowHashes: { [key: string]: TxInfo[] }
   showHadUnknownCollection: { [key: string]: boolean }
 }
 
@@ -793,4 +794,11 @@ export enum VaultAction {
   VaultExit = 'VaultExit',
   VaultLoan = 'VaultLoan',
   VaultSwap = 'VaultSwap',
+}
+
+export enum VaultSwapStep {
+  Edit = 'Edit',
+  Borrow = 'Borrow',
+  Swap = 'Swap',
+  Swaping = 'Swaping',
 }

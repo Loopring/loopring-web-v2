@@ -3184,3 +3184,52 @@ export const ConfirmVaultRisk = withTranslation('common')(
     )
   },
 )
+
+export const VaultSwapCancel = withTranslation('common', {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean
+    handleClose: (event: any, isAgree?: boolean) => void
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle> {t('labelInformation')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-slide-description'>
+            <Trans i18nKey={'labelVaultSwapCancel'}>
+              You are borrowing tokens.\n Are you sure you want to change the token pair or exit the
+              trade?
+            </Trans>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <DialogActions>
+            <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}>
+              {t('labelNo')}
+            </Button>
+            <Button
+              variant={'contained'}
+              size={'small'}
+              onClick={(e) => {
+                handleClose(e as any, true)
+              }}
+              color={'primary'}
+            >
+              {t('labelYes')}
+            </Button>
+          </DialogActions>
+        </DialogActions>
+      </DialogStyle>
+    )
+  },
+)

@@ -59,7 +59,7 @@ export const VaultRepayWrap = <
     tokenType: TokenType.vault,
     order: 'right',
     tokenImageKey: vaultRepayData?.tradeData?.erc20Symbol,
-
+    belongAlice: vaultRepayData?.tradeData?.erc20Symbol,
     // maxValue: vaultRepayData?.tradeData?.borrowed,
   }
   const label = React.useMemo(() => {

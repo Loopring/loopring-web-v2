@@ -16,6 +16,7 @@ import {
   VaultExitPanel,
   VaultJoinPanel,
   VaultLoanPanel,
+  VaultSwapCancel,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
 import {
@@ -24,7 +25,9 @@ import {
   TRADE_TYPE,
   VaultAction,
   VaultLoanType,
+  VaultSwapStep,
 } from '@loopring-web/common-resources'
+import { useVaultSwapExtends } from './useVaultSwapExtends'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -42,7 +45,10 @@ export const ModalVaultWrap = () => {
     setShowNoVaultAccount,
   } = useOpenModals()
   const { vaultAccountInfo } = useVaultLayer2()
-
+  const [{ openCancel, shouldClose }, setOpenCancel] = React.useState({
+    openCancel: false,
+    shouldClose: false,
+  })
   const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
   const {
@@ -61,7 +67,20 @@ export const ModalVaultWrap = () => {
     isSwapLoading,
     market,
     isMobile,
+    disabled,
+    cancelBorrow,
   } = useVaultSwap({ path: 'vault' })
+  const { BtnEle, maxEle } = useVaultSwapExtends({
+    tradeCalcData,
+    swapBtnI18nKey,
+    swapBtnStatus,
+    onSwapClick,
+    isSwapLoading,
+    disabled,
+    handleSwapPanelEvent,
+    tradeData,
+    toastOpen,
+  })
   const { vaultRepayProps, vaultBorrowProps, vaultLoanType, handleTabChange } = useVaultLoan()
   return (
     <>
@@ -103,49 +122,80 @@ export const ModalVaultWrap = () => {
         contentClassName={'vault-wrap'}
         open={isShowVaultSwap.isShow}
         onClose={() => {
-          setShowVaultSwap({ isShow: false })
+          if (
+            (tradeCalcData as any)?.isVault &&
+            (tradeCalcData as any).step !== VaultSwapStep.Edit
+          ) {
+            setOpenCancel({ openCancel: false, shouldClose: true })
+          } else {
+            setShowVaultSwap({ isShow: false })
+          }
         }}
         content={
-          <SwapPanel
-            _width={'var(--modal-width)'}
-            classWrapName={'vaultSwap'}
-            titleI8nKey={'labelVaultSwap'}
-            tokenBuyProps={{
-              tokenImageKey: coinMap[tradeData?.buy?.belong?.toString()]?.erc20Symbol,
-              tokenType: TokenType.vault,
-              disableInputValue: isMarketInit,
-              disabled: isSwapLoading || isMarketInit,
-              decimalsLimit: tradeCalcData.buyPrecision,
-            }}
-            tokenSellProps={{
-              tokenImageKey: coinMap[tradeData?.sell?.belong?.toString()]?.erc20Symbol,
-              tokenType: TokenType.vault,
-              disableInputValue: isMarketInit,
-              disabled: isSwapLoading || isMarketInit,
-              placeholderText:
-                tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
-                  ? t('labelBtradeSwapMiniMax', {
-                      minValue: tradeCalcData.sellMinAmtStr,
-                      maxValue: tradeCalcData.sellMaxAmtStr,
-                    })
-                  : t('labelBtradeSwapMini', {
-                      minValue: tradeCalcData.sellMinAmtStr,
-                    }),
-            }}
-            campaignTagConfig={campaignTagConfig}
-            tradeCalcData={tradeCalcData as any}
-            tradeData={tradeData as any}
-            onSwapClick={onSwapClick}
-            swapBtnI18nKey={swapBtnI18nKey}
-            swapBtnStatus={swapBtnStatus}
-            handleSwapPanelEvent={handleSwapPanelEvent}
-            should15sRefresh={should15sRefresh}
-            refreshRef={refreshRef}
-            tradeVault={tradeVault}
-            market={market}
-            isMobile={isMobile}
-            hideSecondConfirmation
-          />
+          tradeData ? (
+            // @ts-ignore
+            <SwapPanel
+              _width={'var(--modal-width)'}
+              classWrapName={'vaultSwap'}
+              titleI8nKey={'labelVaultSwap'}
+              tokenBuyProps={{
+                tokenImageKey: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
+                belongAlice: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
+                tokenType: TokenType.vault,
+                disableInputValue: isMarketInit,
+                disabled: isSwapLoading || isMarketInit,
+                decimalsLimit: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision,
+                allowDecimals: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision
+                  ? true
+                  : false,
+              }}
+              onCancelClick={() => {
+                setOpenCancel({ openCancel: true, shouldClose: false })
+              }}
+              BtnEle={BtnEle}
+              tokenSellProps={{
+                decimalsLimit:
+                  vaultTokenMao[tradeData?.sell?.belong?.toString() ?? '']?.vaultTokenAmounts
+                    ?.qtyStepScale,
+                allowDecimals: vaultTokenMao[tradeData?.sell?.belong?.toString() ?? '']
+                  ?.vaultTokenAmounts?.qtyStepScale
+                  ? true
+                  : false,
+                tokenImageKey: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
+                belongAlice: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
+                tokenType: TokenType.vault,
+                subEle: maxEle,
+                subLabel: undefined,
+                disableInputValue: isMarketInit,
+                disabled: isSwapLoading || isMarketInit,
+                placeholderText:
+                  tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
+                    ? t('labelBtradeSwapMiniMax', {
+                        minValue: tradeCalcData.sellMinAmtStr,
+                        maxValue: tradeCalcData.sellMaxAmtStr,
+                      })
+                    : t('labelBtradeSwapMini', {
+                        minValue: tradeCalcData.sellMinAmtStr,
+                      }),
+              }}
+              {...{
+                campaignTagConfig,
+                tradeCalcData,
+                tradeData: tradeData as any,
+                onSwapClick,
+                swapBtnI18nKey,
+                swapBtnStatus,
+                handleSwapPanelEvent,
+                should15sRefresh,
+                refreshRef,
+                tradeVault,
+                market,
+                isMobile,
+              }}
+            />
+          ) : (
+            <></>
+          )
         }
       />
       <Modal
@@ -170,6 +220,15 @@ export const ModalVaultWrap = () => {
             handleTabChange={handleTabChange}
           />
         }
+      />
+      <VaultSwapCancel
+        open={openCancel}
+        handleClose={(_, isAgree) => {
+          setOpenCancel({ openCancel: false, shouldClose: false })
+          if (isAgree) {
+            cancelBorrow(shouldClose)
+          }
+        }}
       />
     </>
   )

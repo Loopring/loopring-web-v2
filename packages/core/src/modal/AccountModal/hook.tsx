@@ -124,6 +124,7 @@ import {
   useSettings,
   TOASTOPEN,
   setShowGlobalToast,
+  SendFromContact,
   NFTBurn_Failed,
   NFTBurn_First_Method_Denied,
   NFTBurn_In_Progress,
@@ -152,7 +153,6 @@ import {
   VaultRepay_Success,
   VaultRepay_Failed,
   VaultRepay_In_Progress,
-  SendFromContact,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -883,9 +883,9 @@ export function useAccountModalForUI({
         view: (
           <SendFromContact
             {...(isShowAccount?.info as any)}
-          />
-        )
-      } ,
+               />
+        ),
+      },
       [AccountStep.SendNFTGateway]: {
         view: (
           <SendNFTAsset
