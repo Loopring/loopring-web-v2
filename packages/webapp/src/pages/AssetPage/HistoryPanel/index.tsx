@@ -20,8 +20,8 @@ import {
   useToggle,
   DualDes,
   ButtonStyle,
-  VaultTxTable,
   VaultCloseDetail,
+  VaultTxTable,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,

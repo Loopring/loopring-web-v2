@@ -1052,7 +1052,7 @@ export const useVaultSwap = <
     if (market) {
       getVaultMap()
       callPairDetailInfoAPIs()
-      if (chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
+      if (chainInfos.vaultBorrowHashes && chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
         chainInfos.vaultBorrowHashes[account.accAddress].forEach(({ hash }) => {
           const { account } = store.getState()
           LoopringAPI?.vaultAPI
@@ -1349,7 +1349,7 @@ export const useVaultSwap = <
           erc20Symbol: erc20IdIndex[tokenMap[sellToken.symbol].tokenId],
         } as unknown as VaultBorrowTradeData)
         const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
-        if (chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
+        if (chainInfos.vaultBorrowHashes && chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
           showHasBorrow = true
         }
         const { countBig, ...vaultSellRest } = makeVaultSell(sellToken.symbol)
