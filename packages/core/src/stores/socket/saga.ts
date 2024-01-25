@@ -68,7 +68,7 @@ export function* closeUserSocket() {
     yield put(getSocketStatus({ error: err }))
   }
 }
-
+var firstTimeSubscribe = false
 export function* sendMessage({ payload }: { payload: { socket: SocketMap } }) {
   try {
     const {
@@ -86,13 +86,18 @@ export function* sendMessage({ payload }: { payload: { socket: SocketMap } }) {
     if ((window as any).loopringSocket) {
       let userSocket: SocketMap & SocketUserMap = { ...socket }
       if (account.readyState == AccountStatus.ACTIVATED && account.accAddress) {
-        userSocket = {
-          ...userSocket,
-          [sdk.WsTopicType.account]: true,
-          [sdk.WsTopicType.notification]: {
-            address: account.accAddress,
-            network: networkWallet,
-          },
+        if (!firstTimeSubscribe) {
+          userSocket = socket
+        } else {
+          firstTimeSubscribe = false
+          userSocket = {
+            ...userSocket,
+            [sdk.WsTopicType.account]: true,
+            [sdk.WsTopicType.notification]: {
+              address: account.accAddress,
+              network: networkWallet,
+            },
+          }
         }
       }
       yield getSocket({
