@@ -63,6 +63,7 @@ import {
   useVaultLayer2,
   useVaultMap,
   VaultBorrowTradeData,
+  VaultMapStates,
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
@@ -215,7 +216,13 @@ export const useVaultSwap = <
     tokenMap,
   })
   const { t } = useTranslation(['common', 'error'])
-  const [isSwapLoading, setIsSwapLoading] = React.useState(false)
+  const [isSwapLoading, _setIsSwapLoading] = React.useState(false)
+  const setIsSwapLoading = (args) => {
+    myLog('setIsSwapLoading', args)
+    _setIsSwapLoading(args)
+  }
+  myLog('setIsSwapLoading isSwapLoading', isSwapLoading)
+  
 
   const refreshRef = React.createRef()
   const { toastOpen, setToastOpen, closeToast } = useToast()
@@ -1089,7 +1096,11 @@ export const useVaultSwap = <
       sellToken: _sellToken,
       buyToken: _buyToken,
     } = store.getState()._router_tradeVault.tradeVault
-    if (depth && new RegExp(market ?? '').test(depth?.symbol)) {
+    const {
+      marketMap
+    } = store.getState().invest.vaultMap as VaultMapStates
+
+    if (depth && market && marketMap[market].vaultMarket === depth.symbol) {
       refreshWhenDepthUp()
       setIsMarketStatus((state) => {
         return {
