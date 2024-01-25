@@ -72,12 +72,15 @@ export const MarketDetail = ({
   // const [data, setData] = React.useState([])
   const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
   const [trend, setTrend] = React.useState<AmmHistoryItem[] | undefined>([])
-  const handleTimeIntervalChange = (timeInterval: TradingInterval) => {
-    setTimeInterval(timeInterval)
-    if (trends?.length) {
-      setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
-    }
-  }
+  const handleTimeIntervalChange = React.useCallback(
+    (timeInterval: TradingInterval) => {
+      setTimeInterval(timeInterval)
+      if (trends?.length) {
+        setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
+      }
+    },
+    [trends],
+  ) 
   const priceCall = React.useCallback(
     (price: any) => {
       const priceStr = sdk.toBig(price ?? 0).times(forexMap[currency])
