@@ -335,9 +335,14 @@ export const MarketDetail = ({
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {t('labelTokenSupply')}
           </Typography>
-          <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
-            {tokenInfo.totalSupply !== 'undefined' ? tokenInfo.totalSupply : EmptyValueTag}
-          </QuoteTableChangedCell>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {tokenInfo.totalSupply !== 'undefined'
+              ? getValuePrecisionThousand(tokenInfo.totalSupply, 2, 2, 2, false, {
+                  isAbbreviate: false,
+                  abbreviate: 6,
+                })
+              : EmptyValueTag}
+          </Typography>
         </Typography>
         <Typography
           component={'p'}

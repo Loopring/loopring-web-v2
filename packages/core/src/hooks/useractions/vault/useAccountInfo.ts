@@ -65,26 +65,19 @@ export const useAccountInfo = () => {
     label: string
   } => {
     const { vaultAccountInfo } = store.getState().vaultLayer2
-    if (vaultAccountInfoStatus === SagaStatus.UNSET && vaultAccountInfo) {
-      // setIsLoading(false)
-
-      switch (vaultAccountInfo?.accountStatus) {
-        // @ts-ignore
-        case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
-          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultREDEEMPendingBtn|` }
-        // @ts-ignore
-        case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultAddBtn|` }
-        case sdk.VaultAccountStatus.FREE: // sdk.VaultAccountStatus.FREE:
-        default:
-          if (activeInfo?.hash) {
-            return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
-          }
+    switch (vaultAccountInfo?.accountStatus) {
+      // @ts-ignore
+      case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
+        return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultREDEEMPendingBtn|` }
+      // @ts-ignore
+      case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
+        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultAddBtn|` }
+      case sdk.VaultAccountStatus.FREE: // sdk.VaultAccountStatus.FREE:
+      default:
+        if (activeInfo?.hash) {
           return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
-      }
-    } else {
-      // setIsLoading(true)
-      return { tradeBtnStatus: TradeBtnStatus.LOADING, label: `labelVaultCheckInProcessing|` }
+        }
+        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
     }
   }, [vaultAccountInfoStatus, activeInfo])
   const {

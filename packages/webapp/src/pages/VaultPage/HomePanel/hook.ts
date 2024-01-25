@@ -116,7 +116,7 @@ export const useVaultMarket = <
         detail: {
           tokenInfo: {
             ...tokenMap[row?.erc20Symbol ?? ''],
-            // ...tokneInfoDetail?.list[0],
+            ...(tokneInfoDetail && tokneInfoDetail.list && tokneInfoDetail.list[0]),
             ...row,
             // symbol: row.symbol,
           },

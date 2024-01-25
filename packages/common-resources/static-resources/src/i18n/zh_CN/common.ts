@@ -2283,7 +2283,7 @@ export default {
   labelTokenSupply: 'Token Supply',
   labelMarketCap: 'Market Cap',
   labelTokenInfo: 'Token Info',
-  labelTokenIntroduce: 'Token Introduce',
+  labelTokenIntroduce: 'Introduction',
   labelVaultRedeemDetail: 'Details',
   labelCloseOutDetail: 'Close Out Detail',
   labelVaultTradeTitle: 'Vault trade',

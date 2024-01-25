@@ -148,8 +148,21 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               onSwapPop({})
               break
           }
+        } else if (
+          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+        ) {
+          setShowNoVaultAccount({
+            isShow: true,
+            des: 'labelRedeemDesMessage',
+            title: 'labelRedeemTitle',
+          })
         } else {
-          setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
+          setShowNoVaultAccount({
+            isShow: true,
+            whichBtn: VaultAction.VaultJoin,
+            des: 'labelJoinDesMessage',
+            title: 'labelVaultJoinTitle',
+          })
         }
       },
       [vaultAccountInfo?.accountStatus, activeInfo?.hash],
@@ -166,11 +179,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       const { vaultAccountInfo } = store.getState().vaultLayer2
       if (vaultAccountInfo?.accountStatus) {
         if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
-          setShowNoVaultAccount({
-            isShow: false,
-            des: '',
-            title: '',
-          })
           if (match?.params?.method) {
             switch (match?.params?.method) {
               case VaultAction.VaultJoin:
@@ -192,26 +200,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
-          setShowNoVaultAccount({
-            isShow: true,
-            des: 'labelRedeemDesMessage',
-            title: 'labelRedeemTitle',
-          })
         } else {
-          setShowNoVaultAccount({
-            isShow: true,
-            whichBtn: VaultAction.VaultJoin,
-            des: 'labelJoinDesMessage',
-            title: 'labelVaultJoinTitle',
-          })
         }
       } else {
-        setShowNoVaultAccount({
-          isShow: true,
-          // whichBtn: VaultAction.VaultJoin,
-          des: 'labelJoinDesMessage',
-          title: 'labelVaultCheckInProcessing',
-        })
       }
     }
   }, [vaultAccountInfoStatus, match?.params?.item, match?.params?.method])
@@ -495,10 +486,6 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     btnProps,
     onBtnClose: () => {
       setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
-      } else if (match.params.item == VaultKey.VAULT_DASHBOARD) {
-        history.push(`${RouterPath.vault}/${VaultKey.VAULT_HOME}`)
-      }
     },
     forexMap,
     rawData: assetsRawData as R[],

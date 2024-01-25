@@ -49,7 +49,7 @@ const TableStyled = styled(Table)`
     }};
 
     --template-columns: ${({ ispro, isMobile }: any) =>
-      ispro || isMobile ? '35% 44% auto' : '240px auto 100px auto'} !important;
+      ispro || isMobile ? '35% 44% auto' : '30% 30% 30% 10%'} !important;
 
     .rdg-cell.action {
       display: flex;
@@ -63,6 +63,13 @@ const TableStyled = styled(Table)`
 
     .rdg-header-sort-cell {
       justify-content: flex-end;
+    }
+  }
+  .textAlignLeft {
+    text-align: left;
+
+    .rdg-header-sort-cell {
+      justify-content: flex-start;
     }
   }
 
@@ -154,7 +161,7 @@ export const MarketTable = withTranslation('tables')(
         const basicRender = [
           {
             key: 'pair',
-            name: t('labelQuotaPair'),
+            name: t('labelTxToken'),
             sortable: true,
             formatter: ({ row, rowIdx }: any) => {
               // const isFavourite = favoriteMarket?.includes(row.symbol)
@@ -208,8 +215,8 @@ export const MarketTable = withTranslation('tables')(
           {
             key: 'price',
             name: t('labelQuotaLastPrice'),
-            headerCellClass: 'textAlignRight',
-            cellClass: 'textAlignRight',
+            headerCellClass: 'textAlignLeft',
+            cellClass: 'textAlignLeft',
             sortable: true,
             formatter: ({ row }: any) => {
               return (
@@ -229,11 +236,12 @@ export const MarketTable = withTranslation('tables')(
             key: 'change',
             name: t(isMobile ? 'labelQuota24hChangeLit' : 'labelQuota24hChange'),
             sortable: true,
-            headerCellClass: 'textAlignCenter',
+            headerCellClass: 'textAlignLeft',
+            cellClass: 'textAlignLeft',
             formatter: ({ row }: any) => {
               const value = row.percentChange24H
               return (
-                <div className='rdg-cell-value textAlignRight'>
+                <div className='rdg-cell-value textAlignLeft'>
                   <QuoteTableChangedCell value={value} upColor={upColor}>
                     {typeof value !== 'undefined'
                       ? (sdk.toBig(value).gt(0) ? '+' : '') +
@@ -268,15 +276,6 @@ export const MarketTable = withTranslation('tables')(
                     : EmptyValueTag}
                 </div>
               )
-            },
-          },
-          {
-            key: 'actions',
-            headerCellClass: 'textAlignRight',
-            name: t('labelQuoteAction'),
-            cellClass: 'textAlignRight',
-            formatter: ({ row }: any) => {
-              return <>{actionEle(row)}</>
             },
           },
         ]
