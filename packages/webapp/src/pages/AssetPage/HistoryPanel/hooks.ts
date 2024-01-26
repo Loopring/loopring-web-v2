@@ -1118,6 +1118,58 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         settledToAmount: item.settledToAmount,
         settledFromAmount: item.settledFromAmount,
         time: item?.time ?? undefined,
+        placedAmount:
+          tokenMap && item.fromSymbol && item.fromAmount
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.fromAmount),
+                undefined,
+                undefined,
+                tokenMap[item.fromSymbol].precision,
+                true,
+                { isAbbreviate: true },
+              )} ${item.fromSymbol}`
+            : EmptyValueTag,
+        executedAmount:
+          tokenMap && item.fromSymbol && item.settledFromAmount
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.settledFromAmount),
+                undefined,
+                undefined,
+                tokenMap[item.fromSymbol].precision,
+                true,
+                { isAbbreviate: true },
+              )} ${item.fromSymbol}`
+            : EmptyValueTag,
+        executedRate:
+          tokenMap && item.fromSymbol && item.settledFromAmount && item.fromAmount
+            ? `${sdk
+                .toBig(item.settledFromAmount)
+                .div(item.fromAmount)
+                .multipliedBy('100')
+                .toFixed(2)}%`
+            : EmptyValueTag,
+        convertedAmount:
+          tokenMap && item.toSymbol && item.settledToAmount
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.settledToAmount),
+                undefined,
+                undefined,
+                tokenMap[item.toSymbol].precision,
+                true,
+                { isAbbreviate: true },
+              )} ${item.toSymbol}`
+            : EmptyValueTag,
+        settledAmount:
+          tokenMap && item.toSymbol && item.toAmount
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.toAmount),
+                undefined,
+                undefined,
+                tokenMap[item.toSymbol].precision,
+                true,
+                { isAbbreviate: true },
+              )} ${item.toSymbol}`
+            : EmptyValueTag,
       }
       switch (item.type) {
         case BtradeSwapsType.Delivering:
