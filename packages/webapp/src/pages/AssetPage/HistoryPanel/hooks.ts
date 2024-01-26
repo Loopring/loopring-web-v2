@@ -51,6 +51,7 @@ import {
   DirectionTag,
   PriceTag,
   CurrencyToTag,
+  myLog,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
@@ -915,11 +916,18 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   } = useAccount()
   const { tokenMap } = useTokenMap()
   const { setShowAccount } = useOpenModals()
+  const { chainId, baseURL} = useSystem()
+
   const getBtradeOrderList = React.useCallback(
     async (props: Omit<sdk.GetOrdersRequest, 'accountId'>) => {
-      if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
+      
+      if (chainId && baseURL && accountId && apiKey) {
+        const defiAPI = new sdk.DefiAPI({
+          chainId: chainId as sdk.ChainId,
+          baseUrl: baseURL
+        })
         setShowLoading(true)
-        const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
+        const userOrders = await defiAPI.getBtradeOrders({
           request: { accountId, limit: props.limit, offset: props.offset },
           apiKey,
         })
@@ -1098,7 +1106,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         setShowLoading(false)
       }
     },
-    [accountId, apiKey, setToastOpen, t, tokenMap],
+    [accountId, apiKey, setToastOpen, t, tokenMap, baseURL, chainId],
   )
 
   return {
