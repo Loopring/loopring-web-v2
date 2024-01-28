@@ -2302,4 +2302,14 @@ export default {
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+  labelOpenPositionDetail: 'Open Position Detail',
+  labelMarginCallDetail: 'Margin Call Detail',
+  labelBorrowDetail: 'Borrow Detail',
+  labelRepayDetail: 'Repay Detail',
+  labelTradeDetail: 'Trade Detail',
+  labelVaultPlacedAmount: 'Placed Amount',
+  labelVaultExecutedAmount: 'Executed Amount',
+  labelVaultExecutedRate: 'Executed Rate',
+  labelVaultConvertedAmount: 'Converted Amount',
+  labelVaultTxFee: 'Fee',
 }

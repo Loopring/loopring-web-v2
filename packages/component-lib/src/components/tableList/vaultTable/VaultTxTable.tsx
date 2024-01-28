@@ -1,18 +1,25 @@
-import { WithTranslation, withTranslation } from 'react-i18next'
+import { WithTranslation, useTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import { Column, EmptyDefault, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, IconButton, Typography } from '@mui/material'
+import { Box, BoxProps, Button, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
 import { RawDataVaultTxItem, VaultRecordType } from './Interface'
-import { globalSetup, OrderListIcon, RowInvestConfig } from '@loopring-web/common-resources'
+import {
+  globalSetup,
+  myLog,
+  RowInvestConfig,
+  TokenType,
+  YEAR_DAY_MINUTE_FORMAT,
+} from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment'
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { RedeemDes2 } from '../../modal'
+import { CoinIcons } from '../assetsTable'
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -25,7 +32,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   & .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 16% 48% auto auto !important;`
+        ? `--template-columns: 16% 38% auto auto auto !important;`
         : `--template-columns: 16% 40% auto !important;`}
   }
 `
@@ -97,19 +104,6 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
               >
                 <Typography component={'span'} display={'flex'} alignItems={'center'}>
                   {t(`labelVault${row.type}`)}
-                  {row.type === VaultRecordType.closeout &&
-                  [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED, 'VAULT_STATUS_EARNING'].includes(
-                    row.status,
-                  ) ? (
-                    <IconButton
-                      sx={{ marginLeft: 1, color: 'var(--color-primary)' }}
-                      onClick={() => props.onItemClick(row)}
-                    >
-                      <OrderListIcon color={'inherit'} />
-                    </IconButton>
-                  ) : (
-                    <></>
-                  )}
                 </Typography>
               </Box>
             )
@@ -119,14 +113,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           key: 'Filled',
           name: t('labelVaultTxFilled'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
-            return (
-              <>
-                {row.mainContentRender +
-                  (row.feeStr
-                    ? `; ${t('labelTradeFee')}: ${row.feeStr} ${row.feeTokenSymbol}`
-                    : '')}
-              </>
-            )
+            return <>{row.mainContentRender}</>
           },
         },
         {
@@ -172,6 +159,19 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           name: t('labelVaultTxTime'),
           formatter: ({ row }: FormatterProps<R>) => {
             return <>{moment(row?.raw_data?.operation?.createdAt).fromNow()}</>
+          },
+        },
+        {
+          key: 'Action',
+          cellClass: 'textAlignRight',
+          headerCellClass: 'textAlignRight',
+          name: 'Action',
+          formatter: ({ row }: FormatterProps<R>) => {
+            return (
+              <Button variant={'text'} onClick={() => props.onItemClick(row)}>
+                {t('labelDetail')}
+              </Button>
+            )
           },
         },
       ],
@@ -315,6 +315,9 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           }
           rowHeight={RowInvestConfig.rowHeight}
           headerRowHeight={RowInvestConfig.rowHeaderHeight}
+          onRowClick={(_, row) => {
+            props.onItemClick(row)
+          }}
           {...{
             ...defaultArgs,
             ...props,
@@ -419,6 +422,339 @@ export const VaultCloseDetail = withTranslation(['common'])(
             )}
           </Box>
         }
+      </Box>
+    )
+  },
+)
+
+export const VaultOperationDetail = (props: {
+  statusColor: string
+  statusLabel: string
+  collateralSymbol: string
+  collateralAmount: string
+  time: number
+  type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION'
+}) => {
+  const { coinJson } = useSettings()
+  const { statusColor, statusLabel, collateralSymbol, collateralAmount, time, type } = props
+  const { t } = useTranslation()
+  return (
+    <Box flex={1} display={'flex'} flexDirection={'column'}>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        alignItems={'stretch'}
+        justifyContent={'space-between'}
+        padding={2}
+        margin={2}
+        borderRadius={1 / 2}
+        sx={{
+          background: 'var(--field-opacity)',
+        }}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+          order={9}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelType')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {type === 'VAULT_OPEN_POSITION'
+              ? t('labelVaultJoin')
+              : type === 'VAULT_MARGIN_CALL'
+              ? t('labelVaultMarginCall')
+              : type === 'VAULT_BORROW'
+              ? t('labelVaultBorrow')
+              : t('labelVaultRepay')}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+          order={9}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelVaultStatus')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={statusColor}>
+            {statusLabel}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+          order={9}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelVaultCollateral')}
+          </Typography>
+          <Typography
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+          >
+            <CoinIcons
+              size='small'
+              type={TokenType.vault}
+              tokenIcon={[coinJson[collateralSymbol], undefined]}
+            />{' '}
+            {collateralAmount} {collateralSymbol}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          order={10}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelVaultTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {time && moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+      </Box>
+    </Box>
+  )
+}
+
+export const VaultTradeDetail = withTranslation(['common'])(
+  (
+    props: {
+      statusColor: string
+      statusLabel: string
+      fromSymbol: string
+      toSymbol: string
+      placedAmount: string
+      executedAmount: string
+      executedRate: string
+      convertedAmount: string
+      price: string
+      feeSymbol: string
+      feeAmount: string
+      time: number
+    } & WithTranslation,
+  ) => {
+    const {
+      statusColor,
+      statusLabel,
+      fromSymbol,
+      toSymbol,
+      placedAmount,
+      executedAmount,
+      executedRate,
+      convertedAmount,
+      price,
+      feeSymbol,
+      feeAmount,
+      time,
+    } = props
+    const { coinJson } = useSettings()
+    const { t } = useTranslation()
+    return (
+      <Box flex={1} display={'flex'} flexDirection={'column'}>
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          alignItems={'stretch'}
+          justifyContent={'space-between'}
+          padding={2}
+          margin={2}
+          borderRadius={1 / 2}
+          sx={{
+            background: 'var(--field-opacity)',
+          }}
+        >
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelType')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {t('labelVaultSwap')}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultStatus')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={statusColor}>
+              {statusLabel}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultPlacedAmount')}
+            </Typography>
+            <Typography
+              display={'flex'}
+              flexDirection={'row'}
+              alignItems={'center'}
+              variant={'body1'}
+              component={'span'}
+              color={'var(--color-text-primary)'}
+            >
+              <CoinIcons
+                size='small'
+                type={TokenType.vault}
+                tokenIcon={[coinJson[fromSymbol], undefined]}
+              />{' '}
+              {placedAmount} {fromSymbol}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultExecutedAmount')}
+            </Typography>
+            <Typography
+              display={'flex'}
+              flexDirection={'row'}
+              alignItems={'center'}
+              variant={'body1'}
+              component={'span'}
+              color={'var(--color-text-primary)'}
+            >
+              <CoinIcons
+                size='small'
+                type={TokenType.vault}
+                tokenIcon={[coinJson[fromSymbol], undefined]}
+              />{' '}
+              {executedAmount} {fromSymbol}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultExecutedRate')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {executedRate}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultConvertedAmount')}
+            </Typography>
+
+            <Typography
+              display={'flex'}
+              flexDirection={'row'}
+              alignItems={'center'}
+              variant={'body1'}
+              component={'span'}
+              color={'var(--color-text-primary)'}
+            >
+              <CoinIcons
+                size='small'
+                type={TokenType.vault}
+                tokenIcon={[coinJson[toSymbol], undefined]}
+              />{' '}
+              {convertedAmount} {toSymbol}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultPrice')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {price}
+            </Typography>
+          </Typography>
+          <Typography
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            component={'span'}
+            order={9}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultTxFee')}
+            </Typography>
+
+            <Typography
+              display={'flex'}
+              flexDirection={'row'}
+              alignItems={'center'}
+              variant={'body1'}
+              component={'span'}
+              color={'var(--color-text-primary)'}
+            >
+              <CoinIcons
+                size='small'
+                type={TokenType.vault}
+                tokenIcon={[coinJson[feeSymbol], undefined]}
+              />{' '}
+              {feeAmount} {feeSymbol}
+            </Typography>
+          </Typography>
+          <Typography
+            component={'span'}
+            display={'inline-flex'}
+            justifyContent={'space-between'}
+            marginTop={2}
+            order={10}
+          >
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+              {t('labelVaultTime')}
+            </Typography>
+            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+              {time && moment(time).format(YEAR_DAY_MINUTE_FORMAT)}
+            </Typography>
+          </Typography>
+        </Box>
       </Box>
     )
   },

@@ -2138,8 +2138,8 @@ export default {
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelHideRead: 'Hide Read(s)',
-  labelL2NFTBurnTitle:"Burn NFT",
-  labelL2NFTBurnBtn:"Burn NFT",
+  labelL2NFTBurnTitle: 'Burn NFT',
+  labelL2NFTBurnBtn: 'Burn NFT',
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
@@ -2147,7 +2147,7 @@ export default {
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelUpdateContactsNext: 'Go to Update Contact',
   labelENSAddressMismatch: 'ENS & Address Mismatch',
-  
+
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
@@ -2346,5 +2346,15 @@ export default {
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
   labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
+  labelOpenPositionDetail: 'Open Position Detail',
+  labelMarginCallDetail: 'Margin Call Detail',
+  labelBorrowDetail: 'Borrow Detail',
+  labelRepayDetail: 'Repay Detail',
+  labelTradeDetail: 'Trade Detail',
+  labelVaultPlacedAmount: 'Placed Amount',
+  labelVaultExecutedAmount: 'Executed Amount',
+  labelVaultExecutedRate: 'Executed Rate',
+  labelVaultConvertedAmount: 'Converted Amount',
+  labelVaultTxFee: 'Fee',
 }
 
