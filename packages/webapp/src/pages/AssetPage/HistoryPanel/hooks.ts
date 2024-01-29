@@ -1496,6 +1496,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               type: 'VAULT_OPEN_POSITION' | 'VAULT_MARGIN_CALL' | 'VAULT_BORROW' | 'VAULT_REPAY'
               statusColor: string
               statusLabel: string
+              statusType: "success" | "processing" | "failed"
               collateralSymbol: string
               collateralAmount: string
               time: number
@@ -1504,6 +1505,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               type: 'VAULT_TRADE'
               statusColor: string
               statusLabel: string
+              statusType: "success" | "processing" | "failed"
               fromSymbol: string
               toSymbol: string
               placedAmount: string
@@ -1544,6 +1546,19 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         : operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         ? 'var(--color-error)'
         : 'var(--color-text-primary)'
+      const statusType = [
+        sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+        'VAULT_STATUS_EARNING',
+      ].includes(operation.status)
+        ? 'success'
+        : [
+            sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+            sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING,
+          ].includes(operation.status)
+        ? 'processing'
+        : operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        ? 'failed'
+        : 'processing'
       const statusLabel = t2(`labelVault${operation.status}`)
       switch (operation.operateType) {
         case 'VAULT_BORROW':
@@ -1571,6 +1586,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               time: order && order.createdAt,
               statusColor,
               statusLabel,
+              statusType
             },
           }
         }
@@ -1588,6 +1604,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               ...item,
               type: 'VAULT_CLOSE_OUT',
               vaultCloseDetail: {
+                statusType,
+                statusLabel,
                 status: t(`labelVault${operation.status}`),
                 amount: amount.gte(0)
                   ? getValuePrecisionThousand(
@@ -1675,6 +1693,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               type: 'VAULT_TRADE',
               statusColor,
               statusLabel,
+              statusType,
               fromSymbol: tokenSellInfo.symbol,
               toSymbol: tokenBuyInfo.symbol,
               placedAmount: getValuePrecisionThousand(

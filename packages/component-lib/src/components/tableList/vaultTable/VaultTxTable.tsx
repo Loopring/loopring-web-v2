@@ -8,7 +8,10 @@ import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
 import { RawDataVaultTxItem, VaultRecordType } from './Interface'
 import {
+  DoneIcon,
+  FailedIcon,
   globalSetup,
+  LoadingIcon,
   myLog,
   RowInvestConfig,
   TokenType,
@@ -350,6 +353,35 @@ export const VaultCloseDetail = withTranslation(['common'])(
         <Box
           display={'flex'}
           flexDirection={'column'}
+          justifyContent={'center'}
+          width={'100%'}
+          alignItems={'center'}
+        >
+          {vaultCloseDetail.statusType === 'failed' ? (
+            <FailedIcon style={{ color: 'var(--color-error)', width: 64, height: 64 }} />
+          ) : vaultCloseDetail.statusType === 'processing' ? (
+            <LoadingIcon color={'primary'} style={{ width: 64, height: 64 }} />
+          ) : (
+            <DoneIcon
+              style={{
+                color: 'var(--color-success)',
+                width: 64,
+                height: 64,
+              }}
+            />
+          )}
+          <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+          >
+            {vaultCloseDetail.statusLabel}
+          </Typography>
+        </Box>
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
           alignItems={'stretch'}
           justifyContent={'space-between'}
           padding={2}
@@ -430,16 +462,46 @@ export const VaultCloseDetail = withTranslation(['common'])(
 export const VaultOperationDetail = (props: {
   statusColor: string
   statusLabel: string
+  statusType: "success" | "processing" | "failed"
   collateralSymbol: string
   collateralAmount: string
   time: number
   type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION'
 }) => {
   const { coinJson } = useSettings()
-  const { statusColor, statusLabel, collateralSymbol, collateralAmount, time, type } = props
+  const { statusColor, statusLabel, collateralSymbol, collateralAmount, time, type, statusType } = props
   const { t } = useTranslation()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'center'}
+        width={'100%'}
+        alignItems={'center'}
+      >
+        {statusType === 'failed' ? (
+          <FailedIcon style={{ color: 'var(--color-error)', width: 64, height: 64 }} />
+        ) : statusType === 'processing' ? (
+          <LoadingIcon color={'primary'} style={{ width: 64, height: 64 }} />
+        ) : (
+          <DoneIcon
+            style={{
+              color: 'var(--color-success)',
+              width: 64,
+              height: 64,
+            }}
+          />
+        )}
+        <Typography
+          marginTop={2}
+          variant={'body1'}
+          component={'span'}
+          color={'var(--color-text-primary)'}
+        >
+          {statusLabel}
+        </Typography>
+      </Box>
       <Box
         display={'flex'}
         flexDirection={'column'}
@@ -536,6 +598,7 @@ export const VaultTradeDetail = withTranslation(['common'])(
     props: {
       statusColor: string
       statusLabel: string
+      statusType: "success" | "processing" | "failed"
       fromSymbol: string
       toSymbol: string
       placedAmount: string
@@ -551,6 +614,7 @@ export const VaultTradeDetail = withTranslation(['common'])(
     const {
       statusColor,
       statusLabel,
+      statusType,
       fromSymbol,
       toSymbol,
       placedAmount,
@@ -566,6 +630,35 @@ export const VaultTradeDetail = withTranslation(['common'])(
     const { t } = useTranslation()
     return (
       <Box flex={1} display={'flex'} flexDirection={'column'}>
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          width={'100%'}
+          alignItems={'center'}
+        >
+          {statusType === 'failed' ? (
+            <FailedIcon style={{ color: 'var(--color-error)', width: 64, height: 64 }} />
+          ) : statusType === 'processing' ? (
+            <LoadingIcon color={'primary'} style={{ width: 64, height: 64 }} />
+          ) : (
+            <DoneIcon
+              style={{
+                color: 'var(--color-success)',
+                width: 64,
+                height: 64,
+              }}
+            />
+          )}
+          <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+          >
+            {statusLabel}
+          </Typography>
+        </Box>
         <Box
           display={'flex'}
           flexDirection={'column'}
