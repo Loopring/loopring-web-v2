@@ -142,7 +142,7 @@ export default {
   labelHome: 'Loopring Pro',
   labelVaultDes: '',
   labelVaultHome: 'Home',
-  labelVaultHomeDes: 'Third-party funds to trade',
+  labelVaultHomeDes: 'Access the available portfolio',
   labelVaultDashboard: 'Dashboard',
-  labelVaultDashboardDes: 'Loan & trade freely',
+  labelVaultDashboardDes: 'Manage and trade your assets',
 }

@@ -2188,7 +2188,7 @@ export default {
   labelVaultTokenQuoteDes:
     'When provide the token as collateral, you will receive an equivalent amount of Vault Token.',
   labelTitleVaultDes:
-    'Use third-party funds to trade assets. Traders can access additional capital to leverage their positions and amplify trading results. ',
+    'Loopring Vault can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. Other than leveraged trading, it also allows users to trade hot tokens that are not available in Loopring DEX with CEX liquidity.',
   labelTitleVault: 'Vault',
   labelVaultHomeTitle: 'Home',
   labelVaultDashboardTitle: 'Dashboard',
