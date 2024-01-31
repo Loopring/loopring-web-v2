@@ -186,6 +186,7 @@ export const MarketDetail = ({
           <ScaleAreaChart
             showXAxis={true}
             showYAxis={true}
+            
             type={ChartType.Trend}
             data={trend}
             quoteSymbol={'USDT'}
@@ -212,8 +213,7 @@ export const MarketDetail = ({
             data: timeIntervalData.map((item) => {
               return {
                 value: item.id,
-                JSX: t('i18nKey'),
-                key: item.id,
+                key: item.i18nKey,
               }
             }),
           }}

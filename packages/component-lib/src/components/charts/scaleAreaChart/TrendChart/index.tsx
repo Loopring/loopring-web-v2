@@ -4,6 +4,7 @@ import {
   ComposedChart,
   Line,
   ResponsiveContainer,
+  CartesianGrid,
   Tooltip,
   XAxis,
   YAxis,
@@ -225,6 +226,7 @@ const TrendChart = ({
             <stop offset='90%' stopColor={trendColor} stopOpacity={0} />
           </linearGradient>
         </defs>
+        <CartesianGrid  strokeOpacity={0.3}  stroke={'var(--color-text-secondary)'} strokeDasharray="5 5"/>
         <XAxis
           hide={!showXAxis}
           dataKey={'timeStamp'}
@@ -295,6 +297,7 @@ const TrendChart = ({
             isAnimationActive={false}
           />
         )}
+        
       </ComposedChart>
     </ResponsiveContainer>
   )
