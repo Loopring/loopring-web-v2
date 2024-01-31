@@ -29,6 +29,8 @@ export interface ScaleAreaChartProps {
   marketPrecision?: number
   isDailyTrend?: boolean
   handleMoveOut?: () => void
+  showCartesianGrid?: boolean
+  showClose?: boolean
 }
 
 export const ScaleAreaChart = ({

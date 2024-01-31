@@ -41,18 +41,27 @@ export const getRenderData = (
 ): IDataItem[] => {
   if (!data || !Array.isArray(data)) return []
   const closeDimIdx = 3
+  return data.map((o, index) => {
+    if ((o as any).change) {
+      return {
+        ...o,
+        sign: ((o as any).change ?? 0) >= 0 ? 1 : -1
+      }
+    } else {
+      return {
+        ...o,
+        sign: getSign({
+          type,
+          data: data,
+          dataIndex: index,
+          open: o.open,
+          close: o.close,
+          closeDimIdx,
+        }),
+      }
+    }
+  })
 
-  return data.map((o, index) => ({
-    ...o,
-    sign: getSign({
-      type,
-      data: data,
-      dataIndex: index,
-      open: o.open,
-      close: o.close,
-      closeDimIdx,
-    }),
-  }))
 }
 export const getAprRenderData = (
   type: keyof typeof ChartType,

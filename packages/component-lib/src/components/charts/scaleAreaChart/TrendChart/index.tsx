@@ -50,6 +50,8 @@ const TrendChart = ({
   isHeadTailCompare = false,
   isDailyTrend = false,
   handleMoveOut = undefined,
+  showCartesianGrid = false,
+  showClose = true,
 }: ScaleAreaChartProps) => {
   const theme = useTheme()
   const userSettings = useSettings()
@@ -97,12 +99,18 @@ const TrendChart = ({
       if (!hasData) return
       if (!props.payload || !props.payload.length || !props.payload[0].payload.timeStamp)
         return <span></span>
-      const { timeStamp, close, sign } = props.payload[0].payload
-      const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
-      const change =
-        index === 0
-          ? EmptyValueTag
-          : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
+      const { timeStamp, close, sign: inputSign, change: inputChange } = props.payload[0].payload
+      let change
+      if (inputChange) {
+        change = inputChange
+      } else {
+        const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
+        change =
+          index === 0
+            ? EmptyValueTag
+            : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
+      }
+      const sign = inputChange ? (Number(inputChange || 0) >= 0 ? 1 : -1) : inputSign
       if (isDailyTrend) {
         return (
           <TooltipStyled>
@@ -226,7 +234,13 @@ const TrendChart = ({
             <stop offset='90%' stopColor={trendColor} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid  strokeOpacity={0.3}  stroke={'var(--color-text-secondary)'} strokeDasharray="5 5"/>
+        {showCartesianGrid && (
+          <CartesianGrid
+            strokeOpacity={0.3}
+            stroke={'var(--color-text-secondary)'}
+            strokeDasharray='5 5'
+          />
+        )}
         <XAxis
           hide={!showXAxis}
           dataKey={'timeStamp'}
@@ -244,14 +258,18 @@ const TrendChart = ({
           domain={getDynamicYAxisDomain() as any}
           width={1}
           tickCount={8}
-          label={{
-            value: 'close',
-            fontSize: 14,
-            textAnchor: 'end',
-            fill: theme.colorBase.textThird,
-            position: 'insideTopRight',
-            transform: 'translate(0, 0)',
-          }}
+          label={
+            showClose
+              ? {
+                  value: 'close',
+                  fontSize: 14,
+                  textAnchor: 'end',
+                  fill: theme.colorBase.textThird,
+                  position: 'insideTopRight',
+                  transform: 'translate(0, 0)',
+                }
+              : undefined
+          }
           tickFormatter={(value, index) => {
             // const valueList = renderData.map((o) => o.close)
             // const min = Math.min(...valueList)
@@ -263,7 +281,7 @@ const TrendChart = ({
             fontSize: 12,
             textAnchor: 'start',
             width: 34,
-            transform: 'translate(-60, 0)',
+            transform: 'translate(-68, 0)',
           }}
           /* tickFormatter={convertValue} */
           stroke={'var(--color-text-secondary)'}
@@ -297,7 +315,6 @@ const TrendChart = ({
             isAnimationActive={false}
           />
         )}
-        
       </ComposedChart>
     </ResponsiveContainer>
   )

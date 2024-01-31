@@ -76,7 +76,13 @@ export const MarketDetail = ({
     (timeInterval: TradingInterval) => {
       setTimeInterval(timeInterval)
       if (trends?.length) {
-        setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
+        const _trends = trends[TimeMarketIntervalDataIndex[timeInterval]]
+        setTrend(_trends.map(trend => {
+          return {
+            ...trend,
+            change: sdk.toBig(trend.close).minus(_trends[_trends.length - 1].close).div(_trends[_trends.length - 1].close).multipliedBy(100).toFixed(2),
+          }
+        }))
       }
     },
     [trends],
@@ -186,10 +192,11 @@ export const MarketDetail = ({
           <ScaleAreaChart
             showXAxis={true}
             showYAxis={true}
-            
             type={ChartType.Trend}
             data={trend}
             quoteSymbol={'USDT'}
+            showCartesianGrid
+            showClose={false}
           />
         )}
       </Box>
