@@ -73,7 +73,7 @@ export interface PanelProps {
 const BoxStyle = styled(Box)`
   &.btrade-panel {
     .status-icon {
-      margin-top: ${({ theme }) => theme.unit * 2}px;
+      margin-top: ${({ theme }) => theme.unit * 4}px;
     }
 
     .content-main {

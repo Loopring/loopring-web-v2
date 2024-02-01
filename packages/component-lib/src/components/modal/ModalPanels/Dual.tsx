@@ -256,62 +256,11 @@ export const BtradeDetail = (props: any) => {
       flexDirection={'column'}
       minWidth={'var(--modal-min-width)'}
       justifyContent={'center'}
-      marginTop={1}
+      marginTop={0}
       paddingX={isMobile ? 1 : 5}
       alignSelf={'stretch'}
     >
-      <Box
-        flexDirection={'row'}
-        alignItems={'center'}
-        justifyContent={'space-evenly'}
-        display={'flex'}
-        flex={1}
-        marginTop={2}
-        sx={{ background: 'var(--color-box-hover)' }}
-        paddingY={2}
-      >
-        <Typography
-          flexDirection={'column'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          display={'flex'}
-        >
-          <ListItemIcon style={{ minWidth: '40px' }}>
-            <CoinIcon symbol={info?.sellToken.symbol} size={32} />
-          </ListItemIcon>
-
-          {info?.sellFStr && (
-            <ListItemText>
-              <Typography variant={'h5'} component={'span'}>
-                {info?.sellFStr + ' ' + info.sellToken.symbol}
-              </Typography>
-            </ListItemText>
-          )}
-        </Typography>
-        <Box>
-          <ConvertToIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
-        </Box>
-        <Typography
-          flexDirection={'column'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          display={'flex'}
-          component={'span'}
-        >
-          <ListItemIcon style={{ minWidth: '40px' }}>
-            <CoinIcon symbol={info?.buyToken.symbol} size={32} />
-          </ListItemIcon>
-          {info?.buyFStr && (
-            <ListItemText>
-              <Typography variant={'h5'} component={'span'}>
-                {info?.buyFStr + ' ' + info?.buyToken.symbol}
-              </Typography>
-            </ListItemText>
-          )}
-        </Typography>
-      </Box>
-
-      <Box display={'flex'} flexDirection={'column'} marginBottom={2}>
+      <Box display={'flex'} flexDirection={'column'} marginTop={2}>
         <Typography
           display={'inline-flex'}
           justifyContent={'space-between'}
