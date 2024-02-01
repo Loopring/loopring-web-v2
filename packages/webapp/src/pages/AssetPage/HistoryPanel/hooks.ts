@@ -1127,7 +1127,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         settledFromAmount: item.settledFromAmount,
         time: item?.time ?? undefined,
         placedAmount:
-          tokenMap && item.fromSymbol && item.fromAmount
+          tokenMap && item.fromSymbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
             ? `${getValuePrecisionThousand(
                 sdk.toBig(item.fromAmount),
                 undefined,
@@ -1138,7 +1138,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               )} ${item.fromSymbol}`
             : EmptyValueTag,
         executedAmount:
-          tokenMap && item.fromSymbol && item.settledFromAmount
+          tokenMap && item.fromSymbol && item.settledFromAmount && sdk.toBig(item.settledFromAmount).gt(0)
             ? `${getValuePrecisionThousand(
                 sdk.toBig(item.settledFromAmount),
                 undefined,
@@ -1149,7 +1149,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               )} ${item.fromSymbol}`
             : EmptyValueTag,
         executedRate:
-          tokenMap && item.fromSymbol && item.settledFromAmount && item.fromAmount
+          tokenMap && item.fromSymbol && item.settledFromAmount && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
             ? `${sdk
                 .toBig(item.settledFromAmount)
                 .div(item.fromAmount)
@@ -1157,7 +1157,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 .toFixed(2)}%`
             : EmptyValueTag,
         convertedAmount:
-          tokenMap && item.toSymbol && item.settledToAmount
+          tokenMap && item.toSymbol && item.settledToAmount && sdk.toBig(item.settledToAmount).gt(0)
             ? `${getValuePrecisionThousand(
                 sdk.toBig(item.settledToAmount),
                 undefined,
@@ -1168,9 +1168,9 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               )} ${item.toSymbol}`
             : EmptyValueTag,
         settledAmount:
-          tokenMap && item.toSymbol && item.toAmount
+          tokenMap && item.toSymbol && item.settledToAmount && item.feeAmount && sdk.toBig(item.settledToAmount).gt(0)
             ? `${getValuePrecisionThousand(
-                sdk.toBig(item.toAmount),
+                sdk.toBig(item.settledToAmount).minus(item.feeAmount),
                 undefined,
                 undefined,
                 tokenMap[item.toSymbol].precision,
