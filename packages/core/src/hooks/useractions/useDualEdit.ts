@@ -137,7 +137,7 @@ export const useDualEdit = <
             request.isRecursive = false
           } else {
             request.isRecursive = true
-            request.maxDuration = tradeDual.dualReinvestInfo.maxDuration
+            request.maxDuration = tradeDual.dualReinvestInfo.maxDuration && tradeDual.dualReinvestInfo.maxDuration !== 0 ? tradeDual.dualReinvestInfo.maxDuration : 60*60*1000*24
             if (
               _tradeData.renewDuration &&
               _tradeData.renewDuration !== (request.maxDuration ?? 0) / 86400000
