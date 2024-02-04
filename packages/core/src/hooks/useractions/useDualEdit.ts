@@ -241,6 +241,7 @@ export const useDualEdit = <
             refresh(
               {
                 ...dualViewInfo,
+                ...dualViewInfo.__raw__.order,
                 __raw__: {
                   order: {
                     ...dualViewInfo.__raw__.order,
