@@ -2348,7 +2348,7 @@ export default {
   labelBtradeExecutedAmount: 'Executed Amount',
   labelBtradeExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
   labelBtradePlacedAmount: 'Placed Amount',
-  labelBtradePlacedAmountTip: `The quantity you invested in 'block trade' that you intend to execute.`,
+  labelBtradePlacedAmountTip: `The quantity you invested in 'Block Trade' that you intend to execute.`,
   labelBtradeExecutedRate: 'Executed Rate',
   labelBtradeConvertedAmount: 'Converted Amount',
   labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
