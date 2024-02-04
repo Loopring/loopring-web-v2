@@ -536,19 +536,19 @@ export const useBtradeSwap = <
           sellFStr: undefined,
           buyFStr: undefined,
           convertStr:
-            marketMap[market].baseTokenId === sellToken.tokenId
-              ? `1 ${sellToken.symbol} \u2248 ${
+            marketMap[market].baseTokenId !== sellToken.tokenId
+              ? `1 ${buyToken.symbol} \u2248 ${
                 sdk.toBig(tradeCalcData.volumeSell)
                 .multipliedBy('1e' + buyToken.decimals)
                 .div('1e' + sellToken.decimals)
                 .div(tradeCalcData.volumeBuy).toFixed(4) 
-                } ${buyToken.symbol}`
-              : `1 ${buyToken.symbol} \u2248 ${
+                } ${sellToken.symbol}`
+              : `1 ${sellToken.symbol} \u2248 ${
                 sdk.toBig(tradeCalcData.volumeBuy)
                 .multipliedBy('1e' + sellToken.decimals)
                 .div('1e' + buyToken.decimals)
                 .div(tradeCalcData.volumeSell).toFixed(4) 
-                } ${sellToken.symbol}`,
+                } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,
           time: undefined,
           placedAmount:
