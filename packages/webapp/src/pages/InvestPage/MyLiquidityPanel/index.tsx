@@ -927,7 +927,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       renewDuration: info.renewDuration,
                                     } as any,
                                   })
-                                  onEditDualClick({ dontCloseModal: true })
+                                  onEditDualClick({ dontCloseModal: false })
                                 } else {
                                   handleOnchange({
                                     tradeData: {
@@ -935,7 +935,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       isRenew: false,
                                     } as any,
                                   })
-                                  onEditDualClick({ dontCloseModal: true })
+                                  onEditDualClick({ dontCloseModal: false })
                                 }
                               }}
                               coinSell={{
