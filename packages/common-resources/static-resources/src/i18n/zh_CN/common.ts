@@ -2302,4 +2302,13 @@ export default {
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+    labelBtradeExecutedAmount: 'Executed Amount',
+    labelBtradeExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
+    labelBtradePlacedAmount: 'Placed Amount',
+    labelBtradePlacedAmountTip: `The quantity you invested in 'Block Trade' that you intend to execute.`,
+    labelBtradeExecutedRate: 'Executed Rate',
+    labelBtradeConvertedAmount: 'Converted Amount',
+    labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
+    labelBtradeSettledAmount: 'Settled Amount',
+    labelBtradeSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
 }

@@ -505,6 +505,15 @@ export const useBtradeSwap = <
           clearData()
         }
 
+        const item = {
+          fromSymbol: sellToken.symbol,
+          fromAmount: sdk.toBig(tradeCalcData.volumeSell).div('1e' + sellToken.decimals),
+          settledFromAmount: undefined,
+          toSymbol: buyToken.symbol,
+          feeAmount: tradeCalcData.fee,
+          settledToAmount: undefined,
+        }
+
         let info: any = {
           sellToken,
           buyToken,
@@ -526,11 +535,88 @@ export const useBtradeSwap = <
           ),
           sellFStr: undefined,
           buyFStr: undefined,
-          convertStr: `1 ${sellToken.symbol} \u2248 ${
-            tradeCalcData.StoB && tradeCalcData.StoB != 'NaN' ? tradeCalcData.StoB : EmptyValueTag
-          } ${buyToken.symbol}`,
+          convertStr:
+            marketMap[market].baseTokenId !== sellToken.tokenId
+              ? `1 ${buyToken.symbol} \u2248 ${
+                sdk.toBig(tradeCalcData.volumeSell)
+                .multipliedBy('1e' + buyToken.decimals)
+                .div('1e' + sellToken.decimals)
+                .div(tradeCalcData.volumeBuy).toFixed(4) 
+                } ${sellToken.symbol}`
+              : `1 ${sellToken.symbol} \u2248 ${
+                sdk.toBig(tradeCalcData.volumeBuy)
+                .multipliedBy('1e' + sellToken.decimals)
+                .div('1e' + buyToken.decimals)
+                .div(tradeCalcData.volumeSell).toFixed(4) 
+                } ${buyToken.symbol}`,
           feeStr: tradeCalcData?.fee,
           time: undefined,
+          placedAmount:
+            tokenMap && sellToken.symbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.fromAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.fromSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${item.fromSymbol}`
+              : EmptyValueTag,
+          executedAmount:
+            tokenMap &&
+            item.fromSymbol &&
+            item.settledFromAmount &&
+            sdk.toBig(item.settledFromAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.settledFromAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.fromSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${item.fromSymbol}`
+              : EmptyValueTag,
+          executedRate:
+            tokenMap &&
+            item.fromSymbol &&
+            item.settledFromAmount &&
+            item.fromAmount &&
+            sdk.toBig(item.fromAmount).gt(0)
+              ? `${sdk
+                  .toBig(item.settledFromAmount)
+                  .div(item.fromAmount)
+                  .multipliedBy('100')
+                  .toFixed(2)}%`
+              : EmptyValueTag,
+          convertedAmount:
+            tokenMap &&
+            item.toSymbol &&
+            item.settledToAmount &&
+            sdk.toBig(item.settledToAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.settledToAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.toSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${item.toSymbol}`
+              : EmptyValueTag,
+          settledAmount:
+            tokenMap &&
+            item.toSymbol &&
+            item.settledToAmount &&
+            item.feeAmount &&
+            sdk.toBig(item.settledToAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.settledToAmount).minus(item.feeAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.toSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${item.toSymbol}`
+              : EmptyValueTag,
         }
         setShowAccount({
           isShow: true,

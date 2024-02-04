@@ -137,7 +137,7 @@ export const useDualEdit = <
             request.isRecursive = false
           } else {
             request.isRecursive = true
-            request.maxDuration = tradeDual.dualReinvestInfo.maxDuration
+            request.maxDuration = tradeDual.dualReinvestInfo.maxDuration && tradeDual.dualReinvestInfo.maxDuration !== 0 ? tradeDual.dualReinvestInfo.maxDuration : 60*60*1000*24
             if (
               _tradeData.renewDuration &&
               _tradeData.renewDuration !== (request.maxDuration ?? 0) / 86400000
@@ -235,12 +235,13 @@ export const useDualEdit = <
               type: ToastType.success,
               content: t('labelDualEditSuccess'),
             })
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+            // await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
           }
           refresh &&
             refresh(
               {
                 ...dualViewInfo,
+                ...dualViewInfo.__raw__.order,
                 __raw__: {
                   order: {
                     ...dualViewInfo.__raw__.order,

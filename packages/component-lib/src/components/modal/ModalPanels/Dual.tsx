@@ -1,9 +1,10 @@
 import { AmmBase, BtradeBase, DualBase, IconType, PanelProps } from './BasicPanel'
-import { Box, ListItemIcon, ListItemText, Typography } from '@mui/material'
+import { Box, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material'
 import { useSettings } from '../../../stores'
 import {
   ConvertToIcon,
   EmptyValueTag,
+  Info2Icon,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
 import moment from 'moment'
@@ -247,6 +248,7 @@ export const Staking_Redeem_Failed = (props: PanelProps) => {
 export const BtradeDetail = (props: any) => {
   const { isMobile } = useSettings()
   const { info } = props
+  const { t } = props
   return info?.buyToken && info?.sellToken ? (
     <Box
       justifySelf={'stretch'}
@@ -254,73 +256,119 @@ export const BtradeDetail = (props: any) => {
       flexDirection={'column'}
       minWidth={'var(--modal-min-width)'}
       justifyContent={'center'}
-      marginTop={1}
+      marginTop={0}
       paddingX={isMobile ? 1 : 5}
       alignSelf={'stretch'}
     >
-      <Box
-        flexDirection={'row'}
-        alignItems={'center'}
-        justifyContent={'space-evenly'}
-        display={'flex'}
-        flex={1}
-        marginTop={2}
-        sx={{ background: 'var(--color-box-hover)' }}
-        paddingY={2}
-      >
-        <Typography
-          flexDirection={'column'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          display={'flex'}
-        >
-          <ListItemIcon style={{ minWidth: '40px' }}>
-            <CoinIcon symbol={info?.sellToken.symbol} size={32} />
-          </ListItemIcon>
-
-          {info?.sellFStr && (
-            <ListItemText>
-              <Typography variant={'h5'} component={'span'}>
-                {info?.sellFStr + ' ' + info.sellToken.symbol}
-              </Typography>
-            </ListItemText>
-          )}
-        </Typography>
-        <Box>
-          <ConvertToIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
-        </Box>
-        <Typography
-          flexDirection={'column'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          display={'flex'}
-          component={'span'}
-        >
-          <ListItemIcon style={{ minWidth: '40px' }}>
-            <CoinIcon symbol={info?.buyToken.symbol} size={32} />
-          </ListItemIcon>
-          {info?.buyFStr && (
-            <ListItemText>
-              <Typography variant={'h5'} component={'span'}>
-                {info?.buyFStr + ' ' + info?.buyToken.symbol}
-              </Typography>
-            </ListItemText>
-          )}
-        </Typography>
-      </Box>
-
-      <Box display={'flex'} flexDirection={'column'} marginBottom={2}>
+      <Box display={'flex'} flexDirection={'column'} marginTop={2}>
         <Typography
           display={'inline-flex'}
           justifyContent={'space-between'}
           marginTop={2}
           component={'span'}
         >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelType')}
+          <Typography
+            display={'flex'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t("labelBtradePlacedAmount")}
+            <Tooltip title={<>{t("labelBtradePlacedAmountTip")}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelBtradeTrade')}
+            {info?.placedAmount}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography
+            display={'flex'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t("labelBtradeExecutedAmount")}
+            <Tooltip title={<>{t("labelBtradeExecutedAmountTip")}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.executedAmount}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography
+            display={'flex'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t("labelBtradeExecutedRate")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.executedRate}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography
+            display={'flex'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t("labelBtradeConvertedAmount")}
+            <Tooltip title={<>{t("labelBtradeConvertedAmountTip")}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.convertedAmount}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography
+            display={'flex'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t("labelBtradeSettledAmount")}
+            <Tooltip title={<>{t("labelBtradeSettledAmountTip")}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.settledAmount}
           </Typography>
         </Typography>
         <Typography
@@ -336,93 +384,6 @@ export const BtradeDetail = (props: any) => {
             {info?.convertStr}
           </Typography>
         </Typography>
-        <Typography
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          component={'span'}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelSell')}
-          </Typography>
-          <Typography
-            variant={'body1'}
-            component={'span'}
-            color={'var(--color-text-primary)'}
-            display={'inline-flex'}
-            alignItems={'center'}
-          >
-            <Typography variant={'inherit'} component={'span'}>
-              {info?.sellFStr ?? EmptyValueTag}
-            </Typography>
-            <Typography
-              variant={'inherit'}
-              component={'span'}
-              color={'var(--color-text-secondary)'}
-            >
-              /{info?.sellStr}
-            </Typography>
-            <Typography variant={'inherit'} marginLeft={1 / 2} component={'span'}>
-              {info?.sellToken.symbol}
-            </Typography>
-          </Typography>
-        </Typography>
-        <Typography
-          component={'span'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelBuy')}
-          </Typography>
-          <Typography
-            variant={'body1'}
-            component={'span'}
-            color={'var(--color-text-primary)'}
-            display={'inline-flex'}
-            alignItems={'center'}
-          >
-            <Typography variant={'inherit'} component={'span'}>
-              {info?.buyFStr ?? EmptyValueTag}
-            </Typography>
-            <Typography
-              variant={'inherit'}
-              component={'span'}
-              color={'var(--color-text-secondary)'}
-            >
-              /{info?.buyStr}
-            </Typography>
-            <Typography variant={'inherit'} marginLeft={1 / 2} component={'span'}>
-              {info?.buyToken.symbol}
-            </Typography>
-          </Typography>
-        </Typography>
-        {props.isDelivering && (
-          <Typography
-            component={'span'}
-            display={'inline-flex'}
-            justifyContent={'space-between'}
-            marginTop={2}
-          >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-              {props.t('labelBtradeSettled')}
-            </Typography>
-            <Typography
-              variant={'body1'}
-              component={'span'}
-              color={'var(--color-text-primary)'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              <Typography variant={'inherit'} marginLeft={1 / 2} component={'span'}>
-                {info?.settledToAmount
-                  ? info?.settledToAmount + ' ' + info?.buyToken.symbol
-                  : EmptyValueTag}
-              </Typography>
-            </Typography>
-          </Typography>
-        )}
         <Typography
           component={'span'}
           display={'inline-flex'}

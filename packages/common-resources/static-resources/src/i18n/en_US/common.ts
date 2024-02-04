@@ -2345,4 +2345,13 @@ export default {
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
   labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
+  labelBtradeExecutedAmount: 'Executed Amount',
+  labelBtradeExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
+  labelBtradePlacedAmount: 'Placed Amount',
+  labelBtradePlacedAmountTip: `The quantity you invested in 'Block Trade' that you intend to execute.`,
+  labelBtradeExecutedRate: 'Executed Rate',
+  labelBtradeConvertedAmount: 'Converted Amount',
+  labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
+  labelBtradeSettledAmount: 'Settled Amount',
+  labelBtradeSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
 }
