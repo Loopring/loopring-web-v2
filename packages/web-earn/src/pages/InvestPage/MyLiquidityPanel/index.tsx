@@ -487,7 +487,7 @@ const MyLiquidity: any = withTranslation('common')(
                                       isRenew: false,
                                     } as any,
                                   })
-                                  onEditDualClick({ dontCloseModal: true })
+                                  onEditDualClick({ dontCloseModal: false })
                                 }
                               }}
                               coinSell={{

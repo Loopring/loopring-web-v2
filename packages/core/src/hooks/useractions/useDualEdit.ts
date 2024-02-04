@@ -235,7 +235,7 @@ export const useDualEdit = <
               type: ToastType.success,
               content: t('labelDualEditSuccess'),
             })
-            await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+            // await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
           }
           refresh &&
             refresh(
