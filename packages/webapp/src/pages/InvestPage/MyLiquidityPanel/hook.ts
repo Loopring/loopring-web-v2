@@ -177,7 +177,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       defiCoinArray?.forEach((defiCoinKey) => {
         totalCurrentInvest.stakeETHDollar += Number(
           // @ts-ignore
-          (_walletMap && _walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
+          (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
             (tokenPrices ? tokenPrices[defiCoinKey] : 0),
         )
       }, [])
@@ -187,7 +187,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
       leverageETHCoinArray?.forEach((defiCoinKey) => {
         totalCurrentInvest.leverageETHDollar += Number(
           // @ts-ignore
-          (_walletMap && _walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
+          (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
             tokenPrices[defiCoinKey] ?? 0,
         )
       })
