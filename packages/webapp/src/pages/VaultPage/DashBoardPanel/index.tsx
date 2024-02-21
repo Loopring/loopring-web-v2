@@ -218,11 +218,14 @@ export const VaultDashBoardPanel = ({
                           marginTop={1}
                         >
                           <Typography component={'span'} variant={'h1'}>
-                            {!hideAssets && priceTag}
+                            {!hideAssets &&
+                              !sdk.toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0).eq('0') &&
+                              priceTag}
                           </Typography>
                           {!hideAssets ? (
                             <Typography component={'span'} variant={'h1'}>
-                              {vaultAccountInfo?.totalBalanceOfUsdt
+                              {vaultAccountInfo?.totalBalanceOfUsdt &&
+                              !sdk.toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0).eq('0')
                                 ? getValuePrecisionThousand(
                                     sdk
                                       .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
