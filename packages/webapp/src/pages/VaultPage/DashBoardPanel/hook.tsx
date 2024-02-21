@@ -514,5 +514,15 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     onRowClick: (_, row) => {
       onRowClick({ row })
     },
+    positionOpend: [sdk.VaultAccountStatus.IN_REDEEM, sdk.VaultAccountStatus.IN_STAKING]
+      .includes(vaultAccountInfo?.accountStatus as any),
+    onClcikOpenPosition: () => {
+      setShowNoVaultAccount({
+        isShow: true,
+        whichBtn: VaultAction.VaultJoin,
+        des: 'labelJoinDesMessage',
+        title: 'labelVaultJoinTitle',
+      })
+    }
   }
 }
