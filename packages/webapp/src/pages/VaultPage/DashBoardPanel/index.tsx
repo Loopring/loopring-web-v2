@@ -18,6 +18,7 @@ import {
   MapChainId,
   UpColor,
   Info2Icon,
+  SoursURL,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -31,6 +32,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import { useSystem, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
+import { useTheme } from '@emotion/react'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
@@ -169,6 +171,8 @@ export const VaultDashBoardPanel = ({
       </>
     )
   }, [colors, vaultAccountInfo?.marginLevel])
+  const theme = useTheme()
+  
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -420,11 +424,7 @@ export const VaultDashBoardPanel = ({
                           textAlign: 'left',
                         }}
                       >
-                        <LoadIcon
-                          color={'inherit'}
-                          fontSize={'inherit'}
-                          sx={{ marginRight: 1 / 2 }}
-                        />
+                        <Box marginRight={1} component={'img'} src={`${SoursURL}svg/vault_loan_${theme.mode}.svg`} />
                         {t('labelVaultLoanBtn')}
                       </Typography>
                     </MenuBtnStyled>
@@ -450,11 +450,7 @@ export const VaultDashBoardPanel = ({
                           textAlign: 'left',
                         }}
                       >
-                        <MarginIcon
-                          color={'inherit'}
-                          fontSize={'inherit'}
-                          sx={{ marginRight: 1 / 2 }}
-                        />
+                        <Box marginRight={1} component={'img'} src={`${SoursURL}svg/vault_margin_${theme.mode}.svg`} />
                         {t('labelVaultAddBtn')}
                       </Typography>
                     </MenuBtnStyled>
@@ -480,11 +476,7 @@ export const VaultDashBoardPanel = ({
                           textAlign: 'left',
                         }}
                       >
-                        <VaultTradeIcon
-                          color={'inherit'}
-                          fontSize={'inherit'}
-                          sx={{ marginRight: 1 / 2 }}
-                        />
+                        <Box marginRight={1} component={'img'} src={`${SoursURL}svg/vault_trade_${theme.mode}.svg`} />
                         {t('labelVaultTradeBtn')}
                       </Typography>
                     </MenuBtnStyled>
@@ -510,11 +502,7 @@ export const VaultDashBoardPanel = ({
                           textAlign: 'left',
                         }}
                       >
-                        <CloseOutIcon
-                          color={'inherit'}
-                          fontSize={'inherit'}
-                          sx={{ marginRight: 1 / 2 }}
-                        />
+                        <Box marginRight={1} component={'img'} src={`${SoursURL}svg/vault_close_${theme.mode}.svg`}></Box>
                         {t('labelVaultRedeemBtn')}
                       </Typography>
                     </MenuBtnStyled>
