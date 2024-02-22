@@ -4,6 +4,7 @@ import {
   IBData,
   L1L2_NAME_DEFINED,
   MapChainId,
+  myLog,
   TokenType,
   TradeBtnStatus,
   VaultRepayData,
@@ -15,6 +16,9 @@ import { Grid, Typography, Box, Divider } from '@mui/material'
 import { ButtonStyle } from '../Styled'
 import { useSettings } from '../../../../stores'
 import { BasicACoinTrade } from '../BasicACoinTrade'
+import {
+  CoinIcon,
+} from '@loopring-web/component-lib'
 
 export const VaultRepayWrap = <
   T extends IBData<any> & { borrowed: string; max: string },
@@ -150,15 +154,22 @@ export const VaultRepayWrap = <
           >
             {t('labelVaultRepayBalance')}
           </Typography>
-          <Typography component={'p'} variant='body2' color={'textPrimary'}>
-            {getValuePrecisionThousand(
-              vaultRepayData?.tradeData?.balance,
-              tokenInfo?.precision ?? 6,
-              tokenInfo?.precision ?? 6,
-            ) +
-              ' ' +
-              vaultRepayData?.tradeData?.belong}
-          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            <CoinIcon
+              tokenImageKey={(vaultRepayData as any).erc20Symbol}
+              symbol={vaultRepayData.belong}
+              type={TokenType.vault}
+            />
+            <Typography component={'p'} variant='body2' color={'textPrimary'}>
+              {getValuePrecisionThousand(
+                vaultRepayData?.tradeData?.balance,
+                tokenInfo?.precision ?? 6,
+                tokenInfo?.precision ?? 6,
+              ) +
+                ' ' +
+                (vaultRepayData as any).erc20Symbol}
+            </Typography>
+          </Box>
         </Grid>
         <Grid
           item
@@ -178,15 +189,22 @@ export const VaultRepayWrap = <
           >
             {t('labelRepayQuota')}
           </Typography>
-          <Typography component={'p'} variant='body2' color={'textPrimary'}>
-            {getValuePrecisionThousand(
-              vaultRepayData?.tradeData?.borrowed,
-              tokenInfo?.precision ?? 6,
-              tokenInfo?.precision ?? 6,
-            ) +
-              ' ' +
-              vaultRepayData?.tradeData?.belong}
-          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            <CoinIcon
+              tokenImageKey={(vaultRepayData as any).erc20Symbol}
+              symbol={vaultRepayData.belong}
+              type={TokenType.vault}
+            />
+            <Typography component={'p'} variant='body2' color={'textPrimary'}>
+              {getValuePrecisionThousand(
+                vaultRepayData?.tradeData?.borrowed,
+                tokenInfo?.precision ?? 6,
+                tokenInfo?.precision ?? 6,
+              ) +
+                ' ' +
+                (vaultRepayData as any).erc20Symbol}
+            </Typography>
+          </Box>
         </Grid>
       </Grid>
 

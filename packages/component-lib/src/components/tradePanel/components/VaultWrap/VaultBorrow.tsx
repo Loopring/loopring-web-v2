@@ -3,11 +3,15 @@ import {
   IBData,
   L1L2_NAME_DEFINED,
   MapChainId,
+  myLog,
   TokenType,
   TRADE_TYPE,
   TradeBtnStatus,
   VaultBorrowData,
 } from '@loopring-web/common-resources'
+import {
+  CoinIcon,
+} from '@loopring-web/component-lib'
 import { VaultBorrowWrapProps } from './Interface'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -143,11 +147,20 @@ export const VaultBorrowWrap = <
           >
             {t('labelVaultBorrowed')}
           </Typography>
-          <Typography component={'p'} variant='body2' color={'textPrimary'}>
-            {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt
-              ? vaultBorrowData.borrowedStr + ' ' + vaultBorrowData?.belong?.toString()
-              : EmptyValueTag}
-          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt ? (
+              <CoinIcon
+                tokenImageKey={vaultBorrowData.erc20Symbol}
+                symbol={vaultBorrowData.belong}
+                type={TokenType.vault}
+              />
+            ) : undefined}
+            <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+              {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt
+                ? vaultBorrowData.borrowedStr + ' ' + (vaultBorrowData as any).erc20Symbol
+                : EmptyValueTag}
+            </Typography>
+          </Box>
         </Grid>
       </Grid>
 
