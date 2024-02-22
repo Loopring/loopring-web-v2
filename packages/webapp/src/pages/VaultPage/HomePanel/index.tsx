@@ -208,7 +208,7 @@ export const VaultHomePanel = ({
                                   floor: true,
                                 },
                               )
-                            : EmptyValueTag
+                            : '0.00'
                           : HiddenTag}
                       </Typography>
                       <Typography variant={'body1'} color={'textSecondary'} component={'span'}>
@@ -229,7 +229,7 @@ export const VaultHomePanel = ({
                                   floor: true,
                                 },
                               )
-                            : EmptyValueTag
+                            : PriceTag[CurrencyToTag[currency]] + '0.00'
                           : HiddenTag}
                       </Typography>
                       <Box marginTop={2} display={'flex'} flexDirection={'row'}>
