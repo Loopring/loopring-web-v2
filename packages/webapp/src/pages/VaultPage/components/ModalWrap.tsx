@@ -96,16 +96,6 @@ export const ModalVaultWrap = () => {
         open={isShowVaultJoin.isShow}
         onClose={() => {
           setShowVaultJoin({ isShow: false })
-          if (
-            ![sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)
-          ) {
-            setShowNoVaultAccount({
-              isShow: true,
-              whichBtn: VaultAction.VaultJoin,
-              des: 'labelJoinDesMessage',
-              title: 'labelJoinTitle',
-            })
-          }
         }}
         content={
           <VaultJoinPanel

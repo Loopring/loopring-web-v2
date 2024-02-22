@@ -209,11 +209,11 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableBorrowCheck,
     isLoading: false,
-    submitCallback: async (key?: string) => {
+    submitCallback: async ({symbol}: {isShow: boolean,symbol: string}) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultLoan({ isShow: true, symbol: key ?? '', type: VaultLoanType.Borrow })
+          setShowVaultLoan({ isShow: true, info: {symbol: symbol ?? ''}, type: VaultLoanType.Borrow })
           break
       }
     },

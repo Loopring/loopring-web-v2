@@ -2195,7 +2195,7 @@ export default {
   labelVaultExitProfitPercentage: 'Profit Percentage',
   labelVaultExitTime: 'Time',
   labelVaultExitStatusPending: 'Pending',
-  labelVaultExitCloseAmount: 'Close Amount',
+  labelVaultExitCloseAmount: 'Redeem Token',
   labelVaultExitPendingDes:
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultBorrow: 'Borrow',
@@ -2294,7 +2294,7 @@ export default {
   labelFailed: 'Failed',
   labelVAULT_COLLATERAL: 'Vault Collateral',
   labelTokenVaultDes:
-    '{{vSymbol}} is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
+    '{{symbol}} in Vault is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
   labelTokenWebsite: 'website',
   labelTokenContractAddress: 'Token Contract Address',
   labelTokenSupply: 'Token Supply',

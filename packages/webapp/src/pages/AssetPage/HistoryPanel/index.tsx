@@ -644,6 +644,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                           collateralSymbol={vaultOperationDetail.collateralSymbol}
                           time={vaultOperationDetail.time}
                           type={vaultOperationDetail.type}
+                          statusType={vaultOperationDetail.statusType}
                         />
                       )}
                     {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_CLOSE_OUT' && (
@@ -665,6 +666,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         feeSymbol={vaultOperationDetail.feeSymbol}
                         feeAmount={vaultOperationDetail.feeAmount}
                         time={vaultOperationDetail.time}
+                        statusType={vaultOperationDetail.statusType}
                       />
                     )}
                   </Box>
