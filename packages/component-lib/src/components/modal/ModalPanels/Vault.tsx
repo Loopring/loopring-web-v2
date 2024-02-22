@@ -475,11 +475,12 @@ export const RedeemDes2 = (
   props: PanelProps & {
     isPending?: boolean
     isNoWrap?: boolean
+    isForcedLiqudation: boolean
   },
 ) => {
   const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
-  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time, status } = props?.info ?? {}
+  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time, status, isForcedLiqudation } = props?.info ?? {}
   const detail = React.useMemo(() => {
     return (
       <>
@@ -493,7 +494,9 @@ export const RedeemDes2 = (
             {props.t('labelVaultExitType')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultExitTypeClose')}
+            {isForcedLiqudation
+              ? props.t('labelVaultExitTypeForcedLiquidation')
+              : props.t('labelVaultExitTypeClose')}
           </Typography>
         </Typography>
         <Typography

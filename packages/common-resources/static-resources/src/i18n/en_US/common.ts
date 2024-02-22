@@ -2365,5 +2365,6 @@ export default {
   labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
   labelBtradeSettledAmount: 'Settled Amount',
   labelBtradeSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultExitTypeForcedLiquidation: 'Forced Liquidation',
 }
 

@@ -1521,6 +1521,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   type,
                   vSymbol,
                   vTokenB,
+                  operateSubType,
                   operateType,
                   symbolB,
                   vSymbolB,
@@ -1739,7 +1740,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     )
                   : EmptyValueTag,
                 forexMap,
-                tokenSymbol: outTokenInfo.symbol
+                tokenSymbol: outTokenInfo.symbol,
+                isForcedLiqudation:
+                  (item.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_SETTLEMENT' ||
+                  (item.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW',
               },
             },
           }
