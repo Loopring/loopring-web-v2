@@ -99,7 +99,7 @@ export const VaultBorrowWrap = <
       alignItems={'center'}
       flex={1}
       display={'flex'}
-      height={'100%'}
+      height={'300px'}
     >
       <Box
         flexDirection={'column'}
@@ -128,7 +128,7 @@ export const VaultBorrowWrap = <
         />
       </Box>
       <Divider sx={{ width: '100%', marginY: 3 }} />
-      <Grid container spacing={1} alignItems={'stretch'}>
+      <Grid container spacing={1} marginTop={10} alignItems={'stretch'}>
         <Grid
           item
           xs={12}
@@ -165,7 +165,7 @@ export const VaultBorrowWrap = <
       </Grid>
 
       <Box
-        marginTop={3}
+        marginTop={1}
         alignSelf={'stretch'}
         display={'flex'}
         flexDirection={'column'}
