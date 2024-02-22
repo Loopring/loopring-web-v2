@@ -2178,7 +2178,7 @@ export default {
   labelVaultExitProfitPercentage: 'Profit Percentage',
   labelVaultExitTime: 'Time',
   labelVaultExitStatusPending: 'Pending',
-  labelVaultExitCloseAmount: 'Close Amount',
+  labelVaultExitCloseAmount: 'Redeem Token',
   labelVaultExitPendingDes:
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultBorrow: 'Borrow',

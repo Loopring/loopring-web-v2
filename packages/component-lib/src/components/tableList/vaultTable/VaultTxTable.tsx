@@ -23,6 +23,9 @@ import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { RedeemDes2 } from '../../modal'
 import { CoinIcons } from '../assetsTable'
+import {
+  CoinIcon,
+} from '@loopring-web/component-lib'
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -399,12 +402,19 @@ export const VaultCloseDetail = withTranslation(['common'])(
             component={'span'}
             order={9}
           >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            <Typography display={'flex'} flexDirection={'row'} alignItems={'center'} variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
               {t('labelVaultExitCloseAmount')}
             </Typography>
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-              {vaultCloseDetail?.amount}
-            </Typography>
+            <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+              <CoinIcon
+                tokenImageKey={vaultCloseDetail.tokenSymbol}
+                symbol={vaultCloseDetail.tokenSymbol}
+                type={TokenType.single}
+              />
+              <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+                {vaultCloseDetail?.amount}
+              </Typography>
+            </Box>
           </Typography>
         </Box>
         {

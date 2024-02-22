@@ -1739,6 +1739,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     )
                   : EmptyValueTag,
                 forexMap,
+                tokenSymbol: outTokenInfo.symbol
               },
             },
           }
