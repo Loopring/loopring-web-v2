@@ -392,7 +392,7 @@ export default {
   labelVaultVAULT_STATUS_EARNING: 'Succeed',
   labelVaultVAULT_STATUS_RECEIVED: 'Received',
   labelVaultVAULT_STATUS_PROCESSING: 'Delivering',
-  labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
+  labelVaultVAULT_STATUS_SUCCEED: 'Successfully',
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelDetail: 'Detail',

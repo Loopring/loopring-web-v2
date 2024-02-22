@@ -606,7 +606,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                             : vaultOperationDetail.type === 'VAULT_MARGIN_CALL'
                             ? t('labelMarginCallDetail')
                             : vaultOperationDetail.type === 'VAULT_OPEN_POSITION'
-                            ? t('labelOpenPositionDetail')
+                            ? t('labelVaultJoin')
                             : vaultOperationDetail.type === 'VAULT_REPAY'
                             ? t('labelRepayDetail')
                             : vaultOperationDetail.type === 'VAULT_TRADE'
