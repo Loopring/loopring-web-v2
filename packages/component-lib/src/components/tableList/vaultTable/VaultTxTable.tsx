@@ -9,6 +9,7 @@ import { FormatterProps } from 'react-data-grid'
 import { RawDataVaultTxItem, VaultRecordType } from './Interface'
 import {
   DoneIcon,
+  EmptyValueTag,
   FailedIcon,
   globalSetup,
   LoadingIcon,
@@ -576,12 +577,18 @@ export const VaultOperationDetail = (props: {
             component={'span'}
             color={'var(--color-text-primary)'}
           >
-            <CoinIcons
-              size='small'
-              type={TokenType.vault}
-              tokenIcon={[coinJson[collateralSymbol], undefined]}
-            />{' '}
-            {collateralAmount} {collateralSymbol}
+            {collateralAmount ? (
+              <>
+                <CoinIcons
+                  size='small'
+                  type={TokenType.vault}
+                  tokenIcon={[coinJson[collateralSymbol], undefined]}
+                />{' '}
+                {collateralAmount} {collateralSymbol}
+              </>
+            ) : (
+              EmptyValueTag
+            )}
           </Typography>
         </Typography>
         <Typography

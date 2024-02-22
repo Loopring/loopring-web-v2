@@ -1627,6 +1627,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         case 'VAULT_REPAY':
         case 'VAULT_OPEN_POSITION': {
           const collateralToken = tokenMap[idIndex[operation.tokenIn]]
+          console.log('vaultOperationDetail1', order, operation)
           return {
             isShow: true,
             detail: {
@@ -1644,7 +1645,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     },
                   )
                 : undefined,
-              time: order && order.createdAt,
+              time: operation && operation.createdAt,
               statusColor,
               statusLabel,
               statusType
