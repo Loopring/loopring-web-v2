@@ -2203,7 +2203,7 @@ export default {
   labelGoVaultDashBoard: 'Go to Dashboard',
   labelVaultBrowserToken: 'Amount',
   labelVaultQuotaTooltips: 'VaultQuoteDes',
-  labelVaultQuota: 'Total Quote',
+  labelVaultQuota: 'Total Quota',
   labelVaultBorrowMini: 'Minimum of {{arg}}',
   labelVaultBorrowNotEnough: 'Exceeded Maximum Borrowable Amount',
   labelVaultBorrowMax: 'Maximum of {{arg}}',
@@ -2237,7 +2237,7 @@ export default {
   labelVaultRepayTotalBalance: 'Amount',
   labelVaultVAULT_STATUS_RECEIVED: 'Received',
   labelVaultVAULT_STATUS_PROCESSING: 'Processing',
-  labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
+  labelVaultVAULT_STATUS_SUCCEED: 'Successfully',
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelVaultAccountWait: 'Vault account in loading...',
@@ -2321,4 +2321,10 @@ export default {
     labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
     labelBtradeSettledAmount: 'Settled Amount',
     labelBtradeSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultExitTypeForcedLiquidation: 'Forced Liquidation',
+
+  labelVaultExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
+  labelVaultPlacedAmountTip: `The quantity you invested in 'Vault Trade' that you intend to execute.`,
+  labelVaultConvertedAmountTip: 'The quantity successfully converted from the CEX side.',
+  labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
 }

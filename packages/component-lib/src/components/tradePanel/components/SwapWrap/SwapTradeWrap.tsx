@@ -427,7 +427,7 @@ export const SwapTradeWrap = <
       {!isL2Swap ? (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
-            {(tradeCalcData as any)?.isVault && (
+            {(tradeCalcData as any)?.isVault && tradeCalcData && tradeCalcData.borrowVol ? (
               <Grid
                 container
                 justifyContent={'space-between'}
@@ -459,7 +459,7 @@ export const SwapTradeWrap = <
                     : EmptyValueTag}
                 </Typography>
               </Grid>
-            )}
+            ) : undefined}
             <Grid
               container
               justifyContent={'space-between'}

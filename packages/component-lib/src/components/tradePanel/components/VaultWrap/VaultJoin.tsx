@@ -176,7 +176,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                   display={'flex'}
                 >
                   <Trans i18nKey={'labelVaultTotalQuote'}>
-                    Total Quote
+                    Total Quota
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                   </Trans>
                 </Typography>

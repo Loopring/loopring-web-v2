@@ -198,11 +198,11 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({
           <Box
             className={`logo-icon ${type}`}
             display={'flex'}
-            height={'var(--svg-size-medium)'}
+            height={'var(--svg-size-small)'}
             position={'relative'}
             zIndex={24}
-            left={-12}
-            width={'var(--svg-size-medium)'}
+            left={-10}
+            width={'var(--svg-size-small)'}
             alignItems={'flex-center'}
             justifyContent={'center'}
           >

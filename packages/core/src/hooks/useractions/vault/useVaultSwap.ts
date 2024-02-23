@@ -592,7 +592,7 @@ export const useVaultSwap = <
           }
         } else if (notEnough) {
           return {
-            label: `labelArgNoEnough| ${belongSellAlice}`,
+            label: 'labelVaultBorrowNotEnough',
             tradeBtnStatus: TradeBtnStatus.DISABLED,
           }
         } else if (sellExceed) {
@@ -752,6 +752,14 @@ export const useVaultSwap = <
         }
         myLog('useVaultSwap: submitOrder request', request)
         const priceToken = tradeCalcData.isReverse ? sellToken : buyToken
+        const item = {
+          fromSymbol: sellToken.symbol,
+          fromAmount: sdk.toBig(tradeCalcData.volumeSell).div('1e' + sellToken.decimals),
+          settledFromAmount: undefined,
+          toSymbol: buyToken.symbol,
+          feeAmount: tradeCalcData.fee,
+          settledToAmount: undefined,
+        }
 
         let info: any = {
           sellToken: erc20IdIndex[tokenMap[sellToken.symbol]?.tokenId],
@@ -787,6 +795,77 @@ export const useVaultSwap = <
           convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
           feeStr: tradeCalcData?.fee,
           time: Date.now(),
+          fromSymbol: sellToken.symbol,
+          toSymbol: buyToken.symbol,
+          placedAmount:
+            tokenMap && item.fromSymbol &&(sellToken as any).erc20Symbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.fromAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.fromSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${(sellToken as any).erc20Symbol}`
+              : EmptyValueTag,
+          executedAmount:
+            tokenMap &&
+            item.fromSymbol &&
+            (sellToken as any).erc20Symbol &&
+            item.settledFromAmount &&
+            sdk.toBig(item.settledFromAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.settledFromAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.fromSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${(sellToken as any).erc20Symbol}`
+              : EmptyValueTag,
+          executedRate:
+            tokenMap &&
+            item.fromSymbol &&
+            item.settledFromAmount &&
+            item.fromAmount &&
+            sdk.toBig(item.fromAmount).gt(0)
+              ? `${sdk
+                  .toBig(item.settledFromAmount)
+                  .div(item.fromAmount)
+                  .multipliedBy('100')
+                  .toFixed(2)}%`
+              : EmptyValueTag,
+          convertedAmount:
+            tokenMap &&
+            item.toSymbol &&
+            (buyToken as any).erc20Symbol &&
+            item.settledToAmount &&
+            sdk.toBig(item.settledToAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.settledToAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.toSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${(buyToken as any).erc20Symbol}`
+              : EmptyValueTag,
+          settledAmount:
+            tokenMap &&
+            item.toSymbol &&
+            item.settledToAmount &&
+            item.feeAmount &&
+            sdk.toBig(item.settledToAmount).gt(0)
+              ? `${getValuePrecisionThousand(
+                  sdk.toBig(item.settledToAmount).minus(item.feeAmount),
+                  undefined,
+                  undefined,
+                  tokenMap[item.toSymbol].precision,
+                  true,
+                  { isAbbreviate: true },
+                )} ${item.toSymbol}`
+              : EmptyValueTag,
+
         }
 
         setShowAccount({
@@ -994,6 +1073,12 @@ export const useVaultSwap = <
         startLoopHashCheck()
       }
     } catch (e) {
+      setTradeCalcData((state) => {
+        return {
+          ...state,
+          step: VaultSwapStep.Edit,
+        }
+      })
       borrowHash.current = null
       const code =
         (e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
@@ -1011,12 +1096,6 @@ export const useVaultSwap = <
         step: VaultSwapStep.Borrow,
       })
       setIsSwapLoading(false)
-      setTradeCalcData((state) => {
-        return {
-          ...state,
-          step: VaultSwapStep.Edit,
-        }
-      })
     }
   }
 

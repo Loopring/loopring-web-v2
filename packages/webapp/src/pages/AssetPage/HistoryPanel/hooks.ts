@@ -1399,7 +1399,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = amount.gte(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${amountStr} ${erc20Symbol} ${DirectionTag} ${amountStr} ${vSymbol}`
+                    mainContentRender = `${amountStr} ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
@@ -1423,7 +1423,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_REPAY:
                     type = VaultRecordType.repay
@@ -1447,7 +1447,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_TRADE:
                     type = VaultRecordType.trade
@@ -1484,11 +1484,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     )
                     mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}${
                       order?.fillAmountS === order?.amountS ? '' : '/' + _amountSStr
-                    }  ${vSymbol} ${DirectionTag} ${
+                    }  ${erc20Symbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
                     }${
                       order?.fillAmountS === order?.amountS ? '' : '/' + _amountBStr
-                    } ${vSymbolB}`
+                    } ${erc20SymbolB}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
@@ -1521,6 +1521,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   type,
                   vSymbol,
                   vTokenB,
+                  operateSubType,
                   operateType,
                   symbolB,
                   vSymbolB,
@@ -1626,11 +1627,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         case 'VAULT_REPAY':
         case 'VAULT_OPEN_POSITION': {
           const collateralToken = tokenMap[idIndex[operation.tokenIn]]
+          console.log('vaultOperationDetail1', order, operation)
           return {
             isShow: true,
             detail: {
               type: operation.operateType,
-              collateralSymbol: collateralToken.symbol,
+              collateralSymbol: collateralToken && collateralToken.symbol,
               collateralAmount: operation.amountIn
                 ? getValuePrecisionThousand(
                     sdk.toBig(operation.amountIn ?? 0).div('1e' + collateralToken.decimals),
@@ -1643,7 +1645,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     },
                   )
                 : undefined,
-              time: order && order.createdAt,
+              time: operation && operation.createdAt,
               statusColor,
               statusLabel,
               statusType
@@ -1739,14 +1741,19 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     )
                   : EmptyValueTag,
                 forexMap,
-                tokenSymbol: outTokenInfo.symbol
+                tokenSymbol: outTokenInfo.symbol,
+                isForcedLiqudation:
+                  (item.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_SETTLEMENT' ||
+                  (item.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW',
               },
             },
           }
         }
         case 'VAULT_TRADE': {
-          const tokenSellInfo = vaultTokenMap[vaultIdIndex[order.tokenS]]
-          const tokenBuyInfo = vaultTokenMap[vaultIdIndex[order.tokenB]]
+          const vTokenSellInfo = vaultTokenMap[vaultIdIndex[order.tokenS]]
+          const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[order.tokenB]]
+          const tokenSellInfo = tokenMap[idIndex[vTokenSellInfo.tokenId]]
+          const tokenBuyInfo = tokenMap[idIndex[vTokenBuyInfo.tokenId]]
 
           return {
             isShow: true,

@@ -2220,7 +2220,7 @@ export default {
   labelGoVaultDashBoard: 'Go to Dashboard',
   labelVaultBrowserToken: 'Amount',
   labelVaultQuotaTooltips: 'VaultQuoteDes',
-  labelVaultQuota: 'Total Quote',
+  labelVaultQuota: 'Total Quota',
   labelVaultBorrowMini: 'Minimum of {{arg}}',
   labelVaultBorrowNotEnough: 'Exceeded Maximum Borrowable Amount',
   labelVaultBorrowMax: 'Maximum of {{arg}}',
@@ -2254,7 +2254,7 @@ export default {
   labelVaultRepayTotalBalance: 'Amount',
   labelVaultVAULT_STATUS_RECEIVED: 'Received',
   labelVaultVAULT_STATUS_PROCESSING: 'Processing',
-  labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
+  labelVaultVAULT_STATUS_SUCCEED: 'Successfully',
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelVaultAccountWait: 'Vault account in loading...',
@@ -2321,7 +2321,7 @@ export default {
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
   labelVaultActiveLoanAlert:
     'You currently have an active loan order in progress. This may affect the available tokens for trading. Please proceed with caution.',
-  labelVaultSwapBorrowTip: 'Max is sum of Available and Borrowable tokens',
+  labelVaultSwapBorrowTip: 'Max is  sum of Holding and Borrowable tokens. When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
   labelVaultSwapBorrow: 'Max:',
   labelVaultSwapHoldTip:
     'When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
@@ -2332,7 +2332,7 @@ export default {
   labelStep1Borrow: 'STEP1: Borrow',
   labelStep2Swap: 'STEP2: Swap',
   labelVaultSwapCancel:
-    'You are borrowing tokens. \nAre you sure you want to change the token pair or exit the trade?',
+    'You are currently borrowing tokens. \nAre you sure you want to exit the current transaction?',
   labelAgree: 'I know',
   labelTradeVaultMiniBorrow:
     'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
@@ -2365,5 +2365,11 @@ export default {
   labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
   labelBtradeSettledAmount: 'Settled Amount',
   labelBtradeSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultExitTypeForcedLiquidation: 'Forced Liquidation',
+
+  labelVaultExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
+  labelVaultPlacedAmountTip: `The quantity you invested in 'Vault Trade' that you intend to execute.`,
+  labelVaultConvertedAmountTip: 'The quantity successfully converted from the CEX side.',
+  labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
 }
 
