@@ -356,6 +356,7 @@ export const VaultAssetsTable = withTranslation('tables')(
 								hideSmallBalances,
 								setHideSmallBalances,
 							}}
+              noHideInvestToken
 						/>
 					</Box>
 				)}
