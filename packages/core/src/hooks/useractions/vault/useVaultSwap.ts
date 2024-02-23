@@ -1073,6 +1073,12 @@ export const useVaultSwap = <
         startLoopHashCheck()
       }
     } catch (e) {
+      setTradeCalcData((state) => {
+        return {
+          ...state,
+          step: VaultSwapStep.Edit,
+        }
+      })
       borrowHash.current = null
       const code =
         (e as any)?.message === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
@@ -1090,12 +1096,6 @@ export const useVaultSwap = <
         step: VaultSwapStep.Borrow,
       })
       setIsSwapLoading(false)
-      setTradeCalcData((state) => {
-        return {
-          ...state,
-          step: VaultSwapStep.Edit,
-        }
-      })
     }
   }
 
