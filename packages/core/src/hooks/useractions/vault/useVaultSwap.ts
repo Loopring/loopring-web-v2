@@ -798,7 +798,7 @@ export const useVaultSwap = <
           fromSymbol: sellToken.symbol,
           toSymbol: buyToken.symbol,
           placedAmount:
-            tokenMap && sellToken.symbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+            tokenMap && item.fromSymbol &&(sellToken as any).erc20Symbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
               ? `${getValuePrecisionThousand(
                   sdk.toBig(item.fromAmount),
                   undefined,
@@ -806,11 +806,12 @@ export const useVaultSwap = <
                   tokenMap[item.fromSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${item.fromSymbol}`
+                )} ${(sellToken as any).erc20Symbol}`
               : EmptyValueTag,
           executedAmount:
             tokenMap &&
             item.fromSymbol &&
+            (sellToken as any).erc20Symbol &&
             item.settledFromAmount &&
             sdk.toBig(item.settledFromAmount).gt(0)
               ? `${getValuePrecisionThousand(
@@ -820,7 +821,7 @@ export const useVaultSwap = <
                   tokenMap[item.fromSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${item.fromSymbol}`
+                )} ${(sellToken as any).erc20Symbol}`
               : EmptyValueTag,
           executedRate:
             tokenMap &&
@@ -837,6 +838,7 @@ export const useVaultSwap = <
           convertedAmount:
             tokenMap &&
             item.toSymbol &&
+            (buyToken as any).erc20Symbol &&
             item.settledToAmount &&
             sdk.toBig(item.settledToAmount).gt(0)
               ? `${getValuePrecisionThousand(
@@ -846,7 +848,7 @@ export const useVaultSwap = <
                   tokenMap[item.toSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${item.toSymbol}`
+                )} ${(buyToken as any).erc20Symbol}`
               : EmptyValueTag,
           settledAmount:
             tokenMap &&

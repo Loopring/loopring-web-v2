@@ -1750,8 +1750,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
           }
         }
         case 'VAULT_TRADE': {
-          const tokenSellInfo = vaultTokenMap[vaultIdIndex[order.tokenS]]
-          const tokenBuyInfo = vaultTokenMap[vaultIdIndex[order.tokenB]]
+          const vTokenSellInfo = vaultTokenMap[vaultIdIndex[order.tokenS]]
+          const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[order.tokenB]]
+          const tokenSellInfo = tokenMap[idIndex[vTokenSellInfo.tokenId]]
+          const tokenBuyInfo = tokenMap[idIndex[vTokenBuyInfo.tokenId]]
 
           return {
             isShow: true,

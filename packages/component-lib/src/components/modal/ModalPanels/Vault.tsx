@@ -7,11 +7,12 @@ import {
   VaultRepayBase,
   VaultTradeBase,
 } from './BasicPanel'
-import { Box, Typography } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import {
   AlertIcon,
   EmptyValueTag,
   hexToRGB,
+  Info2Icon,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -91,8 +92,19 @@ const TradeDes2 = (props: PanelProps) => {
           marginTop={2}
           component={'span'}
         >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
             {t('labelVaultPlacedAmount')}
+            <Tooltip title={<>{t('labelVaultPlacedAmountTip')}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
           </Typography>
           <Typography
             display={'flex'}
@@ -116,8 +128,19 @@ const TradeDes2 = (props: PanelProps) => {
           marginTop={2}
           component={'span'}
         >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
             {t('labelVaultExecutedAmount')}
+            <Tooltip title={<>{t('labelVaultExecutedAmountTip')}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
           </Typography>
           <Typography
             display={'flex'}
@@ -127,7 +150,7 @@ const TradeDes2 = (props: PanelProps) => {
             component={'span'}
             color={'var(--color-text-primary)'}
           >
-            {convertedAmount !== EmptyValueTag && (
+            {executedAmount !== EmptyValueTag && (
               <CoinIcons
                 size='small'
                 type={TokenType.vault}
@@ -156,10 +179,20 @@ const TradeDes2 = (props: PanelProps) => {
           marginTop={2}
           component={'span'}
         >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
             {t('labelVaultConvertedAmount')}
+            <Tooltip title={<>{t('labelVaultConvertedAmountTip')}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
           </Typography>
-
           <Typography
             display={'flex'}
             flexDirection={'row'}

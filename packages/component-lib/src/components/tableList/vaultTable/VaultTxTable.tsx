@@ -2,7 +2,7 @@ import { WithTranslation, useTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import { Column, EmptyDefault, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Button, Typography } from '@mui/material'
+import { Box, BoxProps, Button, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
@@ -12,6 +12,7 @@ import {
   EmptyValueTag,
   FailedIcon,
   globalSetup,
+  Info2Icon,
   LoadingIcon,
   myLog,
   RowInvestConfig,
@@ -723,8 +724,13 @@ export const VaultTradeDetail = withTranslation(['common'])(
             component={'span'}
             order={9}
           >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            <Typography display={'flex'} alignItems={'center'} variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
               {t('labelVaultPlacedAmount')}
+              <Tooltip title={<>{t('labelVaultPlacedAmountTip')}</>}>
+                <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                  <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+                </Typography>
+              </Tooltip>
             </Typography>
             <Typography
               display={'flex'}
@@ -749,8 +755,13 @@ export const VaultTradeDetail = withTranslation(['common'])(
             component={'span'}
             order={9}
           >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            <Typography display={'flex'} alignItems={'center'} variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
               {t('labelVaultExecutedAmount')}
+              <Tooltip title={<>{t("labelVaultExecutedAmountTip")}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
             </Typography>
             <Typography
               display={'flex'}
@@ -789,8 +800,13 @@ export const VaultTradeDetail = withTranslation(['common'])(
             component={'span'}
             order={9}
           >
-            <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            <Typography display={'flex'} alignItems={'center'} variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
               {t('labelVaultConvertedAmount')}
+              <Tooltip title={<>{t("labelVaultConvertedAmountTip")}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
             </Typography>
 
             <Typography
