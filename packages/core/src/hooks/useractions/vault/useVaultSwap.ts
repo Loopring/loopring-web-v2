@@ -1073,6 +1073,19 @@ export const useVaultSwap = <
         startLoopHashCheck()
       }
     } catch (e) {
+      handleSwapPanelEvent(
+        {
+          type: 'sell',
+          tradeData: {
+            ...tradeData,
+            sell: {
+              ...tradeData?.sell,
+              tradeValue: tradeData?.sell?.count,
+            },
+          },
+        },
+        SwapType.SELL_SELECTED,
+      )
       setTradeCalcData((state) => {
         return {
           ...state,
