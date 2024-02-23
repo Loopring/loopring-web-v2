@@ -1632,7 +1632,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
             isShow: true,
             detail: {
               type: operation.operateType,
-              collateralSymbol: collateralToken.symbol,
+              collateralSymbol: collateralToken && collateralToken.symbol,
               collateralAmount: operation.amountIn
                 ? getValuePrecisionThousand(
                     sdk.toBig(operation.amountIn ?? 0).div('1e' + collateralToken.decimals),
