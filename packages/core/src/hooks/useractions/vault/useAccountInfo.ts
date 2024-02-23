@@ -276,7 +276,7 @@ export const useAccountInfo = () => {
     updateVaultLayer2({})
     nodeTimer.current = setTimeout(() => {
       refresh()
-    }, 10000)
+    }, 60 * 1000)
   }
   React.useEffect(() => {
     if (nodeTimer.current !== -1) {
