@@ -2332,7 +2332,7 @@ export default {
   labelStep1Borrow: 'STEP1: Borrow',
   labelStep2Swap: 'STEP2: Swap',
   labelVaultSwapCancel:
-    'You are borrowing tokens. \nAre you sure you want to change the token pair or exit the trade?',
+    'You are currently borrowing tokens. \nAre you sure you want to exit the current transaction?',
   labelAgree: 'I know',
   labelTradeVaultMiniBorrow:
     'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
