@@ -264,6 +264,7 @@ export const useVaultSwapExtends = ({
                             toastOpen.type == ToastType.error &&
                             toastOpen.step == tradeCalcData.step
                           }
+                          sx={{width: '120px'}}
                         >
                           {label}
                         </StepLabel>
