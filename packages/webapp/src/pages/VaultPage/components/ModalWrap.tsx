@@ -116,7 +116,7 @@ export const ModalVaultWrap = () => {
             (tradeCalcData as any)?.isVault &&
             (tradeCalcData as any).step !== VaultSwapStep.Edit
           ) {
-            setOpenCancel({ openCancel: false, shouldClose: true })
+            setOpenCancel({ openCancel: true, shouldClose: true })
           } else {
             setShowVaultSwap({ isShow: false })
           }
@@ -138,6 +138,17 @@ export const ModalVaultWrap = () => {
                 allowDecimals: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision
                   ? true
                   : false,
+              }}
+              covertOnClickPreCheck={() => {
+                if (
+                  (tradeCalcData as any)?.isVault &&
+                  (tradeCalcData as any).step !== VaultSwapStep.Edit
+                ) {
+                  setOpenCancel({ openCancel: true, shouldClose: true })
+                  return false
+                } else {
+                  return true
+                }
               }}
               onCancelClick={() => {
                 setOpenCancel({ openCancel: true, shouldClose: false })

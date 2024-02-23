@@ -59,6 +59,7 @@ export const SwapTradeWrap = <
   tokenBuyProps,
   onCancelClick,
   BtnEle,
+  covertOnClickPreCheck,
   ...rest
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef()
@@ -335,7 +336,11 @@ export const SwapTradeWrap = <
               height: 'var(--btn-icon-size-large) !important',
               width: 'var(--btn-icon-size-large) !important',
             }}
-            onClick={covertOnClick}
+            onClick={() => {
+              if (!covertOnClickPreCheck || covertOnClickPreCheck()) {
+                covertOnClick()
+              }
+            }}
             aria-label={t('tokenExchange')}
           >
             <SwapExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
