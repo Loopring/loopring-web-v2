@@ -14,6 +14,7 @@ import {
   hexToRGB,
   AlertIcon,
   ErrorIcon,
+  WarningIcon,
 } from '@loopring-web/common-resources'
 import { Box, Grid, Link, Tooltip, Typography, Stepper, StepLabel, Step } from '@mui/material'
 import { ButtonStyle, SwapType, useSettings } from '@loopring-web/component-lib'
@@ -79,7 +80,7 @@ export const useVaultSwapExtends = ({
       })
     }
   }, [swapBtnI18nKey, network, tradeCalcData, t])
-  const labelBorrowError = React.useMemo(() => {
+  const labelBorrowHint = React.useMemo(() => {
     const keyParams = {
       layer2: L1L2_NAME_DEFINED[network].layer2,
       l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
@@ -88,7 +89,49 @@ export const useVaultSwapExtends = ({
       l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     }
-    if (swapBtnI18nKey) {
+    if (toastOpen?.type == ToastType.error && toastOpen?.step == VaultSwapStep.Borrow) {
+      return (
+        <Box marginLeft={0.5} display={'flex'} alignItems={'center'} color={'var(--color-error)'}>
+          <WarningIcon />
+          <Typography marginLeft={0.5} color={'var(--color-error)'} fontSize={'12px'}>
+            {t('labelVaultActiveLoanError2', {
+              symbol: tradeCalcData.belongSellAlice,
+              value: tradeCalcData.borrowStr,
+            })}
+          </Typography>
+        </Box>
+      )
+    } else if (
+      tradeCalcData?.step === VaultSwapStep.Swap ||
+      tradeCalcData?.step === VaultSwapStep.Swaping
+    ) {
+      return (
+        <Box marginLeft={0.5} display={'flex'} alignItems={'center'} color={'var(--color-success)'}>
+          <CompleteIcon />
+          <Typography marginLeft={0.5} color={'var(--color-success)'} fontSize={'12px'}>
+            {t('labelVaultActiveLoanSuccessful', {
+              symbol: tradeCalcData.belongSellAlice,
+              value: tradeCalcData.borrowStr,
+            })}
+          </Typography>
+        </Box>
+      )
+    } else if (
+      tradeCalcData.step === VaultSwapStep.Borrow &&
+      swapBtnStatus === TradeBtnStatus.LOADING
+    ) {
+      return (
+        <Box marginLeft={0.5} display={'flex'} alignItems={'center'} color={'var(--color-warning)'}>
+          <WaitingIcon />
+          <Typography marginLeft={0.5} color={'var(--color-warning)'} fontSize={'12px'}>
+            {t('labelBorrowing', {
+              symbol: tradeCalcData.belongSellAlice,
+              value: tradeCalcData.borrowStr,
+            })}
+          </Typography>
+        </Box>
+      )
+    } else if (swapBtnI18nKey && tradeCalcData?.isRequiredBorrow) {
       let key = swapBtnI18nKey.split('|')
       if (key) {
         const i18nKey = key.shift()
@@ -114,7 +157,7 @@ export const useVaultSwapExtends = ({
     } else {
       return ''
     }
-  }, [swapBtnI18nKey, network, tradeCalcData])
+  }, [swapBtnI18nKey, network, tradeCalcData, tradeCalcData?.step, swapBtnStatus, toastOpen?.type, toastOpen?.step])
 
   const getDisabled =
     disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined
@@ -264,6 +307,7 @@ export const useVaultSwapExtends = ({
                             toastOpen.type == ToastType.error &&
                             toastOpen.step == tradeCalcData.step
                           }
+                          sx={{ width: '120px' }}
                         >
                           {label}
                         </StepLabel>
@@ -273,37 +317,13 @@ export const useVaultSwapExtends = ({
                 </Stepper>
               </Grid>
               <Grid item xs={5} display={'flex'} justifyContent={'flex-end'}>
-                {tradeCalcData.step === VaultSwapStep.Borrow &&
-                  swapBtnStatus === TradeBtnStatus.LOADING && (
-                    <Typography
-                      variant={'body2'}
-                      component={'span'}
-                      color={'var(--color-warning)'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                    >
-                      <WaitingIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
-                      {t('labelBorrowing', {
-                        symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
-                      })}
-                    </Typography>
-                  )}
-                {[VaultSwapStep.Swap, VaultSwapStep.Swaping].includes(tradeCalcData.step) && (
-                  <Typography
-                    variant={'body2'}
-                    component={'span'}
-                    color={'var(--color-success)'}
-                    display={'inline-flex'}
-                    alignItems={'center'}
-                  >
-                    <CompleteIcon color={'inherit'} sx={{ paddingRight: 1 / 2 }} />
-                    {t('labelBorrowed', {
-                      symbol: `${tradeCalcData.borrowStr} ${tradeCalcData.belongSellAlice} `,
-                    })}
-                  </Typography>
-                )}
+                
               </Grid>
-              {labelBorrowError && (
+              
+            </>
+          )}
+        </>
+        {labelBorrowHint && (
                 <Grid item xs={12}>
                   <Typography
                     variant={'body2'}
@@ -312,13 +332,10 @@ export const useVaultSwapExtends = ({
                     display={'inline-flex'}
                     alignItems={'center'}
                   >
-                    {labelBorrowError}
+                    {labelBorrowHint}
                   </Typography>
                 </Grid>
               )}
-            </>
-          )}
-        </>
         <Grid item xs={12}>
           <ButtonStyle
             variant={'contained'}

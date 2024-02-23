@@ -2337,12 +2337,13 @@ export default {
   labelTradeVaultMiniBorrow:
     'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
   labelVaultTradeSimpleBtn: 'Trade',
-  labelBorrowing: 'Borrowing {{symbol}}',
+  labelBorrowing: 'Borrowing {{value}} {{symbol}}',
   labelBorrowed: 'Borrowed {{symbol}}',
   labelBorrowSwap: 'Borrow & Swap',
   labelVaultTradeInsufficient: 'Insufficient quota',
   labelVaultActiveLoanError:
-    'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
+    'Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
+  
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
   labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
@@ -2371,5 +2372,9 @@ export default {
   labelVaultPlacedAmountTip: `The quantity you invested in 'Vault Trade' that you intend to execute.`,
   labelVaultConvertedAmountTip: 'The quantity successfully converted from the CEX side.',
   labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultActiveLoanError2:
+    'Borrowed {{value}} {{symbol}} failed.',
+  labelVaultActiveLoanSuccessful:
+    'Borrowed {{value}} {{symbol}} successful.',
 }
 
