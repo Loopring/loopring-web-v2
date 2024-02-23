@@ -547,7 +547,7 @@ export const VaultDashBoardPanel = ({
                 marginY={3}
                 paddingY={2}
               >
-                <VaultAssetsTable {...assetPanelProps} showFilter={false} />
+                <VaultAssetsTable {...assetPanelProps} showFilter />
               </Box>
               <Modal
                 open={showNoVaultAccount && !isShowVaultJoin?.isShow}
