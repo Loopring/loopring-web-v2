@@ -2220,7 +2220,7 @@ export default {
   labelGoVaultDashBoard: 'Go to Dashboard',
   labelVaultBrowserToken: 'Amount',
   labelVaultQuotaTooltips: 'VaultQuoteDes',
-  labelVaultQuota: 'Total Quote',
+  labelVaultQuota: 'Total Quota',
   labelVaultBorrowMini: 'Minimum of {{arg}}',
   labelVaultBorrowNotEnough: 'Exceeded Maximum Borrowable Amount',
   labelVaultBorrowMax: 'Maximum of {{arg}}',
