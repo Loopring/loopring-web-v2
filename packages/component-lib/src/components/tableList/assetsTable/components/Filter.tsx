@@ -17,6 +17,7 @@ export interface FilterProps {
     searchValue: string
   }
   handleFilterChange: (props: { searchValue: string }) => void
+  noHideInvestToken?: boolean
 }
 
 export enum CheckboxType {
@@ -33,6 +34,7 @@ export const Filter = withTranslation('tables', { withRef: true })(
     hideSmallBalances,
     setHideLpToken,
     setHideSmallBalances,
+    noHideInvestToken
   }: FilterProps & WithTranslation) => {
     return (
       <Grid container spacing={4} justifyContent={'space-between'}>
@@ -46,7 +48,7 @@ export const Filter = withTranslation('tables', { withRef: true })(
         </Grid>
 
         <Grid item>
-          <FormControlLabel
+          {!noHideInvestToken && <FormControlLabel
             control={
               <Checkbox
                 checked={hideInvestToken}
@@ -61,7 +63,7 @@ export const Filter = withTranslation('tables', { withRef: true })(
               />
             }
             label={t('labelHideInvestToken')}
-          />
+          />}
           <FormControlLabel
             style={{ marginRight: 0, paddingRight: 0 }}
             control={

@@ -2327,4 +2327,5 @@ export default {
   labelVaultPlacedAmountTip: `The quantity you invested in 'Vault Trade' that you intend to execute.`,
   labelVaultConvertedAmountTip: 'The quantity successfully converted from the CEX side.',
   labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultAmount: 'Amount' 
 }

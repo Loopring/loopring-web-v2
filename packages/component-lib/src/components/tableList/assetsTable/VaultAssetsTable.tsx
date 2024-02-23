@@ -231,12 +231,12 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: t('labelAmount'),
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-					const {available, precision, amount} = row
+					const {amount, precision} = row
 					return (
 						<Box className={'textAlignRight'}>
 							{hideAssets
 								? HiddenTag
-								: (available && Number(available) > 0) ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+								: (amount && Number(amount) > 0) ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
 									floor: true,
 								}) : EmptyValueTag}
 						</Box>
@@ -267,12 +267,12 @@ export const VaultAssetsTable = withTranslation('tables')(
 				name: t('labelVaultAssetsTableValue'),
 				headerCellClass: 'textAlignRight',
 				formatter: ({row}) => {
-					const {available, tokenValueDollar} = row
+					const {amount, tokenValueDollar} = row
 					return (
 						<Box className={'textAlignRight'}>
 							{hideAssets
 								? HiddenTag
-								: (available && Number(available) > 0) ? PriceTag[CurrencyToTag[currency]] +
+								: (amount && Number(amount) > 0) ? PriceTag[CurrencyToTag[currency]] +
 									getValuePrecisionThousand(
 										(tokenValueDollar || 0) * (forexMap[currency] ?? 0),
 										undefined,
@@ -356,6 +356,7 @@ export const VaultAssetsTable = withTranslation('tables')(
 								hideSmallBalances,
 								setHideSmallBalances,
 							}}
+              noHideInvestToken
 						/>
 					</Box>
 				)}

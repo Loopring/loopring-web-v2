@@ -475,13 +475,13 @@ export const VaultOperationDetail = (props: {
   statusColor: string
   statusLabel: string
   statusType: "success" | "processing" | "failed"
-  collateralSymbol: string
-  collateralAmount: string
   time: number
   type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION'
+  amount: string
+  amountSymbol: string
 }) => {
   const { coinJson } = useSettings()
-  const { statusColor, statusLabel, collateralSymbol, collateralAmount, time, type, statusType } = props
+  const { statusColor, statusLabel, time, type, statusType, amount, amountSymbol } = props
   const { t } = useTranslation()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -568,7 +568,9 @@ export const VaultOperationDetail = (props: {
           order={9}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {t('labelVaultCollateral')}
+            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY'
+              ? t('labelVaultAmount')
+              : t('labelVaultCollateral')}
           </Typography>
           <Typography
             display={'flex'}
@@ -578,14 +580,14 @@ export const VaultOperationDetail = (props: {
             component={'span'}
             color={'var(--color-text-primary)'}
           >
-            {collateralAmount ? (
+            {amount ? (
               <>
                 <CoinIcons
                   size='small'
                   type={TokenType.vault}
-                  tokenIcon={[coinJson[collateralSymbol], undefined]}
+                  tokenIcon={[coinJson[amountSymbol], undefined]}
                 />{' '}
-                {collateralAmount} {collateralSymbol}
+                {amount} {amountSymbol}
               </>
             ) : (
               EmptyValueTag

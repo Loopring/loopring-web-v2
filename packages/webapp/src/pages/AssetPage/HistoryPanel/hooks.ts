@@ -1558,9 +1558,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               statusColor: string
               statusLabel: string
               statusType: "success" | "processing" | "failed"
-              collateralSymbol: string
-              collateralAmount: string
+              // collateralSymbol?: string
+              // collateralAmount?: string
               time: number
+              amount: string
+              amountSymbol: string
             }
           | {
               type: 'VAULT_TRADE'
@@ -1627,28 +1629,59 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         case 'VAULT_REPAY':
         case 'VAULT_OPEN_POSITION': {
           const collateralToken = tokenMap[idIndex[operation.tokenIn]]
-          console.log('vaultOperationDetail1', order, operation)
+          let amount, amountSymbol: string 
+          if (operation.operateType === 'VAULT_BORROW' ) {
+            const vAmountToken = vaultTokenMap[vaultIdIndex[operation.tokenOut]]
+            const amountToken = tokenMap[idIndex[vAmountToken!.tokenId]]
+            amount = getValuePrecisionThousand(
+              sdk.toBig(operation.amountOut ?? 0).div('1e' + amountToken.decimals),
+              amountToken.precision,
+              amountToken.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+              },
+            )
+            amountSymbol = amountToken && amountToken.symbol
+          } else if (operation.operateType === 'VAULT_REPAY') {
+            const vAmountToken = vaultTokenMap[vaultIdIndex[operation.tokenIn]]
+            const amountToken = tokenMap[idIndex[vAmountToken!.tokenId]]
+            amount = getValuePrecisionThousand(
+              sdk.toBig(operation.amountIn ?? 0).div('1e' + amountToken.decimals),
+              amountToken.precision,
+              amountToken.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+              },
+            )
+            amountSymbol = amountToken && amountToken.symbol
+          } else {
+            const amountToken = tokenMap[idIndex[operation.tokenIn]]
+            amount = getValuePrecisionThousand(
+              sdk.toBig(operation.amountIn ?? 0).div('1e' + amountToken.decimals),
+              amountToken.precision,
+              amountToken.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+              },
+            )
+            amountSymbol = amountToken && amountToken.symbol
+          }
           return {
             isShow: true,
             detail: {
               type: operation.operateType,
-              collateralSymbol: collateralToken && collateralToken.symbol,
-              collateralAmount: operation.amountIn
-                ? getValuePrecisionThousand(
-                    sdk.toBig(operation.amountIn ?? 0).div('1e' + collateralToken.decimals),
-                    collateralToken.precision,
-                    collateralToken.precision,
-                    undefined,
-                    false,
-                    {
-                      floor: false,
-                    },
-                  )
-                : undefined,
               time: operation && operation.createdAt,
               statusColor,
               statusLabel,
-              statusType
+              statusType,
+              amount: amount,
+              amountSymbol: amountSymbol
             },
           }
         }

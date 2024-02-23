@@ -477,7 +477,12 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
         onSwapPop({ symbol: row?.token?.value })
       } else {
-        setShowNoVaultAccount({ isShow: true, whichBtn: VaultAction.VaultJoin })
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelVaultJoinTitle',
+        })
       }
     },
     [vaultAccountInfo?.accountStatus],

@@ -640,11 +640,11 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         <VaultOperationDetail
                           statusColor={vaultOperationDetail.statusColor}
                           statusLabel={vaultOperationDetail.statusLabel}
-                          collateralAmount={vaultOperationDetail.collateralAmount}
-                          collateralSymbol={vaultOperationDetail.collateralSymbol}
                           time={vaultOperationDetail.time}
                           type={vaultOperationDetail.type}
                           statusType={vaultOperationDetail.statusType}
+                          amount={vaultOperationDetail.amount}
+                          amountSymbol={vaultOperationDetail.amountSymbol}
                         />
                       )}
                     {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_CLOSE_OUT' && (
