@@ -64,7 +64,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any]?.vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       const ercToken = tokenMap[tradeData.belong]
-      // tradeData.belong
+      const minAmount =
+        vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
+          ? sdk
+              .toBig('10')
+              .exponentiatedBy(-1 * vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale)
+              .toString()
+          : sdk
+              .toBig(vaultTokenInfo?.vaultTokenAmounts?.minAmount)
+              .div('1e' + vaultTokenInfo.decimals)
+              .toString()
       supportData = {
         maxShowVal: getValuePrecisionThousand(
           sdk
@@ -77,16 +86,13 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ),
 
         minShowVal: getValuePrecisionThousand(
-          sdk.toBig('10').exponentiatedBy(-1 * vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale),
+          minAmount,
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         maxAmount: vaultTokenInfo?.vaultTokenAmounts?.maxAmount,
-        minAmount: sdk
-          .toBig('10')
-          .exponentiatedBy(-1 * vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale)
-          .toString(),
+        minAmount: sdk.toBig(minAmount).times('1e' + vaultTokenInfo.decimals),
         vaultSymbol: vaultTokenSymbol,
         vaultTokenInfo,
       }
@@ -645,7 +651,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const vaultTokenSymbol = idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? '']
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
-  console.log('btnLabel', btnLabel)
   // btnStatus, enableBtn, disableBtn
   return {
     handleError: undefined,
