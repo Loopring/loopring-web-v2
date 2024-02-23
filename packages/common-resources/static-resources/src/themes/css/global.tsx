@@ -24,6 +24,7 @@ export const fontDefault = {
   body2: '1.2rem',
 }
 export enum SvgSize {
+  svgSizeSmall = 12,
   svgSize = 14,
   svgSizeMedium = 16,
   svgSizeCover = 32,
@@ -265,6 +266,7 @@ export const globalCss = ({ theme }: any) => css`
     --btn-icon-size-large: 28px;
     --btn-icon-size: 36px;
     --svg-size: ${SvgSize.svgSize}px;
+    --svg-size-small: ${SvgSize.svgSizeSmall}px;
     --svg-size-medium: ${SvgSize.svgSizeMedium}px;
     --svg-size-cover: ${SvgSize.svgSizeCover}px;
     --svg-size-large: ${SvgSize.svgSizeLarge}px;
