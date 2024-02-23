@@ -592,7 +592,7 @@ export const useVaultSwap = <
           }
         } else if (notEnough) {
           return {
-            label: `labelArgNoEnough| ${belongSellAlice}`,
+            label: 'labelVaultBorrowNotEnough',
             tradeBtnStatus: TradeBtnStatus.DISABLED,
           }
         } else if (sellExceed) {
