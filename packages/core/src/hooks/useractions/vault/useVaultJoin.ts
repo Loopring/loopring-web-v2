@@ -77,15 +77,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ),
 
         minShowVal: getValuePrecisionThousand(
-          sdk
-            .toBig(vaultTokenInfo?.vaultTokenAmounts?.minAmount)
-            .div('1e' + vaultTokenInfo.decimals),
+          sdk.toBig('10').exponentiatedBy(-1 * vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale),
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         maxAmount: vaultTokenInfo?.vaultTokenAmounts?.maxAmount,
-        minAmount: vaultTokenInfo?.vaultTokenAmounts?.minAmount,
+        minAmount: sdk
+          .toBig('10')
+          .exponentiatedBy(-1 * vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale)
+          .toString(),
         vaultSymbol: vaultTokenSymbol,
         vaultTokenInfo,
       }
@@ -644,6 +645,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const vaultTokenSymbol = idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? '']
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
+  console.log('btnLabel', btnLabel)
   // btnStatus, enableBtn, disableBtn
   return {
     handleError: undefined,
