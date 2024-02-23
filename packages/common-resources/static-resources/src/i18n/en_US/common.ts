@@ -2376,5 +2376,6 @@ export default {
     'Borrowed {{value}} {{symbol}} failed.',
   labelVaultActiveLoanSuccessful:
     'Borrowed {{value}} {{symbol}} successful.',
+  labelVaultAmount: 'Amount' 
 }
 
