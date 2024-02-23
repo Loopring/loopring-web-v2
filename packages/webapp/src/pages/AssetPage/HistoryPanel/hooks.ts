@@ -1399,7 +1399,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = amount.gte(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${amountStr} ${erc20Symbol} ${DirectionTag} ${amountStr} ${vSymbol}`
+                    mainContentRender = `${amountStr} ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
@@ -1423,7 +1423,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_REPAY:
                     type = VaultRecordType.repay
@@ -1447,7 +1447,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_TRADE:
                     type = VaultRecordType.trade
@@ -1484,11 +1484,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     )
                     mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}${
                       order?.fillAmountS === order?.amountS ? '' : '/' + _amountSStr
-                    }  ${vSymbol} ${DirectionTag} ${
+                    }  ${erc20Symbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
                     }${
                       order?.fillAmountS === order?.amountS ? '' : '/' + _amountBStr
-                    } ${vSymbolB}`
+                    } ${erc20SymbolB}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
