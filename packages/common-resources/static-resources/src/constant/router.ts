@@ -569,7 +569,7 @@ export const FOOTER_LIST_MAP = {
     },
     {
       linkName: 'Terms', //Terms of service
-      linkHref: 'https://www.iubenda.com/terms-and-conditions/74969935',
+      linkHref: 'https://loopring.io/#/document/terms_en.md',
     },
     {
       linkName: 'Privacy', //Privacy policy
