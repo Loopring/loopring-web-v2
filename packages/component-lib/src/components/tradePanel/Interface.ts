@@ -166,6 +166,7 @@ export type SwapProps<T, I, TCD> = {
   setToastOpen?: (state: TOASTOPEN) => void
   scenario?: SCENARIO
   hideSecondConfirmation?: boolean
+  scrollDisabled?: boolean
 } & SwapInfoProps<T, I, TCD> &
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>
