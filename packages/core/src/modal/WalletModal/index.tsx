@@ -376,7 +376,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(
         [WalletConnectStep.Provider]: {
           view: (
             <ProviderMenu
-              termUrl={'https://www.iubenda.com/terms-and-conditions/74969935'}
               gatewayList={gatewayList}
               providerName={connectProvider}
               status={isShowConnect?.info?.status}
