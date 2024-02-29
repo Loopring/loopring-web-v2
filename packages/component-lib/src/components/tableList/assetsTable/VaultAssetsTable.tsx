@@ -156,8 +156,10 @@ export const VaultAssetsTable = withTranslation('tables')(
       (page) => {
         let resultData = rawData && !!rawData.length ? [...rawData] : []
         // if (filter.hideSmallBalance) {
+        
         if (hideSmallBalances) {
-          resultData = resultData.filter((o) => !o.smallBalance)
+          const list = ['ETH', 'LRC', 'USDT']
+          resultData = resultData.filter((o) => list.includes(o.erc20Symbol) || !o.smallBalance)
         }
         // if (filter.hideLpToken) {
         if (filter.searchValue) {
