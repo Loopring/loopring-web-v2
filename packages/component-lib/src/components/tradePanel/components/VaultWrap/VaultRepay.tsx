@@ -163,8 +163,8 @@ export const VaultRepayWrap = <
             <Typography component={'p'} variant='body2' color={'textPrimary'}>
               {getValuePrecisionThousand(
                 vaultRepayData?.tradeData?.balance,
-                tokenInfo?.precision ?? 6,
-                tokenInfo?.precision ?? 6,
+                tokenInfo?.vaultTokenAmounts.qtyStepScale ?? 6,
+                tokenInfo?.vaultTokenAmounts.qtyStepScale ?? 6,
               ) +
                 ' ' +
                 (vaultRepayData as any).erc20Symbol}

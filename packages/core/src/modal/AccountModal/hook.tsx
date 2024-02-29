@@ -153,6 +153,7 @@ import {
   VaultRepay_Success,
   VaultRepay_Failed,
   VaultRepay_In_Progress,
+  VaultRedeem_Inited,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -3345,6 +3346,14 @@ export function useAccountModalForUI({
               t,
               ...rest,
             }}
+          />
+        ),
+      },
+      [AccountStep.VaultRedeem_Inited]: {
+        view: (
+          <VaultRedeem_Inited
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
           />
         ),
       },

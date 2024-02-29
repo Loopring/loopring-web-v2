@@ -399,7 +399,7 @@ export const VaultDashBoardPanel = ({
                       </Box>
                     ) : (
                       <Box>
-                        <Button onClick={onClcikOpenPosition} variant={'contained'}>
+                        <Button sx={{ minWidth: 'var(--walletconnect-width)' }} onClick={_vaultAccountInfo.onJoinPop} variant={'contained'}>
                           {t('labelVaultJoinBtn')}
                         </Button>
                       </Box>
@@ -575,8 +575,11 @@ export const VaultDashBoardPanel = ({
                       className={'inModal'}
                       activeViewTemplate={
                         <>
-                          <Typography marginBottom={5} variant={'h4'}>
+                          <Typography marginBottom={3} variant={'h4'}>
                             {t(btnProps.title)}
+                          </Typography>
+                          <Typography width={'100%'} marginBottom={3}>
+                            {t("labelVaultOpenPositionDes")}
                           </Typography>
                           <>{dialogBtn}</>
                         </>

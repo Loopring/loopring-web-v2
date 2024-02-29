@@ -104,8 +104,8 @@ export const CoinIcons = React.memo(
           >
             <VaultTag
               style={{
-                height: 12,
-                width: 12,
+                height: size / 2,
+                width: size / 2,
                 transformOrigin: 'bottom',
               }}
             />

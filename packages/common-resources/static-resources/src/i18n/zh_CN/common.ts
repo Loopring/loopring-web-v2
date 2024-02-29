@@ -2285,7 +2285,7 @@ export default {
   labelTokenInfo: 'Token Info',
   labelTokenIntroduce: 'Introduction',
   labelVaultRedeemDetail: 'Details',
-  labelCloseOutDetail: 'Close Out Detail',
+  labelCloseOutDetail: 'Close Out',
   labelVaultTradeTitle: 'Vault trade',
   labelVaultPrice: 'Price',
   labelVaultSell: 'Sell',
@@ -2303,10 +2303,10 @@ export default {
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
   labelOpenPositionDetail: 'Open Position Detail',
-  labelMarginCallDetail: 'Margin Call Detail',
-  labelBorrowDetail: 'Borrow Detail',
-  labelRepayDetail: 'Repay Detail',
-  labelTradeDetail: 'Trade Detail',
+  labelMarginCallDetail: 'Margin Call',
+  labelBorrowDetail: 'Borrow',
+  labelRepayDetail: 'Repay',
+  labelTradeDetail: 'Trade',
   labelVaultPlacedAmount: 'Placed Amount',
   labelVaultExecutedAmount: 'Executed Amount',
   labelVaultExecutedRate: 'Executed Rate',
@@ -2327,5 +2327,6 @@ export default {
   labelVaultPlacedAmountTip: `The quantity you invested in 'Vault Trade' that you intend to execute.`,
   labelVaultConvertedAmountTip: 'The quantity successfully converted from the CEX side.',
   labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
-  labelVaultAmount: 'Amount' 
+  labelVaultAmount: 'Amount',
+  labelVaultOpenPositionDes: 'Please open a position first.' ,
 }

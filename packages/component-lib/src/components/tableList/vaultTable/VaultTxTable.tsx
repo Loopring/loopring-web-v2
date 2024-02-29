@@ -102,6 +102,11 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           name: t('labelVaultTxType'),
           formatter: ({ row }: FormatterProps<R>) => {
+            const isForcedCloseOut =
+              ((row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_SETTLEMENT' ||
+                (row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW') &&
+              row.type === VaultRecordType.closeout
+
             return (
               <Box
                 display={'flex'}
@@ -111,7 +116,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
               >
                 <Typography component={'span'} display={'flex'} alignItems={'center'}>
-                  {t(`labelVault${row.type}`)}
+                  {isForcedCloseOut ? t(`labelVaultcloseoutForced`) : t(`labelVault${row.type}`)}
                 </Typography>
               </Box>
             )
@@ -214,9 +219,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
-                {row.mainContentRender + row.feeStr
-                  ? `fee: ${row.feeStr} ${row.feeErc20Symbol}`
-                  : ''}
+                {row.mainContentRender}
               </>
             )
           },
@@ -584,10 +587,10 @@ export const VaultOperationDetail = (props: {
               <>
                 <CoinIcons
                   size='small'
-                  type={TokenType.vault}
+                  type={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? TokenType.single : TokenType.vault}
                   tokenIcon={[coinJson[amountSymbol], undefined]}
                 />{' '}
-                {amount} {amountSymbol}
+                <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{amount} {amountSymbol}</Typography>
               </>
             ) : (
               EmptyValueTag

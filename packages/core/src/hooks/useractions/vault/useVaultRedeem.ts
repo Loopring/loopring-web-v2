@@ -231,7 +231,7 @@ export const useVaultRedeem = () => {
         setIsLoading(true)
         setShowAccount({
           isShow: true,
-          step: AccountStep.VaultRedeem_In_Progress,
+          step: AccountStep.VaultRedeem_Inited,
         })
         processRequest({
           accountId,
