@@ -1013,6 +1013,7 @@ export const useVaultSwap = <
     __TOAST_AUTO_CLOSE_TIMER__,
     updateTradeVault,
   ])
+  const [borrowedAmount, setBorrowedAmount] = React.useState(undefined as string | undefined)
   const vaultBorrowSubmit = async () => {
     const {
       account,
@@ -1061,6 +1062,7 @@ export const useVaultSwap = <
           timestamp: Date.now(),
         }
         borrowHash.current = null
+        setBorrowedAmount(tradeCalcData.borrowStr)
         let response = await LoopringAPI.vaultAPI.submitVaultBorrow({
           request: vaultBorrowRequest,
           privateKey: account.eddsaKey?.sk,
@@ -1798,5 +1800,6 @@ export const useVaultSwap = <
         setShowVaultSwap({ isShow: false })
       }
     },
+    borrowedAmount
   }
 }

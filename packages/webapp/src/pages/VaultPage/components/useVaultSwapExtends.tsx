@@ -40,6 +40,7 @@ export const useVaultSwapExtends = ({
   // onBorrowClick,
   // borrowBtnI18nKey,
   toastOpen,
+  borrowedAmount
 }) => {
   const { t } = useTranslation()
   const { defaultNetwork, coinJson } = useSettings()
@@ -96,7 +97,7 @@ export const useVaultSwapExtends = ({
           <Typography marginLeft={0.5} color={'var(--color-error)'} fontSize={'12px'}>
             {t('labelVaultActiveLoanError2', {
               symbol: tradeCalcData.belongSellAlice,
-              value: tradeCalcData.borrowStr,
+              value: borrowedAmount
             })}
           </Typography>
         </Box>
@@ -111,7 +112,7 @@ export const useVaultSwapExtends = ({
           <Typography marginLeft={0.5} color={'var(--color-success)'} fontSize={'12px'}>
             {t('labelVaultActiveLoanSuccessful', {
               symbol: tradeCalcData.belongSellAlice,
-              value: tradeCalcData.borrowStr,
+              value: borrowedAmount
             })}
           </Typography>
         </Box>
@@ -126,7 +127,7 @@ export const useVaultSwapExtends = ({
           <Typography marginLeft={0.5} color={'var(--color-warning)'} fontSize={'12px'}>
             {t('labelBorrowing', {
               symbol: tradeCalcData.belongSellAlice,
-              value: tradeCalcData.borrowStr,
+              value: borrowedAmount,
             })}
           </Typography>
         </Box>
@@ -157,7 +158,7 @@ export const useVaultSwapExtends = ({
     } else {
       return ''
     }
-  }, [swapBtnI18nKey, network, tradeCalcData, tradeCalcData?.step, swapBtnStatus, toastOpen?.type, toastOpen?.step])
+  }, [swapBtnI18nKey, network, tradeCalcData, tradeCalcData?.step, swapBtnStatus, toastOpen?.type, toastOpen?.step, borrowedAmount])
 
   const getDisabled =
     disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined

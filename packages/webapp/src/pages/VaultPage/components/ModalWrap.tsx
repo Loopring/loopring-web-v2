@@ -69,6 +69,7 @@ export const ModalVaultWrap = () => {
     isMobile,
     disabled,
     cancelBorrow,
+    borrowedAmount
   } = useVaultSwap({ path: 'vault' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -80,6 +81,7 @@ export const ModalVaultWrap = () => {
     handleSwapPanelEvent,
     tradeData,
     toastOpen,
+    borrowedAmount
   })
   const { vaultRepayProps, vaultBorrowProps, vaultLoanType, handleTabChange } = useVaultLoan()
   return (
