@@ -1482,12 +1482,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
-                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}${
-                      order?.fillAmountS === order?.amountS ? '' : '/' + _amountSStr
-                    }  ${erc20Symbol} ${DirectionTag} ${
+                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}  ${erc20Symbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    }${
-                      order?.fillAmountS === order?.amountS ? '' : '/' + _amountBStr
                     } ${erc20SymbolB}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:

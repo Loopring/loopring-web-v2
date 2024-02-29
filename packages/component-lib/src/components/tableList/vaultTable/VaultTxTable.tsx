@@ -219,9 +219,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return (
               <>
-                {row.mainContentRender + row.feeStr
-                  ? `fee: ${row.feeStr} ${row.feeErc20Symbol}`
-                  : ''}
+                {row.mainContentRender}
               </>
             )
           },
