@@ -584,10 +584,10 @@ export const VaultOperationDetail = (props: {
               <>
                 <CoinIcons
                   size='small'
-                  type={TokenType.vault}
+                  type={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? TokenType.single : TokenType.vault}
                   tokenIcon={[coinJson[amountSymbol], undefined]}
                 />{' '}
-                {amount} {amountSymbol}
+                <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{amount} {amountSymbol}</Typography>
               </>
             ) : (
               EmptyValueTag
