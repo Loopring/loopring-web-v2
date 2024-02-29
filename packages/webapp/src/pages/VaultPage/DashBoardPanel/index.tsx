@@ -399,7 +399,7 @@ export const VaultDashBoardPanel = ({
                       </Box>
                     ) : (
                       <Box>
-                        <Button onClick={onClcikOpenPosition} variant={'contained'}>
+                        <Button sx={{ minWidth: 'var(--walletconnect-width)' }} onClick={onClcikOpenPosition} variant={'contained'}>
                           {t('labelVaultJoinBtn')}
                         </Button>
                       </Box>
