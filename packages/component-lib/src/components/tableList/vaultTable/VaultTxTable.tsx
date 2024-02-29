@@ -102,6 +102,11 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           name: t('labelVaultTxType'),
           formatter: ({ row }: FormatterProps<R>) => {
+            const isForcedCloseOut =
+              ((row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_SETTLEMENT' ||
+                (row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW') &&
+              row.type === VaultRecordType.closeout
+
             return (
               <Box
                 display={'flex'}
@@ -111,7 +116,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
               >
                 <Typography component={'span'} display={'flex'} alignItems={'center'}>
-                  {t(`labelVault${row.type}`)}
+                  {isForcedCloseOut ? t(`labelVaultcloseoutForced`) : t(`labelVault${row.type}`)}
                 </Typography>
               </Box>
             )
