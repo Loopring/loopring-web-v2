@@ -132,6 +132,8 @@ export const useAccountInfo = () => {
     availableTradeCheck: availableSwapCheck,
     isLoading: false,
     submitCallback: async ({ symbol }: { symbol?: string }) => {
+      
+      updateVaultLayer2({})
       const { vaultAccountInfo } = store.getState().vaultLayer2
       const vaultAccountInfoSymbol =
         idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
