@@ -205,6 +205,7 @@ export enum AccountStep {
   VaultJoin_In_Progress,
   VaultRedeem_Success,
   VaultRedeem_Failed,
+  VaultRedeem_Inited,
   VaultRedeem_In_Progress,
   VaultBorrow_Success,
   VaultBorrow_Failed,
