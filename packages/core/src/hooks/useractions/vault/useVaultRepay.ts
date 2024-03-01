@@ -284,7 +284,7 @@ export const useVaultRepay = <
             status = 'labelPending'
           }
           setShowAccount({
-            isShow: true,
+            isShow: store.getState().modals.isShowAccount.isShow,
             step:
               status == 'labelSuccessfully'
                 ? AccountStep.VaultRepay_Success

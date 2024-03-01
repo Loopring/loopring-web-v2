@@ -940,7 +940,7 @@ export const useVaultSwap = <
           }
 
           setShowAccount({
-            isShow: true,
+            isShow: store.getState().modals.isShowAccount.isShow,
             step:
               status == 'labelSuccessfully'
                 ? AccountStep.VaultTrade_Success
