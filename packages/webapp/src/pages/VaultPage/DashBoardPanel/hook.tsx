@@ -206,20 +206,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             title: 'labelRedeemTitle',
           })
         } else {
-          setShowNoVaultAccount({
-            isShow: true,
-            whichBtn: VaultAction.VaultJoin,
-            des: 'labelJoinDesMessage',
-            title: 'labelVaultJoinTitle',
-          })
         }
       } else {
-        setShowNoVaultAccount({
-          isShow: true,
-          // whichBtn: VaultAction.VaultJoin,
-          des: 'labelJoinDesMessage',
-          title: 'labelVaultCheckInProcessing',
-        })
+        
       }
     }
   }, [vaultAccountInfoStatus, match?.params?.item, match?.params?.method])

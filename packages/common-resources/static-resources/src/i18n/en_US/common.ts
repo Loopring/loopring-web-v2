@@ -2290,7 +2290,7 @@ export default {
   labelRedeemDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelJoinDesMessage:
-    'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
+    'Please open a position first.',
   labelFailed: 'Failed',
   labelVAULT_COLLATERAL: 'Vault Collateral',
   labelTokenVaultDes:
