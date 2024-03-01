@@ -94,11 +94,10 @@ export const CoinIcons = React.memo(
           <Box
             className={`logo-icon ${type}`}
             display={'flex'}
-            height={'var(--svg-size-small)'}
             position={'relative'}
             zIndex={24}
             left={-10}
-            width={'var(--svg-size-small)'}
+            top={(Math.pow(size, 1.7) / 50 ) - 3}
             alignItems={'center'}
             justifyContent={'center'}
           >
