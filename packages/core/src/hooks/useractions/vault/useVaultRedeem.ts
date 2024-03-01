@@ -28,7 +28,7 @@ export const useVaultRedeem = () => {
   const { t } = useTranslation('common')
   const { status: vaultAccountInfoStatus, vaultAccountInfo } = useVaultLayer2()
   const [isLoading, setIsLoading] = React.useState(false)
-  const { setShowVaultExit, setShowAccount } = useOpenModals()
+  const { setShowVaultExit, setShowAccount, setShowNoVaultAccount } = useOpenModals()
   const { forexMap } = useSystem()
   const { currency } = useSettings()
   const [info, setInfo] = React.useState<
@@ -195,6 +195,20 @@ export const useVaultRedeem = () => {
         ) {
           setShowAccount({ isShow: false })
         }
+        var timer = setInterval(() => {
+          LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+            {
+              accountId: accountId?.toString(),
+              hash: (response as any).hash,
+            },
+            apiKey,
+          ).then(x => {
+            if (x.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED) {
+              setShowNoVaultAccount({ isShow: false })
+              clearInterval(timer)
+            }
+          })
+        }, 2000)
       } else {
         throw new Error('api not ready')
       }
