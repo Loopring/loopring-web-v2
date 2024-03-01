@@ -200,9 +200,15 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
+          setShowNoVaultAccount({
+            isShow: true,
+            des: 'labelRedeemDesMessage',
+            title: 'labelRedeemTitle',
+          })
         } else {
         }
       } else {
+        
       }
     }
   }, [vaultAccountInfoStatus, match?.params?.item, match?.params?.method])

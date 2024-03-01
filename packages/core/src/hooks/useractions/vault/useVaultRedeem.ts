@@ -174,7 +174,7 @@ export const useVaultRedeem = () => {
           status = 'labelPending'
         }
         setShowAccount({
-          isShow: true,
+          isShow: store.getState().modals.isShowAccount.isShow,
           step:
             status == 'labelSuccessfully'
               ? AccountStep.VaultRedeem_Success
@@ -231,7 +231,7 @@ export const useVaultRedeem = () => {
         setIsLoading(true)
         setShowAccount({
           isShow: true,
-          step: AccountStep.VaultRedeem_Inited,
+          step: AccountStep.VaultRedeem_In_Progress,
         })
         processRequest({
           accountId,

@@ -22,7 +22,6 @@ import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
 import { CoinIcons } from '../../tableList'
 import { useTranslation } from 'react-i18next'
-import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile, coinJson } = useSettings()
@@ -682,35 +681,7 @@ export const VaultRedeem_Success = (props: PanelProps) => {
 export const VaultRedeem_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t('labelVaultRedeemInProgress'),
-    describe2: (
-      <>
-        {props.info && <RedeemDes2 {...props} />}
-      </>
-    ),
-  }
-  return <VaultExitBase showTitle={true} {...propsPatch} {...props} />
-}
-export const VaultRedeem_Inited = (props: PanelProps) => {
-  const propsPatch = {
-    describe1: (
-      <Box display={'flex'} height={'100%'} justifyContent={'space-between'} paddingX={2} alignItems={'center'} flexDirection={'column'}>
-        <Typography textAlign={'left'} marginBottom={6} >{props.t('labelRedeemDesMessage')}</Typography>
-        <img
-          className='loading-gif'
-          alt={'loading'}
-          width={48}
-          src={`${SoursURL}images/loading-line.gif`}
-        />
-      </Box>
-    ),
-  }
-  return <VaultExitBase showTitle={true} {...propsPatch} {...props} />
-}
-export const VaultRedeem_In_Progress = (props: PanelProps) => {
-  const propsPatch = {
-    iconType: IconType.LoadingIcon,
-    describe1: props.t('labelVaultRedeemInProgress', {
+    describe1: props.t('labelVaultRedeemFailed', {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -729,6 +700,17 @@ export const VaultRedeem_In_Progress = (props: PanelProps) => {
         )}
       </>
     ),
+  }
+  return <VaultExitBase showTitle={true} {...propsPatch} {...props} />
+}
+export const VaultRedeem_In_Progress = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t('labelVaultRedeemInProgress', {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+    describe2: props.info && <RedeemDes2 {...props} isPending={true} />,
   }
   return <VaultExitBase showTitle={true} {...propsPatch} {...props} />
 }

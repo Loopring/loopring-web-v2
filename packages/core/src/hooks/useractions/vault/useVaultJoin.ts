@@ -205,7 +205,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           }
 
           setShowAccount({
-            isShow: true,
+            isShow: store.getState().modals.isShowAccount.isShow,
             step:
               status == 'labelSuccessfully'
                 ? AccountStep.VaultJoin_Success
