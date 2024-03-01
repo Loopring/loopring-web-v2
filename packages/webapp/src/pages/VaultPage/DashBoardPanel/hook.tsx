@@ -508,7 +508,8 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     actionRow: ({ row }) => {
       return (
         <Button
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             onRowClick({ row })
           }}
         >

@@ -352,9 +352,8 @@ export const useVaultBorrow = <
         } else {
           status = 'labelPending'
         }
-
         setShowAccount({
-          isShow: true,
+          isShow: store.getState().modals.isShowAccount.isShow,
           step:
             status == 'labelSuccessfully'
               ? AccountStep.VaultBorrow_Success

@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Grid, Modal, Tooltip, Button } from '@mui/material'
+import { Box, Container, Typography, Grid, Modal, Tooltip, Button, Divider, IconButton } from '@mui/material'
 import React from 'react'
 import {
   ConvertToIcon,
@@ -19,30 +19,39 @@ import {
   UpColor,
   Info2Icon,
   SoursURL,
+  RouterPath,
+  VaultKey,
+  TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
+  MarketDetail,
   MenuBtnStyled,
+  ModalCloseButton,
   ModalCloseButtonPosition,
+  SwitchPanelStyled,
   useOpenModals,
   useSettings,
   VaultAssetsTable,
+  Button as MyButton
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
-import { useSystem, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
+import { makeVaultLayer2, useSystem, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 import { useTheme } from '@emotion/react'
+import { useVaultMarket } from '../HomePanel/hook'
+import { useHistory } from 'react-router'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
-  const { vaultAccountInfo } = _vaultAccountInfo
+  const { vaultAccountInfo, activeInfo } = _vaultAccountInfo
   const { t } = useTranslation()
 
-  const { forexMap } = useSystem()
+  const { forexMap, etherscanBaseUrl } = useSystem()
   const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
@@ -174,8 +183,12 @@ export const VaultDashBoardPanel = ({
     )
   }, [colors, vaultAccountInfo?.marginLevel])
   const theme = useTheme()
-  
-
+  const tableRef = React.useRef<HTMLDivElement>()
+  const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
+  const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
+  const { tokenMap: vaultTokenMap, tokenPrices } = useVaultMap()
+  const history = useHistory()
+  const {vaultTickerMap} = useVaultTicker()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -399,7 +412,11 @@ export const VaultDashBoardPanel = ({
                       </Box>
                     ) : (
                       <Box>
-                        <Button sx={{ minWidth: 'var(--walletconnect-width)' }} onClick={_vaultAccountInfo.onJoinPop} variant={'contained'}>
+                        <Button
+                          sx={{ minWidth: 'var(--walletconnect-width)' }}
+                          onClick={_vaultAccountInfo.onJoinPop}
+                          variant={'contained'}
+                        >
                           {t('labelVaultJoinBtn')}
                         </Button>
                       </Box>
@@ -547,7 +564,16 @@ export const VaultDashBoardPanel = ({
                 marginY={3}
                 paddingY={2}
               >
-                <VaultAssetsTable {...assetPanelProps} showFilter />
+                <VaultAssetsTable {...assetPanelProps} onRowClick={(index, row) => {
+                  // @ts-ignore
+                  marketProps.onRowClick(index, {
+                    // @ts-ignore
+                    ...vaultTokenMap[row.name], 
+                    // @ts-ignore
+                    cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+                    ...vaultTickerMap[row.erc20Symbol]
+                  })
+                }} showFilter />
               </Box>
               <Modal
                 open={showNoVaultAccount && !isShowVaultJoin?.isShow}
@@ -579,7 +605,7 @@ export const VaultDashBoardPanel = ({
                             {t(btnProps.title)}
                           </Typography>
                           <Typography width={'100%'} marginBottom={3}>
-                            {t("labelVaultOpenPositionDes")}
+                            {t('labelVaultOpenPositionDes')}
                           </Typography>
                           <>{dialogBtn}</>
                         </>
@@ -587,6 +613,237 @@ export const VaultDashBoardPanel = ({
                     />
                   </Box>
                 </Box>
+              </Modal>
+
+              <Modal
+                open={detail?.isShow && !isShowVaultJoin?.isShow}
+                onClose={() => setShowDetail({ isShow: false })}
+              >
+                <SwitchPanelStyled width={'var(--modal-width)'}>
+                  <ModalCloseButton
+                    t={t}
+                    onClose={(_e: any) => setShowDetail({ isShow: false } as any)}
+                  />
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'flex-start'}
+                    alignSelf={'stretch'}
+                    justifyContent={'stretch'}
+                    marginTop={-5}
+                  >
+                    <Typography
+                      display={'flex'}
+                      flexDirection={'row'}
+                      component={'header'}
+                      alignItems={'center'}
+                      height={'var(--toolbar-row-height)'}
+                      paddingX={3}
+                    >
+                      {detail?.detail?.tokenInfo.erc20Symbol ?? detail?.detail?.tokenInfo.symbol}
+                    </Typography>
+                    <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                    <Box
+                      maxHeight={'60vh'}
+                      overflow={'scroll'}
+                      flex={1}
+                      display={'flex'}
+                      flexDirection={'column'}
+                    >
+                      {vaultAccountInfo &&
+                        walletMap &&
+                        ([sdk.VaultAccountStatus.IN_STAKING].includes(
+                          vaultAccountInfo?.accountStatus,
+                        ) ||
+                          activeInfo?.hash) && (
+                          <>
+                            <Box
+                              display='flex'
+                              flexDirection={'column'}
+                              alignItems={'center'}
+                              alignSelf={'center'}
+                              justifyContent={'center'}
+                              margin={4}
+                            >
+                              <Typography variant={'h2'} component={'h4'} color={'inherit'}>
+                                {!hideAssets
+                                  ? walletMap[detail?.detail?.tokenInfo.symbol!]?.count
+                                    ? getValuePrecisionThousand(
+                                        walletMap[detail?.detail?.tokenInfo.symbol!]?.count ?? 0,
+                                        vaultTokenMap[detail?.detail?.tokenInfo.symbol!].precision,
+                                        vaultTokenMap[detail?.detail?.tokenInfo.symbol!].precision,
+                                        undefined,
+                                        false,
+                                        {
+                                          isFait: false,
+                                          floor: true,
+                                        },
+                                      )
+                                    : '0.00'
+                                  : HiddenTag}
+                              </Typography>
+                              <Typography
+                                variant={'body1'}
+                                color={'textSecondary'}
+                                component={'span'}
+                              >
+                                {!hideAssets
+                                  ? walletMap[detail?.detail?.tokenInfo.symbol!]?.count
+                                    ? PriceTag[CurrencyToTag[currency]] +
+                                      getValuePrecisionThousand(
+                                        sdk
+                                          .toBig(walletMap[detail?.detail?.tokenInfo.symbol!]!.count)
+                                          .times(
+                                            tokenPrices?.[detail?.detail?.tokenInfo.symbol!] || 0,
+                                          )
+                                          .times(forexMap[currency] ?? 0),
+                                        2,
+                                        2,
+                                        2,
+                                        false,
+                                        {
+                                          isFait: false,
+                                          floor: true,
+                                        },
+                                      )
+                                    : PriceTag[CurrencyToTag[currency]] + '0.00'
+                                  : HiddenTag}
+                              </Typography>
+                              <Box marginTop={2} display={'flex'} flexDirection={'row'}>
+                                <Box
+                                  display={'flex'}
+                                  flexDirection={'column'}
+                                  marginRight={5}
+                                  alignItems={'center'}
+                                >
+                                  <IconButton
+                                    sx={{
+                                      height: 'var(--svg-size-huge) !important',
+                                      width: 'var(--svg-size-huge) !important',
+                                      border: 'solid 0.5px var(--color-border)',
+                                    }}
+                                    size={'large'}
+                                    onClick={() => {
+                                      history.push(
+                                        `${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}/${VaultAction.VaultLoan}?symbol=${detail?.detail?.tokenInfo.symbol}`,
+                                      )
+                                    }}
+                                  >
+                                    <Box
+                                      component={'img'}
+                                      src={`${SoursURL}svg/vault_loan_${theme.mode}.svg`}
+                                    />
+                                  </IconButton>
+                                  <Typography
+                                    marginTop={1 / 2}
+                                    component={'span'}
+                                    variant={'body2'}
+                                    color={'textSecondary'}
+                                    display={'inline-flex'}
+                                    alignItems={'center'}
+                                    textAlign={'center'}
+                                    sx={{
+                                      textIndent: 0,
+                                      textAlign: 'center',
+                                    }}
+                                  >
+                                    {t('labelVaultLoanBtn')}
+                                  </Typography>
+                                </Box>
+                                <Box
+                                  display={'flex'}
+                                  flexDirection={'column'}
+                                  alignItems={'center'}
+                                >
+                                  <IconButton
+                                    sx={{
+                                      height: 'var(--svg-size-huge) !important',
+                                      width: 'var(--svg-size-huge) !important',
+                                      border: 'solid 0.5px var(--color-border)',
+                                    }}
+                                    size={'large'}
+                                    onClick={() => {
+                                      history.push(
+                                        `${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}/${VaultAction.VaultSwap}?symbol=${detail?.detail?.tokenInfo.symbol}`,
+                                      )
+                                    }}
+                                  >
+                                    <Box
+                                      component={'img'}
+                                      src={`${SoursURL}svg/vault_trade_${theme.mode}.svg`}
+                                    />
+                                  </IconButton>
+                                  <Typography
+                                    component={'span'}
+                                    variant={'body2'}
+                                    display={'inline-flex'}
+                                    textAlign={'center'}
+                                    alignItems={'center'}
+                                    color={'textSecondary'}
+                                    marginTop={1 / 2}
+                                    sx={{
+                                      textIndent: 0,
+                                      textAlign: 'center',
+                                    }}
+                                  >
+                                    {t('labelVaultTradeSimpleBtn')}
+                                  </Typography>
+                                </Box>
+                              </Box>
+                            </Box>
+                            <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                          </>
+                        )}
+                      <Box padding={3} flex={1} display={'flex'} flexDirection={'column'}>
+                        <MarketDetail
+                          etherscanBaseUrl={etherscanBaseUrl}
+                          isShow={detail.isShow}
+                          forexMap={forexMap}
+                          isLoading={detail.isLoading}
+                          {...{ ...detail?.detail }}
+                        />
+                      </Box>
+                    </Box>
+                    {!(
+                      (vaultAccountInfo &&
+                        [sdk.VaultAccountStatus.IN_STAKING].includes(
+                          vaultAccountInfo?.accountStatus,
+                        )) ||
+                      activeInfo?.hash
+                    ) && (
+                      <>
+                        <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                        <Box
+                          padding={3}
+                          paddingY={1}
+                          display={'flex'}
+                          flexDirection={'column'}
+                          alignItems={'flex-end'}
+                          alignSelf={'stretch'}
+                          justifyContent={'stretch'}
+                        >
+                          <MyButton
+                            size={'medium'}
+                            onClick={() => {
+                              setShowDetail({ isShow: false })
+                              
+                              _vaultAccountInfo.onJoinPop({})
+                            }}
+                            loading={'false'}
+                            variant={'contained'}
+                            sx={{ minWidth: 'var(--walletconnect-width)' }}
+                            disabled={
+                              _vaultAccountInfo.joinBtnStatus === TradeBtnStatus.DISABLED ||
+                              _vaultAccountInfo.joinBtnStatus === TradeBtnStatus.LOADING
+                            }
+                          >
+                            {_vaultAccountInfo.joinBtnLabel}
+                          </MyButton>
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                </SwitchPanelStyled>
               </Modal>
             </>
           }
