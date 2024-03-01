@@ -8,6 +8,7 @@ import {
   LoadIcon,
   PriceTag,
   RouterPath,
+  SoursURL,
   TradeBtnStatus,
   VaultAction,
   VaultIcon,
@@ -252,7 +253,10 @@ export const VaultHomePanel = ({
                               )
                             }}
                           >
-                            <LoadIcon fontSize='large' />
+                            <Box
+                              component={'img'}
+                              src={`${SoursURL}svg/vault_loan_${theme.mode}.svg`}
+                            />
                           </IconButton>
                           <Typography
                             marginTop={1 / 2}
@@ -284,7 +288,10 @@ export const VaultHomePanel = ({
                               )
                             }}
                           >
-                            <VaultTradeIcon fontSize='large' />
+                            <Box
+                              component={'img'}
+                              src={`${SoursURL}svg/vault_trade_${theme.mode}.svg`}
+                            />
                           </IconButton>
                           <Typography
                             component={'span'}
