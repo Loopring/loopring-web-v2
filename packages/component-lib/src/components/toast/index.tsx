@@ -16,6 +16,7 @@ export type TOASTOPEN = {
   open: boolean
   content: JSX.Element | string
   type: ToastType
+  [key: string]: any
 }
 export type TOSTOBJECT = {
   toastOpen: TOASTOPEN

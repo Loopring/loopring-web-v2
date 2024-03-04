@@ -25,9 +25,11 @@ export type SwapTradeBaseProps<T, I, TCD> = {
   tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   classWrapName?: string
+  BtnEle?: JSX.Element
 }
 export type SwapTradeBaseEventProps<T, I> = {
   onSwapClick: () => void | any
+  onCancelClick?: () => void | any
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type SwapTradeExtendProps<T> = {

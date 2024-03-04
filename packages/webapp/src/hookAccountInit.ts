@@ -179,13 +179,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   React.useEffect(() => {
     switch (vaultLayer2Status) {
       case SagaStatus.ERROR:
-        setShowGlobalToast({
-          isShow: true,
-          info: {
-            type: ToastType.error,
-            messageKey: 'update Vault Account Failed',
-          },
-        })
         vaultsLayer2Unset()
         break
       case SagaStatus.DONE:

@@ -1281,6 +1281,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   setToastOpen: (props: any) => void,
 ) => {
   const { t } = useTranslation(['common', 'error'])
+  const { t: t2 } = useTranslation(['tables'])
   const [vaultOrderData, setVaultOrderData] = React.useState<R[]>([])
   const [totalNum, setTotalNum] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(false)
@@ -1398,7 +1399,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = amount.gte(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${amountStr} ${erc20Symbol} ${DirectionTag} ${amountStr} ${vSymbol}`
+                    mainContentRender = `${amountStr} ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
@@ -1422,7 +1423,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_REPAY:
                     type = VaultRecordType.repay
@@ -1446,7 +1447,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${vSymbol}`
+                    } ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_TRADE:
                     type = VaultRecordType.trade
@@ -1481,13 +1482,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
-                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}${
-                      order?.fillAmountS === order?.amountS ? '' : '/' + _amountSStr
-                    }  ${vSymbol} ${DirectionTag} ${
+                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}  ${erc20Symbol} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    }${
-                      order?.fillAmountS === order?.amountS ? '' : '/' + _amountBStr
-                    } ${vSymbolB};\n ${t('labelPrice')}: ${price}`
+                    } ${erc20SymbolB}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
@@ -1495,7 +1492,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     tokenBSymbol = erc20B.symbol
                     //@ts-ignore
                     // vTokenB = vaultTokenMap[vaultIdIndex[tokenB ?? '']]
-                    amount = sdk.toBig(amountB ?? 0).div('1e' + erc20B.decimals)
+                    amount = sdk.toBig(amountB ?? 0).div('1e' + erc20B?.decimals ?? 0)
                     //@ts-ignore
                     precision = erc20B.precision
                     fillAmountB =
@@ -1520,10 +1517,13 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   type,
                   vSymbol,
                   vTokenB,
+                  operateSubType,
                   operateType,
                   symbolB,
+                  vSymbolB,
                   feeStr,
                   feeTokenSymbol: feeToken?.symbol,
+                  feeErc20Symbol: erc20SymbolB,
                   erc20SymbolB,
                   erc20Symbol,
                   mainContentRender,
@@ -1545,100 +1545,306 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
     },
     [accountId, apiKey, setToastOpen, t, tokenMap, vaultIdIndex],
   )
-  const [detail, setShowDetail] = React.useState({
+  const [detail, setShowDetail] = React.useState<
+    | {
+        isShow: true
+        detail:
+          | {
+              type: 'VAULT_OPEN_POSITION' | 'VAULT_MARGIN_CALL' | 'VAULT_BORROW' | 'VAULT_REPAY'
+              statusColor: string
+              statusLabel: string
+              statusType: "success" | "processing" | "failed"
+              // collateralSymbol?: string
+              // collateralAmount?: string
+              time: number
+              amount: string
+              amountSymbol: string
+            }
+          | {
+              type: 'VAULT_TRADE'
+              statusColor: string
+              statusLabel: string
+              statusType: "success" | "processing" | "failed"
+              fromSymbol: string
+              toSymbol: string
+              placedAmount: string
+              executedAmount: string
+              executedRate: string
+              convertedAmount: string
+              price: string
+              feeSymbol: string
+              feeAmount: string
+              time: number
+            }
+          | {
+              type: 'VAULT_CLOSE_OUT'
+              vaultCloseDetail: any
+            }
+      }
+    | { isShow: false }
+  >({
     isShow: false,
-    detail: undefined,
   })
 
   const onItemClick = (item: R) => {
-    setShowDetail((_state) => {
+
+    setShowDetail((_state: any) => {
       const {
-        raw_data: { operation },
+        raw_data: { operation, order },
       } = item
-      const profit =
-        operation?.Collateral && operation?.Collateral
-          ? sdk.toBig(operation?.totalEquity ?? 0).minus(operation?.Collateral ?? 0)
-          : undefined
-      const outTokenInfo = tokenMap[idIndex[operation.tokenOut]]
-      const amount = sdk.toBig(operation.amountOut).div('1e' + outTokenInfo.decimals)
-      return {
-        isShow: true,
-        detail: {
-          ...item,
-          status: t(`labelVault${operation.status}`),
-          amount: amount.gte(0)
-            ? getValuePrecisionThousand(
-                amount,
-                outTokenInfo.precision,
-                outTokenInfo.precision,
-                outTokenInfo.precision,
-                true,
-                { floor: true },
-              ) +
-              ' ' +
-              outTokenInfo.symbol
-            : EmptyValueTag,
-          executionHistory: operation?.executionHistory,
-          profit: profit
-            ? PriceTag[CurrencyToTag[currency]] +
-              getValuePrecisionThousand(
-                sdk.toBig(profit).times(forexMap[currency] ?? 0),
-                2,
-                2,
-                2,
-                true,
-                { floor: true },
-              )
-            : EmptyValueTag,
-          profitPercent:
-            profit && Number(operation?.Collateral ?? 0)
-              ? getValuePrecisionThousand(
-                  profit.div(operation?.Collateral).times(100) ?? '0',
-                  2,
-                  2,
-                  undefined,
-                  false,
-                  {
-                    isFait: false,
-                    floor: true,
-                  },
-                ) + '%'
-              : EmptyValueTag,
-          usdValue: operation?.totalBalance
-            ? PriceTag[CurrencyToTag[currency]] +
-              getValuePrecisionThousand(
-                sdk.toBig(operation?.totalBalance ?? 0).times(forexMap[currency] ?? 0),
-                2,
-                2,
-                2,
-                true,
-                { floor: true },
-              )
-            : EmptyValueTag,
-          usdDebt: operation?.totalDebt
-            ? PriceTag[CurrencyToTag[currency]] +
-              getValuePrecisionThousand(
-                sdk.toBig(operation?.totalDebt ?? 0).times(forexMap[currency] ?? 0),
-                2,
-                2,
-                2,
-                true,
-                { floor: true },
-              )
-            : EmptyValueTag,
-          usdEquity: operation?.totalEquity
-            ? PriceTag[CurrencyToTag[currency]] +
-              getValuePrecisionThousand(
-                sdk.toBig(operation?.totalEquity ?? 0).times(forexMap[currency] ?? 0),
-                2,
-                2,
-                2,
-                true,
-                { floor: true },
-              )
-            : EmptyValueTag,
-          forexMap,
-        },
+      const statusColor = [
+        sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+        'VAULT_STATUS_EARNING',
+      ].includes(operation.status)
+        ? 'var(--color-success)'
+        : [
+            sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+            sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING,
+          ].includes(operation.status)
+        ? 'var(--color-primary)'
+        : operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        ? 'var(--color-error)'
+        : 'var(--color-text-primary)'
+      const statusType = [
+        sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+        'VAULT_STATUS_EARNING',
+      ].includes(operation.status)
+        ? 'success'
+        : [
+            sdk.VaultOperationStatus.VAULT_STATUS_PENDING,
+            sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING,
+          ].includes(operation.status)
+        ? 'processing'
+        : operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+        ? 'failed'
+        : 'processing'
+      const statusLabel = t2(`labelVault${operation.status}`)
+      switch (operation.operateType) {
+        case 'VAULT_BORROW':
+        case 'VAULT_MARGIN_CALL':
+        case 'VAULT_REPAY':
+        case 'VAULT_OPEN_POSITION': {
+          const collateralToken = tokenMap[idIndex[operation.tokenIn]]
+          let amount, amountSymbol: string 
+          if (operation.operateType === 'VAULT_BORROW' ) {
+            const vAmountToken = vaultTokenMap[vaultIdIndex[operation.tokenOut]]
+            const amountToken = tokenMap[idIndex[vAmountToken!.tokenId]]
+            amount = getValuePrecisionThousand(
+              sdk.toBig(operation.amountOut ?? 0).div('1e' + amountToken.decimals),
+              amountToken.precision,
+              amountToken.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+              },
+            )
+            amountSymbol = amountToken && amountToken.symbol
+          } else if (operation.operateType === 'VAULT_REPAY') {
+            const vAmountToken = vaultTokenMap[vaultIdIndex[operation.tokenIn]]
+            const amountToken = tokenMap[idIndex[vAmountToken!.tokenId]]
+            amount = getValuePrecisionThousand(
+              sdk.toBig(operation.amountIn ?? 0).div('1e' + amountToken.decimals),
+              amountToken.precision,
+              amountToken.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+              },
+            )
+            amountSymbol = amountToken && amountToken.symbol
+          } else {
+            const amountToken = tokenMap[idIndex[operation.tokenIn]]
+            amount = getValuePrecisionThousand(
+              sdk.toBig(operation.amountIn ?? 0).div('1e' + amountToken.decimals),
+              amountToken.precision,
+              amountToken.precision,
+              undefined,
+              false,
+              {
+                floor: false,
+              },
+            )
+            amountSymbol = amountToken && amountToken.symbol
+          }
+          return {
+            isShow: true,
+            detail: {
+              type: operation.operateType,
+              time: operation && operation.createdAt,
+              statusColor,
+              statusLabel,
+              statusType,
+              amount: amount,
+              amountSymbol: amountSymbol
+            },
+          }
+        }
+        case 'VAULT_CLOSE_OUT': {
+          const profit =
+            operation?.Collateral && operation?.Collateral
+              ? sdk.toBig(operation?.totalEquity ?? 0).minus(operation?.Collateral ?? 0)
+              : undefined
+          const outTokenInfo = tokenMap[idIndex[operation.tokenOut]]
+          const amount = sdk.toBig(operation.amountOut).div('1e' + outTokenInfo.decimals)
+
+          return {
+            isShow: true,
+            detail: {
+              ...item,
+              type: 'VAULT_CLOSE_OUT',
+              vaultCloseDetail: {
+                statusType,
+                statusLabel,
+                status: t(`labelVault${operation.status}`),
+                amount: amount.gte(0)
+                  ? getValuePrecisionThousand(
+                      amount,
+                      outTokenInfo.precision,
+                      outTokenInfo.precision,
+                      outTokenInfo.precision,
+                      true,
+                      { floor: true },
+                    ) +
+                    ' ' +
+                    outTokenInfo.symbol
+                  : EmptyValueTag,
+                executionHistory: operation?.executionHistory,
+                profit: profit
+                  ? PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(profit).times(forexMap[currency] ?? 0),
+                      2,
+                      2,
+                      2,
+                      true,
+                      { floor: true },
+                    )
+                  : EmptyValueTag,
+                profitPercent:
+                  profit && Number(operation?.Collateral ?? 0)
+                    ? getValuePrecisionThousand(
+                        profit.div(operation?.Collateral).times(100) ?? '0',
+                        2,
+                        2,
+                        undefined,
+                        false,
+                        {
+                          isFait: false,
+                          floor: true,
+                        },
+                      ) + '%'
+                    : EmptyValueTag,
+                usdValue: operation?.totalBalance
+                  ? PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(operation?.totalBalance ?? 0).times(forexMap[currency] ?? 0),
+                      2,
+                      2,
+                      2,
+                      true,
+                      { floor: true },
+                    )
+                  : EmptyValueTag,
+                usdDebt: operation?.totalDebt
+                  ? PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(operation?.totalDebt ?? 0).times(forexMap[currency] ?? 0),
+                      2,
+                      2,
+                      2,
+                      true,
+                      { floor: true },
+                    )
+                  : EmptyValueTag,
+                usdEquity: operation?.totalEquity
+                  ? PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      sdk.toBig(operation?.totalEquity ?? 0).times(forexMap[currency] ?? 0),
+                      2,
+                      2,
+                      2,
+                      true,
+                      { floor: true },
+                    )
+                  : EmptyValueTag,
+                forexMap,
+                tokenSymbol: outTokenInfo.symbol,
+                isForcedLiqudation:
+                  (item.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_SETTLEMENT' ||
+                  (item.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW',
+              },
+            },
+          }
+        }
+        case 'VAULT_TRADE': {
+          const vTokenSellInfo = vaultTokenMap[vaultIdIndex[order.tokenS]]
+          const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[order.tokenB]]
+          const tokenSellInfo = tokenMap[idIndex[vTokenSellInfo.tokenId]]
+          const tokenBuyInfo = tokenMap[idIndex[vTokenBuyInfo.tokenId]]
+
+          return {
+            isShow: true,
+            detail: {
+              type: 'VAULT_TRADE',
+              statusColor,
+              statusLabel,
+              statusType,
+              fromSymbol: tokenSellInfo.symbol,
+              toSymbol: tokenBuyInfo.symbol,
+              placedAmount: getValuePrecisionThousand(
+                sdk.toBig(order.amountS).div('1e' + tokenSellInfo.decimals),
+                tokenSellInfo.precision,
+                tokenSellInfo.precision,
+                undefined,
+                false,
+                {
+                  floor: false,
+                },
+              ),
+              executedAmount: getValuePrecisionThousand(
+                sdk.toBig(order.fillAmountS).div('1e' + tokenSellInfo.decimals),
+                tokenSellInfo.precision,
+                tokenSellInfo.precision,
+                undefined,
+                false,
+                {
+                  floor: false,
+                },
+              ),
+              executedRate:
+                sdk.toBig(order.fillAmountS).div(order.amountS).multipliedBy('100').toFixed(2) +
+                '%',
+              convertedAmount: getValuePrecisionThousand(
+                sdk.toBig(order.fillAmountB).div('1e' + tokenBuyInfo.decimals),
+                tokenBuyInfo.precision,
+                tokenBuyInfo.precision,
+                undefined,
+                false,
+                {
+                  floor: false,
+                },
+              ),
+              price: order.price,
+              feeSymbol: tokenBuyInfo.symbol,
+              feeAmount: getValuePrecisionThousand(
+                sdk.toBig(order.fee).div('1e' + tokenBuyInfo.decimals),
+                tokenBuyInfo.precision,
+                tokenBuyInfo.precision,
+                undefined,
+                false,
+                {
+                  floor: false,
+                },
+              ),
+              time: order.createdAt,
+            },
+          }
+        }
+        default: {
+          throw 'err'
+        }
       }
     })
   }
@@ -1648,12 +1854,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
     totalNum,
     showLoading,
     onItemClick,
-    vaultCloseDetail: detail.detail,
+    vaultOperationDetail: detail.isShow ? detail.detail : undefined,
     openVaultDetail: detail.isShow,
     onVaultDetailClose: () =>
       setShowDetail({
         isShow: false,
-        detail: undefined,
       }),
   }
 }

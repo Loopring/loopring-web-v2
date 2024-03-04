@@ -65,7 +65,7 @@ import { merge } from 'rxjs'
 import { btradeOrderbookService } from '../../services'
 import _ from 'lodash'
 
-const useBtradeSocket = ({ upateAPICall }: { upateAPICall: () => void }) => {
+const useBtradeSocket = ({}: { updateAPICall: () => void }) => {
   const { sendSocketTopic, socketEnd } = useSocket()
   const { tradeBtrade, updateTradeBtrade } = useTradeBtrade()
   const { marketMap } = useBtradeMap()
@@ -140,7 +140,6 @@ export const useBtradeSwap = <
   const {
     toggle: { BTradeInvest },
   } = useToggle()
-
   /** loaded from loading **/
   const { exchangeInfo, allowTrade } = useSystem()
   const { coinMap, tokenMap } = useTokenMap()
@@ -808,7 +807,7 @@ export const useBtradeSwap = <
     }
   }, [market, marketMap])
 
-  useBtradeSocket({ upateAPICall: callPairDetailInfoAPIs })
+  useBtradeSocket({ updateAPICall: callPairDetailInfoAPIs })
   useWalletLayer2Socket({ walletLayer2Callback })
 
   /*** user Action function ***/

@@ -51,7 +51,7 @@ const ToggleButtonDefault = withTranslation()(({ ...rest }: any) => {
         {' '}
         <ToggleButtonGroup
           size={'medium'}
-          {...{ ...rest, ata: toggleData, value: values, setValue: setValues }}
+          {...{ ...rest, fata: toggleData, value: values, setValue: setValues }}
         />
       </Grid>
       <Grid item>

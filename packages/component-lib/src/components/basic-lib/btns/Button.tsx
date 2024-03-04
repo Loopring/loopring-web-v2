@@ -198,7 +198,7 @@ export const ToggleButtonGroup = withTranslation('common')(
           onChange(_e, value)
         }
       },
-      [],
+      [onChange],
     )
     if (data) {
       tgItemJSXs = data.map(({ value, key, disabled }) => {

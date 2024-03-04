@@ -6,6 +6,7 @@ import {
   Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  TokenType,
   TRADE_TYPE,
   TradeBtnStatus,
   VaultJoinData,
@@ -13,12 +14,15 @@ import {
 import { Trans, useTranslation } from 'react-i18next'
 import { VaultJoinWrapProps } from './Interface'
 import React from 'react'
-import { Grid, Tooltip, Typography } from '@mui/material'
+import { Box, Grid, Tooltip, Typography } from '@mui/material'
 import { useSettings } from '../../../../stores'
 import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
 import { BasicACoinInput } from '../BasicACoinInput'
+import {
+  CoinIcon,
+} from '@loopring-web/component-lib'
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -172,7 +176,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                   display={'flex'}
                 >
                   <Trans i18nKey={'labelVaultTotalQuote'}>
-                    Total Quote
+                    Total Quota
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                   </Trans>
                 </Typography>
@@ -207,15 +211,22 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 </Typography>
               </Tooltip>
               <>
-                {vaultJoinData && vaultJoinData?.tradeValue ? (
-                  <Typography component={'span'} variant='body2' color={'textPrimary'}>
-                    {`${getValuePrecisionThousand(
-                      vaultJoinData?.tradeValue,
-                      vaultJoinData?.vaultTokenInfo?.decimals,
-                      vaultJoinData?.vaultTokenInfo?.decimals,
-                      undefined,
-                    )} ${vaultJoinData?.vaultSymbol}`}
-                  </Typography>
+                {(vaultJoinData && vaultJoinData?.tradeValue) ? (
+                  <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+                    <CoinIcon
+                      tokenImageKey={vaultJoinData.belong}
+                      symbol={vaultJoinData.vaultSymbol!}
+                      type={TokenType.vault}
+                    />
+                    <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                      {`${getValuePrecisionThousand(
+                        vaultJoinData?.tradeValue,
+                        vaultJoinData?.vaultTokenInfo?.decimals,
+                        vaultJoinData?.vaultTokenInfo?.decimals,
+                        undefined,
+                      )} ${vaultJoinData?.belong}`}
+                    </Typography>
+                  </Box>
                 ) : (
                   EmptyValueTag
                 )}

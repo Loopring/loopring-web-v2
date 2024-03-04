@@ -196,7 +196,7 @@ export const CoinItem = React.memo(
       }: CoinItemProps<C> & WithTranslation,
       ref: React.ForwardedRef<any>,
     ) => {
-      const { simpleName, erc20Symbol } = coinInfo
+      const { simpleName, erc20Symbol, belongAlice } = coinInfo
 
       return (
         <StyledCoinItem
@@ -216,7 +216,7 @@ export const CoinItem = React.memo(
             />
           </ListItemIcon>
           <ListItemText
-            primary={simpleName}
+            primary={belongAlice ?? simpleName}
             secondary={
               <>
                 {contentEle ? (

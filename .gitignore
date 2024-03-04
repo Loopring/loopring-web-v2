@@ -111,3 +111,7 @@ openapitools.json
 testkey.txt
 
 test_datadir
+
+#yalc
+.yalc
+yalc.lock

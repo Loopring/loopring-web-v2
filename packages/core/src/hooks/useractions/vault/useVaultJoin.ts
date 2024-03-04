@@ -6,7 +6,6 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
-  SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
   TRADE_TYPE,
@@ -29,8 +28,8 @@ import {
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
-  useWalletLayer2Socket,
-  walletLayer2Service,
+  useL2CommonSocket,
+  l2CommonService,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -65,7 +64,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any]?.vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       const ercToken = tokenMap[tradeData.belong]
-      // tradeData.belong
+      const minAmount =
+        vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
+          ? sdk
+              .toBig('10')
+              .exponentiatedBy(-1 * vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale)
+              .toString()
+          : sdk
+              .toBig(vaultTokenInfo?.vaultTokenAmounts?.minAmount)
+              .div('1e' + vaultTokenInfo.decimals)
+              .toString()
       supportData = {
         maxShowVal: getValuePrecisionThousand(
           sdk
@@ -78,15 +86,13 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ),
 
         minShowVal: getValuePrecisionThousand(
-          sdk
-            .toBig(vaultTokenInfo?.vaultTokenAmounts?.minAmount)
-            .div('1e' + vaultTokenInfo.decimals),
+          minAmount,
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           vaultTokenInfo?.vaultTokenAmounts?.qtyStepScale,
           undefined,
         ),
         maxAmount: vaultTokenInfo?.vaultTokenAmounts?.maxAmount,
-        minAmount: vaultTokenInfo?.vaultTokenAmounts?.minAmount,
+        minAmount: sdk.toBig(minAmount).times('1e' + vaultTokenInfo.decimals),
         vaultSymbol: vaultTokenSymbol,
         vaultTokenInfo,
       }
@@ -161,7 +167,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         } else {
-          walletLayer2Service.sendUserUpdate()
+          l2CommonService.sendUserUpdate()
           updateVaultLayer2(
             isActiveAccount
               ? {
@@ -199,7 +205,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           }
 
           setShowAccount({
-            isShow: true,
+            isShow: store.getState().modals.isShowAccount.isShow,
             step:
               status == 'labelSuccessfully'
                 ? AccountStep.VaultJoin_Success
@@ -230,8 +236,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         }
 
         await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        walletLayer2Service.sendUserUpdate()
-        updateVaultLayer2({})
+        l2CommonService.sendUserUpdate()
         if (
           store.getState().modals.isShowAccount.isShow &&
           [AccountStep.VaultJoin_Success, AccountStep.VaultJoin_In_Progress].includes(
@@ -518,7 +523,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     (joinTokenMap &&
       Reflect.ownKeys(joinTokenMap).reduce((prev, key) => {
         const token = vaultTokenMap[key.toString()]
-        const symbol = idIndex[token.tokenId]
+        const symbol = idIndex[token?.tokenId]
         // as sdk.VaultToken
         return {
           ...prev,
@@ -587,11 +592,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     })
   }, [])
 
-  React.useEffect(() => {
-    if (vaultAccountInfoStatus === SagaStatus.UNSET) {
-      vaultLayer2Callback()
-    }
-  }, [vaultAccountInfoStatus])
   const walletLayer2Callback = React.useCallback(() => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     updateVaultJoin({
@@ -599,8 +599,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       walletMap: makeWalletLayer2ForVault(),
     })
   }, [])
-  useWalletLayer2Socket({ walletLayer2Callback })
-
+  useL2CommonSocket({ walletLayer2Callback, vaultLayer2Callback })
   React.useEffect(() => {
     let time: any = -1
     if (isShow) {
@@ -621,9 +620,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   }, [isShow])
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
-    walletLayer2Service.sendUserUpdate()
+    l2CommonService.sendUserUpdate()
     getVaultMap()
-    updateVaultLayer2({})
   }, [])
   const refreshRef = React.createRef()
 

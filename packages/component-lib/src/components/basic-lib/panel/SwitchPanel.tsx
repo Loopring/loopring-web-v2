@@ -117,8 +117,16 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
   }
   &.vaultSwap {
     height: auto;
+    width: var(--swap-box-width);
     .react-swipeable-view-container > div {
       border: none;
+    }
+    .cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
   }
   &.vaultBorrow {

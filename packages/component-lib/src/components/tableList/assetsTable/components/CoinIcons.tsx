@@ -94,21 +94,18 @@ export const CoinIcons = React.memo(
           <Box
             className={`logo-icon ${type}`}
             display={'flex'}
-            height={'var(--btn-icon-size-small)'}
             position={'relative'}
             zIndex={24}
-            left={-12}
-            width={'var(--btn-icon-size-small)'}
+            left={-10}
+            top={(Math.pow(size, 1.7) / 50 ) - 3}
             alignItems={'center'}
             justifyContent={'center'}
-            width={size}
           >
             <VaultTag
               style={{
-                height: size,
-                width: size,
+                height: size / 2,
+                width: size / 2,
                 transformOrigin: 'bottom',
-                transform: `scale(${2 / 3})`,
               }}
             />
           </Box>

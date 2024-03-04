@@ -1064,7 +1064,7 @@ export const useCreateRedPacket = <
     getTargetRedpackets()
     ;(async () => {
       const response = await LoopringAPI.luckTokenAPI?.getLuckTokenAuthorizedSigners()
-      const found = (response?.raw_data as any).find(
+      const found = (response?.raw_data as any)?.find(
         (item) => item.owner.toLocaleLowerCase() === account.accAddress.toLocaleLowerCase(),
       )
       setIsWhiteListed(found ? true : false)

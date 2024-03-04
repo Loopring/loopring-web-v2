@@ -2138,13 +2138,16 @@ export default {
   labelTradingFeeTooltips:
     "The trading fee is determined by the size of your trade. Usually, it's 0.1% of your total converted amount; or the necessary fee that covers the transaction cost for small transactions.",
   labelHideRead: 'Hide Read(s)',
-  labelL2NFTBurnTitle:"Burn NFT",
-  labelL2NFTBurnBtn:"Burn NFT",
+  labelL2NFTBurnTitle: 'Burn NFT',
+  labelL2NFTBurnBtn: 'Burn NFT',
   labelENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
   labelSendToContact: 'Send to',
   labelContactENSAlert:
     "ENS & Address Mismatch. Before proceeding with the transfer, we recommend updating the contact's information for accuracy.",
+  labelUpdateContactsNext: 'Go to Update Contact',
+  labelENSAddressMismatch: 'ENS & Address Mismatch',
+
   labelVault: 'Vault',
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
@@ -2192,7 +2195,7 @@ export default {
   labelVaultExitProfitPercentage: 'Profit Percentage',
   labelVaultExitTime: 'Time',
   labelVaultExitStatusPending: 'Pending',
-  labelVaultExitCloseAmount: 'Close Amount',
+  labelVaultExitCloseAmount: 'Redeem Token',
   labelVaultExitPendingDes:
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultBorrow: 'Borrow',
@@ -2202,7 +2205,7 @@ export default {
   labelVaultTokenQuoteDes:
     'When provide the token as collateral, you will receive an equivalent amount of Vault Token.',
   labelTitleVaultDes:
-    'Use third-party funds to trade assets. Traders can access additional capital to leverage their positions and amplify trading results. ',
+    'Loopring Vault can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. Other than leveraged trading, it also allows users to trade hot tokens that are not available in Loopring DEX with CEX liquidity.',
   labelTitleVault: 'Vault',
   labelVaultHomeTitle: 'Home',
   labelVaultDashboardTitle: 'Dashboard',
@@ -2217,7 +2220,7 @@ export default {
   labelGoVaultDashBoard: 'Go to Dashboard',
   labelVaultBrowserToken: 'Amount',
   labelVaultQuotaTooltips: 'VaultQuoteDes',
-  labelVaultQuota: 'Total Quote',
+  labelVaultQuota: 'Total Quota',
   labelVaultBorrowMini: 'Minimum of {{arg}}',
   labelVaultBorrowNotEnough: 'Exceeded Maximum Borrowable Amount',
   labelVaultBorrowMax: 'Maximum of {{arg}}',
@@ -2251,7 +2254,7 @@ export default {
   labelVaultRepayTotalBalance: 'Amount',
   labelVaultVAULT_STATUS_RECEIVED: 'Received',
   labelVaultVAULT_STATUS_PROCESSING: 'Processing',
-  labelVaultVAULT_STATUS_SUCCEED: 'Succeed',
+  labelVaultVAULT_STATUS_SUCCEED: 'Successfully',
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelVaultAccountWait: 'Vault account in loading...',
@@ -2287,19 +2290,19 @@ export default {
   labelRedeemDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelJoinDesMessage:
-    'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
+    'Please open a position first.',
   labelFailed: 'Failed',
   labelVAULT_COLLATERAL: 'Vault Collateral',
   labelTokenVaultDes:
-    '{{vSymbol}} is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
+    '{{symbol}} in Vault is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
   labelTokenWebsite: 'website',
   labelTokenContractAddress: 'Token Contract Address',
   labelTokenSupply: 'Token Supply',
   labelMarketCap: 'Market Cap',
   labelTokenInfo: 'Token Info',
-  labelTokenIntroduce: 'Token Introduce',
+  labelTokenIntroduce: 'Introduction',
   labelVaultRedeemDetail: 'Details',
-  labelCloseOutDetail: 'Close Out Detail',
+  labelCloseOutDetail: 'Close Out',
   labelVaultTradeTitle: 'Vault trade',
   labelVaultPrice: 'Price',
   labelVaultSell: 'Sell',
@@ -2316,11 +2319,9 @@ export default {
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
-  labelUpdateContactsNext: 'Go to Update Contact',
-  labelENSAddressMismatch: 'ENS & Address Mismatch',
   labelVaultActiveLoanAlert:
     'You currently have an active loan order in progress. This may affect the available tokens for trading. Please proceed with caution.',
-  labelVaultSwapBorrowTip: 'Max is sum of Available and Borrowable tokens',
+  labelVaultSwapBorrowTip: 'Max is sum of Holding and Borrowable tokens. When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
   labelVaultSwapBorrow: 'Max:',
   labelVaultSwapHoldTip:
     'When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
@@ -2331,20 +2332,31 @@ export default {
   labelStep1Borrow: 'STEP1: Borrow',
   labelStep2Swap: 'STEP2: Swap',
   labelVaultSwapCancel:
-    'You are borrowing tokens. \nAre you sure you want to change the token pair or exit the trade?',
+    'You are currently borrowing tokens. \nAre you sure you want to exit the current transaction?',
   labelAgree: 'I know',
   labelTradeVaultMiniBorrow:
     'The minimum borrowing amount is {{arg}}, so the amount you trade should be greater than {{arg1}}',
   labelVaultTradeSimpleBtn: 'Trade',
-  labelBorrowing: 'Borrowing {{symbol}}',
+  labelBorrowing: 'Borrowing {{value}} {{symbol}}',
   labelBorrowed: 'Borrowed {{symbol}}',
   labelBorrowSwap: 'Borrow & Swap',
   labelVaultTradeInsufficient: 'Insufficient quota',
   labelVaultActiveLoanError:
-    'Borrowed {{value}} {{symbol}} failed. Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
+    'Due to high borrowing demand, there are currently insufficient loanable assets for {{symbol}}. You can continue trading with the tokens you hold or choose to Cancel.',
+  
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
   labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
+  labelOpenPositionDetail: 'Open Position Detail',
+  labelMarginCallDetail: 'Margin Call',
+  labelBorrowDetail: 'Borrow',
+  labelRepayDetail: 'Repay',
+  labelTradeDetail: 'Trade',
+  labelVaultPlacedAmount: 'Placed Amount',
+  labelVaultExecutedAmount: 'Executed Amount',
+  labelVaultExecutedRate: 'Executed Rate',
+  labelVaultConvertedAmount: 'Converted Amount',
+  labelVaultTxFee: 'Fee',
   labelBtradeExecutedAmount: 'Executed Amount',
   labelBtradeExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
   labelBtradePlacedAmount: 'Placed Amount',
@@ -2354,4 +2366,18 @@ export default {
   labelBtradeConvertedAmountTip: 'The quantity successfully converted from the CEX side',
   labelBtradeSettledAmount: 'Settled Amount',
   labelBtradeSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultExitTypeForcedLiquidation: 'Forced Liquidation',
+
+  labelVaultExecutedAmountTip: 'The quantity successfully processed on the CEX side.',
+  labelVaultPlacedAmountTip: `The quantity you invested in 'Vault Trade' that you intend to execute.`,
+  labelVaultConvertedAmountTip: 'The quantity successfully converted from the CEX side.',
+  labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
+  labelVaultActiveLoanError2:
+    'Borrowed {{value}} {{symbol}} failed.',
+  labelVaultActiveLoanSuccessful:
+    'Borrowed {{value}} {{symbol}} successful.',
+  labelVaultAmount: 'Amount',
+  labelVaultOpenPositionDes: 'Please open a position first.' ,
+
 }
+

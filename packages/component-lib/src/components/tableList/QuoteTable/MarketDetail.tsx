@@ -11,12 +11,14 @@ import {
   SoursURL,
   SvgSize,
   TokenType,
+  VaultSwapStep,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { CoinIcons } from '../assetsTable'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
 import { QuoteTableChangedCell } from './QuoteTable'
+import { ToggleButtonGroup } from '../../basic-lib'
 
 enum TradingInterval {
   hr1 = 'hr1',
@@ -48,7 +50,6 @@ enum TimeMarketIntervalDataIndex {
   w1,
   m1,
 }
-
 export const MarketDetail = ({
   tokenInfo,
   trends,
@@ -59,7 +60,7 @@ export const MarketDetail = ({
   timeIntervalData = TimeMarketIntervalData,
 }: {
   tokenInfo
-  isLoading: boolean
+  isLoading?: boolean
   trends: any
   isShow: boolean
   forexMap: ForexMap
@@ -69,17 +70,23 @@ export const MarketDetail = ({
   const { t } = useTranslation()
   const { coinJson, currency, upColor } = useSettings()
   // const [data, setData] = React.useState([])
-  const [timeInterval, setTimeInterval] = React.useState(TradingInterval.d1)
+  const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr1)
   const [trend, setTrend] = React.useState<AmmHistoryItem[] | undefined>([])
   const handleTimeIntervalChange = React.useCallback(
     (timeInterval: TradingInterval) => {
       setTimeInterval(timeInterval)
       if (trends?.length) {
-        setTrend(trends[TimeMarketIntervalDataIndex[timeInterval]])
+        const _trends = trends[TimeMarketIntervalDataIndex[timeInterval]]
+        setTrend(_trends.map(trend => {
+          return {
+            ...trend,
+            change: sdk.toBig(trend.close).minus(_trends[_trends.length - 1].close).div(_trends[_trends.length - 1].close).multipliedBy(100).toFixed(2),
+          }
+        }))
       }
     },
     [trends],
-  )
+  ) 
   const priceCall = React.useCallback(
     (price: any) => {
       const priceStr = sdk.toBig(price ?? 0).times(forexMap[currency])
@@ -87,10 +94,11 @@ export const MarketDetail = ({
     },
     [forexMap, currency],
   )
-
+  
+  
   React.useEffect(() => {
     if (isShow && !isLoading) {
-      handleTimeIntervalChange(TradingInterval.d1)
+      handleTimeIntervalChange(TradingInterval.hr1)
     }
   }, [isShow, isLoading])
   return tokenInfo?.symbol ? (
@@ -104,6 +112,7 @@ export const MarketDetail = ({
       >
         <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
           <Typography
+            paddingLeft={1}
             component={'span'}
             display={'inline-flex'}
             width={
@@ -130,7 +139,7 @@ export const MarketDetail = ({
               color={'var(--color-primary)'}
               display={'inline-flex'}
             >
-              {tokenInfo.symbol}
+              {tokenInfo.type == TokenType.vault ? tokenInfo?.erc20Symbol : tokenInfo.symbol}
             </Typography>
             <Typography
               component={'span'}
@@ -180,28 +189,42 @@ export const MarketDetail = ({
             src={`${SoursURL}images/loading-line.gif`}
           />
         ) : (
-          <ScaleAreaChart type={ChartType.Trend} data={trend} quoteSymbol={'USDT'} showXAxis />
+          <ScaleAreaChart
+            showXAxis={true}
+            showYAxis={true}
+            type={ChartType.Trend}
+            data={trend}
+            quoteSymbol={'USDT'}
+            showCartesianGrid
+            showClose={false}
+          />
         )}
       </Box>
-      <Grid container spacing={1} marginRight={1} minWidth={296} justifyContent={'center'}>
-        {timeIntervalData.map((item) => {
-          const { id, i18nKey } = item
-          return (
-            <Grid key={id} item>
-              <Link
-                marginTop={1}
-                variant={'body2'}
-                style={{
-                  color:
-                    id === timeInterval ? 'var(--color-text-primary)' : 'var(--color-text-third)',
-                }}
-                onClick={() => handleTimeIntervalChange(id)}
-              >
-                {t(i18nKey)}
-              </Link>
-            </Grid>
-          )
-        })}
+      <Grid
+        container
+        spacing={1}
+        marginRight={1}
+        minWidth={296}
+        justifyContent={'center'}
+        marginTop={1}
+      >
+        <ToggleButtonGroup
+          size={'medium'}
+          exclusive
+          {...{
+            ...t,
+            value: timeInterval,
+            onChange: (_, value) => {
+              handleTimeIntervalChange(value)
+            },
+            data: timeIntervalData.map((item) => {
+              return {
+                value: item.id,
+                key: item.i18nKey,
+              }
+            }),
+          }}
+        />
       </Grid>
       <Box
         display={'flex'}
@@ -284,7 +307,7 @@ export const MarketDetail = ({
         width={'100%'}
         marginTop={2}
         paddingX={2}
-        paddingTop={1}
+        paddingY={1}
         borderRadius={1 / 2}
         sx={{
           background: 'var(--field-opacity)',
@@ -322,9 +345,14 @@ export const MarketDetail = ({
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {t('labelTokenSupply')}
           </Typography>
-          <QuoteTableChangedCell value={tokenInfo.percentChange24H} upColor={upColor}>
-            {tokenInfo.totalSupply !== 'undefined' ? tokenInfo.totalSupply : EmptyValueTag}
-          </QuoteTableChangedCell>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {tokenInfo.totalSupply !== 'undefined'
+              ? getValuePrecisionThousand(tokenInfo.totalSupply, 2, 2, 2, false, {
+                  isAbbreviate: false,
+                  abbreviate: 6,
+                })
+              : EmptyValueTag}
+          </Typography>
         </Typography>
         <Typography
           component={'p'}
@@ -381,7 +409,7 @@ export const MarketDetail = ({
         width={'100%'}
         marginTop={2}
         paddingX={2}
-        paddingTop={1}
+        paddingY={1}
         borderRadius={1 / 2}
         sx={{
           background: 'var(--field-opacity)',

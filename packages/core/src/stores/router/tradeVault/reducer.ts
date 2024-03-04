@@ -69,6 +69,7 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
         sellMinAmtInfo,
         sellMaxL2AmtInfo,
         sellMaxAmtInfo,
+        isRequiredBorrow,
         // VaultMarket,
         maxFeeBips,
         ...rest
@@ -142,6 +143,9 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
         }
         if (sellMaxAmtInfo !== undefined) {
           state.tradeVault.sellMaxAmtInfo = sellMaxAmtInfo
+        }
+        if (isRequiredBorrow !== undefined) {
+          state.tradeVault.isRequiredBorrow = isRequiredBorrow
         }
       }
     },

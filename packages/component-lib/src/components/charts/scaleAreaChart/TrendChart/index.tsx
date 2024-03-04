@@ -4,6 +4,7 @@ import {
   ComposedChart,
   Line,
   ResponsiveContainer,
+  CartesianGrid,
   Tooltip,
   XAxis,
   YAxis,
@@ -16,6 +17,7 @@ import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import {
   DAT_STRING_FORMAT,
+  DAT_STRING_FORMAT_S,
   EmptyValueTag,
   MINT_STRING_FORMAT,
 } from '@loopring-web/common-resources'
@@ -43,10 +45,13 @@ const TrendChart = ({
   showTooltip = true,
   showArea = true,
   quoteSymbol,
-  showXAxis = false,
+  showXAxis = true,
+  showYAxis = true,
   isHeadTailCompare = false,
   isDailyTrend = false,
   handleMoveOut = undefined,
+  showCartesianGrid = false,
+  showClose = true,
 }: ScaleAreaChartProps) => {
   const theme = useTheme()
   const userSettings = useSettings()
@@ -58,9 +63,7 @@ const TrendChart = ({
   const [priceTrend, setPriceTrend] = useState<'up' | 'down'>(
     renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down',
   )
-  // current chart xAxis index
   const [currentIndex, setCurrentIndex] = useState(-1)
-
   const trendColor =
     upColor === 'green'
       ? priceTrend === 'up'
@@ -96,12 +99,18 @@ const TrendChart = ({
       if (!hasData) return
       if (!props.payload || !props.payload.length || !props.payload[0].payload.timeStamp)
         return <span></span>
-      const { timeStamp, close, sign } = props.payload[0].payload
-      const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
-      const change =
-        index === 0
-          ? EmptyValueTag
-          : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
+      const { timeStamp, close, sign: inputSign, change: inputChange } = props.payload[0].payload
+      let change
+      if (inputChange) {
+        change = inputChange
+      } else {
+        const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
+        change =
+          index === 0
+            ? EmptyValueTag
+            : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
+      }
+      const sign = inputChange ? (Number(inputChange || 0) >= 0 ? 1 : -1) : inputSign
       if (isDailyTrend) {
         return (
           <TooltipStyled>
@@ -183,8 +192,8 @@ const TrendChart = ({
     }
     return (
       <g transform={`translate(${x}, ${y})`}>
-        <text x={0} y={0} dy={16} fontSize={12} textAnchor='start' fill='#A1A7BB'>
-          {isDailyTrend ? moment(payload.value).format(DAT_STRING_FORMAT) : payload.value}
+        <text x={0} y={0} dy={16} fontSize={12} textAnchor='end' fill={theme.colorBase.textThird}>
+          {moment(payload.value).format(DAT_STRING_FORMAT_S)}
         </text>
       </g>
     )
@@ -225,26 +234,55 @@ const TrendChart = ({
             <stop offset='90%' stopColor={trendColor} stopOpacity={0} />
           </linearGradient>
         </defs>
+        {showCartesianGrid && (
+          <CartesianGrid
+            strokeOpacity={0.3}
+            stroke={'var(--color-text-secondary)'}
+            strokeDasharray='5 5'
+          />
+        )}
         <XAxis
-          hide={!showXAxis && !isDailyTrend}
-          dataKey={isDailyTrend ? 'timeStamp' : 'date'}
-          interval={isDailyTrend ? 5 : 8}
-          axisLine={isDailyTrend}
-          tickLine={isDailyTrend}
+          hide={!showXAxis}
+          dataKey={'timeStamp'}
+          tickCount={8}
+          axisLine={true}
+          tickLine={true}
           tick={customTick}
-          stroke={'var(--color-text-secondary)'}
+          stroke={theme.colorBase.textThird}
         />
         <YAxis
-          hide={true}
-          tickFormatter={undefined}
-          domain={
-            isDailyTrend
-              ? (getDynamicYAxisDomain() as any)
-              : [
-                  (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
-                  (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
-                ]
+          dataKey='close'
+          orientation={'right'}
+          hide={!showYAxis}
+          axisLine={false}
+          domain={getDynamicYAxisDomain() as any}
+          width={1}
+          tickCount={8}
+          label={
+            showClose
+              ? {
+                  value: 'close',
+                  fontSize: 14,
+                  textAnchor: 'end',
+                  fill: theme.colorBase.textThird,
+                  position: 'insideTopRight',
+                  transform: 'translate(0, 0)',
+                }
+              : undefined
           }
+          tickFormatter={(value, index) => {
+            // const valueList = renderData.map((o) => o.close)
+            // const min = Math.min(...valueList)
+            // const max = Math.max(...valueList)
+            return index == 0 || index >= 5 ? '' : value
+          }}
+          tick={{
+            fill: theme.colorBase.textThird,
+            fontSize: 12,
+            textAnchor: 'start',
+            width: 34,
+            transform: 'translate(-68, 0)',
+          }}
           /* tickFormatter={convertValue} */
           stroke={'var(--color-text-secondary)'}
         />

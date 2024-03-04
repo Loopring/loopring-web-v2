@@ -1,20 +1,36 @@
-import { CoinInfo, CoinKey, CoinMap, TokenType, CoinSource } from '@loopring-web/common-resources'
+import { CoinInfo, CoinKey, CoinMap, CoinSource, TokenType } from '@loopring-web/common-resources'
 import React from 'react'
 import { InputProps } from '@mui/material'
 import { XOR } from '../../../../types/lib'
-// import styled from '@emotion/styled';
-// import CurrencyInput from 'react-currency-input-field';
-export type defaultProps<R, I> = {
+export type defaultProps<T, R, I> = {
   label: string | JSX.Element
-  subLabel?: string
+
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>
   placeholderText?: string
   allowDecimals?: boolean
   size?: InputSize
   order?: 'left' | 'right'
   tokenType?: TokenType | undefined
-  coinIcon?: [CoinSource, CoinSource?]
+  placeholder: string
+  handleError?: (
+    ibData: T & { maxAllow?: boolean },
+    ref: React.ForwardedRef<any>,
+  ) => { error: boolean; message?: string | JSX.Element }
+  maxValue?: string | number | undefined
+  focusOnInput?: boolean
+  coinPrecision?: number
+  className?: string
+  name?: string
+  minimum?: number | string
+  maxAllow?: boolean
+  decimalsLimit?: number
+  disabled?: boolean
+  logoColor?: string
+  wait?: number
+  isHideError?: boolean
   tokenImageKey?: string
+  belongAlice?: string
+  coinIcon?: [CoinSource, CoinSource?]
   noBalance?: string
 } & XOR<
   { isShowCoinInfo?: true } & XOR<
@@ -22,14 +38,13 @@ export type defaultProps<R, I> = {
     { isShowCoinIcon: false; CoinIconElement?: JSX.Element }
   >,
   { isShowCoinInfo: false }
->
+> &
+  XOR<{ subLabel?: string }, { subEle: JSX.Element }>
 
-export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
+export type InputButtonProps<T, R, I> = defaultProps<T, R, I> & {
   inputData?: T | undefined
   emptyText: string
-  decimalsLimit?: number
   isAllowBalanceClick?: boolean
-  maxAllow?: boolean
   disableInputValue?: boolean
   disableBelong?: boolean
   disabled?: boolean
@@ -50,6 +65,7 @@ export type InputButtonProps<T, R, I> = defaultProps<R, I> & {
   className?: string
   fullwidth?: boolean
   loading?: boolean
+  belongAlice?: string
 }
 
 export enum InputSize {
@@ -57,39 +73,20 @@ export enum InputSize {
   small = 'small',
 }
 
-export type InputCoinProps<T, R, I> = defaultProps<R, I> & {
+export type InputCoinProps<T, R, I> = defaultProps<T, R, I> & {
   inputData?: T | undefined
-  maxAllow?: boolean
-  minimum?: number | string
-  // isBalanceLimit?: boolean;
-  decimalsLimit?: number
-  disabled?: boolean
-  logoColor?: string
-  wait?: number
-  isHideError?: boolean
   handleCountChange?: (ibData: T, name: string, ref: React.ForwardedRef<any>) => void
-  handleError?: (
-    ibData: T & { maxAllow?: boolean },
-    ref: React.ForwardedRef<any>,
-  ) => { error: boolean; message?: string | JSX.Element }
-  focusOnInput?: boolean
-  maxValue?: string | number | undefined
-  name?: string
   coinLabelStyle?: React.CSSProperties
-  coinPrecision?: number
-  className?: string
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
+  placeholder?: string
+  focusOnInput?: boolean
   // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
   // walletMap: WalletMap<R,I extends CoinInfo?WalletCoin:WalletCoin> | {},
-  placeholder: string
   panelRender: (props: any) => JSX.Element
   height?: number //outSide height, default is defined in global.ts file
   inputProps?: InputProps
-  wait?: number
-  disabled?: boolean
   backElement?: JSX.Element
-  focusOnInput?: boolean
   allowScroll?: boolean
   selected?: string | undefined
   // handleClose?: (event: React.MouseEvent) => void,

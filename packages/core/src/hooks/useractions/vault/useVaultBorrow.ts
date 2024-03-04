@@ -19,6 +19,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import {
+  onchainHashInfo,
   store,
   useSystem,
   useTokenMap,
@@ -32,10 +33,95 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../../api_wrapper'
 import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
-import { walletLayer2Service } from '../../../services'
+import { l2CommonService } from '../../../services'
+export type VaultBorrowTradeData = IBData<any> & {
+  erc20Symbol: string
+  borrowed: string
+  count: string
+}
 
+export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
+  tradeData: T, // Omit<T, 'balance'> & { count: string },
+) => {
+  const {
+    invest: {
+      vaultMap: { tokenMap: vaultTokenMap, coinMap: vaultCoinMap },
+    },
+  } = store.getState()
+  let supportData: any = {
+    maxBorrowAmount: undefined,
+    maxBorrowStr: undefined,
+    minBorrowAmount: undefined,
+    minBorrowStr: undefined,
+    maxBorrowVol: undefined,
+    minBorrowVol: undefined,
+    maxQuote: undefined,
+    borrowVol: undefined,
+    borrowAmt: undefined,
+    totalQuote: undefined,
+  }
+  if (tradeData?.belong) {
+    const borrowToken = vaultTokenMap[tradeData.belong]
+    const orderAmounts = borrowToken.orderAmounts
+    const minBorrowVol = BigNumber.max(
+      // orderAmounts.dust,
+      //@ts-ignore
+      borrowToken?.vaultTokenAmounts?.minLoanAmount,
+    )
+    const minBorrowAmt = minBorrowVol.div('1e' + borrowToken.decimals)
+    const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
+    const maxBorrowAmt = sdk
+      .toBig(BigNumber.min(totalQuote, tradeData.count))
+      .toFixed(borrowToken?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN)
+    const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
+    const tradeValue = tradeData.tradeValue
+    // const = tradeData ? tradeData.count : 0
+    supportData = {
+      maxBorrowAmount: maxBorrowAmt?.toString(),
+      maxBorrowStr: getValuePrecisionThousand(
+        maxBorrowAmt ?? 0,
+        borrowToken.precision,
+        borrowToken.precision,
+        undefined,
+      ),
+      minBorrowAmount: minBorrowAmt?.toString(),
+      minBorrowStr: getValuePrecisionThousand(
+        minBorrowAmt ?? 0,
+        borrowToken.precision,
+        borrowToken.precision,
+        undefined,
+      ),
+      maxBorrowVol: maxBorrowVol.toString(),
+      minBorrowVol: minBorrowVol.toString(),
+      maxQuote: orderAmounts.maximum,
+      borrowVol: sdk
+        .toBig(tradeValue ?? 0)
+        .times('1e' + borrowToken.decimals)
+        .toString(),
+      borrowAmtStr: getValuePrecisionThousand(
+        tradeValue ?? 0,
+        borrowToken.precision,
+        borrowToken.precision,
+        undefined,
+      ),
+      borrowedStr: getValuePrecisionThousand(
+        tradeData.borrowed ?? 0,
+        borrowToken.precision,
+        borrowToken.precision,
+        undefined,
+      ),
+      balance: maxBorrowAmt,
+      borrowAmt: tradeValue ?? 0,
+      totalQuote: totalQuote.toString(),
+      coinInfoMap: vaultCoinMap,
+    }
+  }
+  return {
+    ...supportData,
+  }
+}
 export const useVaultBorrow = <
-  T extends IBData<I> & { erc20Symbol: string; borrowed: string },
+  T extends VaultBorrowTradeData,
   V extends VaultBorrowData<T>,
   I,
 >(): Partial<VaultBorrowProps<T, I, V>> => {
@@ -45,95 +131,21 @@ export const useVaultBorrow = <
     setShowAccount,
     setShowVaultLoan,
   } = useOpenModals()
+
   const [isLoading, setIsLoading] = React.useState(false)
 
   const { exchangeInfo, forexMap } = useSystem()
-  const { idIndex } = useTokenMap()
+  const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
     return vaultAvaiable2Map
   })
 
-  const calcSupportData = (tradeData: Omit<T, 'balance'> & { count: string }) => {
-    let supportData: any = {
-      maxBorrowAmount: undefined,
-      maxBorrowStr: undefined,
-      minBorrowAmount: undefined,
-      minBorrowStr: undefined,
-      maxBorrowVol: undefined,
-      minBorrowVol: undefined,
-      maxQuote: undefined,
-      borrowVol: undefined,
-      borrowAmt: undefined,
-      totalQuote: undefined,
-    }
-    if (tradeData?.belong) {
-      const borrowToken = vaultTokenMap[tradeData.belong]
-      // const orderAmounts = borrowToken.orderAmounts
-      const minBorrowVol = BigNumber.max(
-        // orderAmounts.dust,
-        //@ts-ignore
-        borrowToken?.vaultTokenAmounts?.minLoanAmount,
-      )
-      const minBorrowAmt = minBorrowVol.div('1e' + borrowToken.decimals)
-      // const totalQuote = sdk.toBig(orderAmounts.maximum ?? 0).div('1e' + borrowToken.decimals)
-      const maxBorrowAmt = sdk
-        .toBig(
-          BigNumber.min(
-            // totalQuote, // Infinite
-            tradeData.count,
-          ).toString(),
-        )
-        .toFixed(borrowToken?.vaultTokenAmount?.qtyStepScale, BigNumber.ROUND_DOWN)
-      const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
-      const tradeValue = tradeData.tradeValue
-      // const = tradeData ? tradeData.count : 0
-      supportData = {
-        maxBorrowAmount: maxBorrowAmt?.toString(),
-        maxBorrowStr: getValuePrecisionThousand(
-          maxBorrowAmt ?? 0,
-          borrowToken.precision,
-          borrowToken.precision,
-          undefined,
-        ),
-        minBorrowAmount: minBorrowAmt?.toString(),
-        minBorrowStr: getValuePrecisionThousand(
-          minBorrowAmt?.toString() ?? 0,
-          borrowToken.precision,
-          borrowToken.precision,
-          undefined,
-        ),
-        maxBorrowVol: maxBorrowVol.toString(),
-        minBorrowVol: minBorrowVol.toString(),
-        // maxQuote: orderAmounts.maximum,
-        borrowVol: sdk
-          .toBig(tradeValue ?? 0)
-          .times('1e' + borrowToken.decimals)
-          .toString(),
-        borrowAmtStr: getValuePrecisionThousand(
-          tradeValue ?? 0,
-          borrowToken.precision,
-          borrowToken.precision,
-          undefined,
-        ),
-        borrowedStr: getValuePrecisionThousand(
-          tradeData.borrowed ?? 0,
-          borrowToken.precision,
-          borrowToken.precision,
-          undefined,
-        ),
-        balance: maxBorrowAmt,
-        borrowAmt: tradeValue ?? 0,
-        // totalQuote: totalQuote.toString(),
-        coinInfoMap: vaultCoinMap,
-      }
-    }
-    return {
-      ...supportData,
-    }
-  }
-  const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
+  const { updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
+  // chainInfos[defaultNetwork].vaultBorrowHashes
+
+  const { vaultAccountInfo, status: vaultAccountInfoStatus } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
   // const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
   const initData = () => {
@@ -156,9 +168,9 @@ export const useVaultBorrow = <
       ...((vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]) ?? {}),
       // balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
       tradeValue: undefined,
-      erc20Symbol: idIndex[vaultTokenMap[initSymbol].tokenId],
+      erc20Symbol: erc20IdIndex[vaultTokenMap[initSymbol].tokenId],
     }
-    const supportdata = calcSupportData(walletInfo)
+    const supportdata = calcSupportBorrowData(walletInfo)
     walletInfo = {
       ...walletInfo,
       balance: supportdata.balance,
@@ -175,7 +187,7 @@ export const useVaultBorrow = <
     updateVaultBorrow({
       ...walletInfo,
       ...vaultBorrowData,
-      ...calcSupportData(walletInfo),
+      ...calcSupportBorrowData(walletInfo),
     })
   }
   React.useEffect(() => {
@@ -188,9 +200,8 @@ export const useVaultBorrow = <
   const refreshRef = React.createRef()
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
-    walletLayer2Service.sendUserUpdate()
+    l2CommonService.sendUserUpdate()
     getVaultMap()
-    updateVaultLayer2({})
   }, [])
 
   React.useEffect(() => {
@@ -226,7 +237,7 @@ export const useVaultBorrow = <
             tradeValue: data.tradeData?.tradeValue,
             borrowedAmt: walletInfo.borrowed,
           }
-          const supportdata = calcSupportData(walletInfo)
+          const supportdata = calcSupportBorrowData(walletInfo)
           walletInfo = {
             ...walletInfo,
             balance: supportdata.balance,
@@ -296,8 +307,10 @@ export const useVaultBorrow = <
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const vaultToken = vaultTokenMap[vaultBorrowData.belong]
     const {
-      account: { eddsaKey, apiKey, accountId },
+      account: { eddsaKey, apiKey, accountId, accAddress },
     } = store.getState()
+    const erc20Symbol = erc20IdIndex[vaultToken.tokenId]
+
     try {
       if ((LoopringAPI.vaultAPI && request) || (vaultBorrowData.request && accountId)) {
         let response = await LoopringAPI.vaultAPI.submitVaultBorrow({
@@ -312,7 +325,9 @@ export const useVaultBorrow = <
           isShow: false,
         })
         setIsLoading(false)
-        updateVaultLayer2({})
+        l2CommonService.sendUserUpdate()
+        updateVaultBorrowHash((response as any).hash, accAddress)
+
         await sdk.sleep(SUBMIT_PANEL_CHECK)
         const response2 = await LoopringAPI?.vaultAPI.getVaultGetOperationByHash(
           {
@@ -325,19 +340,20 @@ export const useVaultBorrow = <
         if (
           response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         ) {
+          updateVaultBorrowHash((response as any).hash, accAddress, 'failed')
           throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
         } else if (
           [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
             response2?.raw_data?.operation?.status,
           )
         ) {
+          updateVaultBorrowHash((response as any).hash, accAddress, 'success')
           status = 'labelSuccessfully'
         } else {
           status = 'labelPending'
         }
-
         setShowAccount({
-          isShow: true,
+          isShow: store.getState().modals.isShowAccount.isShow,
           step:
             status == 'labelSuccessfully'
               ? AccountStep.VaultBorrow_Success
@@ -349,13 +365,15 @@ export const useVaultBorrow = <
             sum: vaultBorrowData.borrowAmtStr,
             status: t(status),
             forexMap,
-            symbol: vaultToken.symbol,
+            symbol: erc20Symbol,
+            vSymbol: vaultToken.symbol,
             time: response2?.raw_data?.order?.createdAt,
           },
         })
 
         await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        updateVaultLayer2({})
+        l2CommonService.sendUserUpdate()
+
         if (
           store.getState().modals.isShowAccount.isShow &&
           [AccountStep.VaultBorrow_Success, AccountStep.VaultBorrow_In_Progress].includes(
@@ -386,7 +404,8 @@ export const useVaultBorrow = <
           sum: vaultBorrowData.borrowAmtStr,
           status: t('labelFailed'),
           forexMap,
-          symbol: vaultBorrowData.belong,
+          symbol: erc20Symbol,
+          vSymbol: vaultBorrowData.belong,
           time: Date.now(),
           title: t('labelVaultBorrowTitle'),
         },
@@ -398,6 +417,7 @@ export const useVaultBorrow = <
   const submitCallback = async () => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const account = store.getState().account
+    const erc20Symbol = erc20IdIndex[vaultTokenMap[vaultBorrowData?.belong]?.tokenId]
     setIsLoading(true)
     try {
       if (
@@ -418,7 +438,8 @@ export const useVaultBorrow = <
             sum: vaultBorrowData.borrowAmtStr,
             status: t('labelPending'),
             forexMap,
-            symbol: vaultBorrowData.belong,
+            symbol: erc20Symbol,
+            vSymbol: vaultBorrowData.belong,
             time: Date.now(),
             title: t('labelVaultBorrowTitle'),
           },
@@ -449,7 +470,8 @@ export const useVaultBorrow = <
           sum: vaultBorrowData.borrowAmtStr,
           status: t('labelFailed'),
           forexMap,
-          symbol: vaultBorrowData.belong,
+          symbol: erc20Symbol,
+          vSymbol: vaultBorrowData.belong,
           time: Date.now(),
           title: t('labelVaultBorrowTitle'),
         },

@@ -1,4 +1,4 @@
-import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes } from '../constant'
+import { Account, FloatTag, ForexMap, TradeStatus, TradeTypes, VaultSwapStep } from '../constant'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import React from 'react'
@@ -10,7 +10,6 @@ export interface IBData<R> {
   belong: CoinKey<R>
   balance: number
   tradeValue: number | undefined
-  max?: string
 }
 
 export interface IBDataMax<R> extends IBData<R> {
@@ -23,7 +22,7 @@ export interface CoinInfo<R> {
   simpleName: CoinKey<R>
   description?: string
   company: string
-
+  belongAlice?: string
   [key: string]: any
 }
 
@@ -101,7 +100,6 @@ export type TradeCalcData<T> = {
   feeTakerRate?: number
   tradeCost?: string
   lastStepAt?: 'sell' | 'buy'
-
   totalQuota: string
   minimumConverted: string | undefined
 } & (
@@ -159,6 +157,14 @@ export type BtradeTradeCalcData<T> = TradeCalcData<T> & {
 
 export type VaultTradeCalcData<T> = Omit<BtradeTradeCalcData<T>, 'btradeType' | 'isBtrade'> & {
   isVault: true
+  belongBuyAlice: string
+  belongSellAlice: string
+  supportBorrowData: VaultBorrowData
+  showHasBorrow: boolean
+  isRequiredBorrow: boolean
+  borrowVol: string
+  borrowStr: string
+  step: VaultSwapStep
 }
 
 export type TradeCalcProData<T> = {

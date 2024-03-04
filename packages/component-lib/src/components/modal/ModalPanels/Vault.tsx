@@ -7,15 +7,24 @@ import {
   VaultRepayBase,
   VaultTradeBase,
 } from './BasicPanel'
-import { Box, Typography } from '@mui/material'
-import { AlertIcon, YEAR_DAY_MINUTE_FORMAT, hexToRGB } from '@loopring-web/common-resources'
+import { Box, Tooltip, Typography } from '@mui/material'
+import {
+  AlertIcon,
+  EmptyValueTag,
+  hexToRGB,
+  Info2Icon,
+  TokenType,
+  YEAR_DAY_MINUTE_FORMAT,
+} from '@loopring-web/common-resources'
 import moment from 'moment/moment'
 import React from 'react'
 import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
+import { CoinIcons } from '../../tableList'
+import { useTranslation } from 'react-i18next'
 
 const TradeDes2 = (props: PanelProps) => {
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
   const {
     percentage,
@@ -27,7 +36,14 @@ const TradeDes2 = (props: PanelProps) => {
     buyToken: buySymbol,
     price,
     time,
+    placedAmount,
+    executedAmount,
+    executedRate,
+    convertedAmount,
+    fromSymbol,
+    toSymbol,
   } = props?.info ?? {}
+  const {t} = useTranslation()
   return (
     <>
       <Box
@@ -75,6 +91,132 @@ const TradeDes2 = (props: PanelProps) => {
           marginTop={2}
           component={'span'}
         >
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t('labelVaultPlacedAmount')}
+            <Tooltip title={<>{t('labelVaultPlacedAmountTip')}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
+          </Typography>
+          <Typography
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+          >
+            <CoinIcons
+              size='small'
+              type={TokenType.vault}
+              tokenIcon={[coinJson[sellSymbol], undefined]}
+            />{' '}
+            {placedAmount}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t('labelVaultExecutedAmount')}
+            <Tooltip title={<>{t('labelVaultExecutedAmountTip')}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
+          </Typography>
+          <Typography
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+          >
+            {executedAmount !== EmptyValueTag && (
+              <CoinIcons
+                size='small'
+                type={TokenType.vault}
+                tokenIcon={[coinJson[sellSymbol], undefined]}
+              />
+            )}{' '}
+            {executedAmount}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {t('labelVaultExecutedRate')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {executedRate}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-secondary)'}
+          >
+            {t('labelVaultConvertedAmount')}
+            <Tooltip title={<>{t('labelVaultConvertedAmountTip')}</>}>
+              <Typography marginLeft={0.5} display={'flex'} alignItems={'center'}>
+                <Info2Icon fontSize={'medium'} htmlColor={'var(--color-text-third)'} />
+              </Typography>
+            </Tooltip>
+          </Typography>
+          <Typography
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+          >
+            {convertedAmount !== EmptyValueTag && (
+              <CoinIcons
+                size='small'
+                type={TokenType.vault}
+                tokenIcon={[coinJson[buySymbol], undefined]}
+              />
+            )}{' '}
+            {convertedAmount}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultPrice')}
           </Typography>
@@ -89,35 +231,20 @@ const TradeDes2 = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultSell')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {amountSell + ' ' + sellSymbol}
-          </Typography>
-        </Typography>
-        <Typography
-          component={'span'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultBuy')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {amountBuy + ' ' + buySymbol}
-          </Typography>
-        </Typography>
-        <Typography
-          component={'span'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultFee')}
           </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+          <Typography
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            <CoinIcons
+              size='small'
+              type={TokenType.vault}
+              tokenIcon={[coinJson[buySymbol], undefined]}
+            />
             {amountFee + ' ' + buySymbol}
           </Typography>
         </Typography>
@@ -200,8 +327,9 @@ export const VaultTrade_In_Progress = (props: PanelProps) => {
   return <VaultTradeBase showTitle={true} {...propsPatch} {...props} />
 }
 const JoinDes2 = (props: PanelProps) => {
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
+
   const { symbol, vSymbol, sum, status, type, time } = props?.info ?? {}
   return (
     <>
@@ -253,23 +381,46 @@ const JoinDes2 = (props: PanelProps) => {
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultCollateral')}
           </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+          <Typography
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            <CoinIcons
+              size='small'
+              type={TokenType.single}
+              tokenIcon={[coinJson[symbol], undefined]}
+            />
             {sum + ' ' + symbol}
           </Typography>
         </Typography>
-        <Typography
-          component={'span'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultReceive')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {sum + ' ' + vSymbol}
-          </Typography>
-        </Typography>
+        {/*<Typography*/}
+        {/*  display={'inline-flex'}*/}
+        {/*  justifyContent={'space-between'}*/}
+        {/*  marginTop={2}*/}
+        {/*  component={'span'}*/}
+        {/*>*/}
+        {/*  <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>*/}
+        {/*    {props.t('labelVaultReceive')}*/}
+        {/*  </Typography>*/}
+        {/*  <Typography*/}
+        {/*    variant={'body1'}*/}
+        {/*    component={'span'}*/}
+        {/*    color={'var(--color-text-primary)'}*/}
+        {/*    display={'inline-flex'}*/}
+        {/*    alignItems={'center'}*/}
+        {/*  >*/}
+        {/*    <CoinIcons*/}
+        {/*      size='small'*/}
+        {/*      type={TokenType.vault}*/}
+        {/*      tokenIcon={[coinJson[symbol], undefined]}*/}
+        {/*    />*/}
+        {/*    {sum + ' ' + symbol}*/}
+        {/*  </Typography>*/}
+        {/*</Typography>*/}
+
         <Typography
           component={'span'}
           display={'inline-flex'}
@@ -356,11 +507,12 @@ export const RedeemDes2 = (
   props: PanelProps & {
     isPending?: boolean
     isNoWrap?: boolean
+    isForcedLiqudation: boolean
   },
 ) => {
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
-  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time, status } = props?.info ?? {}
+  const { usdValue, usdDebt, usdEquity, profitPercent, profit, time, status, isForcedLiqudation } = props?.info ?? {}
   const detail = React.useMemo(() => {
     return (
       <>
@@ -374,7 +526,9 @@ export const RedeemDes2 = (
             {props.t('labelVaultExitType')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {props.t('labelVaultExitTypeClose')}
+            {isForcedLiqudation
+              ? props.t('labelVaultExitTypeForcedLiquidation')
+              : props.t('labelVaultExitTypeClose')}
           </Typography>
         </Typography>
         <Typography
@@ -566,7 +720,7 @@ export const BorrowDes2 = (
     isPending?: boolean
   },
 ) => {
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
   const { sum, status, symbol, time } = props?.info ?? {}
   return (
@@ -616,7 +770,18 @@ export const BorrowDes2 = (
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultBorrowAmountLabel')}
           </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+          <Typography
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            <CoinIcons
+              size='small'
+              type={TokenType.vault}
+              tokenIcon={[coinJson[symbol], undefined]}
+            />
             {sum + ' ' + symbol}
           </Typography>
         </Typography>
@@ -708,9 +873,9 @@ export const RepayDes2 = (
     isPending?: boolean
   },
 ) => {
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
   const theme = useTheme()
-  const { status, sum, vSymbol, time } = props
+  const { status, sum, vSymbol, symbol, time } = props
   // const { usdValue, usdDebt, usdEquity, forexMap } = props?.info ?? {}
   return (
     <>
@@ -759,8 +924,19 @@ export const RepayDes2 = (
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
             {props.t('labelVaultRepayTotalBalance')}
           </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {sum + ' ' + vSymbol}
+          <Typography
+            variant={'body1'}
+            component={'span'}
+            color={'var(--color-text-primary)'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            <CoinIcons
+              size='small'
+              type={TokenType.vault}
+              tokenIcon={[coinJson[symbol!], undefined]}
+            />
+            {sum + ' ' + symbol}
           </Typography>
         </Typography>
 

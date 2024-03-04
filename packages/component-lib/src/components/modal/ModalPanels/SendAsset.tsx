@@ -181,16 +181,15 @@ const BoxStyle = styled(Box)`
 
 export const SendFromContact = (
   props: {
-    isENSWrong: boolean
+    isENSWrong: boolean,
     selected: string
   } & Contact,
 ) => {
-  const [selected, setSelected] = React.useState(props?.selected ?? SendAssetList.SendAssetToL2.key)
+  const [selected, setSelected] = React.useState(SendAssetList.SendAssetToOtherL1.key)
   const { defaultNetwork } = useSettings()
   const { setShowTransfer, setShowWithdraw, setShowEditContact, setShowAccount } = useOpenModals()
   const { status: contactStatus } = useContacts()
   const [contact, setContact] = React.useState({
-    isENSWrong: props?.isENSWrong,
     ...props,
   })
 
@@ -238,7 +237,7 @@ export const SendFromContact = (
           (contact) =>
             contact.contactAddress?.toLowerCase() === state?.contactAddress?.toLowerCase(),
         )
-        if (contact.isENSWrong && !_contact.ens) {
+        if (contact.isENSWrong && !_contact?.ens) {
           return {
             ...state,
             isENSWrong: false,

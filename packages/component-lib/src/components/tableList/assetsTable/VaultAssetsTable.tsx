@@ -6,7 +6,8 @@ import {Column, Table} from '../../basic-lib'
 import {Filter} from './components/Filter'
 import {TablePaddingX} from '../../styled'
 import {
-	CurrencyToTag, EmptyValueTag,
+	CurrencyToTag,
+	EmptyValueTag,
 	ForexMap,
 	getValuePrecisionThousand,
 	HiddenTag,
@@ -27,15 +28,14 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 
   .rdg {
     flex: 1;
-
-    ${({isMobile}) =>
-            !isMobile
-                    ? `--template-columns: 200px 150px auto auto !important;`
-                    : `--template-columns: 54% 40% 6% !important;`}
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 200px 150px auto auto !important;`
+        : `--template-columns: 54% 40% 6% !important;`}
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
-      margin-top: ${({theme}) => theme.unit / 8}px;
+      margin-top: ${({ theme }) => theme.unit / 8}px;
     }
 
     .rdg-cell.action {
@@ -50,192 +50,195 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   }
 
   .investAsset.rdg {
-    ${({isMobile}) =>
-            !isMobile
-                    ? `--template-columns: 200px 150px auto auto 205px !important;`
-                    : `--template-columns: 54% 40% 6% !important;`}
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 200px 150px auto auto 205px !important;`
+        : `--template-columns: 54% 40% 6% !important;`}
   }
 }
 
-${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element
 
 export type TradePairItem = {
-	first: string
-	last: string
+  first: string
+  last: string
 }
 
 export type VaultDataAssetsItem = {
-	token: {
-		type: TokenType
-		value: string
-	}
-	amount: string
-	available: string
-	locked: string
-	tradePairList?: TradePairItem[]
-	smallBalance: boolean
-	tokenValueDollar: number
-	erc20Symbol: string
-	precision: number
+  token: {
+    type: TokenType
+    value: string
+    belongAlice?: string
+  }
+  amount: string
+  available: string
+  locked: string
+  tradePairList?: TradePairItem[]
+  smallBalance: boolean
+  tokenValueDollar: number
+  erc20Symbol: string
+  precision: number
 }
 
 export type VaultAssetsTableProps<R> = {
-	rawData: R[]
-	searchValue?: string
-	pagination?: {
-		pageSize: number
-	}
-	onRowClick?: (index: number, row: R) => void
-	allowTrade?: any
-	tableHeight?: number
-	onVisibleRowsChange?: (props: any) => void
-	showFilter?: boolean
-	isLoading?: boolean
-	rowConfig?: typeof RowConfig
-	forexMap: ForexMap<sdk.Currency>
-	hideAssets?: boolean
-	actionRow: (props: { row }) => JSX.Element
+  rawData: R[]
+  searchValue?: string
+  pagination?: {
+    pageSize: number
+  }
+  onRowClick?: (index: number, row: R) => void
+  allowTrade?: any
+  tableHeight?: number
+  onVisibleRowsChange?: (props: any) => void
+  showFilter?: boolean
+  isLoading?: boolean
+  rowConfig?: typeof RowConfig
+  forexMap: ForexMap<sdk.Currency>
+  hideAssets?: boolean
+  actionRow: (props: { row }) => JSX.Element
 } & XOR<
-	{
-		setHideSmallBalances: (status: any) => void
-		hideSmallBalances: boolean
-	},
-	{}
+  {
+    setHideSmallBalances: (status: any) => void
+    hideSmallBalances: boolean
+  },
+  {}
 >
 
 export const VaultAssetsTable = withTranslation('tables')(
-	<R extends VaultDataAssetsItem>(props: WithTranslation & VaultAssetsTableProps<R>) => {
-		const {
-			t,
-			rawData,
-			allowTrade,
-			showFilter,
-			onRowClick,
-			actionRow,
-			hideSmallBalances,
-			isLoading = false,
-			setHideSmallBalances,
-			forexMap,
-			rowConfig = RowConfig,
-			hideAssets,
-			searchValue,
-			...rest
-		} = props
-		const gridRef = React.useRef(null)
-		const prevScrollTop = React.useRef(0)
-		// const container = React.useRef<HTMLDivElement>(null)
-		const [filter, setFilter] = React.useState({
-			searchValue: searchValue ?? '',
-		})
-		const [pageSize, setPageSize] = React.useState(8)
-		const [{total, hasMore}, setTotal] = React.useState({total: 0, hasMore: false})
-		const [page, setPage] = React.useState(1)
-		const [viewData, setViewData] = React.useState<R[]>([])
-		const {language, isMobile, coinJson, currency} = useSettings()
-		React.useEffect(() => {
-			// let height = gridRef?.current?.offsetHeight
-			// @ts-ignore
-			let height = gridRef?.current?.element?.parentElement?.offsetHeight
-			if (height) {
-				const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
-				setPageSize((size >= 8 ? size : 8) * 2)
-			} else {
-				setPageSize(16)
-			}
-		}, [gridRef?.current])
-		const handleScroll = _.debounce(() => {
-			// const currentScrollTop = gridRef?.current?.scrollTop;
-			const currentScrollTop = window.scrollY
-			if (currentScrollTop > prevScrollTop.current) {
-				setPage((prevPage) => prevPage + 1)
-			}
-		}, 200)
-		const updateData = React.useCallback(
-			(page) => {
-				let resultData = rawData && !!rawData.length ? [...rawData] : []
-				// if (filter.hideSmallBalance) {
-				if (hideSmallBalances) {
-					resultData = resultData.filter((o) => !o.smallBalance)
-				}
-				// if (filter.hideLpToken) {
-				if (filter.searchValue) {
-					resultData = resultData.filter((o) =>
-						o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
-					)
-				}
-				if (pageSize * page >= resultData.length) {
-					setTotal({total: resultData.length, hasMore: false})
-				} else {
-					setTotal({total: pageSize * (page + 1 / 2), hasMore: true})
-				}
-				setViewData(resultData.slice(0, pageSize * page))
-				// resetTableData(resultData)
-			},
+  <R extends VaultDataAssetsItem>(props: WithTranslation & VaultAssetsTableProps<R>) => {
+    const {
+      t,
+      rawData,
+      allowTrade,
+      showFilter,
+      onRowClick,
+      actionRow,
+      hideSmallBalances,
+      isLoading = false,
+      setHideSmallBalances,
+      forexMap,
+      rowConfig = RowConfig,
+      hideAssets,
+      searchValue,
+      ...rest
+    } = props
+    const gridRef = React.useRef(null)
+    const prevScrollTop = React.useRef(0)
+    // const container = React.useRef<HTMLDivElement>(null)
+    const [filter, setFilter] = React.useState({
+      searchValue: searchValue ?? '',
+    })
+    const [pageSize, setPageSize] = React.useState(8)
+    const [{ total, hasMore }, setTotal] = React.useState({ total: 0, hasMore: false })
+    const [page, setPage] = React.useState(1)
+    const [viewData, setViewData] = React.useState<R[]>([])
+    const { language, isMobile, coinJson, currency } = useSettings()
+    React.useEffect(() => {
+      // let height = gridRef?.current?.offsetHeight
+      // @ts-ignore
+      let height = gridRef?.current?.element?.parentElement?.offsetHeight
+      if (height) {
+        const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
+        setPageSize((size >= 8 ? size : 8) * 2)
+      } else {
+        setPageSize(16)
+      }
+    }, [gridRef?.current])
+    const handleScroll = _.debounce(() => {
+      // const currentScrollTop = gridRef?.current?.scrollTop;
+      const currentScrollTop = window.scrollY
+      if (currentScrollTop > prevScrollTop.current) {
+        setPage((prevPage) => prevPage + 1)
+      }
+    }, 200)
+    const updateData = React.useCallback(
+      (page) => {
+        let resultData = rawData && !!rawData.length ? [...rawData] : []
+        // if (filter.hideSmallBalance) {
+        
+        if (hideSmallBalances) {
+          const list = ['ETH', 'LRC', 'USDT']
+          resultData = resultData.filter((o) => list.includes(o.erc20Symbol) || !o.smallBalance)
+        }
+        // if (filter.hideLpToken) {
+        if (filter.searchValue) {
+          resultData = resultData.filter((o) =>
+            o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
+          )
+        }
+        if (pageSize * page >= resultData.length) {
+          setTotal({ total: resultData.length, hasMore: false })
+        } else {
+          setTotal({ total: pageSize * (page + 1 / 2), hasMore: true })
+        }
+        setViewData(resultData.slice(0, pageSize * page))
+        // resetTableData(resultData)
+      },
 			[rawData, hideSmallBalances, pageSize, filter.searchValue, setTotal, setViewData],
-		)
+    )
 
-		React.useEffect(() => {
-			updateData(page)
-		}, [rawData, page])
-		React.useEffect(() => {
-			updateData(1)
-			return () => {
-				handleScroll.cancel()
-			}
-		}, [filter, hideSmallBalances])
-		React.useEffect(() => {
-			window.addEventListener('scroll', handleScroll)
-			return () => {
-				window.removeEventListener('scroll', handleScroll)
-			}
-		}, [])
+    React.useEffect(() => {
+      updateData(page)
+    }, [rawData, page])
+    React.useEffect(() => {
+      updateData(1)
+      return () => {
+        handleScroll.cancel()
+      }
+    }, [filter, hideSmallBalances])
+    React.useEffect(() => {
+      window.addEventListener('scroll', handleScroll)
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }, [])
 
-		const handleFilterChange = React.useCallback(
-			(filter: any) => {
-				setFilter(filter)
-			},
-			[setFilter],
-		)
+    const handleFilterChange = React.useCallback(
+      (filter: any) => {
+        setFilter(filter)
+      },
+      [setFilter],
+    )
 
-		const getColumnModeAssets = (t: TFunction): Column<R, unknown>[] => [
-			{
-				key: 'token',
-				name: t('labelToken'),
-				formatter: ({row}) => {
-					const symbol = row.erc20Symbol
-					let tokenIcon: [any, any] = [coinJson[symbol], undefined]
-					return (
-						<>
-							<CoinIcons type={row?.token?.type} tokenIcon={tokenIcon}/>
-							<Typography
-								variant={'inherit'}
-								color={'textPrimary'}
-								display={'flex'}
-								flexDirection={'column'}
-								marginLeft={2}
-								component={'span'}
-								paddingRight={1}
-							>
-								<Typography component={'span'} className={'next-coin'}>
-									{row.token.value}
-								</Typography>
-							</Typography>
-						</>
-					)
-				},
-			},
-			{
-				key: 'amount',
-				name: t('labelAmount'),
-				headerCellClass: 'textAlignRight',
-				formatter: ({row}) => {
-					const {available, precision, amount} = row
+    const getColumnModeAssets = (t: TFunction): Column<R, unknown>[] => [
+      {
+        key: 'token',
+        name: t('labelToken'),
+        formatter: ({ row }) => {
+          const symbol = row.erc20Symbol
+          let tokenIcon: [any, any] = [coinJson[symbol], undefined]
+          return (
+            <>
+              <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+              <Typography
+                variant={'inherit'}
+                color={'textPrimary'}
+                display={'flex'}
+                flexDirection={'column'}
+                marginLeft={2}
+                component={'span'}
+                paddingRight={1}
+              >
+                <Typography component={'span'} className={'next-coin'}>
+                  {row.token.belongAlice ?? row.token.vaule}
+                </Typography>
+              </Typography>
+            </>
+          )
+        },
+      },
+      {
+        key: 'amount',
+        name: t('labelAmount'),
+        headerCellClass: 'textAlignRight',
+        formatter: ({ row }) => {
+					const {amount, precision} = row
 					return (
 						<Box className={'textAlignRight'}>
 							{hideAssets
 								? HiddenTag
-								: (available && Number(available) > 0) ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+								: (amount && Number(amount) > 0) ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
 									floor: true,
 								}) : EmptyValueTag}
 						</Box>
@@ -266,12 +269,12 @@ export const VaultAssetsTable = withTranslation('tables')(
 				name: t('labelVaultAssetsTableValue'),
 				headerCellClass: 'textAlignRight',
 				formatter: ({row}) => {
-					const {available, tokenValueDollar} = row
+					const {amount, tokenValueDollar} = row
 					return (
 						<Box className={'textAlignRight'}>
 							{hideAssets
 								? HiddenTag
-								: (available && Number(available) > 0) ? PriceTag[CurrencyToTag[currency]] +
+								: (amount && Number(amount) > 0) ? PriceTag[CurrencyToTag[currency]] +
 									getValuePrecisionThousand(
 										(tokenValueDollar || 0) * (forexMap[currency] ?? 0),
 										undefined,
@@ -355,6 +358,7 @@ export const VaultAssetsTable = withTranslation('tables')(
 								hideSmallBalances,
 								setHideSmallBalances,
 							}}
+              noHideInvestToken
 						/>
 					</Box>
 				)}

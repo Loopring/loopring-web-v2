@@ -242,7 +242,7 @@ export const IWrap = styled(Box)<
         `${theme.border.defaultFrame({ c_key: 'var(--color-border-hover)', d_R: 0.5 })};`}
     }
 
-    height: var(--input-height-swap);
+    min-height: var(--input-height-swap);
     background: var(--field-opacity);
     display: flex;
     flex-direction: column;

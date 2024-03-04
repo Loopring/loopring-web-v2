@@ -20,8 +20,8 @@ import {
   useToggle,
   DualDes,
   ButtonStyle,
-  VaultTxTable,
   VaultCloseDetail,
+  VaultTxTable,
 } from '@loopring-web/component-lib'
 import {
   StylePaper,
@@ -61,7 +61,9 @@ import {
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { useDualAsset } from './useDualAsset'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { VaultOperationDetail, VaultTradeDetail } from '@loopring-web/component-lib/src/components/tableList/vaultTable/VaultTxTable'
 export const l2assetsRouter = `${RouterPath.l2records}/:tab/:orderTab?`
+
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
   const history = useHistory()
@@ -159,7 +161,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     totalNum: vaultTotal,
     showLoading: showVaultLoaning,
     onItemClick: onVaultDetail,
-    vaultCloseDetail,
+    vaultOperationDetail,
     openVaultDetail,
     onVaultDetailClose,
   } = useVaultTransaction(setToastOpen)
@@ -598,7 +600,19 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                       paddingX={3}
                     >
                       <Typography component={'span'} display={'inline-flex'}>
-                        {t('labelCloseOutDetail')}
+                        {vaultOperationDetail &&
+                          (vaultOperationDetail.type === 'VAULT_BORROW'
+                            ? t('labelBorrowDetail')
+                            : vaultOperationDetail.type === 'VAULT_MARGIN_CALL'
+                            ? t('labelMarginCallDetail')
+                            : vaultOperationDetail.type === 'VAULT_OPEN_POSITION'
+                            ? t('labelVaultJoin')
+                            : vaultOperationDetail.type === 'VAULT_REPAY'
+                            ? t('labelRepayDetail')
+                            : vaultOperationDetail.type === 'VAULT_TRADE'
+                            ? t('labelTradeDetail')
+                            : t('labelCloseOutDetail'))
+                            }
                       </Typography>
                     </Typography>
                     <Divider style={{ marginTop: '-1px', width: '100%' }} />
@@ -618,7 +632,43 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
                     }
                   >
-                    {vaultCloseDetail && <VaultCloseDetail vaultCloseDetail={vaultCloseDetail} />}
+                    {vaultOperationDetail &&
+                      (vaultOperationDetail.type === 'VAULT_BORROW' ||
+                        vaultOperationDetail.type === 'VAULT_MARGIN_CALL' ||
+                        vaultOperationDetail.type === 'VAULT_OPEN_POSITION' ||
+                        vaultOperationDetail.type === 'VAULT_REPAY') && (
+                        <VaultOperationDetail
+                          statusColor={vaultOperationDetail.statusColor}
+                          statusLabel={vaultOperationDetail.statusLabel}
+                          time={vaultOperationDetail.time}
+                          type={vaultOperationDetail.type}
+                          statusType={vaultOperationDetail.statusType}
+                          amount={vaultOperationDetail.amount}
+                          amountSymbol={vaultOperationDetail.amountSymbol}
+                        />
+                      )}
+                    {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_CLOSE_OUT' && (
+                      <VaultCloseDetail
+                        vaultCloseDetail={vaultOperationDetail.vaultCloseDetail}
+                      />
+                    )}
+                    {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_TRADE' && (
+                      <VaultTradeDetail
+                        statusColor={vaultOperationDetail.statusColor}
+                        statusLabel={vaultOperationDetail.statusLabel}
+                        fromSymbol={vaultOperationDetail.fromSymbol}
+                        toSymbol={vaultOperationDetail.toSymbol}
+                        placedAmount={vaultOperationDetail.placedAmount}
+                        executedAmount={vaultOperationDetail.executedAmount}
+                        executedRate={vaultOperationDetail.executedRate}
+                        convertedAmount={vaultOperationDetail.convertedAmount}
+                        price={vaultOperationDetail.price}
+                        feeSymbol={vaultOperationDetail.feeSymbol}
+                        feeAmount={vaultOperationDetail.feeAmount}
+                        time={vaultOperationDetail.time}
+                        statusType={vaultOperationDetail.statusType}
+                      />
+                    )}
                   </Box>
                 </SwitchPanelStyled>
               </Modal>

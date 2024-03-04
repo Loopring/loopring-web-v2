@@ -165,7 +165,9 @@ export type SwapProps<T, I, TCD> = {
   onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>
   setToastOpen?: (state: TOASTOPEN) => void
   scenario?: SCENARIO
+  _width?: string
   hideSecondConfirmation?: boolean
+  scrollDisabled?: boolean
 } & SwapInfoProps<T, I, TCD> &
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>

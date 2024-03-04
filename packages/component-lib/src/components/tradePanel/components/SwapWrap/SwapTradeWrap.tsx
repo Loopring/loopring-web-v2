@@ -16,6 +16,7 @@ import {
   SwapExchangeIcon,
   SwapTradeCalcData,
   TradeBtnStatus,
+  VaultSwapStep,
   VaultTradeCalcData,
 } from '@loopring-web/common-resources'
 import { Trans, WithTranslation } from 'react-i18next'
@@ -56,6 +57,9 @@ export const SwapTradeWrap = <
   tradeCalcData,
   tokenSellProps,
   tokenBuyProps,
+  onCancelClick,
+  BtnEle,
+  covertOnClickPreCheck,
   ...rest
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef()
@@ -65,6 +69,8 @@ export const SwapTradeWrap = <
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true)
 
+  const buySymbol = (tradeCalcData as any)?.belongBuyAlice ?? tradeData?.buy?.belong
+  const sellSymbol = (tradeCalcData as any)?.belongSellAlice ?? tradeData?.sell?.belong
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       setIsStoB(!_isStoB)
@@ -193,15 +199,15 @@ export const SwapTradeWrap = <
       })
     }
   }, [t, swapBtnI18nKey, network, tradeCalcData])
-  const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
+  const showVal = buySymbol && sellSymbol && tradeCalcData?.StoB
   const isL2Swap = !((tradeCalcData as any)?.isBtrade || (tradeCalcData as any)?.isVault)
   const convertStr = _isStoB
-    ? `1 ${tradeData.sell?.belong} \u2248 ${
+    ? `1 ${sellSymbol} \u2248 ${
         tradeCalcData.StoB && tradeCalcData.StoB !== 'NaN' ? tradeCalcData.StoB : EmptyValueTag
-      } ${tradeData.buy?.belong}`
-    : `1 ${tradeData.buy?.belong} \u2248 ${
+      } ${buySymbol}`
+    : `1 ${buySymbol} \u2248 ${
         tradeCalcData.BtoS && tradeCalcData.BtoS !== 'NaN' ? tradeCalcData.BtoS : EmptyValueTag
-      } ${tradeData.sell?.belong}`
+      } ${sellSymbol}`
   const priceImpactColor = (tradeCalcData as any)?.priceImpactColor
     ? (tradeCalcData as any).priceImpactColor
     : 'textPrimary'
@@ -218,7 +224,7 @@ export const SwapTradeWrap = <
 
   const fee =
     tradeCalcData && tradeCalcData.fee
-      ? `${tradeCalcData.fee} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+      ? `${tradeCalcData.fee} ${buySymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
   const userTakerRate =
@@ -227,12 +233,12 @@ export const SwapTradeWrap = <
       : EmptyValueTag
   const tradeCostMin =
     tradeCalcData && tradeCalcData.tradeCost
-      ? `${tradeCalcData.tradeCost} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+      ? `${tradeCalcData.tradeCost} ${buySymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
 
   const minimumConverted =
     tradeCalcData && tradeCalcData.minimumConverted
-      ? `${tradeCalcData.minimumConverted}  ${tradeData.buy?.belong}`
+      ? `${tradeCalcData.minimumConverted}  ${buySymbol}`
       : EmptyValueTag
   const { isMobile } = useSettings()
 
@@ -330,7 +336,11 @@ export const SwapTradeWrap = <
               height: 'var(--btn-icon-size-large) !important',
               width: 'var(--btn-icon-size-large) !important',
             }}
-            onClick={covertOnClick}
+            onClick={() => {
+              if (!covertOnClickPreCheck || covertOnClickPreCheck()) {
+                covertOnClick()
+              }
+            }}
             aria-label={t('tokenExchange')}
           >
             <SwapExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'} />
@@ -378,12 +388,16 @@ export const SwapTradeWrap = <
 
             <Typography component={'span'} variant={'inherit'} color={'textPrimary'}>
               {tradeCalcData?.totalQuota
-                ? tradeCalcData?.totalQuota + ' ' + tradeData?.sell?.belong
+                ? tradeCalcData?.totalQuota + ' ' + sellSymbol
                 : EmptyValueTag}
             </Typography>
           </Typography>
         ) : (
           <></>
+        )}
+
+        {(tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== VaultSwapStep.Edit && (
+          <Box className={'cover'} onClick={onCancelClick} />
         )}
       </Grid>
 
@@ -418,6 +432,39 @@ export const SwapTradeWrap = <
       {!isL2Swap ? (
         <>
           <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+            {(tradeCalcData as any)?.isVault && tradeCalcData && tradeCalcData.borrowVol ? (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t('labelTobeBorrowedtips', {
+                    rate: userTakerRate,
+                    value: tradeCostMin,
+                  }).toString()}
+                  placement={'top'}
+                >
+                  <Typography
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('labelTobeBorrowed')}
+                  </Typography>
+                </Tooltip>
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  {tradeCalcData && tradeCalcData.borrowVol
+                    ? `${tradeCalcData.borrowStr} ${sellSymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+                    : EmptyValueTag}
+                </Typography>
+              </Grid>
+            ) : undefined}
             <Grid
               container
               justifyContent={'space-between'}
@@ -575,7 +622,7 @@ export const SwapTradeWrap = <
                   alignItems={'center'}
                 >
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  {' ' + t('labelSwapMinConverted')}
+                  {t('labelSwapMinConverted')}
                 </Typography>
               </Tooltip>
               <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -617,7 +664,9 @@ export const SwapTradeWrap = <
       )}
 
       <Grid item alignSelf={'stretch'}>
-        <Grid item>
+        {(tradeCalcData as any)?.isVault && BtnEle ? (
+          <>{BtnEle}</>
+        ) : (
           <ButtonStyle
             variant={'contained'}
             size={'large'}
@@ -635,7 +684,7 @@ export const SwapTradeWrap = <
           >
             {label}
           </ButtonStyle>
-        </Grid>
+        )}
       </Grid>
       {isL2Swap && (tradeCalcData as any)?.isShowBtradeAllow && (
         <Grid
@@ -661,9 +710,7 @@ export const SwapTradeWrap = <
                 a: (
                   <Link
                     onClick={() => {
-                      history.push(
-                        '/trade/btrade/' + tradeData.sell?.belong + '-' + tradeData.buy?.belong,
-                      )
+                      history.push('/trade/btrade/' + sellSymbol + '-' + buySymbol)
                     }}
                     target='_blank'
                     rel='noopener noreferrer'

@@ -14,7 +14,6 @@ import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring
 import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { DatacenterRange } from '@loopring-web/loopring-sdk/src/defs/loopring_defs'
 
 export const useVaultMarket = <
   R extends TickerNew & { cmcTokenId: number; isFavorite: boolean },
@@ -32,7 +31,7 @@ export const useVaultMarket = <
 
   const [detail, setShowDetail] = React.useState<{
     isShow: boolean
-    isLoading: boolean
+    isLoading?: boolean
     row?: R
     detail?: { tokenInfo: Partial<sdk.DatacenterTokenInfo & sdk.TokenInfo>; trends: any }
   }>({
@@ -117,38 +116,40 @@ export const useVaultMarket = <
         detail: {
           tokenInfo: {
             ...tokenMap[row?.erc20Symbol ?? ''],
-            // ...tokneInfoDetail?.list[0],
+            ...(tokneInfoDetail && tokneInfoDetail.list && tokneInfoDetail.list[0]),
             ...row,
             // symbol: row.symbol,
           },
-          trends: quoteTokenTrends?.map((item) => {
-            return item?.list?.reverse().map((trend) => {
-              const [
-                timestamp,
-                price,
-                volume24H,
-                volumeChange24H,
-                percentChange1H,
-                percentChange24H,
-                percentChange7D,
-                percentChange30D,
-                marketCap,
-              ] = trend
-              return {
-                close: price,
-                timeStamp: timestamp,
-                timestamp,
-                price,
-                volume24H,
-                volumeChange24H,
-                percentChange1H,
-                percentChange24H,
-                percentChange7D,
-                percentChange30D,
-                marketCap,
-              }
-            })
-          }) as any,
+          trends: [
+            ...quoteTokenTrends?.map((item) => {
+              return item?.list?.map((trend) => {
+                const [
+                  timestamp,
+                  price,
+                  volume24H,
+                  volumeChange24H,
+                  percentChange1H,
+                  percentChange24H,
+                  percentChange7D,
+                  percentChange30D,
+                  marketCap,
+                ] = trend
+                return {
+                  close: Number(price).toFixed(2),
+                  timeStamp: Number(timestamp),
+                  timestamp,
+                  price,
+                  volume24H,
+                  volumeChange24H,
+                  percentChange1H,
+                  percentChange24H,
+                  percentChange7D,
+                  percentChange30D,
+                  marketCap,
+                }
+              })
+            }),
+          ] as any,
         },
       })
     } catch (e) {

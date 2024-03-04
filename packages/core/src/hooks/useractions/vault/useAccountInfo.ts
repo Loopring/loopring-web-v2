@@ -65,26 +65,19 @@ export const useAccountInfo = () => {
     label: string
   } => {
     const { vaultAccountInfo } = store.getState().vaultLayer2
-    if (vaultAccountInfoStatus === SagaStatus.UNSET && vaultAccountInfo) {
-      // setIsLoading(false)
-
-      switch (vaultAccountInfo?.accountStatus) {
-        // @ts-ignore
-        case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
-          return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultREDEEMPendingBtn|` }
-        // @ts-ignore
-        case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultAddBtn|` }
-        case sdk.VaultAccountStatus.FREE: // sdk.VaultAccountStatus.FREE:
-        default:
-          if (activeInfo?.hash) {
-            return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
-          }
+    switch (vaultAccountInfo?.accountStatus) {
+      // @ts-ignore
+      case sdk.VaultAccountStatus.IN_REDEEM: //sdk.VaultAccountStatus.IN_REDEEM:
+        return { tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelVaultREDEEMPendingBtn|` }
+      // @ts-ignore
+      case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
+        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultAddBtn|` }
+      case sdk.VaultAccountStatus.FREE: // sdk.VaultAccountStatus.FREE:
+      default:
+        if (activeInfo?.hash) {
           return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
-      }
-    } else {
-      // setIsLoading(true)
-      return { tradeBtnStatus: TradeBtnStatus.LOADING, label: `labelVaultCheckInProcessing|` }
+        }
+        return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: `labelVaultJoinBtn|` }
     }
   }, [vaultAccountInfoStatus, activeInfo])
   const {
@@ -139,6 +132,8 @@ export const useAccountInfo = () => {
     availableTradeCheck: availableSwapCheck,
     isLoading: false,
     submitCallback: async ({ symbol }: { symbol?: string }) => {
+      
+      updateVaultLayer2({})
       const { vaultAccountInfo } = store.getState().vaultLayer2
       const vaultAccountInfoSymbol =
         idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
@@ -216,11 +211,11 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableBorrowCheck,
     isLoading: false,
-    submitCallback: async (key?: string) => {
+    submitCallback: async ({symbol}: {isShow: boolean,symbol: string}) => {
       const { vaultAccountInfo } = store.getState().vaultLayer2
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING: //sdk.VaultAccountStatus.IN_STAKING:
-          setShowVaultLoan({ isShow: true, symbol: key ?? '', type: VaultLoanType.Borrow })
+          setShowVaultLoan({ isShow: true, info: {symbol: symbol ?? ''}, type: VaultLoanType.Borrow })
           break
       }
     },

@@ -12,6 +12,7 @@ import { useFocusRef } from '../hooks'
 import { CoinWrap, IInput, IWrap } from './style'
 import { CoinIcon } from './Default'
 import { useSettings } from '../../../../stores'
+import { sanitize } from 'dompurify'
 
 function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   {
@@ -42,6 +43,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     CoinIconElement,
     tokenType,
     tokenImageKey,
+    belongAlice = undefined,
   }: InputCoinProps<T, C, I>,
   ref: React.ForwardedRef<any>,
 ) {
@@ -231,9 +233,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
                   </Grid>
                 )}
                 <Grid item order={order === 'left' ? 1 : 2} paddingLeft={order === 'left' ? 0 : 1}>
-                  <Typography fontSize={'inherit'} color={'inherit'}>
-                    {belong}
-                  </Typography>
+                  <Typography
+                    fontSize={'inherit'}
+                    color={'inherit'}
+                    dangerouslySetInnerHTML={{ __html: sanitize(belongAlice ?? belong) }}
+                  />
                 </Grid>
               </Grid>
             </CoinWrap>

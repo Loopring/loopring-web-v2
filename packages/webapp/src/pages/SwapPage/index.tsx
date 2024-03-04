@@ -120,6 +120,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
             swapBtnI18nKey={swapBtnI18nKey}
             swapBtnStatus={swapBtnStatus}
             setToastOpen={setToastOpen}
+            scrollDisabled
             {...{ handleSwapPanelEvent, ...rest }}
           />
         ) : (

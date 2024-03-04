@@ -1131,11 +1131,10 @@ export const useSwap = <
           const dustToken = buyToken
           let calcForMinCostInput = BigNumber.max(
             sdk.toBig(tradeCost).times(2),
-            dustToken.orderAmounts.dust,
+            sdk.toBig(dustToken.orderAmounts.dust),
           )
 
-          const tradeCostInput = sdk
-            .toBig(calcForMinCostInput)
+          const tradeCostInput = calcForMinCostInput
             .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
             .div('1e' + dustToken.decimals)
             .toString()
@@ -1148,10 +1147,7 @@ export const useSwap = <
             'calcForMinCostInput',
             calcForMinCostInput.toString(),
             `calcForMinCostInput, with slippage:${slippage}`,
-            sdk
-              .toBig(calcForMinCostInput ?? 0)
-              .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
-              .toString(),
+            calcForMinCostInput.div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000))).toString(),
             'calcForMinCost, Input',
             tradeCostInput,
           )
