@@ -8,6 +8,7 @@ import {
 import { fnType, myLog } from '@loopring-web/common-resources'
 import { accountReducer, metaMaskCallback, store, unlockAccount } from '../../index'
 import _ from 'lodash'
+import { connectProvides } from '@loopring-web/web3-provider'
 
 export const accountStaticCallBack = (
   onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] },
@@ -88,8 +89,7 @@ export const btnClickMap: {
       if (isMobile && window.ethereum) {
         metaMaskCallback()
       } else {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowConnect({ isShow: true, step: WalletConnectStep.Provider }))
+        connectProvides.modal.open()
       }
     },
   ],
