@@ -37,14 +37,14 @@ const App = () => {
   }, [storeLan, language])
   const { walletProvider } = useWeb3ModalProvider()
   const {status} = useSystem()
-  const { address } = useWeb3ModalAccount()
+  const { address, chainId } = useWeb3ModalAccount()
   const { resetAccount } = useAccount()
 
   React.useEffect(() => {
     ;(async () => {
       if (address) {
 
-        let chainId: ChainId = 5
+        // let chainId: ChainId = 5
         // let chainId: ChainId = 
         // walletProvider ? Number(await new Web3(walletProvider as any).eth.getChainId())
         // : ChainId.MAINNET
@@ -62,7 +62,7 @@ const App = () => {
         resetAccount()
       }
     })()
-  }, [address, walletProvider, status])
+  }, [address, walletProvider, status, chainId])
 
 
   

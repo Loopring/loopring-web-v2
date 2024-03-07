@@ -41,20 +41,17 @@ export const useHeader = () => {
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
       function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        setShowAccount({ isShow: true, step: AccountStep.NoAccount })
+        modal.open()
       },
     ],
     [fnType.DEPOSITING]: [
       function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        setShowAccount({ isShow: true, step: AccountStep.NoAccount })
+        modal.open()
       },
     ],
     [fnType.NOT_ACTIVE]: [
       function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        setShowAccount({ isShow: true, step: AccountStep.NoAccount })
+        modal.open()
       },
     ],
     [fnType.ACTIVATED]: [
