@@ -59,8 +59,7 @@ export const useHeader = () => {
     ],
     [fnType.ACTIVATED]: [
       function () {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+        modal.open()
       },
     ],
 
