@@ -85,12 +85,7 @@ export const btnClickMap: {
   [fnType.UN_CONNECT]: [
     function () {
       myLog('UN_CONNECT!')
-      const { isMobile } = store.getState().settings
-      if (isMobile && window.ethereum) {
-        metaMaskCallback()
-      } else {
-        connectProvides.modal.open()
-      }
+      connectProvides.modal.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [goActiveAccount],
