@@ -8,6 +8,7 @@ import { nextAccountSyncStatus } from '../../stores/account/reducer'
 
 export async function unlockAccount() {
   myLog('unlockAccount starts')
+  debugger
   const accounStore = store.getState().account
   const { exchangeInfo } = store.getState().system
   const { isMobile } = store.getState().settings
@@ -60,6 +61,23 @@ export async function unlockAccount() {
 
       await callSwitchChain(_chainId)
 
+      alert(JSON.stringify([
+        {
+          keyPair: {
+            web3: connectProvides.usedWeb3 ? true: false,
+            address: account.owner,
+            keySeed: msg,
+            walletType: connectName,
+            chainId: Number(_chainId),
+            accountId: Number(account.accountId),
+            isMobile: isMobile,
+          },
+          request: {
+            accountId: account.accountId,
+          },
+        },
+        account.publicKey,
+      ]))
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
           keyPair: {

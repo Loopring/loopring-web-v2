@@ -93,6 +93,7 @@ export const btnClickMap: {
   [fnType.NOT_ACTIVE]: [goActiveAccount],
   [fnType.LOCKED]: [
     function () {
+      debugger
       unlockAccount()
       store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
       store.dispatch(

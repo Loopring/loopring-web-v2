@@ -47,7 +47,6 @@ const App = () => {
   React.useEffect(() => {
     ;(async () => {
       if (address) {
-
         dispatch(
           updateAccountStatus({
             connectName: ConnectProviders.MetaMask
