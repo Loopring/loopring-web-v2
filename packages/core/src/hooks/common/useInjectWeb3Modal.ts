@@ -10,6 +10,7 @@ import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
 import { updateAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
 import { useDispatch } from 'react-redux'
 import { providers } from 'ethers'
+import Web3 from 'web3'
 
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 const mainnet = {
@@ -73,10 +74,11 @@ export const useInjectWeb3Modal = () => {
   }, [address, walletProvider, status, chainId])
   React.useEffect(() => {
     const provider = web3Modal.getWalletProvider()
-    providers
-    connectProvides.usedProvide = new providers.Web3Provider(provider as any)
-    // @ts-ignore
-    connectProvides.usedWeb3 = new Web3(provider as any)
+    if (provider) {
+      connectProvides.usedProvide = new providers.Web3Provider(provider as any)
+      // @ts-ignore
+      connectProvides.usedWeb3 = new Web3(provider as any)
+    }
     web3Modal.subscribeProvider(async (pro) => {
       connectProvides.usedProvide = new providers.Web3Provider(pro.provider as any)
       // @ts-ignore
