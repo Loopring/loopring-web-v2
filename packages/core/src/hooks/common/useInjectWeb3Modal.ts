@@ -18,20 +18,20 @@ const mainnet = {
   name: 'Ethereum',
   currency: 'ETH',
   explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://cloudflare-eth.com',
+  rpcUrl: process.env.REACT_APP_RPC_URL_1!
 }
 const goeril = {
   chainId: 5,
   name: 'GOERIL',
   currency: 'ETH',
   explorerUrl: 'https://goerli.etherscan.io/',
-  rpcUrl: 'https://cloudflare-eth.com', // todo
+  rpcUrl: process.env.REACT_APP_RPC_URL_5!
 }
 const metadata = {
   name: 'loopring.io',
   description: 'loopring.io',
   url: 'https://loopring.io', // origin must match your domain & subdomain
-  icons: ['https://avatars.mywebsite.com/'], // todo
+  icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
 
 const web3Modal = createWeb3Modal({
