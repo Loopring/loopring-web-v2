@@ -66,7 +66,7 @@ export async function unlockAccount() {
             web3: connectProvides.usedWeb3 as unknown as Web3,
             address: account.owner,
             keySeed: msg,
-            walletType: connectName,
+            walletType: "Loopring" as any,
             chainId: Number(_chainId),
             accountId: Number(account.accountId),
             isMobile: isMobile,
