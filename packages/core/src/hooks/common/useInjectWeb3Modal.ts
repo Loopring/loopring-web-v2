@@ -53,7 +53,7 @@ export const useInjectWeb3Modal = () => {
       if (address) {
         dispatch(
           updateAccountStatus({
-            connectName: ConnectProviders.Loopring,
+            connectName: ConnectProviders.MetaMask,
           }),
         )
         const { defaultNetwork } = store.getState().settings
