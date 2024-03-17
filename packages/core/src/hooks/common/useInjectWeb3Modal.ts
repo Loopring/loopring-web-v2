@@ -51,11 +51,6 @@ export const useInjectWeb3Modal = () => {
   React.useEffect(() => {
     ;(async () => {
       if (address) {
-        dispatch(
-          updateAccountStatus({
-            connectName: ConnectProviders.MetaMask,
-          }),
-        )
         const { defaultNetwork } = store.getState().settings
         if (chainId !== defaultNetwork || status === SagaStatus.PENDING) {
           store.dispatch(
@@ -78,8 +73,38 @@ export const useInjectWeb3Modal = () => {
       connectProvides.usedProvide = new providers.Web3Provider(provider as any)
       // @ts-ignore
       connectProvides.usedWeb3 = new Web3(provider as any)
+      alert((provider as any).isMetaMask)
+      if ((provider as any).isMetaMask ) {
+        dispatch(
+        
+          updateAccountStatus({
+            connectName: ConnectProviders.MetaMask,
+          }),
+        )
+
+      } else {
+        updateAccountStatus({
+          connectName: ConnectProviders.Unknown,
+        })
+      }
+      
     }
     web3Modal.subscribeProvider(async (pro) => {
+      alert((pro.provider as any).isMetaMask)
+      if ((pro.provider as any).isMetaMask ) {
+        dispatch(
+        
+          updateAccountStatus({
+            connectName: ConnectProviders.MetaMask,
+          }),
+        )
+
+      } else {
+        updateAccountStatus({
+          connectName: ConnectProviders.Unknown,
+        })
+      }
+
       connectProvides.usedProvide = new providers.Web3Provider(pro.provider as any)
       // @ts-ignore
       connectProvides.usedWeb3 = new Web3(pro.provider as any)
