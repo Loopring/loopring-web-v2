@@ -1,21 +1,14 @@
 import RouterView from './routers'
 import { GlobalStyles } from '@mui/material'
 import { css, Theme, useTheme } from '@emotion/react'
-import { globalCss, SagaStatus } from '@loopring-web/common-resources'
-import { setDefaultNetwork, setLanguage, useSettings } from '@loopring-web/component-lib'
+import { globalCss } from '@loopring-web/common-resources'
+import { setLanguage } from '@loopring-web/component-lib'
 import { useInit } from './hook'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { checkAccount, store, useAccount, useSystem } from '@loopring-web/core'
-import { ConnectProviders, walletServices } from '@loopring-web/web3-provider'
-import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { ChainId } from '@loopring-web/loopring-sdk'
-import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
-import { updateAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
-import { providers } from 'ethers'
-import { useDispatch } from 'react-redux'
+import { store, useInjectWeb3Modal } from '@loopring-web/core'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -38,38 +31,8 @@ const App = () => {
       store.dispatch(setLanguage(language))
     }
   }, [storeLan, language])
-  const { walletProvider } = useWeb3ModalProvider()
-  const { status } = useSystem()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { resetAccount } = useAccount()
-  const dispatch = useDispatch()
+  useInjectWeb3Modal()
 
-  React.useEffect(() => {
-    ;(async () => {
-      if (address) {
-
-        dispatch(
-          updateAccountStatus({
-            connectName: ConnectProviders.MetaMask
-          })
-        )
-        const { defaultNetwork } = store.getState().settings
-        if (chainId !== defaultNetwork || status === SagaStatus.PENDING) {
-          store.dispatch(updateSystem({ 
-            chainId,
-          }))
-          store.dispatch(setDefaultNetwork(chainId))
-        }
-        checkAccount(address, chainId)
-      } else {
-        walletServices.sendDisconnect('', 'customer click disconnect')
-        resetAccount()
-      }
-    })()
-  }, [address, walletProvider, status, chainId])
-
-
-  
   React.useEffect(() => {
     if (window.location.protocol !== 'https:') {
       console.log('Current PROTOCOL::', window.location.protocol)
