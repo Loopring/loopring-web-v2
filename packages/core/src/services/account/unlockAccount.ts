@@ -59,7 +59,10 @@ export async function unlockAccount() {
             ).replace('${nonce}', (nonce - 1).toString())
 
       await callSwitchChain(_chainId)
-
+      
+      // debugger
+      const b = connectProvides.usedWeb3.eth.accounts.hashMessage(msg)
+      debugger
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
           keyPair: {

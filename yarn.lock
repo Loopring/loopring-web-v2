@@ -4964,10 +4964,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.2.0"
 
-"@loopring-web/loopring-sdk@3.8.20":
-  version "3.8.20"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.8.20.tgz#07e3ba69561decfd532cc3063acbe0169172b9e1"
-  integrity sha512-Ug1suba0eq1zCROS3PTsk6ZIJGlgyZSmuq5/4Yp1jC+Ebd8xD4rWdhjRmCvNg7QepZmBl7QD6cj+GiuwYlXBdg==
+"@loopring-web/loopring-sdk@3.8.21-sepolia-1":
+  version "3.8.21-sepolia-1"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.8.21-sepolia-1.tgz#399f3fefb158e95b6a11205b05aa15832061898d"
+  integrity sha512-meU0TtHWOZHm3P0F4XYd+dWAyaRHqLuBswu9paYOdjbr8vrzdO8+XQbvT7ZNYz5eFNk78PoWq85AdltA1P+wgQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -5010,10 +5010,10 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@1.4.16-dev-3":
-  version "1.4.16-dev-3"
-  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.4.16-dev-3.tgz#fbb37b66f89ce9c7f7cc830949e0a4ef21ba9847"
-  integrity sha512-h1+6Kn2FxOJQ6sTWyKIOo4NgNbCC/dJ7aGI87eXwHi9qX0uM2NOPI2GWSracSUsULkKtqfDt7vEDhmUlwyVghQ==
+"@loopring-web/web3-provider@1.4.15-sepolia-1":
+  version "1.4.15-sepolia-1"
+  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.4.15-sepolia-1.tgz#46d2821472d2cc98bad465391096d654c4a7ab69"
+  integrity sha512-c6AsgQzgzGqjVYbjmIbCK4AYgUFslqylcqzUSXF3xFvKAPSM5tNSX2yar+frdy+VNYwInoCULPVa4Bmt2jp+kA==
   dependencies:
     "@coinbase/wallet-sdk" "^3.7.1"
     "@metamask/detect-provider" "^2.0.0"
@@ -5021,7 +5021,6 @@
     "@walletconnect/ethereum-provider" "2.10.6"
     "@walletconnect/modal" "2.6.2"
     "@walletconnect/universal-provider" "2.10.6"
-    "@web3modal/ethers5" "^4.0.13"
     ethers "^5.7.2"
     rxjs "^7.5.5"
     web3 "^1.10.0"

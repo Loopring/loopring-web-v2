@@ -59,6 +59,7 @@ export function transactionChecker(web3: any, address: string) {
 const ETHERSCAN_PREFIXES: { [key: number]: string } = {
   1: '',
   5: 'goerli.',
+  11155111: 'sepolia.',
 }
 
 export function getEtherscanLink(

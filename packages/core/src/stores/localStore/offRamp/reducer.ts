@@ -10,6 +10,7 @@ import { ChainId } from '@loopring-web/loopring-sdk'
 
 const initialState: OffRampHashInfos = {
   [ChainId.GOERLI]: {},
+  [ChainId.SEPOLIA]: {},
   [ChainId.MAINNET]: {},
   // withdrawHashes:{},
 }

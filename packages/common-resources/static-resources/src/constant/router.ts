@@ -481,12 +481,14 @@ export const DEFI_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['LIDO', 'ROCKETPOOL'],
     GOERLI: ['ROCKETPOOL'],
+    SEPOLIA: ['ROCKETPOOL'],
     ARBGOERLI: ['ROCKETPOOL'],
   },
   MARKETS: {
     TAIKO: [] as string[],
     ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
     GOERLI: ['RETH-ETH'],
+    SEPOLIA: ['RETH-ETH'],
     ARBGOERLI: ['RETH-ETH'],
   },
 }
@@ -495,24 +497,28 @@ export const LEVERAGE_ETH_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
+    SEPOLIA: ['WSTETH'],
     ARBGOERLI: ['WSTETH'],
   },
   types: {
     TAIKO: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
+    SEPOLIA: ['lido'],
     ARBGOERLI: ['lido'],
   },
   products: {
     TAIKO: [] as string[],
     ETHEREUM: ['CIAN'],
     GOERLI: ['LIDO'],
+    SEPOLIA: ['LIDO'],
     ARBGOERLI: ['LIDO'],
   },
   MARKETS: {
     TAIKO: [] as string[],
     ETHEREUM: ['CIETH-ETH'],
     GOERLI: ['WSTETH-ETH'],
+    SEPOLIA: ['WSTETH-ETH'],
     ARBGOERLI: ['WSTETH-ETH'],
   },
   // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
@@ -523,6 +529,7 @@ export const DUAL_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['PIONEX'],
     GOERLI: ['PIONEX'],
+    SEPOLIA: ['PIONEX'],
     ARBGOERLI: ['PIONEX'],
   },
 }
@@ -885,6 +892,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
   ],
   ETHEREUM: headerMenuData,
   GOERLI: headerMenuData,
+  SEPOLIA: headerMenuData,
   ARBGOERLI: headerMenuData,
 }
 
@@ -892,6 +900,7 @@ export const TokenPriceBase = {
   TAIKO: '0x0000000000000000000000000000000000000000',
   ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
+  SEPOLIA: '0xa7bc5a2731803be668090125b5074555f91cbc9d',
   ARBGOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
 }
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
@@ -910,6 +919,19 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.VaultRecords,
   ],
   GOERLI: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
+  ],
+  SEPOLIA: [
     RecordTabIndex.Transactions,
     RecordTabIndex.Trades,
     RecordTabIndex.Orders,
@@ -959,6 +981,14 @@ export const AddAssetListMap = {
     AddAssetList.FromExchange.key,
     AddAssetList.FromAnotherNet.key,
   ],
+  SEPOLIA: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+  ],
   ARBGOERLI: [
     AddAssetList.FromMyL1.key,
     AddAssetList.BuyWithCard.key,
@@ -986,6 +1016,12 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToOtherL1.key,
     SendAssetList.SendAssetToAnotherNet.key,
   ],
+  SEPOLIA: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+    SendAssetList.SendAssetToAnotherNet.key,
+  ],
   ARBGOERLI: [
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
@@ -1002,6 +1038,12 @@ export const AssetL2TabIndex = {
     AssetTabIndex.Rewards,
   ],
   GOERLI: [
+    AssetTabIndex.Tokens,
+    AssetTabIndex.Invests,
+    AssetTabIndex.RedPacket,
+    AssetTabIndex.Rewards,
+  ],
+  SEPOLIA: [
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
     AssetTabIndex.RedPacket,
@@ -1052,6 +1094,21 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.vault,
   ],
+  SEPOLIA: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+    RouterMainKey.vault,
+  ],
   ARBGOERLI: [
     RouterMainKey.lite,
     RouterMainKey.pro,
@@ -1079,6 +1136,14 @@ export const ProfileIndex = {
     Layer2RouterID.notification,
   ],
   GOERLI: [
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
+  ],
+  SEPOLIA: [
     Layer2RouterID.security,
     Layer2RouterID.forcewithdraw,
     Layer2RouterID.vip,
@@ -1129,6 +1194,17 @@ export const L1L2_NAME_DEFINED = {
     L1Token: 'ETH',
     L2Token: 'LRC',
   },
+  SEPOLIA: {
+    layer2: 'Layer 2',
+    l1ChainName: 'Ethereum',
+    loopringL2: 'Loopring L2',
+    l2Symbol: 'L2',
+    l1Symbol: 'L1',
+    ethereumL1: 'Ethereum L1',
+    loopringLayer2: 'Loopring Layer 2',
+    L1Token: 'ETH',
+    L2Token: 'LRC',
+  },
   ARBGOERLI: {
     layer2: 'Layer 2',
     l1ChainName: 'Ethereum',
@@ -1140,4 +1216,5 @@ export const L1L2_NAME_DEFINED = {
     L1Token: 'ETH',
     L2Token: 'LRC',
   },
+  
 }
