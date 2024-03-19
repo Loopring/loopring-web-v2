@@ -514,7 +514,7 @@ export const useBanxaTransPost = () => {
             {
               request: _.cloneDeep(request),
               web3: connectProvides.usedWeb3 as any,
-              chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
+              chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,

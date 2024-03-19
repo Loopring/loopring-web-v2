@@ -20,6 +20,7 @@ export type updateRedpacketHashProps = {
 }
 const initialState: RedPacketHashInfos = {
   [ChainId.GOERLI]: {},
+  [ChainId.SEPOLIA]: {},
   [ChainId.MAINNET]: {},
   // withdrawHashes:{},
 }
@@ -64,6 +65,7 @@ const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
 
       state = {
         [ChainId.GOERLI]: make(state, ChainId.GOERLI.toString()),
+        [ChainId.SEPOLIA]: make(state, ChainId.SEPOLIA.toString()),
         [ChainId.MAINNET]: make(state, ChainId.MAINNET.toString()),
       }
     },

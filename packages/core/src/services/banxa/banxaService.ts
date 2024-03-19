@@ -138,7 +138,7 @@ export const banxaService = {
     let banxa: any = undefined
     try {
       // @ts-ignore
-      banxa = new window.Banxa('loopring', chainId == ChainId.GOERLI ? 'sandbox' : '')
+      banxa = new window.Banxa('loopring', chainId == ChainId.SEPOLIA ? 'sandbox' : '')
     } catch (e) {
       banxaService.banxaEnd({
         reason: OrderENDReason.BanxaNotReady,

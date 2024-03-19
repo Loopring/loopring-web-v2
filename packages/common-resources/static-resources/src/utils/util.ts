@@ -229,6 +229,9 @@ export const getValuePrecisionThousand = (
   if (result && !notRemoveEndZero) {
     result = addZeroAfterDot(result)
   }
+  if (BigNumber.isBigNumber(result) ) {
+    result = result.toString()
+  }
 
   return result
 }

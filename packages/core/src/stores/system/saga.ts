@@ -396,7 +396,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
   const env =
     window.location.hostname === 'localhost'
       ? ENV.DEV
-      : sdk.ChainId.GOERLI === Number(_chainId)
+      : sdk.ChainId.SEPOLIA === Number(_chainId)
       ? ENV.UAT
       : ENV.PROD
   const chainId: sdk.ChainId = (
@@ -414,7 +414,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         socketURL = `wss://${socketPrefix}${
           process.env['REACT_APP_API_URL_' + chainId.toString()]
         }/v3/ws`
-        etherscanBaseUrl = chainId == 5 ? `https://goerli.etherscan.io/` : `https://etherscan.io/`
+        etherscanBaseUrl = chainId == sdk.ChainId.SEPOLIA ? `https://sepolia.etherscan.io/` : `https://etherscan.io/`
       } else {
         if (sdk.ChainId.MAINNET === chainId) {
           baseURL = `https://${process.env.REACT_APP_API_URL_1}`
@@ -424,29 +424,29 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           let socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
           if (isDevToggle === true && process.env?.REACT_APP_TEST_ENV) {
             socketPrefix = ''
-            baseURL = `https://${process.env.REACT_APP_API_URL_5}`.replace('uat2', 'dev')
-            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_5}/v3/ws`.replace(
+            baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`.replace('uat2', 'dev')
+            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`.replace(
               'uat2',
               'dev',
             )
             // @ts-ignore
-            sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
-              process.env.REACT_APP_GOERLI_DEV_NFT_FACTORY_COLLECTION
+            sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
+              process.env.REACT_APP_SEPOLIA_DEV_NFT_FACTORY_COLLECTION
           } else {
-            baseURL = `https://${process.env.REACT_APP_API_URL_5}`
-            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_5}/v3/ws`
+            baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`
+            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`
             // @ts-ignore
-            sdk.NFTFactory_Collection[sdk.ChainId.GOERLI] =
+            sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
               process.env[
-                `REACT_APP_GOERLI_${
-                  /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_5 ?? '') ? 'DEV' : 'UAT'
+                `REACT_APP_SEPOLIA_${
+                  /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
                 }_NFT_FACTORY_COLLECTION`
               ]
           }
         }
 
         etherscanBaseUrl =
-          sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
+          sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://sepolia.etherscan.io/`
       }
       LoopringAPI.setBaseURL(baseURL)
       let allowTrade, exchangeInfo, gasPrice, forexMap

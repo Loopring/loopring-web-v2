@@ -6,6 +6,7 @@ import { ChainId } from '@loopring-web/loopring-sdk'
 const initialState: NFTHashInfos = {
   [ChainId.GOERLI]: { nftDataHashes: {} },
   [ChainId.MAINNET]: { nftDataHashes: {} },
+  [ChainId.SEPOLIA]: { nftDataHashes: {} },
   // withdrawHashes:{},
 }
 
