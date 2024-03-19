@@ -21,11 +21,11 @@ const mainnet = {
   rpcUrl: process.env.REACT_APP_RPC_URL_1!
 }
 const goeril = {
-  chainId: 5,
-  name: 'GOERIL',
+  chainId: 11155111,
+  name: 'SEPOLIA',
   currency: 'ETH',
-  explorerUrl: 'https://goerli.etherscan.io/',
-  rpcUrl: process.env.REACT_APP_RPC_URL_5!
+  explorerUrl: 'https://sepolia.etherscan.io/',
+  rpcUrl: process.env.REACT_APP_RPC_URL_11155111!
 }
 const metadata = {
   name: 'loopring.io',
