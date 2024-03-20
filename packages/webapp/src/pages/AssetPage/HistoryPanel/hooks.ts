@@ -1026,7 +1026,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 fromToken.precision,
                 fromToken.precision,
-                true,
+                false,
               )
 
               const toAmountDisplay = getValuePrecisionThousand(
@@ -1034,7 +1034,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 toToken.precision,
                 toToken.precision,
-                true,
+                false,
               )
 
               const feeAmount =
