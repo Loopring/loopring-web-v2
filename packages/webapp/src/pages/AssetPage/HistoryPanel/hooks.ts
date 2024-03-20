@@ -1021,7 +1021,19 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               const toAmount = sdk.toBig(amountOut).div('1e' + toToken.decimals)
               const toFAmount = sdk.toBig(amountFOut).div('1e' + toToken.decimals)
               const settledToAmount = sdk.toBig(settledOut).div('1e' + toToken.decimals)
-              myLog('settledToAmount', )
+              const fromAmountDisplay = getValuePrecisionThousand(
+                sdk.toBig(amountIn).div('1e' + fromToken.decimals),
+                fromToken.precision,
+                fromToken.precision,
+                undefined,
+              )
+
+              const toAmountDisplay = getValuePrecisionThousand(
+                sdk.toBig(amountOut).div('1e' + toToken.decimals),
+                toToken.precision,
+                toToken.precision,
+                undefined,
+              )
 
               const feeAmount =
                 fee && fee != 0
@@ -1061,6 +1073,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toFAmount,
                 settledFromAmount,
                 settledToAmount,
+                fromAmountDisplay,
+                toAmountDisplay,
                 toSymbol,
                 time: Number(start + '000'),
                 rawData: item,
@@ -1102,7 +1116,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.fromSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.fromSymbol}`
             : EmptyValueTag,
@@ -1113,7 +1127,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.fromSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.fromSymbol}`
             : EmptyValueTag,
@@ -1132,7 +1146,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.toSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.toSymbol}`
             : EmptyValueTag,
@@ -1143,7 +1157,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.toSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.toSymbol}`
             : EmptyValueTag,

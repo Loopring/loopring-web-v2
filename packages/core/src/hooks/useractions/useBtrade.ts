@@ -557,7 +557,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.fromSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.fromSymbol}`
               : EmptyValueTag,
@@ -571,7 +571,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.fromSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.fromSymbol}`
               : EmptyValueTag,
@@ -597,7 +597,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.toSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.toSymbol}`
               : EmptyValueTag,
@@ -612,7 +612,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.toSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.toSymbol}`
               : EmptyValueTag,

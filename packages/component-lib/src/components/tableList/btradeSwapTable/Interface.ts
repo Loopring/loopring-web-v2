@@ -25,4 +25,6 @@ export type RawDataBtradeSwapsItem = {
   filledPercent: string
   settledFromAmount: string
   settledToAmount: string
+  fromAmountDisplay: string
+  toAmountDisplay: string
 }
