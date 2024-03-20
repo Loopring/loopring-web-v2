@@ -1023,16 +1023,18 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               const settledToAmount = sdk.toBig(settledOut).div('1e' + toToken.decimals)
               const fromAmountDisplay = getValuePrecisionThousand(
                 sdk.toBig(amountIn).div('1e' + fromToken.decimals),
-                fromToken.precision,
-                fromToken.precision,
                 undefined,
+                fromToken.precision,
+                fromToken.precision,
+                true,
               )
 
               const toAmountDisplay = getValuePrecisionThousand(
                 sdk.toBig(amountOut).div('1e' + toToken.decimals),
-                toToken.precision,
-                toToken.precision,
                 undefined,
+                toToken.precision,
+                toToken.precision,
+                true,
               )
 
               const feeAmount =
