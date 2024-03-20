@@ -34,7 +34,7 @@ const metadata = {
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
 
-const web3Modal = createWeb3Modal({
+export const web3Modal = createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
   chains: [mainnet, goeril],
   projectId,
