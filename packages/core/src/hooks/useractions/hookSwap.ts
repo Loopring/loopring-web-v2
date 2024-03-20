@@ -946,17 +946,34 @@ export const useSwap = <
         market: market as any,
         tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
         dependencyData: { ticker, ammPoolSnapshot, depth },
+        noGetValuePrecisionThousand: true
       })
       const result = reCalcStoB({
         market,
         tradeData: tradeData as SwapTradeData<IBData<unknown>>,
         tradePair: tradePair as any,
+        noGetValuePrecisionThousand: true
       })
-
+      const reserveInfo = sdk.getReserveInfo(tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string, marketArray, tokenMap, marketMap)
       setTradeCalcData((state) => {
-        state.StoB = result ? result.stob : stob
-        state.BtoS = result ? result.btos : btos
-        return { ...state, walletMap }
+        return { 
+          ...state, 
+          walletMap,
+          StoB: getValuePrecisionThousand(
+            result ? result.stob : stob,
+            undefined,
+            reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            true
+          ),
+          BtoS: getValuePrecisionThousand(
+            result ? result.btos : btos,
+            undefined,
+            !reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            !reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            true,
+          ),
+        }
       })
       setTradeData({
         ...tradeData,

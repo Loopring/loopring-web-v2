@@ -108,6 +108,7 @@ export const calcPriceByAmmTickMapDepth = <_C>({
   market,
   tradePair,
   dependencyData: { ticker, ammPoolSnapshot, depth },
+  noGetValuePrecisionThousand
 }: {
   market: MarketType
   tradePair: MarketType
@@ -115,7 +116,8 @@ export const calcPriceByAmmTickMapDepth = <_C>({
     ticker: Ticker | undefined
     ammPoolSnapshot: any
     depth: any
-  }
+  },
+  noGetValuePrecisionThousand?: boolean
 }): {
   stob: string | undefined
   btos: string | undefined
@@ -139,17 +141,21 @@ export const calcPriceByAmmTickMapDepth = <_C>({
         volumeToCountAsBigNumber(idIndex[poolATokenVol.tokenId], poolATokenVol.volume) || 1,
       )
       // @ts-ignore
-      btos = getValuePrecisionThousand(
-        new BigNumber(1).div(stob ?? 1).toNumber(),
-        tokenMap[coinA].precision,
-        tokenMap[coinA].precision,
-        tokenMap[coinA].precision,
-        true,
-      ) // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+      btos = noGetValuePrecisionThousand
+        ? new BigNumber(1).div(stob ?? 1).toNumber()
+        : getValuePrecisionThousand(
+            new BigNumber(1).div(stob ?? 1).toNumber(),
+            tokenMap[coinA].precision,
+            tokenMap[coinA].precision,
+            tokenMap[coinA].precision,
+            true,
+          ) // .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
       let precision = marketMap[market].precisionForPrice
         ? marketMap[market].precisionForPrice
         : tokenMap[coinB].precision
-      stob = getValuePrecisionThousand(stob, precision, precision, precision, true)
+      stob = noGetValuePrecisionThousand
+        ? stob
+        : getValuePrecisionThousand(stob, precision, precision, precision, true)
 
       // stob = Number(stob?.toFixed(tokenMap[idIndex[poolBTokenVol.tokenId]].precision))
       close = stob?.toString()
@@ -166,17 +172,21 @@ export const calcPriceByAmmTickMapDepth = <_C>({
       let precision = marketMap[market].precisionForPrice
         ? marketMap[market].precisionForPrice
         : tokenMap[coinB].precision
-      close = getValuePrecisionThousand(ticker.close, precision, precision, precision, true)
+      close = noGetValuePrecisionThousand
+        ? ticker.close
+        : getValuePrecisionThousand(ticker.close, precision, precision, precision, true)
       stob = close
       btos =
         Number(ticker.close) !== 0
-          ? getValuePrecisionThousand(
-              1 / ticker.close,
-              tokenMap[coinA].precision,
-              tokenMap[coinA].precision,
-              tokenMap[coinA].precision,
-              true,
-            )
+          ? noGetValuePrecisionThousand
+            ? 1 / ticker.close
+            : getValuePrecisionThousand(
+                1 / ticker.close,
+                tokenMap[coinA].precision,
+                tokenMap[coinA].precision,
+                tokenMap[coinA].precision,
+                true,
+              )
           : 0
       if (!ticker.__rawTicker__.base === coinSell) {
         stob = btos
@@ -189,17 +199,21 @@ export const calcPriceByAmmTickMapDepth = <_C>({
       let precision = marketMap[market].precisionForPrice
         ? marketMap[market].precisionForPrice
         : tokenMap[coinB].precision
-      close = getValuePrecisionThousand(depth.mid_price, precision, precision, precision, true)
+      close = noGetValuePrecisionThousand
+        ? depth.mid_price
+        : getValuePrecisionThousand(depth.mid_price, precision, precision, precision, true)
       stob = close
       btos =
         Number(close) !== 0
-          ? getValuePrecisionThousand(
-              1 / Number(close),
-              tokenMap[coinA].precision,
-              tokenMap[coinA].precision,
-              tokenMap[coinA].precision,
-              true,
-            )
+          ? noGetValuePrecisionThousand
+            ? 1 / Number(close)
+            : getValuePrecisionThousand(
+                1 / Number(close),
+                tokenMap[coinA].precision,
+                tokenMap[coinA].precision,
+                tokenMap[coinA].precision,
+                true,
+              )
           : 0
       if (!tradePair === depth.symbol) {
         stob = btos
@@ -226,12 +240,14 @@ export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>({
   tradeData,
   tradePair,
   marketMap,
+  noGetValuePrecisionThousand,
 }: {
   market: MarketType
   tradeData: T
   tradePair: MarketType
   marketMap?: any
   tokenMap?: any
+  noGetValuePrecisionThousand?: boolean
 }): { stob: string; btos: string } | undefined => {
   const {
     marketMap: _marketMap,
@@ -255,39 +271,34 @@ export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>({
     const marketPrecision = marketMap[market].precisionForPrice
       ? marketMap[market].precisionForPrice
       : tokenMap[coinB].precision
-    const tokenPrecision = tokenMap[coinA].precision
     let stob, btos
 
     if (market === tradePair) {
-      stob = getValuePrecisionThousand(
-        buyBig.div(sellBig).toString(),
-        marketPrecision,
-        marketPrecision,
-        undefined,
-        true,
-      )
-      btos = getValuePrecisionThousand(
-        sellBig.div(buyBig).toString(),
-        tokenPrecision,
-        tokenPrecision,
-        undefined,
-        true,
-      )
+      stob = noGetValuePrecisionThousand
+        ? buyBig.div(sellBig).toString()
+        : getValuePrecisionThousand(
+            buyBig.div(sellBig).toString(),
+            marketPrecision,
+            marketPrecision,
+            undefined,
+            true,
+          )
+      btos = noGetValuePrecisionThousand
+        ? sellBig.div(buyBig).toString()
+        : getValuePrecisionThousand(sellBig.div(buyBig).toString(), 6, 6, undefined, true)
     } else {
-      stob = getValuePrecisionThousand(
-        buyBig.div(sellBig).toString(),
-        tokenPrecision,
-        tokenPrecision,
-        undefined,
-        true,
-      )
-      btos = getValuePrecisionThousand(
-        sellBig.div(buyBig).toString(),
-        marketPrecision,
-        marketPrecision,
-        undefined,
-        true,
-      )
+      stob = noGetValuePrecisionThousand
+        ? buyBig.div(sellBig).toString()
+        : getValuePrecisionThousand(buyBig.div(sellBig).toString(), 6, 6, undefined, true)
+      btos = noGetValuePrecisionThousand
+        ? sellBig.div(buyBig).toString()
+        : getValuePrecisionThousand(
+            sellBig.div(buyBig).toString(),
+            marketPrecision,
+            marketPrecision,
+            undefined,
+            true,
+          )
     }
     return { stob, btos }
   } else {

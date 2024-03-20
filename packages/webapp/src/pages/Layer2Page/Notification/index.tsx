@@ -167,7 +167,7 @@ export const NotificationPanel = withTranslation(['common', 'layout'])(({ t }: W
           flex={1}
           height={'100%'}
         >
-          <Box display={'flex'} flex={1} ref={container} height={'100%'}>
+          <Box display={'flex'} flex={1} ref={container} height={'95%'}>
             {!!rawData.length ? (
               <Grid
                 container
