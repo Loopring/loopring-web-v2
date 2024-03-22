@@ -73,6 +73,7 @@ import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -95,6 +96,7 @@ const persistSettingConfig = {
 const persistLocalStoreConfig = {
   key: 'localStore',
   storage: storage,
+  stateReconciler: autoMergeLevel2,
 }
 const persistedAccountReducer = persistReducer(persistAccConfig, accountSlice.reducer)
 const perisitTokenPricesSessionStoreConfig = persistReducer(
@@ -136,7 +138,7 @@ const persistedLocalStoreReducer = persistReducer<
     offRampHistory: OffRampHashInfos
     favoriteVaultMarket: FavoriteMarketStates
   }>
->(persistLocalStoreConfig, localStoreReducer)
+>(persistLocalStoreConfig , localStoreReducer)
 
 export const initReduce = {
   account: persistedAccountReducer,
