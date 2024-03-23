@@ -1,16 +1,17 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { createWeb3Modal, defaultConfig, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
-import { SagaStatus } from '@loopring-web/common-resources'
+import { SagaStatus, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork } from '@loopring-web/component-lib'
 
-import { checkAccount, store, useAccount, useSystem } from '@loopring-web/core'
+import { checkAccount, store, useAccount, useSelectNetwork, useSystem } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
-import { updateAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
+import { updateAccountStatus, cleanAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
 import { useDispatch } from 'react-redux'
 import { providers } from 'ethers'
 import Web3 from 'web3'
+import { useTheme } from '@emotion/react'
 
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 const mainnet = {
@@ -33,7 +34,9 @@ const metadata = {
   url: 'https://loopring.io', // origin must match your domain & subdomain
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
+// const { themeMode, themeVariables, setThemeMode, setThemeVariables } = useWeb3ModalTheme()
 
+// setThemeMode('dark')
 export const web3Modal = createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
   chains: [mainnet, goeril],
@@ -47,17 +50,25 @@ export const useInjectWeb3Modal = () => {
   const { status } = useSystem()
   const { address, chainId } = useWeb3ModalAccount()
   const { resetAccount } = useAccount()
+  const event = useWeb3ModalEvents()
   const dispatch = useDispatch()
+  const { mode } = useTheme()
+  const { setThemeMode } = useWeb3ModalTheme()
+  const { handleOnNetworkSwitch } = useSelectNetwork({})
+  React.useEffect(() => {
+    setThemeMode(mode)
+  }, [mode])
+  React.useEffect(() => {
+    if (event.data.event === 'SWITCH_NETWORK') {
+      handleOnNetworkSwitch(web3Modal.getChainId()!)
+    }
+  }, [event])
   React.useEffect(() => {
     ;(async () => {
       if (address) {
-        dispatch(
-          updateAccountStatus({
-            connectName: ConnectProviders.MetaMask,
-          }),
-        )
         const { defaultNetwork } = store.getState().settings
-        if (chainId !== defaultNetwork || status === SagaStatus.PENDING) {
+        const accAddress = store.getState().account.accAddress
+        if (address.toLowerCase() !== accAddress.toLowerCase() || chainId !== defaultNetwork) {
           store.dispatch(
             updateSystem({
               chainId,
@@ -71,19 +82,37 @@ export const useInjectWeb3Modal = () => {
         resetAccount()
       }
     })()
-  }, [address, walletProvider, status, chainId])
+  }, [address, walletProvider, chainId, status])
   React.useEffect(() => {
-    const provider = web3Modal.getWalletProvider()
-    if (provider) {
-      connectProvides.usedProvide = new providers.Web3Provider(provider as any)
+    if (walletProvider) {
+      if (walletProvider.isMetaMask) {
+        dispatch(
+          updateAccountStatus({
+            connectName: ConnectProviders.MetaMask,
+          }),
+        )
+      } else if ((walletProvider as any).isWalletConnect) {
+        dispatch(
+          updateAccountStatus({
+            connectName: ConnectProviders.WalletConnect,
+          }),
+        )
+      } else {
+        dispatch(
+          updateAccountStatus({
+            connectName: ConnectProviders.Unknown,
+          }),
+        )
+      }
+      connectProvides.usedProvide = new providers.Web3Provider(walletProvider as any)
       // @ts-ignore
-      connectProvides.usedWeb3 = new Web3(provider as any)
+      connectProvides.usedWeb3 = new Web3(walletProvider as any)
+    } else {
+      dispatch(
+        updateAccountStatus({
+          connectName: ConnectProviders.Unknown,
+        }),
+      )
     }
-    web3Modal.subscribeProvider(async (pro) => {
-      connectProvides.usedProvide = new providers.Web3Provider(pro.provider as any)
-      // @ts-ignore
-      connectProvides.usedWeb3 = new Web3(pro.provider as any)
-    })
-  }, [])
-
+  }, [walletProvider])
 }

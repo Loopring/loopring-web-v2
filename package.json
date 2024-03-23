@@ -21,7 +21,7 @@
     "@react-buddy/palette-mui": "^5.0.1",
     "@react-spring/parallax": "^9.4.4",
     "@reduxjs/toolkit": "^1.8.1",
-    "@web3modal/ethers5": "^4.0.13",
+    "@web3modal/ethers5": "^3.5.7",
     "assert": "^2.0.0",
     "bignumber.js": "^9.1.1",
     "bn.js": "^5.2.1",
