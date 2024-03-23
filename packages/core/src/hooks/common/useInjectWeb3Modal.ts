@@ -60,7 +60,7 @@ export const useInjectWeb3Modal = () => {
   }, [mode])
   React.useEffect(() => {
     if (event.data.event === 'SWITCH_NETWORK') {
-      handleOnNetworkSwitch(web3Modal.getChainId()!)
+      location.reload()
     }
   }, [event])
   React.useEffect(() => {
