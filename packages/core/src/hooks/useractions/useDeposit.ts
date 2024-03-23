@@ -483,7 +483,6 @@ export const useDeposit = <
           // const realChainId = chainId === 'unknown' ? 1 : chainId
           let response
           try {
-            debugger
             //response = { result: "xxxxxxxx" };
             response = await sdk.deposit(
               connectProvides.usedWeb3,
@@ -500,7 +499,6 @@ export const useDeposit = <
               toAddress,
             )
           } catch (error) {
-            debugger
             if (error instanceof Error) {
               throw {
                 ...error,
