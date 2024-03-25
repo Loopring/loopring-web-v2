@@ -8,7 +8,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { store } from '@loopring-web/core'
+import { store, useInjectWeb3Modal } from '@loopring-web/core'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -40,6 +40,7 @@ const App = () => {
       )
     }
   }, [])
+  useInjectWeb3Modal()
 
   const { state } = useInit()
 
