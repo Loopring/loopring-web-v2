@@ -97,6 +97,12 @@ export const useInjectWeb3Modal = () => {
             connectName: ConnectProviders.WalletConnect,
           }),
         )
+      } else if ((walletProvider as any).isCoinbaseWallet) {
+        dispatch(
+          updateAccountStatus({
+            connectName: ConnectProviders.Coinbase,
+          }),
+        )
       } else {
         dispatch(
           updateAccountStatus({
