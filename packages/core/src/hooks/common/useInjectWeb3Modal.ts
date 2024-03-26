@@ -63,6 +63,7 @@ export const useInjectWeb3Modal = () => {
     if (event.data.event === 'SWITCH_NETWORK') {
       location.reload()
     }
+    console.log('event', event)
   }, [event])
   React.useEffect(() => {
     ;(async () => {
