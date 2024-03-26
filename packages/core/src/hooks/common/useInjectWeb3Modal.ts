@@ -1,4 +1,4 @@
-import { createWeb3Modal, defaultConfig, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
+import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
 import { SagaStatus, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork } from '@loopring-web/component-lib'
@@ -55,6 +55,7 @@ export const useInjectWeb3Modal = () => {
   const { mode } = useTheme()
   const { setThemeMode } = useWeb3ModalTheme()
   const { handleOnNetworkSwitch } = useSelectNetwork({})
+  // const {  } = useWeb3Modal()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
@@ -65,7 +66,7 @@ export const useInjectWeb3Modal = () => {
   }, [event])
   React.useEffect(() => {
     ;(async () => {
-      if (address) {
+      if (address && walletProvider) {
         const { defaultNetwork } = store.getState().settings
         const accAddress = store.getState().account.accAddress
         if (address.toLowerCase() !== accAddress.toLowerCase() || chainId !== defaultNetwork) {
