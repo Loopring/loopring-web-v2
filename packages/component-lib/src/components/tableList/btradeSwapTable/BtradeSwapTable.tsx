@@ -143,7 +143,7 @@ export const BtradeSwapTable = withTranslation(['tables', 'common'])(
                 )}
                 <Typography component={'span'} display={'inline-flex'}>
                   {row
-                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
+                    ? `${row.fromAmountDisplay} ${row.fromSymbol} -> ${row.toAmountDisplay} ${row.toSymbol}`
                     : EmptyValueTag}
                 </Typography>
               </Box>
@@ -243,7 +243,7 @@ export const BtradeSwapTable = withTranslation(['tables', 'common'])(
                 )}
                 <Typography component={'span'} display={'flex'}>
                   {row
-                    ? `${row.fromAmount} ${row.fromSymbol} -> ${row.toAmount} ${row.toSymbol}`
+                    ? `${row.fromAmountDisplay} ${row.fromSymbol} -> ${row.toAmountDisplay} ${row.toSymbol}`
                     : EmptyValueTag}
                 </Typography>
               </Box>

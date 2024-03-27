@@ -356,7 +356,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(
             switch (account.readyState) {
               case AccountStatus.ACTIVATED:
               case AccountStatus.LOCKED:
-                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
                 break
               case AccountStatus.DEPOSITING:
                 setShowAccount({

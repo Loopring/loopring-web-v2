@@ -21,6 +21,7 @@ import {
   setShowLRCStakePopup,
   setShowLeverageETHPopup,
   setShowAutoDefault,
+  setConfirmedOpenVaultPosition
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
@@ -41,6 +42,7 @@ export const useConfirmation = (): {
   setShowLRCStakePopup: (data: { isShow: boolean; confirmationNeeded: boolean }) => void
   setShowLeverageETHPopup: (data: { isShow: boolean; confirmationNeeded: boolean }) => void
   setShowAutoDefault: (show: boolean) => void
+  setConfirmedOpenVaultPosition: () => void
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation,
@@ -110,5 +112,8 @@ export const useConfirmation = (): {
       (show: boolean) => dispatch(setShowAutoDefault({ show })),
       [dispatch],
     ),
+    setConfirmedOpenVaultPosition: React.useCallback(() => {
+      dispatch(setConfirmedOpenVaultPosition(undefined))
+    }, [dispatch]),
   }
 }

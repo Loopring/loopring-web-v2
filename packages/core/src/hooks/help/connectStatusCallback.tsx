@@ -6,8 +6,9 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import { fnType, myLog } from '@loopring-web/common-resources'
-import { accountReducer, metaMaskCallback, store, unlockAccount } from '../../index'
+import { accountReducer, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
 import _ from 'lodash'
+import { connectProvides } from '@loopring-web/web3-provider'
 
 export const accountStaticCallBack = (
   onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] },
@@ -84,13 +85,7 @@ export const btnClickMap: {
   [fnType.UN_CONNECT]: [
     function () {
       myLog('UN_CONNECT!')
-      const { isMobile } = store.getState().settings
-      if (isMobile && window.ethereum) {
-        metaMaskCallback()
-      } else {
-        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-        store.dispatch(setShowConnect({ isShow: true, step: WalletConnectStep.Provider }))
-      }
+      web3Modal.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [goActiveAccount],

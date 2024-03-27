@@ -276,7 +276,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
     return (
       <>
-        {defaultNetwork && (
+        {/* {defaultNetwork && (
           <OutlineSelectStyle
             aria-label={NetworkMap[defaultNetwork]?.label}
             IconComponent={DropDownIcon}
@@ -309,7 +309,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
               return prew
             }, [] as JSX.Element[])}
           </OutlineSelectStyle>
-        )}
+        )} */}
       </>
     )
   }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])

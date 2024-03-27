@@ -144,7 +144,6 @@ export function useAccountModalForL1UI({
           break
         case AccountStatus.LOCKED:
         case AccountStatus.ACTIVATED:
-          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
           break
         default:
           setShowAccount({ isShow: false })

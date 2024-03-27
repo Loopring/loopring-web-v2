@@ -14,10 +14,6 @@ export function useAccountModal() {
   }, [statusAccountUnset])
   const handleLockAccount = React.useCallback(() => {
     statusAccountUnset()
-    setShowAccount({
-      isShow: shouldShow ?? false,
-      step: AccountStep.HadAccount,
-    })
   }, [setShowAccount, shouldShow, statusAccountUnset])
   const handleNoAccount = React.useCallback(
     (_data: any) => {
