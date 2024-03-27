@@ -22,6 +22,13 @@ const mainnet = {
   rpcUrl: process.env.REACT_APP_RPC_URL_1!
 }
 const goeril = {
+  chainId: 5,
+  name: 'GOERIL',
+  currency: 'ETH',
+  explorerUrl: 'https://goeril.etherscan.io/',
+  rpcUrl: process.env.REACT_APP_RPC_URL_5!
+}
+const sepolia = {
   chainId: 11155111,
   name: 'SEPOLIA',
   currency: 'ETH',
