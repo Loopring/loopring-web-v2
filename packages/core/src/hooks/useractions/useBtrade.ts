@@ -557,7 +557,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.fromSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.fromSymbol}`
               : EmptyValueTag,
@@ -571,7 +571,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.fromSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.fromSymbol}`
               : EmptyValueTag,
@@ -597,7 +597,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.toSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.toSymbol}`
               : EmptyValueTag,
@@ -612,7 +612,7 @@ export const useBtradeSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.toSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${item.toSymbol}`
               : EmptyValueTag,
@@ -864,6 +864,7 @@ export const useBtradeSwap = <
         }
         const sellPrecision = tokenMap[tradeCalcData.coinBuy as string].precision
         const buyPrecision = tokenMap[tradeCalcData.coinSell as string].precision
+        const reserveInfo = sdk.getReserveInfo(tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string, marketArray, tokenMap, marketMap as any)
         const _tradeCalcData = {
           ...tradeCalcData,
           coinSell: tradeCalcData.coinBuy,
@@ -872,8 +873,20 @@ export const useBtradeSwap = <
           buyPrecision,
           sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
           buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
-          StoB: getValuePrecisionThousand(StoB, buyPrecision, buyPrecision, undefined, false),
-          BtoS: getValuePrecisionThousand(BtoS, sellPrecision, sellPrecision, undefined, false),
+          StoB: getValuePrecisionThousand(
+            StoB,
+            undefined,
+            reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            true,
+          ),
+          BtoS: getValuePrecisionThousand(
+            BtoS,
+            undefined,
+            !reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            !reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            true,
+          ),
         }
 
         myLog(
@@ -1118,6 +1131,7 @@ export const useBtradeSwap = <
             tradePair: tradePair as any,
             marketMap,
             tokenMap: tradeMap,
+            noGetValuePrecisionThousand: true
           })
           stob = result?.stob
           btos = result?.btos
@@ -1179,43 +1193,41 @@ export const useBtradeSwap = <
           const [mid_price, _mid_price_convert] = calcDexOutput
             ? [
                 depth.mid_price,
-                getValuePrecisionThousand(
-                  1 / depth.mid_price,
-                  buyToken.precision,
-                  buyToken.precision,
-                  buyToken.precision,
-                ),
+                1 / depth.mid_price
               ]
             : [undefined, undefined]
-
           stob = stob
             ? stob
-            : state?.StoB
-            ? state.StoB
-            : !calcDexOutput?.isReverse
-            ? mid_price
-            : _mid_price_convert
+            : calcDexOutput
+            ? calcDexOutput.isReverse
+              ? _mid_price_convert!.toString()
+              : mid_price!.toString()
+            : state.StoB ? state.StoB: undefined
           btos = btos
             ? btos
+            : calcDexOutput
+            ? calcDexOutput.isReverse
+              ? mid_price!.toString()
+              : _mid_price_convert!.toString()
             : state?.BtoS
-            ? state.BtoS
-            : calcDexOutput?.isReverse
-            ? mid_price
-            : _mid_price_convert
+            ? state?.BtoS
+            : undefined
           _tradeCalcData = {
             ...state,
             ..._tradeCalcData,
             StoB: getValuePrecisionThousand(
               stob?.replaceAll(sdk.SEP, '') ?? 0,
-              buyToken.precision,
-              buyToken.precision,
               undefined,
+              calcDexOutput?.isReverse ? 6 : marketMap[market].precisionForPrice,
+              calcDexOutput?.isReverse ? 6 : marketMap[market].precisionForPrice,
+              true
             ),
             BtoS: getValuePrecisionThousand(
               btos?.replaceAll(sdk.SEP, '') ?? 0,
-              sellToken.precision,
-              sellToken.precision,
               undefined,
+              !calcDexOutput?.isReverse ? 6 : marketMap[market].precisionForPrice,
+              !calcDexOutput?.isReverse ? 6 : marketMap[market].precisionForPrice,
+              true
             ),
             lastStepAt: type,
           }
@@ -1278,6 +1290,7 @@ export const useBtradeSwap = <
 
         marketMap,
         tokenMap: tradeMap,
+        noGetValuePrecisionThousand: true
       })
       const buyToken = tokenMap[tradeCalcData.coinBuy]
       const sellToken = tokenMap[tradeCalcData.coinSell]
@@ -1288,20 +1301,23 @@ export const useBtradeSwap = <
         const pr2 = depth.mid_price
         const [StoB, BtoS] =
           market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` ? [pr1, pr2] : [pr2, pr1]
+        const reserveInfo = sdk.getReserveInfo(sellToken.symbol, buyToken.symbol, marketArray, tokenMap, marketMap as any)
         _tradeCalcData = {
           ...state,
           ...tradeCalcData,
           StoB: getValuePrecisionThousand(
             (result ? result?.stob : StoB.toString())?.replaceAll(sdk.SEP, ''),
-            buyToken.precision,
-            buyToken.precision,
             undefined,
+            reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            true,
           ),
           BtoS: getValuePrecisionThousand(
             (result ? result?.btos : BtoS.toString())?.replaceAll(sdk.SEP, ''),
-            sellToken.precision,
-            sellToken.precision,
             undefined,
+            !reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            !reserveInfo?.isReverse ? 6 : marketMap[market].precisionForPrice,
+            true,
           ),
         }
         return {

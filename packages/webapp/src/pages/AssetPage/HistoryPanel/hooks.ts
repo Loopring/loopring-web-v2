@@ -1015,43 +1015,26 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               const fromToken = tokenMap[fromSymbol]
               const toToken = tokenMap[toSymbol]
 
-              const fromAmount = getValuePrecisionThousand(
+              const fromAmount = sdk.toBig(amountIn).div('1e' + fromToken.decimals)
+              const fromFAmount = sdk.toBig(amountFIn).div('1e' + fromToken.decimals)
+              const settledFromAmount = sdk.toBig(settledIn).div('1e' + fromToken.decimals)
+              const toAmount = sdk.toBig(amountOut).div('1e' + toToken.decimals)
+              const toFAmount = sdk.toBig(amountFOut).div('1e' + toToken.decimals)
+              const settledToAmount = sdk.toBig(settledOut).div('1e' + toToken.decimals)
+              const fromAmountDisplay = getValuePrecisionThousand(
                 sdk.toBig(amountIn).div('1e' + fromToken.decimals),
-                fromToken.precision,
-                fromToken.precision,
                 undefined,
-              )
-              const fromFAmount = getValuePrecisionThousand(
-                sdk.toBig(amountFIn).div('1e' + fromToken.decimals),
                 fromToken.precision,
                 fromToken.precision,
-                undefined,
-              )
-              const settledFromAmount = getValuePrecisionThousand(
-                sdk.toBig(settledIn).div('1e' + fromToken.decimals),
-                fromToken.precision,
-                fromToken.precision,
-                undefined,
+                false,
               )
 
-              const toAmount = getValuePrecisionThousand(
+              const toAmountDisplay = getValuePrecisionThousand(
                 sdk.toBig(amountOut).div('1e' + toToken.decimals),
-                toToken.precision,
-                toToken.precision,
                 undefined,
-              )
-
-              const toFAmount = getValuePrecisionThousand(
-                sdk.toBig(amountFOut).div('1e' + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
-                undefined,
-              )
-              const settledToAmount = getValuePrecisionThousand(
-                sdk.toBig(settledOut).div('1e' + toToken.decimals),
-                toToken.precision,
-                toToken.precision,
-                undefined,
+                false,
               )
 
               const feeAmount =
@@ -1092,6 +1075,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toFAmount,
                 settledFromAmount,
                 settledToAmount,
+                fromAmountDisplay,
+                toAmountDisplay,
                 toSymbol,
                 time: Number(start + '000'),
                 rawData: item,
@@ -1133,7 +1118,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.fromSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.fromSymbol}`
             : EmptyValueTag,
@@ -1144,7 +1129,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.fromSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.fromSymbol}`
             : EmptyValueTag,
@@ -1163,7 +1148,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.toSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.toSymbol}`
             : EmptyValueTag,
@@ -1174,7 +1159,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 undefined,
                 undefined,
                 tokenMap[item.toSymbol].precision,
-                true,
+                false,
                 { isAbbreviate: true },
               )} ${item.toSymbol}`
             : EmptyValueTag,
