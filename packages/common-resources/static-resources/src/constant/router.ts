@@ -481,14 +481,14 @@ export const DEFI_CONFIG = {
     TAIKO: [] as string[],
     ETHEREUM: ['LIDO', 'ROCKETPOOL'],
     GOERLI: ['ROCKETPOOL'],
-    SEPOLIA: ['ROCKETPOOL'],
+    SEPOLIA: ['LIDO'],
     ARBGOERLI: ['ROCKETPOOL'],
   },
   MARKETS: {
     TAIKO: [] as string[],
     ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
     GOERLI: ['RETH-ETH'],
-    SEPOLIA: ['RETH-ETH'],
+    SEPOLIA: ['WSTETH-ETH'],
     ARBGOERLI: ['RETH-ETH'],
   },
 }

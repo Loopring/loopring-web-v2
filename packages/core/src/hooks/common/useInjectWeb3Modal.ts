@@ -46,7 +46,7 @@ const metadata = {
 // setThemeMode('dark')
 export const web3Modal = createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
-  chains: [mainnet, goeril],
+  chains: [mainnet, sepolia],
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration,
   featuredWalletIds: [],
