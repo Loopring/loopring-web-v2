@@ -19,4 +19,5 @@ export interface Confirmation {
   showLeverageETHPopup: boolean
   showAutoDefault: boolean
   confirmationNeeded: boolean
+  confirmedOpenVaultPosition: boolean
 }

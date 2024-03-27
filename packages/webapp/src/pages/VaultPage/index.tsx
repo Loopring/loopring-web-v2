@@ -26,6 +26,7 @@ import { VaultDashBoardPanel } from './DashBoardPanel'
 import { VaultHomePanel } from './HomePanel'
 import { useTranslation } from 'react-i18next'
 import { ModalVaultWrap } from './components/ModalWrap'
+import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation'
 
 export const HomeTitle = () => {
   const { t } = useTranslation()
@@ -80,6 +81,7 @@ export const VaultPage = () => {
     setShowConfirmedVault,
     modals: { isShowConfirmedVault },
   } = useOpenModals()
+  const {setConfirmedOpenVaultPosition} = useConfirmation()
 
   const [error, setError] = React.useState(false)
   React.useEffect(() => {
@@ -197,6 +199,7 @@ export const VaultPage = () => {
             history.push(`${RouterPath.vault}/${VaultKey.VAULT_HOME}`)
             setShowConfirmedVault({ isShow: false })
           } else {
+            setConfirmedOpenVaultPosition()
             setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
             setShowConfirmedVault({ isShow: false })
           }

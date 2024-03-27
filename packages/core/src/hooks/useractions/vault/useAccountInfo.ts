@@ -17,6 +17,7 @@ import {
 import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useConfirmation } from '../../../stores/localStore/confirmation'
 
 export type VaultAccountInfoStatus = VaultLayer2States & {
   joinBtnStatus: TradeBtnStatus
@@ -59,6 +60,9 @@ export const useAccountInfo = () => {
   const { t } = useTranslation()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const {
+    confirmation: { confirmedOpenVaultPosition },
+  } = useConfirmation()
 
   const availableJoinCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
@@ -99,9 +103,14 @@ export const useAccountInfo = () => {
           break
         // @ts-ignore
         case sdk.VaultAccountStatus.FREE: //sdk.VaultAccountStatus.FREE
-        default:
-          setShowConfirmedVault({ isShow: true })
-        //setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
+        default: {
+          if (!confirmedOpenVaultPosition) {
+            setShowConfirmedVault({ isShow: true })  
+          } else {
+            setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
+            setShowConfirmedVault({ isShow: false })  
+          }
+        }
       }
     },
   })
