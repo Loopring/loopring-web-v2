@@ -392,7 +392,7 @@ export const useDeposit = <
           toAddress
         ) {
           const tokenInfo = tokenMap[inputValue.belong]
-          const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
+          const gasLimit = '0x' + parseInt(tokenInfo.gasAmounts.deposit).toString(16)
           const fee = 0
           const isMetaMask = true
 
@@ -436,7 +436,7 @@ export const useDeposit = <
                   realGasPrice,
                   gasLimit,
                   _chainId,
-                  nonce,
+                  '0x' + nonce.toString(16),
                   isMetaMask,
                 )
                 nonce += 1
@@ -494,7 +494,7 @@ export const useDeposit = <
               realGasPrice,
               gasLimit,
               _chainId,
-              nonce,
+              '0x' + nonce.toString(16),
               isMetaMask,
               toAddress,
             )
