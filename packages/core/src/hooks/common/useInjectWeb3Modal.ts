@@ -87,8 +87,6 @@ export const useInjectWeb3Modal = () => {
         }
         checkAccount(address, chainId)
       } else {
-        walletServices.sendDisconnect('', 'customer click disconnect')
-        resetAccount()
       }
     })()
   }, [address, walletProvider, chainId, status])
