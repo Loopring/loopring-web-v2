@@ -385,7 +385,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           token: key,
           erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
         }
-        const erc20Symbol = erc20IdIndex[tokenMap[key].tokenId]
+        const erc20Symbol = key.slice(2)
         if (walletMap && walletMap[key]) {
           tokenInfo = {
             ...tokenInfo,

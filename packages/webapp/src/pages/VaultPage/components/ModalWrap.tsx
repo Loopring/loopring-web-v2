@@ -131,8 +131,8 @@ export const ModalVaultWrap = () => {
               classWrapName={'vaultSwap'}
               titleI8nKey={'labelVaultSwap'}
               tokenBuyProps={{
-                tokenImageKey: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
-                belongAlice: coinMap[tradeData?.buy?.belong?.toString() ?? '']?.erc20Symbol,
+                tokenImageKey: tradeData?.buy?.belong?.slice(2),
+                belongAlice: tradeData?.buy?.belong?.slice(2),
                 tokenType: TokenType.vault,
                 disableInputValue: isMarketInit,
                 disabled: isSwapLoading || isMarketInit,
@@ -164,8 +164,8 @@ export const ModalVaultWrap = () => {
                   ?.vaultTokenAmounts?.qtyStepScale
                   ? true
                   : false,
-                tokenImageKey: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
-                belongAlice: coinMap[tradeData?.sell?.belong?.toString() ?? '']?.erc20Symbol,
+                tokenImageKey: tradeData?.sell?.belong?.slice(2),
+                belongAlice: tradeData?.sell?.belong?.slice(2),
                 tokenType: TokenType.vault,
                 subEle: maxEle,
                 subLabel: undefined,
