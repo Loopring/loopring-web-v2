@@ -240,8 +240,15 @@ export const useVaultSwap = <
   const [tradeCalcData, setTradeCalcData] = React.useState<Partial<CAD>>({
     lockedNotification: true,
     isVault: true,
-    coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
-      return { ...prev, [item]: coinMap ? coinMap[item] : {} }
+    coinInfoMap: marketCoins?.reduce((prev: any, item: string ) => {
+      return {
+        ...prev,
+        [item]: {
+          ...(coinMap && coinMap[item]),
+          erc20Symbol: item.slice(2),
+          belongAlice: item.slice(2),
+        },
+      }
     }, {} as CoinMap<C>),
   } as any)
 
@@ -303,8 +310,12 @@ export const useVaultSwap = <
       }
 
       const sellCoinInfoMap = tokenMap[coinB]?.tradePairs?.reduce(
-        (prev: any, item: string | number) => {
-          return { ...prev, [item]: coinMap[item] }
+        (prev: any, item: string ) => {
+          return { ...prev, [item]: {
+            ...coinMap[item],
+            erc20Symbol: item.slice(2),
+            belongAlice: item.slice(2),
+          }}
         },
         {} as CoinMap<C>,
       )
@@ -323,8 +334,8 @@ export const useVaultSwap = <
           walletMap,
           coinSell: coinA,
           coinBuy: coinB,
-          belongSellAlice: erc20IdIndex[tokenMap[coinA]?.tokenId],
-          belongBuyAlice: erc20IdIndex[tokenMap[coinB]?.tokenId],
+          belongSellAlice: tokenMap[coinA].symbol.slice(2),
+          belongBuyAlice: tokenMap[coinB].symbol.slice(2),
           sellPrecision: tokenMap[coinA as string]?.precision,
           buyPrecision: tokenMap[coinB as string]?.precision,
           sellCoinInfoMap,
@@ -552,7 +563,7 @@ export const useVaultSwap = <
     } = store.getState()
     const sellToken = tokenMap[tradeData?.sell.belong as string]
     const buyToken = tokenMap[tradeData?.buy.belong as string]
-    const belongSellAlice = erc20IdIndex[sellToken?.tokenId]
+    const belongSellAlice = sellToken?.symbol.slice(2)
     if (!sellToken || !buyToken || !tradeCalcData || !supportBorrowData) {
       return {
         label: undefined,
@@ -762,8 +773,8 @@ export const useVaultSwap = <
         }
 
         let info: any = {
-          sellToken: erc20IdIndex[tokenMap[sellToken.symbol]?.tokenId],
-          buyToken: erc20IdIndex[tokenMap[buyToken.symbol]?.tokenId],
+          sellToken: sellToken.symbol.slice(2),
+          buyToken: buyToken.symbol.slice(2),
           sellVToken: sellToken.symbol,
           buyVToken: buyToken.symbol,
           sellStr: getValuePrecisionThousand(
@@ -798,7 +809,7 @@ export const useVaultSwap = <
           fromSymbol: sellToken.symbol,
           toSymbol: buyToken.symbol,
           placedAmount:
-            tokenMap && item.fromSymbol &&(sellToken as any).erc20Symbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+            tokenMap && item.fromSymbol && sellToken.symbol.slice(2) && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
               ? `${getValuePrecisionThousand(
                   sdk.toBig(item.fromAmount),
                   undefined,
@@ -806,12 +817,12 @@ export const useVaultSwap = <
                   tokenMap[item.fromSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${(sellToken as any).erc20Symbol}`
+                )} ${sellToken.symbol.slice(2)}`
               : EmptyValueTag,
           executedAmount:
             tokenMap &&
             item.fromSymbol &&
-            (sellToken as any).erc20Symbol &&
+            sellToken.symbol.slice(2) &&
             item.settledFromAmount &&
             sdk.toBig(item.settledFromAmount).gt(0)
               ? `${getValuePrecisionThousand(
@@ -821,7 +832,7 @@ export const useVaultSwap = <
                   tokenMap[item.fromSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${(sellToken as any).erc20Symbol}`
+                )} ${sellToken.symbol.slice(2)}`
               : EmptyValueTag,
           executedRate:
             tokenMap &&
@@ -838,7 +849,7 @@ export const useVaultSwap = <
           convertedAmount:
             tokenMap &&
             item.toSymbol &&
-            (buyToken as any).erc20Symbol &&
+            buyToken.symbol.slice(2) &&
             item.settledToAmount &&
             sdk.toBig(item.settledToAmount).gt(0)
               ? `${getValuePrecisionThousand(
@@ -848,7 +859,7 @@ export const useVaultSwap = <
                   tokenMap[item.toSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${(buyToken as any).erc20Symbol}`
+                )} ${buyToken.symbol.slice(2)}`
               : EmptyValueTag,
           settledAmount:
             tokenMap &&
@@ -1299,8 +1310,8 @@ export const useVaultSwap = <
           ...tradeCalcData,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
-          belongSellAlice: erc20IdIndex[tokenMap[tradeCalcData.coinSell]?.tokenId],
-          belongBuyAlice: erc20IdIndex[tokenMap[tradeCalcData.coinBuy]?.tokenId],
+          belongSellAlice: tradeCalcData.coinSell?.slice(2),
+          belongBuyAlice: tradeCalcData.coinBuy?.slice(2),
           sellPrecision,
           buyPrecision,
           sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
@@ -1610,8 +1621,8 @@ export const useVaultSwap = <
             undefined,
             false,
           ),
-          belongSellAlice: erc20IdIndex[tokenMap[sellToken.symbol]?.tokenId],
-          belongBuyAlice: erc20IdIndex[tokenMap[buyToken.symbol]?.tokenId],
+          belongSellAlice: sellToken.symbol.slice(2),
+          belongBuyAlice: buyToken.symbol.slice(2),
           minimumConverted,
           supportBorrowData,
           showHasBorrow,
