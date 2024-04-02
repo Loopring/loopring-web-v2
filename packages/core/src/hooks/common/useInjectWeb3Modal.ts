@@ -69,6 +69,10 @@ export const useInjectWeb3Modal = () => {
   React.useEffect(() => {
     if (event.data.event === 'SWITCH_NETWORK') {
       location.reload()
+    } else if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
+      // 'DISCONNECT_SUCCESS' not work. Use `event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected` instead.
+      walletServices.sendDisconnect('', 'customer click disconnect')
+      resetAccount()
     }
     myLog('event', event)
   }, [event])
@@ -86,7 +90,6 @@ export const useInjectWeb3Modal = () => {
           store.dispatch(setDefaultNetwork(chainId))
         }
         checkAccount(address, chainId)
-      } else {
       }
     })()
   }, [address, walletProvider, chainId, status])
