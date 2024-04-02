@@ -2215,7 +2215,7 @@ export default {
   labelVaultBorrowTitle: 'Borrow',
   labelPending: 'Pending',
   labelVaultRepayMini: 'Minimum of {{arg}}',
-  labelVaultRepayNotEnough: 'Insufficient {{arg}} balance',
+  labelVaultRepayNotEnough: 'Insufficient balance',
   labelVaultRepayMax: 'Maximum of {{arg}}',
   labelVaultRepayBtn: 'Repay',
   labelRepayQuota: 'Borrowed',
