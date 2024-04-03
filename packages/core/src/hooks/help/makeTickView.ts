@@ -128,9 +128,28 @@ export const makeTokenTickerMap = <R>({
   return rawData.reduce((prev: TickerNewMap<R>, item) => {
     const key = item.symbol
     if (item && item.symbol && item.price) {
+      const {
+        invest: {
+          vaultMap: { tokenMap },
+        },
+      } = store.getState()
+      const priceU = sdk.toBig(item.volume24H ?? 0).times(item.price ?? 0)
+      const change = getValuePrecisionThousand(item.percentChange24H ?? 0, 2, 2, 2)
+      // @ts-ignore
       prev[key] = {
-        ...makeTokenTickerView({ isVault, item }),
-      }
+        // ...tokenInfo,
+        ...item,
+        ...tokenMap['LV' + item.symbol],
+        timeUnit: '24h',
+        volume: item.volume24H,
+        priceU,
+        change,
+        type: TokenType.vault,
+        erc20Symbol: item.symbol,
+        symbol: 'LV' + item.symbol,
+        __rawTicker__: item,
+        rawData: item,
+      } as unknown as TickerNew
     }
     return prev
   }, {} as TickerNewMap<R>)

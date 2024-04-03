@@ -1526,8 +1526,8 @@ export const useVaultSwap = <
                   .div('1e' + buyToken.decimals)
                   .toString(),
                 buyToken.precision,
-                buyToken.precision,
                 undefined,
+                buyToken.precision,
               )
             : 0
           minimumReceived = sdk.toBig(calcDexOutput?.amountBSlipped?.minReceived ?? 0).gt(0)
@@ -1538,8 +1538,8 @@ export const useVaultSwap = <
                   .div('1e' + buyToken.decimals)
                   .toString(),
                 buyToken.precision,
-                buyToken.precision,
                 undefined,
+                buyToken.precision,
               )
             : 0
           minimumConverted = calcDexOutput?.amountB
@@ -1549,8 +1549,8 @@ export const useVaultSwap = <
                   .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
                   .toString(),
                 buyToken.precision,
-                buyToken.precision,
                 undefined,
+                buyToken.precision,
               )
             : undefined
           _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue =
