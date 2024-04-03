@@ -6,6 +6,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { store } from '../../index'
 import { LoopringAPI } from '../../../api_wrapper'
 import { makeTokenTickerMap, makeTokenTickerView } from '../../../hooks'
+import { values } from 'lodash'
 
 const getVaultTickersApi = async (): Promise<{
   data: object | undefined
@@ -13,16 +14,12 @@ const getVaultTickersApi = async (): Promise<{
 }> => {
   const {
     invest,
-    tokenMap: { tokenMap },
   } = store.getState()
   let {
     vaultTickerMap,
-    vaultMap: { erc20Array },
+    vaultMap: { tokenMap: vaultTokenMap },
   } = invest
   let { __timer__ } = vaultTickerMap
-  const tokens = erc20Array.map((item) => {
-    return tokenMap[item]?.address
-  })
   if (LoopringAPI.exchangeAPI) {
     __timer__ = ((__timer__) => {
       if (__timer__ && __timer__ !== -1) {
@@ -32,16 +29,12 @@ const getVaultTickersApi = async (): Promise<{
         store.dispatch(getVaultTickers({}))
       }, 1000 * 60 * 5)
     })(__timer__)
-    const tokenConfig = await LoopringAPI.exchangeAPI.getCmcTokenRelations({
-      tokenAddresses: tokens,
-    })
     const vaultTickers = await LoopringAPI.exchangeAPI.getSupportTokens({
-      cmcTokenIds: tokenConfig?.list?.map((item) => item.cmcTokenId),
+      cmcTokenIds: values(vaultTokenMap).map(token => token.cmcTokenId),
       currency: 'USD',
     })
     //@ts-ignore
-    const data = makeTokenTickerMap({ rawData: vaultTickers.list, tokenConfig, isVault: true })
-
+    const data = makeTokenTickerMap({ rawData: vaultTickers.list, isVault: true })
     return { data, __timer__ }
   } else {
     if (__timer__ && __timer__ !== -1) {
