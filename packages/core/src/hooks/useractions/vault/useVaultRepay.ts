@@ -166,7 +166,7 @@ export const useVaultRepay = <
     } else if (sdk.toBig(vaultRepayData?.tradeValue ?? 0).lt(vaultRepayData.minRepayAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultRepayMini|${vaultRepayData.minRepayStr} ${vaultRepayData.belong}`,
+        label: `labelVaultRepayMini|${vaultRepayData.minRepayStr} ${vaultRepayData.belong.slice(2)}`,
       }
     } else if (sdk.toBig(vaultRepayData.tradeValue ?? 0).gt(vaultRepayData.balance ?? 0)) {
       return {
