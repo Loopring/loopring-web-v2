@@ -49,6 +49,7 @@ export const useVaultMarket = <
         tokenInfo: {
           ...tokenMap[row?.erc20Symbol ?? ''],
           ...row,
+          name: ''
         },
         trends: undefined,
       },
@@ -118,11 +119,12 @@ export const useVaultMarket = <
             ...tokenMap[row?.erc20Symbol ?? ''],
             ...(tokneInfoDetail && tokneInfoDetail.list && tokneInfoDetail.list[0]),
             ...row,
+            name: tokneInfoDetail && tokneInfoDetail.list && tokneInfoDetail.list[0].name
             // symbol: row.symbol,
           },
           trends: [
             ...quoteTokenTrends?.map((item) => {
-              return item?.list?.map((trend) => {
+              return item?.list?.map((trend: string[]) => {
                 const [
                   timestamp,
                   price,
