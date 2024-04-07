@@ -535,7 +535,7 @@ export const NFTDetail = withTranslation('common')(
                       >
                         {popItem?.collectionInfo
                           ? popItem?.collectionInfo?.name
-                            ? popItem?.collectionInfo?.name
+                            ? htmlDecode(popItem.collectionInfo.name)
                             : t('labelUnknown') +
                               ' - ' +
                               getShortAddr(popItem?.collectionInfo?.contractAddress ?? '')
