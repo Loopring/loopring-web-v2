@@ -169,7 +169,7 @@ export const useVaultBorrow = <
       ...((vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]) ?? {}),
       // balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
       tradeValue: undefined,
-      erc20Symbol: erc20IdIndex[vaultTokenMap[initSymbol].tokenId],
+      erc20Symbol: initSymbol.slice(2)
     }
     const supportdata = calcSupportBorrowData(walletInfo)
     walletInfo = {
