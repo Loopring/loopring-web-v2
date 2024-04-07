@@ -42,6 +42,8 @@ import BigNumber from 'bignumber.js'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { keys } from 'lodash'
 
+const DATE_IN_TEN_YEARS = 2027988026
+
 export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { t } = useTranslation()
   const { tokenMap: vaultTokenMap, joinTokenMap, erc20Map, getVaultMap } = useVaultMap()
@@ -456,7 +458,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           },
           allOrNone: false,
           fillAmountBOrS: true,
-          validUntil: getTimestampDaysLater(DAYS),
+          validUntil: DATE_IN_TEN_YEARS, 
           maxFeeBips: 100,
           joinHash: isActiveAccount ? '' : (avaiableNFT as any)?.orderHash,
         }
@@ -641,6 +643,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       ...walletMap[tokenSymbol],
       balance: walletMap[tokenSymbol]?.count ?? 0,
       tradeValue: data.tradeData?.tradeValue,
+      belong: tokenSymbol
     }
     myLog('walletInfo', walletInfo)
     if (tokenSymbol) {
