@@ -643,6 +643,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       ...walletMap[tokenSymbol],
       balance: walletMap[tokenSymbol]?.count ?? 0,
       tradeValue: data.tradeData?.tradeValue,
+      belong: tokenSymbol
     }
     myLog('walletInfo', walletInfo)
     if (tokenSymbol) {
