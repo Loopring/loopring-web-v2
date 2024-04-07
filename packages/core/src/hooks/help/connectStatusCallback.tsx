@@ -108,32 +108,28 @@ export const btnClickMap: {
 export const btnConnectL1kMap = Object.assign(_.cloneDeep(btnClickMap), {
   [fnType.ACTIVATED]: [
     function () {
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+      web3Modal.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [
     function () {
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+      web3Modal.open()
     },
   ],
   [fnType.DEPOSITING]: [
     function () {
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+      web3Modal.open()
     },
   ],
   [fnType.NOT_ACTIVE]: [
     function () {
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+      web3Modal.open()
+      
     },
   ],
   [fnType.LOCKED]: [
     function () {
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+      web3Modal.open()
     },
   ],
 })

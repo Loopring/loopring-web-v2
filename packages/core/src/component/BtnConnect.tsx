@@ -20,6 +20,7 @@ import {
   SagaStatus,
 } from '@loopring-web/common-resources'
 import { changeShowModel } from '../stores/account/reducer'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
@@ -90,6 +91,7 @@ export const BtnConnectL1 = withTranslation(['common', 'layout'], {
       setLabel(accountStaticCallBack(_btnLabel))
     }
   }, [accountStatus])
+  const modal = useWeb3Modal()
 
   return (
     <>
@@ -100,9 +102,7 @@ export const BtnConnectL1 = withTranslation(['common', 'layout'], {
         fullWidth={true}
         style={{ maxWidth: '280px' }}
         onClick={() => {
-          myLog('UN_CONNECT!')
-          store.dispatch(changeShowModel({ _userOnModel: true }))
-          store.dispatch(setShowConnect({ isShow: true, step: WalletConnectStep.Provider }))
+          modal.open()
         }}
       >
         {label !== '' ? (
