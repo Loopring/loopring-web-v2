@@ -27,7 +27,7 @@ import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-we
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
-import { useWeb3Modal } from '@web3modal/scaffold-react'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
