@@ -14,39 +14,40 @@ import Web3 from 'web3'
 import { useTheme } from '@emotion/react'
 
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
-const mainnet = {
-  chainId: 1,
-  name: 'Ethereum',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: process.env.REACT_APP_RPC_URL_1!
-}
-const goeril = {
-  chainId: 5,
-  name: 'GOERIL',
-  currency: 'ETH',
-  explorerUrl: 'https://goeril.etherscan.io/',
-  rpcUrl: process.env.REACT_APP_RPC_URL_5!
-}
-const sepolia = {
-  chainId: 11155111,
-  name: 'SEPOLIA',
-  currency: 'ETH',
-  explorerUrl: 'https://sepolia.etherscan.io/',
-  rpcUrl: process.env.REACT_APP_RPC_URL_11155111!
-}
+const chains = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: process.env.REACT_APP_RPC_URL_1!,
+  },
+  {
+    chainId: 5,
+    name: 'GOERIL',
+    currency: 'ETH',
+    explorerUrl: 'https://goeril.etherscan.io/',
+    rpcUrl: process.env.REACT_APP_RPC_URL_5!,
+  },
+  {
+    chainId: 11155111,
+    name: 'SEPOLIA',
+    currency: 'ETH',
+    explorerUrl: 'https://sepolia.etherscan.io/',
+    rpcUrl: process.env.REACT_APP_RPC_URL_11155111!,
+  },
+]
+
 const metadata = {
   name: 'loopring.io',
   description: 'loopring.io',
   url: 'https://loopring.io', // origin must match your domain & subdomain
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
-// const { themeMode, themeVariables, setThemeMode, setThemeVariables } = useWeb3ModalTheme()
-
-// setThemeMode('dark')
+const chainIds = process.env.REACT_APP_CHAIN_IDS!.split(',').map(Number)
 export const web3Modal = createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
-  chains: [mainnet, sepolia],
+  chains: chains.filter(chain => chainIds.includes(chain.chainId)),
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration,
   featuredWalletIds: [],
