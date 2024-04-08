@@ -27,7 +27,7 @@ const getVaultMapApi = async () => {
       // let { markets, pairs, tokenArr, tokenArrStr, marketArr, marketArrStr } =
       //   await LoopringAPI.defiAPI.getDefiMarkets();
       store.dispatch(getVaultMap(undefined))
-    }, 900000) //15*60*1000 //900000
+    }, 30 * 1000) //15*60*1000 //900000
   })()
 
   try {
