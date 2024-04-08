@@ -9,6 +9,7 @@ import {
   CollectionMeta,
   EmptyValueTag,
   getShortAddr,
+  htmlDecode,
   MY_NFT_VIEW,
   NFTSubRouter,
   NFTWholeINFO,
@@ -96,7 +97,7 @@ export const MyNFTPanelUI = <NFT extends NFTWholeINFO>({
                     t('labelNFTMyNFT', {
                       collection: collectionMeta
                         ? collectionMeta.name
-                          ? collectionMeta?.name
+                          ? htmlDecode(collectionMeta?.name)
                           : t('labelUnknown') +
                             ' - ' +
                             getShortAddr(collectionMeta.contractAddress ?? '')
@@ -315,7 +316,7 @@ export const MyNFTPanel = ({}: any) => {
                       t('labelNFTMyCollection', {
                         collection: collectionMeta
                           ? collectionMeta.name
-                            ? collectionMeta?.name
+                            ? htmlDecode(collectionMeta?.name)
                             : t('labelUnknown') +
                               ' - ' +
                               getShortAddr(collectionMeta.contractAddress ?? '')

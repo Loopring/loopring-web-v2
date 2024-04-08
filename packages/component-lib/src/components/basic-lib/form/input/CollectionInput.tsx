@@ -12,6 +12,7 @@ import {
   TOAST_TIME,
   RouterPath,
   NFTSubRouter,
+  htmlDecode,
 } from '@loopring-web/common-resources'
 import {
   Button,
@@ -273,7 +274,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
                         : {}
                     }
                   >
-                    {collection.name}
+                    {htmlDecode(collection.name)}
                   </Typography>
                   <Typography
                     component={'span'}
