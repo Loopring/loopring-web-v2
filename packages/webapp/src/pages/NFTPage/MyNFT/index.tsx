@@ -316,7 +316,7 @@ export const MyNFTPanel = ({}: any) => {
                       t('labelNFTMyCollection', {
                         collection: collectionMeta
                           ? collectionMeta.name
-                            ? collectionMeta?.name
+                            ? htmlDecode(collectionMeta?.name)
                             : t('labelUnknown') +
                               ' - ' +
                               getShortAddr(collectionMeta.contractAddress ?? '')
