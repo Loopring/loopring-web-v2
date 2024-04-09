@@ -39,9 +39,9 @@ const chains = [
 ]
 
 const metadata = {
-  name: 'loopring.io',
-  description: 'loopring.io',
-  url: 'https://loopring.io', // origin must match your domain & subdomain
+  name: process.env.REACT_APP_NAME!,
+  description: process.env.REACT_APP_NAME!,
+  url: process.env.REACT_APP_DOMAIN!,
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
 const chainIds = process.env.REACT_APP_CHAIN_IDS!.split(',').map(Number)
