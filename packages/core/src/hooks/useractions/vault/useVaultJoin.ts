@@ -40,6 +40,9 @@ import {
 import { useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
+import { keys } from 'lodash'
+
+const DATE_IN_TEN_YEARS = 2027988026
 
 export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { t } = useTranslation()
@@ -60,7 +63,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const calcSupportData = (tradeData: T) => {
     let supportData = {}
     // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
-    if (tradeData?.belong && walletAllowMap[tradeData.belong as any]) {
+    if (tradeData?.belong && walletAllowMap&& walletAllowMap[tradeData.belong as any]) {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any]?.vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
       const ercToken = tokenMap[tradeData.belong]
@@ -455,7 +458,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           },
           allOrNone: false,
           fillAmountBOrS: true,
-          validUntil: getTimestampDaysLater(DAYS),
+          validUntil: DATE_IN_TEN_YEARS, 
           maxFeeBips: 100,
           joinHash: isActiveAccount ? '' : (avaiableNFT as any)?.orderHash,
         }
@@ -519,19 +522,27 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     })
     return walletMap
   }
+
   const walletAllowMap =
-    (joinTokenMap &&
-      Reflect.ownKeys(joinTokenMap).reduce((prev, key) => {
-        const token = vaultTokenMap[key.toString()]
-        const symbol = idIndex[token?.tokenId]
-        // as sdk.VaultToken
+    joinTokenMap &&
+    (keys(joinTokenMap)
+      .filter((key) => {
+        return joinTokenMap[key].vaultTokenAmounts.status & 2
+      })
+      .reduce((pre, cur) => {
+        const value = joinTokenMap[cur]
+        const symbolWithLV = cur.slice(2)
         return {
-          ...prev,
-          [symbol]: { ...coinMap[symbol], vaultToken: token.symbol, vaultId: token.vaultTokenId },
-        } as CoinMap<CoinInfo<I> & { vaultToken: string; vaultId: number }>
-      }, {} as CoinMap<CoinInfo<I> & { vaultToken: string; vaultId: number }>)) ??
-    ({} as CoinMap<CoinInfo<I> & { vaultToken: string; vaultId: number }>)
-  // const calc =
+          ...pre,
+          [symbolWithLV]: {
+            vaultToken: cur,
+            vaultId: value.vaultTokenId,
+            name: symbolWithLV,
+            simpleName: symbolWithLV,
+          },
+        }
+      }, {}) as { name: string; simpleName: string; vaultToken: string; vaultId: number })
+
   const initData = () => {
     let vaultJoinData: any = {}
     let initSymbol = 'LRC'
@@ -632,6 +643,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       ...walletMap[tokenSymbol],
       balance: walletMap[tokenSymbol]?.count ?? 0,
       tradeValue: data.tradeData?.tradeValue,
+      belong: tokenSymbol
     }
     myLog('walletInfo', walletInfo)
     if (tokenSymbol) {

@@ -240,8 +240,15 @@ export const useVaultSwap = <
   const [tradeCalcData, setTradeCalcData] = React.useState<Partial<CAD>>({
     lockedNotification: true,
     isVault: true,
-    coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
-      return { ...prev, [item]: coinMap ? coinMap[item] : {} }
+    coinInfoMap: marketCoins?.reduce((prev: any, item: string ) => {
+      return {
+        ...prev,
+        [item]: {
+          ...(coinMap && coinMap[item]),
+          erc20Symbol: item.slice(2),
+          belongAlice: item.slice(2),
+        },
+      }
     }, {} as CoinMap<C>),
   } as any)
 
@@ -303,8 +310,12 @@ export const useVaultSwap = <
       }
 
       const sellCoinInfoMap = tokenMap[coinB]?.tradePairs?.reduce(
-        (prev: any, item: string | number) => {
-          return { ...prev, [item]: coinMap[item] }
+        (prev: any, item: string ) => {
+          return { ...prev, [item]: {
+            ...coinMap[item],
+            erc20Symbol: item.slice(2),
+            belongAlice: item.slice(2),
+          }}
         },
         {} as CoinMap<C>,
       )
@@ -323,8 +334,8 @@ export const useVaultSwap = <
           walletMap,
           coinSell: coinA,
           coinBuy: coinB,
-          belongSellAlice: erc20IdIndex[tokenMap[coinA]?.tokenId],
-          belongBuyAlice: erc20IdIndex[tokenMap[coinB]?.tokenId],
+          belongSellAlice: tokenMap[coinA].symbol.slice(2),
+          belongBuyAlice: tokenMap[coinB].symbol.slice(2),
           sellPrecision: tokenMap[coinA as string]?.precision,
           buyPrecision: tokenMap[coinB as string]?.precision,
           sellCoinInfoMap,
@@ -552,7 +563,7 @@ export const useVaultSwap = <
     } = store.getState()
     const sellToken = tokenMap[tradeData?.sell.belong as string]
     const buyToken = tokenMap[tradeData?.buy.belong as string]
-    const belongSellAlice = erc20IdIndex[sellToken?.tokenId]
+    const belongSellAlice = sellToken?.symbol.slice(2)
     if (!sellToken || !buyToken || !tradeCalcData || !supportBorrowData) {
       return {
         label: undefined,
@@ -760,10 +771,9 @@ export const useVaultSwap = <
           feeAmount: tradeCalcData.fee,
           settledToAmount: undefined,
         }
-
         let info: any = {
-          sellToken: erc20IdIndex[tokenMap[sellToken.symbol]?.tokenId],
-          buyToken: erc20IdIndex[tokenMap[buyToken.symbol]?.tokenId],
+          sellToken: sellToken.symbol.slice(2),
+          buyToken: buyToken.symbol.slice(2),
           sellVToken: sellToken.symbol,
           buyVToken: buyToken.symbol,
           sellStr: getValuePrecisionThousand(
@@ -798,7 +808,7 @@ export const useVaultSwap = <
           fromSymbol: sellToken.symbol,
           toSymbol: buyToken.symbol,
           placedAmount:
-            tokenMap && item.fromSymbol &&(sellToken as any).erc20Symbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+            tokenMap && item.fromSymbol && sellToken.symbol.slice(2) && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
               ? `${getValuePrecisionThousand(
                   sdk.toBig(item.fromAmount),
                   undefined,
@@ -806,66 +816,12 @@ export const useVaultSwap = <
                   tokenMap[item.fromSymbol].precision,
                   true,
                   { isAbbreviate: true },
-                )} ${(sellToken as any).erc20Symbol}`
+                )} ${sellToken.symbol.slice(2)}`
               : EmptyValueTag,
-          executedAmount:
-            tokenMap &&
-            item.fromSymbol &&
-            (sellToken as any).erc20Symbol &&
-            item.settledFromAmount &&
-            sdk.toBig(item.settledFromAmount).gt(0)
-              ? `${getValuePrecisionThousand(
-                  sdk.toBig(item.settledFromAmount),
-                  undefined,
-                  undefined,
-                  tokenMap[item.fromSymbol].precision,
-                  true,
-                  { isAbbreviate: true },
-                )} ${(sellToken as any).erc20Symbol}`
-              : EmptyValueTag,
-          executedRate:
-            tokenMap &&
-            item.fromSymbol &&
-            item.settledFromAmount &&
-            item.fromAmount &&
-            sdk.toBig(item.fromAmount).gt(0)
-              ? `${sdk
-                  .toBig(item.settledFromAmount)
-                  .div(item.fromAmount)
-                  .multipliedBy('100')
-                  .toFixed(2)}%`
-              : EmptyValueTag,
-          convertedAmount:
-            tokenMap &&
-            item.toSymbol &&
-            (buyToken as any).erc20Symbol &&
-            item.settledToAmount &&
-            sdk.toBig(item.settledToAmount).gt(0)
-              ? `${getValuePrecisionThousand(
-                  sdk.toBig(item.settledToAmount),
-                  undefined,
-                  undefined,
-                  tokenMap[item.toSymbol].precision,
-                  true,
-                  { isAbbreviate: true },
-                )} ${(buyToken as any).erc20Symbol}`
-              : EmptyValueTag,
-          settledAmount:
-            tokenMap &&
-            item.toSymbol &&
-            item.settledToAmount &&
-            item.feeAmount &&
-            sdk.toBig(item.settledToAmount).gt(0)
-              ? `${getValuePrecisionThousand(
-                  sdk.toBig(item.settledToAmount).minus(item.feeAmount),
-                  undefined,
-                  undefined,
-                  tokenMap[item.toSymbol].precision,
-                  true,
-                  { isAbbreviate: true },
-                )} ${item.toSymbol}`
-              : EmptyValueTag,
-
+          executedAmount: EmptyValueTag,
+          executedRate: EmptyValueTag,
+          convertedAmount: EmptyValueTag,
+          settledAmount: EmptyValueTag,
         }
 
         setShowAccount({
@@ -888,7 +844,8 @@ export const useVaultSwap = <
             message: (response as sdk.RESULT_INFO).message,
             ...SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? UIERROR_CODE.UNKNOWN],
           })
-        } else {
+        } 
+        else {
           clearData()
           setShowVaultSwap({ isShow: false })
           l2CommonService.sendUserUpdate()
@@ -906,37 +863,124 @@ export const useVaultSwap = <
               },
               account.apiKey,
             )
-          let status = '',
-            sellFStr = undefined,
-            buyFStr = undefined
           if (
             response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           ) {
             throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-          } else if (
-            [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
-              response2?.raw_data?.operation?.status,
-            )
-          ) {
-            status = 'labelSuccessfully'
-            sellFStr = getValuePrecisionThousand(
-              sdk.toBig(response2?.raw_data.order.fillAmountS).div('1e' + sellToken.decimals),
+          }
+          const status = [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+            response2?.raw_data?.operation?.status,
+          )
+            ? 'labelSuccessfully'
+            : 'labelPending'
+          const item = {
+            fromSymbol: sellToken.symbol,
+            fromAmount: sdk.toBig(response2.order.amountS).div('1e' + sellToken.decimals),
+            settledFromAmount: sdk.toBig(response2.order.fillAmountS).div('1e' + sellToken.decimals),
+            toSymbol: buyToken.symbol,
+            settledToAmount: sdk.toBig(response2.order.fillAmountB).div('1e' + buyToken.decimals),
+            feeAmount: sdk.toBig(response2.order.fee).div('1e' + buyToken.decimals),
+          }
+          const info: any = {
+            sellToken: sellToken.symbol.slice(2),
+            buyToken: buyToken.symbol.slice(2),
+            sellFStr: getValuePrecisionThousand(
+              item.settledFromAmount,
               sellToken.vaultTokenAmounts?.qtyStepScale,
               sellToken.vaultTokenAmounts?.qtyStepScale,
               sellToken.vaultTokenAmounts?.qtyStepScale,
               false,
               { floor: false },
-            )
-            buyFStr = getValuePrecisionThousand(
-              sdk.toBig(response2?.raw_data.order.fillAmountB).div('1e' + buyToken.decimals),
+            ),
+            buyFStr: getValuePrecisionThousand(
+              item.settledToAmount,
               buyToken.precision,
               buyToken.precision,
               buyToken.precision,
               false,
               { floor: false },
-            )
-          } else {
-            status = 'labelPending'
+            ),
+            price: getValuePrecisionThousand(
+              depth?.mid_price,
+              priceToken.precision,
+              priceToken.precision,
+              priceToken.precision,
+              false,
+              { floor: false },
+            ),
+            convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
+            feeStr: tradeCalcData?.fee,
+            time: Date.now(),
+            fromSymbol: sellToken.symbol,
+            toSymbol: buyToken.symbol,
+            placedAmount:
+              tokenMap && item.fromSymbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+                ? `${getValuePrecisionThousand(
+                    sdk.toBig(item.fromAmount),
+                    undefined,
+                    undefined,
+                    tokenMap[item.fromSymbol].precision,
+                    true,
+                    { isAbbreviate: true },
+                  )} ${item.fromSymbol.slice(2)}`
+                : EmptyValueTag,
+            executedAmount:
+              tokenMap &&
+              item.fromSymbol &&
+              sellToken.symbol.slice(2) &&
+              item.settledFromAmount &&
+              sdk.toBig(item.settledFromAmount).gt(0)
+                ? `${getValuePrecisionThousand(
+                    sdk.toBig(item.settledFromAmount),
+                    undefined,
+                    undefined,
+                    tokenMap[item.fromSymbol].precision,
+                    true,
+                    { isAbbreviate: true },
+                  )} ${sellToken.symbol.slice(2)}`
+                : EmptyValueTag,
+            executedRate:
+              tokenMap &&
+              item.fromSymbol &&
+              item.settledFromAmount &&
+              item.fromAmount &&
+              sdk.toBig(item.fromAmount).gt(0)
+                ? `${sdk
+                    .toBig(item.settledFromAmount)
+                    .div(item.fromAmount)
+                    .multipliedBy('100')
+                    .toFixed(2)}%`
+                : EmptyValueTag,
+            convertedAmount:
+              tokenMap &&
+              item.toSymbol &&
+              buyToken.symbol.slice(2) &&
+              item.settledToAmount &&
+              sdk.toBig(item.settledToAmount).gt(0)
+                ? `${getValuePrecisionThousand(
+                    sdk.toBig(item.settledToAmount),
+                    undefined,
+                    undefined,
+                    tokenMap[item.toSymbol].precision,
+                    true,
+                    { isAbbreviate: true },
+                  )} ${buyToken.symbol.slice(2)}`
+                : EmptyValueTag,
+            settledAmount:
+              tokenMap &&
+              item.toSymbol &&
+              item.settledToAmount &&
+              item.feeAmount &&
+              sdk.toBig(item.settledToAmount).gt(0)
+                ? `${getValuePrecisionThousand(
+                    sdk.toBig(item.settledToAmount).minus(item.feeAmount),
+                    undefined,
+                    undefined,
+                    tokenMap[item.toSymbol].precision,
+                    true,
+                    { isAbbreviate: true },
+                  )} ${item.toSymbol}`
+                : EmptyValueTag,
           }
 
           setShowAccount({
@@ -946,9 +990,6 @@ export const useVaultSwap = <
                 ? AccountStep.VaultTrade_Success
                 : AccountStep.VaultTrade_In_Progress,
             info: {
-              ...info,
-              sellFStr,
-              buyFStr,
               price: response2?.raw_data.order.price,
               percentage: sdk
                 .toBig(response2?.raw_data?.order?.fillAmountS ?? 0)
@@ -956,6 +997,7 @@ export const useVaultSwap = <
                 .times(100)
                 .toFixed(2),
               status: t(status),
+              ...info,
             },
           })
           await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
@@ -1299,8 +1341,8 @@ export const useVaultSwap = <
           ...tradeCalcData,
           coinSell: tradeCalcData.coinBuy,
           coinBuy: tradeCalcData.coinSell,
-          belongSellAlice: erc20IdIndex[tokenMap[tradeCalcData.coinSell]?.tokenId],
-          belongBuyAlice: erc20IdIndex[tokenMap[tradeCalcData.coinBuy]?.tokenId],
+          belongSellAlice: tradeCalcData.coinSell?.slice(2),
+          belongBuyAlice: tradeCalcData.coinBuy?.slice(2),
           sellPrecision,
           buyPrecision,
           sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
@@ -1514,8 +1556,8 @@ export const useVaultSwap = <
                   .div('1e' + buyToken.decimals)
                   .toString(),
                 buyToken.precision,
-                buyToken.precision,
                 undefined,
+                buyToken.precision,
               )
             : 0
           minimumReceived = sdk.toBig(calcDexOutput?.amountBSlipped?.minReceived ?? 0).gt(0)
@@ -1526,8 +1568,8 @@ export const useVaultSwap = <
                   .div('1e' + buyToken.decimals)
                   .toString(),
                 buyToken.precision,
-                buyToken.precision,
                 undefined,
+                buyToken.precision,
               )
             : 0
           minimumConverted = calcDexOutput?.amountB
@@ -1537,8 +1579,8 @@ export const useVaultSwap = <
                   .times(sdk.toBig(1).minus(sdk.toBig(slippage).div('10000')))
                   .toString(),
                 buyToken.precision,
-                buyToken.precision,
                 undefined,
+                buyToken.precision,
               )
             : undefined
           _tradeData[isAtoB ? 'buy' : 'sell'].tradeValue =
@@ -1610,8 +1652,8 @@ export const useVaultSwap = <
             undefined,
             false,
           ),
-          belongSellAlice: erc20IdIndex[tokenMap[sellToken.symbol]?.tokenId],
-          belongBuyAlice: erc20IdIndex[tokenMap[buyToken.symbol]?.tokenId],
+          belongSellAlice: sellToken.symbol.slice(2),
+          belongBuyAlice: buyToken.symbol.slice(2),
           minimumConverted,
           supportBorrowData,
           showHasBorrow,

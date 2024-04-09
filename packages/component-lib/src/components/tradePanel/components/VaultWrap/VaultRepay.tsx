@@ -131,6 +131,7 @@ export const VaultRepayWrap = <
             coinMap: vaultRepayData?.coinInfoMap as any,
             inputButtonDefaultProps,
             ...tokenProps,
+            tokenNotEnough: 'labelVaultRepayNotEnough'
           }}
         />
       </Box>

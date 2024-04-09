@@ -146,6 +146,7 @@ export const MarketDetail = ({
               display={'inline-flex'}
               variant={'body1'}
               color={'textPrimary'}
+              height={'21px'}
             >
               {tokenInfo.name}
             </Typography>
@@ -174,6 +175,7 @@ export const MarketDetail = ({
         display={'flex'}
         alignItems={'center'}
         justifyContent={'center'}
+        marginTop={2}
         // height={"60%"}
         height={'calc(var(--swap-box-height) - 262px)'}
         sx={{
