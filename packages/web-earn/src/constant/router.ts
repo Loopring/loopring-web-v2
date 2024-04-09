@@ -50,7 +50,7 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   {
     label: {
       id: 'L2Assets',
-      i18nKey: 'labelVault',
+      i18nKey: 'labelVault2',
     },
     router: { path: '/l2assets' },
     status: HeaderMenuTabStatus.default,
