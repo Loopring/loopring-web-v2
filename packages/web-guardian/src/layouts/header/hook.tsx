@@ -22,9 +22,7 @@ export const useHeader = () => {
   const accountTotal = useAccount()
   const { account, setShouldShow, status: accountStatus } = accountTotal
   const { chainId } = useSystem()
-  const accountState = React.useMemo(() => {
-    return { account }
-  }, [account])
+  const accountState = { account } 
 
   const onkeypress = (e: KeyboardEvent) => {
     if (e.altKey && e.shiftKey && e.code == 'KeyX') {
@@ -37,55 +35,18 @@ export const useHeader = () => {
   }, [account, setShouldShow, btnConnectL1kMap])
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<
-    typeof headerGuardianToolBarData
-  >(() => {
-    headerGuardianToolBarData[ButtonComponentsMap.Notification] = {
-      ...headerGuardianToolBarData[ButtonComponentsMap.Notification],
-    }
-    // headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet] = {
-    //   ...headerGuardianToolBarData[GuardianToolBarComponentsMap.TestNet],
-    //   onTestOpen: (isTestNet: boolean) => {
-    //     const chainId = store.getState().system.chainId;
-    //     updateSystem({ chainId });
-    //   },
-    //   isShow: (chainId as any) === ChainIdExtends["TAIKO"],
-    // };
-    headerGuardianToolBarData[ButtonComponentsMap.WalletConnect] = {
+  
+  const headerToolBarData = {
+    [ButtonComponentsMap.Notification]: headerGuardianToolBarData[ButtonComponentsMap.Notification],
+    [ButtonComponentsMap.WalletConnect]: {
       ...headerGuardianToolBarData[ButtonComponentsMap.WalletConnect],
       accountState,
       isLayer1Only: true,
       NetWorkItems,
       handleClick: onWalletBtnConnect,
     }
-    return headerGuardianToolBarData
-  })
-  React.useEffect(() => {
-    setHeaderToolBarData((headerToolBarData) => {
-      // myLog("isTestNet", isTaikoTest, chainId);
-      // headerToolBarData[GuardianToolBarComponentsMap.TestNet] = {
-      //   ...headerToolBarData[GuardianToolBarComponentsMap.TestNet],
-      //   // isShow: (chainId as any) == ChainIdExtends["TAIKO"],
-      // };
-      return headerToolBarData
-    })
-  }, [chainId])
 
-  React.useEffect(() => {
-    if (accountStatus && accountStatus === 'UNSET') {
-      setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
-          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-          isLayer1Only: true,
-          accountState,
-          NetWorkItems,
-          handleClick: onWalletBtnConnect,
-        }
-        return headerToolBarData
-      })
-    }
-    // forceUpdate()
-  }, [accountStatus, account.readyState])
+  }
   const { notifyMap } = useNotify()
 
   return {

@@ -3,7 +3,7 @@ import React from 'react'
 import { SagaStatus, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork } from '@loopring-web/component-lib'
 
-import { checkAccount, store, useAccount, useSelectNetwork, useSystem } from '@loopring-web/core'
+import { checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
@@ -69,8 +69,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   const dispatch = useDispatch()
   const { mode } = useTheme()
   const { setThemeMode } = useWeb3ModalTheme()
-  const { handleOnNetworkSwitch } = useSelectNetwork({})
-  // const {  } = useWeb3Modal()
+  const { updateWalletLayer1 } = useWalletLayer1()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
@@ -92,7 +91,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   }, [event])
   React.useEffect(() => {
     ;(async () => {
-      if (address && walletProvider) {
+      if (address && walletProvider ) {
         const { defaultNetwork } = store.getState().settings
         const accAddress = store.getState().account.accAddress
         if (address.toLowerCase() !== accAddress.toLowerCase() || chainId !== defaultNetwork) {
@@ -102,6 +101,9 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
             }),
           )
           store.dispatch(setDefaultNetwork(chainId))
+        }
+        if (type === 'BRIDGE') {
+          updateWalletLayer1()
         }
         checkAccount(address, chainId)
       }
