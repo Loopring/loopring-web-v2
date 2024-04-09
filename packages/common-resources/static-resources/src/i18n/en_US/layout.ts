@@ -132,7 +132,7 @@ export default {
   labelInvestLeverageETH: 'Leveraged ETH Staking',
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
   labelDualInvest: 'Dual Investment',
-  labelVault: 'Vault',
+  labelVault: 'Portal',
   labelNavPro: 'Loopring pro',
   labelNavEarn: 'Loopring Earn',
   labelNavWallet: 'Wallet',

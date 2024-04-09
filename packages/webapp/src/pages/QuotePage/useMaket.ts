@@ -82,7 +82,6 @@ export const useMarket = <
         return {
           ...tokenMap[item.symbol],
           ...item,
-          cmcTokenId: item.tokenId,
           isFavorite: favoriteMarket?.includes(item.symbol),
         }
       })

@@ -30,6 +30,7 @@ import BigNumber from 'bignumber.js'
 import { getTimestampDaysLater } from '../../../utils'
 import { DAYS } from '../../../defs'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
+import { mapValues } from 'lodash'
 export const useVaultRepay = <
   T extends IBData<I> & {
     borrowed: string
@@ -165,7 +166,7 @@ export const useVaultRepay = <
     } else if (sdk.toBig(vaultRepayData?.tradeValue ?? 0).lt(vaultRepayData.minRepayAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultRepayMini|${vaultRepayData.minRepayStr} ${vaultRepayData.belong}`,
+        label: `labelVaultRepayMini|${vaultRepayData.minRepayStr} ${vaultRepayData.belong.slice(2)}`,
       }
     } else if (sdk.toBig(vaultRepayData.tradeValue ?? 0).gt(vaultRepayData.balance ?? 0)) {
       return {
@@ -175,7 +176,7 @@ export const useVaultRepay = <
     } else if (sdk.toBig(vaultRepayData.tradeValue ?? 0).gt(vaultRepayData.maxRepayAmount ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultRepayMax|${vaultRepayData.maxRepayStr} ${vaultRepayData.belong}`,
+        label: `labelVaultRepayMax|${vaultRepayData.maxRepayStr} ${vaultRepayData.belong.slice(2)}`,
       }
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
@@ -234,7 +235,7 @@ export const useVaultRepay = <
     const account = store.getState().account
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
     const vaultToken = vaultTokenMap[vaultRepayData.belong]
-    const erc20Symbol = erc20IdIndex[vaultToken.tokenId]
+    const erc20Symbol = vaultRepayData.belong.slice(2)
 
     try {
       if ((request || vaultRepayData.request) && LoopringAPI.vaultAPI) {
@@ -344,7 +345,7 @@ export const useVaultRepay = <
 
   const submitCallback = async () => {
     const vaultRepayData = store.getState()._router_tradeVault.vaultRepayData
-    const erc20Symbol = erc20IdIndex[vaultTokenMap[vaultRepayData.belong]?.tokenId]
+    const erc20Symbol = vaultRepayData.belong.slice(2)
     try {
       if (
         vaultRepayData &&
@@ -429,10 +430,36 @@ export const useVaultRepay = <
     vaultRepayBtnStatus: btnStatus,
     vaultRepayBtnI18nKey: btnLabel,
     onVaultRepayClick: onBtnClick,
-    walletMap: walletMap as unknown as any,
-    coinMap: vaultCoinMap,
-    tradeData: { ...vaultRepayData.tradeData },
-    vaultRepayData: vaultRepayData as unknown as V,
+    walletMap: mapValues(walletMap, (value, key) => {
+      return {
+        ...value,
+        erc20Symbol: key.slice(2),
+        belongAlice: key.slice(2),
+      }
+    }) as unknown as any,
+    coinMap: mapValues(vaultCoinMap, (value) => {
+      return {
+        ...value,
+        erc20Symbol: value?.simpleName.slice(2),
+        belongAlice: value?.simpleName.slice(2),
+      }
+    }),
+    tradeData: { 
+      ...vaultRepayData.tradeData,
+      erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
+      belongAlice: vaultRepayData.tradeData?.belong.slice(2),
+
+    },
+    vaultRepayData: {
+      ...vaultRepayData,
+      erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
+      belongAlice: vaultRepayData.tradeData?.belong.slice(2),
+      tradeData: {
+        ...vaultRepayData?.tradeData,
+        erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
+        belongAlice: vaultRepayData.tradeData?.belong.slice(2),
+      }
+    } as unknown as V,
     tokenInfo: vaultTokenMap[vaultRepayData?.belong],
     tokenProps: {
       decimalsLimit: vaultTokenMap[vaultRepayData?.belong]?.vaultTokenAmounts?.qtyStepScale,

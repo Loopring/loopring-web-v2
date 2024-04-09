@@ -34,6 +34,7 @@ import { LoopringAPI } from '../../../api_wrapper'
 import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
 import { l2CommonService } from '../../../services'
+import { keys } from 'lodash'
 export type VaultBorrowTradeData = IBData<any> & {
   erc20Symbol: string
   borrowed: string
@@ -168,7 +169,7 @@ export const useVaultBorrow = <
       ...((vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]) ?? {}),
       // balance: (vaultAvaiable2Map && vaultAvaiable2Map[initSymbol.toString()]?.count) ?? 0,
       tradeValue: undefined,
-      erc20Symbol: erc20IdIndex[vaultTokenMap[initSymbol].tokenId],
+      erc20Symbol: initSymbol.slice(2)
     }
     const supportdata = calcSupportBorrowData(walletInfo)
     walletInfo = {
@@ -309,7 +310,7 @@ export const useVaultBorrow = <
     const {
       account: { eddsaKey, apiKey, accountId, accAddress },
     } = store.getState()
-    const erc20Symbol = erc20IdIndex[vaultToken.tokenId]
+    const erc20Symbol = vaultBorrowData.erc20Symbol
 
     try {
       if ((LoopringAPI.vaultAPI && request) || (vaultBorrowData.request && accountId)) {
@@ -417,7 +418,7 @@ export const useVaultBorrow = <
   const submitCallback = async () => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     const account = store.getState().account
-    const erc20Symbol = erc20IdIndex[vaultTokenMap[vaultBorrowData?.belong]?.tokenId]
+    const erc20Symbol = vaultBorrowData.erc20Symbol
     setIsLoading(true)
     try {
       if (
@@ -499,8 +500,15 @@ export const useVaultBorrow = <
     vaultBorrowBtnI18nKey: btnLabel,
     onVaultBorrowClick: onBtnClick,
     walletMap: walletMap as unknown as any,
-    coinMap: Reflect.ownKeys(walletMap ?? {}).reduce((prev, item) => {
-      return { ...prev, [item]: { ...vaultCoinMap[item?.toString() ?? ''] } }
+    coinMap: keys(walletMap ?? {}).reduce((prev, key) => {
+      return {
+        ...prev,
+        [key]: {
+          ...vaultCoinMap[key?.toString() ?? ''],
+          erc20Symbol: vaultCoinMap[key?.toString() ?? '']?.simpleName.slice(2),
+          belongAlice: vaultCoinMap[key?.toString() ?? '']?.simpleName.slice(2),
+        },
+      }
     }, {}),
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,

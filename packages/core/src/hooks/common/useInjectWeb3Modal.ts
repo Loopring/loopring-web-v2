@@ -105,9 +105,6 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
           updateWalletLayer1()
         }
         checkAccount(address, chainId)
-      } else {
-        walletServices.sendDisconnect('', 'customer click disconnect')
-        resetAccount()
       }
     })()
   }, [address, walletProvider, chainId, status])

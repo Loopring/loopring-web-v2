@@ -147,12 +147,12 @@ export const makeVaultAvaiable2 = <
   const { maxBorrowableOfUsdt, accountStatus } = vaultAccountInfo ?? {}
   if (accountStatus && accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
     let vaultAvaiable2Map: WalletMap<C> | undefined = marketCoins?.reduce((prev, item) => {
-      const erc20Symbol = erc20IdIndex[tokenMap[item]?.tokenId ?? '']
       const vaultSymbol = vaultIdIndex[tokenMap[item].vaultTokenId]
+      const erc20Symbol = vaultSymbol.slice(2)
       const price = tokenPrices[vaultSymbol] ?? (vaultSymbol == 'USDT' ? 1 : 1)
       const vaultToken = tokenMap[vaultSymbol]
       const status = vaultToken?.vaultTokenAmounts?.status?.toString(2)
-      if (status[0] == '1' && status[3] == '1') {
+      if (status[1] == '1') {
         let borrowed = sdk
           .toBig((vaultLayer2 && vaultLayer2[vaultSymbol]?.borrowed) ?? 0)
           .div('1e' + vaultToken.decimals)
