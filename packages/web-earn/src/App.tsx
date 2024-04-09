@@ -40,7 +40,7 @@ const App = () => {
       )
     }
   }, [])
-  useInjectWeb3Modal()
+  useInjectWeb3Modal('EARN')
 
   const { state } = useInit()
 

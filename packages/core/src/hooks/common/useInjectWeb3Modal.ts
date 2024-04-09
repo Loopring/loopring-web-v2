@@ -24,17 +24,24 @@ const chains = [
   },
   {
     chainId: 5,
-    name: 'GOERIL',
+    name: 'Goerli',
     currency: 'ETH',
     explorerUrl: 'https://goeril.etherscan.io/',
     rpcUrl: process.env.REACT_APP_RPC_URL_5!,
   },
   {
     chainId: 11155111,
-    name: 'SEPOLIA',
+    name: 'Sepolia',
     currency: 'ETH',
     explorerUrl: 'https://sepolia.etherscan.io/',
     rpcUrl: process.env.REACT_APP_RPC_URL_11155111!,
+  },
+  {
+    chainId: 167008,
+    name: 'Taiko Katla',
+    currency: 'ETH',
+    explorerUrl: 'https://explorer.katla.taiko.xyz/',
+    rpcUrl: process.env.REACT_APP_RPC_URL_167008!,
   },
 ]
 
@@ -53,7 +60,7 @@ export const web3Modal = createWeb3Modal({
   featuredWalletIds: [],
 })
 
-export const useInjectWeb3Modal = () => {
+export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN') => {
   const { walletProvider } = useWeb3ModalProvider()
   const { status } = useSystem()
   const { address, chainId } = useWeb3ModalAccount()
@@ -72,8 +79,14 @@ export const useInjectWeb3Modal = () => {
       location.reload()
     } else if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
       // 'DISCONNECT_SUCCESS' not work. Use `event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected` instead.
-      walletServices.sendDisconnect('', 'customer click disconnect')
-      resetAccount()
+      if (type === 'BRIDGE') {
+        resetAccount()
+        walletServices.sendDisconnect('', 'customer click disconnect')
+        updateSystem({ chainId })
+      } else {
+        walletServices.sendDisconnect('', 'customer click disconnect')
+        resetAccount()
+      }
     }
     myLog('event', event)
   }, [event])

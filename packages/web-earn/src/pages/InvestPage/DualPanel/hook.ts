@@ -33,7 +33,7 @@ export const useDualHook = () => {
   const history = useHistory()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
 
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(false)
   const [currentPrice, setCurrentPrice] = React.useState<DualCurrentPrice | undefined>(undefined)
   const [, , coinA, coinB] =
     (match?.params?.market ? match.params.market : 'ETH-USDC').match(/(dual-)?(\w+)-(\w+)/i) ?? []
