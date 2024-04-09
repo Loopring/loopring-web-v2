@@ -44,7 +44,7 @@ const App = () => {
 
   const { state } = useInit()
 
-  useInjectWeb3Modal()
+  useInjectWeb3Modal('GUARDIAN')
 
   return (
     <>

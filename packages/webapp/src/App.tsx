@@ -31,7 +31,7 @@ const App = () => {
       store.dispatch(setLanguage(language))
     }
   }, [storeLan, language])
-  useInjectWeb3Modal()
+  useInjectWeb3Modal('MAIN')
 
   React.useEffect(() => {
     if (window.location.protocol !== 'https:') {
