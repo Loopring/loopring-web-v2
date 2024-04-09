@@ -176,7 +176,7 @@ export const useVaultRepay = <
     } else if (sdk.toBig(vaultRepayData.tradeValue ?? 0).gt(vaultRepayData.maxRepayAmount ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultRepayMax|${vaultRepayData.maxRepayStr} ${vaultRepayData.belong}`,
+        label: `labelVaultRepayMax|${vaultRepayData.maxRepayStr} ${vaultRepayData.belong.slice(2)}`,
       }
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
