@@ -75,9 +75,7 @@ export function useInit() {
     }
     ;(async (account) => {
       if (
-        account.accAddress !== '' &&
-        account.connectName &&
-        account.connectName !== ConnectProviders.Unknown
+        account.accAddress !== ''
       ) {
         try {
           ConnectProvides.IsMobile = isMobile
@@ -116,7 +114,7 @@ export function useInit() {
           }
         }
       } else {
-        if (account.accAddress === '' || account.connectName === ConnectProviders.Unknown) {
+        if (account.accAddress === '') {
           resetAccount()
         }
         const chainId =
