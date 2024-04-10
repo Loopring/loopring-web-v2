@@ -72,7 +72,7 @@ export const useHebaoMain = <
   const [isLoading, setIsLoading] = React.useState(false)
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI'].includes(network)
+  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
   // sdk.NetworkWallet[MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1]]
@@ -241,7 +241,7 @@ export const useAction = ({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true)
 
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI'].includes(network)
+  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
   const submitApprove = async (code: string, selected: sdk.Guardian) => {
@@ -454,7 +454,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
   const { setOneItem } = layer1Store.useLayer1Store()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI'].includes(network)
+  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]
   const onLock = React.useCallback(
@@ -499,8 +499,8 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             from: account.accAddress,
             contractAddress: isVersion1 ? guardianModule : item.address,
             wallet: item.address,
-            gasPrice,
-            gasLimit: config.gasLimit ?? 15000,
+            gasPrice: '0x' + Number(gasPrice).toString(16),
+            gasLimit: '0x' + Number(config.gasLimit).toString(16),
             chainId: chainId as any,
             isVersion1,
             nonce,

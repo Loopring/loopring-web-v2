@@ -21,6 +21,7 @@ export function* closeSocket() {
       const networkWallet: sdk.NetworkWallet = [
         sdk.NetworkWallet.ETHEREUM,
         sdk.NetworkWallet.GOERLI,
+        sdk.NetworkWallet.SEPOLIA,
       ].includes(network as sdk.NetworkWallet)
         ? sdk.NetworkWallet.ETHEREUM
         : sdk.NetworkWallet[network]
@@ -79,6 +80,7 @@ export function* sendMessage({ payload }: { payload: { socket: SocketMap } }) {
     const networkWallet: sdk.NetworkWallet = [
       sdk.NetworkWallet.ETHEREUM,
       sdk.NetworkWallet.GOERLI,
+      sdk.NetworkWallet.SEPOLIA,
     ].includes(network as sdk.NetworkWallet)
       ? sdk.NetworkWallet.ETHEREUM
       : sdk.NetworkWallet[network]

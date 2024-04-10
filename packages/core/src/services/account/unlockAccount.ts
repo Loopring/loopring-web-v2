@@ -59,7 +59,7 @@ export async function unlockAccount() {
             ).replace('${nonce}', (nonce - 1).toString())
 
       await callSwitchChain(_chainId)
-
+      
       const response = await LoopringAPI.userAPI.unLockAccount(
         {
           keyPair: {

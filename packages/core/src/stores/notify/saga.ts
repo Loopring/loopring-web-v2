@@ -43,6 +43,7 @@ const getNotifyUserApi = async () => {
   const networkWallet: sdk.NetworkWallet = [
     sdk.NetworkWallet.ETHEREUM,
     sdk.NetworkWallet.GOERLI,
+    sdk.NetworkWallet.SEPOLIA,
   ].includes(network as sdk.NetworkWallet)
     ? sdk.NetworkWallet.ETHEREUM
     : sdk.NetworkWallet[network]

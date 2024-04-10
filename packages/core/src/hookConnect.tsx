@@ -145,6 +145,12 @@ const Icon = ({ label = '' }: { label: string }) => {
           <ChainETHEREUMIcon sx={{ width: 20, height: 20 }} />
         </Avatar>
       )
+    case 'SEPOLIA':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <>Sepolia</>{/* todo */}
+        </Avatar>
+      )
     case 'TAIKO':
       return (
         <Avatar component={'span'} variant='circular'>

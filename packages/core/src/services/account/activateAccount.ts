@@ -34,7 +34,6 @@ export async function activateAccount({
   if (
     !system.exchangeInfo?.exchangeAddress ||
     system.chainId === ChainIdExtends.NONETWORK ||
-    connectName === ConnectProviders.Unknown ||
     !LoopringAPI?.exchangeAPI ||
     !accAddress
   ) {
