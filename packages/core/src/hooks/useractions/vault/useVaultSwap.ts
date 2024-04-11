@@ -322,8 +322,12 @@ export const useVaultSwap = <
       )
 
       const buyCoinInfoMap = tokenMap[coinA]?.tradePairs?.reduce(
-        (prev: any, item: string | number) => {
-          return { ...prev, [item]: coinMap[item] }
+        (prev: any, item: string) => {
+          return { ...prev, [item]: {
+            ...coinMap[item],
+            erc20Symbol: item.slice(2),
+            belongAlice: item.slice(2),
+          }}
         },
         {} as CoinMap<C>,
       )
