@@ -240,12 +240,18 @@ const TradeDes2 = (props: PanelProps) => {
             display={'inline-flex'}
             alignItems={'center'}
           >
-            <CoinIcons
-              size='small'
-              type={TokenType.vault}
-              tokenIcon={[coinJson[buySymbol], undefined]}
-            />
-            {amountFee + ' ' + buySymbol}
+            {amountFee ? (
+              <>
+                <CoinIcons
+                  size='small'
+                  type={TokenType.vault}
+                  tokenIcon={[coinJson[buySymbol], undefined]}
+                />
+                {amountFee + ' ' + buySymbol}
+              </>
+            ) : (
+              EmptyValueTag
+            )}
           </Typography>
         </Typography>
 
