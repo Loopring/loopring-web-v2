@@ -432,7 +432,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
             // @ts-ignore
             sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
               process.env.REACT_APP_SEPOLIA_DEV_NFT_FACTORY_COLLECTION
-            console.error('nft factory1', process.env.REACT_APP_SEPOLIA_DEV_NFT_FACTORY_COLLECTION)
           } else {
             baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`
             socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`
@@ -443,11 +442,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                   /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
                 }_NFT_FACTORY_COLLECTION`
               ]
-            console.error('nft factory 2', process.env[
-              `REACT_APP_SEPOLIA_${
-                /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
-              }_NFT_FACTORY_COLLECTION`
-            ])
           }
         }
 
