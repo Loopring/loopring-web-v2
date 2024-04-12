@@ -322,8 +322,12 @@ export const useVaultSwap = <
       )
 
       const buyCoinInfoMap = tokenMap[coinA]?.tradePairs?.reduce(
-        (prev: any, item: string | number) => {
-          return { ...prev, [item]: coinMap[item] }
+        (prev: any, item: string) => {
+          return { ...prev, [item]: {
+            ...coinMap[item],
+            erc20Symbol: item.slice(2),
+            belongAlice: item.slice(2),
+          }}
         },
         {} as CoinMap<C>,
       )
@@ -804,7 +808,7 @@ export const useVaultSwap = <
           sellFStr: undefined,
           buyFStr: undefined,
           convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
-          feeStr: tradeCalcData?.fee,
+          feeStr: undefined,
           time: Date.now(),
           fromSymbol: sellToken.symbol,
           toSymbol: buyToken.symbol,
@@ -864,125 +868,136 @@ export const useVaultSwap = <
               },
               account.apiKey,
             )
+            const item = {
+              fromSymbol: sellToken.symbol,
+              fromAmount: sdk.toBig(response2.order.amountS).div('1e' + sellToken.decimals),
+              settledFromAmount: sdk
+                .toBig(response2.order.fillAmountS)
+                .div('1e' + sellToken.decimals),
+              toSymbol: buyToken.symbol,
+              settledToAmount: sdk.toBig(response2.order.fillAmountB).div('1e' + buyToken.decimals),
+              feeAmount: sdk.toBig(response2.order.fee).div('1e' + buyToken.decimals),
+            }
+            const info: any = {
+              sellToken: sellToken.symbol.slice(2),
+              buyToken: buyToken.symbol.slice(2),
+              sellFStr: getValuePrecisionThousand(
+                item.settledFromAmount,
+                sellToken.vaultTokenAmounts?.qtyStepScale,
+                sellToken.vaultTokenAmounts?.qtyStepScale,
+                sellToken.vaultTokenAmounts?.qtyStepScale,
+                false,
+                { floor: false },
+              ),
+              buyFStr: getValuePrecisionThousand(
+                item.settledToAmount,
+                buyToken.precision,
+                buyToken.precision,
+                buyToken.precision,
+                false,
+                { floor: false },
+              ),
+              price: getValuePrecisionThousand(
+                depth?.mid_price,
+                priceToken.precision,
+                priceToken.precision,
+                priceToken.precision,
+                false,
+                { floor: false },
+              ),
+              convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
+              feeStr: !sdk.toBig(item.feeAmount).eq('0') ? tradeCalcData?.fee : undefined,
+              time: Date.now(),
+              fromSymbol: sellToken.symbol,
+              toSymbol: buyToken.symbol,
+              placedAmount:
+                tokenMap && item.fromSymbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+                  ? `${getValuePrecisionThousand(
+                      sdk.toBig(item.fromAmount),
+                      undefined,
+                      undefined,
+                      tokenMap[item.fromSymbol].precision,
+                      true,
+                      { isAbbreviate: true },
+                    )} ${item.fromSymbol.slice(2)}`
+                  : EmptyValueTag,
+              executedAmount:
+                tokenMap &&
+                item.fromSymbol &&
+                sellToken.symbol.slice(2) &&
+                item.settledFromAmount &&
+                sdk.toBig(item.settledFromAmount).gt(0)
+                  ? `${getValuePrecisionThousand(
+                      sdk.toBig(item.settledFromAmount),
+                      undefined,
+                      undefined,
+                      tokenMap[item.fromSymbol].precision,
+                      true,
+                      { isAbbreviate: true },
+                    )} ${sellToken.symbol.slice(2)}`
+                  : EmptyValueTag,
+              executedRate:
+                tokenMap &&
+                item.fromSymbol &&
+                item.settledFromAmount &&
+                item.fromAmount &&
+                sdk.toBig(item.fromAmount).gt(0)
+                  ? `${sdk
+                      .toBig(item.settledFromAmount)
+                      .div(item.fromAmount)
+                      .multipliedBy('100')
+                      .toFixed(2)}%`
+                  : EmptyValueTag,
+              convertedAmount:
+                tokenMap &&
+                item.toSymbol &&
+                buyToken.symbol.slice(2) &&
+                item.settledToAmount &&
+                sdk.toBig(item.settledToAmount).gt(0)
+                  ? `${getValuePrecisionThousand(
+                      sdk.toBig(item.settledToAmount),
+                      undefined,
+                      undefined,
+                      tokenMap[item.toSymbol].precision,
+                      true,
+                      { isAbbreviate: true },
+                    )} ${buyToken.symbol.slice(2)}`
+                  : EmptyValueTag,
+              settledAmount:
+                tokenMap &&
+                item.toSymbol &&
+                item.settledToAmount &&
+                item.feeAmount &&
+                sdk.toBig(item.settledToAmount).gt(0)
+                  ? `${getValuePrecisionThousand(
+                      sdk.toBig(item.settledToAmount).minus(item.feeAmount),
+                      undefined,
+                      undefined,
+                      tokenMap[item.toSymbol].precision,
+                      true,
+                      { isAbbreviate: true },
+                    )} ${item.toSymbol}`
+                  : EmptyValueTag,
+            }
           if (
             response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED
           ) {
-            throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+            setShowAccount({
+              isShow: store.getState().modals.isShowAccount.isShow,
+              step: AccountStep.VaultTrade_Failed,
+              info: {
+                ...info,
+                price: response2?.raw_data.order.price,
+                percentage: '',
+                status: t('labelFailed'),
+              },
+            })
+            return
           }
           const status = [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
             response2?.raw_data?.operation?.status,
-          )
-            ? 'labelSuccessfully'
-            : 'labelPending'
-          const item = {
-            fromSymbol: sellToken.symbol,
-            fromAmount: sdk.toBig(response2.order.amountS).div('1e' + sellToken.decimals),
-            settledFromAmount: sdk.toBig(response2.order.fillAmountS).div('1e' + sellToken.decimals),
-            toSymbol: buyToken.symbol,
-            settledToAmount: sdk.toBig(response2.order.fillAmountB).div('1e' + buyToken.decimals),
-            feeAmount: sdk.toBig(response2.order.fee).div('1e' + buyToken.decimals),
-          }
-          const info: any = {
-            sellToken: sellToken.symbol.slice(2),
-            buyToken: buyToken.symbol.slice(2),
-            sellFStr: getValuePrecisionThousand(
-              item.settledFromAmount,
-              sellToken.vaultTokenAmounts?.qtyStepScale,
-              sellToken.vaultTokenAmounts?.qtyStepScale,
-              sellToken.vaultTokenAmounts?.qtyStepScale,
-              false,
-              { floor: false },
-            ),
-            buyFStr: getValuePrecisionThousand(
-              item.settledToAmount,
-              buyToken.precision,
-              buyToken.precision,
-              buyToken.precision,
-              false,
-              { floor: false },
-            ),
-            price: getValuePrecisionThousand(
-              depth?.mid_price,
-              priceToken.precision,
-              priceToken.precision,
-              priceToken.precision,
-              false,
-              { floor: false },
-            ),
-            convertStr: tradeCalcData.isReverse ? tradeCalcData.BtoS : tradeCalcData.StoB,
-            feeStr: tradeCalcData?.fee,
-            time: Date.now(),
-            fromSymbol: sellToken.symbol,
-            toSymbol: buyToken.symbol,
-            placedAmount:
-              tokenMap && item.fromSymbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
-                ? `${getValuePrecisionThousand(
-                    sdk.toBig(item.fromAmount),
-                    undefined,
-                    undefined,
-                    tokenMap[item.fromSymbol].precision,
-                    true,
-                    { isAbbreviate: true },
-                  )} ${item.fromSymbol.slice(2)}`
-                : EmptyValueTag,
-            executedAmount:
-              tokenMap &&
-              item.fromSymbol &&
-              sellToken.symbol.slice(2) &&
-              item.settledFromAmount &&
-              sdk.toBig(item.settledFromAmount).gt(0)
-                ? `${getValuePrecisionThousand(
-                    sdk.toBig(item.settledFromAmount),
-                    undefined,
-                    undefined,
-                    tokenMap[item.fromSymbol].precision,
-                    true,
-                    { isAbbreviate: true },
-                  )} ${sellToken.symbol.slice(2)}`
-                : EmptyValueTag,
-            executedRate:
-              tokenMap &&
-              item.fromSymbol &&
-              item.settledFromAmount &&
-              item.fromAmount &&
-              sdk.toBig(item.fromAmount).gt(0)
-                ? `${sdk
-                    .toBig(item.settledFromAmount)
-                    .div(item.fromAmount)
-                    .multipliedBy('100')
-                    .toFixed(2)}%`
-                : EmptyValueTag,
-            convertedAmount:
-              tokenMap &&
-              item.toSymbol &&
-              buyToken.symbol.slice(2) &&
-              item.settledToAmount &&
-              sdk.toBig(item.settledToAmount).gt(0)
-                ? `${getValuePrecisionThousand(
-                    sdk.toBig(item.settledToAmount),
-                    undefined,
-                    undefined,
-                    tokenMap[item.toSymbol].precision,
-                    true,
-                    { isAbbreviate: true },
-                  )} ${buyToken.symbol.slice(2)}`
-                : EmptyValueTag,
-            settledAmount:
-              tokenMap &&
-              item.toSymbol &&
-              item.settledToAmount &&
-              item.feeAmount &&
-              sdk.toBig(item.settledToAmount).gt(0)
-                ? `${getValuePrecisionThousand(
-                    sdk.toBig(item.settledToAmount).minus(item.feeAmount),
-                    undefined,
-                    undefined,
-                    tokenMap[item.toSymbol].precision,
-                    true,
-                    { isAbbreviate: true },
-                  )} ${item.toSymbol}`
-                : EmptyValueTag,
-          }
+          ) ? 'labelSuccessfully' : 'labelPending'
+          
 
           setShowAccount({
             isShow: store.getState().modals.isShowAccount.isShow,
