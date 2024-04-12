@@ -391,7 +391,7 @@ const should15MinutesUpdateDataGroup = async (
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) => {
   const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
-    (item) => ![1, 5].includes(Number(item)),
+    (item) => ![1, 5, 11155111].includes(Number(item)),
   )
   const env =
     window.location.hostname === 'localhost'
