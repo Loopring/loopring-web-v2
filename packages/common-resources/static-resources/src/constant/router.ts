@@ -62,7 +62,7 @@ export enum RouterPath {
   nft = '/nft',
   invest = '/invest',
   investBalance = '/invest/balance',
-  vault = '/vault',
+  vault = '/portal',
   //404? loading
   loading = '/loading',
 }
@@ -249,7 +249,7 @@ export enum RouterMainKey {
   nft = 'nft',
   invest = 'invest',
   earn = 'earn',
-  vault = 'vault',
+  vault = 'portal',
 }
 
 export enum NFTSubRouter {
@@ -316,8 +316,8 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
 ]
 
 export enum VaultKey {
-  VAULT_HOME = 'vaultHome',
-  VAULT_DASHBOARD = 'vaultDashboard',
+  VAULT_HOME = 'portalHome',
+  VAULT_DASHBOARD = 'portalDashboard',
 }
 
 export let vaultItemData: Array<HeaderMenuItemInterface> = [

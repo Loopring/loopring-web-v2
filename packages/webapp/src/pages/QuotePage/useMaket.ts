@@ -78,7 +78,12 @@ export const useMarket = <
         return filter
       })
       let data: Array<R & sdk.TokenInfo> = Object.values(tickerMap) ?? []
-      data = data.map((item) => {
+      data = data
+      .filter((item) => {
+        const status = (item as any).vaultTokenAmounts.status as number
+        return item.enabled && status & 1
+      })
+      .map((item) => {
         return {
           ...tokenMap[item.symbol],
           ...item,

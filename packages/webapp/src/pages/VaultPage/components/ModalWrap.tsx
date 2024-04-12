@@ -70,7 +70,7 @@ export const ModalVaultWrap = () => {
     disabled,
     cancelBorrow,
     borrowedAmount
-  } = useVaultSwap({ path: 'vault' })
+  } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
     swapBtnI18nKey,
