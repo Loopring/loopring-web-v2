@@ -27,6 +27,7 @@ import {
   globalSetup,
   L1L2_NAME_DEFINED,
   MapChainId,
+  myLog,
   RouterPath,
   SagaStatus,
   SoursURL,
@@ -45,6 +46,14 @@ import { useLocation, useRouteMatch } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
+
+const parseVaultTokenStatus = (status: number) => ({
+  show: status & 1,
+  join: status & 2,
+  exit: status & 4,
+  loan: status & 8,
+  repay: status & 16,
+})
 
 export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   vaultAccountInfo: _vaultAccountInfo,
@@ -371,13 +380,15 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       },
     } = store.getState()
     const walletMap = makeVaultLayer2({ needFilterZero: false }).vaultLayer2Map ?? {}
+    myLog('asdfhsjdhfjsd', tokenMap, walletMap)
     if (
       tokenMap &&
       !!Object.keys(tokenMap).length &&
       !!Object.keys(walletMap ?? {}).length
     ) {
       let totalAssets = sdk.toBig(0)
-      let data: Array<any> = Object.keys(tokenMap ?? {}).reduce((pre, key, _index) => {
+      let data: Array<any> = Object.keys(tokenMap ?? {})
+      .reduce((pre, key, _index) => {
         let item: any
         // tokenInfo
         let tokenInfo = {
@@ -443,6 +454,10 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         })
         return pre
       }, [] as Array<any>)
+      .filter(token => {
+        const status = tokenMap['LV' + token.erc20Symbol].vaultTokenAmounts.status as number
+        return parseVaultTokenStatus(status).loan && parseVaultTokenStatus(status).repay
+      })
       setAssetsRawData(data)
       setTotalAsset(totalAssets.toString())
     } else {
