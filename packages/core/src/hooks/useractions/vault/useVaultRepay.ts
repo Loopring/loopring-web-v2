@@ -199,12 +199,16 @@ export const useVaultRepay = <
           const walletMap = makeVaultRepay({ needFilterZero: true }).vaultAvaiable2Map ?? {}
           setWalletMap(walletMap)
           if (walletMap && data?.tradeData?.belong) {
+            const vaultToken = vaultTokenMap[data.tradeData.belong]
             let walletInfo: any = walletMap[data?.tradeData?.belong as string]
             walletInfo = {
               ...walletInfo,
               balance: walletInfo ? walletInfo.count : 0,
               tradeValue: data.tradeData?.tradeValue,
-              max: BigNumber.min(walletInfo.borrowed, walletInfo.count),
+              max: BigNumber.min(
+                walletInfo.borrowed, 
+                sdk.toFixed(sdk.toBig(walletInfo.count), vaultToken.vaultTokenAmounts.qtyStepScale, false)
+              )
             }
             setTradeData(walletInfo)
             vaultRepayData = {
