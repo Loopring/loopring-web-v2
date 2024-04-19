@@ -441,15 +441,6 @@ export const MarketDetail = ({
         ) : (
           <></>
         )}
-        <Typography
-          component={'p'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          whiteSpace={'pre-line'}
-        >
-          {tokenInfo.description}
-        </Typography>
       </Box>
     </>
   ) : (
