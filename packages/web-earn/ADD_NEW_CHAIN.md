@@ -72,7 +72,7 @@ export const headerMenuDataMap: { [ key: string ]: HeaderMenuItemInterface[] } =
 }
 ```
 
-#### avaiable land page
+#### available land page
 
 ```ts
 export const RouterAllowIndex = {
