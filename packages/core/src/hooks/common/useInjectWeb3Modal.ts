@@ -110,6 +110,16 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     })()
   }, [address, walletProvider, chainId, status])
   React.useEffect(() => {
+    if (type === 'BRIDGE') {
+      store.dispatch(
+        updateSystem({
+          chainId,
+        }),
+      )
+      store.dispatch(setDefaultNetwork(chainId))
+    }
+  }, [])
+  React.useEffect(() => {
     if (walletProvider) {
       if (walletProvider.isMetaMask) {
         dispatch(
