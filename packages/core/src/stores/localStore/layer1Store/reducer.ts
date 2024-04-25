@@ -69,11 +69,12 @@ const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
       }>,
     ) {
       const { domain, uniqueId, chainId } = action.payload
-
-      state[chainId][domain] = {
-        ...state[chainId][domain],
-        [uniqueId]: Date.now(),
-      }
+      if (state[chainId]) {
+        state[chainId][domain] = {
+          ...state[chainId][domain],
+          [uniqueId]: Date.now(),
+        }
+      } 
     },
   },
 })

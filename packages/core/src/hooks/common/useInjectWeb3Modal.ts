@@ -37,11 +37,11 @@ const chains = [
     rpcUrl: process.env.REACT_APP_RPC_URL_11155111!,
   },
   {
-    chainId: 167008,
-    name: 'Taiko Katla',
+    chainId: 167009,
+    name: 'Taiko Hekla',
     currency: 'ETH',
-    explorerUrl: 'https://explorer.katla.taiko.xyz/',
-    rpcUrl: process.env.REACT_APP_RPC_URL_167008!,
+    explorerUrl: 'https://explorer.hekla.taiko.xyz/',
+    rpcUrl: process.env.REACT_APP_RPC_URL_167009!,
   },
 ]
 
