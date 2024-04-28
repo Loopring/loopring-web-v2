@@ -54,14 +54,19 @@ export function useTickList<C extends { [key: string]: string }>() {
           }, [] as QuoteTableRawDataItem[])
         : []
 
-    const newTickListWithPrecision = _tickList.map((o: any) => {
-      const pair = o.__rawTicker__.symbol
-      const precision = marketMap ? marketMap[pair]?.precisionForPrice : undefined
-      return {
-        ...o,
-        precision,
-      }
-    })
+    const newTickListWithPrecision = _tickList
+      .filter((o: any) => {
+        const pair = o.__rawTicker__.symbol
+        return marketMap ? marketMap[pair]?.enabled : undefined
+      })
+      .map((o: any) => {
+        const pair = o.__rawTicker__.symbol
+        const precision = marketMap ? marketMap[pair]?.precisionForPrice : undefined
+        return {
+          ...o,
+          precision,
+        }
+      })
 
     setTickList(newTickListWithPrecision)
     while (_recommendationsFloat.length < 4) {
