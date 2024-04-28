@@ -137,13 +137,13 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         label: 'Görli',
         chainId: '5',
         isTest: true,
-        walletType: 'ETHEREUM',
+        walletType: 'GOERLI',
       },
       11155111: {
         label: 'Sepolia',
         chainId: '11155111',
         isTest: true,
-        walletType: 'ETHEREUM',
+        walletType: 'SEPOLIA',
       },
       // 421613: {
       //   label: 'ARBGOERLI',
