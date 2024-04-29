@@ -3,9 +3,11 @@ import { updateContacts, getContactsStatus } from './reducer'
 
 import { LoopringAPI, store } from '../../index'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { NetworkMap } from '@loopring-web/common-resources'
 
 const getContractsApi = async ({ limit = 100 }: { limit?: number }) => {
   const { isContractAddress, isCFAddress, accountId, apiKey } = store.getState().account
+  const { defaultNetwork } = store.getState().settings
   let contacts: any[] = []
   if (apiKey && LoopringAPI.contactAPI && accountId) {
     const response = await LoopringAPI.contactAPI?.getContacts(
@@ -14,6 +16,8 @@ const getContractsApi = async ({ limit = 100 }: { limit?: number }) => {
         accountId,
         limit,
         offset: 0,
+        // @ts-ignore
+        network: NetworkMap[defaultNetwork].walletType,
       },
       apiKey,
     )
