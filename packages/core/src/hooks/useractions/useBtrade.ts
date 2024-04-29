@@ -991,8 +991,8 @@ export const useBtradeSwap = <
         const calcDexOutput = sdk.calcDex({
           info,
           input: input.toString(),
-          sell: sellToken.symbol,
-          buy: buyToken.symbol,
+          sell: sellToken?.symbol,
+          buy: buyToken?.symbol,
           isAtoB,
           marketArr: marketArray,
           tokenMap,
