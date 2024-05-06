@@ -960,7 +960,7 @@ export const useBtradeSwap = <
         _tradeData.sell.balance = walletMap ? walletMap[coinA]?.count : 0
         const sellToken = tokenMap[coinA as string]
         const buyToken = tokenMap[coinB as string]
-        const sellBuyStr = `${sellToken?.symbol}-${buyToken?.symbol}`
+        const sellBuyStr = `${sellToken.symbol}-${buyToken.symbol}`
         const isAtoB = type === 'sell'
 
         let input: any = isAtoB ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue
@@ -991,8 +991,8 @@ export const useBtradeSwap = <
         const calcDexOutput = sdk.calcDex({
           info,
           input: input.toString(),
-          sell: sellToken?.symbol,
-          buy: buyToken?.symbol,
+          sell: sellToken.symbol,
+          buy: buyToken.symbol,
           isAtoB,
           marketArr: marketArray,
           tokenMap,
