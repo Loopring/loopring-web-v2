@@ -202,7 +202,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         })
       }
     }
-  }, [])
+  }, [defaultNetwork])
 
   const debounceCheck = _.debounce(
     async (address) => {
