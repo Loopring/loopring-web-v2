@@ -217,6 +217,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
         sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0,
         sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0,
         sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0,
+        sdk.AddressType.LOOPRING_HEBAO_CONTRACT_3_0_0,
         sdk.AddressType.EXCHANGE_OTHER,
         sdk.AddressType.EXCHANGE_BINANCE,
         sdk.AddressType.EXCHANGE_OKX,
@@ -241,7 +242,8 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_1_2_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
           case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0:
-          case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0: {
+          case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0:
+          case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_3_0_0: {
             if (found.addressType === sdk.AddressType.LOOPRING_HEBAO_CF) {
               // recheck CF Wallet
               const walletTypeResponse = await LoopringAPI.walletAPI?.getWalletType({

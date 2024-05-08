@@ -17,6 +17,7 @@ const addressToExWalletMap: [
   [sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0, WALLET_TYPE.Loopring],
   [sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0, WALLET_TYPE.Loopring],
   [sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0, WALLET_TYPE.Loopring],
+  [sdk.AddressType.LOOPRING_HEBAO_CONTRACT_3_0_0, WALLET_TYPE.Loopring],
   [sdk.AddressType.CONTRACT, WALLET_TYPE.OtherSmart],
 ]
 export const addressToExWalletMapFn = (a: (typeof sdk.AddressType)[sdk.AddressTypeKeys]) => {

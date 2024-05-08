@@ -61,6 +61,7 @@ export const AddressTypeTag = ({ addressType }: { addressType }) => {
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0:
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0:
     case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0:
+    case sdk.AddressType.LOOPRING_HEBAO_CONTRACT_3_0_0:
       return (
         <ChipStyle
           label={t('labelLoopringWallet')}

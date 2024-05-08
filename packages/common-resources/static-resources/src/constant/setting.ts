@@ -171,6 +171,7 @@ if (window) {
 }
 
 export const HEBAO_CONTRACT_MAP = [
+  ['V3_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_3_0_0],
   ['V2_2_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_2_0],
   ['V2_1_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_1_0],
   ['V2_0_0', sdk.AddressType.LOOPRING_HEBAO_CONTRACT_2_0_0],
