@@ -147,6 +147,13 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
           type: ToastType.error,
           content: t('labelContactsDeleteFailed'),
         })
+        return
+      }
+      // setPage to page - 1 if there is only one contact on this page when page >= 1
+      if (
+        page >= 1 && contacts.length % pageSize === 1
+      ) {
+        setPage(page - 1)
       }
       updateContacts()
       setToastOpen({
@@ -158,7 +165,7 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
       onCloseDelete()
       // if(result as sdk.RESULT_INFO)
     },
-    [contacts],
+    [contacts, page, pageSize],
   )
   return {
     contacts:
