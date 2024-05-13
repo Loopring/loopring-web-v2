@@ -174,7 +174,6 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                 return d
               })
               .accessor((d: any = {}) => d && d[`sma${periodMA}`])
-            
             mainIndicatorLst.push({ func: indMA, type: item.indicator })
             maToolTipOptions.push({
               yAccessor: indMA.accessor(),
@@ -189,7 +188,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
               .id(id++)
               .options({ windowSize: periodEMA })
               .merge((d: any, c: any) => {
-                d[`ema${periodEMA}`] = c
+                d && (d[`ema${periodEMA}`] = c)
               })
               .accessor((d: any = {}) => d && d[`ema${periodEMA}`])
             mainIndicatorLst.push({ func: indEMA, type: item.indicator })
@@ -204,7 +203,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
             const indBOLL = bollingerBand()
               .id(id++)
               .merge((d: any, c: any) => {
-                d.bb = c
+                d && (d.bb = c)
               })
               .accessor((d: any = {}) => d && d.bb)
             mainIndicatorLst.push({ func: indBOLL, type: item.indicator })

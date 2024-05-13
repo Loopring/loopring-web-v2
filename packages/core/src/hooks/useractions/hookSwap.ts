@@ -816,7 +816,7 @@ export const useSwap = <
           // @ts-ignore
           const [, _coinA] = market.match(/(\w+)-(\w+)/i)
           btos = getValuePrecisionThousand(
-            1 / Number(close.replaceAll(sdk.SEP, '')),
+            1 / Number(typeof close === 'number' ? close : close.replaceAll(sdk.SEP, '')),
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
             tokenMap[_coinA].precision,
