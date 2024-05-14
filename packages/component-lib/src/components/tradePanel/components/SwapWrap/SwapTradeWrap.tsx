@@ -226,6 +226,8 @@ export const SwapTradeWrap = <
     tradeCalcData && tradeCalcData.fee
       ? `${tradeCalcData.fee} ${buySymbol}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag
+  myLog('tradeCalcDatatradeCalcData', tradeCalcData)
+  myLog('tradeCalcDatatradeCalcData', tradeData)
 
   const userTakerRate =
     tradeCalcData && tradeCalcData.feeTakerRate
@@ -474,8 +476,7 @@ export const SwapTradeWrap = <
             >
               <Tooltip
                 title={t('labelBtradeFeeTooltips', {
-                  rate: userTakerRate,
-                  value: tradeCostMin,
+                  feeRate: `${(tradeCalcData as any).maxFeeBips / 100}%`,
                 }).toString()}
                 placement={'top'}
               >
