@@ -151,7 +151,7 @@ export const useContact = ({ viewHeightRatio = 0.85, viewHeightOffset = 130 }) =
       }
       // setPage to page - 1 if there is only one contact on this page when page >= 1
       if (
-        page >= 1 && contacts.length % pageSize === 1
+        page >= 1 && page === Math.floor(contacts.length / pageSize -1)   && contacts.length % pageSize === 1 
       ) {
         setPage(page - 1)
       }
