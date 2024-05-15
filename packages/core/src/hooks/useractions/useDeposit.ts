@@ -644,7 +644,7 @@ export const useDeposit = <
     return () => {
       subscription.unsubscribe()
     }
-  }, [subject])
+  }, [subject, accountStatus, systemStatus])
 
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT

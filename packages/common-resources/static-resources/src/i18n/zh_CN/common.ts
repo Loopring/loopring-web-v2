@@ -1618,7 +1618,7 @@ export default {
   labelBtradePool: 'Loopring Pool',
   labelBtradeToleranceTooltips:
     'Your trade will revert if the price changes unfavorably by more than this percentage.',
-  labelBtradeFeeTooltips: 'The trading fee is fixed at 0.3%.',
+  labelBtradeFeeTooltips: 'The trading fee is fixed at {{feeRate}}.',
   labelBtradeMinReceiveTooltips:
     'The price in other liquidity source changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.',
   labelBtradeInsufficient: 'Insufficient',

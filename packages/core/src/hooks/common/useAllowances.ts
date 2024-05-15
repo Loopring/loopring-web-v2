@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { LoopringAPI, useTokenMap } from '../../index'
+import { LoopringAPI, useSystem, useTokenMap } from '../../index'
 import React from 'react'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 export function useAllowances({ owner, symbol }: { owner: string; symbol: string }) {
   const { tokenMap } = useTokenMap()
+  const { status: systemStatus } = useSystem()
 
   const [allowanceInfo, setAllowanceInfo] = React.useState<{
     allowance: BigNumber
@@ -45,7 +46,7 @@ export function useAllowances({ owner, symbol }: { owner: string; symbol: string
 
   React.useEffect(() => {
     updateAllowance(symbol)
-  }, [owner, symbol])
+  }, [owner, symbol, systemStatus])
 
   return {
     allowanceInfo,

@@ -91,7 +91,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   }, [event])
   React.useEffect(() => {
     ;(async () => {
-      if (address && walletProvider ) {
+      if (address && walletProvider) {
         const { defaultNetwork } = store.getState().settings
         const accAddress = store.getState().account.accAddress
         if (address.toLowerCase() !== accAddress.toLowerCase() || chainId !== defaultNetwork) {
@@ -102,13 +102,23 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
           )
           store.dispatch(setDefaultNetwork(chainId))
         }
-        if (type === 'BRIDGE') {
-          updateWalletLayer1()
-        }
         checkAccount(address, chainId)
+      }
+      if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
+        updateWalletLayer1()
       }
     })()
   }, [address, walletProvider, chainId, status])
+  React.useEffect(() => {
+    if (type === 'BRIDGE') {
+      store.dispatch(
+        updateSystem({
+          chainId,
+        }),
+      )
+      store.dispatch(setDefaultNetwork(chainId))
+    }
+  }, [])
   React.useEffect(() => {
     if (walletProvider) {
       if (walletProvider.isMetaMask) {

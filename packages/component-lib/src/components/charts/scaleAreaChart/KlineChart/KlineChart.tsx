@@ -173,7 +173,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                 }
                 return d
               })
-              .accessor((d: any = {}) => d[`sma${periodMA}`])
+              .accessor((d: any = {}) => d && d[`sma${periodMA}`])
             mainIndicatorLst.push({ func: indMA, type: item.indicator })
             maToolTipOptions.push({
               yAccessor: indMA.accessor(),
@@ -188,9 +188,9 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
               .id(id++)
               .options({ windowSize: periodEMA })
               .merge((d: any, c: any) => {
-                d[`ema${periodEMA}`] = c
+                d && (d[`ema${periodEMA}`] = c)
               })
-              .accessor((d: any = {}) => d[`ema${periodEMA}`])
+              .accessor((d: any = {}) => d && d[`ema${periodEMA}`])
             mainIndicatorLst.push({ func: indEMA, type: item.indicator })
             maToolTipOptions.push({
               yAccessor: indEMA.accessor(),
@@ -203,9 +203,9 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
             const indBOLL = bollingerBand()
               .id(id++)
               .merge((d: any, c: any) => {
-                d.bb = c
+                d && (d.bb = c)
               })
-              .accessor((d: any = {}) => d.bb)
+              .accessor((d: any = {}) => d && d.bb)
             mainIndicatorLst.push({ func: indBOLL, type: item.indicator })
             bollToolTipOption = indBOLL.options()
             break
@@ -229,7 +229,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
               .merge((d: any, c: any) => {
                 d.macd = c
               })
-              .accessor((d: any = {}) => d.macd)
+              .accessor((d: any = {}) => d && d.macd)
             subIndicatorLst.push({
               func: macdCalculator,
               type: item.indicator,
@@ -241,7 +241,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
               .merge((d: any, c: any) => {
                 d.rsi = c
               })
-              .accessor((d: any = {}) => d.rsi)
+              .accessor((d: any = {}) => d && d.rsi)
             subIndicatorLst.push({
               func: rsiCalculator,
               type: item.indicator,
@@ -257,7 +257,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
               .merge((d: any, c: any) => {
                 d.sar = c
               })
-              .accessor((d: any = {}) => d.sar)
+              .accessor((d: any = {}) => d && d.sar)
             subIndicatorLst.push({
               func: sarCalculator,
               type: item.indicator,
@@ -412,7 +412,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
               <BollingerSeries strokeStyle={bbStroke} />
               <BollingerBandTooltip
                 origin={[8, 64]}
-                yAccessor={(d) => d.bb}
+                yAccessor={(d) => d && d.bb}
                 options={bollToolTipOption}
                 textFill={colorBase.textPrimary}
               />
