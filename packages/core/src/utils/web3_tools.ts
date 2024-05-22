@@ -176,14 +176,12 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        const provider = connectProvides?.usedProvide && new providers.Web3Provider(connectProvides.usedProvide as any)
+        const provider = connectProvides?.usedProvide && connectProvides?.usedProvide as Web3Provider
         // @ts-ignore
         if (connectProvides?.usedProvide?.isWalletConnect) {
           const network = await provider?.getNetwork()
           const jsonPRCProvider = new providers.JsonRpcProvider(
-            network?.chainId === 1
-              ? process.env.REACT_APP_RPC_URL_1
-              : process.env.REACT_APP_RPC_URL_5,
+            process.env[`REACT_APP_RPC_URL_${network?.chainId}`]
           )
           realAddr = await jsonPRCProvider
             .resolveName(address)
