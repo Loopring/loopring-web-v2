@@ -176,43 +176,23 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        const provider = connectProvides?.usedProvide && connectProvides?.usedProvide as Web3Provider
-        // @ts-ignore
-        if (connectProvides?.usedProvide?.isWalletConnect) {
-          const network = await provider?.getNetwork()
-          const jsonPRCProvider = new providers.JsonRpcProvider(
-            process.env[`REACT_APP_RPC_URL_${network?.chainId}`]
-          )
-          realAddr = await jsonPRCProvider
-            .resolveName(address)
-            .then((addr) => {
-              if (addr) {
-                return addr
-              } else {
-                throw 'no result'
-              }
-            })
-            .catch((_e: any) => {
-              addressErr = AddressError.InvalidAddr
-              return ''
-            })
-        } else {
-          realAddr = provider
-            ? await provider
-                .resolveName(address)
-                .then((addr) => {
-                  if (addr) {
-                    return addr
-                  } else {
-                    throw 'no result'
-                  }
-                })
-                .catch((_e: any) => {
-                  addressErr = AddressError.InvalidAddr
-                  return ''
-                })
-            : ''
-        }
+        const chainId = await web3?.eth.getChainId()
+        const jsonPRCProvider = new providers.JsonRpcProvider(
+          process.env[`REACT_APP_RPC_URL_${chainId}`],
+        )
+        realAddr = await jsonPRCProvider
+          .resolveName(address)
+          .then((addr) => {
+            if (addr) {
+              return addr
+            } else {
+              throw 'no result'
+            }
+          })
+          .catch((_e: any) => {
+            addressErr = AddressError.InvalidAddr
+            return ''
+          })
 
         
         if (realAddr && addressErr == AddressError.NoError) {
