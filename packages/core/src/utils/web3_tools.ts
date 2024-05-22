@@ -176,12 +176,7 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     } catch (reason: any) {
       if (web3) {
         addressErr = AddressError.NoError
-        const chainId = await web3?.eth.getChainId()
-        const jsonPRCProvider = new providers.JsonRpcProvider(
-          process.env[`REACT_APP_RPC_URL_${chainId}`],
-        )
-        realAddr = await jsonPRCProvider
-          .resolveName(address)
+        realAddr = await web3?.eth?.ens?.getAddress(address)
           .then((addr) => {
             if (addr) {
               return addr
