@@ -39,6 +39,7 @@ import { updateDefiSyncMap } from '../invest/DefiMap/reducer'
 import { getVaultMap, updateVaultSyncMap } from '../invest/VaultMap/reducer'
 import { getVaultTickers } from '../invest/VaultTicker/reducer'
 import { getExclusiveRedpacket } from '../targetRedpackt/reducer'
+import { promiseAllSequently } from '../../utils/promise'
 
 enum ENV_KEY {
   Bridge = 'bridge',
@@ -353,22 +354,21 @@ const should15MinutesUpdateDataGroup = async (
     //   chainId === sdk.ChainId.GOERLI
     //     ? '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a'
     //     : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+    
     const promiseArray = Object.keys(CurrencyToTag).map((key, index) => {
       if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
         indexUSD = index
       }
-      return (
+      return () => (
         LoopringAPI?.walletAPI?.getLatestTokenPrices({
           currency: CurrencyToTag[key].toString(),
           tokens: tokenAddress,
         }) ?? Promise.resolve({ tokenPrices: null })
       )
     })
+    const restForexs = await promiseAllSequently(promiseArray)
 
-    const [{ gasPrice }, ...restForexs] = await Promise.all([
-      LoopringAPI.exchangeAPI.getGasPrice(),
-      ...promiseArray,
-    ])
+    const { gasPrice } = await LoopringAPI.exchangeAPI.getGasPrice();
     const baseUsd = restForexs[indexUSD].tokenPrices[tokenAddress] ?? 1
     const forexMap: ForexMap = Object.keys(CurrencyToTag).reduce<ForexMap>((prev, key, index) => {
       if (restForexs[index] && key && restForexs[index].tokenPrices) {
