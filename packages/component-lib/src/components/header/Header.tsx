@@ -164,7 +164,7 @@ const ToolBarItem = ({
       case ButtonComponentsMap.ColorSwitch:
         return <ColorSwitch {...props} />
       case ButtonComponentsMap.WalletConnect:
-        return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} />
+        return isLayer1Only ? <WalletConnectL1Btn {...props} /> : <WalletConnectBtn {...props} accountState={{account}} />
       default:
         return undefined
     }
