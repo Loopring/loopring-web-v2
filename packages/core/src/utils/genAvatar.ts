@@ -38,7 +38,7 @@ export const createImageFromInitials = (size: number, _name: string, color: stri
   context.textBaseline = 'middle'
   context.textAlign = 'center'
   context.font = `${size / 2}px Roboto`
-  context.fillText(name, size / 2, size / 2)
+  context.fillText(name, size / 2, size / 1.9)
 
   return canvas.toDataURL()
 }
