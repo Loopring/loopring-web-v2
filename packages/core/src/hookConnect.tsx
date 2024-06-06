@@ -279,7 +279,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     const { open } = useWeb3Modal()
     return (
       <>
-        {defaultNetwork && (
+        {defaultNetwork && NetworkMap[defaultNetwork] && (
           <OutlineSelectItemStyle
             sx={{ cursor: 'pointer' }}
             onClick={() => open({ view: accAddress ? 'Networks' : 'Connect' })}
