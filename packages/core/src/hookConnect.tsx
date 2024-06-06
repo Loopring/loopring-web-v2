@@ -215,7 +215,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
   const {
-    account: { connectName },
+    account: { connectName, accAddress },
   } = useAccount()
   const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>(_defaultNetwork)
 
@@ -275,13 +275,14 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
-    const {open} = useWeb3Modal()
+    
+    const { open } = useWeb3Modal()
     return (
       <>
         {defaultNetwork && (
           <OutlineSelectItemStyle
             sx={{ cursor: 'pointer' }}
-            onClick={() => open({ view: 'Networks' })}
+            onClick={() => open({ view: accAddress ? 'Networks' : 'Connect' })}
             disabled={disable(defaultNetwork)}
             className={`viewNetwork${defaultNetwork} ${
               NetworkMap[defaultNetwork]?.isTest ? 'provider-test' : ''
@@ -297,7 +298,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         )}
       </>
     )
-  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])
+  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide, accAddress])
   React.useEffect(() => {}, [])
 
   return {
