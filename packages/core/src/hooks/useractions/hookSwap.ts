@@ -217,7 +217,7 @@ export const useSwap = <
         },
       }
 
-      const sellCoinInfoMap = tokenMap[coinB].tradePairs?.reduce(
+      const sellCoinInfoMap = tokenMap[coinB]?.tradePairs?.reduce(
         (prev: any, item: string | number) => {
           return { ...prev, [item]: coinMap[item] }
         },
