@@ -64,7 +64,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   const { walletProvider } = useWeb3ModalProvider()
   const { status } = useSystem()
   const { address, chainId } = useWeb3ModalAccount()
-  const { resetAccount } = useAccount()
+  const { resetAccount, account: {accAddress} } = useAccount()
   const event = useWeb3ModalEvents()
   const dispatch = useDispatch()
   const { mode } = useTheme()
@@ -74,9 +74,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     setThemeMode(mode)
   }, [mode])
   React.useEffect(() => {
-    if (event.data.event === 'SWITCH_NETWORK') {
-      location.reload()
-    } else if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
+    if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
       // 'DISCONNECT_SUCCESS' not work. Use `event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected` instead.
       if (type === 'BRIDGE') {
         resetAccount()
@@ -93,22 +91,24 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     ;(async () => {
       if (address && walletProvider) {
         const { defaultNetwork } = store.getState().settings
-        const accAddress = store.getState().account.accAddress
-        if (address.toLowerCase() !== accAddress.toLowerCase() || chainId !== defaultNetwork) {
+        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || chainId !== defaultNetwork) {
           store.dispatch(
             updateSystem({
               chainId,
             }),
           )
           store.dispatch(setDefaultNetwork(chainId))
-        }
+          setTimeout(() => {
+            location.reload()  
+          }, 1000);
+        } 
         checkAccount(address, chainId)
       }
       if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
         updateWalletLayer1()
       }
     })()
-  }, [address, walletProvider, chainId, status])
+  }, [address, walletProvider, chainId, status, accAddress])
   React.useEffect(() => {
     if (type === 'BRIDGE') {
       store.dispatch(
