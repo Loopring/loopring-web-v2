@@ -1,7 +1,7 @@
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
 import { SagaStatus, myLog } from '@loopring-web/common-resources'
-import { setDefaultNetwork } from '@loopring-web/component-lib'
+import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
 import { checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
@@ -70,6 +70,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   const { mode } = useTheme()
   const { setThemeMode } = useWeb3ModalTheme()
   const { updateWalletLayer1 } = useWalletLayer1()
+  const {defaultNetwork} = useSettings()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
@@ -87,11 +88,11 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     }
     myLog('event', event)
   }, [event])
+  
   React.useEffect(() => {
     ;(async () => {
       if (address && walletProvider) {
-        const { defaultNetwork } = store.getState().settings
-        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || chainId !== defaultNetwork) {
+        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) {
           store.dispatch(
             updateSystem({
               chainId,
@@ -108,7 +109,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
         updateWalletLayer1()
       }
     })()
-  }, [address, walletProvider, chainId, status, accAddress])
+  }, [address, walletProvider, chainId, status, accAddress, defaultNetwork])
   React.useEffect(() => {
     if (type === 'BRIDGE') {
       store.dispatch(
