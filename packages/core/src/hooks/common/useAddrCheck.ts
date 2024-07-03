@@ -416,7 +416,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
     return () => {
       debounceCheck.cancel()
     }
-  }, [address, isAddressCheckLoading, chainId])
+  }, [address, chainId])
   const reCheck = React.useCallback(() => {
     debounceCheck(address)
     _address.current = address

@@ -318,7 +318,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
         claimValue?.fee?.belong &&
         claimValue.fee?.feeRaw &&
         claimValue?.tradeValue &&
-        claimValue?.belong &&
+        (claimValue?.belong || claimValue.nftData) &&
         !isFeeNotEnough.isFeeNotEnough &&
         eddsaKey?.sk
       ) {
@@ -486,7 +486,7 @@ export const useClaimConfirm = <T extends IBData<I> & { tradeValueView: string }
       chargeFeeTokenList.length &&
       isFeeNotEnough &&
       !isFeeNotEnough.isFeeNotEnough &&
-      claimValue.belong &&
+      (claimValue.belong || claimValue.nftData) &&
       claimValue.tradeValue &&
       claimValue.fee &&
       claimValue.fee.belong

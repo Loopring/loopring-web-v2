@@ -82,9 +82,10 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
       )
     }
   }, [coinMap, filterString, sorted, walletMap, nonZero])
+  const coinMapJSONString = JSON.stringify(coinMap) 
   React.useEffect(() => {
     update()
-  }, [coinMap, filterString, sorted])
+  }, [coinMapJSONString, filterString, sorted])
 
   const handleListItemClick = React.useCallback(
     (_event: React.MouseEvent, select: CoinKey<C>) => {

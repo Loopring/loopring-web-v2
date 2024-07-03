@@ -35,11 +35,12 @@ import { accountReducer, useAccount } from './stores/account'
 import { resetDepositData, resetTransferData, resetWithdrawData, useModalData } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
-import { store, WalletConnectL2Btn } from './index'
+import { createImageFromInitials, store, WalletConnectL2Btn } from './index'
 import { useTranslation } from 'react-i18next'
 import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -148,7 +149,7 @@ const Icon = ({ label = '' }: { label: string }) => {
     case 'SEPOLIA':
       return (
         <Avatar component={'span'} variant='circular'>
-          <>Sepolia</>{/* todo */}
+          <Box component={'img'} src={createImageFromInitials(24, 'Sepolia', '#56a7c9')}/> 
         </Avatar>
       )
     case 'TAIKO':
@@ -214,7 +215,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
   const {
-    account: { connectName },
+    account: { connectName, accAddress },
   } = useAccount()
   const [defaultNetwork, setDefaultNetwork] = React.useState<number | undefined>(_defaultNetwork)
 
@@ -274,45 +275,30 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
   )
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
+    
+    const { open } = useWeb3Modal()
     return (
       <>
-        {/* {defaultNetwork && (
-          <OutlineSelectStyle
-            aria-label={NetworkMap[defaultNetwork]?.label}
-            IconComponent={DropDownIcon}
-            labelId='network-selected'
-            id='network-selected'
-            className={`${className} ${NetworkMap[defaultNetwork]?.isTest ? 'test ' : ''} ${
-              isMobile ? 'mobile' : ''
+        {defaultNetwork && NetworkMap[defaultNetwork] && (
+          <OutlineSelectItemStyle
+            sx={{ cursor: 'pointer' }}
+            onClick={() => open({ view: accAddress ? 'Networks' : 'Connect' })}
+            disabled={disable(defaultNetwork)}
+            className={`viewNetwork${defaultNetwork} ${
+              NetworkMap[defaultNetwork]?.isTest ? 'provider-test' : ''
             }`}
+            aria-label={NetworkMap[defaultNetwork].label}
             value={defaultNetwork}
-            autoWidth
-            onChange={(event: SelectChangeEvent<any>) => handleOnNetworkSwitch(event.target.value)}
           >
-            {AvaiableNetwork.reduce((prew, id, index) => {
-              if (NetworkMap[id]) {
-                prew.push(
-                  <OutlineSelectItemStyle
-                    disabled={disable(id)}
-                    className={`viewNetwork${id} ${NetworkMap[id]?.isTest ? 'provider-test' : ''}`}
-                    aria-label={NetworkMap[id].label}
-                    value={id}
-                    key={'viewNetwork' + NetworkMap[id] + index}
-                  >
-                    <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
-                      <Icon label={MapChainId[id]} />
-                      <span className={'label'}>{t(NetworkMap[id].label)}</span>
-                    </Typography>
-                  </OutlineSelectItemStyle>,
-                )
-              }
-              return prew
-            }, [] as JSX.Element[])}
-          </OutlineSelectStyle>
-        )} */}
+            <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
+              <Icon label={MapChainId[defaultNetwork]} />
+              <span className={'label'}>{t(NetworkMap[defaultNetwork].label)}</span>
+            </Typography>
+          </OutlineSelectItemStyle>
+        )}
       </>
     )
-  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide])
+  }, [defaultNetwork, NetworkMap, connectName, connectProvides.usedProvide, accAddress])
   React.useEffect(() => {}, [])
 
   return {

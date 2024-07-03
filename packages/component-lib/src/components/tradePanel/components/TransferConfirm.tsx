@@ -124,14 +124,6 @@ export const TransferConfirm = <T extends IBData<I> & Partial<NFTWholeINFO>, I, 
       </Grid>
 
       <Grid item marginTop={2} alignSelf={'stretch'} paddingBottom={0}>
-        {lastFailed && (
-          <Typography paddingBottom={1} textAlign={'center'} color={'var(--color-warning)'}>
-            {t('labelConfirmAgainByFailedWithBalance', {
-              symbol: type === 'NFT' ? 'NFT' : ` ${tradeData?.belong}` ?? EmptyValueTag,
-              count: tradeData?.balance,
-            })}
-          </Typography>
-        )}
         <Button
           fullWidth
           variant={'contained'}

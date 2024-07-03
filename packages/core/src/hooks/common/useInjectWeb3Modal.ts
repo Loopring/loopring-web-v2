@@ -1,7 +1,7 @@
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
 import { SagaStatus, myLog } from '@loopring-web/common-resources'
-import { setDefaultNetwork } from '@loopring-web/component-lib'
+import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
 import { checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
@@ -64,19 +64,18 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   const { walletProvider } = useWeb3ModalProvider()
   const { status } = useSystem()
   const { address, chainId } = useWeb3ModalAccount()
-  const { resetAccount } = useAccount()
+  const { resetAccount, account: {accAddress} } = useAccount()
   const event = useWeb3ModalEvents()
   const dispatch = useDispatch()
   const { mode } = useTheme()
   const { setThemeMode } = useWeb3ModalTheme()
   const { updateWalletLayer1 } = useWalletLayer1()
+  const {defaultNetwork} = useSettings()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
   React.useEffect(() => {
-    if (event.data.event === 'SWITCH_NETWORK') {
-      location.reload()
-    } else if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
+    if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
       // 'DISCONNECT_SUCCESS' not work. Use `event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected` instead.
       if (type === 'BRIDGE') {
         resetAccount()
@@ -92,33 +91,35 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   React.useEffect(() => {
     ;(async () => {
       if (address && walletProvider) {
-        const { defaultNetwork } = store.getState().settings
-        const accAddress = store.getState().account.accAddress
-        if (address.toLowerCase() !== accAddress.toLowerCase() || chainId !== defaultNetwork) {
+        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) {
           store.dispatch(
             updateSystem({
               chainId,
             }),
           )
           store.dispatch(setDefaultNetwork(chainId))
-        }
+          setTimeout(() => {
+            location.reload()  
+          }, 1000);
+        } 
         checkAccount(address, chainId)
       }
       if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
         updateWalletLayer1()
       }
     })()
-  }, [address, walletProvider, chainId, status])
+  }, [address, walletProvider, chainId, status, accAddress, defaultNetwork])
   React.useEffect(() => {
-    if (type === 'BRIDGE') {
+    if (type === 'BRIDGE' && address) {
       store.dispatch(
         updateSystem({
           chainId,
         }),
       )
       store.dispatch(setDefaultNetwork(chainId))
+      checkAccount(address, chainId)
     }
-  }, [])
+  }, [address])
   React.useEffect(() => {
     if (walletProvider) {
       if (walletProvider.isMetaMask) {
