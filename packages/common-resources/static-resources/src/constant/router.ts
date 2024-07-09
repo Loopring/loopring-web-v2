@@ -527,7 +527,7 @@ export const LEVERAGE_ETH_CONFIG = {
 
 export const DUAL_CONFIG = {
   products: {
-    TAIKOHEKLA: [] as string[],
+    TAIKOHEKLA: ['PIONEX'] as string[],
     ETHEREUM: ['PIONEX'],
     GOERLI: ['PIONEX'],
     SEPOLIA: ['PIONEX'],
@@ -848,49 +848,7 @@ export enum TabOrderIndex {
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
-  TAIKOHEKLA: [
-    {
-      label: {
-        id: 'L2Assets',
-        i18nKey: 'labelAssets',
-      },
-      router: { path: `${RouterPath.l2assets}` },
-      status: HeaderMenuTabStatus.default,
-    },
-    {
-      label: {
-        id: 'Markets',
-        i18nKey: 'labelMarkets',
-      },
-      router: { path: `${RouterPath.markets}` },
-      status: HeaderMenuTabStatus.default,
-    },
-    {
-      label: {
-        id: 'Trade',
-        i18nKey: 'labelTrade',
-      },
-      status: HeaderMenuTabStatus.default,
-      child: [
-        {
-          label: {
-            id: 'lite',
-            i18nKey: 'labelClassic',
-            description: 'labelClassicDescription',
-          },
-          router: { path: RouterPath.lite + '/${pair}' },
-        },
-        {
-          label: {
-            id: 'pro',
-            i18nKey: 'labelAdvanced',
-            description: 'labelAdvancedDescription',
-          },
-          router: { path: RouterPath.pro + '/${pair}' },
-        },
-      ],
-    },
-  ],
+  TAIKOHEKLA: headerMenuData,
   ETHEREUM: headerMenuData,
   GOERLI: headerMenuData,
   SEPOLIA: headerMenuData,
@@ -905,7 +863,19 @@ export const TokenPriceBase = {
   ARBGOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
 }
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
-  TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
+  TAIKOHEKLA: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
+  ],
   ETHEREUM: [
     RecordTabIndex.Transactions,
     RecordTabIndex.Trades,
@@ -963,8 +933,12 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
 export const AddAssetListMap = {
   TAIKOHEKLA: [
     AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
     AddAssetList.FromOtherL2.key,
-    // AddAssetList.FromExchange.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+    AddAssetList.FromExchange.key,
   ],
   ETHEREUM: [
     AddAssetList.FromMyL1.key,
@@ -1061,9 +1035,17 @@ export const RouterAllowIndex = {
   TAIKOHEKLA: [
     RouterMainKey.lite,
     RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
     RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
     RouterMainKey.l2assets,
     RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+    RouterMainKey.vault,
   ],
   ETHEREUM: [
     RouterMainKey.lite,
@@ -1127,7 +1109,14 @@ export const RouterAllowIndex = {
 }
 
 export const ProfileIndex = {
-  TAIKOHEKLA: [Layer2RouterID.security, Layer2RouterID.referralrewards],
+  TAIKOHEKLA: [
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
+  ],
   ETHEREUM: [
     Layer2RouterID.security,
     Layer2RouterID.forcewithdraw,

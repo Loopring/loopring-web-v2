@@ -141,16 +141,7 @@ export const RouterAllowIndex = {
 }
 
 export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] } = {
-  TAIKOHEKLA: [
-    {
-      label: {
-        id: 'L2Assets',
-        i18nKey: 'labelAssets',
-      },
-      router: { path: '/l2assets' },
-      status: HeaderMenuTabStatus.default,
-    },
-  ],
+  TAIKOHEKLA: headerMenuEartData,
   ETHEREUM: headerMenuEartData,
   GOERLI: headerMenuEartData,
   SEPOLIA: headerMenuEartData,
@@ -169,7 +160,7 @@ export enum AssetTabIndex {
   DualInvests = 'DualInvests',
 }
 export const AssetL2TabEarnIndex = {
-  TAIKOHEKLA: [AssetTabIndex.Tokens],
+  TAIKOHEKLA: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
   ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
   GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
   SEPOLIA: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
@@ -177,7 +168,7 @@ export const AssetL2TabEarnIndex = {
   Arbitrum: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
 }
 export const RouterAllowEarnIndex = {
-  TAIKOHEKLA: [RouterMainKey.l2assets],
+  TAIKOHEKLA: [RouterMainKey.l2assets, RouterMainKey.invest],
   ETHEREUM: [RouterMainKey.l2assets, RouterMainKey.invest],
   GOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
   SEPOLIA: [RouterMainKey.l2assets, RouterMainKey.invest],
