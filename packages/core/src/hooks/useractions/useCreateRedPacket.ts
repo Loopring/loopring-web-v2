@@ -21,7 +21,7 @@ import {
   MapChainId,
   isAddress,
 } from '@loopring-web/common-resources'
-import { store, useAccount, useModalData, useNotify, useSystem, useTokenMap } from '../../stores'
+import { NETWORKEXTEND, store, useAccount, useModalData, useNotify, useSystem, useTokenMap } from '../../stores'
 import {
   AccountStep,
   CreateRedPacketProps,
@@ -518,7 +518,7 @@ export const useCreateRedPacket = <
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+              chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProvidersSignMap[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,

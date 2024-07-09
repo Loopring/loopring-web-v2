@@ -8,7 +8,6 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   connectProvides,
   ErrorType,
@@ -156,6 +155,12 @@ const Icon = ({ label = '' }: { label: string }) => {
       return (
         <Avatar component={'span'} variant='circular'>
           <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
+        </Avatar>
+      )
+    case 'TAIKOHEKLA':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <Box component={'img'} src={createImageFromInitials(24, 'TAIKOHEKLA', '#E91898')}/> 
         </Avatar>
       )
     default:

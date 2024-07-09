@@ -1,7 +1,6 @@
 import { accountServices, cleanLayer2, goErrorNetWork, store } from '../../index'
 
-import { AvaiableNetwork } from '@loopring-web/web3-provider'
-import { AccountStatus, myLog, SagaStatus } from '@loopring-web/common-resources'
+import { AccountStatus, myLog, SagaStatus, SUPPORTING_NETWORKS } from '@loopring-web/common-resources'
 import { updateAccountStatus } from '../../stores/account/reducer'
 import { updateSystem } from '../../stores/system/reducer'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -15,7 +14,7 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
   const { _chainId: accountChainId, accAddress, readyState } = store.getState().account
   if (chainId && chainId !== defaultNetwork) {
     let _chainId = Number(chainId)
-    if (AvaiableNetwork.includes(_chainId.toString())) {
+    if (SUPPORTING_NETWORKS.includes(_chainId.toString())) {
       store.dispatch(setDefaultNetwork(_chainId))
       if (systemStatus !== SagaStatus.UNSET) {
         await sdk.sleep(10)
@@ -37,7 +36,7 @@ export const networkUpdate = async (chainId?: ChainId | string): Promise<boolean
       return false
     }
   } else {
-    if (AvaiableNetwork.includes(defaultNetwork.toString())) {
+    if (SUPPORTING_NETWORKS.includes(defaultNetwork.toString())) {
       if (systemStatus !== SagaStatus.UNSET) {
         await sdk.sleep(10)
       }

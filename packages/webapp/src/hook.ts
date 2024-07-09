@@ -19,9 +19,8 @@ import {
   useVaultMap,
 } from '@loopring-web/core'
 import { ChainId } from '@loopring-web/loopring-sdk'
-import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
+import { myLog, SagaStatus, SUPPORTING_NETWORKS, ThemeType } from '@loopring-web/common-resources'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   ConnectProvides,
   connectProvides,
@@ -30,6 +29,7 @@ import {
 import { useAccountInit } from './hookAccountInit'
 import { useSettings } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
+import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 /**
  * @description
@@ -85,7 +85,7 @@ export function useInit() {
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
   const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
   const { status: vaultStatus, statusUnset: vaultStatusUnset } = useVaultMap()
-
+  const { chainId } =  useWeb3ModalAccount()
   React.useEffect(() => {
     ConnectProvides.walletConnectClientMeta = {
       ...ConnectProvides.walletConnectClientMeta,
@@ -105,30 +105,18 @@ export function useInit() {
       ) {
         try {
           ConnectProvides.IsMobile = isMobile
-          await connectProvides[account.connectName]({
-            // @ts-ignore
-            account: account.accAddress,
-            chainId: defaultNetwork.toString(),
-            darkMode: theme.mode === ThemeType.dark,
-          })
-          updateAccount({})
-          if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-            let chainId = Number(
-              // @ts-ignore
-              connectProvides.usedProvide?.connection?.chainId ??
-                (await connectProvides.usedWeb3.eth.getChainId()),
-            )
-            myLog('AvaiableNetwork', AvaiableNetwork)
-            if (!AvaiableNetwork.includes(chainId.toString())) {
-              chainId =
-                account._chainId && account._chainId !== 'unknown'
-                  ? account._chainId
-                  : ChainId.MAINNET
-            }
-            circleUpdateLayer1ActionHistory({ chainId })
+          if (chainId) {
+            updateAccount({})
+            const _chainId = !SUPPORTING_NETWORKS
+            .includes(chainId.toString())
+              ? account._chainId && account._chainId !== 'unknown'
+                ? account._chainId
+                : ChainId.MAINNET
+              : chainId
+            circleUpdateLayer1ActionHistory({ chainId: _chainId })
 
             if (!isNoServer) {
-              updateSystem({ chainId: chainId as any })
+              updateSystem({ chainId: _chainId as any })
             }
             return
           }
@@ -150,7 +138,7 @@ export function useInit() {
         }
       }
     })(account)
-  }, [])
+  }, [chainId])
   React.useEffect(() => {
     switch (accountStatus) {
       case SagaStatus.ERROR:

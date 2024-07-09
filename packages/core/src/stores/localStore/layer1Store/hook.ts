@@ -8,6 +8,7 @@ export const useLayer1Store = (): {
     [ChainId.MAINNET]: Layer1ActionHistory
     [ChainId.GOERLI]: Layer1ActionHistory
     [ChainId.SEPOLIA]: Layer1ActionHistory
+    [ChainId.TAIKOHEKLA]: Layer1ActionHistory
   }
   setOneItem: (props: { domain: string; uniqueId: string; chainId?: ChainId }) => void
   clearOneItem: (props: { domain: string; uniqueId: string; chainId?: ChainId }) => void

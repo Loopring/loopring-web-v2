@@ -476,16 +476,17 @@ export const INVEST_TABS = [
   { tab: InvestAssetRouter.STAKELRC, label: 'labelInvestLRCTitle' },
 ]
 
+
 export const DEFI_CONFIG = {
   products: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['LIDO', 'ROCKETPOOL'],
     GOERLI: ['ROCKETPOOL'],
     SEPOLIA: ['LIDO'],
     ARBGOERLI: ['ROCKETPOOL'],
   },
   MARKETS: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
     GOERLI: ['RETH-ETH'],
     SEPOLIA: ['WSTETH-ETH'],
@@ -494,28 +495,28 @@ export const DEFI_CONFIG = {
 }
 export const LEVERAGE_ETH_CONFIG = {
   coins: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
     SEPOLIA: ['WSTETH'],
     ARBGOERLI: ['WSTETH'],
   },
   types: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
     SEPOLIA: ['lido'],
     ARBGOERLI: ['lido'],
   },
   products: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['CIAN'],
     GOERLI: ['LIDO'],
     SEPOLIA: ['LIDO'],
     ARBGOERLI: ['LIDO'],
   },
   MARKETS: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['CIETH-ETH'],
     GOERLI: ['WSTETH-ETH'],
     SEPOLIA: ['WSTETH-ETH'],
@@ -526,7 +527,7 @@ export const LEVERAGE_ETH_CONFIG = {
 
 export const DUAL_CONFIG = {
   products: {
-    TAIKO: [] as string[],
+    TAIKOHEKLA: [] as string[],
     ETHEREUM: ['PIONEX'],
     GOERLI: ['PIONEX'],
     SEPOLIA: ['PIONEX'],
@@ -847,7 +848,7 @@ export enum TabOrderIndex {
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
-  TAIKO: [
+  TAIKOHEKLA: [
     {
       label: {
         id: 'L2Assets',
@@ -897,14 +898,14 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
 }
 
 export const TokenPriceBase = {
-  TAIKO: '0x0000000000000000000000000000000000000000',
+  TAIKOHEKLA: '0x0000000000000000000000000000000000000000', //todo
   ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
   SEPOLIA: '0xa7bc5a2731803be668090125b5074555f91cbc9d',
   ARBGOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
 }
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
-  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
+  TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.Trades, RecordTabIndex.Orders],
   ETHEREUM: [
     RecordTabIndex.Transactions,
     RecordTabIndex.Trades,
@@ -960,7 +961,7 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
 }
 
 export const AddAssetListMap = {
-  TAIKO: [
+  TAIKOHEKLA: [
     AddAssetList.FromMyL1.key,
     AddAssetList.FromOtherL2.key,
     // AddAssetList.FromExchange.key,
@@ -999,7 +1000,7 @@ export const AddAssetListMap = {
   ],
 }
 export const SendAssetListMap = {
-  TAIKO: [
+  TAIKOHEKLA: [
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
@@ -1030,7 +1031,7 @@ export const SendAssetListMap = {
   ],
 }
 export const AssetL2TabIndex = {
-  TAIKO: [AssetTabIndex.Tokens],
+  TAIKOHEKLA: [AssetTabIndex.Tokens],
   ETHEREUM: [
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
@@ -1057,7 +1058,7 @@ export const AssetL2TabIndex = {
   ],
 }
 export const RouterAllowIndex = {
-  TAIKO: [
+  TAIKOHEKLA: [
     RouterMainKey.lite,
     RouterMainKey.pro,
     RouterMainKey.markets,
@@ -1126,7 +1127,7 @@ export const RouterAllowIndex = {
 }
 
 export const ProfileIndex = {
-  TAIKO: [Layer2RouterID.security, Layer2RouterID.referralrewards],
+  TAIKOHEKLA: [Layer2RouterID.security, Layer2RouterID.referralrewards],
   ETHEREUM: [
     Layer2RouterID.security,
     Layer2RouterID.forcewithdraw,
@@ -1161,9 +1162,9 @@ export const ProfileIndex = {
 }
 
 export const L1L2_NAME_DEFINED = {
-  TAIKO: {
+  TAIKOHEKLA: {
     layer2: 'Layer 3',
-    l1ChainName: 'TAIKO',
+    l1ChainName: 'TAIKO HEKLA',
     loopringL2: 'Loopring L3',
     l2Symbol: 'L3',
     l1Symbol: 'TAIKO',
