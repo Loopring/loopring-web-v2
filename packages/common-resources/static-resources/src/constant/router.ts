@@ -848,7 +848,117 @@ export enum TabOrderIndex {
 }
 
 export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
-  TAIKOHEKLA: headerMenuData,
+  TAIKOHEKLA:[
+    {
+      label: {
+        id: 'home',
+        i18nKey: 'labelHome',
+      },
+      router: { path: `/pro` },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'L2Assets',
+        i18nKey: 'labelAssets',
+      },
+      router: { path: `${RouterPath.l2assets}` },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Markets',
+        i18nKey: 'labelMarkets',
+      },
+      router: { path: `${RouterPath.markets}` },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Trade',
+        i18nKey: 'labelTrade',
+      },
+      status: HeaderMenuTabStatus.default,
+      child: [
+        {
+          label: {
+            id: 'lite',
+            i18nKey: 'labelClassic',
+            description: 'labelClassicDescription',
+            icon: SwapIcon,
+          },
+          router: { path: RouterPath.lite + '/${pair}' },
+        },
+        {
+          label: {
+            id: 'pro',
+            i18nKey: 'labelAdvanced',
+            description: 'labelAdvancedDescription',
+            icon: OrderBookIcon,
+          },
+          router: { path: RouterPath.pro + '/${pair}' },
+        },
+        {
+          label: {
+            id: 'stopLimit',
+            i18nKey: 'labelStopLimit',
+            description: 'labelStopLimitDescription',
+            icon: StopLimitIcon,
+          },
+          router: { path: RouterPath.stoplimit + '/${pair}' },
+        },
+        {
+          label: {
+            id: 'btrade',
+            i18nKey: 'labelBtradeTrade',
+            description: 'labelBtradeTradeDescription',
+            icon: BlockTradeIcon,
+          },
+          router: { path: RouterPath.btrade + '/${pair}' },
+        },
+      ]
+    },
+    {
+      label: {
+        id: 'vault',
+        i18nKey: 'labelVault',
+        description: 'labelVaultDescription',
+      },
+      router: { path: `${RouterPath.vault}` },
+      status: HeaderMenuTabStatus.default,
+      child: vaultItemData,
+    },
+    {
+      label: {
+        id: 'Invest',
+        i18nKey: 'labelInvest',
+      },
+      router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+      status: HeaderMenuTabStatus.default,
+      child: [
+        // {
+        //   icon: L2MyLiquidityIcon,
+        //   router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+        //   label: {
+        //     id: 'overview',
+        //     i18nKey: 'labelInvestOverview',
+        //     description: 'labelInvestOverviewDes',
+        //     icon: OverviewIcon,
+        //   },
+        // },
+        {
+          icon: L2MyLiquidityIcon,
+          router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
+          label: {
+            id: 'dual',
+            i18nKey: 'labelInvestDual',
+            description: 'labelInvestDualDes',
+            icon: DualInvestIcon,
+          },
+        },
+      ] as HeaderMenuItemInterface[]
+    },
+  ],
   ETHEREUM: headerMenuData,
   GOERLI: headerMenuData,
   SEPOLIA: headerMenuData,
