@@ -956,6 +956,16 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
             icon: DualInvestIcon,
           },
         },
+        {
+          icon: L2MyLiquidityIcon,
+          router: { path: `${RouterPath.invest}/${InvestAssetRouter.AMM}` },
+          label: {
+            id: 'ammpool',
+            i18nKey: 'labelInvestAmm',
+            description: 'labelInvestAmmDes',
+            icon: AmmIcon,
+          },
+        },
       ] as HeaderMenuItemInterface[]
     },
   ],
