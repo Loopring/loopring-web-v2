@@ -101,8 +101,10 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
           setTimeout(() => {
             location.reload()  
           }, 1000);
-        } 
-        checkAccount(address, chainId)
+        }
+        if (chainId && chainIds.includes(chainId)) {
+          checkAccount(address, chainId)
+        }
       }
       if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
         updateWalletLayer1()
