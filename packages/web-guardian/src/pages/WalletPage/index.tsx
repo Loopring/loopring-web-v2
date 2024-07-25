@@ -270,6 +270,8 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const onClickCopy = useCallback((str: string) => {
     copyToClipBoard(str)
   }, [])
+  
+  const { checkHWAddr }= useWalletInfo()
 
   switch (account.readyState) {
     case AccountStatus.UN_CONNECT:
@@ -338,7 +340,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
     }&action=HebaoAddGuardian`,
   )
 
-  const { checkHWAddr }= useWalletInfo()
+  
 
   const codeInputValidation = () => {
     if (approvalRequests.codeInput) {
