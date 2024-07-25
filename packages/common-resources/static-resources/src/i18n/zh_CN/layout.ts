@@ -141,4 +141,5 @@ export default {
   labelVaultDashboard: 'Dashboard',
   labelVaultDashboardDes: 'Manage and trade your assets',
   labelVault2: 'Portfolio',
+  labelUnlockFirst: 'Unlock First',
 }
