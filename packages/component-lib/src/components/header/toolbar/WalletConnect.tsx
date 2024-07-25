@@ -11,6 +11,7 @@ import {
   LockIcon,
   myLog,
   UnConnectIcon,
+  UnlockedIcon,
 } from '@loopring-web/common-resources'
 import { Typography, Box } from '@mui/material'
 import { Button, ButtonProps } from '../../basic-lib'
@@ -42,19 +43,12 @@ const WalletConnectBtnStyled = styled(Button)`
     }
   }
 
-  &.no-account {
-  }
-  &.not-active {
-  }
-
-  &.unlocked {
-  }
-
   &.wrong-network {
     background: var(--color-error);
     color: var(--color-text-primary);
   }
 `
+
 const ProviderBox = styled(Box)<ButtonProps & { account?: any }>`
   display: none;
   background-image: none;
@@ -81,68 +75,65 @@ export const WalletConnectBtn = ({
   accountState,
   handleClick,
   NetWorkItems,
+  handleClickUnlock
 }: WalletConnectBtnProps) => {
+  console.log('accountState', accountState.account)
   const { t, i18n } = useTranslation(['layout', 'common'])
   const { isMobile } = useSettings()
-  const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
-
-  const [btnClassname, setBtnClassname] = React.useState<string | undefined>('')
-  const [icon, setIcon] = React.useState<JSX.Element | undefined>()
-
-  React.useEffect(() => {
+  
+  const {label, btnClassname, icon, isLocked} = React.useMemo(() => {
     const account = accountState?.account
+    var label: string | undefined
+    var btnClassname: string | undefined
+    var icon: JSX.Element | undefined
+    const isLocked = account.readyState === AccountStatus.LOCKED
     if (account) {
       const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined
       if (addressShort) {
-        setLabel(addressShort)
+        label = addressShort
       }
-      setIcon(undefined)
-
-      myLog('wallet connect account.readyState:', account.readyState)
-
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
-          setBtnClassname('un-connect')
-          setLabel('labelConnectWallet')
+          btnClassname = 'un-connect'
+          label = 'labelConnectWallet'
           break
         case AccountStatus.LOCKED:
-          setBtnClassname('locked')
-          setIcon(<LockIcon color={'error'} style={{ width: 16, height: 16 }} />)
+          btnClassname = 'locked'
+          icon = <LockIcon color={'error'}  style={{ width: 16, height: 16 }} />
           break
         case AccountStatus.ACTIVATED:
-          setBtnClassname('unlocked')
-          setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-success)'} />)
+          btnClassname = 'unlocked'
+          icon = <UnlockedIcon stroke='var(--color-success)' sx={{marginBottom: 0.1, marginRight: 0.5}} style={{ width: 16, height: 16 }} />
           break
         case AccountStatus.NO_ACCOUNT:
-          setBtnClassname('no-account')
-          setIcon(<CircleIcon fontSize={'large'} color={'error'} />)
+          btnClassname = 'no-account'
+          icon = <CircleIcon fontSize={'large'} color={'error'} />
           break
         case AccountStatus.DEPOSITING:
-          setBtnClassname('depositing')
-          setIcon(<LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />)
+          btnClassname = 'depositing'
+          icon = <LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />
           break
         case AccountStatus.NOT_ACTIVE:
-          setBtnClassname('not-active')
-          setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-warning)'} />)
+          btnClassname = 'not-active'
+          icon = <CircleIcon fontSize={'large'} htmlColor={'var(--color-warning)'} />
           break
         case AccountStatus.ERROR_NETWORK:
-          setBtnClassname('wrong-network')
-          setLabel('labelWrongNetwork')
-          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />)
+          btnClassname = 'wrong-network'
+          label = 'labelWrongNetwork'
+          icon = <UnConnectIcon style={{ width: 16, height: 16 }} />
           break
         default:
       }
     } else {
-      setLabel('labelConnectWallet')
+      label = 'labelConnectWallet'
+    }
+    return {
+      label: label ?? '',
+      btnClassname,
+      icon,
+      isLocked
     }
   }, [accountState?.account?.readyState, i18n])
-
-  const _handleClick = (event: React.MouseEvent) => {
-    // debounceCount(event)
-    if (handleClick) {
-      handleClick(event)
-    }
-  }
 
   const popupState = usePopupState({
     variant: 'popover',
@@ -152,33 +143,65 @@ export const WalletConnectBtn = ({
     <>
       {NetWorkItems}
       {!isMobile && <ProviderBox account={accountState?.account} />}
-      <WalletConnectBtnStyled
-        variant={
-          ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
-            ? 'contained'
-            : 'outlined'
-        }
-        size={
-          ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
-            ? 'small'
-            : 'medium'
-        }
-        color={'primary'}
-        className={`wallet-btn ${btnClassname}`}
-        onClick={_handleClick}
-        {...bindHover(popupState)}
-      >
-        {icon ? (
-          <Typography component={'i'} marginLeft={-1}>
-            {icon}
+      {(isLocked && !isMobile) ? (
+        <Box
+          display={'flex'}
+          paddingLeft={'1.2rem'}
+          borderRadius={'0.4rem'}
+          border={'1px solid var(--color-border)'}
+        >
+          <Box component={'div'} paddingRight={2} onClick={handleClick} paddingY={'5px'} display={'flex'} alignItems={'center'}>
+            <CircleIcon
+              fontSize={'large'}
+              htmlColor={'var(--color-error)'}
+              sx={{ marginLeft: -1 }}
+            />
+            <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
+              {t(label)}
+            </Typography>
+          </Box>
+          <Button
+            color={'error'}
+            size={'small'}
+            sx={{ borderRadius: '4px', height: '34px' }}
+            variant={'contained'}
+            onClick={handleClickUnlock}
+          >
+            <LockIcon sx={{ marginRight: 1, marginBottom: 0.2 }} style={{ width: 16, height: 16 }} />
+            <Typography component={'span'} variant={'body1'}>
+              Unlock First
+            </Typography>
+          </Button>
+        </Box>
+      ) : (
+        <WalletConnectBtnStyled
+          variant={
+            ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
+              ? 'contained'
+              : 'outlined'
+          }
+          size={
+            ['un-connect', 'wrong-network'].findIndex((ele) => btnClassname === ele) !== -1
+              ? 'small'
+              : 'medium'
+          }
+          color={'primary'}
+          className={`wallet-btn ${btnClassname}`}
+          onClick={handleClick}
+          {...bindHover(popupState)}
+        >
+          {icon ? (
+            <Typography component={'i'} marginLeft={-1}>
+              {icon}
+            </Typography>
+          ) : (
+            <></>
+          )}
+          <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
+            {t(label)}
           </Typography>
-        ) : (
-          <></>
-        )}
-        <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
-          {t(label)}
-        </Typography>
-      </WalletConnectBtnStyled>
+        </WalletConnectBtnStyled>
+      )}
     </>
   )
 }

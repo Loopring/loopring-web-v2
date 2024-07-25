@@ -489,6 +489,17 @@ export const LockIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
+export const UnlockedIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox='0 0 24 24' aria-hidden='true' fill="none" data-testid='LockIcon'>
+
+<path d="M19.0001 10.9999H4.99999C3.89542 10.9999 3 11.8953 3 12.9999V20C3 21.1044 3.89542 21.9999 4.99999 21.9999H19.0001C20.1045 21.9999 21 21.1044 21 20V12.9999C21 11.8953 20.1045 10.9999 19.0001 10.9999Z" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" fill='none'/>
+<path d="M7.00003 11.0002V7.00016C6.99879 5.7602 7.45831 4.56402 8.2894 3.64382C9.12049 2.72362 10.2639 2.14506 11.4975 2.02044C12.7312 1.89583 13.9672 2.23406 14.9655 2.96946C15.9639 3.70488 16.6533 4.785 16.9 6.00015"  stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" fill='none'/>
+
+
+    </SvgIcon>
+  )
+}
 export const ProToLiteIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon {...props} width='24' height='24' viewBox='0 0 24 24' fill='none'>
