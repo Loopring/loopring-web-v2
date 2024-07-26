@@ -278,10 +278,10 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     },
     [connectName, connectProvides.usedProvide, defaultNetwork],
   )
+  const { open } = useWeb3Modal()
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
     
-    const { open } = useWeb3Modal()
     return (
       <>
         {defaultNetwork && NetworkMap[defaultNetwork] && (
