@@ -29,7 +29,6 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const [label, setLabel] = React.useState(undefined)
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
     [fnType.ERROR_NETWORK]: [
@@ -40,10 +39,8 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
     ...btnLabelProps,
   })
 
-  React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET) {
-      setLabel(accountStaticCallBack(_btnLabel))
-    }
+  const label = React.useMemo(() => {
+    return accountStatus === SagaStatus.UNSET ? accountStaticCallBack(_btnLabel) : undefined
   }, [accountStatus, account.readyState, i18n.language])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
