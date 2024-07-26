@@ -40,7 +40,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
   })
 
   const label = React.useMemo(() => {
-    return accountStatus === SagaStatus.UNSET ? accountStaticCallBack(_btnLabel) : undefined
+    return (accountStatus === SagaStatus.UNSET || accountStatus === SagaStatus.DONE ) ? accountStaticCallBack(_btnLabel) : undefined
   }, [accountStatus, account.readyState, i18n.language])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
