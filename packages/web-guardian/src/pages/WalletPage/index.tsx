@@ -32,67 +32,9 @@ import { GuardianModal } from './GuardianModal'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { useWalletInfo } from '@loopring-web/core/src/stores/localStore/walletInfo'
+import { decodeData, getSignature } from './utils'
 
-const getSignature = async (args: {
-  web3: any,
-  guardianAddr: string, 
-  senderAddr: string, 
-  metaTxType: number,
-  networkName: sdk.NetworkWallet, 
-  validUntil: number, 
-  metaTxData: any,
-  moduleAddress: string,
-  isHWAddr: boolean
-}) => {
-  const {
-    web3,
-    guardianAddr, 
-    senderAddr, 
-    metaTxType, 
-    networkName, 
-    validUntil, 
-    moduleAddress,
-    metaTxData,
-    isHWAddr
-  } = args
-  if (LoopringAPI.walletAPI  && connectProvides.usedWeb3) {
-    const [
-      {
-        // @ts-ignore
-        raw_data: { data: contractTypes },
-      },
-      _chainId,
-    ] = await Promise.all([
-      LoopringAPI.walletAPI.getContractType({
-        wallet: senderAddr,
-        network: networkName,
-      }),
-      connectProvides.usedWeb3.eth.getChainId(),
-    ])
 
-    await callSwitchChain(_chainId)
-    const contractType = contractTypes?.find(
-      (item) => item?.network.toUpperCase() === networkName,
-    )
-    const isContract1XAddress = contractType && contractType.contractVersion?.startsWith('V1_') ? true : false
-
-    return sdk.signHebaoApproveWrap({
-      web3: web3,
-      chainId: _chainId,
-      owner: guardianAddr,
-      isHWAddr: isHWAddr,
-      type: metaTxType,
-      // newGuardians?: any
-      masterCopy: isContract1XAddress ? undefined : moduleAddress,
-      wallet: senderAddr,
-      validUntil: validUntil,
-      forwarderModuleAddress: isContract1XAddress ? moduleAddress : undefined,
-      messageData: metaTxData,
-      guardian: undefined,
-      walletVersion: isContract1XAddress ? 1 : 2
-    })
-  }
-}
 const WrongStatusStyled = styled(Box)`
   display: flex;
   justify-content: center;
@@ -345,7 +287,8 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const codeInputValidation = () => {
     if (approvalRequests.codeInput) {
       try {
-        const jsonObj = JSON.parse(approvalRequests.codeInput)
+        const jsonObj = decodeData(approvalRequests.codeInput)
+        if (!jsonObj) return t('labelGuardianCodeFormatError')
         if (network.toLowerCase() !== jsonObj.network.toLowerCase()) {
           return t('labelGuardianCodeNetworkError') 
         }
@@ -494,7 +437,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             guardianSign={approvalRequests.guardianSign}
             approvalCodeStatus={approvalRequests.codeApprovalStatus}
             onClickCodeApprovalApprove={async () => {
-              const jsonObj = JSON.parse(approvalRequests.codeInput)
+              const jsonObj = decodeData(approvalRequests.codeInput)
               const metaTxData =
                 jsonObj.metaTxType === 16
                   ? {
@@ -509,7 +452,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                 metaTxType: jsonObj.metaTxType,
                 networkName: (jsonObj.network as string).toUpperCase() as sdk.NetworkWallet,
                 validUntil: jsonObj.validUntil,
-                moduleAddress: jsonObj.module,
+                moduleAddress: jsonObj.extra.masterCopy,
                 metaTxData: metaTxData,
                 isHWAddr: checkHWAddr(account.accAddress),
               })
@@ -526,7 +469,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               })
             }}
             onClickNext={async () => {
-              const jsonObj = JSON.parse(approvalRequests.codeInput)
+              const jsonObj = decodeData(approvalRequests.codeInput)
               const metaTxData =
                 jsonObj.metaTxType === 16
                   ? {
@@ -541,7 +484,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                 metaTxType: jsonObj.metaTxType,
                 networkName: (jsonObj.network as string).toUpperCase() as sdk.NetworkWallet,
                 validUntil: jsonObj.validUntil,
-                moduleAddress: jsonObj.module,
+                moduleAddress: jsonObj.extra.masterCopy,
                 metaTxData: metaTxData,
                 isHWAddr: checkHWAddr(account.accAddress),
               })

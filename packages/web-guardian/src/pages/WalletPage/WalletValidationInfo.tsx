@@ -1,7 +1,7 @@
 import { Box, IconButton, Input, Modal, Typography } from '@mui/material'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { Trans, useTranslation } from 'react-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Button,
   EmptyDefault,
@@ -16,6 +16,7 @@ import { useTheme } from '@emotion/react'
 import { CopyIcon, ScanQRIcon, SoursURL } from '@loopring-web/common-resources'
 import { createImageFromInitials, shortenAddress } from '@loopring-web/core'
 import QRCodeStyling from 'qr-code-styling'
+import { decodeData, encodeData } from './utils'
 
 const VCODE_UNIT = 6
 export const WalletValidationInfo = ({
@@ -63,13 +64,14 @@ export const WalletValidationInfo = ({
     handleOpenModal,
   })
   const theme = useTheme()
-  const sharingStr =
-    approvalCodeStatus === 'sharing' && guardianSign
-      ? JSON.stringify({ ...JSON.parse(codeText), guardianSign })
+  const sharingStr = useMemo(() => {
+    return approvalCodeStatus === 'sharing' && guardianSign
+      ? encodeData({ ...decodeData(codeText), guardianSign })
       : undefined
+  }, [approvalCodeStatus === 'sharing', guardianSign, codeText])
 
   if (approvalCodeStatus === 'confirmation') {
-    const jsonObj = JSON.parse(codeText)
+    const jsonObj = decodeData(codeText)
 
     return (
       <Box>
@@ -136,7 +138,7 @@ export const WalletValidationInfo = ({
       </Box>
     )
   } else if (approvalCodeStatus === 'sharing') {
-    const jsonObj = JSON.parse(codeText)
+    const jsonObj = decodeData(codeText)
     // const guardianSign = '0xaa' // todo
     return (
       <Box display={'flex'} alignItems={'center'} flexDirection={'column'}>
