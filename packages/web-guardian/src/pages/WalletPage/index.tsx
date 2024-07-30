@@ -292,9 +292,6 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
         if (network.toLowerCase() !== jsonObj.network.toLowerCase()) {
           return t('labelGuardianCodeNetworkError') 
         }
-        if (account.accAddress.toLowerCase() !== jsonObj.guardian.toLowerCase()) {
-          return t('labelGuardianCodeAccountError')
-        }
       } catch {
         return t('labelGuardianCodeFormatError')
       }
@@ -444,6 +441,11 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                       newGuardians: jsonObj.extra.guardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
+                  : jsonObj.metaTxType === 18
+                  ? {
+                      ...jsonObj.extra,
+                      logdata: '',
+                    }
                   : jsonObj.extra
               const signature = await getSignature({
                 web3: connectProvides.usedWeb3,
@@ -476,7 +478,13 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                       newGuardians: jsonObj.extra.guardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
+                  : jsonObj.metaTxType === 18
+                  ? {
+                      ...jsonObj.extra,
+                      logdata: '0x',
+                    }
                   : jsonObj.extra
+              
               const signature = await getSignature({
                 web3: connectProvides.usedWeb3,
                 guardianAddr: account.accAddress,
@@ -491,7 +499,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               setApprovalRequests({
                 ...approvalRequests,
                 codeApprovalStatus: 'sharing',
-                guardianSign: signature,
+                guardianSign: signature!.slice(0, signature!.length - 2),
               })
             }}
             onClickScan={() => {
@@ -511,6 +519,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             codeText={approvalRequests.codeInput}
             codeInputError={codeInputValidation()}
             nextBtnDisabled={(!approvalRequests.codeInput || codeInputValidation()) ? true : false}
+            guardian={account.accAddress}
           />
         }
       />
