@@ -24,7 +24,63 @@ const extraKeyMap = [
   { short: 'c', long: 'data' },
   { short: 'gs', long: 'newGuardians' },
   { short: 'no', long: 'newOwner' },
+  { short: 'a', long: 'amount' },
 ]
+
+const compressCallData = (hexString: String) => {
+  const hex = hexString.startsWith("0x") ? hexString.slice(2) : hexString;
+  const length = hex.length;
+  var compressedData = '';
+  var zeroCount = 0;
+  for (var i = 0; i < length; i += 2) {
+      const byteStr = hex.slice(i, i + 2);
+      const byteValue = parseInt(byteStr, 16)
+      if (byteValue === 0) {
+          zeroCount++;
+      } else {
+          if (zeroCount > 0) {
+              compressedData += "00";
+              compressedData += zeroCount.toString(16).padStart(2, '0');;
+              zeroCount = 0;
+          }
+          compressedData += byteValue.toString(16).padStart(2, '0');
+      }
+  }
+  
+  if (zeroCount > 0) {
+      compressedData += "00"
+      compressedData += zeroCount.toString(16).padStart(2, '0');
+  }
+  return compressedData
+}
+
+
+function decompressCallData(compressedHexString: string) {
+  let decompressedData = [] as number[];
+  let length = compressedHexString.length;
+
+  for (let i = 0; i < length; i += 2) {
+      let byteStr = compressedHexString.substring(i, i + 2);
+      if (byteStr === "00") {
+          if (i + 2 < length) {
+              let zeroCount = parseInt(compressedHexString.substring(i + 2, i + 4), 16);
+              for (let j = 0; j < zeroCount; j++) {
+                  decompressedData.push(0);
+              }
+              i += 2;
+          }
+      } else {
+          decompressedData.push(parseInt(byteStr, 16));
+      }
+  }
+
+  let result = '';
+  for (let b of decompressedData) {
+      result += b.toString(16).padStart(2, '0');
+  }
+
+  return '0x' + result;
+}
 
 const JSONKeyMapShortToLong = (json: any) => {
   const mapped = mapKeys(json, (_, key) => {
@@ -44,7 +100,7 @@ const JSONKeyMapLongToShort = (json: any) => {
   }) as any
   return {
     ...mapped,
-    extra: mapKeys(mapped.extra, (_, key) => {
+    e: mapKeys(mapped.e, (_, key) => {
       return extraKeyMap.find((k) => k.long === key)!.short
     }),
   }
@@ -169,11 +225,25 @@ export const getSignature = async (args: {
   }
 }
 
-export const encodeData = (data: any) => 'MetaTxWa:' + JSON.stringify(JSONKeyMapLongToShort(data))
+export const encodeData = (data: any) => {
+  const {e,...rest} = JSONKeyMapLongToShort(data)
+  return 'MetaTxWa:' + JSON.stringify(rest)
+} 
 
 export const decodeData = (str: string) => {
   if (str.startsWith('MetaTxWa:')) {
-    return JSONKeyMapShortToLong(JSON.parse(str.slice(9)))
+    const obj = JSONKeyMapShortToLong(JSON.parse(str.slice(9)))
+    if (obj.extra.data) {
+      return {
+        ...obj,
+        extra: {
+          ...obj.extra,
+          data: decompressCallData(obj.extra.data) 
+        }
+      }
+    } else {
+      return obj
+    }
   } else {
     return undefined
   }

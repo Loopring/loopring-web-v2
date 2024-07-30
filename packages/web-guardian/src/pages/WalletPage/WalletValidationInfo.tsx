@@ -34,7 +34,8 @@ export const WalletValidationInfo = ({
   approvalCodeStatus,
   guardianSign,
   codeInputError,
-  nextBtnDisabled
+  nextBtnDisabled,
+  guardian
 }: {
   guardiansList: sdk.Guardian[]
   guardianConfig: any
@@ -49,6 +50,7 @@ export const WalletValidationInfo = ({
   onClickCodeApprovalReject: () => void
   approvalCodeStatus: 'init' | 'confirmation' | 'sharing'
   guardianSign?: string
+  guardian: string
   codeInputError?: string
   nextBtnDisabled: boolean
 }) => {
@@ -66,7 +68,7 @@ export const WalletValidationInfo = ({
   const theme = useTheme()
   const sharingStr = useMemo(() => {
     return approvalCodeStatus === 'sharing' && guardianSign
-      ? encodeData({ ...decodeData(codeText), guardianSign })
+      ? encodeData({ ...decodeData(codeText), guardian, guardianSign })
       : undefined
   }, [approvalCodeStatus === 'sharing', guardianSign, codeText])
 
