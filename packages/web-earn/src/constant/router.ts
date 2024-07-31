@@ -29,6 +29,7 @@ export enum RouterPath {
   // nft = '/nft',
   invest = '/invest',
   dualIntro = '/dual-intro',
+  intro = '/intro',
 }
 
 export enum RouterMainKey {
