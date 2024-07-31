@@ -976,7 +976,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
 }
 
 export const TokenPriceBase = {
-  TAIKOHEKLA: '0x68e98205b34c851ada1ebeb97dba826c39ccc47a', 
+  TAIKOHEKLA: '0x931c7ada32c20b9d565cab616fe9976154e29809', 
   ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
   SEPOLIA: '0xa7bc5a2731803be668090125b5074555f91cbc9d',
