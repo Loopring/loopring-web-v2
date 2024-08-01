@@ -1,9 +1,9 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { ToRightTopArrow } from '@loopring-web/common-resources';
+import { ToRightTopArrow, hexToRGB } from '@loopring-web/common-resources';
 import { useSettings } from '@loopring-web/component-lib';
 import { SoursURL } from '@loopring-web/loopring-sdk';
-import { Box, BoxProps, Button, ContainerProps } from '@mui/material';
+import { Box, BoxProps, Button, ContainerProps, useMediaQuery } from '@mui/material';
 // import { styled } from '@mui/material';
 import { Container, Typography, Card, CardMedia, CardContent, Grid } from '@mui/material';
 import React, { useState } from 'react';
@@ -69,27 +69,31 @@ const Section: React.FC<SectionProps> = (props) => {
     isReverse,
     sx
   } = props
+  const theme = useTheme()
+  const isCompact = useMediaQuery('(max-width:720px)');
   return (
     <Box
       sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#000',
-        color: '#fff',
-        flexDirection: isReverse ? 'row-reverse' : 'row',
+        backgroundColor: theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black,
+        color: 'var(--color-text-primary)',
+        flexDirection: isCompact ? 'column' : isReverse ? 'row-reverse' : 'row',
         ...sx
       }}
       {...props}
     >
-      <Box width={'30%'} marginRight={isReverse ? '' : '10%'}>
+      <Box width={isCompact ? '80%' : '30%'} marginRight={isReverse ? '' : '10%'}>
         <Grid item xs={12} md={6}>
           <Typography
             gutterBottom
             sx={{
               fontSize: '45px',
               marginBottom: 3,
-              fontWeight: 800
+              fontWeight: 800,
+              zIndex: 1,
+              position: 'relative'
             }}
             color={'var(--color-text-primary)'}
           >
@@ -100,7 +104,9 @@ const Section: React.FC<SectionProps> = (props) => {
             sx={{
               fontSize: '24px',
               marginBottom: 5,
-              fontWeight: 300
+              fontWeight: 300,
+              zIndex: 1,
+              position: 'relative'
             }}
             color={'var(--color-text-primary)'}
           >
@@ -110,15 +116,18 @@ const Section: React.FC<SectionProps> = (props) => {
             variant='contained'
             sx={{
               padding: '4px 20px',
-              fontSize: '1rem',
+              fontSize: '16px',
               color: 'var(--color-text-primary)',
+              fontWeight: 400,
               bgcolor: 'transparent',
               '&:hover': {
                 bgcolor: 'transparent',
               },
               borderRadius: '8px',
-              border: '1px solid var(--color-text-primary)',
-              cursor: 'pointer'
+              border: '1px solid var(--color-border)',
+              cursor: 'pointer',
+              zIndex: 1
+              
             }}
           >
             Learn More  <ToRightTopArrow
@@ -132,9 +141,11 @@ const Section: React.FC<SectionProps> = (props) => {
         image={imgURL}
         alt='Dual Investment Info'
         sx={{
-          width: '35%',
+          width: isCompact ? '80%' : '35%',
           height: 'auto',
-          marginRight: isReverse ? '10%' : ''
+          marginRight: isCompact ? '' : isReverse ? '10%' : '',
+          marginTop: isCompact ? 10 : 0,
+          zIndex: 1
         }}
       />
     </Box>
@@ -149,16 +160,18 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   })
   const theme = useTheme()
   const {t} = useTranslation('webEarn')
+  const isCompact = useMediaQuery('(max-width:720px)');
   return (
-    <Box height={'100%'}>
+    <Box>
       <Box
         width={'100%'}
         sx={{
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          backgroundImage: `url('${SoursURL}earn/intro_bg_1.jpg')`,
-          bgcolor: 'red',
+          backgroundImage: `url('${SoursURL}earn/intro_bg_1${
+            theme.mode === 'light' ? '_light' : ''
+          }.jpg')`,
           paddingTop: '44.32%',
           position: 'relative',
         }}
@@ -166,9 +179,17 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         <Box
           sx={{
             cursor: 'pointer',
-            background: 'rgba(255, 255, 255, 0.12)',
-            boxShadow:
-              '0px 40px 40px rgba(0, 0, 0, 0.25), inset 0px 4px 6px rgba(255, 255, 255, 0.12)',
+            background: hexToRGB(
+              theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black,
+              0.12,
+            ),
+            boxShadow: `0px 40px 40px ${hexToRGB(
+              theme.mode === 'light' ? theme.colorBase.black : theme.colorBase.white,
+              0.12,
+            )}, inset 0px 4px 6px ${hexToRGB(
+              theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black,
+              0.12,
+            )}`,
             backdropFilter: 'blur(12px)',
             borderRadius: '8px',
             padding: '12px 20px',
@@ -185,7 +206,23 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           />{' '}
         </Box>
       </Box>
-      <Box bgcolor={'var(--color-black)'} paddingTop={27.5}>
+      <Box
+        position={'relative'}
+        bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
+        paddingTop={isCompact ? 15 : 27.5}
+      >
+        <Box
+          width={'25%'}
+          sx={{ position: 'absolute', left: 0, top: '20%' }}
+          component={'img'}
+          src={`${SoursURL}earn/intro_sphere${theme.mode === 'light' ? '_light' : ''}.png`}
+        />
+        <Box
+          width={'25%'}
+          sx={{ position: 'absolute', right: 0, bottom: '5%' }}
+          component={'img'}
+          src={`${SoursURL}earn/intro_ring${theme.mode === 'light' ? '_light' : ''}.png`}
+        />
         <Section
           title='Dual Investment'
           des='Buy the dip or sell the covered gain while earning a high yield'
@@ -193,7 +230,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           imgURL={SoursURL + 'earn/intro_screenshot_1.png'}
         />
         <Section
-          marginTop={37.5}
+          marginTop={isCompact ? 15 : 37.5}
           isReverse
           title='Portal'
           des='Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. '
@@ -201,14 +238,18 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
         />
         <Section
-          marginTop={37.5}
+          marginTop={isCompact ? 15 : 37.5}
           title='Block Trade'
           des="Boost your earnings with CIAN protocol's leveraged ETH staking strategy."
           viewMoreLink=''
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
         />
+        
       </Box>
-      <Box paddingTop={20} bgcolor={'var(--color-black)'}>
+      <Box
+        paddingTop={20}
+        bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
+      >
         <Typography textAlign={'center'} fontSize={'45px'} fontWeight={800}>
           {t('labelLoopringProtocol')}
         </Typography>
@@ -222,7 +263,11 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           {t('labelLoopringProtocolDes')}
         </Typography>
       </Box>
-      <Box display={'flex'} justifyContent={'center'} bgcolor={'var(--color-black)'}>
+      <Box
+        display={'flex'}
+        justifyContent={'center'}
+        bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
+      >
         <Box
           display={'flex'}
           flexDirection={isMobile ? 'column' : 'row'}

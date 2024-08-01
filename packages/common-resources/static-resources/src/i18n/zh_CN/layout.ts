@@ -140,5 +140,5 @@ export default {
   labelVaultHomeDes: 'Access the available portfolio',
   labelVaultDashboard: 'Dashboard',
   labelVaultDashboardDes: 'Manage and trade your assets',
-  labelVault2: 'Portfolio',
+  labelVault2: 'Assets',
 }

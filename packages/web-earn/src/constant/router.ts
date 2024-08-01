@@ -30,6 +30,7 @@ export enum RouterPath {
   invest = '/invest',
   dualIntro = '/dual-intro',
   intro = '/intro',
+  portal = '/portal',
 }
 
 export enum RouterMainKey {
@@ -37,9 +38,18 @@ export enum RouterMainKey {
   dualIntro = 'dualIntro',
   invest = 'invest',
   layer2 = 'layer2',
+  portal = 'portal',
 }
 
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: 'L2Assets',
+      i18nKey: 'labelVault2',
+    },
+    router: { path: '/l2assets' },
+    status: HeaderMenuTabStatus.default,
+  },
   {
     label: {
       id: 'dual-intro',
@@ -50,10 +60,18 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: 'L2Assets',
-      i18nKey: 'labelVault2',
+      id: 'portal',
+      i18nKey: 'Portal-todo',
     },
-    router: { path: '/l2assets' },
+    router: { path: '/portal' },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: 'blockTrade',
+      i18nKey: 'Block Trade-todo',
+    },
+    router: { path: '/block-trade' },
     status: HeaderMenuTabStatus.default,
   },
 ]
