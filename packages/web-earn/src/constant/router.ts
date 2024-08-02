@@ -6,6 +6,7 @@ import {
   ButtonComponentsMap,
   SecurityIcon,
 } from '@loopring-web/common-resources'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const toolBarAvailableEarnItem: number[] = [
   ButtonComponentsMap.Download,
@@ -75,39 +76,20 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
     status: HeaderMenuTabStatus.default,
   },
 ]
-
 export const RouterAllowIndex = {
   TAIKO: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
     RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.portal,
   ],
   ETHEREUM: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
     RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.portal,
   ],
   GOERLI: [
     RouterMainKey.l2assets,
@@ -128,18 +110,9 @@ export const RouterAllowIndex = {
   SEPOLIA: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
     RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.portal,
   ],
   ARBGOERLI: [
     RouterMainKey.l2assets,
@@ -156,6 +129,13 @@ export const RouterAllowIndex = {
     // RouterMainKey.layer2,
     // RouterMainKey.nft,
     RouterMainKey.invest,
+  ],
+  TAIKOHEKLA: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    RouterMainKey.layer2,
+    RouterMainKey.invest,
+    RouterMainKey.portal,
   ],
 }
 

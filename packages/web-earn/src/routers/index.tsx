@@ -299,7 +299,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Intro />
           </ContentWrap>
         </Route>
-        <Route exact path={RouterPath.portal}>
+        <Route exact path={[RouterPath.portal, RouterPath.portal + '/*']}>
           <ContentWrap state={state} noContainer value={RouterMainKey.portal}>
             <VaultPage />
           </ContentWrap>
