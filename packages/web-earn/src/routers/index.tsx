@@ -47,7 +47,8 @@ import { EarnPage } from '../pages/EarnPage'
 import { RouterAllowIndex, RouterMainKey, RouterPath } from '../constant/router'
 import { Layer2Page } from '../pages/Layer2Page'
 import Intro from '../pages/IntroPage'
-import { VaultPage } from 'pages/VaultPage'
+import { VaultPage } from '../pages/VaultPage'
+import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 
 // RouterAllowIndex
 const ContentWrap = ({
@@ -200,7 +201,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MarkdownPage />
           </Container>
         </Route>
-        <Route exact path={'/'} children={ <Redirect to={RouterPath.dualIntro} /> }/>
+        <Route exact path={'/'} children={ <Redirect to={RouterPath.intro} /> }/>
         <Route exact path='/notification/:path'>
           {searchParams && searchParams.has('noheader') ? (
             <></>
@@ -242,6 +243,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={['/race-event/:path']}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <TradeRacePage />
+        </Route>
+
+        <Route path={RouterPath.btrade}>
+          <ContentWrap state={state} value={RouterMainKey.btrade}>
+            <BtradeSwapPage />
+          </ContentWrap>
         </Route>
 
         {/* <Route path={RouterPath.pro}>

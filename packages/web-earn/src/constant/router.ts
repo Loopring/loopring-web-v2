@@ -20,7 +20,7 @@ export enum RouterPath {
   // lite = '/trade/lite',
   // pro = '/trade/pro',
   // stoplimit = '/trade/stoplimit',
-  // btrade = '/trade/btrade',
+  btrade = '/trade/btrade',
   // fiat = '/trade/fiat',
   // markets = '/markets',
   // mining = '/mining',
@@ -40,6 +40,7 @@ export enum RouterMainKey {
   invest = 'invest',
   layer2 = 'layer2',
   portal = 'portal',
+  btrade = 'btrade',
 }
 
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
@@ -56,13 +57,13 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
       id: 'dual-intro',
       i18nKey: 'labelDualInvest',
     },
-    router: { path: '/dual-intro' },
+    router: { path: '/invest/dual' },
     status: HeaderMenuTabStatus.default,
   },
   {
     label: {
       id: 'portal',
-      i18nKey: 'Portal-todo',
+      i18nKey: 'labelVault',
     },
     router: { path: '/portal' },
     status: HeaderMenuTabStatus.default,
@@ -70,9 +71,9 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   {
     label: {
       id: 'blockTrade',
-      i18nKey: 'Block Trade-todo',
+      i18nKey: 'labelBtradeTrade',
     },
-    router: { path: '/block-trade' },
+    router: { path: '/trade/btrade' },
     status: HeaderMenuTabStatus.default,
   },
 ]
@@ -83,6 +84,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.invest,
     RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
   ETHEREUM: [
     RouterMainKey.l2assets,
@@ -90,44 +92,20 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.invest,
     RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
-  GOERLI: [
-    RouterMainKey.l2assets,
-    RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
-    RouterMainKey.layer2,
-    // RouterMainKey.nft,
-    RouterMainKey.invest,
-  ],
+  GOERLI: [],
   SEPOLIA: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
     RouterMainKey.layer2,
     RouterMainKey.invest,
     RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
   ARBGOERLI: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
-    // RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
   ],
   TAIKOHEKLA: [
@@ -136,6 +114,7 @@ export const RouterAllowIndex = {
     RouterMainKey.layer2,
     RouterMainKey.invest,
     RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
 }
 
@@ -157,11 +136,11 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
 }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
-  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',

@@ -8,6 +8,7 @@ import { Box, BoxProps, Button, ContainerProps, useMediaQuery } from '@mui/mater
 import { Container, Typography, Card, CardMedia, CardContent, Grid } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 
 interface IntroProps {
   
@@ -71,6 +72,7 @@ const Section: React.FC<SectionProps> = (props) => {
   } = props
   const theme = useTheme()
   const isCompact = useMediaQuery('(max-width:720px)');
+  const history = useHistory()
   return (
     <Box
       sx={{
@@ -127,8 +129,8 @@ const Section: React.FC<SectionProps> = (props) => {
               border: '1px solid var(--color-border)',
               cursor: 'pointer',
               zIndex: 1
-              
             }}
+            onClick={() => history.push(viewMoreLink)}
           >
             Learn More  <ToRightTopArrow
             sx={{ marginLeft: 1, fontSize: '24px', color: 'var(--color-text-primary)' }}
@@ -161,6 +163,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const theme = useTheme()
   const {t} = useTranslation('webEarn')
   const isCompact = useMediaQuery('(max-width:720px)');
+  const history = useHistory()
   return (
     <Box>
       <Box
@@ -199,6 +202,8 @@ const Intro: React.FC<IntroProps> = ({  }) => {
             color: 'var(--color-text-primary)',
             fontSize: '24px',
           }}
+          component={'div'}
+          onClick={() => history.push('/l2assets') }
         >
           View More{' '}
           <ToRightTopArrow
@@ -226,7 +231,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         <Section
           title='Dual Investment'
           des='Buy the dip or sell the covered gain while earning a high yield'
-          viewMoreLink=''
+          viewMoreLink='/invest/dual'
           imgURL={SoursURL + 'earn/intro_screenshot_1.png'}
         />
         <Section
@@ -234,14 +239,14 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           isReverse
           title='Portal'
           des='Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. '
-          viewMoreLink=''
+          viewMoreLink='/portal'
           imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
         />
         <Section
           marginTop={isCompact ? 15 : 37.5}
           title='Block Trade'
           des="Boost your earnings with CIAN protocol's leveraged ETH staking strategy."
-          viewMoreLink=''
+          viewMoreLink='/trade/btrade'
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
         />
         
