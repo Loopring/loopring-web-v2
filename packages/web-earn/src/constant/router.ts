@@ -54,7 +54,7 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: 'dual-intro',
+      id: 'dual',
       i18nKey: 'labelDualInvest',
     },
     router: { path: '/invest/dual' },
@@ -70,7 +70,7 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: 'blockTrade',
+      id: 'btrade',
       i18nKey: 'labelBtradeTrade',
     },
     router: { path: '/trade/btrade' },
