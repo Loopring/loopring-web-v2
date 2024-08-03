@@ -132,6 +132,7 @@ export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
   GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',
@@ -144,6 +145,7 @@ export const AssetL2TabEarnIndex = {
   SEPOLIA: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
   ARBGOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
   Arbitrum: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  TAIKOHEKLA: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
 }
 export const RouterAllowEarnIndex = {
   TAIKOHEKLA: [RouterMainKey.l2assets, RouterMainKey.invest],
