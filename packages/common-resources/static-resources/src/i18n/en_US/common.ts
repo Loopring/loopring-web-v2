@@ -2378,6 +2378,6 @@ export default {
     'Borrowed {{value}} {{symbol}} successful.',
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
-
+  labelAssetDefiPortfolio: 'Defi Portfolio',
 }
 
