@@ -16,6 +16,7 @@ import {
   useDualMap,
   useStakingMap,
   useBtradeMap,
+  useInjectWeb3Modal,
 } from '@loopring-web/core'
 import { ChainId } from '@loopring-web/loopring-sdk'
 import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
@@ -357,6 +358,7 @@ export function useInit() {
   }, [investTokenTypeMapStatus])
 
   useAccountInit({ state })
+  useInjectWeb3Modal('EARN')
   return {
     state,
   }

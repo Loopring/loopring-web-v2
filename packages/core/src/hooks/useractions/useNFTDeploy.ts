@@ -13,6 +13,7 @@ import {
   useChargeFees,
   useWalletLayer2NFT,
   useWalletL2Collection,
+  NETWORKEXTEND,
 } from '../../index'
 import { AccountStep, NFTDeployProps, useOpenModals } from '@loopring-web/component-lib'
 import React from 'react'
@@ -93,7 +94,7 @@ export function useNFTDeploy<T extends TradeNFT<I, any> & { broker: string }, I>
               {
                 request: request as sdk.OriginDeployNFTRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
-                chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+                chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
                 walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
@@ -110,7 +111,7 @@ export function useNFTDeploy<T extends TradeNFT<I, any> & { broker: string }, I>
               {
                 request: request as sdk.OriginDeployCollectionRequestV3,
                 web3: connectProvides.usedWeb3 as unknown as Web3,
-                chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+                chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
                 walletType: (ConnectProviders[connectName] ??
                   connectName) as unknown as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,

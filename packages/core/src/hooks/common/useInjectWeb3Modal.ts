@@ -1,6 +1,6 @@
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
-import { SagaStatus, myLog } from '@loopring-web/common-resources'
+import { SUPPORTING_NETWORKS, SagaStatus, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
 import { checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
@@ -51,7 +51,7 @@ const metadata = {
   url: process.env.REACT_APP_DOMAIN!,
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
-const chainIds = process.env.REACT_APP_CHAIN_IDS!.split(',').map(Number)
+const chainIds = SUPPORTING_NETWORKS.map(Number)
 export const web3Modal = createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
   chains: chains.filter(chain => chainIds.includes(chain.chainId)),

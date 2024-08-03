@@ -57,7 +57,7 @@ import {
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
-import { useContacts } from '../../stores'
+import { NETWORKEXTEND, useContacts } from '../../stores'
 import Web3 from 'web3'
 
 export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
@@ -344,7 +344,7 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+              chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
