@@ -21,6 +21,7 @@ import {
   btnClickMap,
   useSelectNetwork,
   useNotificationFunc,
+  unlockAccount,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
@@ -63,6 +64,7 @@ export const useHeader = () => {
     [fnType.LOCKED]: [
       function () {
         modal.open()
+        // unlockAccount()
       },
     ],
   })
@@ -71,7 +73,6 @@ export const useHeader = () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`)
     accountStaticCallBack(_btnClickMap, [])
   }, [account, setShouldShow, _btnClickMap])
-
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
   const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof _initHeaderToolBarData>({
@@ -85,6 +86,9 @@ export const useHeader = () => {
         headerToolBarData[ButtonComponentsMap.WalletConnect as any] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           handleClick: onWalletBtnConnect,
+          handleClickUnlock: () => {
+            unlockAccount()
+          },
           NetWorkItems,
           accountState: { account },
         }
