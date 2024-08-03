@@ -82,7 +82,7 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => history.push('/invest/balance')}
+              onClick={() => history.push('/l2assets/assets/Invests')}
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
