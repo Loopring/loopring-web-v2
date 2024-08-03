@@ -134,18 +134,20 @@ const MyLiquidity: any = withTranslation('common')(
       handleOnchange,
       onEditDualClick,
     } = useDualAsset()
+    
     const {
       summaryMyInvest,
 
       getStakingList,
       stakedSymbol,
+      
     } = useOverview({
       ammActivityMap,
       dualOnInvestAsset,
       hideSmallBalances,
       // dualList,
     })
-    const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
+    console.log('useDualAsset()',useDualAsset())
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -159,51 +161,6 @@ const MyLiquidity: any = withTranslation('common')(
 
     const theme = useTheme()
     const { isMobile } = useSettings()
-    const lidoAssets = assetsRawData.filter((o) => {
-      return (
-        ethStakingCoins?.includes(o.name) &&
-        o.token.type !== TokenType.lp &&
-        (hideSmallBalances ? !o.smallBalance : true)
-      )
-    })
-    const leverageETHAssets = assetsRawData.filter((o) => {
-      return (
-        marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
-      )
-    })
-    const totalClaimableRewardsAmount =
-      rewardsAPIError || !totalClaims
-        ? '0'
-        : getValuePrecisionThousand(
-            sdk
-              .toBig(
-                totalClaims['LRC']?.detail?.find(
-                  (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
-                )?.amount ?? 0,
-              )
-              .div('1e' + tokenMap[stakedSymbol].decimals),
-            tokenMap[stakedSymbol].precision,
-            tokenMap[stakedSymbol].precision,
-            tokenMap[stakedSymbol].precision,
-            false,
-            { floor: true, isAbbreviate: true },
-          )
-
-    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = rewardsAPIError
-      ? { totalDollar: '0', detail: [] }
-      : Reflect.ownKeys(totalClaims ?? {}).reduce(
-          (prev, key) => {
-            const item = totalClaims[key]?.detail?.find(
-              (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
-            )
-            if (item && item.amount !== '0') {
-              prev.detail.push({ ...item })
-              prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
-            }
-            return prev
-          },
-          { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
-        )
     const dualStakeDollar = React.useMemo(() => {
       return dualOnInvestAsset
         ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
@@ -285,15 +242,21 @@ const MyLiquidity: any = withTranslation('common')(
       onBtnClose,
       positionOpend,
       onClcikOpenPosition,
+      totalAsset: totalAssetVault,
       ...assetPanelProps
     } = useGetVaultAssets({ vaultAccountInfo: vaultAccountInfo })
     const { tokenMap: vaultTokenMap } = useVaultMap()
+    const priceTag = PriceTag[CurrencyToTag[currency]]
     const {vaultTickerMap} = useVaultTicker()
+    const defiTotalInUSD = sdk
+      .toBig(dualStakeDollar ?? 0)
+      .plus(totalAssetVault ?? 0)
+      .toString()
     // @ts-ignore
-    const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef: undefined })
+    const { marketProps } = useVaultMarket({ tableRef: undefined })
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {!noHeader && (
+        {/* {!noHeader && (
           <MaxWidthContainer
             height={isMobile ? 70 * theme.unit : 34 * theme.unit}
             alignItems={'center'}
@@ -382,7 +345,7 @@ const MyLiquidity: any = withTranslation('common')(
               </Box>
             </Box>
           </MaxWidthContainer>
-        )}
+        )} */}
 
         <MaxWidthContainer
           marginBottom={3}
@@ -394,7 +357,13 @@ const MyLiquidity: any = withTranslation('common')(
           }}
         >
           <Typography marginY={3.5} color={'var(--color-text-third)'}>
-            Total Balance: ${}
+            Total Balance: {nanToEmptyTag(
+              sdk
+                .toBig(defiTotalInUSD)
+                .times(forexMap[currency] ?? 0)
+                .toFixed(2, 1),
+              PriceTag[CurrencyToTag[currency]],
+            )}
           </Typography>
           <Box
             sx={{
@@ -413,7 +382,18 @@ const MyLiquidity: any = withTranslation('common')(
               />
               <Box>
                 <Typography variant='h4'>Dual Investment</Typography>
-                <Typography color={'var(--color-text-third)'}>Balance: ${} </Typography>
+                <Typography color={'var(--color-text-third)'}>
+                  Balance:{' '}
+                  {dualStakeDollar && !Number.isNaN(dualStakeDollar)
+                    ? nanToEmptyTag(
+                        sdk
+                          .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
+                          .times(forexMap[currency] ?? 0)
+                          .toFixed(2, 1),
+                        PriceTag[CurrencyToTag[currency]],
+                      )
+                    : EmptyValueTag}
+                </Typography>
               </Box>
             </Box>
             <TableWrapStyled
@@ -562,7 +542,22 @@ const MyLiquidity: any = withTranslation('common')(
               />
               <Box>
                 <Typography variant='h4'>Portal</Typography>
-                <Typography color={'var(--color-text-third)'}>Balance: ${} </Typography>
+                <Typography color={'var(--color-text-third)'}>
+                  Balance:{' '}
+                  {totalAssetVault && !sdk.toBig(totalAssetVault ?? 0).eq('0')
+                    ? `${nanToEmptyTag(
+                        getValuePrecisionThousand(
+                          sdk.toBig(totalAssetVault ?? 0).times(forexMap[currency] ?? 0),
+                          2,
+                          2,
+                          2,
+                          true,
+                          { floor: true },
+                        ),
+                        priceTag,
+                      )}`
+                    : EmptyValueTag}{' '}
+                </Typography>
               </Box>
             </Box>
             <Box marginLeft={-2.5}>
