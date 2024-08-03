@@ -14,6 +14,8 @@ import {
   store,
   useContacts,
   useSocket,
+  useVaultTicker,
+  useVaultLayer2,
 } from '@loopring-web/core'
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -57,6 +59,14 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   const { clearRedPacketHash } = redPacketHistory.useRedPacketHistory()
   const { account, status: accountStatus } = useAccount()
   const { sendSocketTopic, socketUserEnd } = useSocket()
+  
+  const {
+    updateVaultLayer2,
+    status: vaultLayer2Status,
+    statusUnset: vaultsLayer2Unset,
+  } = useVaultLayer2()
+  const { status: vaultTickerStatus, statusUnset: vaultTickerUnset } = useVaultTicker()
+
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
@@ -90,6 +100,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2()
+            updateVaultLayer2({})
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
           }
@@ -186,4 +197,28 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break
     }
   }, [contactsStatus])
+  React.useEffect(() => {
+    switch (vaultLayer2Status) {
+      case SagaStatus.ERROR:
+        vaultsLayer2Unset()
+        break
+      case SagaStatus.DONE:
+        vaultsLayer2Unset()
+        break
+      default:
+        break
+    }
+  }, [vaultLayer2Status])
+  React.useEffect(() => {
+    switch (vaultTickerStatus) {
+      case SagaStatus.ERROR:
+        vaultTickerUnset()
+        break
+      case SagaStatus.DONE:
+        vaultTickerUnset()
+        break
+      default:
+        break
+    }
+  }, [vaultTickerStatus])
 }

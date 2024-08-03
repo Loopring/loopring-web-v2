@@ -6,6 +6,7 @@ import {
   ButtonComponentsMap,
   SecurityIcon,
 } from '@loopring-web/common-resources'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const toolBarAvailableEarnItem: number[] = [
   ButtonComponentsMap.Download,
@@ -19,7 +20,7 @@ export enum RouterPath {
   // lite = '/trade/lite',
   // pro = '/trade/pro',
   // stoplimit = '/trade/stoplimit',
-  // btrade = '/trade/btrade',
+  btrade = '/trade/btrade',
   // fiat = '/trade/fiat',
   // markets = '/markets',
   // mining = '/mining',
@@ -29,6 +30,8 @@ export enum RouterPath {
   // nft = '/nft',
   invest = '/invest',
   dualIntro = '/dual-intro',
+  intro = '/intro',
+  portal = '/portal',
 }
 
 export enum RouterMainKey {
@@ -36,17 +39,11 @@ export enum RouterMainKey {
   dualIntro = 'dualIntro',
   invest = 'invest',
   layer2 = 'layer2',
+  portal = 'portal',
+  btrade = 'btrade',
 }
 
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
-  {
-    label: {
-      id: 'dual-intro',
-      i18nKey: 'labelDualInvest',
-    },
-    router: { path: '/dual-intro' },
-    status: HeaderMenuTabStatus.default,
-  },
   {
     label: {
       id: 'L2Assets',
@@ -55,88 +52,69 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
     router: { path: '/l2assets' },
     status: HeaderMenuTabStatus.default,
   },
+  {
+    label: {
+      id: 'dual',
+      i18nKey: 'labelDualInvest',
+    },
+    router: { path: '/invest/dual' },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: 'portal',
+      i18nKey: 'labelVault',
+    },
+    router: { path: '/portal' },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: 'btrade',
+      i18nKey: 'labelBtradeTrade',
+    },
+    router: { path: '/trade/btrade' },
+    status: HeaderMenuTabStatus.default,
+  },
 ]
-
 export const RouterAllowIndex = {
   TAIKOHEKLA: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
     RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
   ETHEREUM: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
     RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
-  GOERLI: [
-    RouterMainKey.l2assets,
-    RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
-    RouterMainKey.layer2,
-    // RouterMainKey.nft,
-    RouterMainKey.invest,
-  ],
+  GOERLI: [],
   SEPOLIA: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
     RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+    RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
   ARBGOERLI: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
-    // RouterMainKey.lite,
-    // RouterMainKey.pro,
-    // RouterMainKey.stoplimit,
-    // RouterMainKey.btrade,
-    // RouterMainKey.fiat,
-    // RouterMainKey.markets,
-    // RouterMainKey.mining,
-    // RouterMainKey.redPacket,
-    // RouterMainKey.l2assets,
-    // RouterMainKey.layer2,
-    // RouterMainKey.nft,
     RouterMainKey.invest,
+  ],
+  TAIKOHEKLA: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    RouterMainKey.layer2,
+    RouterMainKey.invest,
+    RouterMainKey.portal,
+    RouterMainKey.btrade,
   ],
 }
 
@@ -149,23 +127,23 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
 }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
-  TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
-  ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords],
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',
-  DualInvests = 'DualInvests',
+  DefiPortfolio = 'DefiPortfolio',
 }
 export const AssetL2TabEarnIndex = {
-  TAIKOHEKLA: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
-  ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
-  GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
-  SEPOLIA: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
-  ARBGOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
-  Arbitrum: [AssetTabIndex.Tokens, AssetTabIndex.DualInvests],
+  TAIKO: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  ETHEREUM: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  GOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  SEPOLIA: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  ARBGOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  Arbitrum: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
 }
 export const RouterAllowEarnIndex = {
   TAIKOHEKLA: [RouterMainKey.l2assets, RouterMainKey.invest],
