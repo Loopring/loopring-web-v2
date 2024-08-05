@@ -29,7 +29,6 @@ export type QCodeProps = {
   fgColor2?: string
   bgColor?: string
   imageInfo?: { imageSrc?: string; size?: number }
-  margin?: number
 }
 const qrCode = new QRCodeStyling()
 
@@ -43,14 +42,12 @@ export const QRCode = ({
     imageSrc: `${SoursURL + 'svg/loopring.svg'}`,
     size: 40,
   },
-  margin
 }: QCodeProps & QRCodePanelProps) => {
   const ref = React.useRef()
 
   React.useEffect(() => {
     if (url) {
       qrCode.update({
-        margin,
         type: 'svg',
         data: url,
         width: size,
