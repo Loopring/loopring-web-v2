@@ -31,4 +31,5 @@ export interface HeaderProps<R, N = sdk.UserNotification> {
   toolBarMap?: typeof ButtonComponentsMap
   transparent?: boolean
   landBtn?: JSX.Element
+  application: string
 }

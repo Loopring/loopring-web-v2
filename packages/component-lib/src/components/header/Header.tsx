@@ -233,6 +233,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         i18n,
         t,
         transparent,
+        application,
         ...rest
       }: HeaderProps<R> & WithTranslation,
       ref: React.ForwardedRef<any>,
@@ -308,16 +309,33 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           ]
                         }
 
-                        const selectFlag =
-                          match?.params[LAYERMAP[layer + 1]] &&
+                        let selectedFlag: boolean | undefined = undefined
+                        if (application === 'web-earn') {
+                          if (label.id === 'portal') {
+                            selectedFlag = match?.params['l1'] === 'portal'
+                          } else if (label.id === 'L2Assets') {
+                            selectedFlag = match?.params['l1'] === 'l2assets'
+                          } else if (label.id === 'dual') {
+                            selectedFlag = match?.params['l1'] === 'invest' 
+                            && match?.params['l2'] === 'dual' 
+                          } else if (label.id === 'btrade') {
+                            selectedFlag = match?.params['l1'] === 'trade' 
+                            && match?.params['l2'] === 'btrade' 
+                          } else {
+                            selectedFlag = false
+                          }
+                        } else {
+                          selectedFlag = match?.params[LAYERMAP[layer + 1]] &&
                           new RegExp(label.id?.toLowerCase(), 'ig').test(
                             match?.params[LAYERMAP[layer + 1]],
                           )
+                        }
+                        
 
                         return [
                           ...prev,
                           <HeadMenuItem
-                            selected={selectFlag}
+                            selected={selectedFlag}
                             {...{
                               ...props,
                               allowTrade,

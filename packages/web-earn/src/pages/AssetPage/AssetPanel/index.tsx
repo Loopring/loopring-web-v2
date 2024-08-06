@@ -56,9 +56,9 @@ export const AssetPanel = withTranslation('common')(
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
-          case AssetTabIndex.DualInvests:
+          case AssetTabIndex.DefiPortfolio:
             history.replace('/l2assets/assets/Invests')
-            setCurrentTab(AssetTabIndex.DualInvests)
+            setCurrentTab(AssetTabIndex.DefiPortfolio)
             break
           case AssetTabIndex.Tokens:
           default:
@@ -73,7 +73,7 @@ export const AssetPanel = withTranslation('common')(
     }
     React.useEffect(() => {
       if (match.params.item === 'Invests') {
-        setCurrentTab(AssetTabIndex.DualInvests)
+        setCurrentTab(AssetTabIndex.DefiPortfolio)
       }
     }, [])
     const hideAssets = assetTitleProps.hideL2Assets
@@ -185,7 +185,7 @@ export const AssetPanel = withTranslation('common')(
           </MaxWidthContainer>
         )}
 
-        {currentTab === AssetTabIndex.DualInvests && (
+        {currentTab === AssetTabIndex.DefiPortfolio && (
           <MyLiquidity
             noHeader
             className={'assetWrap'}

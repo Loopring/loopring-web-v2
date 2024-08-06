@@ -8,7 +8,6 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   connectProvides,
   ErrorType,
@@ -158,6 +157,12 @@ const Icon = ({ label = '' }: { label: string }) => {
           <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
         </Avatar>
       )
+    case 'TAIKOHEKLA':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <Box component={'img'} src={createImageFromInitials(24, 'TAIKOHEKLA', '#E91898')}/> 
+        </Avatar>
+      )
     default:
       const child = label.split(' ')?.map((item) => item[0])
       return <Avatar component={'span'} variant='circular' children={child} />
@@ -273,10 +278,10 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     },
     [connectName, connectProvides.usedProvide, defaultNetwork],
   )
+  const { open } = useWeb3Modal()
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
     
-    const { open } = useWeb3Modal()
     return (
       <>
         {defaultNetwork && NetworkMap[defaultNetwork] && (

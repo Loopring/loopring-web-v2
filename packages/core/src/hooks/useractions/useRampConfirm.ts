@@ -12,7 +12,7 @@ import {
   WALLET_TYPE,
   WalletMap,
 } from '@loopring-web/common-resources'
-import { useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
+import { NETWORKEXTEND, useAccount, useModalData, useSystem, useTokenMap } from '../../stores'
 import { AccountStep, useOpenModals } from '@loopring-web/component-lib'
 import React from 'react'
 import { makeWalletLayer2 } from '../help'
@@ -352,7 +352,7 @@ export const useRampTransPost = () => {
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+              chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,

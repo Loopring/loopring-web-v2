@@ -7,6 +7,7 @@ const initialState: NFTHashInfos = {
   [ChainId.GOERLI]: { nftDataHashes: {} },
   [ChainId.MAINNET]: { nftDataHashes: {} },
   [ChainId.SEPOLIA]: { nftDataHashes: {} },
+  [ChainId.TAIKOHEKLA]: { nftDataHashes: {} },
   // withdrawHashes:{},
 }
 

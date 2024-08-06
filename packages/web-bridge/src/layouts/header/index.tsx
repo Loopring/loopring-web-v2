@@ -39,6 +39,7 @@ const Header = withTranslation('common')(
             headerToolBarData={{}}
             notification={notifyMap}
             selected={location.pathname === '/' ? headerRoot : location.pathname}
+            application={'web-bridge'}
           />
         </HideOnScroll>
         <Toolbar id='back-to-top-anchor' />

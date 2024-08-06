@@ -15,6 +15,7 @@ import {
   myLog,
   TokenPriceBase,
   CurrencyToTag,
+  SUPPORTING_NETWORKS,
 } from '@loopring-web/common-resources'
 import { statusUnset as accountStatusUnset } from '../account/reducer'
 import { getAmmMap, initAmmMap } from '../Amm/AmmMap/reducer'
@@ -31,7 +32,6 @@ import { clearAll as clearWalletInfoAll } from '../localStore/walletInfo'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
-import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 import { updateDualSyncMap } from '../invest/DualMap/reducer'
@@ -390,7 +390,8 @@ const should15MinutesUpdateDataGroup = async (
 }
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) => {
-  const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
+  const extendsChain: string[] = (SUPPORTING_NETWORKS ?? []) 
+  .filter(
     (item) => ![1, 5, 11155111].includes(Number(item)),
   )
   const env =
@@ -400,7 +401,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       ? ENV.UAT
       : ENV.PROD
   const chainId: sdk.ChainId = (
-    AvaiableNetwork.includes(_chainId.toString()) ? Number(_chainId) : ChainIdExtends.NONETWORK
+    SUPPORTING_NETWORKS.includes(_chainId.toString()) ? Number(_chainId) : ChainIdExtends.NONETWORK
   ) as sdk.ChainId
   if (_chainId === ChainIdExtends.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
@@ -409,12 +410,13 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
     if (LoopringAPI.exchangeAPI) {
       let baseURL, socketURL, etherscanBaseUrl
       if (extendsChain.includes(chainId.toString())) {
+
         const socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
         baseURL = `https://${process.env['REACT_APP_API_URL_' + chainId.toString()]}`
         socketURL = `wss://${socketPrefix}${
           process.env['REACT_APP_API_URL_' + chainId.toString()]
         }/v3/ws`
-        etherscanBaseUrl = chainId == sdk.ChainId.SEPOLIA ? `https://sepolia.etherscan.io/` : `https://etherscan.io/`
+        etherscanBaseUrl = undefined
       } else {
         if (sdk.ChainId.MAINNET === chainId) {
           baseURL = `https://${process.env.REACT_APP_API_URL_1}`
@@ -553,6 +555,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
 export function* getUpdateSystem({ payload }: any) {
   try {
     const { chainId } = payload
+    
     const {
       env,
       baseURL,

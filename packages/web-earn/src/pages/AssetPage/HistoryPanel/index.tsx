@@ -1,6 +1,6 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box, Tab, Tabs } from '@mui/material'
+import { Box, Divider, Tab, Tabs, Typography } from '@mui/material'
 import {
   AmmTable,
   BtradeSwapTable,
@@ -8,11 +8,14 @@ import {
   DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
+  ModalCloseButton,
   OrderHistoryTable,
+  SwitchPanelStyled,
   Toast,
   ToastType,
   TradeTable,
   TransactionTable,
+  VaultTxTable,
   useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
@@ -35,6 +38,7 @@ import {
   useGetTrades,
   useGetTxs,
   useOrderList,
+  useVaultTransaction,
 } from './hooks'
 import {
   BackIcon,
@@ -46,6 +50,8 @@ import {
 } from '@loopring-web/common-resources'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { RecordEarnMap } from '../../../constant/router'
+import { Modal } from '@mui/material'
+import { VaultCloseDetail, VaultOperationDetail, VaultTradeDetail } from '@loopring-web/component-lib/src/components/tableList/vaultTable/VaultTxTable'
 
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
@@ -134,6 +140,17 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
 
   const { userOrderDetailList, getUserOrderDetailTradeList } = useGetOrderHistorys()
   const { etherscanBaseUrl } = useSystem()
+  const {
+    getVaultOrderList,
+    vaultOrderData,
+    totalNum: vaultTotal,
+    showLoading: showVaultLoaning,
+    onItemClick: onVaultDetail,
+    vaultOperationDetail,
+    openVaultDetail,
+    onVaultDetailClose,
+  } = useVaultTransaction(setToastOpen)
+
   const {
     getBtradeOrderList,
     btradeOrderData,
@@ -456,6 +473,120 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               tokenMap={tokenMap}
               idIndex={idIndex}
             />
+          ) : currentTab === RecordTabIndex.VaultRecords ? (
+            <>
+              <Modal
+                open={openVaultDetail}
+                onClose={onVaultDetailClose}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+              >
+                <SwitchPanelStyled width={'var(--modal-width)'}>
+                  <ModalCloseButton onClose={onVaultDetailClose} t={t} />
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    alignItems={'flex-start'}
+                    alignSelf={'stretch'}
+                    marginTop={-4}
+                    justifyContent={'stretch'}
+                  >
+                    <Typography
+                      display={'flex'}
+                      flexDirection={'row'}
+                      component={'header'}
+                      alignItems={'center'}
+                      height={'var(--toolbar-row-height)'}
+                      paddingX={3}
+                    >
+                      <Typography component={'span'} display={'inline-flex'}>
+                        {vaultOperationDetail &&
+                          (vaultOperationDetail.type === 'VAULT_BORROW'
+                            ? t('labelBorrowDetail')
+                            : vaultOperationDetail.type === 'VAULT_MARGIN_CALL'
+                            ? t('labelMarginCallDetail')
+                            : vaultOperationDetail.type === 'VAULT_OPEN_POSITION'
+                            ? t('labelVaultJoin')
+                            : vaultOperationDetail.type === 'VAULT_REPAY'
+                            ? t('labelRepayDetail')
+                            : vaultOperationDetail.type === 'VAULT_TRADE'
+                            ? t('labelTradeDetail')
+                            : t('labelCloseOutDetail'))
+                            }
+                      </Typography>
+                    </Typography>
+                    <Divider style={{ marginTop: '-1px', width: '100%' }} />
+                  </Box>
+                  <Box
+                    flex={1}
+                    paddingY={2}
+                    width={'100%'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    sx={
+                      isMobile
+                        ? {
+                            maxHeight: 'initial',
+                            overflowY: 'initial',
+                          }
+                        : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                    }
+                  >
+                    {vaultOperationDetail &&
+                      (vaultOperationDetail.type === 'VAULT_BORROW' ||
+                        vaultOperationDetail.type === 'VAULT_MARGIN_CALL' ||
+                        vaultOperationDetail.type === 'VAULT_OPEN_POSITION' ||
+                        vaultOperationDetail.type === 'VAULT_REPAY') && (
+                        <VaultOperationDetail
+                          statusColor={vaultOperationDetail.statusColor}
+                          statusLabel={vaultOperationDetail.statusLabel}
+                          time={vaultOperationDetail.time}
+                          type={vaultOperationDetail.type}
+                          statusType={vaultOperationDetail.statusType}
+                          amount={vaultOperationDetail.amount}
+                          amountSymbol={vaultOperationDetail.amountSymbol}
+                        />
+                      )}
+                    {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_CLOSE_OUT' && (
+                      <VaultCloseDetail
+                        vaultCloseDetail={vaultOperationDetail.vaultCloseDetail}
+                      />
+                    )}
+                    {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_TRADE' && (
+                      <VaultTradeDetail
+                        statusColor={vaultOperationDetail.statusColor}
+                        statusLabel={vaultOperationDetail.statusLabel}
+                        fromSymbol={vaultOperationDetail.fromSymbol}
+                        toSymbol={vaultOperationDetail.toSymbol}
+                        placedAmount={vaultOperationDetail.placedAmount}
+                        executedAmount={vaultOperationDetail.executedAmount}
+                        executedRate={vaultOperationDetail.executedRate}
+                        convertedAmount={vaultOperationDetail.convertedAmount}
+                        price={vaultOperationDetail.price}
+                        feeSymbol={vaultOperationDetail.feeSymbol}
+                        feeAmount={vaultOperationDetail.feeAmount}
+                        time={vaultOperationDetail.time}
+                        statusType={vaultOperationDetail.statusType}
+                      />
+                    )}
+                  </Box>
+                </SwitchPanelStyled>
+              </Modal>
+              <Box flex={1} display={'flex'} flexDirection={'column'} marginTop={-2}>
+                <VaultTxTable
+                  {...{
+                    showloading: showVaultLoaning,
+                    getOrderList: getVaultOrderList,
+                    rawData: vaultOrderData,
+                    onItemClick: onVaultDetail,
+                  }}
+                  pagination={{
+                    pageSize: pageSize,
+                    total: vaultTotal,
+                  }}
+                />
+              </Box>
+            </>
           ) : (
             <></>
           )}

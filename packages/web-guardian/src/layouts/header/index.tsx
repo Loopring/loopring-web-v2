@@ -43,6 +43,7 @@ const Header = withTranslation('common')(
             headerToolBarData={headerToolBarData}
             notification={notifyMap}
             selected={location.pathname === '/' ? headerRoot : location.pathname}
+            application={'web-guardian'}
           />
         </HideOnScroll>
         <Toolbar id='back-to-top-anchor' />

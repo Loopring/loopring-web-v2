@@ -18,6 +18,7 @@ import {
   accountStaticCallBack,
   btnClickMap,
   useSelectNetwork,
+  unlockAccount,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
@@ -83,6 +84,10 @@ export const useHeader = () => {
         headerToolBarData[ButtonComponentsMap.WalletConnect] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
           handleClick: onWalletBtnConnect,
+          handleClickUnlock: () => {
+            unlockAccount()
+          },
+
           NetWorkItems,
           accountState: { account },
         }

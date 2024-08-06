@@ -24,6 +24,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import {
   LAST_STEP,
+  NETWORKEXTEND,
   store,
   useAccount,
   useModalData,
@@ -177,7 +178,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
             {
               request,
               web3: connectProvides.usedWeb3 as unknown as Web3,
-              chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+              chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
               walletType: (ConnectProviders[connectName] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,

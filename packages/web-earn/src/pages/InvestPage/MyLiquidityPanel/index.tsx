@@ -11,6 +11,7 @@ import {
   SwitchPanelStyled,
   Toast,
   ToastType,
+  VaultAssetsTable,
   useSettings,
 } from '@loopring-web/component-lib'
 import {
@@ -29,6 +30,7 @@ import {
   myLog,
   PriceTag,
   SagaStatus,
+  SoursURL,
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
@@ -40,6 +42,7 @@ import {
   confirmation,
   TableWrapStyled,
   useAccount,
+  useAccountInfo,
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
@@ -47,6 +50,8 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
+  useVaultMap,
+  useVaultTicker,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useGetAssets } from '../../AssetPage/AssetPanel/hook'
@@ -55,6 +60,8 @@ import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
 import { RowEarnConfig } from '../../../constant/setting'
+import { useGetVaultAssets } from 'pages/VaultPage/DashBoardPanel/hook'
+import { useVaultMarket } from 'pages/VaultPage/HomePanel/hook'
 
 const MyLiquidity: any = withTranslation('common')(
   ({
@@ -127,18 +134,20 @@ const MyLiquidity: any = withTranslation('common')(
       handleOnchange,
       onEditDualClick,
     } = useDualAsset()
+    
     const {
       summaryMyInvest,
 
       getStakingList,
       stakedSymbol,
+      
     } = useOverview({
       ammActivityMap,
       dualOnInvestAsset,
       hideSmallBalances,
       // dualList,
     })
-    const { marketLeverageCoins: marketCoins, marketCoins: ethStakingCoins } = useDefiMap()
+    console.log('useDualAsset()',useDualAsset())
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -152,51 +161,6 @@ const MyLiquidity: any = withTranslation('common')(
 
     const theme = useTheme()
     const { isMobile } = useSettings()
-    const lidoAssets = assetsRawData.filter((o) => {
-      return (
-        ethStakingCoins?.includes(o.name) &&
-        o.token.type !== TokenType.lp &&
-        (hideSmallBalances ? !o.smallBalance : true)
-      )
-    })
-    const leverageETHAssets = assetsRawData.filter((o) => {
-      return (
-        marketCoins && marketCoins.includes(o.name) && (hideSmallBalances ? !o.smallBalance : true)
-      )
-    })
-    const totalClaimableRewardsAmount =
-      rewardsAPIError || !totalClaims
-        ? '0'
-        : getValuePrecisionThousand(
-            sdk
-              .toBig(
-                totalClaims['LRC']?.detail?.find(
-                  (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
-                )?.amount ?? 0,
-              )
-              .div('1e' + tokenMap[stakedSymbol].decimals),
-            tokenMap[stakedSymbol].precision,
-            tokenMap[stakedSymbol].precision,
-            tokenMap[stakedSymbol].precision,
-            false,
-            { floor: true, isAbbreviate: true },
-          )
-
-    const totalAMMClaims: { totalDollar: string; detail: EarningsDetail[] } = rewardsAPIError
-      ? { totalDollar: '0', detail: [] }
-      : Reflect.ownKeys(totalClaims ?? {}).reduce(
-          (prev, key) => {
-            const item = totalClaims[key]?.detail?.find(
-              (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.PROTOCOL_FEE,
-            )
-            if (item && item.amount !== '0') {
-              prev.detail.push({ ...item })
-              prev.totalDollar = sdk.toBig(item.tokenValueDollar).plus(prev.totalDollar).toString()
-            }
-            return prev
-          },
-          { totalDollar: '0', detail: [] } as { totalDollar: string; detail: EarningsDetail[] },
-        )
     const dualStakeDollar = React.useMemo(() => {
       return dualOnInvestAsset
         ? dualOnInvestAsset.reduce((pre: string, cur: any) => {
@@ -267,9 +231,32 @@ const MyLiquidity: any = withTranslation('common')(
     const nanToEmptyTag = (value: any, prefix: string) => {
       return value === 'NaN' ? EmptyValueTag : prefix + value
     }
+    const vaultAccountInfo = useAccountInfo()
+    const {
+      onActionBtnClick,
+      dialogBtn,
+      showNoVaultAccount,
+      setShowNoVaultAccount,
+      whichBtn,
+      btnProps,
+      onBtnClose,
+      positionOpend,
+      onClcikOpenPosition,
+      totalAsset: totalAssetVault,
+      ...assetPanelProps
+    } = useGetVaultAssets({ vaultAccountInfo: vaultAccountInfo })
+    const { tokenMap: vaultTokenMap } = useVaultMap()
+    const priceTag = PriceTag[CurrencyToTag[currency]]
+    const {vaultTickerMap} = useVaultTicker()
+    const defiTotalInUSD = sdk
+      .toBig(dualStakeDollar ?? 0)
+      .plus(totalAssetVault ?? 0)
+      .toString()
+    // @ts-ignore
+    const { marketProps } = useVaultMarket({ tableRef: undefined })
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {!noHeader && (
+        {/* {!noHeader && (
           <MaxWidthContainer
             height={isMobile ? 70 * theme.unit : 34 * theme.unit}
             alignItems={'center'}
@@ -358,7 +345,8 @@ const MyLiquidity: any = withTranslation('common')(
               </Box>
             </Box>
           </MaxWidthContainer>
-        )}
+        )} */}
+
         <MaxWidthContainer
           marginBottom={3}
           minHeight={'80vh'}
@@ -368,20 +356,57 @@ const MyLiquidity: any = withTranslation('common')(
             marginTop: 0,
           }}
         >
-          {
-            <>
-              {
-                <TableWrapStyled
-                  ref={dualRef}
-                  className={`min-height`}
-                  marginBottom={2}
-                  paddingTop={1}
-                  paddingX={0}
-                  flex={1}
-                  marginLeft={-3}
-                >
-                  <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
-                    {/* {dualStakeDollar !== undefined ? (
+          <Typography marginY={3.5} color={'var(--color-text-third)'}>
+            Total Balance: {nanToEmptyTag(
+              sdk
+                .toBig(defiTotalInUSD)
+                .times(forexMap[currency] ?? 0)
+                .toFixed(2, 1),
+              PriceTag[CurrencyToTag[currency]],
+            )}
+          </Typography>
+          <Box
+            sx={{
+              borderRadius: '8px',
+              border: '1px solid var(--color-border)',
+              padding: 4.5,
+            }}
+          >
+            <Box display={'flex'}>
+              <Box
+                component={'img'}
+                marginRight={1}
+                width={40}
+                height={40}
+                src={SoursURL + 'images/icon-dual.svg'}
+              />
+              <Box>
+                <Typography variant='h4'>Dual Investment</Typography>
+                <Typography color={'var(--color-text-third)'}>
+                  Balance:{' '}
+                  {dualStakeDollar && !Number.isNaN(dualStakeDollar)
+                    ? nanToEmptyTag(
+                        sdk
+                          .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
+                          .times(forexMap[currency] ?? 0)
+                          .toFixed(2, 1),
+                        PriceTag[CurrencyToTag[currency]],
+                      )
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+            </Box>
+            <TableWrapStyled
+              ref={dualRef}
+              className={`min-height`}
+              marginBottom={2}
+              paddingTop={1}
+              paddingX={0}
+              flex={1}
+              marginLeft={-3}
+            >
+              <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
+                {/* {dualStakeDollar !== undefined ? (
                       <Typography component={'h4'} variant={'h3'} marginX={3}>
                         {dualStakeDollar && !Number.isNaN(dualStakeDollar)
                           ? hideAssets
@@ -398,111 +423,160 @@ const MyLiquidity: any = withTranslation('common')(
                     ) : (
                       ''
                     )} */}
-                    <DualAssetTable
-                      rawData={dualList}
-                      getDetail={getDetail}
-                      idIndex={idIndex}
-                      dualMarketMap={dualMarketMap}
-                      tokenMap={tokenMap}
-                      showloading={dualLoading}
-                      pagination={pagination}
-                      getDualAssetList={getDualTxList}
-                      showDetail={showDetail}
-                      refresh={refresh}
-                      hideAssets={hideAssets}
-                      cancelReInvest={_cancelReInvest as any}
-                      getProduct={getProduct}
-                      rowConfig={RowEarnConfig}
-                    />
-                    <Modal
-                      open={dualOpen}
-                      onClose={(_e: any) => setDualOpen(false)}
-                      aria-labelledby='modal-modal-title'
-                      aria-describedby='modal-modal-description'
-                    >
-                      <SwitchPanelStyled width={'var(--modal-width)'}>
-                        <ModalCloseButton onClose={(_e: any) => setDualOpen(false)} t={t} />
-                        {dualDetail && dualDetail.dualViewInfo && (
-                          <Box
-                            flex={1}
-                            paddingY={2}
-                            width={'100%'}
-                            display={'flex'}
-                            flexDirection={'column'}
-                          >
-                            <DualDetail
-                              setShowAutoDefault={setShowAutoDefault}
-                              isOrder={true}
-                              btnConfirm={
-                                dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
-                                  <ButtonStyle
-                                    fullWidth
-                                    variant={'contained'}
-                                    size={'medium'}
-                                    color={'primary'}
-                                    onClick={() => {
-                                      onEditDualClick()
-                                    }}
-                                    loading={
-                                      editDualBtnStatus === TradeBtnStatus.LOADING
-                                        ? 'true'
-                                        : 'false'
-                                    }
-                                    disabled={
-                                      editDualBtnStatus === TradeBtnStatus.LOADING ||
-                                      editDualBtnStatus === TradeBtnStatus.DISABLED
-                                    }
-                                  >
-                                    {label}
-                                  </ButtonStyle>
-                                )
-                              }
-                              dualProducts={dualProducts}
-                              dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
-                              currentPrice={dualDetail.dualViewInfo.currentPrice}
-                              isPriceEditable={true}
-                              toggle={{ enable: true }}
-                              lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
-                              greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
-                              lessEarnView={dualDetail.lessEarnView}
-                              greaterEarnView={dualDetail.greaterEarnView}
-                              onChange={(item) => {
-                                handleOnchange({ tradeData: item })
-                              }}
-                              onChangeOrderReinvest={(info, item) => {
-                                if (info.on) {
-                                  handleOnchange({
-                                    tradeData: {
-                                      ...item,
-                                      isRenew: info.on,
-                                      renewTargetPrice: info.renewTargetPrice,
-                                      renewDuration: info.renewDuration,
-                                    } as any,
-                                  })
-                                  onEditDualClick({ dontCloseModal: false })
-                                } else {
-                                  handleOnchange({
-                                    tradeData: {
-                                      ...item,
-                                      isRenew: false,
-                                    } as any,
-                                  })
-                                  onEditDualClick({ dontCloseModal: false })
+                <DualAssetTable
+                  rawData={dualList}
+                  getDetail={getDetail}
+                  idIndex={idIndex}
+                  dualMarketMap={dualMarketMap}
+                  tokenMap={tokenMap}
+                  showloading={dualLoading}
+                  pagination={pagination}
+                  getDualAssetList={getDualTxList}
+                  showDetail={showDetail}
+                  refresh={refresh}
+                  hideAssets={hideAssets}
+                  cancelReInvest={_cancelReInvest as any}
+                  getProduct={getProduct}
+                  rowConfig={RowEarnConfig}
+                />
+                <Modal
+                  open={dualOpen}
+                  onClose={(_e: any) => setDualOpen(false)}
+                  aria-labelledby='modal-modal-title'
+                  aria-describedby='modal-modal-description'
+                >
+                  <SwitchPanelStyled width={'var(--modal-width)'}>
+                    <ModalCloseButton onClose={(_e: any) => setDualOpen(false)} t={t} />
+                    {dualDetail && dualDetail.dualViewInfo && (
+                      <Box
+                        flex={1}
+                        paddingY={2}
+                        width={'100%'}
+                        display={'flex'}
+                        flexDirection={'column'}
+                      >
+                        <DualDetail
+                          setShowAutoDefault={setShowAutoDefault}
+                          isOrder={true}
+                          btnConfirm={
+                            dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (
+                              <ButtonStyle
+                                fullWidth
+                                variant={'contained'}
+                                size={'medium'}
+                                color={'primary'}
+                                onClick={() => {
+                                  onEditDualClick()
+                                }}
+                                loading={
+                                  editDualBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'
                                 }
-                              }}
-                              coinSell={{
-                                ...editDualTrade,
-                              }}
-                            />
-                          </Box>
-                        )}
-                      </SwitchPanelStyled>
-                    </Modal>
-                  </Grid>
-                </TableWrapStyled>
-              }
-            </>
-          }
+                                disabled={
+                                  editDualBtnStatus === TradeBtnStatus.LOADING ||
+                                  editDualBtnStatus === TradeBtnStatus.DISABLED
+                                }
+                              >
+                                {label}
+                              </ButtonStyle>
+                            )
+                          }
+                          dualProducts={dualProducts}
+                          dualViewInfo={dualDetail.dualViewInfo as DualViewBase}
+                          currentPrice={dualDetail.dualViewInfo.currentPrice}
+                          isPriceEditable={true}
+                          toggle={{ enable: true }}
+                          lessEarnTokenSymbol={dualDetail.lessEarnTokenSymbol}
+                          greaterEarnTokenSymbol={dualDetail.greaterEarnTokenSymbol}
+                          lessEarnView={dualDetail.lessEarnView}
+                          greaterEarnView={dualDetail.greaterEarnView}
+                          onChange={(item) => {
+                            handleOnchange({ tradeData: item })
+                          }}
+                          onChangeOrderReinvest={(info, item) => {
+                            if (info.on) {
+                              handleOnchange({
+                                tradeData: {
+                                  ...item,
+                                  isRenew: info.on,
+                                  renewTargetPrice: info.renewTargetPrice,
+                                  renewDuration: info.renewDuration,
+                                } as any,
+                              })
+                              onEditDualClick({ dontCloseModal: false })
+                            } else {
+                              handleOnchange({
+                                tradeData: {
+                                  ...item,
+                                  isRenew: false,
+                                } as any,
+                              })
+                              onEditDualClick({ dontCloseModal: false })
+                            }
+                          }}
+                          coinSell={{
+                            ...editDualTrade,
+                          }}
+                        />
+                      </Box>
+                    )}
+                  </SwitchPanelStyled>
+                </Modal>
+              </Grid>
+            </TableWrapStyled>
+          </Box>
+          <Box
+            sx={{
+              borderRadius: '8px',
+              border: '1px solid var(--color-border)',
+              padding: 4.5,
+              marginTop: 4,
+            }}
+          >
+            <Box marginBottom={2} display={'flex'}>
+              <Box
+                component={'img'}
+                marginRight={1}
+                width={40}
+                height={40}
+                src={SoursURL + 'images/icon-dual.svg'}
+              />
+              <Box>
+                <Typography variant='h4'>Portal</Typography>
+                <Typography color={'var(--color-text-third)'}>
+                  Balance:{' '}
+                  {totalAssetVault && !sdk.toBig(totalAssetVault ?? 0).eq('0')
+                    ? `${nanToEmptyTag(
+                        getValuePrecisionThousand(
+                          sdk.toBig(totalAssetVault ?? 0).times(forexMap[currency] ?? 0),
+                          2,
+                          2,
+                          2,
+                          true,
+                          { floor: true },
+                        ),
+                        priceTag,
+                      )}`
+                    : EmptyValueTag}{' '}
+                </Typography>
+              </Box>
+            </Box>
+            <Box marginLeft={-2.5}>
+              <VaultAssetsTable
+                {...assetPanelProps}
+                onRowClick={(index, row) => {
+                  // @ts-ignore
+                  marketProps.onRowClick(index, {
+                    // @ts-ignore
+                    ...vaultTokenMap[row.name],
+                    // @ts-ignore
+                    cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+                    ...vaultTickerMap[row.erc20Symbol],
+                  })
+                }}
+                showFilter
+              />
+            </Box>
+          </Box>
         </MaxWidthContainer>
         <Modal
           open={showRefreshError}

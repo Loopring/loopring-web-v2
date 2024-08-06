@@ -2,15 +2,15 @@ import React from 'react'
 import {
   layer1Store,
   useAccount,
+  useInjectWeb3Modal,
   useSocket,
   useSystem,
   useTokenMap,
   useTokenPrices,
 } from '@loopring-web/core'
 import { ChainId } from '@loopring-web/loopring-sdk'
-import { myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources'
+import { myLog, SagaStatus, SUPPORTING_NETWORKS, ThemeType } from '@loopring-web/common-resources'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   ConnectProvides,
   connectProvides,
@@ -91,8 +91,7 @@ export function useInit() {
               connectProvides.usedProvide?.connection?.chainId ??
                 (await connectProvides.usedWeb3.eth.getChainId()),
             )
-            myLog('AvaiableNetwork', AvaiableNetwork)
-            if (!AvaiableNetwork.includes(chainId.toString())) {
+            if (!SUPPORTING_NETWORKS.includes(chainId.toString())) {
               chainId =
                 account._chainId && account._chainId !== 'unknown'
                   ? account._chainId
@@ -198,6 +197,7 @@ export function useInit() {
   }, [socketStatus])
 
   useAccountInit({ state })
+  useInjectWeb3Modal('GUARDIAN')
   return {
     state,
   }

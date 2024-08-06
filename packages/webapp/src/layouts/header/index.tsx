@@ -116,6 +116,7 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
                 onClickExclusiveredPacket={onClickExclusiveredPacket}
                 showExclusiveRedpacket={showExclusiveRedpacket}
                 exclusiveRedpacketCount={exclusiveRedpacketCount}
+                application={'webapp'}
               />
             </HideOnScroll>
           ) : (
@@ -135,6 +136,7 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
               onClickExclusiveredPacket={onClickExclusiveredPacket}
               showExclusiveRedpacket={showExclusiveRedpacket}
               exclusiveRedpacketCount={exclusiveRedpacketCount}
+              application={'webapp'}
             />
           )}
           <Toolbar id='back-to-top-anchor' />
