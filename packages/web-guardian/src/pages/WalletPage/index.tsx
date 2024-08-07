@@ -140,9 +140,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const { account } = useAccount()
   const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
-    ? sdk.NetworkWallet.ETHEREUM
-    : sdk.NetworkWallet[network]
+  const networkName: sdk.NetworkWallet = sdk.NetworkWallet[network]
   const [openQRCode, setOpenQRCode] = React.useState(false)
   const onOpenAdd = React.useCallback((open: boolean) => {
     setOpenQRCode(open)
