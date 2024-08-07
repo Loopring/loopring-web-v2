@@ -1282,6 +1282,17 @@ export const L1L2_NAME_DEFINED = {
     L1Token: 'ETH',
     L2Token: 'TAIKO',
   },
+  TAIKO: {
+    layer2: 'Layer 3',
+    l1ChainName: 'TAIKO HEKLA',
+    loopringL2: 'Loopring L3',
+    l2Symbol: 'L3',
+    l1Symbol: 'TAIKO',
+    ethereumL1: 'TAIKO',
+    loopringLayer2: 'Loopring Layer 3',
+    L1Token: 'ETH',
+    L2Token: 'TAIKO',
+  },
   ETHEREUM: {
     layer2: 'Layer 2',
     l1ChainName: 'Ethereum',
