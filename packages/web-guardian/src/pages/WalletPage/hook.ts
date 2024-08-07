@@ -72,9 +72,8 @@ export const useHebaoMain = <
   const [isLoading, setIsLoading] = React.useState(false)
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
-    ? sdk.NetworkWallet.ETHEREUM
-    : sdk.NetworkWallet[network]
+  const networkName: sdk.NetworkWallet = sdk.NetworkWallet[network]
+  // sdk.NetworkWallet[MapChainId[AvaiableNetwork.includes(chainId.toString()) ? chainId : 1]]
   const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory
     if (LoopringAPI.walletAPI && account.accAddress) {
@@ -240,9 +239,7 @@ export const useAction = ({
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true)
 
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
-    ? sdk.NetworkWallet.ETHEREUM
-    : sdk.NetworkWallet[network]
+  const networkName: sdk.NetworkWallet = sdk.NetworkWallet[network]
   const submitApprove = async (code: string, selected: sdk.Guardian) => {
     setOpenCode(false)
     handleOpenModal({
@@ -453,9 +450,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
   const { setOneItem } = layer1Store.useLayer1Store()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
-    ? sdk.NetworkWallet.ETHEREUM
-    : sdk.NetworkWallet[network]
+  const networkName: sdk.NetworkWallet = sdk.NetworkWallet[network]
   const onLock = React.useCallback(
     async (item: T) => {
       handleOpenModal({
