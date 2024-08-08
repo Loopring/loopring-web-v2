@@ -473,7 +473,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               const metaTxData =
                 jsonObj.metaTxType === 16
                   ? {
-                      newGuardians: jsonObj.extra.guardians,
+                      newGuardians: jsonObj.extra.newGuardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
                   : jsonObj.metaTxType === 18
