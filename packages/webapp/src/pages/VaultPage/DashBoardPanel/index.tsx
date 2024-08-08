@@ -191,6 +191,11 @@ export const VaultDashBoardPanel = ({
   const { tokenMap: vaultTokenMap, tokenPrices } = useVaultMap()
   const history = useHistory()
   const {vaultTickerMap} = useVaultTicker()
+  
+  const [localState, setLocalState] = React.useState({
+    modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit',
+  })
+  console.log('vaultTokenMap', vaultTokenMap)
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -388,6 +393,14 @@ export const VaultDashBoardPanel = ({
                               sx={{ cursor: 'pointer' }}
                               color={'var(--color-primary)'}
                               marginLeft={1}
+                              component={'span'}
+                              onClick={() => {
+                                setLocalState({
+                                  ...localState,
+                                  modalStatus: 'collateralDetails'
+                                })
+
+                              }}
                             >
                               Detail
                             </Typography>
@@ -952,40 +965,67 @@ export const VaultDashBoardPanel = ({
                   </Box>
                 </SwitchPanelStyled>
               </Modal>
-              <CollateralDetailsModal 
-                open={false}
+              <CollateralDetailsModal
+                open={localState.modalStatus === 'collateralDetails'}
                 onClose={() => {
-
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'noModal'
+                  })
+                }}
+                onClickMaxCredit={() => {
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'collateralDetailsMaxCredit'
+                  })
                 }}
                 collateralTokens={[
                   {
-                    name:'LRC',
+                    name: 'LRC',
                     logo: '',
-                    amount:'1',
-                    valueInUSD: '1'
-                  }
+                    amount: '1',
+                    valueInUSD: '1',
+                  },
                 ]}
                 maxCredit='11'
                 totalCollateral='11'
-                />
+              />
               <MaximumCreditModal
-                open
+                open={
+                  localState.modalStatus === 'leverageMaxCredit' ||
+                  localState.modalStatus === 'collateralDetailsMaxCredit'
+                }
                 onClose={() => {
-
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'noModal',
+                  })
+                }}
+                onClickBack={() => {
+                  if (localState.modalStatus === 'collateralDetailsMaxCredit') {
+                    setLocalState({
+                      ...localState,
+                      modalStatus: 'collateralDetails',
+                    })
+                  } else if (localState.modalStatus === 'leverageMaxCredit') {
+                    setLocalState({
+                      ...localState,
+                      modalStatus: 'leverage',
+                    })
+                  }
                 }}
                 collateralFactors={[
                   {
-                    name:'LRC',
+                    name: 'LRC',
                     collateralFactor: '1',
                   },
                   {
-                    name:'BTC',
+                    name: 'BTC',
                     collateralFactor: '0.9',
-                  }
+                  },
                 ]}
                 maxLeverage={11}
-                />
-                
+              />
             </>
           }
         />

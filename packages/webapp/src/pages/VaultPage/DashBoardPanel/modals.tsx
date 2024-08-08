@@ -5,6 +5,7 @@ import { BackIcon, CloseIcon } from '@loopring-web/common-resources'
 type CollateralDetailsModalProps = {
   open: boolean
   onClose: () => void
+  onClickMaxCredit: () => void
   collateralTokens: {
     name: string
     logo: string
@@ -16,7 +17,7 @@ type CollateralDetailsModalProps = {
 }
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
-  const { open, onClose, collateralTokens, totalCollateral, maxCredit } = props
+  const { open, onClose, collateralTokens, totalCollateral, maxCredit,onClickMaxCredit } = props
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -77,9 +78,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
               adjusted for price factor and the maximum leverage.
               <Typography
                 component={'span'}
-                onClick={() => {
-                  // todo onclick
-                }}
+                onClick={onClickMaxCredit}
                 variant='body2'
                 color={'var(--color-primary)'}
                 sx={{ cursor: 'pointer' }}
@@ -143,7 +142,7 @@ type MaximumCreditModalProps = {
   maxLeverage: number
 }
 export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
-  const { open, onClose,onClickBack, collateralFactors, maxLeverage } = props
+  const { open, onClose, onClickBack, collateralFactors, maxLeverage } = props
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
