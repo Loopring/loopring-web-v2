@@ -154,11 +154,13 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
     codeApprovalStatus: 'init' | 'confirmation' | 'sharing'
     codeInput: string,
     guardianSign?: string
+    approveHash?: string
   } >({
     show: false,
     codeApprovalStatus: 'init',
     codeInput: '',
-    guardianSign: undefined
+    guardianSign: undefined,
+    approveHash: undefined
   })
   const onOpenApprovalRequests = React.useCallback((open: boolean) => {
     setApprovalRequests({
@@ -430,6 +432,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             handleOpenModal={handleOpenModal}
             guardiansList={guardiansList}
             guardianSign={approvalRequests.guardianSign}
+            approveHash={approvalRequests.approveHash}
             approvalCodeStatus={approvalRequests.codeApprovalStatus}
             onClickCodeApprovalApprove={async () => {
               const jsonObj = decodeData(approvalRequests.codeInput)
@@ -445,7 +448,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                       logdata: '',
                     }
                   : jsonObj.extra
-              const signature = await getSignature({
+              const data = await getSignature({
                 web3: connectProvides.usedWeb3,
                 guardianAddr: account.accAddress,
                 senderAddr: jsonObj.sender,
@@ -459,7 +462,8 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               setApprovalRequests({
                 ...approvalRequests,
                 codeApprovalStatus: 'sharing',
-                guardianSign: signature,
+                guardianSign: data!.signature.slice(0, data!.signature!.length - 2),
+                approveHash: data!.hash
               })
             }}
             onClickCodeApprovalReject={() => {
@@ -483,7 +487,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                     }
                   : jsonObj.extra
               
-              const signature = await getSignature({
+              const data = await getSignature({
                 web3: connectProvides.usedWeb3,
                 guardianAddr: account.accAddress,
                 senderAddr: jsonObj.sender,
@@ -497,7 +501,8 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               setApprovalRequests({
                 ...approvalRequests,
                 codeApprovalStatus: 'sharing',
-                guardianSign: signature!.slice(0, signature!.length - 2),
+                guardianSign: data!.signature.slice(0, data!.signature!.length - 2),
+                approveHash: data!.hash
               })
             }}
             onClickScan={() => {

@@ -33,6 +33,7 @@ export const WalletValidationInfo = ({
   onClickCodeApprovalReject,
   approvalCodeStatus,
   guardianSign,
+  approveHash,
   codeInputError,
   nextBtnDisabled,
   guardian
@@ -50,6 +51,7 @@ export const WalletValidationInfo = ({
   onClickCodeApprovalReject: () => void
   approvalCodeStatus: 'init' | 'confirmation' | 'sharing'
   guardianSign?: string
+  approveHash?: string
   guardian: string
   codeInputError?: string
   nextBtnDisabled: boolean
@@ -67,10 +69,10 @@ export const WalletValidationInfo = ({
   })
   const theme = useTheme()
   const sharingStr = useMemo(() => {
-    return approvalCodeStatus === 'sharing' && guardianSign
-      ? encodeData({ ...decodeData(codeText), guardian, guardianSign })
+    return approvalCodeStatus === 'sharing' && guardianSign && approveHash
+      ? encodeData({ ...decodeData(codeText), guardian, guardianSign, approveHash })
       : undefined
-  }, [approvalCodeStatus === 'sharing', guardianSign, codeText])
+  }, [approvalCodeStatus === 'sharing', guardianSign, codeText, approveHash])
 
   if (approvalCodeStatus === 'confirmation') {
     const jsonObj = decodeData(codeText)
