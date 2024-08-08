@@ -1673,6 +1673,8 @@ export const useVaultSwap = <
           minimumConverted,
           supportBorrowData,
           showHasBorrow,
+          hourlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100, 6, false),
+          yearlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100 * 24 * 365, 2, false)
         }
         let _edit = {}
 

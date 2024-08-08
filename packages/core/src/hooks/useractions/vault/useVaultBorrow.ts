@@ -115,6 +115,8 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
       borrowAmt: tradeValue ?? 0,
       totalQuote: totalQuote.toString(),
       coinInfoMap: vaultCoinMap,
+      hourlyRateInPercent: sdk.toFixed(sdk.toNumber(borrowToken.interestRate) * 100, 6, false),
+      yearlyRateInPercent: sdk.toFixed(sdk.toNumber(borrowToken.interestRate) * 100 * 24 * 365, 2, false)
     }
   }
   return {

@@ -2378,6 +2378,28 @@ export default {
     'Borrowed {{value}} {{symbol}} successful.',
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
+  labelHourlyInterestRate: 'Hourly Interest Rate',
+  labelHourlyInterestRateTips: 'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.',
 
+  labelVaultMarginLevelTooltips2:
+    'Margin Level = (Balance +Collateral) / Total Debt',
+  labelVaultMarginLevelTooltips3:
+    'Default Margin Level is 999.00',
+  labelVaultMarginLevelTooltips4:
+    'Low Risk    Margin Level ≥ 1.5',
+  labelVaultMarginLevelTooltips5:
+    'At Low Risk, your collateral is relatively sufficient. You should mainly focus on whether the market fluctuates violently and causes liquidation.',
+  labelVaultMarginLevelTooltips6:
+    'Middle Risk    1.15 ≤ Margin Level < 1.5',
+  labelVaultMarginLevelTooltips7:
+    'At Middle Risk, it is recommended that you always pay attention to changes in market conditions and add collateral or repay borrowed tokens to reduce the risk of liquidation.',
+  labelVaultMarginLevelTooltips8:
+    'High Risk    1.1 ≤ Margin Level < 1.15',
+  labelVaultMarginLevelTooltips9:
+    'At High Risk, it is strongly recommended that you add collateral or repay borrowed tokens immediately to reduce the risk of liquidation.',
+  labelVaultMarginLevelTooltips10:
+    'Liquidation    Margin Level < 1.1',
+  labelVaultMarginLevelTooltips11:
+    'When Margin Level is lower than 1.1, the position will be liquidated.',
 }
 

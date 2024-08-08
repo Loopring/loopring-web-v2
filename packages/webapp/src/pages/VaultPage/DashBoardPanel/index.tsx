@@ -33,7 +33,8 @@ import {
   useOpenModals,
   useSettings,
   VaultAssetsTable,
-  Button as MyButton
+  Button as MyButton,
+  SpaceBetweenBox
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
 import { makeVaultLayer2, useSystem, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
@@ -42,6 +43,7 @@ import moment from 'moment'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory } from 'react-router'
+import { CollateralDetailsModal, MaximumCreditModal } from './modals'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
@@ -189,6 +191,7 @@ export const VaultDashBoardPanel = ({
   const { tokenMap: vaultTokenMap, tokenPrices } = useVaultMap()
   const history = useHistory()
   const {vaultTickerMap} = useVaultTicker()
+
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -286,8 +289,60 @@ export const VaultDashBoardPanel = ({
                       >
                         <Box>
                           <Tooltip
-                            title={t('labelVaultMarginLevelTooltips').toString()}
-                            placement={'top'}
+                            title={
+                              <Box>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips')}
+                                </Typography>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips2')}
+                                </Typography>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips3')}
+                                </Typography>
+                                <Typography
+                                  color={'var(--color-success)'}
+                                  marginBottom={1}
+                                  variant={'body2'}
+                                >
+                                  {t('labelVaultMarginLevelTooltips4')}
+                                </Typography>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips5')}
+                                </Typography>
+                                <Typography
+                                  color={'var(--color-warning)'}
+                                  marginBottom={1}
+                                  variant={'body2'}
+                                >
+                                  {t('labelVaultMarginLevelTooltips6')}
+                                </Typography>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips7')}
+                                </Typography>
+                                <Typography
+                                  color={'var(--color-error)'}
+                                  marginBottom={1}
+                                  variant={'body2'}
+                                >
+                                  {t('labelVaultMarginLevelTooltips8')}
+                                </Typography>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips9')}
+                                </Typography>
+                                <Typography
+                                  color={'var(--color-error'}
+                                  marginBottom={1}
+                                  variant={'body2'}
+                                >
+                                  {t('labelVaultMarginLevelTooltips10')}
+                                </Typography>
+                                <Typography marginBottom={1} variant={'body2'}>
+                                  {t('labelVaultMarginLevelTooltips11')}
+                                </Typography>
+                              </Box>
+                            }
+                            placement={'right'}
                           >
                             <Typography
                               component={'h4'}
@@ -312,6 +367,7 @@ export const VaultDashBoardPanel = ({
                             display={'inline-flex'}
                             variant={'body1'}
                             color={'textPrimary'}
+                            alignItems={'center'}
                           >
                             {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                               ? hideAssets
@@ -327,6 +383,14 @@ export const VaultDashBoardPanel = ({
                                     { isFait: true, floor: true },
                                   )
                               : EmptyValueTag}
+                            <Typography
+                              variant={'body2'}
+                              sx={{ cursor: 'pointer' }}
+                              color={'var(--color-primary)'}
+                              marginLeft={1}
+                            >
+                              Detail
+                            </Typography>
                           </Typography>
                         </Box>
                         <Box>
@@ -351,6 +415,7 @@ export const VaultDashBoardPanel = ({
                             display={'inline-flex'}
                             variant={'body1'}
                             color={'textPrimary'}
+                            alignItems={'center'}
                           >
                             {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                               ? hideAssets
@@ -366,6 +431,14 @@ export const VaultDashBoardPanel = ({
                                     { isFait: true, floor: true },
                                   )
                               : EmptyValueTag}
+                            <Typography
+                              variant={'body2'}
+                              sx={{ cursor: 'pointer' }}
+                              color={'var(--color-primary)'}
+                              marginLeft={1}
+                            >
+                              Detail
+                            </Typography>
                           </Typography>
                         </Box>
                         <Box>
@@ -378,6 +451,7 @@ export const VaultDashBoardPanel = ({
                             display={'inline-flex'}
                             variant={'body1'}
                             color={'textPrimary'}
+                            alignItems={'center'}
                           >
                             {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
                               ? hideAssets
@@ -393,6 +467,15 @@ export const VaultDashBoardPanel = ({
                                     { isFait: true, floor: true },
                                   )
                               : EmptyValueTag}
+
+                            <Typography
+                              variant={'body2'}
+                              sx={{ cursor: 'pointer' }}
+                              color={'var(--color-primary)'}
+                              marginLeft={1}
+                            >
+                              Detail
+                            </Typography>
                           </Typography>
                         </Box>
                         <Box>
@@ -564,16 +647,20 @@ export const VaultDashBoardPanel = ({
                 marginY={3}
                 paddingY={2}
               >
-                <VaultAssetsTable {...assetPanelProps} onRowClick={(index, row) => {
-                  // @ts-ignore
-                  marketProps.onRowClick(index, {
+                <VaultAssetsTable
+                  {...assetPanelProps}
+                  onRowClick={(index, row) => {
                     // @ts-ignore
-                    ...vaultTokenMap[row.name], 
-                    // @ts-ignore
-                    cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
-                    ...vaultTickerMap[row.erc20Symbol]
-                  })
-                }} showFilter />
+                    marketProps.onRowClick(index, {
+                      // @ts-ignore
+                      ...vaultTokenMap[row.name],
+                      // @ts-ignore
+                      cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+                      ...vaultTickerMap[row.erc20Symbol],
+                    })
+                  }}
+                  showFilter
+                />
               </Box>
               <Modal
                 open={showNoVaultAccount && !isShowVaultJoin?.isShow}
@@ -710,7 +797,9 @@ export const VaultDashBoardPanel = ({
                                     ? PriceTag[CurrencyToTag[currency]] +
                                       getValuePrecisionThousand(
                                         sdk
-                                          .toBig(walletMap[detail?.detail?.tokenInfo.symbol!]!.count)
+                                          .toBig(
+                                            walletMap[detail?.detail?.tokenInfo.symbol!]!.count,
+                                          )
                                           .times(
                                             tokenPrices?.[detail?.detail?.tokenInfo.symbol!] || 0,
                                           )
@@ -844,7 +933,7 @@ export const VaultDashBoardPanel = ({
                             size={'medium'}
                             onClick={() => {
                               setShowDetail({ isShow: false })
-                              
+
                               _vaultAccountInfo.onJoinPop({})
                             }}
                             loading={'false'}
@@ -863,6 +952,40 @@ export const VaultDashBoardPanel = ({
                   </Box>
                 </SwitchPanelStyled>
               </Modal>
+              <CollateralDetailsModal 
+                open={false}
+                onClose={() => {
+
+                }}
+                collateralTokens={[
+                  {
+                    name:'LRC',
+                    logo: '',
+                    amount:'1',
+                    valueInUSD: '1'
+                  }
+                ]}
+                maxCredit='11'
+                totalCollateral='11'
+                />
+              <MaximumCreditModal
+                open
+                onClose={() => {
+
+                }}
+                collateralFactors={[
+                  {
+                    name:'LRC',
+                    collateralFactor: '1',
+                  },
+                  {
+                    name:'BTC',
+                    collateralFactor: '0.9',
+                  }
+                ]}
+                maxLeverage={11}
+                />
+                
             </>
           }
         />

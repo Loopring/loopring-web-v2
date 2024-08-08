@@ -162,6 +162,46 @@ export const VaultBorrowWrap = <
             </Typography>
           </Box>
         </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelHourlyInterestRate')}
+          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt ? (
+              <CoinIcon
+                tokenImageKey={vaultBorrowData.erc20Symbol}
+                symbol={vaultBorrowData.belong}
+                type={TokenType.vault}
+              />
+            ) : undefined}
+            <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+              {/* {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt
+                ? vaultBorrowData.borrowedStr + ' ' + (vaultBorrowData as any).erc20Symbol
+                : EmptyValueTag} */}
+              {vaultBorrowData &&
+              (vaultBorrowData as any).hourlyRateInPercent &&
+              (vaultBorrowData as any).yearlyRateInPercent
+                ? `${(vaultBorrowData as any).hourlyRateInPercent}% (APR: ${
+                    (vaultBorrowData as any).yearlyRateInPercent
+                  }%)`
+                : EmptyValueTag}
+            </Typography>
+          </Box>
+        </Grid>
       </Grid>
 
       <Box

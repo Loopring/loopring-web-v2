@@ -467,6 +467,35 @@ export const SwapTradeWrap = <
                 </Typography>
               </Grid>
             ) : undefined}
+            {(tradeCalcData as any)?.isVault && tradeCalcData && tradeCalcData.borrowVol ? (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
+                <Tooltip
+                  title={t('labelHourlyInterestRateTips')}
+                  placement={'top'}
+                >
+                  <Typography
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('labelHourlyInterestRate')}
+                  </Typography>
+                </Tooltip>
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  {tradeCalcData && (tradeCalcData as any).hourlyRateInPercent && (tradeCalcData as any).yearlyRateInPercent 
+                  && `${(tradeCalcData as any).hourlyRateInPercent}% (APR: ${(tradeCalcData as any).yearlyRateInPercent}%)`}
+                </Typography>
+              </Grid>
+            ) : undefined}
             <Grid
               container
               justifyContent={'space-between'}
