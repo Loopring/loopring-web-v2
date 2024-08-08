@@ -6,3 +6,10 @@ export * from './makeMeta'
 export * from './genAvatar'
 export * from './addressTypeMap'
 export * from './waitForTx'
+export {
+  numberFormat,
+  numberFormatShowInPercent,
+  numberFormatThousandthPlace,
+  bigNumberFormat,
+  fiatNumberDisplay,
+} from './numberFormat'

@@ -37,24 +37,27 @@ import {
   SpaceBetweenBox
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
-import { makeVaultLayer2, useSystem, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
+import { fiatNumberDisplay, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, useAccount, useSystem, useTokenMap, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory } from 'react-router'
-import { CollateralDetailsModal, MaximumCreditModal } from './modals'
+import { CollateralDetailsModal, LeverageModal, MaximumCreditModal } from './modals'
+import { utils } from 'ethers'
+import Decimal from 'decimal.js'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
-  const { vaultAccountInfo, activeInfo } = _vaultAccountInfo
+  const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage } = _vaultAccountInfo
   const { t } = useTranslation()
+  console.log('tokenFactors', tokenFactors)
 
-  const { forexMap, etherscanBaseUrl } = useSystem()
-  const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork } = useSettings()
+  const { forexMap, etherscanBaseUrl, getValueInCurrency } = useSystem()
+  const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork, coinJson } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
     // setShowNoVaultAccount,
@@ -189,13 +192,29 @@ export const VaultDashBoardPanel = ({
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
   const { tokenMap: vaultTokenMap, tokenPrices } = useVaultMap()
+  const { tokenMap, idIndex } = useTokenMap()
+  
   const history = useHistory()
   const {vaultTickerMap} = useVaultTicker()
   
   const [localState, setLocalState] = React.useState({
     modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit',
   })
+
   console.log('vaultTokenMap', vaultTokenMap)
+  const {account}=useAccount()
+  const {updateVaultLayer2} = useVaultLayer2()
+
+  const changeLeverage = async (leverage: number) => {
+    await LoopringAPI.vaultAPI?.submitLeverage({
+      request: {
+        accountId: account.accountId.toString(),
+        leverage: leverage.toString()
+      },
+      apiKey: account.apiKey
+    })
+    updateVaultLayer2({})
+  }
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -219,6 +238,7 @@ export const VaultDashBoardPanel = ({
                     display={'flex'}
                     flexDirection={'column'}
                     padding={2}
+                    paddingBottom={1.5}
                     justifyContent={'space-between'}
                   >
                     <Box
@@ -397,9 +417,8 @@ export const VaultDashBoardPanel = ({
                               onClick={() => {
                                 setLocalState({
                                   ...localState,
-                                  modalStatus: 'collateralDetails'
+                                  modalStatus: 'collateralDetails',
                                 })
-
                               }}
                             >
                               Detail
@@ -454,9 +473,9 @@ export const VaultDashBoardPanel = ({
                             </Typography>
                           </Typography>
                         </Box>
-                        <Box>
+                        <Box position={'relative'} width={'120px'}>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                            {t('labelVaultTotalEquity')}
+                            Default Leverage
                           </Typography>
                           <Typography
                             component={'span'}
@@ -466,29 +485,38 @@ export const VaultDashBoardPanel = ({
                             color={'textPrimary'}
                             alignItems={'center'}
                           >
-                            {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
-                              ? hideAssets
-                                ? HiddenTag
-                                : PriceTag[CurrencyToTag[currency]] +
-                                  getValuePrecisionThousand(
-                                    Number(vaultAccountInfo?.totalEquityOfUsdt ?? 0) *
-                                      (forexMap[currency] ?? 0),
-                                    2,
-                                    2,
-                                    2,
-                                    false,
-                                    { isFait: true, floor: true },
-                                  )
+                            {vaultAccountInfo?.leverage
+                              ? `${vaultAccountInfo?.leverage}x`
                               : EmptyValueTag}
-
                             <Typography
                               variant={'body2'}
                               sx={{ cursor: 'pointer' }}
                               color={'var(--color-primary)'}
                               marginLeft={1}
+                              component={'span'}
+                              onClick={() => {
+                                setLocalState({
+                                  ...localState,
+                                  modalStatus: 'leverage',
+                                })
+                              }}
                             >
                               Detail
                             </Typography>
+                          </Typography>
+                          <Typography
+                            marginTop={0.5}
+                            width={'200px'}
+                            color={'var(--color-text-secondary)'}
+                            variant={'body2'}
+                          >
+                            Maximum Credit:{' '}
+                            {vaultAccountInfo?.maxBorrowableOfUsdt
+                              ? fiatNumberDisplay(
+                                  getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                                  currency,
+                                )
+                              : EmptyValueTag}
                           </Typography>
                         </Box>
                         <Box>
@@ -970,25 +998,66 @@ export const VaultDashBoardPanel = ({
                 onClose={() => {
                   setLocalState({
                     ...localState,
-                    modalStatus: 'noModal'
+                    modalStatus: 'noModal',
                   })
                 }}
                 onClickMaxCredit={() => {
                   setLocalState({
                     ...localState,
-                    modalStatus: 'collateralDetailsMaxCredit'
+                    modalStatus: 'collateralDetailsMaxCredit',
                   })
                 }}
-                collateralTokens={[
-                  {
-                    name: 'LRC',
-                    logo: '',
-                    amount: '1',
-                    valueInUSD: '1',
-                  },
-                ]}
-                maxCredit='11'
-                totalCollateral='11'
+                collateralTokens={
+                  vaultAccountInfo?.collateralInfo
+                    ? [
+                        {
+                          name: idIndex[vaultAccountInfo.collateralInfo.collateralTokenId],
+                          amount: numberFormat(
+                            utils.formatUnits(
+                              vaultAccountInfo.collateralInfo.collateralTokenAmount,
+                              tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]]
+                                .decimals,
+                            ),
+                            {
+                              fixed:
+                                tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]]
+                                  .precision,
+                            },
+                          ),
+                          logo: '',
+                          valueInUSD: '',
+                        },
+                      ]
+                    : []
+                }
+                maxCredit={
+                  vaultAccountInfo?.maxBorrowableOfUsdt &&
+                  getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt)
+                    ? numberFormatThousandthPlace(
+                        getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                        {
+                          fixed: 2,
+                          currency,
+                        },
+                      )
+                    : EmptyValueTag
+                }
+                totalCollateral={
+                  vaultAccountInfo?.totalCollateralOfUsdt &&
+                  getValueInCurrency(vaultAccountInfo?.totalCollateralOfUsdt)
+                    ? numberFormatThousandthPlace(
+                        getValueInCurrency(vaultAccountInfo?.totalCollateralOfUsdt),
+                        {
+                          fixed: 2,
+                          currency,
+                        },
+                      )
+                    : EmptyValueTag
+                }
+                coinJSON={
+                  vaultAccountInfo?.collateralInfo &&
+                  coinJson[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]]
+                }
               />
               <MaximumCreditModal
                 open={
@@ -1014,17 +1083,75 @@ export const VaultDashBoardPanel = ({
                     })
                   }
                 }}
-                collateralFactors={[
-                  {
-                    name: 'LRC',
-                    collateralFactor: '1',
-                  },
-                  {
-                    name: 'BTC',
-                    collateralFactor: '0.9',
-                  },
-                ]}
-                maxLeverage={11}
+                collateralFactors={
+                  tokenFactors?.map((tokenFactor) => {
+                    return {
+                      name: tokenFactor.symbol,
+                      collateralFactor: numberFormat(tokenFactor.factor, { fixed: 1 }),
+                    }
+                  }) ?? []
+                }
+                maxLeverage={maxLeverage ?? EmptyValueTag}
+              />
+              <LeverageModal
+                open={localState.modalStatus === 'leverage'}
+                onClose={() => {
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'noModal',
+                  })
+                }}
+                onClickMaxCredit={() => {
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'leverageMaxCredit',
+                  })
+                }}
+                maxLeverage={maxLeverage ? Number(maxLeverage) : 0}
+                onClickReduce={() => {
+                  if (vaultAccountInfo?.leverage) {
+                    changeLeverage(Number(vaultAccountInfo?.leverage) - 1)
+                  }
+                }}
+                onClickAdd={() => {
+                  if (vaultAccountInfo?.leverage) {
+                    changeLeverage(Number(vaultAccountInfo?.leverage) + 1)
+                  }
+                }}
+                onClickLeverage={(leverage) => {
+                  changeLeverage(leverage)
+                }}
+                currentLeverage={
+                  vaultAccountInfo?.leverage ? Number(vaultAccountInfo?.leverage) : 0
+                }
+                maximumCredit={
+                  vaultAccountInfo?.maxBorrowableOfUsdt
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                        currency,
+                      )
+                    : EmptyValueTag
+                }
+                borrowed={
+                  vaultAccountInfo?.totalDebtOfUsdt
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt),
+                        currency,
+                      )
+                    : EmptyValueTag
+                }
+                borrowAvailable={
+                  vaultAccountInfo?.totalDebtOfUsdt && vaultAccountInfo?.maxBorrowableOfUsdt
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(
+                          new Decimal(vaultAccountInfo.maxBorrowableOfUsdt)
+                            .sub(vaultAccountInfo.totalDebtOfUsdt)
+                            .toString(),
+                        ),
+                        currency,
+                      )
+                    : EmptyValueTag
+                }
               />
             </>
           }

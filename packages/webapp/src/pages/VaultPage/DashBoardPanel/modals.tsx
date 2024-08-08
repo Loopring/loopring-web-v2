@@ -1,6 +1,10 @@
-import { Box, Typography, Modal, Divider } from '@mui/material'
-import { SpaceBetweenBox } from '@loopring-web/component-lib'
-import { BackIcon, CloseIcon } from '@loopring-web/common-resources'
+import { Box, Typography, Modal, Divider, IconButton, Slider } from '@mui/material'
+import { AvatarCoin, CoinIcons, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { BackIcon, CloseIcon, EmptyValueTag, TokenType } from '@loopring-web/common-resources'
+import { numberFormat } from '@loopring-web/core'
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import _ from 'lodash';
 
 type CollateralDetailsModalProps = {
   open: boolean
@@ -14,17 +18,18 @@ type CollateralDetailsModalProps = {
   }[]
   totalCollateral: string
   maxCredit: string
+  coinJSON: any
 }
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
-  const { open, onClose, collateralTokens, totalCollateral, maxCredit,onClickMaxCredit } = props
+  const { open, onClose, collateralTokens, totalCollateral, maxCredit,onClickMaxCredit,coinJSON } = props
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
         <Box
           bgcolor={'var(--color-box)'}
           width={'var(--modal-width)'}
-          height={'550px'}
+          height={'600px'}
           borderRadius={1}
           display={'flex'}
           flexDirection={'column'}
@@ -97,16 +102,18 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                   key={token.name}
                 >
                   <SpaceBetweenBox
+                    alignItems={'center'}
                     leftNode={
                       <Box display={'flex'} alignItems={'center'}>
-                        <Box
+                        {/* <Box
                           component={'img'}
                           src={token.logo}
                           width={32}
                           height={32}
                           marginRight={1}
-                        />
-                        <Typography>{token.name}</Typography>
+                        /> */}
+                        <CoinIcons  type={TokenType.single} tokenIcon={[coinJSON]}/>
+                        <Typography marginLeft={1}>{token.name}</Typography>
                       </Box>
                     }
                     rightNode={
@@ -139,7 +146,7 @@ type MaximumCreditModalProps = {
     name: string
     collateralFactor: string
   }[]
-  maxLeverage: number
+  maxLeverage: string
 }
 export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
   const { open, onClose, onClickBack, collateralFactors, maxLeverage } = props
@@ -149,7 +156,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
         <Box
           bgcolor={'var(--color-box)'}
           width={'var(--modal-width)'}
-          height={'550px'}
+          height={'600px'}
           borderRadius={1}
           display={'flex'}
           flexDirection={'column'}
@@ -231,6 +238,184 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
                 rightNode={<Typography>{maxLeverage}x</Typography>}
               />
             </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+
+type LeverageModalProps = {
+  open: boolean
+  maxLeverage: number
+  onClose: () => void
+  onClickMaxCredit: () => void
+  onClickReduce: () => void
+  onClickAdd: () => void
+  onClickLeverage: (leverage: number) => void
+  currentLeverage: number | undefined
+  borrowAvailable: string
+  borrowed: string
+  maximumCredit: string
+}
+
+export const LeverageModal = (props: LeverageModalProps) => {
+  const {
+    open,
+    onClose,
+    onClickMaxCredit,
+    currentLeverage,
+    onClickReduce,
+    onClickAdd,
+    maxLeverage,
+    onClickLeverage,
+    borrowAvailable,
+  borrowed,
+  maximumCredit,
+  } = props
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-box)'}
+          width={'var(--modal-width)'}
+          height={'620px'}
+          borderRadius={1}
+          display={'flex'}
+          flexDirection={'column'}
+        >
+          <Box
+            paddingX={1.5}
+            paddingY={1.5}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+          >
+            <Typography variant={'h5'}>Leverage</Typography>
+            <CloseIcon
+              sx={{
+                cursor: 'pointer',
+                fontSize: '24px',
+                marginRight: 1.5,
+                color: 'var(--color-text-third)',
+              }}
+              onClick={onClose}
+            />
+          </Box>
+          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+          <Box paddingX={3}>
+            <Box
+              borderRadius={'4px'}
+              padding={1}
+              justifyContent={'space-between'}
+              marginTop={4}
+              marginBottom={2.5}
+              display={'flex'}
+              bgcolor={'var(--color-box-secondary)'}
+              alignItems={'center'}
+            >
+              <IconButton onClick={onClickReduce}>
+                <RemoveIcon
+                  sx={{
+                    cursor: 'pointer',
+                    color: 'var(--color-text-secondary)',
+                    fontSize: '16px',
+                  }}
+                />
+              </IconButton>
+
+              <Typography>
+                {currentLeverage
+                  ? `${numberFormat(currentLeverage, { fixed: 1 })}x`
+                  : EmptyValueTag}
+              </Typography>
+              <IconButton onClick={onClickAdd}>
+                <AddIcon
+                  sx={{
+                    cursor: 'pointer',
+                    color: 'var(--color-text-secondary)',
+                    fontSize: '16px',
+                  }}
+                />
+              </IconButton>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Slider
+                aria-label='Always visible'
+                value={currentLeverage ? (currentLeverage / maxLeverage) * 100 : 0}
+                step={maxLeverage}
+                onChange={(_, _value) => {
+                  const value = _value as number
+                  const leverage = value / 100 * maxLeverage
+                  onClickLeverage(leverage)
+                }}
+                marks={_.range(0, maxLeverage).map((number) => ({
+                  value: (number / maxLeverage) * 100,
+                  label: number === 0 ? '' : `${number}x`,
+                }))}
+              />
+            </Box>
+            <Box
+              marginTop={2}
+              marginBottom={3}
+              padding={2.5}
+              bgcolor={'var(--color-box-secondary)'}
+              borderRadius={'8px'}
+            >
+              <SpaceBetweenBox
+                leftNode={
+                  <Typography color={'var(--color-text-secondary)'}>Available Borrow</Typography>
+                }
+                rightNode={<Typography>{borrowAvailable}</Typography>}
+                marginBottom={2}
+              />
+              <SpaceBetweenBox
+                leftNode={<Typography color={'var(--color-text-secondary)'}>Borrowed</Typography>}
+                rightNode={<Typography>{borrowed}</Typography>}
+                marginBottom={2}
+              />
+              <SpaceBetweenBox
+                leftNode={
+                  <Typography color={'var(--color-text-secondary)'}>Maximum Credit</Typography>
+                }
+                rightNode={<Typography>{maximumCredit}</Typography>}
+              />
+            </Box>
+            <Typography
+              marginBottom={3}
+              marginTop={3}
+              variant='body2'
+              color={'var(--color-text-secondary)'}
+            >
+              Maximum Credit means the maximum amount of money you can borrow from Portal based on
+              your collateral. It is calculated by taking the total value of your collateral,
+              adjusted for price factor and the maximum leverage.
+              <Typography
+                component={'span'}
+                onClick={onClickMaxCredit}
+                variant='body2'
+                color={'var(--color-primary)'}
+                sx={{ cursor: 'pointer' }}
+              >
+                Learn More
+              </Typography>
+            </Typography>
+          </Box>
+          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+          <Box paddingX={3} marginTop={3}>
+            <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
+              {' '}
+              · Selecting higher leverage will increase your liquidation risk.
+            </Typography>
+            <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
+              {' '}
+              · Available Borrow is based on the upper limit corresponding to the leverage you
+              choose. The total value of all your borrowed tokens will not exceed Available Borrow.
+            </Typography>
+            <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
+              {' '}
+              · Maximum Credit is the maximum amount you can borrow based on your collateral.
+            </Typography>
           </Box>
         </Box>
       </Box>

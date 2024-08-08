@@ -43,6 +43,8 @@ export const useAccountInfo = () => {
     vaultAccountInfo,
     status: vaultAccountInfoStatus,
     updateVaultLayer2,
+    tokenFactors,
+    maxLeverage,
     activeInfo,
   } = useVaultLayer2()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
@@ -320,6 +322,8 @@ export const useAccountInfo = () => {
     onRepayPop,
     repayBtnLabel: label(repayBtnLabel),
     vaultAccountInfoStatus,
+    tokenFactors,
+    maxLeverage,
 
     // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus

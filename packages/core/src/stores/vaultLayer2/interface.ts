@@ -12,5 +12,10 @@ export type VaultLayer2States = {
     hash: string
     isInActive: boolean
   }
+  tokenFactors: {
+    symbol: string
+    factor: string
+  }[]
+  maxLeverage: string | undefined
   __timer__?: NodeJS.Timeout | -1
 } & StateBase
