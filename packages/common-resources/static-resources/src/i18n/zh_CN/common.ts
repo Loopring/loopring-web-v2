@@ -2135,7 +2135,7 @@ export default {
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
   labelVaultRefresh: 'Refresh',
-  labelVaultAddBtn: 'Margin Call',
+  labelVaultAddBtn: 'Collateral Management',
   labelVaultJoinBtn: 'Open Position',
   labelVaultCheckInProcessing: 'Checking Portal status',
   labelVaultRecord: 'Records',
