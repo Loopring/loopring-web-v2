@@ -53,6 +53,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { account } = useAccount()
   const { updateVaultJoin, vaultJoinData, resetVaultJoin } = useTradeVault()
   const [isLoading, setIsLoading] = React.useState(false)
+  const [isAddOrRedeem, setIsAddOrRedeem] = React.useState<'Add' | 'Redeem'>('Add')
 
   const isActiveAccount =
     [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
@@ -399,7 +400,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
         //step 2: get a NFT
         const [avaiableNFT, storageId] = await Promise.all([
-          isActiveAccount
+          (isActiveAccount)
             ? LoopringAPI.vaultAPI
                 .getVaultGetAvailableNFT(
                   {
@@ -438,9 +439,12 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ) {
           throw storageId
         }
-        const amount = sdk
-          .toBig(vaultJoinData.amount)
-          .plus(isActiveAccount ? 0 : vaultAccountInfo?.collateralInfo?.collateralTokenAmount ?? 0)
+        const amount = isActiveAccount 
+          ? sdk.toBig(vaultJoinData.amount)
+          : isAddOrRedeem === 'Add' 
+            ? sdk.toBig(vaultAccountInfo?.collateralInfo?.collateralTokenAmount).plus(vaultJoinData.amount)
+            : sdk.toBig(vaultAccountInfo?.collateralInfo?.collateralTokenAmount).minus(vaultJoinData.amount)  
+        alert(isActiveAccount)
         const takerOrder: sdk.VaultJoinRequest = {
           exchange: exchangeInfo.exchangeAddress,
           accountId: account.accountId,
@@ -664,6 +668,36 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
   // btnStatus, enableBtn, disableBtn
+
+  console.log('aaa',{
+    handleError: undefined,
+    type: TRADE_TYPE.TOKEN,
+    baseURL,
+    btnI18nKey: btnLabel,
+    btnStatus,
+    isActiveAccount,
+    disabled: false,
+    onSubmitClick: (_data: T) => onBtnClick(),
+    propsExtends: {},
+    tradeData: vaultJoinData.tradeData as unknown as T,
+    handlePanelEvent,
+    onRefreshData,
+    refreshRef,
+    walletMap: vaultJoinData.walletMap as WalletMap<any>,
+    vaultJoinData,
+    coinMap: walletAllowCoin,
+    tokenProps: {
+      decimalsLimit: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale
+        ? true
+        : false,
+    },
+    onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
+      debugger
+      setIsAddOrRedeem(value)
+    },
+    isAddOrRedeem
+  })
   return {
     handleError: undefined,
     type: TRADE_TYPE.TOKEN,
@@ -687,5 +721,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ? true
         : false,
     },
+    onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
+      debugger
+      setIsAddOrRedeem(value)
+    },
+    isAddOrRedeem
   }
 }

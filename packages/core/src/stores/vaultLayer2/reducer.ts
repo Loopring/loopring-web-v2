@@ -8,7 +8,8 @@ const initialState: VaultLayer2States = {
   errorMessage: null,
   vaultAccountInfo: undefined,
   tokenFactors: [],
-  maxLeverage: undefined
+  maxLeverage: undefined,
+  collateralTokens: []
 }
 const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
   name: 'vaultLayer2',
@@ -47,6 +48,7 @@ const vaultLayer2Slice: Slice<VaultLayer2States> = createSlice({
       state.vaultAccountInfo = { ...action.payload.vaultAccountInfo } as any
       state.tokenFactors = action.payload.tokenFactors
       state.maxLeverage = action.payload.maxLeverage
+      state.collateralTokens = action.payload.collateralTokens
       state.status = SagaStatus.DONE
     },
     statusUnset: (state) => {

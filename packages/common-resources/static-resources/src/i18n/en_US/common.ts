@@ -2152,7 +2152,7 @@ export default {
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
   labelVaultRefresh: 'Refresh',
-  labelVaultAddBtn: 'Collateral Management',
+  labelVaultAddBtn: 'Margin Call',
   labelVaultJoinBtn: 'Open Position',
   labelVaultCheckInProcessing: 'Checking Portal status',
   labelVaultRecord: 'Records',
@@ -2401,5 +2401,6 @@ export default {
     'Liquidation    Margin Level < 1.1',
   labelVaultMarginLevelTooltips11:
     'When Margin Level is lower than 1.1, the position will be liquidated.',
+  labelVaultCollateralManagement: 'Collateral Management',
 }
 

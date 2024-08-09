@@ -23,6 +23,7 @@ import { BasicACoinInput } from '../BasicACoinInput'
 import {
   CoinIcon,
 } from '@loopring-web/component-lib'
+import InfoIcon from '@mui/icons-material/Info';
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -78,7 +79,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             },
       )
     } else {
-      return t(isActiveAccount ? `labelVaultJoinBtn` : `labelVaultAddBtn`, {
+      return t(isActiveAccount ? `labelVaultJoinBtn` : `labelVaultConfirm`, {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -87,53 +88,6 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
       })
     }
   }, [btnI18nKey, isActiveAccount, network, t])
-  const inputEle = React.useMemo(() => {
-    return !isActiveAccount ? (
-      <BasicACoinInput
-        {...{
-          ...rest,
-          ...i18n,
-          t,
-          tReady: true,
-          tradeData: tradeData as any,
-          type: TRADE_TYPE.TOKEN,
-          disabled,
-          onChangeEvent: onChangeEvent as any,
-          inputCoinDefaultProps: inputButtonDefaultProps,
-          inputCoinRef: inputBtnRef,
-          ...tokenProps,
-          // inputCoinProps: rest?.inputCoinProps,
-        }}
-      />
-    ) : (
-      <BasicACoinTrade
-        {...{
-          ...rest,
-          ...i18n,
-          t,
-          tReady: true,
-          tradeData: tradeData as any,
-          type: TRADE_TYPE.TOKEN,
-          disabled,
-          onChangeEvent: onChangeEvent as any,
-          inputButtonDefaultProps: { ...inputButtonDefaultProps, disableBelong: !isActiveAccount },
-          placeholderText: '0.00',
-          inputBtnRef,
-          ...tokenProps,
-        }}
-      />
-    )
-  }, [
-    disabled,
-    i18n,
-    inputButtonDefaultProps,
-    isActiveAccount,
-    onChangeEvent,
-    rest,
-    t,
-    tokenProps,
-    tradeData,
-  ])
 
   return (
     <Grid
@@ -155,11 +109,26 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
         alignItems={'stretch'}
         flexDirection={'column'}
       >
-        {inputEle}
+        <BasicACoinTrade
+          {...{
+            ...rest,
+            ...i18n,
+            t,
+            tReady: true,
+            tradeData: tradeData as any,
+            type: TRADE_TYPE.TOKEN,
+            disabled,
+            onChangeEvent: onChangeEvent as any,
+            inputButtonDefaultProps: { ...inputButtonDefaultProps, disableBelong: !isActiveAccount },
+            placeholderText: '0.00',
+            inputBtnRef,
+            ...tokenProps,
+          }}
+        />
       </Grid>
       <Grid item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
+          <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
             <Grid
               container
               justifyContent={'space-between'}
@@ -211,7 +180,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 </Typography>
               </Tooltip>
               <>
-                {(vaultJoinData && vaultJoinData?.tradeValue) ? (
+                {vaultJoinData && vaultJoinData?.tradeValue ? (
                   <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
                     <CoinIcon
                       tokenImageKey={vaultJoinData.belong}
@@ -233,6 +202,13 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               </>
             </Grid>
           </Grid>
+          
+          {rest.isAddOrRedeem === 'Redeem' && <Grid item display={'flex'} >
+            <InfoIcon sx={{marginX: 1, color: 'var(--color-text-secondary)'}} />
+            <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
+            Collateral with a value more than 2 times of your total debt can be redeemed out of your portal account.
+            </Typography>
+          </Grid>}
           <Grid item>
             <ButtonStyle
               variant={'contained'}

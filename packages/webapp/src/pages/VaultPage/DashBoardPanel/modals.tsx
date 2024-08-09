@@ -5,6 +5,7 @@ import { numberFormat } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import _ from 'lodash';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 type CollateralDetailsModalProps = {
   open: boolean
@@ -14,7 +15,7 @@ type CollateralDetailsModalProps = {
     name: string
     logo: string
     amount: string
-    valueInUSD: string
+    valueInCurrency: string
   }[]
   totalCollateral: string
   maxCredit: string
@@ -124,7 +125,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                           textAlign={'right'}
                           variant={'subtitle2'}
                         >
-                          {token.valueInUSD}
+                          {token.valueInCurrency}
                         </Typography>
                       </Box>
                     }
@@ -416,6 +417,169 @@ export const LeverageModal = (props: LeverageModalProps) => {
               {' '}
               · Maximum Credit is the maximum amount you can borrow based on your collateral.
             </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+
+type DebtModalProps = {
+  open: boolean
+  onClose: () => void
+  borrowedVaultTokens?: {
+    symbol: string,
+    amount: string,
+    valueInCurrency: string
+    coinJSON: any
+    onClick: () => void
+  }[]
+  totalFundingFee: string
+  totalBorrowed: string
+  totalDebt: string
+}
+
+export const DebtModal = (props: DebtModalProps) => {
+  const {
+    open,
+    onClose,
+    borrowedVaultTokens,
+    totalFundingFee,
+  totalBorrowed,
+  totalDebt,
+  //   onClickMaxCredit,
+  //   currentLeverage,
+  //   onClickReduce,
+  //   onClickAdd,
+  //   maxLeverage,
+  //   onClickLeverage,
+  //   borrowAvailable,
+  // borrowed,
+  // maximumCredit,
+  } = props
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-box)'}
+          width={'var(--modal-width)'}
+          height={'620px'}
+          borderRadius={1}
+          display={'flex'}
+          flexDirection={'column'}
+        >
+          <Box
+            paddingX={1.5}
+            paddingY={1.5}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+          >
+            <Typography variant={'h5'}>Debt</Typography>
+            <CloseIcon
+              sx={{
+                cursor: 'pointer',
+                fontSize: '24px',
+                marginRight: 1.5,
+                color: 'var(--color-text-third)',
+              }}
+              onClick={onClose}
+            />
+          </Box>
+          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+          <Box paddingX={3}>
+            <Box
+              borderRadius={'8px'}
+              padding={2}
+              // justifyContent={'space-between'}
+              marginTop={4}
+              marginBottom={2}
+              // display={'flex'}
+              bgcolor={'var(--color-box-secondary)'}
+              // alignItems={'center'}
+            >
+              <Typography marginBottom={2} fontSize={'16px'}>Details</Typography>
+              <SpaceBetweenBox
+                marginBottom={2}
+                leftNode={
+                  <Typography color={'var(--color-text-secondary)'}>
+                    Total Debt
+                  </Typography>
+                }
+                rightNode={
+                  <Typography>
+                    {totalDebt}
+                  </Typography>
+                }
+              />
+              <SpaceBetweenBox
+                marginBottom={2}
+                leftNode={
+                  <Typography color={'var(--color-text-secondary)'}>
+                    Total Borrowed
+                  </Typography>
+                }
+                rightNode={
+                  <Typography>
+                    {totalBorrowed}
+                  </Typography>
+                }
+              />
+              <SpaceBetweenBox
+                leftNode={
+                  <Typography color={'var(--color-text-secondary)'}>
+                    Total Funding Fee
+                  </Typography>
+                }
+                rightNode={
+                  <Typography>
+                    {totalFundingFee}
+                  </Typography>
+                }
+              />
+            </Box>  
+            <Typography fontSize={'16px'} marginBottom={2}>Borrowed</Typography>
+          </Box>
+          <Divider style={{ width: '100%' }} />
+          <Box paddingX={3} marginTop={3}>
+            {borrowedVaultTokens?.map(token => {
+              return (
+                <SpaceBetweenBox
+                  key={token.symbol}
+                  marginBottom={2}
+                  paddingX={2}
+                  paddingY={1.5}
+                  borderRadius={'8px'}
+                  border={'1px solid var(--color-border)'}
+                  alignItems={'center'}
+                  sx={{
+                    cursor: 'pointer'
+                  }}
+                  onClick={token.onClick}
+                  leftNode={
+                    <Box display={'flex'} alignItems={'center'}>
+                      <CoinIcons type={TokenType.vault} tokenIcon={[token.coinJSON]} />
+                      <Typography marginLeft={1}>{token.symbol}</Typography>
+                    </Box>
+                  }
+                  rightNode={
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Box marginRight={1}>
+                        <Typography textAlign={'right'}>{token.amount}</Typography>
+                        <Typography
+                          color={'var(--color-text-secondary)'}
+                          textAlign={'right'}
+                          variant={'subtitle2'}
+                        >
+                          {token.valueInCurrency}
+                        </Typography>
+                      </Box>
+                      <ArrowForwardIosIcon sx={{ color: 'var(--color-text-primary)' }} />
+                    </Box>
+                  }
+                />
+              )
+            })}
           </Box>
         </Box>
       </Box>

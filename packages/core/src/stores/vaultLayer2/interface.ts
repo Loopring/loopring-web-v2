@@ -17,5 +17,12 @@ export type VaultLayer2States = {
     factor: string
   }[]
   maxLeverage: string | undefined
+  collateralTokens: {
+    orderHash: string
+    collateralTokenId: number
+    collateralTokenAmount: string
+    nftTokenId: number
+    nftData: string
+  }[]
   __timer__?: NodeJS.Timeout | -1
 } & StateBase

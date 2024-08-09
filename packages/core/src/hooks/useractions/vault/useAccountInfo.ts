@@ -44,6 +44,7 @@ export const useAccountInfo = () => {
     status: vaultAccountInfoStatus,
     updateVaultLayer2,
     tokenFactors,
+    collateralTokens,
     maxLeverage,
     activeInfo,
   } = useVaultLayer2()
@@ -324,6 +325,7 @@ export const useAccountInfo = () => {
     vaultAccountInfoStatus,
     tokenFactors,
     maxLeverage,
+    collateralTokens
 
     // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus

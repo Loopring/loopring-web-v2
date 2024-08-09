@@ -22,6 +22,7 @@ import {
   RouterPath,
   VaultKey,
   TradeBtnStatus,
+  VaultLoanType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -37,13 +38,13 @@ import {
   SpaceBetweenBox
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
-import { fiatNumberDisplay, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, useAccount, useSystem, useTokenMap, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
+import { fiatNumberDisplay, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, useAccount, useSystem, useTokenMap, useTokenPrices, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory } from 'react-router'
-import { CollateralDetailsModal, LeverageModal, MaximumCreditModal } from './modals'
+import { CollateralDetailsModal, DebtModal, LeverageModal, MaximumCreditModal } from './modals'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
 
@@ -52,9 +53,9 @@ export const VaultDashBoardPanel = ({
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
-  const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage } = _vaultAccountInfo
+  const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } = _vaultAccountInfo
   const { t } = useTranslation()
-  console.log('tokenFactors', tokenFactors)
+  console.log('collateralTokens', collateralTokens)
 
   const { forexMap, etherscanBaseUrl, getValueInCurrency } = useSystem()
   const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork, coinJson } = useSettings()
@@ -63,8 +64,10 @@ export const VaultDashBoardPanel = ({
     // setShowNoVaultAccount,
     modals: {
       isShowVaultJoin,
+
       // isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
     },
+    setShowVaultLoan
   } = useOpenModals()
   const priceTag = PriceTag[CurrencyToTag[currency]]
   const {
@@ -191,14 +194,15 @@ export const VaultDashBoardPanel = ({
   const tableRef = React.useRef<HTMLDivElement>()
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-  const { tokenMap: vaultTokenMap, tokenPrices } = useVaultMap()
+  const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex } = useVaultMap()
+  const {  tokenPrices: nonVaultTokenPrices } = useTokenPrices()
   const { tokenMap, idIndex } = useTokenMap()
   
   const history = useHistory()
   const {vaultTickerMap} = useVaultTicker()
   
   const [localState, setLocalState] = React.useState({
-    modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit',
+    modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit' | 'debt',
   })
 
   console.log('vaultTokenMap', vaultTokenMap)
@@ -468,6 +472,13 @@ export const VaultDashBoardPanel = ({
                               sx={{ cursor: 'pointer' }}
                               color={'var(--color-primary)'}
                               marginLeft={1}
+                              component={'span'}
+                              onClick={() => {
+                                setLocalState({
+                                  ...localState,
+                                  modalStatus: 'debt',
+                                })
+                              }}
                             >
                               Detail
                             </Typography>
@@ -613,7 +624,7 @@ export const VaultDashBoardPanel = ({
                           component={'img'}
                           src={`${SoursURL}svg/vault_margin_${theme.mode}.svg`}
                         />
-                        {t('labelVaultAddBtn')}
+                        {t('labelVaultCollateralManagement')}
                       </Typography>
                     </MenuBtnStyled>
                     <MenuBtnStyled
@@ -1008,27 +1019,35 @@ export const VaultDashBoardPanel = ({
                   })
                 }}
                 collateralTokens={
-                  vaultAccountInfo?.collateralInfo
-                    ? [
-                        {
-                          name: idIndex[vaultAccountInfo.collateralInfo.collateralTokenId],
-                          amount: numberFormat(
-                            utils.formatUnits(
-                              vaultAccountInfo.collateralInfo.collateralTokenAmount,
-                              tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]]
-                                .decimals,
-                            ),
-                            {
-                              fixed:
-                                tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]]
-                                  .precision,
-                            },
-                          ),
-                          logo: '',
-                          valueInUSD: '',
-                        },
-                      ]
-                    : []
+                  collateralTokens?.map((collateralToken) => {
+                    const tokenSymbol = idIndex[collateralToken.collateralTokenId]
+                    const amount = collateralToken.collateralTokenAmount
+                      ? utils.formatUnits(
+                          collateralToken.collateralTokenAmount,
+                          tokenMap[tokenSymbol].decimals,
+                        )
+                      : undefined
+                    return {
+                      name: tokenSymbol,
+                      amount: amount
+                        ? numberFormat(amount, {
+                            fixed: tokenMap[tokenSymbol].precision,
+                          })
+                        : EmptyValueTag,
+                      logo: '',
+                      valueInCurrency:
+                        amount && nonVaultTokenPrices[tokenSymbol]
+                          ? fiatNumberDisplay(
+                              getValueInCurrency(
+                                new Decimal(nonVaultTokenPrices[tokenSymbol])
+                                  .mul(amount)
+                                  .toString(),
+                              ),
+                              currency,
+                            )
+                          : EmptyValueTag,
+                    }
+                  }) ?? []
                 }
                 maxCredit={
                   vaultAccountInfo?.maxBorrowableOfUsdt &&
@@ -1148,6 +1167,69 @@ export const VaultDashBoardPanel = ({
                             .sub(vaultAccountInfo.totalDebtOfUsdt)
                             .toString(),
                         ),
+                        currency,
+                      )
+                    : EmptyValueTag
+                }
+              />
+              <DebtModal
+                open={localState.modalStatus === 'debt'}
+                onClose={() => {
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'noModal',
+                  })
+                }}
+                borrowedVaultTokens={vaultAccountInfo?.userAssets
+                  .filter((asset) => new Decimal(asset.borrowed).greaterThan('0'))
+                  .map((asset) => {
+                    const vaultSymbol = vaultIdIndex[
+                      asset.tokenId as unknown as number
+                    ] as unknown as string
+                    const vaultToken = vaultTokenMap[vaultSymbol]
+                    const originSymbol = vaultSymbol.replace('LV', '')
+                    const price = tokenPrices[vaultSymbol]
+                    const borrowedAmount = vaultToken
+                      ? utils.formatUnits(asset.borrowed, vaultToken.decimals)
+                      : undefined
+                    return {
+                      symbol: vaultSymbol,
+                      coinJSON: coinJson[originSymbol],
+                      amount: borrowedAmount
+                        ? numberFormat(borrowedAmount, { fixed: vaultToken?.precision })
+                        : EmptyValueTag,
+                      valueInCurrency:
+                        price && borrowedAmount
+                          ? fiatNumberDisplay(
+                              getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString()),
+                              currency,
+                            )
+                          : EmptyValueTag,
+                      onClick: () => {
+                        setShowVaultLoan({ isShow: true, info: {symbol: vaultSymbol}, type: VaultLoanType.Repay })
+                      },
+                    }
+                  })}
+                totalDebt={
+                  vaultAccountInfo?.totalDebtOfUsdt
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt),
+                        currency,
+                      )
+                    : EmptyValueTag
+                }
+                totalFundingFee={
+                  vaultAccountInfo?.totalInterestOfUsdt
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt),
+                        currency,
+                      )
+                    : EmptyValueTag
+                }
+                totalBorrowed={
+                  vaultAccountInfo?.totalBorrowedOfUsdt
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt),
                         currency,
                       )
                     : EmptyValueTag

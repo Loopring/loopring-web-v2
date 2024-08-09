@@ -2135,7 +2135,7 @@ export default {
   labelVaultHome: 'Home',
   labelVaultDashboard: 'Dashboard',
   labelVaultRefresh: 'Refresh',
-  labelVaultAddBtn: 'Collateral Management',
+  labelVaultAddBtn: 'Margin Call',
   labelVaultJoinBtn: 'Open Position',
   labelVaultCheckInProcessing: 'Checking Portal status',
   labelVaultRecord: 'Records',
@@ -2329,4 +2329,5 @@ export default {
   labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
+  labelVaultCollateralManagement: 'Collateral Management',
 }

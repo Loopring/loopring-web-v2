@@ -14,6 +14,8 @@ export type VaultJoinBaseProps<T, I, V> = {
   isActiveAccount: boolean
   onRefreshData: () => void
   refreshRef: React.Ref<any>
+  onToggleAddRedeem: (value: 'Add' | 'Redeem') => void;
+  isAddOrRedeem: 'Add' | 'Redeem'
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type VaultJoinExtendProps<T, I, C = IBData<I>> = {
