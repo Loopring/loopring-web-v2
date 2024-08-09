@@ -103,6 +103,8 @@ export const WalletValidationInfo = ({
               ? 'Add Guardian'
               : jsonObj.metaTxType === 35
               ? 'Remove Guardian'
+              : jsonObj.metaTxType === 37
+              ? 'Unlock Wallet'
               : jsonObj.metaTxType === 18
               ? 'Transfer'
               : jsonObj.metaTxType === 23
@@ -206,6 +208,8 @@ export const WalletValidationInfo = ({
                 ? 'Add Guardian'
                 : jsonObj.metaTxType === 35
                 ? 'Remove Guardian'
+                : jsonObj.metaTxType === 37
+                ? 'Unlock Wallet'
                 : jsonObj.metaTxType === 18
                 ? 'Transfer'
                 : jsonObj.metaTxType === 23
@@ -225,8 +229,8 @@ export const WalletValidationInfo = ({
           </Box>
           <Box width={'100%'} marginTop={2} display={'flex'} justifyContent={'space-between'}>
             <Typography variant={'body2'}>{t('labelGuardianCodeRequester')}</Typography>
-            <Typography variant={'body2'} color={theme.colorBase.textPrimary}>
-              {jsonObj?.sender ? shortenAddress(jsonObj?.sender) : ''}
+            <Typography width={'55%'} variant={'body2'} sx={{wordBreak: 'break-all'}} color={theme.colorBase.textPrimary}>
+              {jsonObj?.sender}
             </Typography>
           </Box>
           <Box width={'100%'} marginTop={2} display={'flex'} justifyContent={'space-between'}>
