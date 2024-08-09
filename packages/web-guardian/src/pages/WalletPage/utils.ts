@@ -11,7 +11,7 @@ const keyMap = [
   { short: 'vu', long: 'validUntil' },
   { short: 'cv', long: 'contractVersion' },
   { short: 'gs', long: 'guardianSign' },
-  { short: 'g', long: 'guardianAddress' },
+  { short: 'g', long: 'guardian' },
   { short: 'e', long: 'extra' },
 ]
 const extraKeyMap = [
