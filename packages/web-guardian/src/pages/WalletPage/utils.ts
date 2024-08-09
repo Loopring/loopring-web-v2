@@ -11,11 +11,11 @@ const keyMap = [
   { short: 'vu', long: 'validUntil' },
   { short: 'cv', long: 'contractVersion' },
   { short: 'gs', long: 'guardianSign' },
-  { short: 'g', long: 'guardian' },
+  { short: 'g', long: 'guardianAddress' },
   { short: 'e', long: 'extra' },
 ]
 const extraKeyMap = [
-  { short: 'g', long: 'guardian' },
+  { short: 'g', long: 'guardianAddress' },
   { short: 't', long: 'token' },
   { short: 'to', long: 'to' },
   { short: 'nm', long: 'newMasterCopy' },
