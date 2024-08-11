@@ -13,3 +13,6 @@ export {
   bigNumberFormat,
   fiatNumberDisplay,
 } from './numberFormat'
+export {
+  numberStringListSum
+} from './calculation'

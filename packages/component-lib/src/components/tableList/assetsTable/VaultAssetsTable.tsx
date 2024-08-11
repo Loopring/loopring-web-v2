@@ -6,6 +6,7 @@ import {Column, Table} from '../../basic-lib'
 import {Filter} from './components/Filter'
 import {TablePaddingX} from '../../styled'
 import {
+  BrushIcon,
 	CurrencyToTag,
 	EmptyValueTag,
 	ForexMap,
@@ -97,6 +98,7 @@ export type VaultAssetsTableProps<R> = {
   forexMap: ForexMap<sdk.Currency>
   hideAssets?: boolean
   actionRow: (props: { row }) => JSX.Element
+  onClickDustCollector: () => void
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -121,6 +123,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       rowConfig = RowConfig,
       hideAssets,
       searchValue,
+      onClickDustCollector,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -348,58 +351,66 @@ export const VaultAssetsTable = withTranslation('tables')(
 		]
 
 		return (
-			<TableWrap lan={language} isMobile={isMobile}>
-				{showFilter && (
-					<Box marginX={2}>
-						<Filter
-							{...{
-								handleFilterChange,
-								filter,
-								hideSmallBalances,
-								setHideSmallBalances,
-							}}
-              noHideInvestToken
-						/>
-					</Box>
-				)}
-				<Table
-					ref={gridRef}
-					className={''}
-					{...{...rest, t}}
-					style={{
-						height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
-					}}
-					onRowClick={onRowClick as any}
-					rowHeight={rowConfig.rowHeight}
-					headerRowHeight={rowConfig.rowHeaderHeight}
-					rawData={viewData}
-					generateRows={(rowData: any) => rowData}
-					generateColumns={({columnsRaw}: any) => columnsRaw as Column<any, unknown>[]}
-					showloading={isLoading}
-					// onScroll={handleScroll}
-					columnMode={(isMobile ? getColumnMobileAssets(t) : getColumnModeAssets(t)) as any}
-				/>
-				{hasMore && (
-					<Typography
-						variant={'body1'}
-						display={'inline-flex'}
-						justifyContent={'center'}
-						alignItems={'center'}
-						color={'var(--color-primary)'}
-						textAlign={'center'}
-						paddingY={1}
-					>
-						<img
-							alt={'loading'}
-							className='loading-gif'
-							width='16'
-							src={`./static/loading-1.gif`}
-							style={{paddingRight: 1, display: 'inline-block'}}
-						/>
-						{t('labelLoadingMore')}
-					</Typography>
-				)}
-			</TableWrap>
-		)
+      <TableWrap lan={language} isMobile={isMobile}>
+        {showFilter && (
+          <Box marginX={2} display={'flex'} alignItems={'center'}>
+            <Box width={'calc(100% - 130px)'}>
+              <Filter
+                {...{
+                  handleFilterChange,
+                  filter,
+                  hideSmallBalances,
+                  setHideSmallBalances,
+                }}
+                noHideInvestToken
+              />
+            </Box>
+
+            <Typography sx={{cursor: 'pointer'}} component={'span'} onClick={onClickDustCollector} width={'140px'} color={'var(--color-text-secondary)'} display={'flex'} alignItems={'center'}>
+              <BrushIcon 
+                sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }} 
+              /> Dust Collector
+            </Typography>
+          </Box>
+        )}
+        <Table
+          ref={gridRef}
+          className={''}
+          {...{ ...rest, t }}
+          style={{
+            height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
+          }}
+          onRowClick={onRowClick as any}
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
+          rawData={viewData}
+          generateRows={(rowData: any) => rowData}
+          generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
+          showloading={isLoading}
+          // onScroll={handleScroll}
+          columnMode={(isMobile ? getColumnMobileAssets(t) : getColumnModeAssets(t)) as any}
+        />
+        {hasMore && (
+          <Typography
+            variant={'body1'}
+            display={'inline-flex'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            color={'var(--color-primary)'}
+            textAlign={'center'}
+            paddingY={1}
+          >
+            <img
+              alt={'loading'}
+              className='loading-gif'
+              width='16'
+              src={`./static/loading-1.gif`}
+              style={{ paddingRight: 1, display: 'inline-block' }}
+            />
+            {t('labelLoadingMore')}
+          </Typography>
+        )}
+      </TableWrap>
+    )
 	},
 )

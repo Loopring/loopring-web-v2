@@ -1,6 +1,6 @@
-import { Box, Typography, Modal, Divider, IconButton, Slider } from '@mui/material'
-import { AvatarCoin, CoinIcons, SpaceBetweenBox } from '@loopring-web/component-lib'
-import { BackIcon, CloseIcon, EmptyValueTag, TokenType } from '@loopring-web/common-resources'
+import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip } from '@mui/material'
+import { AvatarCoin, Button, CoinIcons, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, OrderListIcon, TokenType } from '@loopring-web/common-resources'
 import { numberFormat } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -44,6 +44,10 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
           >
             <Typography variant={'h5'}>Collateral Details</Typography>
             <CloseIcon
+              style={{
+                height: '20px',
+                width: '20px',
+              }}
               sx={{
                 cursor: 'pointer',
                 fontSize: '24px',
@@ -174,6 +178,10 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
               <Typography variant={'h5'}>Maximum Credit</Typography>
             </Box>
             <CloseIcon
+              style={{
+                height: '20px',
+                width: '20px',
+              }}
               sx={{
                 cursor: 'pointer',
                 fontSize: '24px',
@@ -294,6 +302,10 @@ export const LeverageModal = (props: LeverageModalProps) => {
           >
             <Typography variant={'h5'}>Leverage</Typography>
             <CloseIcon
+              style={{
+                height: '20px',
+                width: '20px',
+              }}
               sx={{
                 cursor: 'pointer',
                 fontSize: '24px',
@@ -445,17 +457,8 @@ export const DebtModal = (props: DebtModalProps) => {
     onClose,
     borrowedVaultTokens,
     totalFundingFee,
-  totalBorrowed,
-  totalDebt,
-  //   onClickMaxCredit,
-  //   currentLeverage,
-  //   onClickReduce,
-  //   onClickAdd,
-  //   maxLeverage,
-  //   onClickLeverage,
-  //   borrowAvailable,
-  // borrowed,
-  // maximumCredit,
+    totalBorrowed,
+    totalDebt,
   } = props
   return (
     <Modal open={open} onClose={onClose}>
@@ -477,6 +480,10 @@ export const DebtModal = (props: DebtModalProps) => {
           >
             <Typography variant={'h5'}>Debt</Typography>
             <CloseIcon
+              style={{
+                height: '20px',
+                width: '20px',
+              }}
               sx={{
                 cursor: 'pointer',
                 fontSize: '24px',
@@ -580,6 +587,164 @@ export const DebtModal = (props: DebtModalProps) => {
                 />
               )
             })}
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+
+type DustCollectorProps = {
+  open: boolean
+  onClose: () => void
+  dusts?: {
+    symbol: string
+    amount: string
+    valueInCurrency
+    checked: boolean
+    coinJSON: any
+    onCheck: () => void
+  }[]
+  totalValueInUSDT: string
+  totalValueInCurrency: string
+  onClickConvert: () => void
+  onClickRecords: () => void
+  convertBtnDisabled: boolean
+}
+
+export const DustCollectorModal = (props: DustCollectorProps) => {
+  const {
+    open,
+    onClose,
+    dusts,
+    totalValueInUSDT,
+    totalValueInCurrency,
+    onClickConvert,
+    convertBtnDisabled,
+    onClickRecords,
+  } = props
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-box)'}
+          width={'var(--modal-width)'}
+          height={'500px'}
+          borderRadius={1}
+          display={'flex'}
+          flexDirection={'column'}
+        >
+          <Box
+            paddingX={1.5}
+            paddingY={1.5}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+          >
+            <Typography variant={'h5'}>Dust Collector</Typography>
+            <Box>
+              <OrderListIcon
+                style={{
+                  height: '20px',
+                  width: '20px',
+                }}
+                sx={{
+                  cursor: 'pointer',
+                  marginRight: 1.5,
+                  color: 'var(--color-text-third)',
+                }}
+                onClick={onClickRecords}
+              />
+              <CloseIcon
+                style={{
+                  height: '20px',
+                  width: '20px',
+                }}
+                sx={{
+                  cursor: 'pointer',
+                  marginRight: 1.5,
+                  color: 'var(--color-text-third)',
+                }}
+                onClick={onClose}
+              />
+            </Box>
+          </Box>
+          <Divider style={{ marginTop: '-1px', width: '100%' }} />
+          <Box paddingX={3} paddingTop={5} paddingBottom={4}>
+            {dusts?.map((dust) => {
+              return (
+                <SpaceBetweenBox
+                  key={dust.symbol}
+                  leftNode={
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Checkbox
+                        checked={dust.checked}
+                        checkedIcon={<CheckedIcon />}
+                        icon={<CheckBoxIcon />}
+                        color='default'
+                        onChange={dust.onCheck}
+                      />
+                      <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
+                      <Typography sx={{ marginLeft: 1 }}>{dust.symbol}</Typography>
+                    </Box>
+                  }
+                  rightNode={
+                    <Box>
+                      <Typography textAlign={'right'}>{dust.amount}</Typography>
+                      <Typography
+                        color={'var(--color-text-secondary)'}
+                        textAlign={'right'}
+                        variant={'subtitle2'}
+                      >
+                        {dust.valueInCurrency}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              )
+            })}
+          </Box>
+          <Divider style={{ width: '100%' }} />
+          <Box paddingX={3}>
+            <SpaceBetweenBox
+              marginTop={3}
+              leftNode={
+                <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'}>
+                  Value (est.)
+                  <Tooltip
+                    title={
+                      'The token price changes dynamically, the dust value you see here may be inconsistent with the final value.'
+                    }
+                    placement={'top'}
+                  >
+                    <IconButton>
+                      <Info2Icon sx={{ color: 'var(--color-text-secondary)',marginLeft: 1 / 2 }} />
+                    </IconButton>
+                    
+                  </Tooltip>
+                </Typography>
+              }
+              rightNode={
+                <Typography>
+                  {totalValueInUSDT} / {totalValueInCurrency}
+                </Typography>
+              }
+            />
+            <Typography marginBottom={2} color={'var(--color-text-secondary)'} marginTop={5}>
+              The accumulated dust will be converted into corresponding USDT. If you do not have any
+              USDT to be repaid, the converted amount will be deposited into your portal's USDT.
+              However, if you have USDT to be repaid, the converted amount will be prioritized to
+              repay the debt. 
+            </Typography>
+            <Button
+              sx={{ marginBottom: 4 }}
+              disabled={convertBtnDisabled}
+              fullWidth
+              onClick={onClickConvert}
+              variant={'contained'}
+            >
+              Convert
+            </Button>
           </Box>
         </Box>
       </Box>

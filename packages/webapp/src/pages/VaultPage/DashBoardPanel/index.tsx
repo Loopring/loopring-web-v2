@@ -38,13 +38,13 @@ import {
   SpaceBetweenBox
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
-import { fiatNumberDisplay, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, useAccount, useSystem, useTokenMap, useTokenPrices, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
+import { fiatNumberDisplay, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, numberStringListSum, useAccount, useSystem, useTokenMap, useTokenPrices, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory } from 'react-router'
-import { CollateralDetailsModal, DebtModal, LeverageModal, MaximumCreditModal } from './modals'
+import { CollateralDetailsModal, DebtModal, DustCollectorModal, LeverageModal, MaximumCreditModal } from './modals'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
 
@@ -202,7 +202,8 @@ export const VaultDashBoardPanel = ({
   const {vaultTickerMap} = useVaultTicker()
   
   const [localState, setLocalState] = React.useState({
-    modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit' | 'debt',
+    modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit' | 'debt' | 'dustCollector',
+    selectedDustSymbol: [] as string[]
   })
 
   console.log('vaultTokenMap', vaultTokenMap)
@@ -219,6 +220,71 @@ export const VaultDashBoardPanel = ({
     })
     updateVaultLayer2({})
   }
+
+  const dustsAssets = vaultAccountInfo?.userAssets
+    .filter((asset) => {
+      // @ts-ignore
+      const dust: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.dust
+      return new Decimal(asset.total).greaterThan('0') 
+      // && new Decimal(asset.total).lessThanOrEqualTo(dust)
+    })
+  const dusts = dustsAssets
+    ?.map((asset) => {
+      // @ts-ignore
+      const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
+      const vaultSymbol = token.symbol
+      const originSymbol = vaultSymbol.slice(2)
+      const checked = localState.selectedDustSymbol.includes(originSymbol)
+      const price = tokenPrices[vaultSymbol]
+      return {
+        symbol: originSymbol,
+        coinJSON: coinJson[originSymbol],
+        amount: numberFormat(utils.formatUnits(asset.total, token.decimals), {
+          fixed: token.precision,
+        }),
+        checked,
+        valueInCurrency: price
+          ? fiatNumberDisplay(
+              getValueInCurrency(
+                new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
+              ),
+              currency,
+            )
+          : EmptyValueTag,
+        onCheck() {
+          if (checked) {
+            setLocalState({
+              ...localState,
+              selectedDustSymbol: localState.selectedDustSymbol.filter(
+                (symbol) => symbol !== originSymbol,
+              ),
+            })
+          } else {
+            setLocalState({
+              ...localState,
+              selectedDustSymbol: localState.selectedDustSymbol.concat(originSymbol),
+            })
+          }
+        },
+      }
+    })
+    numberStringListSum
+  const totalDustsInUSDT = dustsAssets
+    ? numberStringListSum(
+        dustsAssets.map((asset) => {
+          // @ts-ignore
+          const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
+          const vaultSymbol = token.symbol
+          const price = tokenPrices[vaultSymbol]
+          return new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString()
+        }),
+      )
+    : undefined
+  const totalDustsInCurrency = totalDustsInUSDT
+    ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
+    : EmptyValueTag
+  
+    
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -711,6 +777,12 @@ export const VaultDashBoardPanel = ({
                       ...vaultTickerMap[row.erc20Symbol],
                     })
                   }}
+                  onClickDustCollector={() => {
+                    setLocalState({
+                      ...localState,
+                      modalStatus: 'dustCollector'
+                    })
+                  }}
                   showFilter
                 />
               </Box>
@@ -1181,7 +1253,7 @@ export const VaultDashBoardPanel = ({
                   })
                 }}
                 borrowedVaultTokens={vaultAccountInfo?.userAssets
-                  .filter((asset) => new Decimal(asset.borrowed).greaterThan('0'))
+                  ?.filter((asset) => new Decimal(asset.borrowed).greaterThan('0'))
                   .map((asset) => {
                     const vaultSymbol = vaultIdIndex[
                       asset.tokenId as unknown as number
@@ -1234,6 +1306,25 @@ export const VaultDashBoardPanel = ({
                       )
                     : EmptyValueTag
                 }
+              />
+              <DustCollectorModal 
+                open={localState.modalStatus==='dustCollector'}
+                onClose={() => {
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'noModal',
+                  })
+                }}
+                dusts={dusts}
+                onClickConvert={() => {
+
+                }}
+                convertBtnDisabled={false}
+                totalValueInCurrency={totalDustsInCurrency}
+                totalValueInUSDT={totalDustsInUSDT ?? EmptyValueTag}
+                onClickRecords={() => {
+                  history.push('/l2assets/history/VaultRecords')
+                }}
               />
             </>
           }
