@@ -730,7 +730,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                 </Typography>
               }
             />
-            <Typography marginBottom={2} color={'var(--color-text-secondary)'} marginTop={5}>
+            <Typography marginBottom={3} color={'var(--color-text-secondary)'} marginTop={5}>
               The accumulated dust will be converted into corresponding USDT. If you do not have any
               USDT to be repaid, the converted amount will be deposited into your portal's USDT.
               However, if you have USDT to be repaid, the converted amount will be prioritized to

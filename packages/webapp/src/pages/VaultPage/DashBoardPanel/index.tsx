@@ -23,6 +23,8 @@ import {
   VaultKey,
   TradeBtnStatus,
   VaultLoanType,
+  SUBMIT_PANEL_CHECK,
+  SUBMIT_PANEL_AUTO_CLOSE,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -35,10 +37,11 @@ import {
   useSettings,
   VaultAssetsTable,
   Button as MyButton,
-  SpaceBetweenBox
+  SpaceBetweenBox,
+  AccountStep
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
-import { fiatNumberDisplay, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, numberStringListSum, useAccount, useSystem, useTokenMap, useTokenPrices, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
+import { DAYS, fiatNumberDisplay, getTimestampDaysLater, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, numberStringListSum, store, useAccount, useSystem, useTokenMap, useTokenPrices, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 import { useTheme } from '@emotion/react'
@@ -57,17 +60,18 @@ export const VaultDashBoardPanel = ({
   const { t } = useTranslation()
   console.log('collateralTokens', collateralTokens)
 
-  const { forexMap, etherscanBaseUrl, getValueInCurrency } = useSystem()
+  const { forexMap, etherscanBaseUrl, getValueInCurrency, exchangeInfo } = useSystem()
   const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork, coinJson } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
     // setShowNoVaultAccount,
     modals: {
       isShowVaultJoin,
-
+      isShowAccount
       // isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
     },
-    setShowVaultLoan
+    setShowAccount,
+    setShowVaultLoan,
   } = useOpenModals()
   const priceTag = PriceTag[CurrencyToTag[currency]]
   const {
@@ -222,7 +226,7 @@ export const VaultDashBoardPanel = ({
   }
 
   const dustsAssets = vaultAccountInfo?.userAssets
-    .filter((asset) => {
+    ?.filter((asset) => {
       // @ts-ignore
       const dust: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.dust
       return new Decimal(asset.total).greaterThan('0') 
@@ -268,7 +272,6 @@ export const VaultDashBoardPanel = ({
         },
       }
     })
-    numberStringListSum
   const totalDustsInUSDT = dustsAssets
     ? numberStringListSum(
         dustsAssets.map((asset) => {
@@ -284,6 +287,115 @@ export const VaultDashBoardPanel = ({
     ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
     : EmptyValueTag
   
+  const convert = async () => {
+    if (!dustsAssets || !exchangeInfo) return
+    const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+      type: 4,
+    })!
+    const dustTransfers = await Promise.all(
+      dustsAssets.map(async (asset) => {
+        const tokenId = asset.tokenId as unknown as number
+        const { offchainId } = await LoopringAPI.userAPI?.getNextStorageId(
+          {
+            accountId: account.accountId,
+            sellTokenId: tokenId,
+          },
+          account.apiKey,
+        )!
+        return {
+          exchange: exchangeInfo.exchangeAddress,
+          payerAddr: account.accAddress,
+          payerId: account.accountId,
+          payeeId: 0,
+          payeeAddr: broker,
+          storageId: offchainId,
+          token: {
+            tokenId: tokenId,
+            volume: asset.total,
+          },
+          maxFee: {
+            tokenId: tokenId,
+            volume: '0',
+          },
+          validUntil: getTimestampDaysLater(DAYS),
+          memo: '',
+        }
+      })
+    ) 
+    const response = await LoopringAPI.vaultAPI?.submitDustCollector({
+      dustTransfers: dustTransfers,
+      apiKey: account.apiKey,
+      accountId: account.accountId,
+      eddsaKey: account.eddsaKey.sk
+    })
+    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response){
+      throw response
+    }
+    setLocalState({
+      ...localState,
+      modalStatus: 'noModal'
+    })
+    updateVaultLayer2({})
+    await sdk.sleep(SUBMIT_PANEL_CHECK)
+    const response2 = await LoopringAPI?.vaultAPI?.getVaultGetOperationByHash(
+      {
+        accountId: account?.accountId?.toString(),
+        hash: response.hash,
+      },
+      account.apiKey,
+    )
+    if (response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+      throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+    } 
+    const status = response2?.raw_data?.operation?.status && [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
+      response2?.raw_data?.operation?.status,
+    ) ? 'labelSuccessfully' : 'labelPending'
+    
+    setShowAccount({
+      isShow: store.getState().modals.isShowAccount.isShow,
+      step:
+        status == 'labelSuccessfully'
+          ? AccountStep.VaultDustCollector_Success
+          : AccountStep.VaultDustCollector_In_Progress,
+      info: {
+        totalValueInCurrency: 'totalValueInCurrency', 
+        convertedInUSDT: 'convertedInUSDT',
+        repaymentInUSDT: 'repaymentInUSDT', 
+        time: 'time',
+        dusts: [
+          {
+            symbol: 'LRC',
+            coinJSON: '',
+            amount: '1',
+            valueInCurrency: '1'
+          }
+        ]
+      },
+    })
+    await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+    updateVaultLayer2({})
+  }
+  React.useEffect(() => {
+    return
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.VaultDustCollector_Failed,
+      info: {
+        totalValueInCurrency: 'totalValueInCurrency', 
+        convertedInUSDT: 'convertedInUSDT',
+        repaymentInUSDT: 'repaymentInUSDT', 
+        time: 'time',
+        dusts: [
+          {
+            symbol: 'LRC',
+            coinJSON: '',
+            amount: '1',
+            valueInCurrency: '1'
+          }
+        ]
+      },
+    })
+  }, [])
     
 
   return (
@@ -1317,7 +1429,7 @@ export const VaultDashBoardPanel = ({
                 }}
                 dusts={dusts}
                 onClickConvert={() => {
-
+                  convert()
                 }}
                 convertBtnDisabled={false}
                 totalValueInCurrency={totalDustsInCurrency}

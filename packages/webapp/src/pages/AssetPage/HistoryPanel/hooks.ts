@@ -1302,7 +1302,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
             operateTypes:
               props?.operateTypes ??
               [
-                0, 1, 2, 3, 4, 5,
+                0, 1, 2, 3, 4, 5, 6
                 // sdk.VaultOperationType.VAULT_OPEN_POSITION,
                 // sdk.VaultOperationType.VAULT_MARGIN_CALL,
                 // sdk.VaultOperationType.VAULT_BORROW,

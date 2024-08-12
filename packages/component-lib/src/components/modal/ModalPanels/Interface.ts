@@ -212,6 +212,9 @@ export enum AccountStep {
   VaultRepay_Success,
   VaultRepay_Failed,
   VaultRepay_In_Progress,
+  VaultDustCollector_Success,
+  VaultDustCollector_Failed,
+  VaultDustCollector_In_Progress,
 }
 
 /**
