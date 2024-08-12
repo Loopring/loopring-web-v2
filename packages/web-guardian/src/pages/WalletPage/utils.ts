@@ -20,11 +20,10 @@ const extraKeyMap = [
   { short: 'to', long: 'to' },
   { short: 'nm', long: 'newMasterCopy' },
   { short: 'm', long: 'masterCopy' },
-  { short: 'v', long: 'value' },
   { short: 'c', long: 'data' },
   { short: 'gs', long: 'newGuardians' },
   { short: 'no', long: 'newOwner' },
-  { short: 'a', long: 'amount' },
+  { short: 'a', long: 'value' },
 ]
 
 const compressCallData = (hexString: String) => {
