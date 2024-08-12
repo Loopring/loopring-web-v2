@@ -437,15 +437,21 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             onClickCodeApprovalApprove={async () => {
               const jsonObj = decodeData(approvalRequests.codeInput)
               const metaTxData =
-                jsonObj.metaTxType === 16
+                jsonObj.metaTxType === sdk.HEBAO_META_TYPE.recovery
                   ? {
                       newGuardians: jsonObj.extra.guardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
-                  : jsonObj.metaTxType === 18
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.transfer
                   ? {
                       ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
                       logdata: '',
+                    }
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.approve_token
+                  ? {
+                      ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
                     }
                   : jsonObj.extra
               const data = await getSignature({
@@ -475,15 +481,21 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             onClickNext={async () => {
               const jsonObj = decodeData(approvalRequests.codeInput)
               const metaTxData =
-                jsonObj.metaTxType === 16
+                jsonObj.metaTxType === sdk.HEBAO_META_TYPE.recovery
                   ? {
-                      newGuardians: jsonObj.extra.newGuardians,
+                      newGuardians: jsonObj.extra.guardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
-                  : jsonObj.metaTxType === 18
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.transfer
                   ? {
                       ...jsonObj.extra,
-                      logdata: '0x',
+                      amount: jsonObj.extra.value,
+                      logdata: '',
+                    }
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.approve_token
+                  ? {
+                      ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
                     }
                   : jsonObj.extra
               
