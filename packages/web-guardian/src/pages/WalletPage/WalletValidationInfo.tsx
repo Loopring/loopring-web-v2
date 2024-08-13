@@ -417,17 +417,7 @@ export const WalletValidationInfo = ({
           })}
         </Box>
       ) : (
-        <Box flex={1} height={'100%'} width={'100%'}>
-          <EmptyDefault
-            style={{ alignSelf: 'center' }}
-            height={'100%'}
-            message={() => (
-              <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                {t('labelNoContent')}
-              </Box>
-            )}
-          />
-        </Box>
+        <></>
       )}
     </>
   )
