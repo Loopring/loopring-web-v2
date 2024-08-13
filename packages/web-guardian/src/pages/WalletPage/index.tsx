@@ -439,7 +439,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               const metaTxData =
                 jsonObj.metaTxType === sdk.HEBAO_META_TYPE.recovery
                   ? {
-                      newGuardians: jsonObj.extra.guardians,
+                      newGuardians: jsonObj.extra.newGuardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
                   : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.transfer
@@ -483,7 +483,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               const metaTxData =
                 jsonObj.metaTxType === sdk.HEBAO_META_TYPE.recovery
                   ? {
-                      newGuardians: jsonObj.extra.guardians,
+                      newGuardians: jsonObj.extra.newGuardians,
                       newOwner: jsonObj.extra.newOwner,
                     }
                   : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.transfer
