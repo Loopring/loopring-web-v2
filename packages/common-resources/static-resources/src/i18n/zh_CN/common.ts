@@ -2351,4 +2351,5 @@ export default {
   requester for the necessary information.`,
   labelGuardianCodeSharingDes: `Please send the QR code to the requester`,
   labelGuardianCodeSharingApprovalRequest: 'Approval Request',
+  labelGuardianNotWhoIProtect: 'Request not from who I protect',
 }

@@ -283,12 +283,16 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   )
 
   
-
+  
   const codeInputValidation = () => {
     if (approvalRequests.codeInput) {
       try {
         const jsonObj = decodeData(approvalRequests.codeInput)
         if (!jsonObj) return t('labelGuardianCodeFormatError')
+        const found = protectList.find(protect => {
+          return protect.address.toLowerCase() === jsonObj.sender.toLowerCase()
+        })
+        if (!found) return t('labelGuardianNotWhoIProtect')
         if (network.toLowerCase() !== jsonObj.network.toLowerCase()) {
           return t('labelGuardianCodeNetworkError') 
         }
