@@ -8,6 +8,7 @@ const initialState: NFTHashInfos = {
   [ChainId.MAINNET]: { nftDataHashes: {} },
   [ChainId.SEPOLIA]: { nftDataHashes: {} },
   [ChainId.TAIKOHEKLA]: { nftDataHashes: {} },
+  [ChainId.TAIKO]: { nftDataHashes: {} },
   // withdrawHashes:{},
 }
 

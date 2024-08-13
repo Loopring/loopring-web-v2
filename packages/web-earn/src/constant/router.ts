@@ -108,7 +108,7 @@ export const RouterAllowIndex = {
     RouterMainKey.dualIntro,
     RouterMainKey.invest,
   ],
-  TAIKOHEKLA: [
+  TAIKO: [
     RouterMainKey.l2assets,
     RouterMainKey.dualIntro,
     RouterMainKey.layer2,
@@ -120,6 +120,7 @@ export const RouterAllowIndex = {
 
 export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] } = {
   TAIKOHEKLA: headerMenuEartData,
+  TAIKO: headerMenuEartData,
   ETHEREUM: headerMenuEartData,
   GOERLI: headerMenuEartData,
   SEPOLIA: headerMenuEartData,
@@ -149,6 +150,7 @@ export const AssetL2TabEarnIndex = {
 }
 export const RouterAllowEarnIndex = {
   TAIKOHEKLA: [RouterMainKey.l2assets, RouterMainKey.invest],
+  TAIKO: [RouterMainKey.l2assets, RouterMainKey.invest],
   ETHEREUM: [RouterMainKey.l2assets, RouterMainKey.invest],
   GOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
   SEPOLIA: [RouterMainKey.l2assets, RouterMainKey.invest],

@@ -23,11 +23,11 @@ const chains = [
     rpcUrl: process.env.REACT_APP_RPC_URL_1!,
   },
   {
-    chainId: 5,
-    name: 'Goerli',
+    chainId: 167000,
+    name: 'Taiko',
     currency: 'ETH',
-    explorerUrl: 'https://goeril.etherscan.io/',
-    rpcUrl: process.env.REACT_APP_RPC_URL_5!,
+    explorerUrl: 'https://explorer.taiko.xyz/',
+    rpcUrl: process.env.REACT_APP_RPC_URL_167000!,
   },
   {
     chainId: 11155111,

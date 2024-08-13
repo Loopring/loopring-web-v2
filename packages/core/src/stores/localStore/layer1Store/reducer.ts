@@ -9,6 +9,7 @@ const initialState: LAYER1_ACTION_HISTORY = {
   [ChainId.MAINNET]: {},
   [ChainId.SEPOLIA]: {},
   [ChainId.TAIKOHEKLA]: {},
+  [ChainId.TAIKO]: {},
   __timer__: -1,
 }
 

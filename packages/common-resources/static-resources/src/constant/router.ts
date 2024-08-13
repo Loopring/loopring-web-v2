@@ -480,6 +480,7 @@ export const INVEST_TABS = [
 export const DEFI_CONFIG = {
   products: {
     TAIKOHEKLA: [] as string[],
+    TAIKO: [] as string[],
     ETHEREUM: ['LIDO', 'ROCKETPOOL'],
     GOERLI: ['ROCKETPOOL'],
     SEPOLIA: ['LIDO'],
@@ -487,6 +488,7 @@ export const DEFI_CONFIG = {
   },
   MARKETS: {
     TAIKOHEKLA: [] as string[],
+    TAIKO: [] as string[],
     ETHEREUM: ['RETH-ETH', 'WSTETH-ETH'],
     GOERLI: ['RETH-ETH'],
     SEPOLIA: ['WSTETH-ETH'],
@@ -496,6 +498,7 @@ export const DEFI_CONFIG = {
 export const LEVERAGE_ETH_CONFIG = {
   coins: {
     TAIKOHEKLA: [] as string[],
+    TAIKO: [] as string[],
     ETHEREUM: ['CIETH'],
     GOERLI: ['WSTETH'],
     SEPOLIA: ['WSTETH'],
@@ -503,6 +506,7 @@ export const LEVERAGE_ETH_CONFIG = {
   },
   types: {
     TAIKOHEKLA: [] as string[],
+    TAIKO: [] as string[],
     ETHEREUM: ['cian'],
     GOERLI: ['lido'],
     SEPOLIA: ['lido'],
@@ -510,6 +514,7 @@ export const LEVERAGE_ETH_CONFIG = {
   },
   products: {
     TAIKOHEKLA: [] as string[],
+    TAIKO: [] as string[],
     ETHEREUM: ['CIAN'],
     GOERLI: ['LIDO'],
     SEPOLIA: ['LIDO'],
@@ -517,6 +522,7 @@ export const LEVERAGE_ETH_CONFIG = {
   },
   MARKETS: {
     TAIKOHEKLA: [] as string[],
+    TAIKO: [] as string[],
     ETHEREUM: ['CIETH-ETH'],
     GOERLI: ['WSTETH-ETH'],
     SEPOLIA: ['WSTETH-ETH'],
@@ -528,6 +534,7 @@ export const LEVERAGE_ETH_CONFIG = {
 export const DUAL_CONFIG = {
   products: {
     TAIKOHEKLA: ['PIONEX'] as string[],
+    TAIKO: ['PIONEX'] as string[],
     ETHEREUM: ['PIONEX'],
     GOERLI: ['PIONEX'],
     SEPOLIA: ['PIONEX'],
@@ -969,6 +976,127 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
       ] as HeaderMenuItemInterface[]
     },
   ],
+  TAIKO:[
+    {
+      label: {
+        id: 'home',
+        i18nKey: 'labelHome',
+      },
+      router: { path: `/pro` },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'L2Assets',
+        i18nKey: 'labelAssets',
+      },
+      router: { path: `${RouterPath.l2assets}` },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Markets',
+        i18nKey: 'labelMarkets',
+      },
+      router: { path: `${RouterPath.markets}` },
+      status: HeaderMenuTabStatus.default,
+    },
+    {
+      label: {
+        id: 'Trade',
+        i18nKey: 'labelTrade',
+      },
+      status: HeaderMenuTabStatus.default,
+      child: [
+        {
+          label: {
+            id: 'lite',
+            i18nKey: 'labelClassic',
+            description: 'labelClassicDescription',
+            icon: SwapIcon,
+          },
+          router: { path: RouterPath.lite + '/${pair}' },
+        },
+        {
+          label: {
+            id: 'pro',
+            i18nKey: 'labelAdvanced',
+            description: 'labelAdvancedDescription',
+            icon: OrderBookIcon,
+          },
+          router: { path: RouterPath.pro + '/${pair}' },
+        },
+        {
+          label: {
+            id: 'stopLimit',
+            i18nKey: 'labelStopLimit',
+            description: 'labelStopLimitDescription',
+            icon: StopLimitIcon,
+          },
+          router: { path: RouterPath.stoplimit + '/${pair}' },
+        },
+        {
+          label: {
+            id: 'btrade',
+            i18nKey: 'labelBtradeTrade',
+            description: 'labelBtradeTradeDescription',
+            icon: BlockTradeIcon,
+          },
+          router: { path: RouterPath.btrade + '/${pair}' },
+        },
+      ]
+    },
+    {
+      label: {
+        id: 'vault',
+        i18nKey: 'labelVault',
+        description: 'labelVaultDescription',
+      },
+      router: { path: `${RouterPath.vault}` },
+      status: HeaderMenuTabStatus.default,
+      child: vaultItemData,
+    },
+    {
+      label: {
+        id: 'Invest',
+        i18nKey: 'labelInvest',
+      },
+      router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+      status: HeaderMenuTabStatus.default,
+      child: [
+        // {
+        //   icon: L2MyLiquidityIcon,
+        //   router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+        //   label: {
+        //     id: 'overview',
+        //     i18nKey: 'labelInvestOverview',
+        //     description: 'labelInvestOverviewDes',
+        //     icon: OverviewIcon,
+        //   },
+        // },
+        {
+          icon: L2MyLiquidityIcon,
+          router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
+          label: {
+            id: 'dual',
+            i18nKey: 'labelInvestDual',
+            description: 'labelInvestDualDes',
+            icon: DualInvestIcon,
+          },
+        },
+        {
+          icon: L2MyLiquidityIcon,
+          router: { path: `${RouterPath.invest}/${InvestAssetRouter.AMM}` },
+          label: {
+            id: 'ammpool',
+            i18nKey: 'labelInvestAmm',
+            description: 'labelInvestAmmDes',
+            icon: AmmIcon,
+          },
+        },
+      ] as HeaderMenuItemInterface[]
+    },
+  ],
   ETHEREUM: headerMenuData,
   GOERLI: headerMenuData,
   SEPOLIA: headerMenuData,
@@ -977,6 +1105,7 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
 
 export const TokenPriceBase = {
   TAIKOHEKLA: '0x931c7ada32c20b9d565cab616fe9976154e29809', 
+  TAIKO: '0x07d83526730c7438048d55a4fc0b850e2aab6f0b', 
   ETHEREUM: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   GOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
   SEPOLIA: '0xa7bc5a2731803be668090125b5074555f91cbc9d',
@@ -984,6 +1113,19 @@ export const TokenPriceBase = {
 }
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
   TAIKOHEKLA: [
+    RecordTabIndex.Transactions,
+    RecordTabIndex.Trades,
+    RecordTabIndex.Orders,
+    RecordTabIndex.StopLimitRecords,
+    RecordTabIndex.AmmRecords,
+    RecordTabIndex.DefiRecords,
+    RecordTabIndex.DualRecords,
+    RecordTabIndex.SideStakingRecords,
+    RecordTabIndex.BtradeSwapRecords,
+    RecordTabIndex.leverageETHRecords,
+    RecordTabIndex.VaultRecords,
+  ],
+  TAIKO: [
     RecordTabIndex.Transactions,
     RecordTabIndex.Trades,
     RecordTabIndex.Orders,
@@ -1060,6 +1202,15 @@ export const AddAssetListMap = {
     AddAssetList.FromAnotherNet.key,
     AddAssetList.FromExchange.key,
   ],
+  TAIKO: [
+    AddAssetList.FromMyL1.key,
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromOtherL2.key,
+    AddAssetList.FromOtherL1.key,
+    AddAssetList.FromExchange.key,
+    AddAssetList.FromAnotherNet.key,
+    AddAssetList.FromExchange.key,
+  ],
   ETHEREUM: [
     AddAssetList.FromMyL1.key,
     AddAssetList.BuyWithCard.key,
@@ -1099,6 +1250,11 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
   ],
+  TAIKO: [
+    SendAssetList.SendAssetToMyL1.key,
+    SendAssetList.SendAssetToL2.key,
+    SendAssetList.SendAssetToOtherL1.key,
+  ],
   ETHEREUM: [
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
@@ -1126,6 +1282,7 @@ export const SendAssetListMap = {
 }
 export const AssetL2TabIndex = {
   TAIKOHEKLA: [AssetTabIndex.Tokens],
+  TAIKO: [AssetTabIndex.Tokens],
   ETHEREUM: [
     AssetTabIndex.Tokens,
     AssetTabIndex.Invests,
@@ -1153,6 +1310,21 @@ export const AssetL2TabIndex = {
 }
 export const RouterAllowIndex = {
   TAIKOHEKLA: [
+    RouterMainKey.lite,
+    RouterMainKey.pro,
+    RouterMainKey.stoplimit,
+    RouterMainKey.btrade,
+    RouterMainKey.fiat,
+    RouterMainKey.markets,
+    RouterMainKey.mining,
+    RouterMainKey.redPacket,
+    RouterMainKey.l2assets,
+    RouterMainKey.layer2,
+    RouterMainKey.nft,
+    RouterMainKey.invest,
+    RouterMainKey.vault,
+  ],
+  TAIKO: [
     RouterMainKey.lite,
     RouterMainKey.pro,
     RouterMainKey.stoplimit,
@@ -1237,6 +1409,14 @@ export const ProfileIndex = {
     Layer2RouterID.referralrewards,
     Layer2RouterID.notification,
   ],
+  TAIKO: [
+    Layer2RouterID.security,
+    Layer2RouterID.forcewithdraw,
+    Layer2RouterID.vip,
+    Layer2RouterID.contact,
+    Layer2RouterID.referralrewards,
+    Layer2RouterID.notification,
+  ],
   ETHEREUM: [
     Layer2RouterID.security,
     Layer2RouterID.forcewithdraw,
@@ -1276,15 +1456,15 @@ export const L1L2_NAME_DEFINED = {
     l1ChainName: 'TAIKO HEKLA',
     loopringL2: 'Loopring L3',
     l2Symbol: 'L3',
-    l1Symbol: 'TAIKO',
-    ethereumL1: 'TAIKO',
+    l1Symbol: 'TAIKO HEKLA',
+    ethereumL1: 'TAIKO HEKLA',
     loopringLayer2: 'Loopring Layer 3',
     L1Token: 'ETH',
     L2Token: 'TAIKO',
   },
   TAIKO: {
     layer2: 'Layer 3',
-    l1ChainName: 'TAIKO HEKLA',
+    l1ChainName: 'TAIKO',
     loopringL2: 'Loopring L3',
     l2Symbol: 'L3',
     l1Symbol: 'TAIKO',
