@@ -5,10 +5,11 @@ import { myLog } from '@loopring-web/common-resources'
 
 export const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
   const { addressIndex } = store.getState().tokenMap
-  if (LoopringAPI?.walletAPI && addressIndex) {
+  if (LoopringAPI?.exchangeAPI && addressIndex) {
     myLog('loop get getLatestTokenPrices')
+    
     const { tokenPrices: _tokenPrices, raw_data } =
-      await LoopringAPI?.walletAPI.getLatestTokenPrices()
+      await LoopringAPI?.exchangeAPI.getLatestTokenPrices()
     let { __timer__ } = store.getState().tokenPrices
     const tokenPrices: { [key in keyof R]: number } = Reflect.ownKeys(_tokenPrices).reduce(
       (prev, address) => {

@@ -360,7 +360,7 @@ const should15MinutesUpdateDataGroup = async (
         indexUSD = index
       }
       return () => (
-        LoopringAPI?.walletAPI?.getLatestTokenPrices({
+        LoopringAPI?.exchangeAPI?.getLatestTokenPrices({
           currency: CurrencyToTag[key].toString(),
           tokens: tokenAddress,
         }) ?? Promise.resolve({ tokenPrices: null })
@@ -422,35 +422,24 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           baseURL = `https://${process.env.REACT_APP_API_URL_1}`
           socketURL = `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
         } else {
-          const isDevToggle = store.getState().settings.isDevToggle
+          
           let socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
-          if (isDevToggle === true && process.env?.REACT_APP_TEST_ENV) {
-            socketPrefix = ''
-            baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`.replace('uat2', 'dev')
-            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`.replace(
-              'uat2',
-              'dev',
-            )
-            // @ts-ignore
-            sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
-              process.env.REACT_APP_SEPOLIA_DEV_NFT_FACTORY_COLLECTION
-          } else {
-            baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`
-            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`
-            // @ts-ignore
-            sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
-              process.env[
-                `REACT_APP_SEPOLIA_${
-                  /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
-                }_NFT_FACTORY_COLLECTION`
-              ]
-          }
+          baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`
+          socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`
+          // @ts-ignore
+          sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
+            process.env[
+              `REACT_APP_SEPOLIA_${
+                /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
+              }_NFT_FACTORY_COLLECTION`
+            ]
         }
 
         etherscanBaseUrl =
           sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://sepolia.etherscan.io/`
       }
       LoopringAPI.setBaseURL(baseURL)
+      LoopringAPI.walletAPI?.setBaseUrl('https://api3.loopring.io')
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
         const _exchangeInfo = JSON.parse(

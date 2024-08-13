@@ -1,4 +1,4 @@
-import { AccountStatus, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { AccountStatus, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { LoopringAPI, store, useAccount } from '@loopring-web/core'
 import React from 'react'
 
@@ -82,7 +82,7 @@ export function useExportAccountInfo() {
     const connectName = (ConnectProviders[_account.connectName] ??
       _account.connectName) as unknown as sdk.ConnectorNames
     const { exchangeInfo, chainId } = store.getState().system
-    const { isMobile } = store.getState().settings
+    const { isMobile, defaultNetwork } = store.getState().settings
     let walletType, account
     if (exchangeInfo && LoopringAPI.userAPI && LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
       try {
@@ -97,6 +97,7 @@ export function useExportAccountInfo() {
             ? Promise.resolve({ walletType: undefined })
             : LoopringAPI.walletAPI.getWalletType({
                 wallet: _account.accAddress,
+                network: MapChainId[defaultNetwork] as sdk.NetworkWallet
               })
         ;[{ accInfo: account }, { walletType }] = await Promise.all([
           LoopringAPI.exchangeAPI.getAccount({

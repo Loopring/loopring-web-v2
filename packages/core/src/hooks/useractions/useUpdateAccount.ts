@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FeeInfo, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { FeeInfo, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
 import { activateAccount, useAccount, LoopringAPI, accountServices } from '../../index'
@@ -14,7 +14,7 @@ export function useUpdateAccount() {
   const { setShowAccount } = useOpenModals()
   const { account } = useAccount()
   const { search } = useLocation()
-  const { referralCode, setReferralCode } = useSettings()
+  const { referralCode, setReferralCode, defaultNetwork } = useSettings()
   // const searchParams = new URLSearchParams(search);
 
   const goUpdateAccount = React.useCallback(
@@ -65,6 +65,7 @@ export function useUpdateAccount() {
             ),
             LoopringAPI.walletAPI.getWalletType({
               wallet: account.accAddress,
+              network: MapChainId[defaultNetwork] as sdk.NetworkWallet
             }),
           ])
             .then((response) => {
