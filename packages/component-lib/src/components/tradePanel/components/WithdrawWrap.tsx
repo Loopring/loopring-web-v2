@@ -36,6 +36,7 @@ import { NFTInput } from './BasicANFTTrade'
 import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
+import { useSystem } from '@loopring-web/core'
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
@@ -93,6 +94,7 @@ export const WithdrawWrap = <
     handleConfirm: (index: number) => void
   }) => {
   const { isMobile, defaultNetwork } = useSettings()
+  const { app } = useSystem()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const theme = useTheme()
 
@@ -141,9 +143,11 @@ export const WithdrawWrap = <
   const allowToClickIsSure = React.useMemo(() => {
     return isAddressCheckLoading || addrStatus === AddressError.InvalidAddr || !realAddr
   }, [addrStatus, isAddressCheckLoading, realAddr])
-
+  const isEarn = app === 'earn';
   const label = React.useMemo(() => {
-    if (withdrawI18nKey) {
+    if (isEarn) {
+      return t('labelWithdrawBtn')
+    } else if (withdrawI18nKey) {
       const key = withdrawI18nKey.split('|')
       return t(
         key[0],
@@ -215,7 +219,9 @@ export const WithdrawWrap = <
             whiteSpace={'pre'}
             marginRight={1}
           >
-            {title
+            {isEarn
+              ? t('labelWithdrawBtn')
+              : title
               ? title
               : (tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
                 (tradeData as NFTWholeINFO)?.deploymentStatus === 'NOT_DEPLOYED'

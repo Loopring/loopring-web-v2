@@ -407,7 +407,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId)
-    if (LoopringAPI.exchangeAPI) {
+    if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
       let baseURL, socketURL, etherscanBaseUrl
       if (extendsChain.includes(chainId.toString())) {
 
@@ -460,7 +460,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                 return { exchangeInfo }
               }),
           should15MinutesUpdateDataGroup(chainId),
-          LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
+          LoopringAPI.walletAPI.getAccountServices({}).then((result) => {
             return {
               ...result,
               legal: (result as any)?.raw_data?.legal ?? { enable: false },

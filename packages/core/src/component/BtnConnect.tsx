@@ -1,5 +1,5 @@
 import { withTranslation } from 'react-i18next'
-import { accountStaticCallBack, btnClickMap, btnLabel, store, useAccount } from '../index'
+import { accountStaticCallBack, btnClickMap, btnLabel, store, useAccount, useSystem } from '../index'
 import {
   Button,
   setShowConnect,
@@ -27,9 +27,9 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
 })(({ t, btnLabelProps = {}, btnClickMapProps = {}, className, size = 'large' }: any) => {
   const { status: accountStatus, account } = useAccount()
   const { defaultNetwork } = useSettings()
+  const { app } = useSystem()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const [label, setLabel] = React.useState(undefined)
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
     [fnType.ERROR_NETWORK]: [
@@ -40,11 +40,14 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
     ...btnLabelProps,
   })
 
-  React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET) {
-      setLabel(accountStaticCallBack(_btnLabel))
-    }
-  }, [accountStatus, account.readyState, i18n.language])
+  const label = React.useMemo(() => {
+    return (accountStatus === SagaStatus.UNSET || accountStatus === SagaStatus.DONE)
+      ? accountStaticCallBack(_btnLabel, [{
+          chainId: defaultNetwork,
+          isEarn: app === 'earn',
+        }])
+      : undefined
+  }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
 

@@ -64,7 +64,7 @@ export const useDeposit = <
   const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
-  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus } = useSystem()
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus, app } = useSystem()
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -647,7 +647,9 @@ export const useDeposit = <
   }, [subject, accountStatus, systemStatus])
 
   const title =
-    account.readyState === AccountStatus.NO_ACCOUNT
+    app === 'earn'
+      ? 'labelDeposit'
+      : account.readyState === AccountStatus.NO_ACCOUNT
       ? t('labelDepositTitleAndActive', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
       : t('labelDepositTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
   const depositProps: DepositProps<T, I> = {

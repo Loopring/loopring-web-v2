@@ -24,7 +24,18 @@ const initialState: SystemStatus = {
     dAppTrade: { enable: false },
   },
   exchangeInfo: undefined,
-
+  app:
+    process.env.REACT_APP_NAME === 'loopring.io'
+      ? 'main'
+      : process.env.REACT_APP_NAME === 'loopring earn'
+      ? 'earn'
+      : process.env.REACT_APP_NAME === 'loopring guardian'
+      ? 'guardian'
+      : process.env.REACT_APP_NAME === 'loopring guardian'
+      ? 'guardian'
+      : process.env.REACT_APP_NAME === 'loopring bridge'
+      ? 'bridge'
+      : undefined,
   topics: [],
 }
 const systemSlice: Slice<SystemStatus> = createSlice({

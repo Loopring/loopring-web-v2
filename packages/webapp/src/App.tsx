@@ -25,7 +25,6 @@ const App = () => {
     i18n: { language },
   } = useTranslation()
   const storeLan = store.getState().settings.language
-debugger
   React.useEffect(() => {
     if (storeLan !== language) {
       store.dispatch(setLanguage(language))

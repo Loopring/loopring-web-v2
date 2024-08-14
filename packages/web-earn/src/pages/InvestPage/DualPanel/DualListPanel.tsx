@@ -28,6 +28,7 @@ import {
   useDualTrade,
   useSystem,
   useTokenMap,
+  useTokenPrices,
 } from '@loopring-web/core'
 import { useHistory, useLocation } from 'react-router-dom'
 import {
@@ -42,7 +43,8 @@ import {
 import { BeginnerMode } from './BeginnerMode'
 import { containerColors, MaxWidthContainer } from '..'
 import { ChooseDualType } from './ChooseDualType'
-
+import { max } from 'lodash'
+import { toBig } from '@loopring-web/loopring-sdk'
 const StyleDual = styled(Box)`
   position: relative;
 ` as typeof Box
@@ -82,7 +84,7 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
   const { forexMap } = useSystem()
   const history = useHistory()
   const { isMobile } = useSettings()
-  const { tradeMap, marketArray, status, getDualMap } = useDualMap()
+  const { tradeMap, marketArray, status, getDualMap, marketMap } = useDualMap()
   const { tokenMap } = useTokenMap()
   const { setShowDual } = useOpenModals()
   const [confirmDualAutoInvest, setConfirmDualAutoInvest] = React.useState(false)
@@ -97,9 +99,56 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
     market,
     handleOnPairChange,
     onSelectStep1Token,
+    baseTokenList
   } = dualListProps
   const marketsIsLoading = status === 'PENDING'
+  
+  const tokenList: any[] = Object.values(baseTokenList ?? {})
+  const { tokenPrices } = useTokenPrices()
+  const sellCoverTokens: {
+    symbol: string
+    apy: string
+    price: string
+    tag: 'sellCover' | 'buyDip'
+    apyRaw: number
+  }[] = (tokenList ?? [])?.map((token) => {
+    const keys = Object.keys(marketMap).filter((key) => key.includes(token.tokenName))
+    const maxApy = max(keys.map((key) => (marketMap[key] as any).baseTokenApy?.max as number))
+    return {
+      symbol: token.tokenName,
+      apy:
+        toBig(maxApy ?? 0)
+          .times('100')
+          .toString() + '%',
+      price: '$' + getValuePrecisionThousand(tokenPrices[token.tokenName], 2, 2),
+      tag: 'sellCover',
+      apyRaw: maxApy ?? 0,
+    }
+  })
+  const buyDipTokens: {
+    symbol: string
+    apy: string
+    price: string
+    tag: 'sellCover' | 'buyDip'
+    apyRaw: number
+  }[] =
+    tokenList?.map((token) => {
+      const keys = Object.keys(marketMap).filter((key) => key.includes(token.tokenName))
+      const maxApy = max(keys.map((key) => (marketMap[key] as any).quoteTokenApy?.max as number))
+      return {
+        symbol: token.tokenName,
+        apy:
+          toBig(maxApy ?? 0)
+            .times('100')
+            .toString() + '%',
+        price: '$' + getValuePrecisionThousand(tokenPrices[token.tokenName], 2, 2),
+        tag: 'buyDip',
+        apyRaw: maxApy ?? 0,
+      }
+    }) ?? []
 
+  const dualTokenList = [...sellCoverTokens, ...buyDipTokens]
+  const productsRef = React.useRef<HTMLDivElement>()
   return (
     <Box display={'flex'} flexDirection={'column'} flex={1} width={'100%'}>
       {viewType ? (
@@ -466,6 +515,8 @@ export const DualListPanel: any = withTranslation('common')(({ t }: WithTranslat
             searchParams.set('viewType', item)
             history.push(pathname + '?' + searchParams.toString())
           }}
+          productsRef={productsRef}
+          dualTokenList={dualTokenList}
         />
       )}
 

@@ -19,6 +19,7 @@ import {
   ChainETHEREUMIcon,
   ChainGOERLIIcon,
   ChainTAIKOIcon,
+  DoneIcon,
   DropDownIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
@@ -31,12 +32,12 @@ import {
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { accountReducer, useAccount } from './stores/account'
-import { resetDepositData, resetTransferData, resetWithdrawData, useModalData } from './stores'
+import { resetDepositData, resetTransferData, resetWithdrawData, useModalData, useSystem } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { createImageFromInitials, store, WalletConnectL2Btn } from './index'
 import { useTranslation } from 'react-i18next'
-import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
+import { Avatar, Box, Button, Modal, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
@@ -452,15 +453,21 @@ export const ViewAccountTemplate = React.memo(
     activeViewTemplate,
     className,
     size = 'large',
+    onClickCompleteSignIn
   }: {
     activeViewTemplate: JSX.Element
     className?: string
     size?: string
+    onClickCompleteSignIn?: () => void
   }) => {
     const { account } = useAccount()
     const { t } = useTranslation(['common', 'layout'])
     const { isMobile, defaultNetwork } = useSettings()
+    const { app } = useSystem()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
+    const isTaikoEarn =
+      [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork) && app === 'earn'
 
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
@@ -519,7 +526,7 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={'calc(1200px - 32px)'}
+              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
               <Typography
@@ -528,11 +535,13 @@ export const ViewAccountTemplate = React.memo(
                 whiteSpace={'pre-line'}
                 textAlign={'center'}
               >
-                {t('describeTitleNoAccount', {
-                  layer2: L1L2_NAME_DEFINED[network].layer2,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                })}
+                {isTaikoEarn
+                  ? t('labelEarnDepositDes')
+                  : t('describeTitleNoAccount', {
+                      layer2: L1L2_NAME_DEFINED[network].layer2,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    })}
               </Typography>
               <WalletConnectL2Btn size={size} />
             </ViewAccountTemplateStyle>
@@ -540,25 +549,85 @@ export const ViewAccountTemplate = React.memo(
           break
         case AccountStatus.NOT_ACTIVE:
           return (
-            <ViewAccountTemplateStyle
-              flex={1}
-              className={className}
-              display={'flex'}
-              justifyContent={'center'}
-              flexDirection={'column'}
-              alignItems={'center'}
-              maxWidth={'calc(1200px - 32px)'}
-              alignSelf={'center'}
-            >
-              <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                {t('describeTitleNotActive', {
-                  layer2: 'Layer 2',
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l1ChainName: 'Ethereum',
-                })}
-              </Typography>
-              <WalletConnectL2Btn size={size} />
-            </ViewAccountTemplateStyle>
+            <>
+              <ViewAccountTemplateStyle
+                flex={1}
+                className={className}
+                display={'flex'}
+                justifyContent={'center'}
+                flexDirection={'column'}
+                alignItems={'center'}
+                maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
+                alignSelf={'center'}
+              >
+                <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+                  {isTaikoEarn
+                    ? t('labelEarnDepositDes')
+                    : t('describeTitleNotActive', {
+                        layer2: 'Layer 2',
+                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                        l1ChainName: 'Ethereum',
+                      })}
+                </Typography>
+                <WalletConnectL2Btn size={size} />
+              </ViewAccountTemplateStyle>
+              <Modal open={true}>
+                <Box
+                  height={'100%'}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  <Box
+                    paddingX={5}
+                    bgcolor={'var(--color-box)'}
+                    width={'var(--modal-width)'}
+                    borderRadius={1}
+                    display={'flex'}
+                    alignItems={'center'}
+                    flexDirection={'column'}
+                    justifyContent={'center'}
+                  >
+                    <Box
+                      marginTop={10}
+                      display={'flex'}
+                      flexDirection={'column'}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      width={'100%'}
+                    >
+                      <DoneIcon
+                        style={{ color: 'var(--color-success)', width: '64px', height: '64px' }}
+                      />
+                      <Typography textAlign={'center'} marginTop={3}>
+                        Your Loopring DeFi account has been created. <br />
+                        Please sign to complete the process.
+                      </Typography>
+                    </Box>
+                    <Box
+                      marginTop={10}
+                      display={'flex'}
+                      flexDirection={'column'}
+                      justifyContent={'center'}
+                      width={'100%'}
+                      marginBottom={5}
+                    >
+                      <Typography textAlign={'center'} variant='body2'>
+                        Note that this interaction won't incur any additional cost.
+                      </Typography>
+                      <Button
+                        onClick={onClickCompleteSignIn}
+                        sx={{ marginTop: 1.5 }}
+                        fullWidth
+                        variant={'contained'}
+                      >
+                        Complete Sign in
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
+              </Modal>
+            </>
           )
           break
         case AccountStatus.DEPOSITING:
@@ -570,7 +639,7 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={'calc(1200px - 32px)'}
+              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
               <img
@@ -580,9 +649,11 @@ export const ViewAccountTemplate = React.memo(
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                {t('describeTitleOpenAccounting', {
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                })}
+                {isTaikoEarn
+                  ? t('labelEarnDepositDes')
+                  : t('describeTitleOpenAccounting', {
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    })}
               </Typography>
             </ViewAccountTemplateStyle>
           )
@@ -612,8 +683,12 @@ export const ViewAccountTemplate = React.memo(
         default:
           break
       }
-    }, [account.readyState, account.connectName, isMobile, t, activeViewTemplate])
+    }, [account.readyState, account.connectName, isMobile, t, activeViewTemplate, isTaikoEarn])
 
-    return <>{viewTemplate}</>
+    return (
+      <>
+        {viewTemplate}
+      </>
+    )
   },
 )

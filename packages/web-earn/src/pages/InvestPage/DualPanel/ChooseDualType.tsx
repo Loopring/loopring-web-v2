@@ -6,14 +6,33 @@ import {
   DualViewType,
   LOOPRING_DOCUMENT,
   DualInvestmentLogo,
+  SoursURL,
 } from '@loopring-web/common-resources'
-import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
+import { Button, CoinIcon, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { containerColors, MaxWidthContainer } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
+
+const EarnCard = styled(Box)<{ isMobile: boolean }>`
+  background-color: var(--color-box-third);
+  padding: ${({ theme }) => theme.unit * 6}px ${({ theme }) => theme.unit * 4}px
+    ${({ theme }) => theme.unit * 4}px ${({ theme }) => theme.unit * 4}px;
+  width: ${({ isMobile }) => (isMobile ? '100%' : '32%')};
+  margin-bottom: ${({ theme }) => theme.unit * 2}px;
+  border-radius: ${({ theme }) => theme.unit * 1.5}px;
+  border: 0.5px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  :hover {
+    border: 1px solid var(--color-primary);
+  }
+`
 
 export const ChooseDualTypeContent = [
   {
@@ -62,11 +81,26 @@ export const TypographyStyle = styled(Typography)`
     fill: ${({ theme }) => theme.colorBase.textSecondary};
   }
 ` as typeof Typography
-export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) => void }) => {
+export const ChooseDualType = ({ 
+  onSelect,
+  dualTokenList,
+  productsRef
+}: { 
+  onSelect: (props: DualViewType) => void,
+  dualTokenList: {
+    symbol: string;
+    apy: string;
+    price: string;
+    tag: "sellCover" | "buyDip";
+    apyRaw: number;
+  }[]
+  productsRef: React.MutableRefObject<HTMLDivElement | undefined>
+}) => {
   const { isMobile } = useSettings()
   const theme = useTheme()
   const history = useHistory()
   const { t } = useTranslation()
+  const tEarn = useTranslation('webEarn').t
   return (
     <>
       <MaxWidthContainer
@@ -164,6 +198,101 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
             )
           })}
         </Grid>
+
+        <Box ref={productsRef} component={'div'} id={'products'} marginTop={8}>
+          {dualTokenList && dualTokenList.length !== 0 ? (
+            <Box display={'flex'} flexDirection={isMobile ? 'column' : 'row'} flexWrap={'wrap'}>
+              {dualTokenList.map((info, index) => {
+                return (
+                  <EarnCard
+                    isMobile={isMobile}
+                    key={info.symbol}
+                    marginRight={index % 3 === 2 ? '0' : '2%'}
+                  >
+                    <Box
+                      sx={{
+                        height: 64,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <CoinIcon size={64} symbol={info.symbol} />
+                    </Box>
+
+                    {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
+                    <Typography variant={'h3'} marginTop={2}>
+                      {info.tag === 'sellCover'
+                        ? tEarn('labelInvestSymbolSellHigh', {
+                            symbol: info.symbol,
+                          })
+                        : tEarn('labelInvestSymbolBuyLow', {
+                            symbol: info.symbol,
+                          })}
+                    </Typography>
+                    <Box
+                      marginBottom={4}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      marginTop={7}
+                      display={'flex'}
+                    >
+                      <Box>
+                        <Typography color={'var(--color-success)'} textAlign={'center'}>
+                          {tEarn('labelApy')}
+                        </Typography>
+                        <Typography
+                          variant={'h4'}
+                          color={'var(--color-success)'}
+                          textAlign={'center'}
+                        >
+                          {info.apy}
+                        </Typography>
+                      </Box>
+                      <Box
+                        width={'1px'}
+                        height={24}
+                        marginX={1.5}
+                        bgcolor={'var(--color-border)'}
+                      />
+                      <Box>
+                        <Typography textAlign={'center'}>{tEarn('labelCurrentPrice')}</Typography>
+                        <Typography variant={'h4'} textAlign={'center'}>
+                          {info.price}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    <Button
+                      onClick={() => {
+                        history.push(
+                          `/invest/dual?viewType=${
+                            info.tag === 'buyDip' ? 'DualDip' : 'DualGain'
+                          }&autoChose=${info.symbol}`,
+                        )
+                      }}
+                      variant={'contained'}
+                      fullWidth
+                    >
+                      {tEarn('labelViewDetails')}
+                    </Button>
+                  </EarnCard>
+                )
+              })}
+            </Box>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              height={'150px'}
+              width={'100%'}
+            >
+              <img width={60} src={SoursURL + 'images/loading-line.gif'} />
+            </Box>
+          )}
+        </Box>
+
       </MaxWidthContainer>
     </>
   )

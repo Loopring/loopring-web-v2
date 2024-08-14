@@ -9,6 +9,7 @@ import { fnType, myLog } from '@loopring-web/common-resources'
 import { accountReducer, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
 import _ from 'lodash'
 import { connectProvides } from '@loopring-web/web3-provider'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const accountStaticCallBack = (
   onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] },
@@ -23,9 +24,10 @@ export const accountStaticCallBack = (
     return fn.apply(this, args)
   }
 }
-const activeBtnLabelFn = function () {
-
-  return `labelDepositAndActiveBtn`
+const activeBtnLabelFn = function (options?: {chainId: ChainId, isEarn: boolean}) {
+  return options && options.isEarn && [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId)
+    ? 'labelDeposit'
+    : 'labelDepositAndActiveBtn'
 }
 
 export const btnLabel = {

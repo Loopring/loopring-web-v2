@@ -6,10 +6,11 @@ import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
+import { LoopringAPI, useAccount, useSystem, useTargetRedPackets, useUpdateAccount, useWalletLayer2, ViewAccountTemplate } from '@loopring-web/core'
 import { useAssetAction, useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { MaxWidthContainer } from '../InvestPage'
+import { toBig } from '@loopring-web/loopring-sdk'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -19,7 +20,7 @@ export const AssetPage = () => {
   const { forexMap } = useSystem()
 
   const selected = match?.params.item ?? 'assets'
-  const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
+  const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, assetsRawData, ...assetPanelProps } =
     useGetAssets()
   const { redPackets } = useTargetRedPackets()
   const layer2Router = React.useMemo(() => {
@@ -66,6 +67,35 @@ export const AssetPage = () => {
     ),
     [assetTitleMobileExtendProps, assetTitleProps, isMobile, assetBtnStatus, layer2Router],
   )
-  return <ViewAccountTemplate activeViewTemplate={activeView} />
+  const { goUpdateAccount } = useUpdateAccount()
+  const { account } = useAccount()
+  const {walletLayer2}=useWalletLayer2()
+  
+  return (
+    <ViewAccountTemplate
+      onClickCompleteSignIn={async () => {
+        const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
+          accountId: account._accountIdNotActive,
+        })
+        const found = Object.keys(feeInfo.fees).find((key) => {
+          const fee = feeInfo.fees[key].fee
+          const balance = walletLayer2 && walletLayer2[key]?.total
+          return balance && toBig(balance).gte(fee)
+        })
+        goUpdateAccount({
+          isFirstTime: true,
+          isReset: false,
+          // @ts-ignore
+          feeInfo: {
+            token: feeInfo.fees[found!].fee,
+            belong: found!,
+            fee: feeInfo.fees[found!].fee,
+            feeRaw: feeInfo.fees[found!].fee,
+          },
+        })
+      }}
+      activeViewTemplate={activeView}
+    />
+  )
   // <>{viewTemplate}</>;
 }

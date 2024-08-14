@@ -87,7 +87,6 @@ export const useHeader = () => {
           handleClickUnlock: () => {
             unlockAccount()
           },
-
           NetWorkItems,
           accountState: { account },
         }

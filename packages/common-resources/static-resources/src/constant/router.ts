@@ -1452,24 +1452,24 @@ export const ProfileIndex = {
 
 export const L1L2_NAME_DEFINED = {
   TAIKOHEKLA: {
-    layer2: 'Layer 3',
+    layer2: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'Layer 3',
     l1ChainName: 'TAIKO HEKLA',
-    loopringL2: 'Loopring L3',
-    l2Symbol: 'L3',
+    loopringL2: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'Loopring L3',
+    l2Symbol: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'L3',
     l1Symbol: 'TAIKO HEKLA',
     ethereumL1: 'TAIKO HEKLA',
-    loopringLayer2: 'Loopring Layer 3',
+    loopringLayer2: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'Loopring Layer 3',
     L1Token: 'ETH',
     L2Token: 'TAIKO',
   },
   TAIKO: {
-    layer2: 'Layer 3',
+    layer2: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'Layer 3',
     l1ChainName: 'TAIKO',
-    loopringL2: 'Loopring L3',
-    l2Symbol: 'L3',
+    loopringL2: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'Loopring L3',
+    l2Symbol: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'L3',
     l1Symbol: 'TAIKO',
     ethereumL1: 'TAIKO',
-    loopringLayer2: 'Loopring Layer 3',
+    loopringLayer2: process.env.REACT_APP_NAME === 'loopring earn' ? 'Loopring Defi' : 'Loopring Layer 3',
     L1Token: 'ETH',
     L2Token: 'TAIKO',
   },
@@ -1519,3 +1519,4 @@ export const L1L2_NAME_DEFINED = {
   },
   
 }
+

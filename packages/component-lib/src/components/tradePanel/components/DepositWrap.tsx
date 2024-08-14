@@ -430,7 +430,7 @@ export const DepositWrap = <
           loading={!getDisabled && depositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
           disabled={getDisabled || depositBtnStatus === TradeBtnStatus.LOADING}
         >
-          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`depositLabelBtn`)}
+          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelDeposit`)}
         </Button>
       </Grid>
     </GridWrapStyle>

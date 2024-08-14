@@ -425,7 +425,7 @@ export default {
   labelMinutes: 'Minutes',
   labelSeconds: 'Seconds',
   labelIsNotFeeToken: 'Please deposit {{symbol}} to activate {{loopringL2}}.',
-  labelIsETHDepositAlert: 'Please reserve enough ETH in Layer 1 account to pay for gas!',
+  labelIsETHDepositAlert: 'Please reserve enough ETH in your account to pay for gas!',
   labelIsNotEnoughFeeToken:
     'Please deposit enough token to cover the activation fee: {{fee}} {{symbol}}. Remaining token will appear in your asset after activation',
   depositNFTAddressLabelPlaceholder: 'please input NFT contract address...',
@@ -2330,4 +2330,5 @@ export default {
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
   labelAssetDefiPortfolio: 'Defi Portfolio',
+  labelEarnDepositDes: `There are no assets in your Loopring DeFi account yet. Please deposit a supported token to start exploring the DeFi world.`
 }
