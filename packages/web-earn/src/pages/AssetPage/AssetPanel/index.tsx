@@ -136,7 +136,7 @@ export const AssetPanel = withTranslation('common')(
             variant='scrollable'
           >
             {AssetL2TabEarnIndex[MapChainId[defaultNetwork]].map((item: string) => {
-              return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
+              return <Tab key={item.toString()} label={t(`labelEarnAsset${item}`)} value={item} />
             })}
           </Tabs>
         </MaxWidthContainer>

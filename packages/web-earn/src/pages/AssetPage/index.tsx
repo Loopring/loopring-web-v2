@@ -2,12 +2,12 @@ import { useRouteMatch } from 'react-router-dom'
 
 import { Box } from '@mui/material'
 import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
-import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
+import { subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
 import { LoopringAPI, useAccount, useSystem, useTargetRedPackets, useUpdateAccount, useWalletLayer2, ViewAccountTemplate } from '@loopring-web/core'
-import { useAssetAction, useGetAssets } from './AssetPanel/hook'
+import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { MaxWidthContainer } from '../InvestPage'
 import { toBig } from '@loopring-web/loopring-sdk'
@@ -68,7 +68,7 @@ export const AssetPage = () => {
     [assetTitleMobileExtendProps, assetTitleProps, isMobile, assetBtnStatus, layer2Router],
   )
   const { goUpdateAccount } = useUpdateAccount()
-  const { account } = useAccount()
+  const { account, updateAccount } = useAccount()
   const {walletLayer2}=useWalletLayer2()
   
   return (
@@ -82,7 +82,7 @@ export const AssetPage = () => {
           const balance = walletLayer2 && walletLayer2[key]?.total
           return balance && toBig(balance).gte(fee)
         })
-        goUpdateAccount({
+        await goUpdateAccount({
           isFirstTime: true,
           isReset: false,
           // @ts-ignore
@@ -93,6 +93,16 @@ export const AssetPage = () => {
             feeRaw: feeInfo.fees[found!].fee,
           },
         })
+        const timer = setInterval(() => {
+          LoopringAPI.exchangeAPI?.getAccount({
+            owner: account.accAddress,
+          }).then(acc => {
+            if (acc.accInfo.nonce > 0) {
+              updateAccount({ })
+            }
+            clearInterval(timer)
+          })
+        }, 5 * 1000);
       }}
       activeViewTemplate={activeView}
     />

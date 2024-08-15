@@ -68,9 +68,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowActiveAccount({ isShow: true })
   }
   const onIKnowClick = () => {
-    if (account.isContract) {
-      setKnow(true)
-    } else if (isFeeNotEnough.isFeeNotEnough) {
+    if (account.isContract || account._accountIdNotActive === -1) {
       setKnow(true)
     } else {
       goUpdateAccount()
@@ -147,6 +145,8 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     },
     walletMap,
     isFeeNotEnough,
+    depositNeeded: true
+    // account._accountIdNotActive !== -1
   }
   return { checkActiveStatusProps }
 }

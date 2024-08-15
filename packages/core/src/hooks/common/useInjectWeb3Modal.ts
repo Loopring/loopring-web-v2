@@ -91,20 +91,23 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   React.useEffect(() => {
     ;(async () => {
       if (address && walletProvider) {
-        
-        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
+        if ((address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
           store.dispatch(
             updateSystem({
               chainId,
             }),
           )
           store.dispatch(setDefaultNetwork(chainId))
+        }
+        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) { 
           setTimeout(() => {
-            location.reload()  
+            location.reload()
           }, 1000);
         } else {
           checkAccount(address, chainId)
         }
+      } else {
+        store.dispatch(setDefaultNetwork(undefined))
       }
       if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
         updateWalletLayer1()

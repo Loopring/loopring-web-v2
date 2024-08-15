@@ -2378,7 +2378,8 @@ export default {
     'Borrowed {{value}} {{symbol}} successful.',
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
-  labelAssetDefiPortfolio: 'Defi Portfolio',
-  labelEarnDepositDes: `There are no assets in your Loopring DeFi account yet. Please deposit a supported token to start exploring the DeFi world.`
+  labelEarnAssetDefiPortfolio: 'Defi Portfolio',
+  labelEarnDepositDes: `There are no assets in your Loopring DeFi account yet. Please deposit a supported token to start exploring the DeFi world.`,
+  labelEarnAssetTokens: 'All Tokens',
 }
 

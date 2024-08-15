@@ -549,85 +549,50 @@ export const ViewAccountTemplate = React.memo(
           break
         case AccountStatus.NOT_ACTIVE:
           return (
-            <>
-              <ViewAccountTemplateStyle
-                flex={1}
-                className={className}
-                display={'flex'}
-                justifyContent={'center'}
-                flexDirection={'column'}
-                alignItems={'center'}
-                maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
-                alignSelf={'center'}
-              >
-                <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                  {isTaikoEarn
-                    ? t('labelEarnDepositDes')
-                    : t('describeTitleNotActive', {
-                        layer2: 'Layer 2',
-                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                        l1ChainName: 'Ethereum',
-                      })}
-                </Typography>
-                <WalletConnectL2Btn size={size} />
-              </ViewAccountTemplateStyle>
-              <Modal open={true}>
-                <Box
-                  height={'100%'}
-                  display={'flex'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                >
-                  <Box
-                    paddingX={5}
-                    bgcolor={'var(--color-box)'}
-                    width={'var(--modal-width)'}
-                    borderRadius={1}
-                    display={'flex'}
-                    alignItems={'center'}
-                    flexDirection={'column'}
-                    justifyContent={'center'}
+            <ViewAccountTemplateStyle
+              flex={1}
+              className={className}
+              display={'flex'}
+              justifyContent={'center'}
+              flexDirection={'column'}
+              alignItems={'center'}
+              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
+              alignSelf={'center'}
+            >
+              {isTaikoEarn ? (
+                <>
+                  <DoneIcon
+                    style={{ color: 'var(--color-success)', width: '64px', height: '64px' }}
+                  />
+                  <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+                    Your Loopring DeFi account has been created. 
+                    Please sign to complete the process.
+                  </Typography>
+                  <Button
+                    onClick={onClickCompleteSignIn}
+                    sx={{ marginTop: 1.5 }}
+                    variant={'contained'}
+                    size={size}
+                    color={'primary'}
+                    fullWidth={true}
+                    style={{ maxWidth: '280px' }}
                   >
-                    <Box
-                      marginTop={10}
-                      display={'flex'}
-                      flexDirection={'column'}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      width={'100%'}
-                    >
-                      <DoneIcon
-                        style={{ color: 'var(--color-success)', width: '64px', height: '64px' }}
-                      />
-                      <Typography textAlign={'center'} marginTop={3}>
-                        Your Loopring DeFi account has been created. <br />
-                        Please sign to complete the process.
-                      </Typography>
-                    </Box>
-                    <Box
-                      marginTop={10}
-                      display={'flex'}
-                      flexDirection={'column'}
-                      justifyContent={'center'}
-                      width={'100%'}
-                      marginBottom={5}
-                    >
-                      <Typography textAlign={'center'} variant='body2'>
-                        Note that this interaction won't incur any additional cost.
-                      </Typography>
-                      <Button
-                        onClick={onClickCompleteSignIn}
-                        sx={{ marginTop: 1.5 }}
-                        fullWidth
-                        variant={'contained'}
-                      >
-                        Complete Sign in
-                      </Button>
-                    </Box>
-                  </Box>
-                </Box>
-              </Modal>
-            </>
+                    Complete Sign in
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+                    {t('describeTitleNotActive', {
+                      layer2: 'Layer 2',
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l1ChainName: 'Ethereum',
+                    })}
+                  </Typography>
+                  <WalletConnectL2Btn size={size} />
+                </>
+              )}
+            </ViewAccountTemplateStyle>
           )
           break
         case AccountStatus.DEPOSITING:
