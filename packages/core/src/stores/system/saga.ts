@@ -439,7 +439,9 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://sepolia.etherscan.io/`
       }
       LoopringAPI.setBaseURL(baseURL)
-      LoopringAPI.walletAPI?.setBaseUrl('https://api3.loopring.io')
+      if (process.env && process.env[`REACT_APP_API_URL_${chainId}`]) {
+        LoopringAPI.walletAPI?.setBaseUrl(process.env[`REACT_APP_API_URL_${chainId}`]!)
+      }
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
         const _exchangeInfo = JSON.parse(
