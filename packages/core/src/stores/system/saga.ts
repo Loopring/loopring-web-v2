@@ -440,7 +440,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       }
       LoopringAPI.setBaseURL(baseURL)
       if (process.env && process.env[`REACT_APP_API_URL_${chainId}`]) {
-        LoopringAPI.walletAPI?.setBaseUrl(process.env[`REACT_APP_API_URL_${chainId}`]!)
+        LoopringAPI.walletAPI?.setBaseUrl('https://' + process.env[`REACT_APP_API_URL_${chainId}`]!)
       }
       let allowTrade, exchangeInfo, gasPrice, forexMap
       try {
