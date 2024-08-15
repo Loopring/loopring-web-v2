@@ -905,11 +905,18 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
   } = useAccount()
   const { tokenMap } = useTokenMap()
   const { setShowAccount } = useOpenModals()
+  const { chainId, baseURL} = useSystem()
+
   const getBtradeOrderList = React.useCallback(
-    async (props: Omit<GetOrdersRequest, 'accountId'>) => {
-      if (LoopringAPI && LoopringAPI.defiAPI && accountId && apiKey) {
+    async (props: Omit<sdk.GetOrdersRequest, 'accountId'>) => {
+      
+      if (chainId && baseURL && accountId && apiKey) {
+        const defiAPI = new sdk.DefiAPI({
+          chainId: chainId as sdk.ChainId,
+          baseUrl: baseURL
+        })
         setShowLoading(true)
-        const userOrders = await LoopringAPI.defiAPI.getBtradeOrders({
+        const userOrders = await defiAPI.getBtradeOrders({
           request: { accountId, limit: props.limit, offset: props.offset },
           apiKey,
         })
@@ -997,43 +1004,26 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
               const fromToken = tokenMap[fromSymbol]
               const toToken = tokenMap[toSymbol]
 
-              const fromAmount = getValuePrecisionThousand(
+              const fromAmount = sdk.toBig(amountIn).div('1e' + fromToken.decimals)
+              const fromFAmount = sdk.toBig(amountFIn).div('1e' + fromToken.decimals)
+              const settledFromAmount = sdk.toBig(settledIn).div('1e' + fromToken.decimals)
+              const toAmount = sdk.toBig(amountOut).div('1e' + toToken.decimals)
+              const toFAmount = sdk.toBig(amountFOut).div('1e' + toToken.decimals)
+              const settledToAmount = sdk.toBig(settledOut).div('1e' + toToken.decimals)
+              const fromAmountDisplay = getValuePrecisionThousand(
                 sdk.toBig(amountIn).div('1e' + fromToken.decimals),
-                fromToken.precision,
-                fromToken.precision,
                 undefined,
-              )
-              const fromFAmount = getValuePrecisionThousand(
-                sdk.toBig(amountFIn).div('1e' + fromToken.decimals),
                 fromToken.precision,
                 fromToken.precision,
-                undefined,
-              )
-              const settledFromAmount = getValuePrecisionThousand(
-                sdk.toBig(settledIn).div('1e' + fromToken.decimals),
-                fromToken.precision,
-                fromToken.precision,
-                undefined,
+                false,
               )
 
-              const toAmount = getValuePrecisionThousand(
+              const toAmountDisplay = getValuePrecisionThousand(
                 sdk.toBig(amountOut).div('1e' + toToken.decimals),
-                toToken.precision,
-                toToken.precision,
                 undefined,
-              )
-
-              const toFAmount = getValuePrecisionThousand(
-                sdk.toBig(amountFOut).div('1e' + toToken.decimals),
                 toToken.precision,
                 toToken.precision,
-                undefined,
-              )
-              const settledToAmount = getValuePrecisionThousand(
-                sdk.toBig(settledOut).div('1e' + toToken.decimals),
-                toToken.precision,
-                toToken.precision,
-                undefined,
+                false,
               )
 
               const feeAmount =
@@ -1074,6 +1064,8 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
                 toFAmount,
                 settledFromAmount,
                 settledToAmount,
+                fromAmountDisplay,
+                toAmountDisplay,
                 toSymbol,
                 time: Number(start + '000'),
                 rawData: item,
@@ -1088,7 +1080,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         setShowLoading(false)
       }
     },
-    [accountId, apiKey, setToastOpen, t, tokenMap],
+    [accountId, apiKey, setToastOpen, t, tokenMap, baseURL, chainId],
   )
 
   return {
@@ -1108,6 +1100,58 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
         settledToAmount: item.settledToAmount,
         settledFromAmount: item.settledFromAmount,
         time: item?.time ?? undefined,
+        placedAmount:
+          tokenMap && item.fromSymbol && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.fromAmount),
+                undefined,
+                undefined,
+                tokenMap[item.fromSymbol].precision,
+                false,
+                { isAbbreviate: true },
+              )} ${item.fromSymbol}`
+            : EmptyValueTag,
+        executedAmount:
+          tokenMap && item.fromSymbol && item.settledFromAmount && sdk.toBig(item.settledFromAmount).gt(0)
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.settledFromAmount),
+                undefined,
+                undefined,
+                tokenMap[item.fromSymbol].precision,
+                false,
+                { isAbbreviate: true },
+              )} ${item.fromSymbol}`
+            : EmptyValueTag,
+        executedRate:
+          tokenMap && item.fromSymbol && item.settledFromAmount && item.fromAmount && sdk.toBig(item.fromAmount).gt(0)
+            ? `${sdk
+                .toBig(item.settledFromAmount)
+                .div(item.fromAmount)
+                .multipliedBy('100')
+                .toFixed(2)}%`
+            : EmptyValueTag,
+        convertedAmount:
+          tokenMap && item.toSymbol && item.settledToAmount && sdk.toBig(item.settledToAmount).gt(0)
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.settledToAmount),
+                undefined,
+                undefined,
+                tokenMap[item.toSymbol].precision,
+                false,
+                { isAbbreviate: true },
+              )} ${item.toSymbol}`
+            : EmptyValueTag,
+        settledAmount:
+          tokenMap && item.toSymbol && item.settledToAmount && item.feeAmount && sdk.toBig(item.settledToAmount).gt(0)
+            ? `${getValuePrecisionThousand(
+                sdk.toBig(item.settledToAmount).minus(item.feeAmount),
+                undefined,
+                undefined,
+                tokenMap[item.toSymbol].precision,
+                false,
+                { isAbbreviate: true },
+              )} ${item.toSymbol}`
+            : EmptyValueTag,
       }
       switch (item.type) {
         case BtradeSwapsType.Delivering:
@@ -1150,6 +1194,7 @@ export const useBtradeTransaction = <R extends RawDataBtradeSwapsItem>(
     showLoading,
   }
 }
+
 
 export function useGetLeverageETHRecord(setToastOpen: (props: any) => void) {
   const { t } = useTranslation(['error'])

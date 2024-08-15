@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box, Tab } from '@mui/material'
+import { Box, Tab, Typography } from '@mui/material'
 import {
   AssetsTable,
   AssetTitle,
@@ -8,7 +8,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 
-import { useSystem, useTokenMap } from '@loopring-web/core'
+import { numberStringListSum, useSystem, useTokenMap } from '@loopring-web/core'
 import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -18,6 +18,7 @@ import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
 import { MaxWidthContainer, containerColors } from 'pages/InvestPage'
 import { RowEarnConfig } from 'constant/setting'
 import { useTheme } from '@emotion/react'
+import Decimal from 'decimal.js'
 
 export const AssetPanel = withTranslation('common')(
   ({
@@ -34,6 +35,8 @@ export const AssetPanel = withTranslation('common')(
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
+      totalAvailableInCurrency,
+      totalFrozenInCurrency
       // onTokenLockHold,
       // tokenLockDetail,
     },
@@ -76,7 +79,7 @@ export const AssetPanel = withTranslation('common')(
         setCurrentTab(AssetTabIndex.DefiPortfolio)
       }
     }, [])
-    const hideAssets = assetTitleProps.hideL2Assets
+    const hideAssets = assetTitleProps.hideL2Assets;
 
     return (
       <>
@@ -135,7 +138,7 @@ export const AssetPanel = withTranslation('common')(
             aria-label='l2-history-tabs'
             variant='scrollable'
           >
-            {AssetL2TabEarnIndex[MapChainId[defaultNetwork]].map((item: string) => {
+            {AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.map((item: string) => {
               return <Tab key={item.toString()} label={t(`labelEarnAsset${item}`)} value={item} />
             })}
           </Tabs>
@@ -157,6 +160,14 @@ export const AssetPanel = withTranslation('common')(
               },
             }}
           >
+            <Box marginBottom={3} marginTop={2} display={'flex'}>
+              <Typography marginRight={4} color={'var(--color-text-secondary)'}>
+              Frozen: {totalFrozenInCurrency}
+              </Typography>
+              <Typography color={'var(--color-text-secondary)'}>
+              Available: {totalAvailableInCurrency}
+              </Typography>
+            </Box>
             <Box className='tableWrapper'>
               <AssetsTable
                 {...{

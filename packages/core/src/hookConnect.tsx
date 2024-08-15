@@ -300,6 +300,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
               <Icon label={MapChainId[defaultNetwork]} />
               <span className={'label'}>{t(NetworkMap[defaultNetwork].label)}</span>
             </Typography>
+            <DropDownIcon sx={{marginLeft: 0.5}} />
           </OutlineSelectItemStyle>
         )}
       </>

@@ -20,7 +20,7 @@ export const AssetPage = () => {
   const { forexMap } = useSystem()
 
   const selected = match?.params.item ?? 'assets'
-  const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, assetsRawData, ...assetPanelProps } =
+  const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
   const { redPackets } = useTargetRedPackets()
   const layer2Router = React.useMemo(() => {

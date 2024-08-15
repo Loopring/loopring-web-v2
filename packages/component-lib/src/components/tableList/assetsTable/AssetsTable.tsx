@@ -376,23 +376,25 @@ export const AssetsTable = withTranslation('tables')(
           const lpPair = lpPairList.join('-')
           const renderMarket: MarketType = (isLp ? lpPair : tokenValue) as MarketType
           return (
-            <ActionMemo
-              {...{
-                isInvest,
-                tokenValue,
-                getMarketArrayListCallback,
-                disableWithdrawList,
-                isLp,
-                isDefi,
-                isToL1,
-                allowTrade,
-                market: renderMarket,
-                onReceive,
-                onSend,
-                isLeverageETH: false,
-                isWebEarn: isWebEarn,
-              }}
-            />
+            <Box marginTop={isWebEarn ? '7px' : 0}>
+              <ActionMemo
+                {...{
+                  isInvest,
+                  tokenValue,
+                  getMarketArrayListCallback,
+                  disableWithdrawList,
+                  isLp,
+                  isDefi,
+                  isToL1,
+                  allowTrade,
+                  market: renderMarket,
+                  onReceive,
+                  onSend,
+                  isLeverageETH: false,
+                  isWebEarn: isWebEarn,
+                }}
+              />
+            </Box>
           )
         },
       },
@@ -506,7 +508,7 @@ export const AssetsTable = withTranslation('tables')(
     ]
 
     return (
-      <TableWrap lan={language} isMobile={isMobile}>
+      <TableWrap lan={language} isMobile={isMobile} isWebEarn={isWebEarn}>
         {!isWebEarn && showFilter && (
           <Box marginX={2}>
             <Filter

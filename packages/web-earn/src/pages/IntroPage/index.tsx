@@ -68,7 +68,8 @@ const Section: React.FC<SectionProps> = (props) => {
     viewMoreLink,
     imgURL,
     isReverse,
-    sx
+    sx,
+    ref
   } = props
   const theme = useTheme()
   const isCompact = useMediaQuery('(max-width:720px)');
@@ -84,6 +85,7 @@ const Section: React.FC<SectionProps> = (props) => {
         flexDirection: isCompact ? 'column' : isReverse ? 'row-reverse' : 'row',
         ...sx
       }}
+      ref={ref}
       {...props}
     >
       <Box width={isCompact ? '80%' : '30%'} marginRight={isReverse ? '' : '10%'}>
@@ -164,6 +166,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const {t} = useTranslation('webEarn')
   const isCompact = useMediaQuery('(max-width:720px)');
   const history = useHistory()
+  const dual = React.useRef(null)
   return (
     <Box>
       <Box
@@ -203,7 +206,12 @@ const Intro: React.FC<IntroProps> = ({  }) => {
             fontSize: '24px',
           }}
           component={'div'}
-          onClick={() => history.push('/l2assets') }
+          onClick={() => {
+            (dual.current as any).scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+          } }
         >
           View More{' '}
           <ToRightTopArrow
@@ -215,6 +223,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         position={'relative'}
         bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
         paddingTop={isCompact ? 15 : 27.5}
+        ref={dual}
       >
         <Box
           width={'25%'}
@@ -227,12 +236,14 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           sx={{ position: 'absolute', right: 0, bottom: '5%' }}
           component={'img'}
           src={`${SoursURL}earn/intro_ring${theme.mode === 'light' ? '_light' : ''}.png`}
+          ref={dual}
         />
         <Section
           title='Dual Investment'
           des='Buy the dip or sell the covered gain while earning a high yield'
           viewMoreLink='/invest/dual'
           imgURL={SoursURL + 'earn/intro_screenshot_1.png'}
+          // ref={dual}
         />
         <Section
           marginTop={isCompact ? 15 : 37.5}
@@ -245,7 +256,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         <Section
           marginTop={isCompact ? 15 : 37.5}
           title='Block Trade'
-          des="Boost your earnings with CIAN protocol's leveraged ETH staking strategy."
+          des="Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral."
           viewMoreLink='/trade/btrade'
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
         />
