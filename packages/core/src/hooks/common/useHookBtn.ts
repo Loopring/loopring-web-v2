@@ -2,7 +2,11 @@ import React from 'react'
 import { AccountStatus, fnType, TradeBtnStatus } from '@loopring-web/common-resources'
 import * as _ from 'lodash'
 import { accountStaticCallBack, btnClickMap, btnLabel } from '../help'
-import { useAccount } from '../../stores'
+import { useAccount, useSystem, useWalletLayer2 } from '../../stores'
+import { useSettings } from '@loopring-web/component-lib'
+import { ChainId, toBig } from '@loopring-web/loopring-sdk'
+import { LoopringAPI } from '../../api_wrapper'
+import { useUpdateAccount } from '../../hooks/useractions'
 
 export const useSubmitBtn = ({
   availableTradeCheck,
@@ -20,6 +24,9 @@ export const useSubmitBtn = ({
 }) => {
   // let {calcTradeParams} = usePageTradePro();
   let { account } = useAccount()
+  let { app } = useSystem()
+  let { defaultNetwork } = useSettings()
+  const { goUpdateAccount } = useUpdateAccount()
 
   const btnStatus = React.useMemo((): TradeBtnStatus | undefined => {
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -57,18 +64,52 @@ export const useSubmitBtn = ({
   })
 
   const _btnLabel = React.useMemo((): string => {
-    return accountStaticCallBack(_btnLabelArray, [rest])
-    // myLog(label);
-  }, [_btnLabelArray, rest])
+    return accountStaticCallBack(_btnLabelArray, [{
+      ...rest,
+      chainId: defaultNetwork,
+      isEarn: app === 'earn',
+      readyState: account.readyState,
+    }])
+  }, [_btnLabelArray, rest, app, defaultNetwork, account.readyState])
 
   const btnClickCallbackArray = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [submitCallback],
   })
   const onBtnClick = React.useCallback(
     (props?: any) => {
-      accountStaticCallBack(btnClickCallbackArray, [props])
+      accountStaticCallBack(btnClickCallbackArray, [{
+        ...props,
+        chainId: defaultNetwork,
+        isEarn: app === 'earn',
+        readyState: account.readyState,
+        taikoEarnActivation: async () => {
+          const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
+            accountId: account._accountIdNotActive,
+          })
+          const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
+            accountId: account._accountIdNotActive!,
+            tokens: '',
+          })
+          const found = Object.keys(feeInfo.fees).find((key) => {
+            const fee = feeInfo.fees[key].fee
+            const foundBalance = userBalances[feeInfo.fees[key].tokenId]
+            return (foundBalance && toBig(foundBalance.total).gte(fee)) || toBig(fee).eq('0')
+          })
+          await goUpdateAccount({
+            isFirstTime: true,
+            isReset: false,
+            // @ts-ignore
+            feeInfo: {
+              token: feeInfo.fees[found!].fee,
+              belong: found!,
+              fee: feeInfo.fees[found!].fee,
+              feeRaw: feeInfo.fees[found!].fee,
+            },
+          })
+        }
+      }])
     },
-    [btnClickCallbackArray],
+    [btnClickCallbackArray, app, defaultNetwork, account],
   )
 
   return {

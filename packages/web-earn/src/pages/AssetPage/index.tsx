@@ -5,12 +5,13 @@ import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
 import { subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { LoopringAPI, useAccount, useSystem, useTargetRedPackets, useUpdateAccount, useWalletLayer2, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { MaxWidthContainer } from '../InvestPage'
 import { toBig } from '@loopring-web/loopring-sdk'
+import { random } from 'lodash'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -69,7 +70,6 @@ export const AssetPage = () => {
   )
   const { goUpdateAccount } = useUpdateAccount()
   const { account, updateAccount } = useAccount()
-  const {walletLayer2}=useWalletLayer2()
   
   return (
     <ViewAccountTemplate
@@ -77,10 +77,14 @@ export const AssetPage = () => {
         const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
           accountId: account._accountIdNotActive,
         })
+        const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
+          accountId: account._accountIdNotActive!,
+          tokens: '',
+        })
         const found = Object.keys(feeInfo.fees).find((key) => {
           const fee = feeInfo.fees[key].fee
-          const balance = walletLayer2 && walletLayer2[key]?.total
-          return balance && toBig(balance).gte(fee)
+          const foundBalance = userBalances[feeInfo.fees[key].tokenId]
+          return (foundBalance && toBig(foundBalance.total).gte(fee)) || toBig(fee).eq('0')
         })
         await goUpdateAccount({
           isFirstTime: true,
@@ -93,16 +97,6 @@ export const AssetPage = () => {
             feeRaw: feeInfo.fees[found!].fee,
           },
         })
-        const timer = setInterval(() => {
-          LoopringAPI.exchangeAPI?.getAccount({
-            owner: account.accAddress,
-          }).then(acc => {
-            if (acc.accInfo.nonce > 0) {
-              updateAccount({ })
-            }
-            clearInterval(timer)
-          })
-        }, 5 * 1000);
       }}
       activeViewTemplate={activeView}
     />

@@ -41,6 +41,7 @@ import {
   useSystem,
   useTokenMap,
   useWalletLayer1,
+  useWalletLayer2,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
@@ -58,8 +59,9 @@ export const useDeposit = <
 ) => {
   const subject = React.useMemo(() => depositServices.onSocket(), [])
   const { tokenMap, totalCoinMap } = useTokenMap()
-  const { account, status: accountStatus } = useAccount()
+  const { account, status: accountStatus, updateAccount } = useAccount()
   const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
+  const { updateWalletLayer2 } = useWalletLayer2()
   const { updateDepositHash } = useOnChainInfo()
   const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
@@ -545,6 +547,23 @@ export const useDeposit = <
             ) {
               setShowAccount({ isShow: false })
             }
+            if (account.readyState === 'NO_ACCOUNT') {
+              const timer = setInterval(() => {
+                LoopringAPI.exchangeAPI?.getAccount({
+                  owner: account.accAddress,
+                }).then(acc => {
+                  if (acc.accInfo.accountId > 0) {
+                    updateAccount({ 
+                      _accountIdNotActive : acc.accInfo.accountId,
+                      readyState: 'NOT_ACTIVE',
+                    })
+                    updateWalletLayer2()
+                    clearInterval(timer)
+                  }
+                })
+              }, 5 * 1000);
+            }
+            
           } else {
             throw { code: UIERROR_CODE.ERROR_NO_RESPONSE }
           }

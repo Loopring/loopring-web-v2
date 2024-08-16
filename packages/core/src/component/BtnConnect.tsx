@@ -45,6 +45,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
       ? accountStaticCallBack(_btnLabel, [{
           chainId: defaultNetwork,
           isEarn: app === 'earn',
+          readyState: account.readyState
         }])
       : undefined
   }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app])

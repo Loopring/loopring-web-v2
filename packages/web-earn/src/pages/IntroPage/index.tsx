@@ -256,7 +256,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         <Section
           marginTop={isCompact ? 15 : 37.5}
           title='Block Trade'
-          des="Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral."
+          des="Offers a secure and trustless way for users to swap tokens using CEX liquidity."
           viewMoreLink='/trade/btrade'
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
         />

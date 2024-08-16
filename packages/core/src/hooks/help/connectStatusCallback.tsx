@@ -5,8 +5,8 @@ import {
   setShowWrongNetworkGuide,
   WalletConnectStep,
 } from '@loopring-web/component-lib'
-import { fnType, myLog } from '@loopring-web/common-resources'
-import { accountReducer, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
+import { Account, AccountStatus, fnType, myLog } from '@loopring-web/common-resources'
+import { accountReducer, LoopringAPI, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
 import _ from 'lodash'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { ChainId } from '@loopring-web/loopring-sdk'
@@ -24,10 +24,13 @@ export const accountStaticCallBack = (
     return fn.apply(this, args)
   }
 }
-const activeBtnLabelFn = function (options?: {chainId: ChainId, isEarn: boolean}) {
-  return options && options.isEarn && [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId)
-    ? 'labelDeposit'
-    : 'labelDepositAndActiveBtn'
+const activeBtnLabelFn = function (options?: {chainId: ChainId, isEarn: boolean, readyState: AccountStatus}) {
+  if (options && options.isEarn && [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId) 
+  ) {
+    return options?.readyState === AccountStatus.NOT_ACTIVE ? 'Complete Sign in' : 'labelDeposit'
+  } else {
+    return 'labelDepositAndActiveBtn'
+  }
 }
 
 export const btnLabel = {
@@ -56,11 +59,24 @@ export const btnLabel = {
     },
   ],
 }
-export const goActiveAccount = () => {
+export const goActiveAccount = async (options?: {
+  chainId: ChainId
+  isEarn: boolean
+  readyState: AccountStatus
+  taikoEarnActivation: () => Promise<void>
+}) => {
   // accountServices.sendCheckAcc();
-
-  store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))
-  store.dispatch(setShowAccount({ isShow: true, step: AccountStep.CheckingActive }))
+  if (
+    options &&
+    options.isEarn &&
+    [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId) &&
+    options.readyState === AccountStatus.NOT_ACTIVE
+  ) {
+    return options.taikoEarnActivation()
+  } else {
+    store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))
+    store.dispatch(setShowAccount({ isShow: true, step: AccountStep.CheckingActive }))
+  }
 }
 export const geDepositingActive = () => {
   // const { system, localStore, account } = store.getState();
