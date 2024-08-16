@@ -162,10 +162,22 @@ export const AssetPanel = withTranslation('common')(
           >
             <Box marginBottom={3} marginTop={2} display={'flex'}>
               <Typography marginRight={4} color={'var(--color-text-secondary)'}>
-              Frozen: {totalFrozenInCurrency}
+                Frozen:{' '}
+                {hideAssets ? (
+                  <>
+                    <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
+                  </>
+                ) : (
+                  totalFrozenInCurrency
+                )}
               </Typography>
               <Typography color={'var(--color-text-secondary)'}>
-              Available: {totalAvailableInCurrency}
+                Available:{' '}
+                {hideAssets ? (
+                  <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
+                ) : (
+                  totalAvailableInCurrency
+                )}
               </Typography>
             </Box>
             <Box className='tableWrapper'>
