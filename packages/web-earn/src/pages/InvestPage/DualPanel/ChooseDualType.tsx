@@ -15,6 +15,7 @@ import styled from '@emotion/styled'
 import { containerColors, MaxWidthContainer } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
+import { groupBy, keys } from 'lodash'
 
 const EarnCard = styled(Box)<{ isMobile: boolean }>`
   background-color: var(--color-box-third);
@@ -101,6 +102,54 @@ export const ChooseDualType = ({
   const history = useHistory()
   const { t } = useTranslation()
   const tEarn = useTranslation('webEarn').t
+
+  const widths = ['25%', '25%','25%','25%']
+  const group = groupBy(dualTokenList, token => token.symbol)
+  const tableData = dualTokenList.length > 0 ? keys(group).map(symbol => {
+    const list = group[symbol]
+    return {
+      token: symbol,
+      list: list.map(type => {
+        return {
+          apy: type.apy,
+          type: type.tag === 'buyDip' ? 'Buy Low' : 'Sell High',
+          viewDetail: () => {},
+        }
+      })
+    }
+  }) : undefined
+  // [
+  //   {
+  //     token: 'LRC',
+  //     list: [
+  //       {
+  //         apy: '1%',
+  //         type: 'Sell High',
+  //         viewDetail: () => {},
+  //       },
+  //       {
+  //         apy: '1%',
+  //         type: 'Buy Low',
+  //         viewDetail: () => {},
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     token: 'ETH',
+  //     list: [
+  //       {
+  //         apy: '1%',
+  //         type: 'Sell High',
+  //         viewDetail: () => {},
+  //       },
+  //       {
+  //         apy: '1%',
+  //         type: 'Buy Low',
+  //         viewDetail: () => {},
+  //       },
+  //     ],
+  //   },
+  // ]
   return (
     <>
       <MaxWidthContainer
@@ -200,99 +249,112 @@ export const ChooseDualType = ({
         </Grid>
 
         <Box ref={productsRef} component={'div'} id={'products'} marginTop={8}>
-          {dualTokenList && dualTokenList.length !== 0 ? (
-            <Box display={'flex'} flexDirection={isMobile ? 'column' : 'row'} flexWrap={'wrap'}>
-              {dualTokenList.map((info, index) => {
-                return (
-                  <EarnCard
-                    isMobile={isMobile}
-                    key={info.symbol}
-                    marginRight={index % 3 === 2 ? '0' : '2%'}
-                  >
-                    <Box
-                      sx={{
-                        height: 64,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <CoinIcon size={64} symbol={info.symbol} />
-                    </Box>
-
-                    {/* <Box width={64} height={64} src={info.imgSrc} component={'img'} /> */}
-                    <Typography variant={'h3'} marginTop={2}>
-                      {info.tag === 'sellCover'
-                        ? tEarn('labelInvestSymbolSellHigh', {
-                            symbol: info.symbol,
-                          })
-                        : tEarn('labelInvestSymbolBuyLow', {
-                            symbol: info.symbol,
-                          })}
-                    </Typography>
-                    <Box
-                      marginBottom={4}
-                      justifyContent={'center'}
-                      alignItems={'center'}
-                      marginTop={7}
-                      display={'flex'}
-                    >
-                      <Box>
-                        <Typography color={'var(--color-success)'} textAlign={'center'}>
-                          {tEarn('labelApy')}
-                        </Typography>
-                        <Typography
-                          variant={'h4'}
-                          color={'var(--color-success)'}
-                          textAlign={'center'}
-                        >
-                          {info.apy}
-                        </Typography>
-                      </Box>
-                      <Box
-                        width={'1px'}
-                        height={24}
-                        marginX={1.5}
-                        bgcolor={'var(--color-border)'}
-                      />
-                      <Box>
-                        <Typography textAlign={'center'}>{tEarn('labelCurrentPrice')}</Typography>
-                        <Typography variant={'h4'} textAlign={'center'}>
-                          {info.price}
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Button
-                      onClick={() => {
-                        history.push(
-                          `/invest/dual?viewType=${
-                            info.tag === 'buyDip' ? 'DualDip' : 'DualGain'
-                          }&autoChose=${info.symbol}`,
-                        )
-                      }}
-                      variant={'contained'}
-                      fullWidth
-                    >
-                      {tEarn('labelViewDetails')}
-                    </Button>
-                  </EarnCard>
-                )
-              })}
-            </Box>
-          ) : (
-            <Box
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}
-              height={'150px'}
-              width={'100%'}
+        {tableData ? <>
+          <Typography variant='h2'>All Products</Typography>
+          <Box
+            component={'hr'}
+            marginTop={3}
+            marginBottom={3}
+            sx={{
+              background: 'var(--color-border)',
+              border: 'none',
+              height: '1px',
+            }}
+          />
+          <Box paddingX={1.5} paddingY={1.5} display={'flex'}>
+            <Typography fontSize={'14px'} color={'var(--color-text-secondary)'} width={widths[0]}>
+              Token
+            </Typography>
+            <Typography fontSize={'14px'} color={'var(--color-text-secondary)'} width={widths[1]}>
+              APY
+            </Typography>
+            <Typography fontSize={'14px'} color={'var(--color-text-secondary)'} width={widths[2]}>
+              Type
+            </Typography>
+            <Typography
+              fontSize={'14px'}
+              color={'var(--color-text-secondary)'}
+              width={widths[3]}
+              textAlign={'right'}
             >
-              <img width={60} src={SoursURL + 'images/loading-line.gif'} />
-            </Box>
-          )}
-        </Box>
+              Action
+            </Typography>
+          </Box>
 
+          <Box>
+            {
+              tableData.map((ele) => {
+                return (
+                  <Box key={ele.token} marginBottom={2.5}>
+                    <Box
+                      component={'hr'}
+                      sx={{
+                        background: 'var(--color-border)',
+                        border: 'none',
+                        height: '1px',
+                      }}
+                    />
+                    {ele.list.map((type, index) => {
+                      return (
+                        <Box
+                          paddingX={1.5}
+                          key={type.type}
+                          paddingY={3.5}
+                          display={'flex'}
+                          alignItems={'center'}
+                        >
+                          <Box width={widths[0]} display={'flex'} alignItems={'center'}>
+                            {index === 0 && (
+                              <>
+                                <CoinIcon symbol={ele.token} />
+                                <Typography marginLeft={1.5}>{ele.token}</Typography>
+                              </>
+                            )}
+                          </Box>
+                          <Box width={widths[1]} display={'flex'} alignItems={'center'}>
+                            <Typography>{type.apy}</Typography>
+                          </Box>
+                          <Box width={widths[2]} display={'flex'} alignItems={'center'}>
+                            <Typography>{type.type}</Typography>
+                          </Box>
+                          <Box width={widths[3]} display={'flex'} flexDirection={'row-reverse'}>
+                            <Button
+                              sx={{
+                                color: 'var(--color-primary)',
+                                borderColor: 'var(--color-primary)',
+                                ':hover': {
+                                  color: 'var(--color-primary)',
+                                  borderColor: 'var(--color-primary)',
+                                },
+                              }}
+                              variant={'outlined'}
+                              onClick={type.viewDetail}
+                            >
+                              View Details
+                            </Button>
+                          </Box>
+                        </Box>
+                      )
+                    })}
+                  </Box>
+                )
+              })
+              }
+              </Box>
+            
+        </>  : (
+              <Box
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                height={'150px'}
+                width={'100%'}
+              >
+                <img width={60} src={SoursURL + 'images/loading-line.gif'} />
+              </Box>
+            )}
+          
+        </Box>
       </MaxWidthContainer>
     </>
   )
