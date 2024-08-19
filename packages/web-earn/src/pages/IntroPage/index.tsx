@@ -74,6 +74,7 @@ const Section: React.FC<SectionProps> = (props) => {
   const theme = useTheme()
   const isCompact = useMediaQuery('(max-width:720px)');
   const history = useHistory()
+  const {t} = useTranslation('common')
   return (
     <Box
       sx={{
@@ -134,7 +135,7 @@ const Section: React.FC<SectionProps> = (props) => {
             }}
             onClick={() => history.push(viewMoreLink)}
           >
-            Learn More  <ToRightTopArrow
+            {t("labelLearnMore2")}  <ToRightTopArrow
             sx={{ marginLeft: 1, fontSize: '24px', color: 'var(--color-text-primary)' }}
           />{' '}
           </Button>
@@ -213,7 +214,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
             });
           } }
         >
-          View More{' '}
+          {t("labelViewMore")}{' '}
           <ToRightTopArrow
             sx={{ marginLeft: 1, fontSize: '24px', color: 'var(--color-text-primary)' }}
           />{' '}
@@ -239,8 +240,8 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           ref={dual}
         />
         <Section
-          title='Dual Investment'
-          des='Buy the dip or sell the covered gain while earning a high yield'
+          title={t("labelInvestDualTitle")}
+          des={t("labelInvestDualDes")}
           viewMoreLink='/invest/dual'
           imgURL={SoursURL + 'earn/intro_screenshot_1.png'}
           // ref={dual}
@@ -248,15 +249,15 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         <Section
           marginTop={isCompact ? 15 : 37.5}
           isReverse
-          title='Portal'
-          des='Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. '
+          title={t("labelVault")}
+          des={t("labelPortalDes")}
           viewMoreLink='/portal'
           imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
         />
         <Section
           marginTop={isCompact ? 15 : 37.5}
-          title='Block Trade'
-          des="Offers a secure and trustless way for users to swap tokens using CEX liquidity."
+          title={t("labelBtradeSwapTitle")}
+          des={t("labelBtradeDes")}
           viewMoreLink='/trade/btrade'
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
         />

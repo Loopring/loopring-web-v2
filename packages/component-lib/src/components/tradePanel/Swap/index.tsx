@@ -277,7 +277,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             justifyContent={'space-between'}
                           >
                             <Typography color={'var(--color-text-secondary)'}>
-                              Block Trade Tutorial{' '}
+                              {rest.t("Block Trade Tutorial")}
                             </Typography>
 
                             <Switch

@@ -149,7 +149,6 @@ const MyLiquidity: any = withTranslation('common')(
       hideSmallBalances,
       // dualList,
     })
-    console.log('useDualAsset()',useDualAsset())
     myLog('summaryMyInvest', summaryMyInvest, forexMap[currency])
 
     React.useEffect(() => {
@@ -267,96 +266,6 @@ const MyLiquidity: any = withTranslation('common')(
     const showEmptyHint = !assetPanelProps.isLoading && !showDual && !showPortal && !dualLoading
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-        {/* {!noHeader && (
-          <MaxWidthContainer
-            height={isMobile ? 70 * theme.unit : 34 * theme.unit}
-            alignItems={'center'}
-            background={containerColors[0]}
-          >
-            <Box
-              display={'flex'}
-              justifyContent={'space-between'}
-              flexDirection={isMobile ? 'column' : 'row'}
-              alignItems={isMobile ? 'start' : 'center'}
-            >
-              <Box paddingY={7}>
-                <Typography marginBottom={5} fontSize={'38px'} variant={'h1'}>
-                  {t('labelInvestBalanceTitle')}
-                </Typography>
-                <Button
-                  onClick={() => {
-                    history.push('/invest/overview')
-                  }}
-                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit, marginRight: 2 }}
-                  variant={'contained'}
-                >
-                  {t('labelInvestOverviewTitle')}
-                </Button>
-                <Button
-                  onClick={() => {
-                    history.push('/l2assets/history/Transactions')
-                  }}
-                  sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
-                  variant={'contained'}
-                >
-                  {t('labelTxnDetailHeader')}
-                </Button>
-              </Box>
-              <Box
-                sx={{ background: 'var(--color-box-secondary)' }}
-                width={'var(--earning-banner-width)'}
-                border={'1px solid var(--color-border)'}
-                borderRadius={0.5}
-                paddingX={3}
-                paddingY={4}
-                display={'flex'}
-                justifyContent={'space-between'}
-                marginRight={10}
-                marginBottom={isMobile ? 7 : 0}
-              >
-                <Box>
-                  <Typography marginBottom={2} color={'var(--color-text-third)'} variant={'h6'}>
-                    {t('labelTotalPositionValue')}
-                  </Typography>
-                  <Typography>
-                    {_summaryMyInvest
-                      ? PriceTag[CurrencyToTag[currency]] +
-                        getValuePrecisionThousand(
-                          sdk
-                            .toBig(_summaryMyInvest)
-                            .times(forexMap[currency] ?? 0)
-                            .toString(),
-                          undefined,
-                          undefined,
-                          2,
-                          true,
-                          { isFait: true, floor: true },
-                        )
-                      : EmptyValueTag}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography color={'var(--color-text-third)'} marginBottom={2} variant={'h6'}>
-                    {t('labelInvestTotalEarnings')}
-                  </Typography>
-                  <Typography>
-                    {summaryMyInvest.rewardU
-                      ? PriceTag[CurrencyToTag[currency]] +
-                        getValuePrecisionThousand(
-                          summaryMyInvest.rewardU,
-                          undefined,
-                          undefined,
-                          2,
-                          true,
-                          { isFait: true, floor: true },
-                        )
-                      : EmptyValueTag}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </MaxWidthContainer>
-        )} */}
 
         <MaxWidthContainer
           marginBottom={3}
@@ -368,7 +277,7 @@ const MyLiquidity: any = withTranslation('common')(
           }}
         >
           <Typography marginY={3.5} color={'var(--color-text-third)'}>
-            Total Balance:{' '}
+            {t("labelTotalBalance")}:{' '}
             {nanToEmptyTag(
               sdk
                 .toBig(defiTotalInUSD)
@@ -394,9 +303,9 @@ const MyLiquidity: any = withTranslation('common')(
                   src={SoursURL + 'images/icon-dual.svg'}
                 />
                 <Box>
-                  <Typography variant='h4'>Dual Investment</Typography>
+                  <Typography variant='h4'>{t("labelInvestDualTitle")}</Typography>
                   <Typography color={'var(--color-text-third)'}>
-                    Balance:{' '}
+                    {t("labelBalance")}:{' '}
                     {dualStakeDollar && !Number.isNaN(dualStakeDollar)
                       ? nanToEmptyTag(
                           sdk
@@ -419,23 +328,6 @@ const MyLiquidity: any = withTranslation('common')(
                 marginLeft={-3}
               >
                 <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1} margin={0}>
-                  {/* {dualStakeDollar !== undefined ? (
-                      <Typography component={'h4'} variant={'h3'} marginX={3}>
-                        {dualStakeDollar && !Number.isNaN(dualStakeDollar)
-                          ? hideAssets
-                            ? HiddenTag
-                            : nanToEmptyTag(
-                                sdk
-                                  .toBig(dualStakeDollar?.replaceAll(sdk.SEP))
-                                  .times(forexMap[currency] ?? 0)
-                                  .toFixed(2, 1),
-                                PriceTag[CurrencyToTag[currency]],
-                              )
-                          : EmptyValueTag}
-                      </Typography>
-                    ) : (
-                      ''
-                    )} */}
                   <DualAssetTable
                     rawData={dualList}
                     getDetail={getDetail}

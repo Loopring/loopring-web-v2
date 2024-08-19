@@ -64,7 +64,6 @@ export const useHeader = () => {
     [fnType.LOCKED]: [
       function () {
         modal.open()
-        // unlockAccount()
       },
     ],
   })

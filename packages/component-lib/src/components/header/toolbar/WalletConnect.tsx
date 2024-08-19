@@ -77,7 +77,6 @@ export const WalletConnectBtn = ({
   NetWorkItems,
   handleClickUnlock
 }: WalletConnectBtnProps) => {
-  console.log('accountState', accountState.account)
   const { t, i18n } = useTranslation(['layout', 'common'])
   const { isMobile } = useSettings()
   

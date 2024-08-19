@@ -2332,5 +2332,23 @@ export default {
   labelEarnAssetDefiPortfolio: 'Defi Portfolio',
   labelEarnDepositDes: `There are no assets in your Loopring DeFi account yet. Please deposit a supported token to start exploring the DeFi world.`,
   labelEarnAssetTokens: 'All Tokens',
+  labelBlockTradeTutorial: 'Block Trade Tutorial',
+  labelAccountCreatedHint: 'Your Loopring DeFi account has been created. Please sign to complete the process.',
+  labelFrozen: 'Frozen',
+  labelBTradeTutorial: `
+  Block Trade offers a secure and trustless way for users to swap tokens using CEX
+  liquidity. The trades happen exclusively between designated entities, ensuring that the
+  existing liquidity of the DEX remains unaffected. There is no price impact to other DEX
+  users as a result of the transaction.
+  `,
+  labelLearnMore: 'Learn More >',
+  labelLearnMore2: 'Learn More',
+  labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield',
+  labelPortalDes: 'Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. ',
+  labelBtradeDes: 'Offers a secure and trustless way for users to swap tokens using CEX liquidity.',
+  labelAPY: 'APY',
+  labelAction2: 'Action',
+  labelTotalBalance: 'Total Balance',
+  labelBalance: 'Balance',
 
 }

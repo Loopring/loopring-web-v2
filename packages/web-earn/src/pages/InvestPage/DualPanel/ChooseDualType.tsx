@@ -118,38 +118,6 @@ export const ChooseDualType = ({
       })
     }
   }) : undefined
-  // [
-  //   {
-  //     token: 'LRC',
-  //     list: [
-  //       {
-  //         apy: '1%',
-  //         type: 'Sell High',
-  //         viewDetail: () => {},
-  //       },
-  //       {
-  //         apy: '1%',
-  //         type: 'Buy Low',
-  //         viewDetail: () => {},
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     token: 'ETH',
-  //     list: [
-  //       {
-  //         apy: '1%',
-  //         type: 'Sell High',
-  //         viewDetail: () => {},
-  //       },
-  //       {
-  //         apy: '1%',
-  //         type: 'Buy Low',
-  //         viewDetail: () => {},
-  //       },
-  //     ],
-  //   },
-  // ]
   return (
     <>
       <MaxWidthContainer
@@ -249,111 +217,121 @@ export const ChooseDualType = ({
         </Grid>
 
         <Box ref={productsRef} component={'div'} id={'products'} marginTop={8}>
-        {tableData ? <>
-          <Typography variant='h2'>All Products</Typography>
-          <Box
-            component={'hr'}
-            marginTop={3}
-            marginBottom={3}
-            sx={{
-              background: 'var(--color-border)',
-              border: 'none',
-              height: '1px',
-            }}
-          />
-          <Box paddingX={1.5} paddingY={1.5} display={'flex'}>
-            <Typography fontSize={'14px'} color={'var(--color-text-secondary)'} width={widths[0]}>
-              Token
-            </Typography>
-            <Typography fontSize={'14px'} color={'var(--color-text-secondary)'} width={widths[1]}>
-              APY
-            </Typography>
-            <Typography fontSize={'14px'} color={'var(--color-text-secondary)'} width={widths[2]}>
-              Type
-            </Typography>
-            <Typography
-              fontSize={'14px'}
-              color={'var(--color-text-secondary)'}
-              width={widths[3]}
-              textAlign={'right'}
-            >
-              Action
-            </Typography>
-          </Box>
+          {tableData ? (
+            <>
+              <Typography variant='h2'>{t("labelTitleOverviewAllPrd")}</Typography>
+              <Box
+                component={'hr'}
+                marginTop={3}
+                marginBottom={3}
+                sx={{
+                  background: 'var(--color-border)',
+                  border: 'none',
+                  height: '1px',
+                }}
+              />
+              <Box paddingX={1.5} paddingY={1.5} display={'flex'}>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[0]}
+                >
+                  {t("labelToken")}
+                </Typography>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[1]}
+                >
+                  {t("labelAPY")}
+                </Typography>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[2]}
+                >
+                  {t("labelType")}
+                </Typography>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[3]}
+                  textAlign={'right'}
+                >
+                  {t("labelAction2")}
+                </Typography>
+              </Box>
 
-          <Box>
-            {
-              tableData.map((ele) => {
-                return (
-                  <Box key={ele.token} marginBottom={2.5}>
-                    <Box
-                      component={'hr'}
-                      sx={{
-                        background: 'var(--color-border)',
-                        border: 'none',
-                        height: '1px',
-                      }}
-                    />
-                    {ele.list.map((type, index) => {
-                      return (
-                        <Box
-                          paddingX={1.5}
-                          key={type.type}
-                          paddingY={3.5}
-                          display={'flex'}
-                          alignItems={'center'}
-                        >
-                          <Box width={widths[0]} display={'flex'} alignItems={'center'}>
-                            {index === 0 && (
-                              <>
-                                <CoinIcon symbol={ele.token} />
-                                <Typography marginLeft={1.5}>{ele.token}</Typography>
-                              </>
-                            )}
-                          </Box>
-                          <Box width={widths[1]} display={'flex'} alignItems={'center'}>
-                            <Typography>{type.apy}</Typography>
-                          </Box>
-                          <Box width={widths[2]} display={'flex'} alignItems={'center'}>
-                            <Typography>{type.type}</Typography>
-                          </Box>
-                          <Box width={widths[3]} display={'flex'} flexDirection={'row-reverse'}>
-                            <Button
-                              sx={{
-                                color: 'var(--color-primary)',
-                                borderColor: 'var(--color-primary)',
-                                ':hover': {
+              <Box>
+                {tableData.map((ele) => {
+                  return (
+                    <Box key={ele.token} marginBottom={2.5}>
+                      <Box
+                        component={'hr'}
+                        sx={{
+                          background: 'var(--color-border)',
+                          border: 'none',
+                          height: '1px',
+                        }}
+                      />
+                      {ele.list.map((type, index) => {
+                        return (
+                          <Box
+                            paddingX={1.5}
+                            key={type.type}
+                            paddingY={3.5}
+                            display={'flex'}
+                            alignItems={'center'}
+                          >
+                            <Box width={widths[0]} display={'flex'} alignItems={'center'}>
+                              {index === 0 && (
+                                <>
+                                  <CoinIcon symbol={ele.token} />
+                                  <Typography marginLeft={1.5}>{ele.token}</Typography>
+                                </>
+                              )}
+                            </Box>
+                            <Box width={widths[1]} display={'flex'} alignItems={'center'}>
+                              <Typography>{type.apy}</Typography>
+                            </Box>
+                            <Box width={widths[2]} display={'flex'} alignItems={'center'}>
+                              <Typography>{type.type}</Typography>
+                            </Box>
+                            <Box width={widths[3]} display={'flex'} flexDirection={'row-reverse'}>
+                              <Button
+                                sx={{
                                   color: 'var(--color-primary)',
                                   borderColor: 'var(--color-primary)',
-                                },
-                              }}
-                              variant={'outlined'}
-                              onClick={type.viewDetail}
-                            >
-                              View Details
-                            </Button>
+                                  ':hover': {
+                                    color: 'var(--color-primary)',
+                                    borderColor: 'var(--color-primary)',
+                                  },
+                                }}
+                                variant={'outlined'}
+                                onClick={type.viewDetail}
+                              >
+                                {t("labelMiningViewDetails")}
+                              </Button>
+                            </Box>
                           </Box>
-                        </Box>
-                      )
-                    })}
-                  </Box>
-                )
-              })
-              }
+                        )
+                      })}
+                    </Box>
+                  )
+                })}
               </Box>
-            
-        </>  : (
-              <Box
-                display={'flex'}
-                justifyContent={'center'}
-                alignItems={'center'}
-                height={'150px'}
-                width={'100%'}
-              >
-                <img width={60} src={SoursURL + 'images/loading-line.gif'} />
-              </Box>
-            )}
-          
+            </>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              height={'150px'}
+              width={'100%'}
+            >
+              <img width={60} src={SoursURL + 'images/loading-line.gif'} />
+            </Box>
+          )}
         </Box>
       </MaxWidthContainer>
     </>

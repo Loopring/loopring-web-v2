@@ -453,8 +453,7 @@ export const ViewAccountTemplate = React.memo(
   ({
     activeViewTemplate,
     className,
-    size = 'large',
-    onClickCompleteSignIn
+    size = 'large'
   }: {
     activeViewTemplate: JSX.Element
     className?: string
@@ -566,20 +565,8 @@ export const ViewAccountTemplate = React.memo(
                     style={{ color: 'var(--color-success)', width: '64px', height: '64px' }}
                   />
                   <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                    Your Loopring DeFi account has been created. 
-                    Please sign to complete the process.
+                    {t("labelAccountCreatedHint")}
                   </Typography>
-                  {/* <Button
-                    onClick={onClickCompleteSignIn}
-                    sx={{ marginTop: 1.5 }}
-                    variant={'contained'}
-                    size={size}
-                    color={'primary'}
-                    fullWidth={true}
-                    style={{ maxWidth: '280px' }}
-                  >
-                    Complete Sign in
-                  </Button> */}
                   <WalletConnectL2Btn size={size} />
                 </>
               ) : (

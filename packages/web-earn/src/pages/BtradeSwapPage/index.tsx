@@ -63,12 +63,9 @@ const Content = withTranslation('common')(({ ...rest }: WithTranslation) => {
           paddingTop={3}
           paddingBottom={2}
         >
-          <Typography fontSize={'16px'}>Block Trade</Typography>
+          <Typography fontSize={'16px'}>{t("labelBtradeSwapTitle")}</Typography>
           <Typography marginTop={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
-            Block Trade offers a secure and trustless way for users to swap tokens using CEX
-            liquidity. The trades happen exclusively between designated entities, ensuring that the
-            existing liquidity of the DEX remains unaffected. There is no price impact to other DEX
-            users as a result of the transaction.
+            {t("labelBTradeTutorial")}
           </Typography>
           <br />
           <Link
@@ -76,7 +73,7 @@ const Content = withTranslation('common')(({ ...rest }: WithTranslation) => {
             fontSize={'14px'}
             href='https://loopring.io/#/document/Block_Trade_tutorial_en.md'
           >
-            {`Learn More >`}
+            {t("labelLearnMore")}
           </Link>
         </Box>
       )}
@@ -176,9 +173,6 @@ export const BtradeSwapPage = withTranslation('common')(({ t, ...rest }: WithTra
     >
       <Box
         paddingBottom={isMobile ? 2 : 'initial'}
-        // display={'flex'}
-        // style={styles}
-        // justifyContent={'center'}
       >
         {!marketArray?.length ||
         !marketMap[marketArray[0]] ||

@@ -819,7 +819,7 @@ const ReferView = () => {
           </Container>
         </>
       ) : (
-        <ErrorPage messageKey={'error404111'} />
+        <ErrorPage messageKey={'error404'} />
       )}
     </>
   )

@@ -153,54 +153,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const [showLoading, setShowLoading] = React.useState(false)
   const mountedRef = React.useRef(false)
 
-  // const walletLayer2Callback = React.useCallback(() => {
-  //   if (ammMap && tokenPrices && userRewardsMap && myAmmLPMap) {
-  //     setShowLoading(true)
-  //     updateData()
-  //     let resultData: MyPoolRow<R>[] = Object.keys(myAmmLPMap).map((key) => ({
-  //       ...myAmmLPMap[key],
-  //       ammDetail: ammMap['AMM-' + key],
-  //     }))
-  //     let totalCurrentInvest = {
-  //       ammPoolDollar: 0,
-  //       stakeETHDollar: 0,
-  //       leverageETHDollar: 0,
-  //       // dualStakeDollar: summaryDefiReward,
-  //     }
-  //     const { walletMap: _walletMap } = makeWalletLayer2({ needFilterZero: false })
-
-  //     defiCoinArray?.forEach((defiCoinKey) => {
-  //       totalCurrentInvest.stakeETHDollar += Number(
-  //         // @ts-ignore
-  //         (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
-  //           (tokenPrices ? tokenPrices[defiCoinKey] : 0),
-  //       )
-  //     }, [])
-  //     resultData.forEach((item) => {
-  //       totalCurrentInvest.ammPoolDollar += Number(item.balanceU ?? 0)
-  //     })
-  //     leverageETHCoinArray?.forEach((defiCoinKey) => {
-  //       totalCurrentInvest.leverageETHDollar += Number(
-  //         // @ts-ignore
-  //         (_walletMap[defiCoinKey]?.count?.toString()?.replaceAll(sdk.SEP, '') ?? 0) *
-  //           tokenPrices[defiCoinKey] ?? 0,
-  //       )
-  //     })
-  //     setSummaryMyInvest((state) => {
-  //       return {
-  //         ...state,
-  //         ...totalCurrentInvest,
-  //         investDollar: sdk
-  //           .toBig(totalCurrentInvest.ammPoolDollar ?? 0)
-  //           .plus(totalCurrentInvest.stakeETHDollar ?? 0)
-  //           .plus(totalCurrentInvest.leverageETHDollar ?? 0)
-  //           .plus(state.stakeLRCDollar ?? 0)
-  //           .toString(),
-  //       }
-  //     })
-  //     setShowLoading(false)
-  //   }
-  // }, [ammMap, tokenPrices, userRewardsMap, summaryDefiReward])
 
   React.useEffect(() => {
     if (ammMapStatus === SagaStatus.UNSET && accountStatus === SagaStatus.UNSET) {
@@ -217,12 +169,6 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
     }
   }, [ammMapStatus, accountStatus])
 
-  // React.useEffect(() => {
-  //   if (userRewardsStatus === SagaStatus.UNSET) {
-  //     walletLayer2Callback()
-  //   }
-  // }, [userRewardsStatus, summaryDefiReward])
-  // useWalletLayer2Socket({ walletLayer2Callback })
 
   React.useEffect(() => {
     mountedRef.current = true

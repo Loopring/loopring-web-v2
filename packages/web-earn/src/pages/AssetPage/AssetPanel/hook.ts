@@ -308,7 +308,6 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
   const { tokenPrices } = useTokenPrices()
-  console.log(assetsRawData)
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
@@ -485,7 +484,6 @@ export const useAssetAction = () => {
           } else {
             sum.shift()
           }
-          // debugger
 
           return {
             list: sum,
