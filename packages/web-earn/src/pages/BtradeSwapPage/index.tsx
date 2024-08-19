@@ -73,6 +73,7 @@ const Content = withTranslation('common')(({ ...rest }: WithTranslation) => {
             marginTop={1}
             fontSize={'14px'}
             href='https://loopring.io/#/document/Block_Trade_tutorial_en.md'
+            target="_blank"
           >
             {t("labelLearnMore")}
           </Link>

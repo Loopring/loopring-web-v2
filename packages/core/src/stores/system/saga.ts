@@ -318,7 +318,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       store.dispatch(getStakingMap(undefined))
       store.dispatch(getBtradeMap(undefined))
       store.dispatch(getVaultMap(undefined))
-      store.dispatch(getExclusiveRedpacket(undefined))
       defiAllAsync()
       yield take('vaultMap/getVaultMapStatus')
       store.dispatch(getVaultTickers(undefined))
@@ -359,14 +358,14 @@ const should15MinutesUpdateDataGroup = async (
       if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
         indexUSD = index
       }
-      return () => (
+      return (
         LoopringAPI?.exchangeAPI?.getLatestTokenPrices({
           currency: CurrencyToTag[key].toString(),
           tokens: tokenAddress,
         }) ?? Promise.resolve({ tokenPrices: null })
       )
     })
-    const restForexs = await promiseAllSequently(promiseArray)
+    const restForexs = await Promise.all(promiseArray)
 
     const { gasPrice } = await LoopringAPI.exchangeAPI.getGasPrice();
     const baseUsd = restForexs[indexUSD].tokenPrices[tokenAddress] ?? 1
