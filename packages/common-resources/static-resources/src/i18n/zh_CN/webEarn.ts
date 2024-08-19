@@ -98,4 +98,11 @@ export default {
   labelHighThroughputDes:
     'Loopring L2 can settle ~2000 transactions per second with near instant finality.',
   labelFAQs: 'FAQs',
+  labelBtradeSwapTitle: 'Block Trade',
+  labelViewMore: 'View more',
+  labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield',
+  labelVault: 'Portal',
+  labelPortalDes: 'Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. ',
+  labelBtradeDes: 'Offers a secure and trustless way for users to swap tokens using CEX liquidity.',
+  labelInvestDualTitle: 'Dual Investment',
 }
