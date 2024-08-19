@@ -113,7 +113,13 @@ export const ChooseDualType = ({
         return {
           apy: type.apy,
           type: type.tag === 'buyDip' ? 'Buy Low' : 'Sell High',
-          viewDetail: () => {},
+          viewDetail: () => {
+            history.push(
+              `/invest/dual?viewType=${
+                type.tag === 'buyDip' ? 'DualDip' : 'DualGain'
+              }&autoChose=${type.symbol}`,
+            )
+          },
         }
       })
     }

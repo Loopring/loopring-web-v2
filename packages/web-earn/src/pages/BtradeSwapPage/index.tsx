@@ -53,15 +53,16 @@ const Content = withTranslation('common')(({ ...rest }: WithTranslation) => {
   } = useBtradeSwap({ path: '/trade/btrade' })
   const { isMobile, bTradeShowTutorial, setBTradeShowTutorial } = useSettings()
   return (
-    <Box display={'flex'} justifyContent={'space-evenly'} alignItems={'start'} flexDirection={isMobile ? 'column-reverse' : 'row'} >
+    <Box display={'flex'} justifyContent={'space-evenly'} alignItems={isMobile ? 'center' : 'start'} flexDirection={isMobile ? 'column-reverse' : 'row'} >
       {bTradeShowTutorial && (
         <Box
-          width={isMobile ? '70%' : '30%'}
+          width={isMobile ? '100%' : '30%'}
           borderRadius={'8px'}
           bgcolor={'var(--color-pop-bg)'}
           paddingX={4}
           paddingTop={3}
           paddingBottom={2}
+          marginTop={isMobile ? -20 : 0}
         >
           <Typography fontSize={'16px'}>{t("labelBtradeSwapTitle")}</Typography>
           <Typography marginTop={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
