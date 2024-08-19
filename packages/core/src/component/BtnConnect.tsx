@@ -1,11 +1,12 @@
 import { withTranslation } from 'react-i18next'
-import { accountStaticCallBack, btnClickMap, btnLabel, store, useAccount, useSystem } from '../index'
+import { accountStaticCallBack, btnClickMap, btnLabel, LoopringAPI, store, useAccount, useSystem, useUpdateAccount } from '../index'
 import {
   Button,
   setShowConnect,
   useSettings,
   WalletConnectStep,
   ButtonProps,
+  useOpenModals,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import _ from 'lodash'
@@ -21,6 +22,7 @@ import {
 } from '@loopring-web/common-resources'
 import { changeShowModel } from '../stores/account/reducer'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { toBig } from '@loopring-web/loopring-sdk'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
@@ -51,7 +53,8 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
   }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
-
+  const { setShowDeposit } = useOpenModals()
+  const { goUpdateAccount } = useUpdateAccount()
   return (
     <Button
       variant={'contained'}
@@ -61,7 +64,39 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
       style={{ maxWidth: '280px' }}
       className={className}
       onClick={() => {
-        accountStaticCallBack(_btnClickMap, [])
+        accountStaticCallBack(_btnClickMap, [{
+          chainId: defaultNetwork,
+          isEarn: app === 'earn',
+          readyState: account.readyState,
+          taikoEarnActivation: async () => {
+            const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
+              accountId: account._accountIdNotActive,
+            })
+            const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
+              accountId: account._accountIdNotActive!,
+              tokens: '',
+            })
+            const found = Object.keys(feeInfo.fees).find((key) => {
+              const fee = feeInfo.fees[key].fee
+              const foundBalance = userBalances[feeInfo.fees[key].tokenId]
+              return (foundBalance && toBig(foundBalance.total).gte(fee)) || toBig(fee).eq('0')
+            })
+            await goUpdateAccount({
+              isFirstTime: true,
+              isReset: false,
+              // @ts-ignore
+              feeInfo: {
+                token: feeInfo.fees[found!].fee,
+                belong: found!,
+                fee: feeInfo.fees[found!].fee,
+                feeRaw: feeInfo.fees[found!].fee,
+              },
+            })
+          },
+          taikoEarnDeposit: async () => {
+            setShowDeposit({isShow: true})
+          }
+        }])
       }}
     >
       {label !== '' ? (

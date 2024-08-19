@@ -68,36 +68,9 @@ export const AssetPage = () => {
     ),
     [assetTitleMobileExtendProps, assetTitleProps, isMobile, assetBtnStatus, layer2Router],
   )
-  const { goUpdateAccount } = useUpdateAccount()
-  const { account, updateAccount } = useAccount()
   
   return (
     <ViewAccountTemplate
-      onClickCompleteSignIn={async () => {
-        const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
-          accountId: account._accountIdNotActive,
-        })
-        const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
-          accountId: account._accountIdNotActive!,
-          tokens: '',
-        })
-        const found = Object.keys(feeInfo.fees).find((key) => {
-          const fee = feeInfo.fees[key].fee
-          const foundBalance = userBalances[feeInfo.fees[key].tokenId]
-          return (foundBalance && toBig(foundBalance.total).gte(fee)) || toBig(fee).eq('0')
-        })
-        await goUpdateAccount({
-          isFirstTime: true,
-          isReset: false,
-          // @ts-ignore
-          feeInfo: {
-            token: feeInfo.fees[found!].fee,
-            belong: found!,
-            fee: feeInfo.fees[found!].fee,
-            feeRaw: feeInfo.fees[found!].fee,
-          },
-        })
-      }}
       activeViewTemplate={activeView}
     />
   )

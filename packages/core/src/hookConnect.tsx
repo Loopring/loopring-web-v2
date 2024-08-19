@@ -569,7 +569,7 @@ export const ViewAccountTemplate = React.memo(
                     Your Loopring DeFi account has been created. 
                     Please sign to complete the process.
                   </Typography>
-                  <Button
+                  {/* <Button
                     onClick={onClickCompleteSignIn}
                     sx={{ marginTop: 1.5 }}
                     variant={'contained'}
@@ -579,7 +579,8 @@ export const ViewAccountTemplate = React.memo(
                     style={{ maxWidth: '280px' }}
                   >
                     Complete Sign in
-                  </Button>
+                  </Button> */}
+                  <WalletConnectL2Btn size={size} />
                 </>
               ) : (
                 <>

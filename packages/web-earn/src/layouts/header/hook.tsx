@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import {
   ButtonComponentsMap,
   fnType,
   headerMenuLandingData,
   MapChainId,
-  Profile,
   ProfileIndex,
   SagaStatus,
+  WebEarnProfile,
 } from '@loopring-web/common-resources'
 
 import {
@@ -73,32 +73,28 @@ export const useHeader = () => {
 
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof earnHeaderToolBarData>({
-    ...earnHeaderToolBarData,
-  })
-
-  React.useEffect(() => {
-    if ([SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)) {
-      const account = store.getState().account
-      setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
-          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-          handleClick: onWalletBtnConnect,
-          handleClickUnlock: () => {
-            unlockAccount()
+  const headerToolBarData = React.useMemo(() => {
+    return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
+      ? {
+          ...earnHeaderToolBarData,
+          [ButtonComponentsMap.WalletConnect]: {
+            ...earnHeaderToolBarData[ButtonComponentsMap.WalletConnect],
+            handleClick: onWalletBtnConnect,
+            handleClickUnlock: () => {
+              unlockAccount()
+            },
+            NetWorkItems,
+            accountState: { account }
           },
-          NetWorkItems,
-          accountState: { account },
+          [ButtonComponentsMap.ProfileMenu]: {
+            ...earnHeaderToolBarData[ButtonComponentsMap.ProfileMenu],
+            subMenu: profile.map((item: string) => WebEarnProfile[item]),
+            readyState: account.readyState,
+          },
         }
-        headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
-          ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
-          subMenu: profile.map((item: string) => Profile[item]),
-          readyState: account.readyState,
-        }
-        return headerToolBarData
-      })
-    }
-  }, [accountStatus, account?.readyState])
+      : earnHeaderToolBarData
+  }, [accountStatus, account?.readyState, account])
+  
   const { notifyMap } = useNotify()
 
   return {

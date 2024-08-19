@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AccountStatus, fnType, TradeBtnStatus } from '@loopring-web/common-resources'
 import * as _ from 'lodash'
 import { accountStaticCallBack, btnClickMap, btnLabel } from '../help'
 import { useAccount, useSystem, useWalletLayer2 } from '../../stores'
-import { useSettings } from '@loopring-web/component-lib'
+import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { ChainId, toBig } from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../api_wrapper'
 import { useUpdateAccount } from '../../hooks/useractions'
@@ -27,6 +27,7 @@ export const useSubmitBtn = ({
   let { app } = useSystem()
   let { defaultNetwork } = useSettings()
   const { goUpdateAccount } = useUpdateAccount()
+  const { setShowDeposit } = useOpenModals()
 
   const btnStatus = React.useMemo((): TradeBtnStatus | undefined => {
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -106,6 +107,9 @@ export const useSubmitBtn = ({
               feeRaw: feeInfo.fees[found!].fee,
             },
           })
+        },
+        taikoEarnDeposit: async () => {
+          setShowDeposit({isShow: true})
         }
       }])
     },

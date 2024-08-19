@@ -147,6 +147,19 @@ export const Profile = {
   ],
 }
 
+export const WebEarnProfile = {
+  security: [
+    {
+      icon: SecurityIcon,
+      router: { path: `${RouterPath.layer2}/${Layer2RouterID.security}` },
+      label: {
+        id: 'security',
+        i18nKey: 'labelSecurity',
+      },
+    },
+  ],
+}
+
 export enum ButtonComponentsMap {
   Download = 'Download',
   Notification = 'Notification',

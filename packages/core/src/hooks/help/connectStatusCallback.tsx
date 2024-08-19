@@ -64,15 +64,19 @@ export const goActiveAccount = async (options?: {
   isEarn: boolean
   readyState: AccountStatus
   taikoEarnActivation: () => Promise<void>
+  taikoEarnDeposit: () => Promise<void>
 }) => {
   // accountServices.sendCheckAcc();
   if (
     options &&
     options.isEarn &&
-    [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId) &&
-    options.readyState === AccountStatus.NOT_ACTIVE
+    [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId)
   ) {
-    return options.taikoEarnActivation()
+    if (options.readyState === AccountStatus.NOT_ACTIVE) {
+      return options.taikoEarnActivation()
+    } else {
+      return options.taikoEarnDeposit()
+    }
   } else {
     store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))
     store.dispatch(setShowAccount({ isShow: true, step: AccountStep.CheckingActive }))

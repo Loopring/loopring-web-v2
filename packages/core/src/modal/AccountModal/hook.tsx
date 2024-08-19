@@ -3052,7 +3052,13 @@ export function useAccountModalForUI({
               btnTxt: 'labelClose',
               callback: () => {
                 setShouldShow(false)
-                setShowActiveAccount({ isShow: true })
+                const isTaikoEarn =
+                  isEarn && [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
+                if (isTaikoEarn) {
+                  setShowAccount({ isShow: false })
+                } else {
+                  setShowActiveAccount({ isShow: true })
+                }
               },
             }}
             {...{
