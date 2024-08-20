@@ -33,6 +33,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
     accountReady,
     addressDefault,
     allowTrade,
+    isShow,
     onBack,
     t,
     ...rest
@@ -45,6 +46,15 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
       walletMap,
       coinMap,
     } as any)
+    
+    React.useEffect(() => {
+      onChangeEvent(0, {
+        to: 'button',
+        tradeData: {
+          tradeValue: undefined,
+        }
+      })
+    }, [])
     const [panelIndex, setPanelIndex] = React.useState(index + 1)
     const handleConfirm = (index: number) => {
       setPanelIndex(index)

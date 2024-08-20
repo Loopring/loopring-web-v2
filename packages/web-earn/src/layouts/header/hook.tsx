@@ -82,6 +82,10 @@ export const useHeader = () => {
             handleClick: onWalletBtnConnect,
             handleClickUnlock: () => {
               unlockAccount()
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.UnlockAccount_WaitForAuth,
+              })
             },
             NetWorkItems,
             accountState: { account }
