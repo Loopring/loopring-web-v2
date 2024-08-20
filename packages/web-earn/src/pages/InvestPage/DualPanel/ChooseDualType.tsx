@@ -225,17 +225,7 @@ export const ChooseDualType = ({
         <Box ref={productsRef} component={'div'} id={'products'} marginTop={8}>
           {tableData ? (
             <>
-              <Typography variant='h2'>{t("labelTitleOverviewAllPrd")}</Typography>
-              <Box
-                component={'hr'}
-                marginTop={3}
-                marginBottom={3}
-                sx={{
-                  background: 'var(--color-border)',
-                  border: 'none',
-                  height: '1px',
-                }}
-              />
+              <Typography marginBottom={5} variant='h2'>{t("labelTitleOverviewAllPrd")}</Typography>
               <Box paddingX={1.5} paddingY={1.5} display={'flex'}>
                 <Typography
                   fontSize={'14px'}
