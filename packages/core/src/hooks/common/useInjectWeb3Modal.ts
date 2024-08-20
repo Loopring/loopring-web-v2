@@ -3,7 +3,7 @@ import React from 'react'
 import { SUPPORTING_NETWORKS, SagaStatus, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
-import { checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
+import { accountServices, checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
@@ -100,10 +100,9 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
           store.dispatch(setDefaultNetwork(chainId))
         }
         if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) { 
-          setTimeout(() => {
-            location.reload()
-          }, 1000);
-        } else {
+          accountServices.sendAccountLock()
+          checkAccount(address, chainId)
+        } else if (chainId && chainIds.includes(chainId)) {
           checkAccount(address, chainId)
         }
       } else {
