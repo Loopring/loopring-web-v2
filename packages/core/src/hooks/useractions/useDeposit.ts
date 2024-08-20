@@ -1,4 +1,4 @@
-import React from 'react'
+import Reactfrom 'react'
 
 import {
   AccountStep,
@@ -103,6 +103,12 @@ export const useDeposit = <
     setShowDeposit,
     setShowAccount,
   } = useOpenModals()
+
+  React.useEffect(() => {
+    if(!isShow) {
+      resetDepositData()
+    }
+  }, [isShow])
 
   const {
     btnStatus,

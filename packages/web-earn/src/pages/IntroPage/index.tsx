@@ -263,21 +263,21 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           // ref={dual}
         />
         <Section
-          marginTop={isCompact ? 15 : 37.5}
           isReverse
-          title={t("labelVault")}
-          des1={t("labelPortalDes1")}
-          des2={t("labelPortalDes2")}
-          viewMoreLink='/portal'
-          imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
-        />
-        <Section
           marginTop={isCompact ? 15 : 37.5}
           title={t("labelBtradeSwapTitle")}
           des1={t("labelBtradeDes1")}
           des2={t("labelBtradeDes2")}
           viewMoreLink='/trade/btrade'
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
+        />
+        <Section
+          marginTop={isCompact ? 15 : 37.5}
+          title={t("labelVault")}
+          des1={t("labelPortalDes1")}
+          des2={t("labelPortalDes2")}
+          viewMoreLink='/portal'
+          imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
         />
         
       </Box>
