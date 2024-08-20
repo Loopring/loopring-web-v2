@@ -443,12 +443,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           ? `https://sepolia.etherscan.io/`
           : process.env[`REACT_APP_EXPLORER_URL_${chainId}`]
       
-      let allowTrade, exchangeInfo, gasPrice, forexMap
+      let allowTrade, exchangeInfo
       try {
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem(LocalStorageConfigKey.exchangeInfo) ?? '{}',
         )
-        ;[{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] = await Promise.all([
+        ;[{ exchangeInfo }, allowTrade] = await Promise.all([
           _exchangeInfo[chainId]
             ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
             : LoopringAPI.exchangeAPI.getExchangeInfo().then(({ exchangeInfo }) => {
@@ -462,7 +462,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                 )
                 return { exchangeInfo }
               }),
-          should15MinutesUpdateDataGroup(chainId),
+          // should15MinutesUpdateDataGroup(chainId),
           LoopringAPI.walletAPI.getAccountServices({}).then((result) => {
             return {
               ...result,
@@ -516,18 +516,22 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       // @ts-ignore
       ;(window as any).loopringSocket = new LoopringSocket(socketURL)
 
+      const updateForexGasPrice = () => {
+        if (!LoopringAPI.exchangeAPI) return
+        should15MinutesUpdateDataGroup(chainId).then(({ forexMap, gasPrice }) => {
+          store.dispatch(updateRealTimeObj({ forexMap, gasPrice }))
+        })
+      }
       let { __timer__ } = store.getState().system
       __timer__ = ((__timer__) => {
         if (__timer__ && __timer__ !== -1) {
           clearInterval(__timer__ as NodeJS.Timeout)
         }
         return setInterval(async () => {
-          if (LoopringAPI.exchangeAPI) {
-            const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
-            store.dispatch(updateRealTimeObj({ forexMap, gasPrice }))
-          }
+          updateForexGasPrice()
         }, 300000) //
       })(__timer__)
+      updateForexGasPrice()
       return {
         allowTrade,
         chainId,
@@ -535,8 +539,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         env,
         baseURL,
         socketURL,
-        forexMap,
-        gasPrice,
         exchangeInfo,
         __timer__,
       }

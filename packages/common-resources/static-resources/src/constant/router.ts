@@ -147,19 +147,6 @@ export const Profile = {
   ],
 }
 
-export const WebEarnProfile = {
-  security: [
-    {
-      icon: SecurityIcon,
-      router: { path: `${RouterPath.layer2}/${Layer2RouterID.security}` },
-      label: {
-        id: 'security',
-        i18nKey: 'labelSecurity',
-      },
-    },
-  ],
-}
-
 export enum ButtonComponentsMap {
   Download = 'Download',
   Notification = 'Notification',
@@ -1416,19 +1403,9 @@ export const RouterAllowIndex = {
 export const ProfileIndex = {
   TAIKOHEKLA: [
     Layer2RouterID.security,
-    Layer2RouterID.forcewithdraw,
-    Layer2RouterID.vip,
-    Layer2RouterID.contact,
-    Layer2RouterID.referralrewards,
-    Layer2RouterID.notification,
   ],
   TAIKO: [
     Layer2RouterID.security,
-    Layer2RouterID.forcewithdraw,
-    Layer2RouterID.vip,
-    Layer2RouterID.contact,
-    Layer2RouterID.referralrewards,
-    Layer2RouterID.notification,
   ],
   ETHEREUM: [
     Layer2RouterID.security,

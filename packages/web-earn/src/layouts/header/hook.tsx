@@ -5,9 +5,9 @@ import {
   fnType,
   headerMenuLandingData,
   MapChainId,
+  Profile,
   ProfileIndex,
   SagaStatus,
-  WebEarnProfile,
 } from '@loopring-web/common-resources'
 
 import {
@@ -88,7 +88,7 @@ export const useHeader = () => {
           },
           [ButtonComponentsMap.ProfileMenu]: {
             ...earnHeaderToolBarData[ButtonComponentsMap.ProfileMenu],
-            subMenu: profile.map((item: string) => WebEarnProfile[item]),
+            subMenu: profile.map((item: string) => Profile[item]),
             readyState: account.readyState,
           },
         }
