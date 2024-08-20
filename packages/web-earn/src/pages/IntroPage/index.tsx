@@ -53,7 +53,8 @@ const AnimationCard = styled(Box)<{ highlighted: boolean; isMobile: boolean }>`
 
 type SectionProps = {
   title:string
-  des:string
+  des1:string
+  des2:string
   viewMoreLink:string
   imgURL?:string
   isReverse?: boolean
@@ -64,7 +65,8 @@ type SectionProps = {
 const Section: React.FC<SectionProps> = (props) => {
   const {
     title,
-    des,
+    des1,
+    des2,
     viewMoreLink,
     imgURL,
     isReverse,
@@ -108,6 +110,19 @@ const Section: React.FC<SectionProps> = (props) => {
             paragraph
             sx={{
               fontSize: '24px',
+              marginBottom: 4,
+              fontWeight: 600,
+              zIndex: 1,
+              position: 'relative'
+            }}
+            color={'var(--color-text-primary)'}
+          >
+            {des1}
+          </Typography>
+          <Typography
+            paragraph
+            sx={{
+              fontSize: '24px',
               marginBottom: 5,
               fontWeight: 300,
               zIndex: 1,
@@ -115,7 +130,7 @@ const Section: React.FC<SectionProps> = (props) => {
             }}
             color={'var(--color-text-primary)'}
           >
-            {des}
+            {des2}
           </Typography>
           <Button
             variant='contained'
@@ -241,7 +256,8 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         />
         <Section
           title={t("labelInvestDualTitle")}
-          des={t("labelInvestDualDes")}
+          des1={t("labelInvestDualDes1")}
+          des2={t("labelInvestDualDes2")}
           viewMoreLink='/invest/dual'
           imgURL={SoursURL + 'earn/intro_screenshot_1.png'}
           // ref={dual}
@@ -250,14 +266,16 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           marginTop={isCompact ? 15 : 37.5}
           isReverse
           title={t("labelVault")}
-          des={t("labelPortalDes")}
+          des1={t("labelPortalDes1")}
+          des2={t("labelPortalDes2")}
           viewMoreLink='/portal'
           imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
         />
         <Section
           marginTop={isCompact ? 15 : 37.5}
           title={t("labelBtradeSwapTitle")}
-          des={t("labelBtradeDes")}
+          des1={t("labelBtradeDes1")}
+          des2={t("labelBtradeDes2")}
           viewMoreLink='/trade/btrade'
           imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
         />
