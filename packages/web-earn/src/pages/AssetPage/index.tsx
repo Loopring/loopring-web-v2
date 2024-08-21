@@ -5,13 +5,12 @@ import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
 import { subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
-import React, { useEffect } from 'react'
-import { LoopringAPI, useAccount, useSystem, useTargetRedPackets, useUpdateAccount, useWalletLayer2, ViewAccountTemplate } from '@loopring-web/core'
+import React from 'react'
+import { useSocket, useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
 import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { MaxWidthContainer } from '../InvestPage'
-import { toBig } from '@loopring-web/loopring-sdk'
-import { random } from 'lodash'
+import { WsTopicType } from '@loopring-web/loopring-sdk'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -44,6 +43,7 @@ export const AssetPage = () => {
     }
   }, [selected, assetTitleProps, assetPanelProps, assetBtnStatus])
   const { isMobile } = useSettings()
+  const { sendSocketTopic } = useSocket()
   const activeView = React.useMemo(
     () => (
       <>
@@ -68,6 +68,14 @@ export const AssetPage = () => {
     ),
     [assetTitleMobileExtendProps, assetTitleProps, isMobile, assetBtnStatus, layer2Router],
   )
+
+
+  React.useEffect(() => {
+    sendSocketTopic({
+      [WsTopicType.account]: true
+    })
+  }, [])
+  
   
   return (
     <ViewAccountTemplate
