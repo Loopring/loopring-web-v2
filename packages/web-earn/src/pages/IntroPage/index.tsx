@@ -198,7 +198,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           position: 'relative',
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             cursor: 'pointer',
             background: hexToRGB(
@@ -233,7 +233,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           <ToRightTopArrow
             sx={{ marginLeft: 1, fontSize: '24px', color: 'var(--color-text-primary)' }}
           />{' '}
-        </Box>
+        </Box> */}
       </Box>
       <Box
         position={'relative'}
