@@ -288,7 +288,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
         {defaultNetwork && NetworkMap[defaultNetwork] && (
           <OutlineSelectItemStyle
             sx={{ cursor: 'pointer' }}
-            onClick={() => open({ view: accAddress ? 'Networks' : 'Connect' })}
+            onClick={() => open({ view: 'Networks' })}
             disabled={disable(defaultNetwork)}
             className={`viewNetwork${defaultNetwork} ${
               NetworkMap[defaultNetwork]?.isTest ? 'provider-test' : ''
