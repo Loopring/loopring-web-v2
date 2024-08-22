@@ -164,7 +164,11 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const history = useHistory()
   const dual = React.useRef(null)
   return (
-    <Box marginTop={'calc(var(--header-height) * -1)'} position={'relative'} sx={{ bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#25282E' }}>
+    <Box
+      marginTop={'calc(var(--header-height) * -1)'}
+      position={'relative'}
+      sx={{ bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#25282E' }}
+    >
       <Box
         component={'img'}
         src={`${SoursURL}earn/intro_bg_1.png`}
@@ -205,7 +209,9 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           textAlign={'center'}
         >
           {' '}
-          {t('labelIntroDes1')}<br/>{t('labelIntroDes2')}
+          {t('labelIntroDes1')}
+          <br />
+          {t('labelIntroDes2')}
         </Typography>
         <Section
           title={t('labelInvestDualTitle')}
@@ -220,7 +226,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }
           marginBottom={6}
           sx={{
-            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.8)  : '#FFFFFF',
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.8) : '#FFFFFF',
           }}
           // ref={dual}
         />
@@ -237,7 +243,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }
           marginBottom={6}
           sx={{
-            bgcolor: theme.mode === 'dark' ?  hexToRGB('#393E47', 0.5)  : '#FFFFFF'
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.5) : '#FFFFFF',
           }}
         />
         <Section
@@ -252,7 +258,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               : 'earn/intro_screenshot_3_light.png')
           }
           sx={{
-            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.3)   : '#FFFFFF'
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.3) : '#FFFFFF',
           }}
         />
       </Box>
@@ -345,6 +351,71 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               }
             />
           </AnimationCard>
+        </Box>
+      </Box>
+      <Box display={'flex'} justifyContent={'center'}>
+        <Box
+          sx={{
+            display: 'flex',
+            // justifyContent: 'center',
+            color: 'var(--color-text-primary)',
+            flexDirection: 'column',
+            paddingX: 5,
+            paddingY: 8,
+            borderRadius: '12px',
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.3) : '#FFFFFF',
+            width: '1152px',
+            maxWidth: '90%',
+          }}
+          marginTop={8}
+          marginBottom={15}
+        >
+          
+            <Typography
+              paragraph
+              sx={{
+                fontSize: '24px',
+                marginBottom: 6,
+                fontWeight: 500,
+              }}
+              color={'var(--color-text-primary)'}
+            >
+              {t("labelReadyForDevelopers")}
+            </Typography>
+            <Typography
+              paragraph
+              sx={{
+                fontSize: '20px',
+                marginBottom: 6,
+                fontWeight: 300,
+              }}
+              color={'var(--color-text-primary)'}
+            >
+              {t("labelReadyForDevelopersDes")}
+              
+            </Typography>
+            <Button
+              variant='contained'
+              sx={{
+                fontSize: '16px',
+                fontWeight: 400,
+                color: theme.mode === 'dark' ? 'black' : '',
+                bgcolor: theme.mode === 'dark' ? 'white' : '',
+                width: '160px',
+                ':hover': {
+                  color: theme.mode === 'dark' ? 'black' : '',
+                  bgcolor: theme.mode === 'dark' ? 'white' : '',
+
+                }
+              }}
+              onClick={() => 
+                window.open('https://docs.loopring.io/', '_blank')}
+            >
+              {t('labelLearnMore2')}{' '}
+              <ToRightTopArrow
+                sx={{ marginLeft: 1, fontSize: '24px', fill: theme.mode === 'dark' ? 'black' : 'var(--color-text-button)' }}
+              />{' '}
+            </Button>
         </Box>
       </Box>
     </Box>

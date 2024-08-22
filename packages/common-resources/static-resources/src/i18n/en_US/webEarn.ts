@@ -111,4 +111,8 @@ export default {
   labelLoopringDeFi: 'Loopring DeFi',
   labelIntroDes1: 'Revolutionizing decentralized finance with the most advanced',
   labelIntroDes2: 'structured products and a user friendly experience',
+  labelLearnMore2: 'Learn More',
+  labelReadyForDevelopers: 'Ready for Developers',
+  labelReadyForDevelopersDes:
+    "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
 }
