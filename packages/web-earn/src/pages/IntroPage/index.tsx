@@ -17,7 +17,7 @@ interface IntroProps {
 const AnimationCard = styled(Box)<{ highlighted: boolean; isMobile: boolean }>`
   display: flex;
   flex-direction: column;
-  background-color: var(--color-box-third);
+  background-color: ${({ theme }) => theme.mode === 'dark' ? '#15191F' : '#FFFFFF'};
   border-radius: 12px;
   padding-top: ${({ theme }) => theme.unit * 8}px;
   padding-left: ${({ theme }) => theme.unit * 5}px;
@@ -62,7 +62,7 @@ type SectionProps = {
 
 
 const Section: React.FC<SectionProps> = (props) => {
-  const { title, des1, des2, viewMoreLink, imgURL, sx, ref } = props
+  const { title, des1, des2, viewMoreLink, imgURL, sx, ref,...rest } = props
   const theme = useTheme()
   const isCompact = useMediaQuery('(max-width:720px)')
   const history = useHistory()
@@ -77,13 +77,13 @@ const Section: React.FC<SectionProps> = (props) => {
         flexDirection: 'column',
         paddingX: 5,
         paddingY: 8,
-        width:'1200px',
+        width:'1152px',
         maxWidth:'90%',
         borderRadius: '12px',
         ...sx,
       }}
       ref={ref}
-      {...props}
+      {...rest}
     >
       <Typography
         gutterBottom
@@ -164,60 +164,99 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const history = useHistory()
   const dual = React.useRef(null)
   return (
-    <Box position={'relative'} sx={{bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#000000',}}>
-      <Box 
+    <Box marginTop={'calc(var(--header-height) * -1)'} position={'relative'} sx={{ bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#000000' }}>
+      <Box
         component={'img'}
         src={`${SoursURL}earn/intro_bg_1.png`}
         position={'absolute'}
         left={'45%'}
+        top={-86}
         sx={{
-          transform: 'translateX(-50%)'
+          transform: 'translateX(-50%)',
         }}
-        
-        />
+      />
       <Box
         width={'100%'}
         zIndex={2}
         sx={{
-          marginTop: 25,
+          marginTop: 33,
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'column',
           alignItems: 'center',
-          position: 'relative'
+          position: 'relative',
         }}
       >
-        <Typography width={'1200px'} maxWidth={'90%'} fontWeight={700} fontSize={'64px'} textAlign={'center'} marginBottom={6}>{t("labelLoopringDeFi")}</Typography>
-        <Typography width={'1200px'} maxWidth={'90%'} marginBottom={ 15} fontSize={'30px'} textAlign={'center'}> {t("labelIntroDes")}</Typography>
-        <Section
-          title={t("labelInvestDualTitle")}
-          des1={t("labelInvestDualDes1")}
-          des2={t("labelInvestDualDes2")}
-          viewMoreLink='/invest/dual'
-          imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_1.png' : 'earn/intro_screenshot_1_light.png')}
+        <Typography
+          width={'1152px'}
+          maxWidth={'90%'}
+          fontWeight={700}
+          fontSize={'64px'}
+          textAlign={'center'}
           marginBottom={6}
+        >
+          {t('labelLoopringDeFi')}
+        </Typography>
+        <Typography
+          width={'1152px'}
+          maxWidth={'90%'}
+          marginBottom={15}
+          fontSize={'30px'}
+          textAlign={'center'}
+        >
+          {' '}
+          {t('labelIntroDes')}
+        </Typography>
+        <Section
+          title={t('labelInvestDualTitle')}
+          des1={t('labelInvestDualDes1')}
+          des2={t('labelInvestDualDes2')}
+          viewMoreLink='/invest/dual'
+          imgURL={
+            SoursURL +
+            (theme.mode === 'dark'
+              ? 'earn/intro_screenshot_1.png'
+              : 'earn/intro_screenshot_1_light.png')
+          }
+          marginBottom={6}
+          sx={{
+            bgcolor: theme.mode === 'dark' ? '#061021' : '#FFFFFF',
+          }}
           // ref={dual}
         />
         <Section
-          title={t("labelBtradeSwapTitle")}
-          des1={t("labelBtradeDes1")}
-          des2={t("labelBtradeDes2")}
+          title={t('labelBtradeSwapTitle')}
+          des1={t('labelBtradeDes1')}
+          des2={t('labelBtradeDes2')}
           viewMoreLink='/trade/btrade'
-          imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_2.png' : 'earn/intro_screenshot_2_light.png')}
+          imgURL={
+            SoursURL +
+            (theme.mode === 'dark'
+              ? 'earn/intro_screenshot_2.png'
+              : 'earn/intro_screenshot_2_light.png')
+          }
           marginBottom={6}
+          sx={{
+            bgcolor: theme.mode === 'dark' ? '#415E8A' : '#FFFFFF',
+          }}
         />
         <Section
-          title={t("labelVault")}
-          des1={t("labelPortalDes1")}
-          des2={t("labelPortalDes2")}
+          title={t('labelVault')}
+          des1={t('labelPortalDes1')}
+          des2={t('labelPortalDes2')}
           viewMoreLink='/portal'
-          imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_3.png' : 'earn/intro_screenshot_3_light.png')}
+          imgURL={
+            SoursURL +
+            (theme.mode === 'dark'
+              ? 'earn/intro_screenshot_3.png'
+              : 'earn/intro_screenshot_3_light.png')
+          }
+          sx={{
+            bgcolor: theme.mode === 'dark' ? '#455368' : '#FFFFFF',
+          }}
         />
       </Box>
-      <Box
-        paddingTop={20}
-
-      >
+      <Box paddingTop={20}>
         <Typography textAlign={'center'} fontSize={'45px'} fontWeight={800}>
           {t('labelLoopringProtocol')}
         </Typography>
@@ -231,11 +270,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           {t('labelLoopringProtocolDes')}
         </Typography>
       </Box>
-      <Box
-        display={'flex'}
-        justifyContent={'center'}
-
-      >
+      <Box display={'flex'} justifyContent={'center'}>
         <Box
           display={'flex'}
           flexDirection={isMobile ? 'column' : 'row'}
