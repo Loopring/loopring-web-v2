@@ -5,7 +5,7 @@ export default {
   errorBase: 'Oops! Something went wrong.',
   errorTimeout: 'Oops! Something went wrong at network.',
   errorLoading: 'Loading! Please wait...',
-  error404: "404! Page can't be reached.111",
+  error404: "404! Page can't be reached.",
   errorMaintain: 'System update! Please wait...',
   errorMessageNoNetwork: 'Oops! Something went wrong at service.',
   errorUnknown: 'Unknown Error',

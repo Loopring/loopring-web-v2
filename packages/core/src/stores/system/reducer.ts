@@ -31,8 +31,6 @@ const initialState: SystemStatus = {
       ? 'earn'
       : process.env.REACT_APP_NAME === 'loopring guardian'
       ? 'guardian'
-      : process.env.REACT_APP_NAME === 'loopring guardian'
-      ? 'guardian'
       : process.env.REACT_APP_NAME === 'loopring bridge'
       ? 'bridge'
       : undefined,
