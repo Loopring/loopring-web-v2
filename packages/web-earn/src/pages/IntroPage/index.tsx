@@ -143,8 +143,6 @@ const Section: React.FC<SectionProps> = (props) => {
             sx={{
               
               height: 'auto',
-              // marginRight: isCompact ? '' : isReverse ? '10%' : '',
-              // marginTop: isCompact ? 10 : 0,
               zIndex: 1,
             }}
           />
@@ -181,10 +179,6 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         width={'100%'}
         zIndex={2}
         sx={{
-          // backgroundSize: 'auto',
-          // backgroundPosition: 'center',
-          // backgroundRepeat: 'no-repeat',
-          // backgroundImage: `url('${SoursURL}earn/intro_bg_1.png')`,
           marginTop: 25,
           display: 'flex',
           justifyContent: 'center',
@@ -193,8 +187,8 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           position: 'relative'
         }}
       >
-        <Typography width={'1200px'} maxWidth={'90%'} fontWeight={700} fontSize={'64px'} textAlign={'center'} marginBottom={6}>Loopring DeFi</Typography>
-        <Typography width={'1200px'} maxWidth={'90%'} marginBottom={ 15} fontSize={'30px'} textAlign={'center'}> Revolutionizing decentralized finance with the most advanced structured products and a user friendly experience</Typography>
+        <Typography width={'1200px'} maxWidth={'90%'} fontWeight={700} fontSize={'64px'} textAlign={'center'} marginBottom={6}>{t("labelLoopringDeFi")}</Typography>
+        <Typography width={'1200px'} maxWidth={'90%'} marginBottom={ 15} fontSize={'30px'} textAlign={'center'}> {t("labelIntroDes")}</Typography>
         <Section
           title={t("labelInvestDualTitle")}
           des1={t("labelInvestDualDes1")}
@@ -220,16 +214,6 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_3.png' : 'earn/intro_screenshot_3_light.png')}
         />
       </Box>
-      {/* <Box
-        position={'relative'}
-        display={'flex'}
-        alignItems={'center'}
-        flexDirection={'column'}
-        ref={dual}
-      >
-        
-        
-      </Box> */}
       <Box
         paddingTop={20}
 

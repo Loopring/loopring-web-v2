@@ -420,7 +420,6 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                   ? undefined
                   : Explorer + `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`
             }
-            console.log('asdhakjshdjksa', path)
             return (
               <Box
                 className='rdg-cell-value textAlignRight'
