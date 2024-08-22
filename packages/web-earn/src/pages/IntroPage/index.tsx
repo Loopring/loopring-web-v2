@@ -237,7 +237,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }
           marginBottom={6}
           sx={{
-            bgcolor: theme.mode === 'dark' ? '#415E8A' : '#FFFFFF',
+            bgcolor: theme.mode === 'dark' ?  hexToRGB('#415E8A', 0.3) : '#FFFFFF'
           }}
         />
         <Section
@@ -252,7 +252,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               : 'earn/intro_screenshot_3_light.png')
           }
           sx={{
-            bgcolor: theme.mode === 'dark' ? '#455368' : '#FFFFFF',
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#455368', 0.3)  : '#FFFFFF'
           }}
         />
       </Box>
