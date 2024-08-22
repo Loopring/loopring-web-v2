@@ -41,7 +41,7 @@ export default {
     'You need to have enough balance for {{layer2}} creation as below.',
   labelActiveAccountFee: 'Fee {{count}} GAS ≈ ${{price}}',
   labelActiveAccountBtn: 'Activate Account',
-  depositLabelEnterToken: 'Select Layer 1 Token',
+  depositLabelEnterToken: 'Select Token',
   labelDepositDescription:
     'Once your deposit is confirmed on {{l1ChainName}}, \n it will be added to your balance within 2 minutes.',
   labelDepositAndActiveDescription:

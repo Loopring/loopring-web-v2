@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import { providers } from 'ethers'
 import Web3 from 'web3'
 import { useTheme } from '@emotion/react'
+import { ChainId, toHex } from '@loopring-web/loopring-sdk'
 
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 const chains = [
@@ -70,7 +71,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   const { mode } = useTheme()
   const { setThemeMode } = useWeb3ModalTheme()
   const { updateWalletLayer1 } = useWalletLayer1()
-  const {defaultNetwork} = useSettings()
+  const { defaultNetwork } = useSettings()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
@@ -85,9 +86,13 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
         walletServices.sendDisconnect('', 'customer click disconnect')
         resetAccount()
       }
+    } else if (event.data.event === 'CONNECT_SUCCESS' && type === 'EARN' && walletProvider) {
+      new providers.Web3Provider(walletProvider).send('wallet_switchEthereumChain', [
+        { chainId: toHex(ChainId.TAIKO) },
+      ])
     }
     myLog('event', event)
-  }, [event])
+  }, [event, walletProvider])
   React.useEffect(() => {
     ;(async () => {
       if (address && walletProvider) {
