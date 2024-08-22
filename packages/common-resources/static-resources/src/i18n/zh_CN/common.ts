@@ -2350,5 +2350,6 @@ export default {
   labelAction2: 'Action',
   labelTotalBalance: 'Total Balance',
   labelBalance: 'Balance',
+  depositLabelEnterTokenEarn: '选择充值代币',
 
 }

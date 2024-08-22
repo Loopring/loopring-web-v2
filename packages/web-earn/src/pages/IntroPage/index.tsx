@@ -17,7 +17,7 @@ interface IntroProps {
 const AnimationCard = styled(Box)<{ highlighted: boolean; isMobile: boolean }>`
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.mode === 'dark' ? '#15191F' : '#FFFFFF'};
+  background-color: ${({ theme }) => theme.mode === 'dark' ? hexToRGB('#393E47', 0.3) : '#FFFFFF'};
   border-radius: 12px;
   padding-top: ${({ theme }) => theme.unit * 8}px;
   padding-left: ${({ theme }) => theme.unit * 5}px;
@@ -75,7 +75,7 @@ const Section: React.FC<SectionProps> = (props) => {
         backgroundColor: theme.mode === 'dark' ? '#061021' : '#FFFFFF',
         color: 'var(--color-text-primary)',
         flexDirection: 'column',
-        paddingX: 5,
+        paddingX: 7.25,
         paddingY: 8,
         width:'1152px',
         maxWidth:'90%',
@@ -164,12 +164,12 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const history = useHistory()
   const dual = React.useRef(null)
   return (
-    <Box marginTop={'calc(var(--header-height) * -1)'} position={'relative'} sx={{ bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#000000' }}>
+    <Box marginTop={'calc(var(--header-height) * -1)'} position={'relative'} sx={{ bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#25282E' }}>
       <Box
         component={'img'}
         src={`${SoursURL}earn/intro_bg_1.png`}
         position={'absolute'}
-        left={'45%'}
+        left={'50%'}
         top={-86}
         sx={{
           transform: 'translateX(-50%)',
@@ -193,7 +193,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           fontWeight={700}
           fontSize={'64px'}
           textAlign={'center'}
-          marginBottom={6}
+          marginBottom={3}
         >
           {t('labelLoopringDeFi')}
         </Typography>
@@ -205,7 +205,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           textAlign={'center'}
         >
           {' '}
-          {t('labelIntroDes')}
+          {t('labelIntroDes1')}<br/>{t('labelIntroDes2')}
         </Typography>
         <Section
           title={t('labelInvestDualTitle')}
@@ -220,7 +220,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }
           marginBottom={6}
           sx={{
-            bgcolor: theme.mode === 'dark' ? '#061021' : '#FFFFFF',
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.8)  : '#FFFFFF',
           }}
           // ref={dual}
         />
@@ -237,7 +237,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }
           marginBottom={6}
           sx={{
-            bgcolor: theme.mode === 'dark' ?  hexToRGB('#415E8A', 0.3) : '#FFFFFF'
+            bgcolor: theme.mode === 'dark' ?  hexToRGB('#393E47', 0.5)  : '#FFFFFF'
           }}
         />
         <Section
@@ -252,7 +252,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               : 'earn/intro_screenshot_3_light.png')
           }
           sx={{
-            bgcolor: theme.mode === 'dark' ? hexToRGB('#455368', 0.3)  : '#FFFFFF'
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.3)   : '#FFFFFF'
           }}
         />
       </Box>

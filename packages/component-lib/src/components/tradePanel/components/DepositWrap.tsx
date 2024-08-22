@@ -78,7 +78,7 @@ export const DepositWrap = <
   }, [depositBtnStatus, disabled])
 
   const inputButtonDefaultProps = {
-    label: t('depositLabelEnterToken'),
+    label: [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork) ? t('depositLabelEnterTokenEarn') : t('depositLabelEnterToken'),
   }
   const isNewAlert = React.useMemo(() => {
     if (isNewAccount && chargeFeeTokenList && tradeData && tradeData.belong) {
