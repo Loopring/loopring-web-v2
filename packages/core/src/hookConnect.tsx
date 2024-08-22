@@ -287,7 +287,11 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
       <>
         {defaultNetwork && NetworkMap[defaultNetwork] && (
           <OutlineSelectItemStyle
-            sx={{ cursor: 'pointer' }}
+            sx={{ 
+              cursor: 'pointer',
+              borderRadius: '4px',
+              marginRight: 0.5
+            }}
             onClick={() => open({ view: 'Networks' })}
             disabled={disable(defaultNetwork)}
             className={`viewNetwork${defaultNetwork} ${

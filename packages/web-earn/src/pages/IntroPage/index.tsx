@@ -57,63 +57,54 @@ type SectionProps = {
   des2:string
   viewMoreLink:string
   imgURL?:string
-  isReverse?: boolean
 } & BoxProps
 
 
 
 const Section: React.FC<SectionProps> = (props) => {
-  const {
-    title,
-    des1,
-    des2,
-    viewMoreLink,
-    imgURL,
-    isReverse,
-    sx,
-    ref
-  } = props
+  const { title, des1, des2, viewMoreLink, imgURL, sx, ref } = props
   const theme = useTheme()
-  const isCompact = useMediaQuery('(max-width:720px)');
+  const isCompact = useMediaQuery('(max-width:720px)')
   const history = useHistory()
-  const {t} = useTranslation('common')
+  const { t } = useTranslation('common')
   return (
     <Box
       sx={{
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black,
+        backgroundColor: theme.mode === 'dark' ? '#061021' : '#FFFFFF',
         color: 'var(--color-text-primary)',
-        flexDirection: isCompact ? 'column' : isReverse ? 'row-reverse' : 'row',
-        ...sx
+        flexDirection: 'column',
+        paddingX: 5,
+        paddingY: 8,
+        width:'1200px',
+        maxWidth:'90%',
+        borderRadius: '12px',
+        ...sx,
       }}
       ref={ref}
       {...props}
     >
-      <Box width={isCompact ? '80%' : '30%'} marginRight={isReverse ? '' : '10%'}>
-        <Grid item xs={12} md={6}>
-          <Typography
-            gutterBottom
-            sx={{
-              fontSize: '45px',
-              marginBottom: 3,
-              fontWeight: 800,
-              zIndex: 1,
-              position: 'relative'
-            }}
-            color={'var(--color-text-primary)'}
-          >
-            {title}
-          </Typography>
+      <Typography
+        gutterBottom
+        sx={{
+          fontSize: '30px',
+          marginBottom: 9,
+          fontWeight: 500,
+        }}
+        color={'var(--color-text-primary)'}
+        textAlign={'center'}
+      >
+        {title}
+      </Typography>
+      <Box width={'100%'} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+        <Box width={isCompact ? '100%' : '45%'}>
           <Typography
             paragraph
             sx={{
               fontSize: '24px',
-              marginBottom: 4,
-              fontWeight: 600,
-              zIndex: 1,
-              position: 'relative'
+              marginBottom: 3,
+              fontWeight: 500,
             }}
             color={'var(--color-text-primary)'}
           >
@@ -122,11 +113,9 @@ const Section: React.FC<SectionProps> = (props) => {
           <Typography
             paragraph
             sx={{
-              fontSize: '24px',
+              fontSize: '20px',
               marginBottom: 5,
               fontWeight: 300,
-              zIndex: 1,
-              position: 'relative'
             }}
             color={'var(--color-text-primary)'}
           >
@@ -135,42 +124,35 @@ const Section: React.FC<SectionProps> = (props) => {
           <Button
             variant='contained'
             sx={{
-              padding: '4px 20px',
               fontSize: '16px',
-              color: 'var(--color-text-primary)',
               fontWeight: 400,
-              bgcolor: 'transparent',
-              '&:hover': {
-                bgcolor: 'transparent',
-              },
-              borderRadius: '8px',
-              border: '1px solid var(--color-border)',
-              cursor: 'pointer',
-              zIndex: 1
             }}
             onClick={() => history.push(viewMoreLink)}
           >
-            {t("labelLearnMore2")}  <ToRightTopArrow
-            sx={{ marginLeft: 1, fontSize: '24px', color: 'var(--color-text-primary)' }}
-          />{' '}
+            {t('labelLearnMore2')}{' '}
+            <ToRightTopArrow
+              sx={{ marginLeft: 1, fontSize: '24px', fill: 'var(--color-text-button)' }}
+            />{' '}
           </Button>
-        </Grid>
+        </Box>
+        <Box width={'45%'} display={isCompact ? 'none' : 'block'}>
+          <CardMedia
+            component='img'
+            image={imgURL}
+            alt='Dual Investment Info'
+            sx={{
+              
+              height: 'auto',
+              // marginRight: isCompact ? '' : isReverse ? '10%' : '',
+              // marginTop: isCompact ? 10 : 0,
+              zIndex: 1,
+            }}
+          />
+        </Box>
       </Box>
-      <CardMedia
-        component='img'
-        image={imgURL}
-        alt='Dual Investment Info'
-        sx={{
-          width: isCompact ? '80%' : '35%',
-          height: 'auto',
-          marginRight: isCompact ? '' : isReverse ? '10%' : '',
-          marginTop: isCompact ? 10 : 0,
-          zIndex: 1
-        }}
-      />
     </Box>
   )
-};
+}
 
 const Intro: React.FC<IntroProps> = ({  }) => {
   const { isMobile } = useSettings()
@@ -184,106 +166,73 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const history = useHistory()
   const dual = React.useRef(null)
   return (
-    <Box>
+    <Box position={'relative'} sx={{bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#000000',}}>
+      <Box 
+        component={'img'}
+        src={`${SoursURL}earn/intro_bg_1.png`}
+        position={'absolute'}
+        left={'45%'}
+        sx={{
+          transform: 'translateX(-50%)'
+        }}
+        
+        />
       <Box
         width={'100%'}
+        zIndex={2}
         sx={{
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundImage: `url('${SoursURL}earn/intro_bg_1${
-            theme.mode === 'light' ? '_light' : ''
-          }.jpg')`,
-          paddingTop: '44.32%',
-          position: 'relative',
+          // backgroundSize: 'auto',
+          // backgroundPosition: 'center',
+          // backgroundRepeat: 'no-repeat',
+          // backgroundImage: `url('${SoursURL}earn/intro_bg_1.png')`,
+          marginTop: 25,
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          position: 'relative'
         }}
       >
-        {/* <Box
-          sx={{
-            cursor: 'pointer',
-            background: hexToRGB(
-              theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black,
-              0.12,
-            ),
-            boxShadow: `0px 40px 40px ${hexToRGB(
-              theme.mode === 'light' ? theme.colorBase.black : theme.colorBase.white,
-              0.12,
-            )}, inset 0px 4px 6px ${hexToRGB(
-              theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black,
-              0.12,
-            )}`,
-            backdropFilter: 'blur(12px)',
-            borderRadius: '8px',
-            padding: '12px 20px',
-            position: 'absolute',
-            left: '25%',
-            bottom: '17%',
-            color: 'var(--color-text-primary)',
-            fontSize: '24px',
-          }}
-          component={'div'}
-          onClick={() => {
-            (dual.current as any).scrollIntoView({
-              behavior: "smooth",
-              block: "start"
-            });
-          } }
-        >
-          {t("labelViewMore")}{' '}
-          <ToRightTopArrow
-            sx={{ marginLeft: 1, fontSize: '24px', color: 'var(--color-text-primary)' }}
-          />{' '}
-        </Box> */}
-      </Box>
-      <Box
-        position={'relative'}
-        bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
-        paddingTop={isCompact ? 15 : 27.5}
-        ref={dual}
-      >
-        <Box
-          width={'25%'}
-          sx={{ position: 'absolute', left: 0, top: '20%' }}
-          component={'img'}
-          src={`${SoursURL}earn/intro_sphere${theme.mode === 'light' ? '_light' : ''}.png`}
-        />
-        <Box
-          width={'25%'}
-          sx={{ position: 'absolute', right: 0, bottom: '5%' }}
-          component={'img'}
-          src={`${SoursURL}earn/intro_ring${theme.mode === 'light' ? '_light' : ''}.png`}
-          ref={dual}
-        />
+        <Typography width={'1200px'} maxWidth={'90%'} fontWeight={700} fontSize={'64px'} textAlign={'center'} marginBottom={6}>Loopring DeFi</Typography>
+        <Typography width={'1200px'} maxWidth={'90%'} marginBottom={ 15} fontSize={'30px'} textAlign={'center'}> Revolutionizing decentralized finance with the most advanced structured products and a user friendly experience</Typography>
         <Section
           title={t("labelInvestDualTitle")}
           des1={t("labelInvestDualDes1")}
           des2={t("labelInvestDualDes2")}
           viewMoreLink='/invest/dual'
-          imgURL={SoursURL + 'earn/intro_screenshot_1.png'}
+          imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_1.png' : 'earn/intro_screenshot_1_light.png')}
+          marginBottom={6}
           // ref={dual}
         />
         <Section
-          isReverse
-          marginTop={isCompact ? 15 : 37.5}
           title={t("labelBtradeSwapTitle")}
           des1={t("labelBtradeDes1")}
           des2={t("labelBtradeDes2")}
           viewMoreLink='/trade/btrade'
-          imgURL={SoursURL + 'earn/intro_screenshot_2.png'}
+          imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_2.png' : 'earn/intro_screenshot_2_light.png')}
+          marginBottom={6}
         />
         <Section
-          marginTop={isCompact ? 15 : 37.5}
           title={t("labelVault")}
           des1={t("labelPortalDes1")}
           des2={t("labelPortalDes2")}
           viewMoreLink='/portal'
-          imgURL={SoursURL + 'earn/intro_screenshot_3.png'}
+          imgURL={SoursURL + (theme.mode === 'dark' ? 'earn/intro_screenshot_3.png' : 'earn/intro_screenshot_3_light.png')}
         />
-        
       </Box>
+      {/* <Box
+        position={'relative'}
+        display={'flex'}
+        alignItems={'center'}
+        flexDirection={'column'}
+        ref={dual}
+      >
+        
+        
+      </Box> */}
       <Box
         paddingTop={20}
-        bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
+
       >
         <Typography textAlign={'center'} fontSize={'45px'} fontWeight={800}>
           {t('labelLoopringProtocol')}
@@ -301,7 +250,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
       <Box
         display={'flex'}
         justifyContent={'center'}
-        bgcolor={theme.mode === 'light' ? theme.colorBase.white : theme.colorBase.black}
+
       >
         <Box
           display={'flex'}
