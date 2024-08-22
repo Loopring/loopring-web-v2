@@ -225,10 +225,10 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           // ref={dual}
         />
         <Section
-          title={t('labelBtradeSwapTitle')}
-          des1={t('labelBtradeDes1')}
-          des2={t('labelBtradeDes2')}
-          viewMoreLink='/trade/btrade'
+          title={t('labelVault')}
+          des1={t('labelPortalDes1')}
+          des2={t('labelPortalDes2')}
+          viewMoreLink='/portal'
           imgURL={
             SoursURL +
             (theme.mode === 'dark'
@@ -241,10 +241,10 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }}
         />
         <Section
-          title={t('labelVault')}
-          des1={t('labelPortalDes1')}
-          des2={t('labelPortalDes2')}
-          viewMoreLink='/portal'
+          title={t('labelBtradeSwapTitle')}
+          des1={t('labelBtradeDes1')}
+          des2={t('labelBtradeDes2')}
+          viewMoreLink='/trade/btrade'
           imgURL={
             SoursURL +
             (theme.mode === 'dark'
