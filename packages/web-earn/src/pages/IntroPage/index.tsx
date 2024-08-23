@@ -129,7 +129,7 @@ const Section: React.FC<SectionProps> = (props) => {
             }}
             onClick={() => history.push(viewMoreLink)}
           >
-            {t('labelLearnMore2')}{' '}
+            {t('labelLaunch')}{' '}
             <ToRightTopArrow
               sx={{ marginLeft: 1, fontSize: '24px', fill: 'var(--color-text-button)' }}
             />{' '}
@@ -255,7 +255,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           }
           marginBottom={6}
           sx={{
-            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.5) : '#FFFFFF',
+            bgcolor: theme.mode === 'dark' ? '#2A3A41' : '#E2F7F7',
           }}
         />
         <Section
@@ -270,7 +270,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               : 'earn/intro_screenshot_3_light.png')
           }
           sx={{
-            bgcolor: theme.mode === 'dark' ? hexToRGB('#393E47', 0.3) : '#FFFFFF',
+            bgcolor: theme.mode === 'dark' ? '#2D3449' : '#E5F3FF',
           }}
         />
       </Box>
@@ -423,7 +423,7 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               onClick={() => 
                 window.open('https://docs.loopring.io/', '_blank')}
             >
-              {t('labelLearnMore2')}{' '}
+              {t('labelLaunch')}{' '}
               <ToRightTopArrow
                 sx={{ marginLeft: 1, fontSize: '24px', fill: theme.mode === 'dark' ? 'black' : 'var(--color-text-button)' }}
               />{' '}

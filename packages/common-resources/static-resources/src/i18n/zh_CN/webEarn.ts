@@ -115,4 +115,5 @@ export default {
   labelReadyForDevelopers: 'Ready for Developers',
   labelReadyForDevelopersDes:
     "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
+  labelLaunch: 'Launch',
 }
