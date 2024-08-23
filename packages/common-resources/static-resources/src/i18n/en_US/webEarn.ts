@@ -90,13 +90,13 @@ export default {
     "The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for trading.",
   labelUltimateSecurity: 'Ultimate Security',
   labelUltimateSecurityDes:
-    'Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.',
+    'Assets on Loopring are equally secure as they are on the Ethereum mainnet.',
   labelLowTransactionFees: 'Low Transaction Fees',
   labelLowTransactionFeesDes:
     'Loopring performs most operations, including trade and transfer settlement, off the Ethereum blockchain. This dramatically reduces gas consumption and overall transaction cost to small fractions of comparable on-chain cost.',
   labelHighThroughput: 'High Throughput',
   labelHighThroughputDes:
-    'Loopring L2 can settle ~2000 transactions per second with near instant finality.',
+    'Loopring can settle ~2000 transactions per second with near instant finality.',
   labelFAQs: 'FAQs',
   labelBtradeSwapTitle: 'Block Trade',
   labelViewMore: 'View more',
