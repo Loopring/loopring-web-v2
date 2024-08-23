@@ -450,7 +450,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                   ? {
                       ...jsonObj.extra,
                       amount: jsonObj.extra.value,
-                      logdata: '',
+                      logdata: '0x',
                     }
                   : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.approve_token
                   ? {
@@ -494,7 +494,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
                   ? {
                       ...jsonObj.extra,
                       amount: jsonObj.extra.value,
-                      logdata: '',
+                      logdata: '0x',
                     }
                   : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.approve_token
                   ? {
