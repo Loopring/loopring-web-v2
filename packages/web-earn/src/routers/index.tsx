@@ -56,9 +56,11 @@ const ContentWrap = ({
   state,
   noContainer = false,
   value,
+  noPending
 }: React.PropsWithChildren<any> & {
   state: keyof typeof SagaStatus
   noContainer: boolean
+  noPending?: boolean
   value: string
 }) => {
   const { defaultNetwork } = useSettings()
@@ -66,7 +68,7 @@ const ContentWrap = ({
   return (
     <>
       <Header isHideOnScroll={false} />
-      {state === 'PENDING' ? (
+      {state === 'PENDING' && !noPending ? (
         <LoadingBlock />
       ) : state === 'ERROR' || !RouterAllowIndex[network]?.includes(value) ? (
         <ErrorPage
@@ -302,7 +304,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </ContentWrap>
         </Route>
         <Route exact path={RouterPath.intro}>
-          <ContentWrap state={state} noContainer value={RouterMainKey.dualIntro}>
+          <ContentWrap state={state} noPending noContainer value={RouterMainKey.dualIntro}>
             <Intro />
           </ContentWrap>
         </Route>
