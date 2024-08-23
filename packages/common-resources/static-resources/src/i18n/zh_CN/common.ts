@@ -2351,5 +2351,5 @@ export default {
   labelTotalBalance: 'Total Balance',
   labelBalance: 'Balance',
   depositLabelEnterTokenEarn: '选择充值代币',
-
+  labelLaunch: 'Launch',
 }

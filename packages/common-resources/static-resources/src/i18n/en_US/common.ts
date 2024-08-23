@@ -2400,6 +2400,6 @@ export default {
   labelTotalBalance: 'Total Balance',
   labelBalance: 'Balance',
   depositLabelEnterTokenEarn: 'Select Token',
-
+  labelLaunch: 'Launch',
 }
 
