@@ -250,17 +250,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
     case AccountStatus.NOT_ACTIVE:
     case AccountStatus.DEPOSITING:
     case AccountStatus.ACTIVATED:
-      if (loopringSmartContractWallet) {
-        return (
-          <WrongStatus
-            logo={<RefuseIcon htmlColor='var(--color-warning)' style={{ width: 60, height: 60 }} />}
-            content={t('labelWalletLoopringSmartWallet')}
-            onClickDisconnect={() => {
-              walletServices.sendDisconnect('', 'customer click disconnect')
-            }}
-          />
-        )
-      } else if (nonLoopringSmartContractWallet) {
+      if (nonLoopringSmartContractWallet) {
         return (
           <WrongStatus
             logo={<FailedIcon htmlColor='var(--color-error)' style={{ width: 60, height: 60 }} />}
