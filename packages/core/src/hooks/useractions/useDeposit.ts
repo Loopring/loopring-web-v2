@@ -106,7 +106,12 @@ export const useDeposit = <
 
   React.useEffect(() => {
     if(!isShow) {
-      resetDepositData()
+      const oldValue = store.getState()._router_modalData.depositValue
+      let newValue = {
+        ...oldValue,
+        tradeValue: undefined
+      }
+      updateDepositData({ ...newValue })
     }
   }, [isShow])
 
@@ -699,6 +704,7 @@ export const useDeposit = <
     realToAddress: depositValue.toAddress,
     isToAddressEditable,
   }
+  console.log('depositProps', depositProps)
 
   return {
     depositProps,

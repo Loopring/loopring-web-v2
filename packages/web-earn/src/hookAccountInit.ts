@@ -69,7 +69,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
 
 
   React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
+    if (state === SagaStatus.DONE) {
       offFaitService.banxaEnd()
       const account = store.getState().account
       switch (account.readyState) {
@@ -81,9 +81,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         case AccountStatus.NOT_ACTIVE:
         case AccountStatus.LOCKED:
         case AccountStatus.NO_ACCOUNT:
-          if (walletLayer1Status !== SagaStatus.PENDING) {
-            updateWalletLayer1()
-          }
+          updateWalletLayer1()
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2()
             resetLayer2NFT()
