@@ -171,19 +171,31 @@ const Intro: React.FC<IntroProps> = ({  }) => {
     >
       <Box
         component={'img'}
-        src={`${SoursURL}earn/intro_bg_1.png`}
+        src={`${SoursURL}earn/intro_bg_2.png`}
         position={'absolute'}
         left={'50%'}
-        top={-86}
+        top={-26}
         sx={{
           transform: 'translateX(-50%)',
         }}
+        zIndex={2}
       />
       <Box
+        component={'img'}
+        src={`${SoursURL}earn/intro_bg_1.png`}
+        position={'absolute'}
+        left={0}
+        right={0}
+        top={0}
         width={'100%'}
-        zIndex={2}
+        zIndex={1}
+      />
+      
+      <Box
+        width={'100%'}
+        zIndex={3}
         sx={{
-          marginTop: 33,
+          marginTop: 17,
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'column',
