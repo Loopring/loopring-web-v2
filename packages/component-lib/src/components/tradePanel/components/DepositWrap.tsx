@@ -11,6 +11,7 @@ import {
   SoursURL,
   TRADE_TYPE,
   TradeBtnStatus,
+  FailedIcon
 } from '@loopring-web/common-resources'
 import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
@@ -64,6 +65,8 @@ export const DepositWrap = <
   allowTrade,
   toAddress,
   handleAddressChange,
+  isLoopringSmartWallet,
+  onClose,
   ...rest
 }: DepositViewProps<T, I> & {
   accountReady?: AccountStatus
@@ -158,6 +161,36 @@ export const DepositWrap = <
       return <></>
     }
   }, [isNewAccount, chargeFeeTokenList, tradeData, t, feeChargeOrder])
+  
+  if (isNewAccount && isLoopringSmartWallet) {
+    return <Box
+      flex={1}
+      display={'flex'}
+      alignItems={'center'}
+      height={'100%'}
+      justifyContent={'space-evenly'}
+      flexDirection={'column'}
+      paddingX={2}
+    >
+      <FailedIcon style={{ height: 60, width: 60 }} color={'error'} />
+      <Typography textAlign={'center'} variant={'body1'} component={'span'}>
+        {t("labelSmartWalletDepositError1")}<br/>
+        {t("labelSmartWalletDepositError2")}<br/>
+        {t("labelSmartWalletDepositError3")}
+
+      </Typography>
+      <Button
+        fullWidth
+        variant={'contained'}
+        size={'medium'}
+        color={'primary'}
+        onClick={onClose}
+      >
+        {t("labelClose")}
+      </Button>
+    </Box>
+
+  }
 
   return (
     <GridWrapStyle

@@ -31,6 +31,7 @@ import {
   callSwitchChain,
   DepositCommands,
   depositServices,
+  getContractTypeByNetwork,
   LoopringAPI,
   store,
   useAccount,
@@ -84,6 +85,29 @@ export const useDeposit = <
     addrStatus: toAddressStatus,
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck()
+
+  const [loopringSmartWalletCheck, setLoopringSmartWalletCheck] = React.useState(
+    {
+      isLoopringSmartWallet: undefined as boolean | undefined,
+      checkedAddress: undefined as string | undefined
+    }
+  )
+  
+  React.useEffect(() => {
+    if (realToAddress && realToAddress !== loopringSmartWalletCheck.checkedAddress) {
+      setLoopringSmartWalletCheck({
+        checkedAddress: realToAddress,
+        isLoopringSmartWallet: undefined
+      })
+      getContractTypeByNetwork(realToAddress, MapChainId[defaultNetwork]).then((contractType) => {
+        setLoopringSmartWalletCheck((state) => ({
+          ...state,
+          isLoopringSmartWallet: contractType ? contractType.contractVersion !== '' : false
+        }))
+      })
+    }
+  }, [realToAddress])
+  
 
   React.useEffect(() => {
     const depositValue = store.getState()._router_modalData.depositValue
@@ -703,8 +727,11 @@ export const useDeposit = <
     toAddress: toInputAddress,
     realToAddress: depositValue.toAddress,
     isToAddressEditable,
+    isLoopringSmartWallet: loopringSmartWalletCheck.isLoopringSmartWallet,
+    onClose() {
+      setShowDeposit({ isShow: false })
+    },
   }
-  console.log('depositProps', depositProps)
 
   return {
     depositProps,

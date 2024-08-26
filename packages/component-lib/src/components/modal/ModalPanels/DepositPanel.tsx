@@ -34,6 +34,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
     addressDefault,
     allowTrade,
     isShow,
+    isLoopringSmartWallet,
     onBack,
     t,
     ...rest
@@ -171,6 +172,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
                   addressDefault,
                   allowTrade,
                   accountReady,
+                  isLoopringSmartWallet
                 }}
               />
             ),
@@ -184,6 +186,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
               coinMap,
               addressDefault,
               allowTrade,
+              isLoopringSmartWallet
             ],
           ),
           toolBarItem: React.useMemo(
@@ -234,7 +237,7 @@ export const DepositPanel = withTranslation('common', { withRef: true })(
         },
       ],
     }
-    return !switchData.tradeData?.belong ? (
+    return !switchData.tradeData?.belong || isLoopringSmartWallet === undefined ? (
       <Box
         height={'var(--min-height)'}
         width={'var(--modal-width)'}

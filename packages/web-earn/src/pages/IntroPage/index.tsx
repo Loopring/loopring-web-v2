@@ -411,21 +411,14 @@ const Intro: React.FC<IntroProps> = ({  }) => {
               sx={{
                 fontSize: '16px',
                 fontWeight: 400,
-                color: theme.mode === 'dark' ? 'black' : '',
-                bgcolor: theme.mode === 'dark' ? 'white' : '',
-                width: '160px',
-                ':hover': {
-                  color: theme.mode === 'dark' ? 'black' : '',
-                  bgcolor: theme.mode === 'dark' ? 'white' : '',
-
-                }
+                width: '120px',
               }}
               onClick={() => 
                 window.open('https://docs.loopring.io/', '_blank')}
             >
               {t('labelLaunch')}{' '}
               <ToRightTopArrow
-                sx={{ marginLeft: 1, fontSize: '24px', fill: theme.mode === 'dark' ? 'black' : 'var(--color-text-button)' }}
+                sx={{ marginLeft: 1, fontSize: '24px', fill: 'var(--color-text-button)' }}
               />{' '}
             </Button>
         </Box>

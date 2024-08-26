@@ -2352,4 +2352,7 @@ export default {
   labelBalance: 'Balance',
   depositLabelEnterTokenEarn: '选择充值代币',
   labelLaunch: 'Launch',
+  labelSmartWalletDepositError1: 'Currently, only EOA wallets are supported.',
+  labelSmartWalletDepositError2: 'Loopring Smart Wallet support is coming soon ',
+  labelSmartWalletDepositError3: 'stay tuned for updates!',
 }

@@ -59,3 +59,5 @@ export class LoopringAPI {
     LoopringAPI.vaultAPI?.setBaseUrl(baseURL)
   }
 }
+
+export { getContractTypeByNetwork } from './wallet'
