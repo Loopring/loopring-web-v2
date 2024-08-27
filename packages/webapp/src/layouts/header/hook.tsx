@@ -21,6 +21,7 @@ import {
   btnClickMap,
   useSelectNetwork,
   useNotificationFunc,
+  unlockAccount,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
@@ -71,32 +72,34 @@ export const useHeader = () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`)
     accountStaticCallBack(_btnClickMap, [])
   }, [account, setShouldShow, _btnClickMap])
-
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof _initHeaderToolBarData>({
-    ..._initHeaderToolBarData,
-  })
+  const headerToolBarData = React.useMemo(() => {
+    return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
+      ? {
+          ..._initHeaderToolBarData,
+          [ButtonComponentsMap.WalletConnect]: {
+            ..._initHeaderToolBarData[ButtonComponentsMap.WalletConnect],
+            handleClick: onWalletBtnConnect,
+            handleClickUnlock: () => {
+              unlockAccount()
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.UnlockAccount_WaitForAuth,
+              })
+            },
+            NetWorkItems,
+            accountState: { account }
+          },
+          [ButtonComponentsMap.ProfileMenu]: {
+            ..._initHeaderToolBarData[ButtonComponentsMap.ProfileMenu],
+            subMenu: profile.map((item: string) => Profile[item]),
+            readyState: account.readyState,
+          },
+        }
+      : _initHeaderToolBarData
+  }, [accountStatus, account?.readyState, account])
 
-  React.useEffect(() => {
-    if ([SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)) {
-      const account = store.getState().account
-      setHeaderToolBarData((headerToolBarData) => {
-        headerToolBarData[ButtonComponentsMap.WalletConnect as any] = {
-          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-          handleClick: onWalletBtnConnect,
-          NetWorkItems,
-          accountState: { account },
-        }
-        headerToolBarData[ButtonComponentsMap.ProfileMenu as any] = {
-          ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
-          subMenu: profile.map((item: string) => Profile[item]),
-          readyState: account.readyState,
-        }
-        return headerToolBarData
-      })
-    }
-  }, [accountStatus, account?.readyState])
   const { notifyMap, myNotifyMap } = useNotify()
   const toggle = useToggle()
   const showVault = toggle.toggle.VaultInvest.enable || toggle.toggle.isSupperUser

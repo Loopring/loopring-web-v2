@@ -425,7 +425,7 @@ export default {
   labelMinutes: 'Minutes',
   labelSeconds: 'Seconds',
   labelIsNotFeeToken: 'Please deposit {{symbol}} to activate {{loopringL2}}.',
-  labelIsETHDepositAlert: 'Please reserve enough ETH in Layer 1 account to pay for gas!',
+  labelIsETHDepositAlert: 'Please reserve enough ETH in your account to pay for gas!',
   labelIsNotEnoughFeeToken:
     'Please deposit enough token to cover the activation fee: {{fee}} {{symbol}}. Remaining token will appear in your asset after activation',
   depositNFTAddressLabelPlaceholder: 'please input NFT contract address...',
@@ -2329,4 +2329,30 @@ export default {
   labelVaultSettledAmountTip: `The quantity deposited into your Loopring L2 account. If you opt for 'Prioritize Quantity' mode and the Loopring L2 pool exhausts its quota, you may not receive the entire amount instantly. The remaining tokens will be 'swapped' at the executed price once the pool is replenished.`,
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
+  labelEarnAssetDefiPortfolio: 'Defi Portfolio',
+  labelEarnDepositDes: `There are no assets in your Loopring DeFi account yet. Please deposit a supported token to start exploring the DeFi world.`,
+  labelEarnAssetTokens: 'All Tokens',
+  labelBlockTradeTutorial: 'Block Trade Tutorial',
+  labelAccountCreatedHint: 'Your Loopring DeFi account has been created. Please sign to complete the process.',
+  labelFrozen: 'Frozen',
+  labelBTradeTutorial: `
+  Block Trade offers a secure and trustless way for users to swap tokens using CEX
+  liquidity. The trades happen exclusively between designated entities, ensuring that the
+  existing liquidity of the DEX remains unaffected. There is no price impact to other DEX
+  users as a result of the transaction.
+  `,
+  labelLearnMore: 'Learn More >',
+  labelLearnMore2: 'Learn More',
+  labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield',
+  labelPortalDes: 'Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. ',
+  labelBtradeDes: 'Offers a secure and trustless way for users to swap tokens using CEX liquidity.',
+  labelAPY: 'APY',
+  labelAction2: 'Action',
+  labelTotalBalance: 'Total Balance',
+  labelBalance: 'Balance',
+  depositLabelEnterTokenEarn: '选择充值代币',
+  labelLaunch: 'Launch',
+  labelSmartWalletDepositError1: 'Currently, only EOA wallets are supported.',
+  labelSmartWalletDepositError2: 'Loopring Smart Wallet support is coming soon ',
+  labelSmartWalletDepositError3: 'stay tuned for updates!',
 }

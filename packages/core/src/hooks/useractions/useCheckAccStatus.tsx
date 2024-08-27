@@ -5,7 +5,7 @@ import {
   UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
-import { makeWalletLayer2, store, useAccount, useWalletLayer2 } from '../../index'
+import { makeWalletLayer2, store, useAccount, useSystem, useWalletLayer2 } from '../../index'
 import {
   AccountStep,
   CheckActiveStatusProps,
@@ -13,6 +13,7 @@ import {
   ToastType,
   useOpenModals,
   TransErrorHelp,
+  useSettings,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import { connectProvides } from '@loopring-web/web3-provider'
@@ -50,6 +51,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const {
     setShowAccount,
     setShowActiveAccount,
+    setShowDeposit,
     modals: { isShowAccount },
   } = useOpenModals()
   const [know, setKnow] = React.useState(false)
@@ -68,9 +70,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowActiveAccount({ isShow: true })
   }
   const onIKnowClick = () => {
-    if (account.isContract) {
-      setKnow(true)
-    } else if (isFeeNotEnough.isFeeNotEnough) {
+    if (account.isContract || account._accountIdNotActive === -1) {
       setKnow(true)
     } else {
       goUpdateAccount()
@@ -131,6 +131,11 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     }
   }, [isShowAccount.step, isShowAccount.isShow])
 
+  const { app } = useSystem()
+  const { defaultNetwork } = useSettings()
+  const isTaikoEarn =
+      [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork) && app === 'earn'
+
   const checkActiveStatusProps: CheckActiveStatusProps<C> = {
     know,
     knowDisable,
@@ -140,13 +145,18 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     account: { ...account, isContract: isAddressContract },
     chargeFeeTokenList,
     goSend: () => {
-      setShowAccount({
-        isShow: true,
-        step: AccountStep.AddAssetGateway,
-      })
+      if (isTaikoEarn) {
+        setShowAccount({ isShow: false })
+        setShowDeposit({ isShow: true })
+      } else {
+        setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway })
+      }
+      
     },
     walletMap,
     isFeeNotEnough,
+    depositNeeded: true
+    // account._accountIdNotActive !== -1
   }
   return { checkActiveStatusProps }
 }

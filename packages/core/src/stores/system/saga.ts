@@ -15,6 +15,7 @@ import {
   myLog,
   TokenPriceBase,
   CurrencyToTag,
+  SUPPORTING_NETWORKS,
 } from '@loopring-web/common-resources'
 import { statusUnset as accountStatusUnset } from '../account/reducer'
 import { getAmmMap, initAmmMap } from '../Amm/AmmMap/reducer'
@@ -31,7 +32,6 @@ import { clearAll as clearWalletInfoAll } from '../localStore/walletInfo'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { getRedPacketConfigs } from '../redPacket/reducer'
-import { AvaiableNetwork } from '@loopring-web/web3-provider'
 import { getBtradeMap, getBtradeMapStatus } from '../invest/BtradeMap/reducer'
 import { setShowGlobalToast } from '@loopring-web/component-lib'
 import { updateDualSyncMap } from '../invest/DualMap/reducer'
@@ -318,7 +318,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       store.dispatch(getStakingMap(undefined))
       store.dispatch(getBtradeMap(undefined))
       store.dispatch(getVaultMap(undefined))
-      store.dispatch(getExclusiveRedpacket(undefined))
       defiAllAsync()
       yield take('vaultMap/getVaultMapStatus')
       store.dispatch(getVaultTickers(undefined))
@@ -360,7 +359,7 @@ const should15MinutesUpdateDataGroup = async (
         indexUSD = index
       }
       return () => (
-        LoopringAPI?.walletAPI?.getLatestTokenPrices({
+        LoopringAPI?.exchangeAPI?.getLatestTokenPrices({
           currency: CurrencyToTag[key].toString(),
           tokens: tokenAddress,
         }) ?? Promise.resolve({ tokenPrices: null })
@@ -390,7 +389,8 @@ const should15MinutesUpdateDataGroup = async (
 }
 
 const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) => {
-  const extendsChain: string[] = (AvaiableNetwork ?? []).filter(
+  const extendsChain: string[] = (SUPPORTING_NETWORKS ?? []) 
+  .filter(
     (item) => ![1, 5, 11155111].includes(Number(item)),
   )
   const env =
@@ -400,61 +400,55 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       ? ENV.UAT
       : ENV.PROD
   const chainId: sdk.ChainId = (
-    AvaiableNetwork.includes(_chainId.toString()) ? Number(_chainId) : ChainIdExtends.NONETWORK
+    SUPPORTING_NETWORKS.includes(_chainId.toString()) ? Number(_chainId) : ChainIdExtends.NONETWORK
   ) as sdk.ChainId
   if (_chainId === ChainIdExtends.NONETWORK) {
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
   } else {
     LoopringAPI.InitApi(chainId as sdk.ChainId)
-    if (LoopringAPI.exchangeAPI) {
-      let baseURL, socketURL, etherscanBaseUrl
+    if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
+      let baseURL, socketURL
       if (extendsChain.includes(chainId.toString())) {
         const socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
         baseURL = `https://${process.env['REACT_APP_API_URL_' + chainId.toString()]}`
         socketURL = `wss://${socketPrefix}${
           process.env['REACT_APP_API_URL_' + chainId.toString()]
         }/v3/ws`
-        etherscanBaseUrl = chainId == sdk.ChainId.SEPOLIA ? `https://sepolia.etherscan.io/` : `https://etherscan.io/`
       } else {
         if (sdk.ChainId.MAINNET === chainId) {
           baseURL = `https://${process.env.REACT_APP_API_URL_1}`
           socketURL = `wss://ws.${process.env.REACT_APP_API_URL_1}/v3/ws`
         } else {
-          const isDevToggle = store.getState().settings.isDevToggle
+          
           let socketPrefix = 'ws.' // process.env['REACT_APP_API_WS_' + chainId.toString() + '_PREFIX'] ?? ''
-          if (isDevToggle === true && process.env?.REACT_APP_TEST_ENV) {
-            socketPrefix = ''
-            baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`.replace('uat2', 'dev')
-            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`.replace(
-              'uat2',
-              'dev',
-            )
-            // @ts-ignore
-            sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
-              process.env.REACT_APP_SEPOLIA_DEV_NFT_FACTORY_COLLECTION
-          } else {
-            baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`
-            socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`
-            // @ts-ignore
-            sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
-              process.env[
-                `REACT_APP_SEPOLIA_${
-                  /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
-                }_NFT_FACTORY_COLLECTION`
-              ]
-          }
+          baseURL = `https://${process.env.REACT_APP_API_URL_11155111}`
+          socketURL = `wss://${socketPrefix}${process.env.REACT_APP_API_URL_11155111}/v3/ws`
+          // @ts-ignore
+          sdk.NFTFactory_Collection[sdk.ChainId.SEPOLIA] =
+            process.env[
+              `REACT_APP_SEPOLIA_${
+                /dev\.loopring\.io/.test(process.env?.REACT_APP_API_URL_11155111 ?? '') ? 'DEV' : 'UAT'
+              }_NFT_FACTORY_COLLECTION`
+            ]
         }
-
-        etherscanBaseUrl =
-          sdk.ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://sepolia.etherscan.io/`
       }
       LoopringAPI.setBaseURL(baseURL)
-      let allowTrade, exchangeInfo, gasPrice, forexMap
+      if (process.env && process.env[`REACT_APP_WALLET_API_URL_${chainId}`]) {
+        LoopringAPI.walletAPI?.setBaseUrl('https://' + process.env[`REACT_APP_WALLET_API_URL_${chainId}`]!)
+      }
+      const etherscanBaseUrl =
+        sdk.ChainId.MAINNET === chainId
+          ? `https://etherscan.io/`
+          : sdk.ChainId.SEPOLIA === chainId
+          ? `https://sepolia.etherscan.io/`
+          : process.env[`REACT_APP_EXPLORER_URL_${chainId}`]
+      
+      let allowTrade, exchangeInfo, forexMap, gasPrice
       try {
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem(LocalStorageConfigKey.exchangeInfo) ?? '{}',
         )
-        ;[{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] = await Promise.all([
+        ;[{ exchangeInfo }, { forexMap, gasPrice },allowTrade] = await Promise.all([
           _exchangeInfo[chainId]
             ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
             : LoopringAPI.exchangeAPI.getExchangeInfo().then(({ exchangeInfo }) => {
@@ -469,7 +463,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                 return { exchangeInfo }
               }),
           should15MinutesUpdateDataGroup(chainId),
-          LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
+          LoopringAPI.walletAPI.getAccountServices({}).then((result) => {
             return {
               ...result,
               legal: (result as any)?.raw_data?.legal ?? { enable: false },
@@ -528,10 +522,10 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           clearInterval(__timer__ as NodeJS.Timeout)
         }
         return setInterval(async () => {
-          if (LoopringAPI.exchangeAPI) {
-            const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(chainId)
+          if (!LoopringAPI.exchangeAPI) return
+          should15MinutesUpdateDataGroup(chainId).then(({ forexMap, gasPrice }) => {
             store.dispatch(updateRealTimeObj({ forexMap, gasPrice }))
-          }
+          })
         }, 300000) //
       })(__timer__)
       return {
@@ -541,9 +535,9 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         env,
         baseURL,
         socketURL,
-        forexMap,
-        gasPrice,
         exchangeInfo,
+        forexMap, 
+        gasPrice,
         __timer__,
       }
     }
@@ -553,6 +547,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
 export function* getUpdateSystem({ payload }: any) {
   try {
     const { chainId } = payload
+    
     const {
       env,
       baseURL,

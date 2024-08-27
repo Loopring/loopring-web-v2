@@ -1,7 +1,7 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { callSwitchChain, LoopringAPI, store } from '../../index'
 import { accountServices } from './accountServices'
-import { myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountSyncStatus } from '../../stores/account/reducer'
@@ -10,7 +10,7 @@ export async function unlockAccount() {
   myLog('unlockAccount starts')
   const accounStore = store.getState().account
   const { exchangeInfo } = store.getState().system
-  const { isMobile } = store.getState().settings
+  const { isMobile, defaultNetwork } = store.getState().settings
   myLog('unlockAccount account:', accounStore)
   accountServices.sendSign()
   if (
@@ -30,6 +30,7 @@ export async function unlockAccount() {
           ? Promise.resolve({ walletType: undefined })
           : LoopringAPI.walletAPI.getWalletType({
               wallet: accounStore.accAddress,
+              network: MapChainId[defaultNetwork] as sdk.NetworkWallet
             })
       ;[{ accInfo: account }, { walletType }, _chainId] = await Promise.all([
         LoopringAPI.exchangeAPI.getAccount({

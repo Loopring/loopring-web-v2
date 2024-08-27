@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box, Tab } from '@mui/material'
+import { Box, Tab, Typography } from '@mui/material'
 import {
   AssetsTable,
   AssetTitle,
@@ -8,7 +8,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 
-import { useSystem, useTokenMap } from '@loopring-web/core'
+import { numberStringListSum, useSystem, useTokenMap } from '@loopring-web/core'
 import { AssetPanelProps, useAssetAction } from './hook'
 import React from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -18,6 +18,7 @@ import { AssetL2TabEarnIndex, AssetTabIndex } from '../../../constant/router'
 import { MaxWidthContainer, containerColors } from 'pages/InvestPage'
 import { RowEarnConfig } from 'constant/setting'
 import { useTheme } from '@emotion/react'
+import Decimal from 'decimal.js'
 
 export const AssetPanel = withTranslation('common')(
   ({
@@ -34,6 +35,8 @@ export const AssetPanel = withTranslation('common')(
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
+      totalAvailableInCurrency,
+      totalFrozenInCurrency
       // onTokenLockHold,
       // tokenLockDetail,
     },
@@ -56,9 +59,9 @@ export const AssetPanel = withTranslation('common')(
     const handleTabChange = (value: AssetTabIndex) => {
       if (AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.includes(value)) {
         switch (value) {
-          case AssetTabIndex.DualInvests:
+          case AssetTabIndex.DefiPortfolio:
             history.replace('/l2assets/assets/Invests')
-            setCurrentTab(AssetTabIndex.DualInvests)
+            setCurrentTab(AssetTabIndex.DefiPortfolio)
             break
           case AssetTabIndex.Tokens:
           default:
@@ -73,10 +76,10 @@ export const AssetPanel = withTranslation('common')(
     }
     React.useEffect(() => {
       if (match.params.item === 'Invests') {
-        setCurrentTab(AssetTabIndex.DualInvests)
+        setCurrentTab(AssetTabIndex.DefiPortfolio)
       }
     }, [])
-    const hideAssets = assetTitleProps.hideL2Assets
+    const hideAssets = assetTitleProps.hideL2Assets;
 
     return (
       <>
@@ -135,8 +138,8 @@ export const AssetPanel = withTranslation('common')(
             aria-label='l2-history-tabs'
             variant='scrollable'
           >
-            {AssetL2TabEarnIndex[MapChainId[defaultNetwork]].map((item: string) => {
-              return <Tab key={item.toString()} label={t(`labelAsset${item}`)} value={item} />
+            {AssetL2TabEarnIndex[MapChainId[defaultNetwork]]?.map((item: string) => {
+              return <Tab key={item.toString()} label={t(`labelEarnAsset${item}`)} value={item} />
             })}
           </Tabs>
         </MaxWidthContainer>
@@ -157,6 +160,26 @@ export const AssetPanel = withTranslation('common')(
               },
             }}
           >
+            <Box marginBottom={3} marginTop={2} display={'flex'}>
+              <Typography marginRight={4} color={'var(--color-text-secondary)'}>
+                {t("labelFrozen")}:{' '}
+                {hideAssets ? (
+                  <>
+                    <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
+                  </>
+                ) : (
+                  totalFrozenInCurrency
+                )}
+              </Typography>
+              <Typography color={'var(--color-text-secondary)'}>
+                {t("labelAvailable")}{' '}
+                {hideAssets ? (
+                  <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
+                ) : (
+                  totalAvailableInCurrency
+                )}
+              </Typography>
+            </Box>
             <Box className='tableWrapper'>
               <AssetsTable
                 {...{
@@ -185,7 +208,7 @@ export const AssetPanel = withTranslation('common')(
           </MaxWidthContainer>
         )}
 
-        {currentTab === AssetTabIndex.DualInvests && (
+        {currentTab === AssetTabIndex.DefiPortfolio && (
           <MyLiquidity
             noHeader
             className={'assetWrap'}

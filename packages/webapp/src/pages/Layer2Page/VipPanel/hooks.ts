@@ -15,8 +15,8 @@ export function useGetVIPInfo() {
 
   const getUserTradeAmount = React.useCallback(
     async (markets: string = '', limit: number = 30) => {
-      if (LoopringAPI && LoopringAPI.walletAPI && accountId) {
-        const data = await LoopringAPI.walletAPI.getUserTradeAmount({
+      if (LoopringAPI && LoopringAPI.exchangeAPI && accountId) {
+        const data = await LoopringAPI.exchangeAPI.getUserTradeAmount({
           accountId,
           markets,
           limit,

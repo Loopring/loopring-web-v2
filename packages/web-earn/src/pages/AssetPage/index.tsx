@@ -2,14 +2,15 @@ import { useRouteMatch } from 'react-router-dom'
 
 import { Box } from '@mui/material'
 import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
-import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
+import { subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
-import { useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
-import { useAssetAction, useGetAssets } from './AssetPanel/hook'
+import { useSocket, useSystem, useTargetRedPackets, ViewAccountTemplate } from '@loopring-web/core'
+import { useGetAssets } from './AssetPanel/hook'
 import { AssetPanel } from './AssetPanel'
 import { MaxWidthContainer } from '../InvestPage'
+import { WsTopicType } from '@loopring-web/loopring-sdk'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -42,6 +43,7 @@ export const AssetPage = () => {
     }
   }, [selected, assetTitleProps, assetPanelProps, assetBtnStatus])
   const { isMobile } = useSettings()
+  const { sendSocketTopic } = useSocket()
   const activeView = React.useMemo(
     () => (
       <>
@@ -66,6 +68,19 @@ export const AssetPage = () => {
     ),
     [assetTitleMobileExtendProps, assetTitleProps, isMobile, assetBtnStatus, layer2Router],
   )
-  return <ViewAccountTemplate activeViewTemplate={activeView} />
+
+
+  React.useEffect(() => {
+    sendSocketTopic({
+      [WsTopicType.account]: true
+    })
+  }, [])
+  
+  
+  return (
+    <ViewAccountTemplate
+      activeViewTemplate={activeView}
+    />
+  )
   // <>{viewTemplate}</>;
 }

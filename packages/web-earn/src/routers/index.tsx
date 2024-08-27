@@ -46,6 +46,9 @@ import { useTranslation } from 'react-i18next'
 import { EarnPage } from '../pages/EarnPage'
 import { RouterAllowIndex, RouterMainKey, RouterPath } from '../constant/router'
 import { Layer2Page } from '../pages/Layer2Page'
+import Intro from '../pages/IntroPage'
+import { VaultPage } from '../pages/VaultPage'
+import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 
 // RouterAllowIndex
 const ContentWrap = ({
@@ -53,9 +56,11 @@ const ContentWrap = ({
   state,
   noContainer = false,
   value,
+  noPending
 }: React.PropsWithChildren<any> & {
   state: keyof typeof SagaStatus
   noContainer: boolean
+  noPending?: boolean
   value: string
 }) => {
   const { defaultNetwork } = useSettings()
@@ -63,7 +68,7 @@ const ContentWrap = ({
   return (
     <>
       <Header isHideOnScroll={false} />
-      {state === 'PENDING' ? (
+      {state === 'PENDING' && !noPending ? (
         <LoadingBlock />
       ) : state === 'ERROR' || !RouterAllowIndex[network]?.includes(value) ? (
         <ErrorPage
@@ -198,7 +203,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MarkdownPage />
           </Container>
         </Route>
-        <Route exact path={'/'} children={ <Redirect to={RouterPath.dualIntro} /> }/>
+        <Route exact path={'/'} children={ <Redirect to={RouterPath.intro} /> }/>
         <Route exact path='/notification/:path'>
           {searchParams && searchParams.has('noheader') ? (
             <></>
@@ -240,6 +245,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={['/race-event/:path']}>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <TradeRacePage />
+        </Route>
+
+        <Route path={RouterPath.btrade}>
+          <ContentWrap state={state} value={RouterMainKey.btrade}>
+            <BtradeSwapPage />
+          </ContentWrap>
         </Route>
 
         {/* <Route path={RouterPath.pro}>
@@ -292,41 +303,22 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <EarnPage />
           </ContentWrap>
         </Route>
+        <Route exact path={RouterPath.intro}>
+          <ContentWrap state={state} noPending noContainer value={RouterMainKey.dualIntro}>
+            <Intro />
+          </ContentWrap>
+        </Route>
+        <Route exact path={[RouterPath.portal, RouterPath.portal + '/*']}>
+          <ContentWrap state={state} noContainer value={RouterMainKey.portal}>
+            <VaultPage />
+          </ContentWrap>
+        </Route>
+        
         <Route path={[RouterPath.layer2, RouterPath.layer2 + '/*']}>
           <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
             <Layer2Page />
           </ContentWrap>
         </Route>
-        {/* <Route exact path={RouterPath.mining}>
-          <ContentWrap state={state} value={RouterMainKey.mining}>
-            <MiningPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.redPacket, RouterPath.redPacket + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.redPacket}>
-            <RedPacketPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.l2assets, RouterPath.l2assets + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.l2assets}>
-            <AssetPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.layer2, RouterPath.layer2 + '/*']}>
-          <ContentWrap state={state} noContainer={true} value={RouterMainKey.layer2}>
-            <Layer2Page />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.nft, RouterPath.nft + '/*']}>
-          <ContentWrap state={state} value={RouterMainKey.nft}>
-            <NFTPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
-          <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
-            <InvestPage />
-          </ContentWrap>
-        </Route> */}
         <Route exact path={[RouterPath.l2assets, RouterPath.l2assets + '/*']}>
           <ContentWrap noContainer state={state} value={RouterMainKey.l2assets}>
             <AssetPage />

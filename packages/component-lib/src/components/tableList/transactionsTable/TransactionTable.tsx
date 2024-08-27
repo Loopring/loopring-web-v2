@@ -393,7 +393,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                   ]
                 : ['', '']
             const hash = row.txHash !== '' ? row.txHash : row.hash
-            let path: string
+            let path: string | undefined
             if (
               [
                 sdk.UserTxTypes.L2_STAKING,
@@ -408,12 +408,16 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
                 row.txHash !== ''
                   ? etherscanBaseUrl +
                     `/tx/${row.txHash.slice(0, 6)}-${row.txHash.slice(row.txHash - 4)}`
+                  : [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
+                  ? undefined
                   : Explorer +
                     `tx/${row.hash}-transfer-${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
             } else {
               path =
                 row.txHash !== ''
                   ? etherscanBaseUrl + `/tx/${row.txHash}`
+                  : [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
+                  ? undefined
                   : Explorer + `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`
             }
             return (
@@ -426,8 +430,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
               >
                 <Link
                   style={{
-                    cursor: 'pointer',
-                    color: 'var(--color-primary)',
+                    cursor: path ? 'pointer' : 'text',
+                    color: path ? 'var(--color-primary)' : 'var(--color-text-primary)',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                   }}

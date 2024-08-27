@@ -6,14 +6,34 @@ import {
   DualViewType,
   LOOPRING_DOCUMENT,
   DualInvestmentLogo,
+  SoursURL,
 } from '@loopring-web/common-resources'
-import { Button, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
+import { Button, CoinIcon, MenuBtnStyled, useSettings } from '@loopring-web/component-lib'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { containerColors, MaxWidthContainer } from '../index'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
+import { groupBy, keys } from 'lodash'
+
+const EarnCard = styled(Box)<{ isMobile: boolean }>`
+  background-color: var(--color-box-third);
+  padding: ${({ theme }) => theme.unit * 6}px ${({ theme }) => theme.unit * 4}px
+    ${({ theme }) => theme.unit * 4}px ${({ theme }) => theme.unit * 4}px;
+  width: ${({ isMobile }) => (isMobile ? '100%' : '32%')};
+  margin-bottom: ${({ theme }) => theme.unit * 2}px;
+  border-radius: ${({ theme }) => theme.unit * 1.5}px;
+  border: 0.5px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  :hover {
+    border: 1px solid var(--color-primary);
+  }
+`
 
 export const ChooseDualTypeContent = [
   {
@@ -62,11 +82,48 @@ export const TypographyStyle = styled(Typography)`
     fill: ${({ theme }) => theme.colorBase.textSecondary};
   }
 ` as typeof Typography
-export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) => void }) => {
+export const ChooseDualType = ({ 
+  onSelect,
+  dualTokenList,
+  productsRef
+}: { 
+  onSelect: (props: DualViewType) => void,
+  dualTokenList: {
+    symbol: string;
+    apy: string;
+    price: string;
+    tag: "sellCover" | "buyDip";
+    apyRaw: number;
+  }[]
+  productsRef: React.MutableRefObject<HTMLDivElement | undefined>
+}) => {
   const { isMobile } = useSettings()
   const theme = useTheme()
   const history = useHistory()
   const { t } = useTranslation()
+  const tEarn = useTranslation('webEarn').t
+
+  const widths = ['25%', '25%','25%','25%']
+  const group = groupBy(dualTokenList, token => token.symbol)
+  const tableData = dualTokenList.length > 0 ? keys(group).map(symbol => {
+    const list = group[symbol]
+    return {
+      token: symbol,
+      list: list.map(type => {
+        return {
+          apy: type.apy,
+          type: type.tag === 'buyDip' ? 'Buy Low' : 'Sell High',
+          viewDetail: () => {
+            history.push(
+              `/invest/dual?viewType=${
+                type.tag === 'buyDip' ? 'DualDip' : 'DualGain'
+              }&autoChose=${type.symbol}`,
+            )
+          },
+        }
+      })
+    }
+  }) : undefined
   return (
     <>
       <MaxWidthContainer
@@ -82,7 +139,7 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Button
-              onClick={() => history.push('/invest/balance')}
+              onClick={() => history.push('/l2assets/assets/Invests')}
               sx={{ width: isMobile ? 36 * theme.unit : 18 * theme.unit }}
               variant={'contained'}
             >
@@ -164,6 +221,114 @@ export const ChooseDualType = ({ onSelect }: { onSelect: (props: DualViewType) =
             )
           })}
         </Grid>
+
+        <Box ref={productsRef} component={'div'} id={'products'} marginTop={8}>
+          {tableData ? (
+            <>
+              <Typography marginBottom={5} variant='h2'>{t("labelTitleOverviewAllPrd")}</Typography>
+              <Box paddingX={1.5} paddingY={1.5} display={'flex'}>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[0]}
+                >
+                  {t("labelToken")}
+                </Typography>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[1]}
+                >
+                  {t("labelAPY")}
+                </Typography>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[2]}
+                >
+                  {t("labelType")}
+                </Typography>
+                <Typography
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                  width={widths[3]}
+                  textAlign={'right'}
+                >
+                  {t("labelAction2")}
+                </Typography>
+              </Box>
+
+              <Box>
+                {tableData.map((ele) => {
+                  return (
+                    <Box key={ele.token} marginBottom={2.5}>
+                      <Box
+                        component={'hr'}
+                        sx={{
+                          background: 'var(--color-border)',
+                          border: 'none',
+                          height: '1px',
+                        }}
+                      />
+                      {ele.list.map((type, index) => {
+                        return (
+                          <Box
+                            paddingX={1.5}
+                            key={type.type}
+                            paddingY={3.5}
+                            display={'flex'}
+                            alignItems={'center'}
+                          >
+                            <Box width={widths[0]} display={'flex'} alignItems={'center'}>
+                              {index === 0 && (
+                                <>
+                                  <CoinIcon symbol={ele.token} />
+                                  <Typography marginLeft={1.5}>{ele.token}</Typography>
+                                </>
+                              )}
+                            </Box>
+                            <Box width={widths[1]} display={'flex'} alignItems={'center'}>
+                              <Typography>{type.apy}</Typography>
+                            </Box>
+                            <Box width={widths[2]} display={'flex'} alignItems={'center'}>
+                              <Typography>{type.type}</Typography>
+                            </Box>
+                            <Box width={widths[3]} display={'flex'} flexDirection={'row-reverse'}>
+                              <Button
+                                sx={{
+                                  color: 'var(--color-primary)',
+                                  borderColor: 'var(--color-primary)',
+                                  ':hover': {
+                                    color: 'var(--color-primary)',
+                                    borderColor: 'var(--color-primary)',
+                                  },
+                                }}
+                                variant={'outlined'}
+                                onClick={type.viewDetail}
+                              >
+                                {t("labelMiningViewDetails")}
+                              </Button>
+                            </Box>
+                          </Box>
+                        )
+                      })}
+                    </Box>
+                  )
+                })}
+              </Box>
+            </>
+          ) : (
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+              height={'150px'}
+              width={'100%'}
+            >
+              <img width={60} src={SoursURL + 'images/loading-line.gif'} />
+            </Box>
+          )}
+        </Box>
       </MaxWidthContainer>
     </>
   )

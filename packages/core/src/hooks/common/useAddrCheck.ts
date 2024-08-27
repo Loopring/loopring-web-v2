@@ -14,7 +14,7 @@ import {
 import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { checkAddr } from '../../utils'
-import { LoopringAPI, store, useAccount, useContacts, useSystem } from '../../index'
+import { getContractTypeByNetwork, LoopringAPI, store, useAccount, useContacts, useSystem } from '../../index'
 import { ToastType, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
 export const useAddressCheck = (checkLayer2Status: boolean = true) => {
@@ -70,7 +70,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
               setIsContractAddress(isContract)
             }
             if (addressErr === AddressError.NoError) {
-              const [{ walletType }, response, { contractType: _contractType, raw_data }] =
+              const [{ walletType }, response, _contractType] =
                 await Promise.all([
                   LoopringAPI.walletAPI.getWalletType({
                     wallet: realAddr,
@@ -79,10 +79,7 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   LoopringAPI.exchangeAPI.getAccount({
                     owner: realAddr,
                   }),
-                  LoopringAPI.walletAPI.getContractType({
-                    wallet: realAddr,
-                    network: sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType],
-                  }),
+                  getContractTypeByNetwork(realAddr, sdk.NetworkWallet[NetworkMap[defaultNetwork]?.walletType])
                 ])
               // for debounce & promise clean  (next user input sync function will cover by async)
               if (_address.current == address) {
@@ -113,9 +110,8 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                 }
 
                 if (
-                  raw_data &&
-                  (raw_data as any)?.data[0]?.network &&
-                  (raw_data as any)?.data[0]?.network !== NetworkMap[defaultNetwork].walletType
+                  _contractType &&
+                  _contractType.network !== NetworkMap[defaultNetwork].walletType
                 ) {
                   setIsLoopringAddress(true)
                   setAddrStatus(AddressError.InvalidAddr)
@@ -123,8 +119,8 @@ export const useAddressCheck = (checkLayer2Status: boolean = true) => {
                   setIsActiveAccountFee('not allow')
                 } else if (
                   realAddr &&
-                  (_contractType as any)?.network &&
-                  (_contractType as any)?.network === NetworkMap[defaultNetwork].walletType &&
+                  _contractType?.network &&
+                  _contractType?.network === NetworkMap[defaultNetwork].walletType &&
                   (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet &&
                   (_contractType as any)?.extra?.createWalletFromInfo?.fromWallet?.toLowerCase() ===
                     realAddr.toLowerCase()
