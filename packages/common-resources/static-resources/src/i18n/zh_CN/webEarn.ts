@@ -90,12 +90,30 @@ export default {
     "The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for trading.",
   labelUltimateSecurity: 'Ultimate Security',
   labelUltimateSecurityDes:
-    'Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.',
+    'Assets on Loopring are equally secure as they are on the Ethereum mainnet.',
   labelLowTransactionFees: 'Low Transaction Fees',
   labelLowTransactionFeesDes:
     'Loopring performs most operations, including trade and transfer settlement, off the Ethereum blockchain. This dramatically reduces gas consumption and overall transaction cost to small fractions of comparable on-chain cost.',
   labelHighThroughput: 'High Throughput',
   labelHighThroughputDes:
-    'Loopring L2 can settle ~2000 transactions per second with near instant finality.',
+    'Loopring can settle ~2000 transactions per second with near instant finality.',
   labelFAQs: 'FAQs',
+  labelBtradeSwapTitle: 'Block Trade',
+  labelViewMore: 'View more',
+  labelVault: 'Portal',
+  labelInvestDualDes1: 'Experience the Leading On-Chain Structured Product',
+  labelInvestDualDes2: 'Buy the dip or sell at a higher price - all while earning high yields.',
+  labelPortalDes1: 'Unlock the Power of Leveraged Trading',
+  labelPortalDes2: 'Seamlessly borrow tokens against your collateral, paving the way for leveraged trading opportunities. By bridging decentralized and centralized exchanges, Loopring Portal broadens your trading horizon, granting access to tokens beyond the Ethereum network.',
+  labelBtradeDes1: 'Trade with CEX Liquidity',
+  labelBtradeDes2: 'Effortlessly trade tokens with near-zero impact, leveraging multiple liquidity sources across crypto to guarantee the best rates every time.',
+  labelInvestDualTitle: 'Dual Investment',
+  labelLoopringDeFi: 'Loopring DeFi',
+  labelIntroDes1: 'Revolutionizing decentralized finance with the most advanced',
+  labelIntroDes2: 'structured products and a user friendly experience',
+  labelLearnMore2: 'Learn More',
+  labelReadyForDevelopers: 'Ready for Developers',
+  labelReadyForDevelopersDes:
+    "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
+  labelLaunch: 'Launch',
 }

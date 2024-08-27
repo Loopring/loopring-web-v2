@@ -7,3 +7,13 @@ export * from './genAvatar'
 export * from './addressTypeMap'
 export * from './waitForTx'
 export {readFileQrCode} from './readFileQrcode'
+export {
+  numberFormat,
+  numberFormatShowInPercent,
+  numberFormatThousandthPlace,
+  bigNumberFormat,
+  fiatNumberDisplay,
+} from './numberFormat'
+export {
+  numberStringListSum
+} from './calculation'

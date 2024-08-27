@@ -20,6 +20,7 @@ import {
   setSwapSecondConfirmation,
   setTheme,
   setUpColor,
+  setBTradeShowTutorial
 } from './reducer'
 import { PlatFormType, SettingsState } from './interface'
 import {
@@ -54,6 +55,7 @@ export function useSettings(): SettingsState & {
   setIsDevToggle(value: boolean): void
   setReferralCode(value: string): void
   setDualDefault(vaule: { auto: boolean; day: number | 'auto' }): void
+  setBTradeShowTutorial(value: boolean): void
 } {
   const settings: SettingsState = useSelector((state: any) => state.settings)
   const dispatch = useDispatch()
@@ -134,6 +136,10 @@ export function useSettings(): SettingsState & {
     ),
     setDualDefault: React.useCallback(
       (value: { auto: boolean; day: number | 'auto' }) => dispatch(setDualDefault(value)),
+      [dispatch],
+    ),
+    setBTradeShowTutorial: React.useCallback(
+      (value: boolean) => dispatch(setBTradeShowTutorial(value)),
       [dispatch],
     ),
   }

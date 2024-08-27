@@ -12,6 +12,7 @@ import {
 } from '@loopring-web/common-resources'
 import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
 import {
+  NETWORKEXTEND,
   store,
   useAccount,
   useSystem,
@@ -248,7 +249,7 @@ export const useVaultRepay = <
             // @ts-ignore
             request: request ?? vaultRepayData.request,
             web3: connectProvides.usedWeb3 as any,
-            chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+            chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
             walletType: (ConnectProviders[account.connectName] ??
               account.connectName) as unknown as sdk.ConnectorNames,
             eddsaKey: account.eddsaKey.sk,

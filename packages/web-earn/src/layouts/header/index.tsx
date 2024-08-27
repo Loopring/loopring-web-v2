@@ -31,6 +31,7 @@ const Header = withTranslation('common')(
       isHideOnScroll = false,
       isLandPage = false,
       isWrap = false,
+      application = 'webapp',
       ...rest
     }: any & RouteComponentProps) => {
       const { headerToolBarData, headerMenuData, notifyMap, headerMenuLandingData } = useHeader()
@@ -87,6 +88,7 @@ const Header = withTranslation('common')(
                 onClickExclusiveredPacket={onClickExclusiveredPacket}
                 showExclusiveRedpacket={showExclusiveRedpacket}
                 exclusiveRedpacketCount={exclusiveRedpacketCount}
+                application={'web-earn'}
               />
             </HideOnScroll>
           ) : (
@@ -107,6 +109,7 @@ const Header = withTranslation('common')(
               showExclusiveRedpacket={showExclusiveRedpacket}
               exclusiveRedpacketCount={exclusiveRedpacketCount}
               transparent
+              application={'web-earn'}
             />
           )}
           <Toolbar id='back-to-top-anchor' />

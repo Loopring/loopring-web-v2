@@ -23,6 +23,7 @@ export type System = {
   gasPrice: number
   forexMap: ForexMap
   exchangeInfo: sdk.ExchangeInfo | undefined
+  app: 'main' | 'earn' | 'guardian' | 'bridge' | undefined
   allowTrade: {
     register: { enable: boolean; reason?: string }
     order: { enable: boolean; reason?: string }

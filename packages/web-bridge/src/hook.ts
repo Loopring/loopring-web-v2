@@ -2,6 +2,7 @@ import React from 'react'
 import {
   layer1Store,
   useAccount,
+  useInjectWeb3Modal,
   useSocket,
   useSystem,
   useTokenMap,
@@ -195,6 +196,7 @@ export function useInit() {
   }, [socketStatus])
 
   useAccountInit({ state })
+  useInjectWeb3Modal('BRIDGE')
   return {
     state,
   }

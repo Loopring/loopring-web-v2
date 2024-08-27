@@ -205,6 +205,8 @@ export type DepositExtendProps<T> = {
   onBack?: () => void
   accountReady?: AccountStatus | undefined
   handleAddressChange: (address: string) => void
+  isLoopringSmartWallet?: boolean
+  onClose: () => void
 } & DepositInfoProps
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T>
