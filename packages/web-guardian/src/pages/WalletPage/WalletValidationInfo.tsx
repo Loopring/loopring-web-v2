@@ -106,11 +106,11 @@ export const WalletValidationInfo = ({
               : jsonObj.metaTxType === 37
               ? 'Unlock Wallet'
               : jsonObj.metaTxType === 18
-              ? 'Transfer'
+              ? 'Exceed Daily Quota Transfer'
               : jsonObj.metaTxType === 23
-              ? 'Approve Token'
+              ? 'Token Approval'
               : jsonObj.metaTxType === 201
-              ? 'Change Master Copy'
+              ? 'Upgrade Wallet Contract'
               : jsonObj.metaTxType === 202
               ? 'Call Contract'
               : 'Unknown'}
@@ -211,11 +211,11 @@ export const WalletValidationInfo = ({
                 : jsonObj.metaTxType === 37
                 ? 'Unlock Wallet'
                 : jsonObj.metaTxType === 18
-                ? 'Transfer'
+                ? 'Exceed Daily Quota Transfer'
                 : jsonObj.metaTxType === 23
-                ? 'Approve Token'
+                ? 'Token Approval'
                 : jsonObj.metaTxType === 201
-                ? 'Change Master Copy'
+                ? 'Upgrade Wallet Contract'
                 : jsonObj.metaTxType === 202
                 ? 'Call Contract'
                 : 'Unknown'}
