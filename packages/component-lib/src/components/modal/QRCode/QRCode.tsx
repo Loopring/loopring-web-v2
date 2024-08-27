@@ -1,9 +1,9 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { Box, Modal, Typography } from '@mui/material'
+import { Box, BoxProps, Modal, Typography } from '@mui/material'
 import { ModalQRCodeProps, QRCodePanelProps } from './Interface'
 import { ModalCloseButton } from '../../basic-lib'
-import QRCodeStyling from 'qr-code-styling'
+import QRCodeStyling, { Options } from 'qr-code-styling'
 import { SoursURL } from '@loopring-web/common-resources'
 import React from 'react'
 
@@ -95,6 +95,22 @@ export const QRCode = ({
   }, [url])
   return <Box ref={ref} />
 }
+
+
+export const QRCodeV2 = ({ options, ...rest }: { options: Options } & BoxProps) => {
+  const ref = React.useRef<HTMLDivElement>(null)
+  React.useEffect(() => {
+    if (ref.current) {
+      if (ref.current.children[0]) {
+        ref.current.removeChild(ref.current.children[0])
+      }
+      const qrCode = new QRCodeStyling(options)
+      qrCode.append(ref.current)
+    }
+  }, [options, ref])
+  return <Box ref={ref} {...rest} />
+}
+
 export const QRCodePanel = ({
   title,
   description,
