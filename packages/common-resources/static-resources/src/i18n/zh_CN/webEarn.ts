@@ -102,7 +102,7 @@ export default {
   labelViewMore: 'View more',
   labelVault: 'Portal',
   labelInvestDualDes1: 'Experience the Leading On-Chain Structured Product',
-  labelInvestDualDes2: 'Buy the dip or sell at a higher price - all while earning high yields',
+  labelInvestDualDes2: 'Buy the dip or sell at a higher price - all while earning high yields.',
   labelPortalDes1: 'Unlock the Power of Leveraged Trading',
   labelPortalDes2: 'Seamlessly borrow tokens against your collateral, paving the way for leveraged trading opportunities. By bridging decentralized and centralized exchanges, Loopring Portal broadens your trading horizon, granting access to tokens beyond the Ethereum network.',
   labelBtradeDes1: 'Trade with CEX Liquidity',
