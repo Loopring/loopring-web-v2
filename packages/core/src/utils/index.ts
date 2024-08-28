@@ -6,10 +6,7 @@ export * from './makeMeta'
 export * from './genAvatar'
 export * from './addressTypeMap'
 export * from './waitForTx'
-<<<<<<< HEAD
-=======
 export {readFileQrCode} from './readFileQrcode'
->>>>>>> released
 export {
   numberFormat,
   numberFormatShowInPercent,
