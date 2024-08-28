@@ -20,16 +20,20 @@ import {
 } from '@loopring-web/common-resources'
 import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
 import { GuardianStep, QRCodePanel, useSettings } from '@loopring-web/component-lib'
-import { BtnConnectL1, useAccount } from '@loopring-web/core'
+import { BtnConnectL1, callSwitchChain, LoopringAPI, readFileQrCode, useAccount } from '@loopring-web/core'
 import { useHebaoMain } from './hook'
 import { ModalLock } from './modal'
 import { WalletHistory } from './WalletHistory'
 import { WalletValidationInfo } from './WalletValidationInfo'
 import { WalletProtector } from './WalletProtector'
 import styled from '@emotion/styled'
-import { walletServices } from '@loopring-web/web3-provider'
+import { connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { GuardianModal } from './GuardianModal'
 import * as sdk from '@loopring-web/loopring-sdk'
+
+import { useWalletInfo } from '@loopring-web/core/src/stores/localStore/walletInfo'
+import { decodeData, getSignature } from './utils'
+
 
 const WrongStatusStyled = styled(Box)`
   display: flex;
@@ -136,9 +140,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const { account } = useAccount()
   const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const networkName: sdk.NetworkWallet = ['ETHEREUM', 'GOERLI', 'SEPOLIA'].includes(network)
-    ? sdk.NetworkWallet.ETHEREUM
-    : sdk.NetworkWallet[network]
+  const networkName: sdk.NetworkWallet = sdk.NetworkWallet[network]
   const [openQRCode, setOpenQRCode] = React.useState(false)
   const onOpenAdd = React.useCallback((open: boolean) => {
     setOpenQRCode(open)
@@ -147,10 +149,27 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const onOpenHistory = React.useCallback((open: boolean) => {
     setShowHistory(open)
   }, [])
-  const [showApprovalRequests, setShowApprovalRequests] = React.useState(false)
+  const [approvalRequests, setApprovalRequests] = React.useState<{
+    show: boolean,
+    codeApprovalStatus: 'init' | 'confirmation' | 'sharing'
+    codeInput: string,
+    guardianSign?: string
+    approveHash?: string
+  } >({
+    show: false,
+    codeApprovalStatus: 'init',
+    codeInput: '',
+    guardianSign: undefined,
+    approveHash: undefined
+  })
   const onOpenApprovalRequests = React.useCallback((open: boolean) => {
-    setShowApprovalRequests(open)
-  }, [])
+    setApprovalRequests({
+      show: open,
+      codeApprovalStatus: 'init',
+      codeInput: '',
+      guardianSign: '' 
+    })
+  }, [approvalRequests])
 
   const [showLockWallet, setShowLockWallet] = React.useState(false)
   const onOpenLockWallet = React.useCallback((open: boolean) => {
@@ -193,6 +212,8 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
   const onClickCopy = useCallback((str: string) => {
     copyToClipBoard(str)
   }, [])
+  
+  const { checkHWAddr }= useWalletInfo()
 
   switch (account.readyState) {
     case AccountStatus.UN_CONNECT:
@@ -229,17 +250,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
     case AccountStatus.NOT_ACTIVE:
     case AccountStatus.DEPOSITING:
     case AccountStatus.ACTIVATED:
-      if (loopringSmartContractWallet) {
-        return (
-          <WrongStatus
-            logo={<RefuseIcon htmlColor='var(--color-warning)' style={{ width: 60, height: 60 }} />}
-            content={t('labelWalletLoopringSmartWallet')}
-            onClickDisconnect={() => {
-              walletServices.sendDisconnect('', 'customer click disconnect')
-            }}
-          />
-        )
-      } else if (nonLoopringSmartContractWallet) {
+      if (nonLoopringSmartContractWallet) {
         return (
           <WrongStatus
             logo={<FailedIcon htmlColor='var(--color-error)' style={{ width: 60, height: 60 }} />}
@@ -260,6 +271,28 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
       account?.connectName
     }&action=HebaoAddGuardian`,
   )
+
+  
+  
+  const codeInputValidation = () => {
+    if (approvalRequests.codeInput) {
+      try {
+        const jsonObj = decodeData(approvalRequests.codeInput)
+        if (!jsonObj) return t('labelGuardianCodeFormatError')
+        const found = protectList.find(protect => {
+          return protect.address.toLowerCase() === jsonObj.sender.toLowerCase()
+        })
+        if (!found) return t('labelGuardianNotWhoIProtect')
+        if (network.toLowerCase() !== jsonObj.network.toLowerCase()) {
+          return t('labelGuardianCodeNetworkError') 
+        }
+      } catch {
+        return t('labelGuardianCodeFormatError')
+      }
+    } else {
+      return undefined
+    }
+  }
   // const { isMobile } = useSettings();
   return (
     <>
@@ -359,28 +392,32 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
         }
       />
       <GuardianModal
-        open={showApprovalRequests}
+        open={approvalRequests.show}
         onClose={() => onOpenApprovalRequests(false)}
+        background={approvalRequests.codeApprovalStatus === 'sharing' ? 'var(--color-pop-bg)' : undefined}
         title={
-          <Typography component={'p'} textAlign={'center'} marginBottom={1}>
-            <Typography
-              color={'var(--color-text-primary)'}
-              component={'p'}
-              variant={'h4'}
-              marginBottom={2}
-            >
-              {t('labelWalletValidationTitle')}
+          approvalRequests.codeApprovalStatus !== 'sharing' && (
+            <Typography component={'p'} textAlign={'center'} marginBottom={1}>
+              <Typography
+                color={'var(--color-text-primary)'}
+                component={'p'}
+                variant={'h4'}
+                marginBottom={2}
+              >
+                {t('labelWalletValidationTitle')}
+              </Typography>
+              <Typography
+                color={'var(--color-text-secondary)'}
+                component={'p'}
+                variant={'body1'}
+                marginBottom={2}
+              >
+                {t('labelWalletValidationDes')}
+              </Typography>
             </Typography>
-            <Typography
-              color={'var(--color-text-secondary)'}
-              component={'p'}
-              variant={'body1'}
-              marginBottom={2}
-            >
-              {t('labelWalletValidationDes')}
-            </Typography>
-          </Typography>
+          )
         }
+        
         body={
           <WalletValidationInfo
             isContractAddress={isContractAddress}
@@ -388,6 +425,110 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
             guardianConfig={guardianConfig}
             handleOpenModal={handleOpenModal}
             guardiansList={guardiansList}
+            guardianSign={approvalRequests.guardianSign}
+            approveHash={approvalRequests.approveHash}
+            approvalCodeStatus={approvalRequests.codeApprovalStatus}
+            onClickCodeApprovalApprove={async () => {
+              const jsonObj = decodeData(approvalRequests.codeInput)
+              const metaTxData =
+                jsonObj.metaTxType === sdk.HEBAO_META_TYPE.recovery
+                  ? {
+                      newGuardians: jsonObj.extra.newGuardians,
+                      newOwner: jsonObj.extra.newOwner,
+                    }
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.transfer
+                  ? {
+                      ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
+                      logdata: '0x',
+                    }
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.approve_token
+                  ? {
+                      ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
+                    }
+                  : jsonObj.extra
+              const data = await getSignature({
+                web3: connectProvides.usedWeb3,
+                guardianAddr: account.accAddress,
+                senderAddr: jsonObj.sender,
+                metaTxType: jsonObj.metaTxType,
+                networkName: (jsonObj.network as string).toUpperCase() as sdk.NetworkWallet,
+                validUntil: jsonObj.validUntil,
+                moduleAddress: jsonObj.extra.masterCopy,
+                metaTxData: metaTxData,
+                isHWAddr: checkHWAddr(account.accAddress),
+              })
+              setApprovalRequests({
+                ...approvalRequests,
+                codeApprovalStatus: 'sharing',
+                guardianSign: data!.signature.slice(0, data!.signature!.length - 2),
+                approveHash: data!.hash
+              })
+            }}
+            onClickCodeApprovalReject={() => {
+              setApprovalRequests({
+                ...approvalRequests,
+                codeApprovalStatus: 'init',
+              })
+            }}
+            onClickNext={async () => {
+              const jsonObj = decodeData(approvalRequests.codeInput)
+              const metaTxData =
+                jsonObj.metaTxType === sdk.HEBAO_META_TYPE.recovery
+                  ? {
+                      newGuardians: jsonObj.extra.newGuardians,
+                      newOwner: jsonObj.extra.newOwner,
+                    }
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.transfer
+                  ? {
+                      ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
+                      logdata: '0x',
+                    }
+                  : jsonObj.metaTxType === sdk.HEBAO_META_TYPE.approve_token
+                  ? {
+                      ...jsonObj.extra,
+                      amount: jsonObj.extra.value,
+                    }
+                  : jsonObj.extra
+              
+              const data = await getSignature({
+                web3: connectProvides.usedWeb3,
+                guardianAddr: account.accAddress,
+                senderAddr: jsonObj.sender,
+                metaTxType: jsonObj.metaTxType,
+                networkName: (jsonObj.network as string).toUpperCase() as sdk.NetworkWallet,
+                validUntil: jsonObj.validUntil,
+                moduleAddress: jsonObj.extra.masterCopy,
+                metaTxData: metaTxData,
+                isHWAddr: checkHWAddr(account.accAddress),
+              })
+              setApprovalRequests({
+                ...approvalRequests,
+                codeApprovalStatus: 'sharing',
+                guardianSign: data!.signature.slice(0, data!.signature!.length - 2),
+                approveHash: data!.hash
+              })
+            }}
+            onClickScan={() => {
+              readFileQrCode().then((value) => {
+                setApprovalRequests({
+                  ...approvalRequests,
+                  codeInput: value,
+                })
+              })
+            }}
+            onInputCode={(str) => {
+              setApprovalRequests({
+                ...approvalRequests,
+                codeInput: str,
+              })
+            }}
+            codeText={approvalRequests.codeInput}
+            codeInputError={codeInputValidation()}
+            nextBtnDisabled={(!approvalRequests.codeInput || codeInputValidation()) ? true : false}
+            guardian={account.accAddress}
           />
         }
       />

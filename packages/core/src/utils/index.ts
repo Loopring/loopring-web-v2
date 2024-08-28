@@ -6,6 +6,7 @@ export * from './makeMeta'
 export * from './genAvatar'
 export * from './addressTypeMap'
 export * from './waitForTx'
+export {readFileQrCode} from './readFileQrcode'
 export {
   numberFormat,
   numberFormatShowInPercent,
