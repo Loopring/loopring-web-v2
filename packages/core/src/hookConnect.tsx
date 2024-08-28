@@ -8,7 +8,6 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import {
-  AvaiableNetwork,
   ConnectProviders,
   connectProvides,
   ErrorType,
@@ -20,6 +19,7 @@ import {
   ChainETHEREUMIcon,
   ChainGOERLIIcon,
   ChainTAIKOIcon,
+  DoneIcon,
   DropDownIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
@@ -32,12 +32,12 @@ import {
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { accountReducer, useAccount } from './stores/account'
-import { resetDepositData, resetTransferData, resetWithdrawData, useModalData } from './stores'
+import { resetDepositData, resetTransferData, resetWithdrawData, useModalData, useSystem } from './stores'
 import { checkAccount, networkUpdate, resetLayer12Data, useConnectHook } from './services'
 import { REFRESH_RATE } from './defs'
 import { createImageFromInitials, store, WalletConnectL2Btn } from './index'
 import { useTranslation } from 'react-i18next'
-import { Avatar, Box, SelectChangeEvent, Typography } from '@mui/material'
+import { Avatar, Box, Button, Modal, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
@@ -158,6 +158,12 @@ const Icon = ({ label = '' }: { label: string }) => {
           <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
         </Avatar>
       )
+    case 'TAIKOHEKLA':
+      return (
+        <Avatar component={'span'} variant='circular'>
+          <Box component={'img'} src={createImageFromInitials(24, 'TAIKOHEKLA', '#E91898')}/> 
+        </Avatar>
+      )
     default:
       const child = label.split(' ')?.map((item) => item[0])
       return <Avatar component={'span'} variant='circular' children={child} />
@@ -273,16 +279,20 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     },
     [connectName, connectProvides.usedProvide, defaultNetwork],
   )
+  const { open } = useWeb3Modal()
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
     
-    const { open } = useWeb3Modal()
     return (
       <>
         {defaultNetwork && NetworkMap[defaultNetwork] && (
           <OutlineSelectItemStyle
-            sx={{ cursor: 'pointer' }}
-            onClick={() => open({ view: accAddress ? 'Networks' : 'Connect' })}
+            sx={{ 
+              cursor: 'pointer',
+              borderRadius: '4px',
+              marginRight: 0.5
+            }}
+            onClick={() => open({ view: 'Networks' })}
             disabled={disable(defaultNetwork)}
             className={`viewNetwork${defaultNetwork} ${
               NetworkMap[defaultNetwork]?.isTest ? 'provider-test' : ''
@@ -294,6 +304,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
               <Icon label={MapChainId[defaultNetwork]} />
               <span className={'label'}>{t(NetworkMap[defaultNetwork].label)}</span>
             </Typography>
+            <DropDownIcon sx={{marginLeft: 0.5}} />
           </OutlineSelectItemStyle>
         )}
       </>
@@ -446,16 +457,21 @@ export const ViewAccountTemplate = React.memo(
   ({
     activeViewTemplate,
     className,
-    size = 'large',
+    size = 'large'
   }: {
     activeViewTemplate: JSX.Element
     className?: string
     size?: string
+    onClickCompleteSignIn?: () => void
   }) => {
     const { account } = useAccount()
     const { t } = useTranslation(['common', 'layout'])
     const { isMobile, defaultNetwork } = useSettings()
+    const { app } = useSystem()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+
+    const isTaikoEarn =
+      [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork) && app === 'earn'
 
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
@@ -514,7 +530,7 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={'calc(1200px - 32px)'}
+              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
               <Typography
@@ -523,11 +539,13 @@ export const ViewAccountTemplate = React.memo(
                 whiteSpace={'pre-line'}
                 textAlign={'center'}
               >
-                {t('describeTitleNoAccount', {
-                  layer2: L1L2_NAME_DEFINED[network].layer2,
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                })}
+                {isTaikoEarn
+                  ? t('labelEarnDepositDes')
+                  : t('describeTitleNoAccount', {
+                      layer2: L1L2_NAME_DEFINED[network].layer2,
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    })}
               </Typography>
               <WalletConnectL2Btn size={size} />
             </ViewAccountTemplateStyle>
@@ -542,17 +560,31 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={'calc(1200px - 32px)'}
+              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
-              <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                {t('describeTitleNotActive', {
-                  layer2: 'Layer 2',
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l1ChainName: 'Ethereum',
-                })}
-              </Typography>
-              <WalletConnectL2Btn size={size} />
+              {isTaikoEarn ? (
+                <>
+                  <DoneIcon
+                    style={{ color: 'var(--color-success)', width: '64px', height: '64px' }}
+                  />
+                  <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+                    {t("labelAccountCreatedHint")}
+                  </Typography>
+                  <WalletConnectL2Btn size={size} />
+                </>
+              ) : (
+                <>
+                  <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+                    {t('describeTitleNotActive', {
+                      layer2: 'Layer 2',
+                      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                      l1ChainName: 'Ethereum',
+                    })}
+                  </Typography>
+                  <WalletConnectL2Btn size={size} />
+                </>
+              )}
             </ViewAccountTemplateStyle>
           )
           break
@@ -565,7 +597,7 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={'calc(1200px - 32px)'}
+              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
               <img
@@ -575,9 +607,11 @@ export const ViewAccountTemplate = React.memo(
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                {t('describeTitleOpenAccounting', {
-                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                })}
+                {isTaikoEarn
+                  ? t('labelEarnDepositDes')
+                  : t('describeTitleOpenAccounting', {
+                      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                    })}
               </Typography>
             </ViewAccountTemplateStyle>
           )
@@ -607,8 +641,12 @@ export const ViewAccountTemplate = React.memo(
         default:
           break
       }
-    }, [account.readyState, account.connectName, isMobile, t, activeViewTemplate])
+    }, [account.readyState, account.connectName, isMobile, t, activeViewTemplate, isTaikoEarn])
 
-    return <>{viewTemplate}</>
+    return (
+      <>
+        {viewTemplate}
+      </>
+    )
   },
 )

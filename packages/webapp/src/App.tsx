@@ -8,7 +8,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { store, useInjectWeb3Modal } from '@loopring-web/core'
+import { store } from '@loopring-web/core'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -25,13 +25,11 @@ const App = () => {
     i18n: { language },
   } = useTranslation()
   const storeLan = store.getState().settings.language
-
   React.useEffect(() => {
     if (storeLan !== language) {
       store.dispatch(setLanguage(language))
     }
   }, [storeLan, language])
-  useInjectWeb3Modal('MAIN')
 
   React.useEffect(() => {
     if (window.location.protocol !== 'https:') {

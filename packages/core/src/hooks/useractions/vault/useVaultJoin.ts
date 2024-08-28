@@ -30,6 +30,7 @@ import {
   useVaultMap,
   useL2CommonSocket,
   l2CommonService,
+  NETWORKEXTEND,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -379,7 +380,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                             memo: '',
                           } as any,
                           web3: connectProvides.usedWeb3 as any,
-                          chainId: chainId !== sdk.ChainId.SEPOLIA ? sdk.ChainId.MAINNET : chainId,
+                          chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
                           walletType: (ConnectProviders[account.connectName] ??
                             account.connectName) as unknown as sdk.ConnectorNames,
                           eddsaKey: account.eddsaKey.sk,

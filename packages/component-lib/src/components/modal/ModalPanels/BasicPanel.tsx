@@ -523,11 +523,7 @@ export const ExportAccountBase = (props: PanelProps) => {
 }
 
 export const DepositBase = (props: PanelProps) => {
-  const propsPatch = {
-    title: 'labelL1toL2',
-  }
-
-  return <BasicPanel {...props} {...propsPatch} />
+  return <BasicPanel title={'labelL1toL2'} {...props} />
 }
 
 export const MintBase = (props: PanelProps) => {

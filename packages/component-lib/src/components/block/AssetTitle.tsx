@@ -119,24 +119,49 @@ export const AssetTitle = withTranslation('common')(
           flexDirection={'row'}
           justifyContent={'flex-end'}
         >
-          <Button
-            variant={'contained'}
-            size={'small'}
-            color={'primary'}
-            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
-            onClick={() => onShowSend()}
-          >
-            {isWebEarn ? t('labelWithdrawBtn') : t('labelSendAssetBtn')}
-          </Button>
-          <Button
-            variant={'outlined'}
-            size={'medium'}
-            color={'secondary'}
-            disabled={assetBtnStatus === TradeBtnStatus.LOADING}
-            onClick={() => onShowReceive()}
-          >
-            {isWebEarn ? t('labelDeposit') : t('labelAddAssetBtn')}
-          </Button>
+          {isWebEarn ? (
+            <>
+              <Button
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
+                disabled={assetBtnStatus === TradeBtnStatus.LOADING}
+                onClick={() => onShowReceive()}
+              >
+                {t('labelDeposit')}
+              </Button>
+              <Button
+                variant={'outlined'}
+                size={'medium'}
+                color={'secondary'}
+                disabled={assetBtnStatus === TradeBtnStatus.LOADING}
+                onClick={() => onShowSend()}
+              >
+                {t('labelWithdrawBtn')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant={'contained'}
+                size={'small'}
+                color={'primary'}
+                disabled={assetBtnStatus === TradeBtnStatus.LOADING}
+                onClick={() => onShowSend()}
+              >
+                {t('labelSendAssetBtn')}
+              </Button>
+              <Button
+                variant={'outlined'}
+                size={'medium'}
+                color={'secondary'}
+                disabled={assetBtnStatus === TradeBtnStatus.LOADING}
+                onClick={() => onShowReceive()}
+              >
+                {t('labelAddAssetBtn')}
+              </Button>
+            </>
+          )}
           <Button
             variant={'outlined'}
             size={'medium'}

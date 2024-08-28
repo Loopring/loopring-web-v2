@@ -13,6 +13,7 @@ type GuardianModalProps = {
   body: ReactNode
   onBack?: () => void
   showBackButton?: boolean
+  background?: string 
 }
 
 const GuardianModalContentStyled = styled(Box)<{ isMobile?: boolean }>`
@@ -41,6 +42,7 @@ export const GuardianModal = withTranslation('common')(
     title,
     onBack,
     showBackButton,
+    background,
     t,
   }: GuardianModalProps & WithTranslation) => {
     const { isMobile } = useSettings()
@@ -66,6 +68,7 @@ export const GuardianModal = withTranslation('common')(
             flexDirection={'column'}
             // width={isMobile ? "100%" : "auto"}
             width={'100%'}
+            style={{background: background}}
           >
             {showBackButton && <ModalBackButton onBack={onBack} />}
             <ModalCloseButton onClose={onClose} t={t} />

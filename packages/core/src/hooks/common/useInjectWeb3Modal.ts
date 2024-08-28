@@ -1,9 +1,9 @@
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
-import { SagaStatus, myLog } from '@loopring-web/common-resources'
+import { SUPPORTING_NETWORKS, SagaStatus, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
-import { checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
+import { accountServices, checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import { providers } from 'ethers'
 import Web3 from 'web3'
 import { useTheme } from '@emotion/react'
+import { ChainId, toHex } from '@loopring-web/loopring-sdk'
 
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 const chains = [
@@ -23,24 +24,24 @@ const chains = [
     rpcUrl: process.env.REACT_APP_RPC_URL_1!,
   },
   {
-    chainId: 5,
-    name: 'Goerli',
+    chainId: 167000,
+    name: 'Taiko',
     currency: 'ETH',
-    explorerUrl: 'https://goeril.etherscan.io/',
-    rpcUrl: process.env.REACT_APP_RPC_URL_5!,
+    explorerUrl: 'https://taikoscan.io',
+    rpcUrl: process.env.REACT_APP_RPC_URL_167000!,
   },
   {
     chainId: 11155111,
     name: 'Sepolia',
     currency: 'ETH',
-    explorerUrl: 'https://sepolia.etherscan.io/',
+    explorerUrl: 'https://sepolia.etherscan.io',
     rpcUrl: process.env.REACT_APP_RPC_URL_11155111!,
   },
   {
     chainId: 167009,
     name: 'Taiko Hekla',
     currency: 'ETH',
-    explorerUrl: 'https://explorer.hekla.taiko.xyz/',
+    explorerUrl: 'https://hekla.taikoscan.io',
     rpcUrl: process.env.REACT_APP_RPC_URL_167009!,
   },
 ]
@@ -51,7 +52,7 @@ const metadata = {
   url: process.env.REACT_APP_DOMAIN!,
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
-const chainIds = process.env.REACT_APP_CHAIN_IDS!.split(',').map(Number)
+const chainIds = SUPPORTING_NETWORKS.map(Number)
 export const web3Modal = createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
   chains: chains.filter(chain => chainIds.includes(chain.chainId)),
@@ -70,7 +71,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   const { mode } = useTheme()
   const { setThemeMode } = useWeb3ModalTheme()
   const { updateWalletLayer1 } = useWalletLayer1()
-  const {defaultNetwork} = useSettings()
+  const { defaultNetwork } = useSettings()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
@@ -85,24 +86,32 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
         walletServices.sendDisconnect('', 'customer click disconnect')
         resetAccount()
       }
+    } else if (event.data.event === 'CONNECT_SUCCESS' && type === 'EARN' && walletProvider) {
+      new providers.Web3Provider(walletProvider).send('wallet_switchEthereumChain', [
+        { chainId: toHex(ChainId.TAIKO) },
+      ])
     }
     myLog('event', event)
-  }, [event])
+  }, [event, walletProvider])
   React.useEffect(() => {
     ;(async () => {
       if (address && walletProvider) {
-        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) {
+        if ((address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
           store.dispatch(
             updateSystem({
               chainId,
             }),
           )
           store.dispatch(setDefaultNetwork(chainId))
-          setTimeout(() => {
-            location.reload()  
-          }, 1000);
-        } 
-        checkAccount(address, chainId)
+        }
+        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) { 
+          accountServices.sendAccountLock()
+          checkAccount(address, chainId)
+        } else if (chainId && chainIds.includes(chainId)) {
+          checkAccount(address, chainId)
+        }
+      } else {
+        store.dispatch(setDefaultNetwork(undefined))
       }
       if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
         updateWalletLayer1()

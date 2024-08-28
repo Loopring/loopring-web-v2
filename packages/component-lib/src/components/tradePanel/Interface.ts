@@ -168,6 +168,11 @@ export type SwapProps<T, I, TCD> = {
   _width?: string
   hideSecondConfirmation?: boolean
   scrollDisabled?: boolean
+  bTradeTutorial?: {
+    show: boolean
+    onToggle: () => void
+    checked: boolean
+  }
 } & SwapInfoProps<T, I, TCD> &
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>

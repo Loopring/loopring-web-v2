@@ -31,6 +31,7 @@ import {
   callSwitchChain,
   DepositCommands,
   depositServices,
+  getContractTypeByNetwork,
   LoopringAPI,
   store,
   useAccount,
@@ -41,6 +42,7 @@ import {
   useSystem,
   useTokenMap,
   useWalletLayer1,
+  useWalletLayer2,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
@@ -58,13 +60,14 @@ export const useDeposit = <
 ) => {
   const subject = React.useMemo(() => depositServices.onSocket(), [])
   const { tokenMap, totalCoinMap } = useTokenMap()
-  const { account, status: accountStatus } = useAccount()
+  const { account, status: accountStatus, updateAccount } = useAccount()
   const { walletLayer1, updateWalletLayer1, status: walletLayer1Status } = useWalletLayer1()
+  const { updateWalletLayer2 } = useWalletLayer2()
   const { updateDepositHash } = useOnChainInfo()
   const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
-  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus } = useSystem()
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus, app } = useSystem()
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -82,6 +85,29 @@ export const useDeposit = <
     addrStatus: toAddressStatus,
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck()
+
+  const [loopringSmartWalletCheck, setLoopringSmartWalletCheck] = React.useState(
+    {
+      isLoopringSmartWallet: undefined as boolean | undefined,
+      checkedAddress: undefined as string | undefined
+    }
+  )
+  
+  React.useEffect(() => {
+    if (realToAddress && realToAddress !== loopringSmartWalletCheck.checkedAddress) {
+      setLoopringSmartWalletCheck({
+        checkedAddress: realToAddress,
+        isLoopringSmartWallet: undefined
+      })
+      getContractTypeByNetwork(realToAddress, MapChainId[defaultNetwork]).then((contractType) => {
+        setLoopringSmartWalletCheck((state) => ({
+          ...state,
+          isLoopringSmartWallet: contractType ? contractType.contractVersion !== '' : false
+        }))
+      })
+    }
+  }, [realToAddress])
+  
 
   React.useEffect(() => {
     const depositValue = store.getState()._router_modalData.depositValue
@@ -101,6 +127,17 @@ export const useDeposit = <
     setShowDeposit,
     setShowAccount,
   } = useOpenModals()
+
+  React.useEffect(() => {
+    if(!isShow) {
+      const oldValue = store.getState()._router_modalData.depositValue
+      let newValue = {
+        ...oldValue,
+        tradeValue: undefined
+      }
+      updateDepositData({ ...newValue })
+    }
+  }, [isShow])
 
   const {
     btnStatus,
@@ -545,6 +582,23 @@ export const useDeposit = <
             ) {
               setShowAccount({ isShow: false })
             }
+            if (account.readyState === 'NO_ACCOUNT') {
+              const timer = setInterval(() => {
+                LoopringAPI.exchangeAPI?.getAccount({
+                  owner: account.accAddress,
+                }).then(acc => {
+                  if (acc.accInfo.accountId > 0) {
+                    updateAccount({ 
+                      _accountIdNotActive : acc.accInfo.accountId,
+                      readyState: 'NOT_ACTIVE',
+                    })
+                    updateWalletLayer2()
+                    clearInterval(timer)
+                  }
+                })
+              }, 5 * 1000);
+            }
+            
           } else {
             throw { code: UIERROR_CODE.ERROR_NO_RESPONSE }
           }
@@ -647,7 +701,9 @@ export const useDeposit = <
   }, [subject, accountStatus, systemStatus])
 
   const title =
-    account.readyState === AccountStatus.NO_ACCOUNT
+    app === 'earn'
+      ? 'labelDeposit'
+      : account.readyState === AccountStatus.NO_ACCOUNT
       ? t('labelDepositTitleAndActive', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
       : t('labelDepositTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
   const depositProps: DepositProps<T, I> = {
@@ -671,6 +727,10 @@ export const useDeposit = <
     toAddress: toInputAddress,
     realToAddress: depositValue.toAddress,
     isToAddressEditable,
+    isLoopringSmartWallet: loopringSmartWalletCheck.isLoopringSmartWallet,
+    onClose() {
+      setShowDeposit({ isShow: false })
+    },
   }
 
   return {

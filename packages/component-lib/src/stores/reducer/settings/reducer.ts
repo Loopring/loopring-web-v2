@@ -38,6 +38,7 @@ const initialState: SettingsState = {
   referralCode: '',
   isDevToggle: false,
   dualAuto: { auto: true, day: 'auto' },
+  bTradeShowTutorial: true
 }
 
 export const settingsSlice: Slice<SettingsState> = createSlice({
@@ -163,6 +164,9 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
     setDualDefault(state, action: PayloadAction<{ auto: boolean; day: number | 'auto' }>) {
       state.dualAuto = action.payload
     },
+    setBTradeShowTutorial(state, action: PayloadAction<boolean>) {
+      state.bTradeShowTutorial = action.payload
+    },
   },
 })
 export const {
@@ -186,5 +190,6 @@ export const {
   setReferralCode,
   setIsDevToggle,
   setDualDefault,
+  setBTradeShowTutorial
 } = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

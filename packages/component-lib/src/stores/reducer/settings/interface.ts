@@ -39,4 +39,5 @@ export interface SettingsState {
   referralCode: string
   isDevToggle: boolean
   dualAuto: { auto: boolean; day: number | 'auto' }
+  bTradeShowTutorial: boolean
 }

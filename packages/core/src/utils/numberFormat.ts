@@ -2,13 +2,12 @@ import Decimal from "decimal.js"
 
 import { BigNumber, utils } from "ethers"
 import { CurrencyToTag, PriceTag } from "@loopring-web/common-resources"
-import {  } from "@loopring-web/loopring-sdk"
 
 export const numberFormat = (number: string | number, format?: {
   fixed?: number,
   thousandthPlace?: boolean,
   showInPercent?: boolean,
-  currency?: Currency,
+  currency?: CurrencyToTag,
   locale?: Intl.LocalesArgument
   tokenSymbol?: string
   removeTrailingZero?: boolean
@@ -31,7 +30,7 @@ export const numberFormat = (number: string | number, format?: {
 export const numberFormatThousandthPlace = (number: string | number, format?: {
   fixed?: number,
   showInPercent?: boolean,
-  currency?: Currency,
+  currency?: CurrencyToTag,
   locale?: Intl.LocalesArgument
   tokenSymbol?: string
   removeTrailingZero?: boolean
@@ -42,7 +41,7 @@ export const numberFormatThousandthPlace = (number: string | number, format?: {
 export const numberFormatShowInPercent = (number: string | number, format?: {
   fixed?: number,
   thousandthPlace?: boolean,
-  currency?: Currency,
+  currency?: CurrencyToTag,
   locale?: Intl.LocalesArgument
   tokenSymbol?: string
   removeTrailingZero?: boolean

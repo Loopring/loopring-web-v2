@@ -1,7 +1,9 @@
 import React from 'react'
 import {
+  fiatNumberDisplay,
   LoopringAPI,
   makeWalletLayer2,
+  numberStringListSum,
   store,
   useAccount,
   useBtnStatus,
@@ -38,11 +40,13 @@ import {
   TabOrderIndex,
   TokenType,
   TradeBtnStatus,
+  VaultKey,
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
 import _, { omitBy } from 'lodash'
+import Decimal from 'decimal.js'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
   assetsRawData: R[]
@@ -59,6 +63,8 @@ export type AssetPanelProps<R = AssetsRawDataItem> = {
   getTokenRelatedMarketArray: any
   hideSmallBalances: any
   assetBtnStatus: TradeBtnStatus
+  totalAvailableInCurrency: string
+  totalFrozenInCurrency: string
 }
 export const useGetAssets = (): AssetPanelProps & {
   assetTitleProps: any
@@ -301,8 +307,7 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
-
-  myLog('assetsRawData')
+  const { tokenPrices } = useTokenPrices()
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
@@ -320,6 +325,40 @@ export const useGetAssets = (): AssetPanelProps & {
     themeMode,
     getTokenRelatedMarketArray,
     hideSmallBalances,
+    totalAvailableInCurrency: forexMap[currency] && fiatNumberDisplay(
+      new Decimal(forexMap[currency])
+      .mul(
+        numberStringListSum(
+          assetsRawData.map((asset) => {
+            try {
+              return new Decimal(asset.available.toString()).mul(tokenPrices[asset.name]).toString()
+            } catch {
+              return '0'
+            }
+            
+          }),
+        ),
+      )
+      .toString(),
+      currency
+    ) ,
+    totalFrozenInCurrency: forexMap[currency] && fiatNumberDisplay(
+      new Decimal(forexMap[currency])
+      .mul(
+        numberStringListSum(
+          assetsRawData.map((asset) => {
+
+            try {
+              return new Decimal(asset.locked).mul(tokenPrices[asset.name]).toString()
+            } catch {
+              return '0'
+            }
+          }),
+        ),
+      )
+      .toString(),
+      currency
+    ),
   }
 }
 export const useAssetAction = () => {
@@ -348,6 +387,7 @@ export const useAssetAction = () => {
             sdk.LOCK_TYPE.BTRADE,
             sdk.LOCK_TYPE.L2STAKING,
             sdk.LOCK_TYPE.STOP_LIMIT,
+            sdk.LOCK_TYPE.VAULT_COLLATERAL,
           ].join(','),
         } as any,
         account.apiKey,
@@ -384,6 +424,9 @@ export const useAssetAction = () => {
                   break
                 case sdk.LOCK_TYPE.STOP_LIMIT:
                   link = `/#${RouterPath.l2records}/${RecordTabIndex.Orders}/${TabOrderIndex.orderOpenTable}`
+                  break
+                case sdk.LOCK_TYPE.VAULT_COLLATERAL:
+                  link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
               }
               prev.push({

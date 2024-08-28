@@ -7,7 +7,7 @@ export default {
   labelL2toL1Action: 'Withdraw',
   labelReceive: 'Receive',
   labelTransfer: 'Transfer',
-  labelWithdraw: 'Withdrawal',
+  labelWithdraw: 'Withdraw',
   labelWithdrawAction: 'Withdraw',
   labelDeposit: 'Deposit',
   labelTrade: '交易',

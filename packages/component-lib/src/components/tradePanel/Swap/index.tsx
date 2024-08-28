@@ -1,10 +1,12 @@
 import { SwapProps, SwapTradeData, SwapType } from '../Interface'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import React, { useCallback, useState } from 'react'
-import { Box, Grid, Popover, Switch, Tooltip, Typography } from '@mui/material'
+import { Box, Checkbox, Grid, Popover, Switch, Tooltip, Typography } from '@mui/material'
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib'
 import {
   BtradeTradeCalcData,
+  CheckBoxIcon,
+  CheckedIcon,
   defaultBlockTradeSlipage,
   IBData,
   Info2Icon,
@@ -67,6 +69,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     titleI8nKey = 'swapTitle',
     scenario = SCENARIO.SWAP,
     hideSecondConfirmation,
+    bTradeTutorial,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
     let history = useHistory()
@@ -266,40 +269,61 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             onSlippageChangeCallBack(slippage, customSlippage)
                           }}
                         />
-                        {!hideSecondConfirmation && <Grid
-                          container
-                          justifyContent={'space-between'}
-                          direction={'row'}
-                          alignItems={'center'}
-                          height={24}
-                          marginTop={2.5}
-                        >
-                          <Tooltip
-                            title={rest.t('labelSwapSettingSecondConfirmTootip').toString()}
-                            placement={'bottom'}
+                        {bTradeTutorial?.show && (
+                          <Box
+                            marginTop={1.5}
+                            display={'flex'}
+                            alignItems={'center'}
+                            justifyContent={'space-between'}
                           >
-                            <Typography
-                              component={'span'}
-                              variant='body2'
-                              color={'textSecondary'}
-                              display={'inline-flex'}
-                              alignItems={'center'}
-                            >
-                              <Info2Icon
-                                fontSize={'small'}
-                                color={'inherit'}
-                                sx={{ marginX: 1 / 2 }}
-                              />
-                              {' ' + rest.t('labelSwapSettingSecondConfirm')}
+                            <Typography color={'var(--color-text-secondary)'}>
+                              {rest.t("Block Trade Tutorial")}
                             </Typography>
-                          </Tooltip>
-                          <Switch
-                            onChange={() => {
-                              onSwitchChangeCallback()
-                            }}
-                            checked={swapSecondConfirmation !== false}
-                          />
-                        </Grid>}
+
+                            <Switch
+                              checked={bTradeTutorial?.checked}
+                              onChange={(_event, _checked) => {
+                                bTradeTutorial?.onToggle()
+                              }}
+                            />
+                          </Box>
+                        )}
+                        {!hideSecondConfirmation && (
+                          <Grid
+                            container
+                            justifyContent={'space-between'}
+                            direction={'row'}
+                            alignItems={'center'}
+                            height={24}
+                            marginTop={2.5}
+                          >
+                            <Tooltip
+                              title={rest.t('labelSwapSettingSecondConfirmTootip').toString()}
+                              placement={'bottom'}
+                            >
+                              <Typography
+                                component={'span'}
+                                variant='body2'
+                                color={'textSecondary'}
+                                display={'inline-flex'}
+                                alignItems={'center'}
+                              >
+                                <Info2Icon
+                                  fontSize={'small'}
+                                  color={'inherit'}
+                                  sx={{ marginX: 1 / 2 }}
+                                />
+                                {' ' + rest.t('labelSwapSettingSecondConfirm')}
+                              </Typography>
+                            </Tooltip>
+                            <Switch
+                              onChange={() => {
+                                onSwitchChangeCallback()
+                              }}
+                              checked={swapSecondConfirmation !== false}
+                            />
+                          </Grid>
+                        )}
                       </Box>
                     </PopoverStyled>
                   </Typography>

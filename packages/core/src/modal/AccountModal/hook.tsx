@@ -275,7 +275,7 @@ export function useAccountModalForUI({
     claimValue,
   } = useModalData()
 
-  const { chainId, allowTrade } = useSystem()
+  const { chainId, allowTrade, app } = useSystem()
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const { account, addressShort, shouldShow, setShouldShow } = useAccount()
@@ -790,6 +790,7 @@ export function useAccountModalForUI({
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
   })
+  const isEarn = app === 'earn'
 
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
@@ -1003,6 +1004,7 @@ export function useAccountModalForUI({
               account,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
       },
@@ -1015,6 +1017,7 @@ export function useAccountModalForUI({
               account,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
       },
@@ -1032,6 +1035,7 @@ export function useAccountModalForUI({
               account,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
         onBack: () => {
@@ -1051,6 +1055,7 @@ export function useAccountModalForUI({
               account,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
         onBack: () => {
@@ -1071,6 +1076,7 @@ export function useAccountModalForUI({
               account,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
         onBack: () => {
@@ -1098,6 +1104,7 @@ export function useAccountModalForUI({
               error: isShowAccount.error,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
         onBack: !depositProps.isAllowInputToAddress
@@ -1134,6 +1141,7 @@ export function useAccountModalForUI({
               account,
               t,
             }}
+            title={isEarn ? 'labelDeposit' : 'labelL1toL2'}
           />
         ),
       },
@@ -3047,7 +3055,13 @@ export function useAccountModalForUI({
               btnTxt: 'labelClose',
               callback: () => {
                 setShouldShow(false)
-                setShowActiveAccount({ isShow: true })
+                const isTaikoEarn =
+                  isEarn && [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
+                if (isTaikoEarn) {
+                  setShowAccount({ isShow: false })
+                } else {
+                  setShowActiveAccount({ isShow: true })
+                }
               },
             }}
             {...{
