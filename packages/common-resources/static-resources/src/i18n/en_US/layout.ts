@@ -134,7 +134,7 @@ export default {
   labelDualInvest: 'Dual Investment',
   labelVault: 'Portal',
   labelNavPro: 'Loopring pro',
-  labelNavEarn: 'Loopring Earn',
+  labelNavEarn: 'Loopring DeFi',
   labelNavWallet: 'Wallet',
 
   labelDashBoard: 'Dashboard',
