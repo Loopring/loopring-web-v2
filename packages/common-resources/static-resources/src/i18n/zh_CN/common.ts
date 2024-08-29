@@ -1028,7 +1028,7 @@ export default {
   labelDualReturnValue: 'Return {{value}} {{symbol}}',
   labelDualQuota: 'Total Quota',
   labelProduct: 'Product',
-  labelDualAssetFrozen_Target: 'Frozen Target',
+  labelDualAssetFrozen_Target: 'Invest Target',
   labelDualAssetPrice: 'Price',
   labelDualAssetSettlement_Date: 'SettlementDate',
   labelDualAssetAPR: 'APR',
