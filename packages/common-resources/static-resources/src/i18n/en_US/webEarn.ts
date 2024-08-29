@@ -110,7 +110,7 @@ export default {
   labelInvestDualTitle: 'Dual Investment',
   labelLoopringDeFi: 'Loopring DeFi',
   labelIntroDes1: 'Revolutionizing Decentralized Finance with Cutting-',
-  labelIntroDes2: 'structured products and a user friendly experience',
+  labelIntroDes2: 'Edge Earning and Trading Solutions',
   labelIntroDes3: 'Delivering CeFi-like user experiences in a fully trustless environment',
   labelLearnMore2: 'Learn More',
   labelReadyForDevelopers: 'Ready for Developers',

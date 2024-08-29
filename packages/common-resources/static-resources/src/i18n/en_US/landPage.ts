@@ -88,7 +88,7 @@ export default {
   labelFeatureDes8: 'Loopring Layer2',
   labelFeatureDes8_2: 'Crypto exchange on the go',
   labelGo: 'Go',
-  labelTitleLiteDes: 'Access the most innovative structural products brought to the DeFi world.',
+  labelTitleLiteDes: 'Revolutionizing Decentralized Finance with Cutting-Edge Earning and Trading Solutions.',
   labelInvestStakeLRCDes:
     'Lock your LRC for a minimum duration to earn interest and redeem at any time.',
   labelInvestDualDes: 'Buy the dip or sell the covered gain while earning a high yield.',
