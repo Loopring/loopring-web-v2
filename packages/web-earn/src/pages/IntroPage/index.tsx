@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { ToRightTopArrow, hexToRGB } from '@loopring-web/common-resources';
+import { CloseIcon, ToRightTopArrow, hexToRGB } from '@loopring-web/common-resources';
 import { useSettings } from '@loopring-web/component-lib';
 import { SoursURL } from '@loopring-web/loopring-sdk';
 import { Box, BoxProps, Button, ContainerProps, useMediaQuery } from '@mui/material';
@@ -9,7 +9,6 @@ import { Container, Typography, IconButton, Card, CardMedia, CardContent, Grid }
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
-import CloseIcon from '@mui/icons-material/Close'; // Optional close button
 import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation';
 // import { confirmation } from '@loopring-web/core';
 
