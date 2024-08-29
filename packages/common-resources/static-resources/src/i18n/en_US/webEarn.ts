@@ -109,8 +109,9 @@ export default {
   labelBtradeDes2: 'Effortlessly trade tokens with near-zero impact, leveraging multiple liquidity sources across crypto to guarantee the best rates every time.',
   labelInvestDualTitle: 'Dual Investment',
   labelLoopringDeFi: 'Loopring DeFi',
-  labelIntroDes1: 'Revolutionizing decentralized finance with the most advanced',
+  labelIntroDes1: 'Revolutionizing Decentralized Finance with Cutting-',
   labelIntroDes2: 'structured products and a user friendly experience',
+  labelIntroDes3: 'Delivering CeFi-like user experiences in a fully trustless environment',
   labelLearnMore2: 'Learn More',
   labelReadyForDevelopers: 'Ready for Developers',
   labelReadyForDevelopersDes:

@@ -318,7 +318,7 @@ export const AssetsTable = withTranslation('tables')(
       },
       {
         key: 'locked',
-        name: t('labelLocked'),
+        name: isWebEarn ? t('labelInvest') : t('labelLocked'),
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           return (
@@ -451,7 +451,7 @@ export const AssetsTable = withTranslation('tables')(
       },
       {
         key: 'locked',
-        name: t('labelLocked'),
+        name: isWebEarn ? t('labelInvest') : t('labelLocked'),
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           return (
