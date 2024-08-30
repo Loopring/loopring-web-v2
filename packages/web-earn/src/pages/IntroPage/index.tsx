@@ -20,7 +20,7 @@ const LoopringDeFiLaunchPopup = ({ onClose }) => {
         position: 'absolute',
         maxWidth: '95%',
         width: '428px',
-        backgroundColor: theme.mode === 'dark' ? 'var(--color-global-bg-opacity)' : '#F9F9FE',
+        backgroundColor: theme.mode === 'dark' ? 'var(--color-global-bg)' : '#F9F9FE',
         padding: 4,
         boxShadow: 3,
         borderRadius: '24px',
