@@ -82,9 +82,9 @@ export default {
   labelApy: 'APY',
   labelCurrentPrice: 'Current Price',
   labelViewDetails: 'View Details',
-  labelLoopringEarn: 'Loopring Earn',
+  labelLoopringEarn: 'Loopring DeFi',
   labelLoopringEarnDes:
-    'Loopring Earn is built on top of Loopring Protocol to take full advantage of its ZKRollup technology and full-stack DEX capability to provide the most innovative DeFi products to users.',
+    'Loopring DeFi is built on top of Loopring Protocol to take full advantage of its ZKRollup technology and full-stack DEX capability to provide the most innovative DeFi products to users.',
   labelLoopringProtocol: 'Loopring Protocol',
   labelLoopringProtocolDes:
     "The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for trading.",

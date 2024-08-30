@@ -60,7 +60,7 @@ export default {
   labelEthereum: 'Ethereum ',
   labelGoDapps: 'Go Dapps',
   labelNavPro: 'Loopring pro',
-  labelNavEarn: 'Loopring Earn',
+  labelNavEarn: 'Loopring DeFi',
   labelNavWallet: 'Wallet',
   labelNavLanuch: 'View Dapps',
   labelLoopringSmartWallet: 'Loopring Smart Wallet',
@@ -69,7 +69,7 @@ export default {
   labelEthereumUnleashed: "<0>Ethereum's First zkRollup </0><1>Layer 2</1>",
   labelGatewayToEthereum:
     'Your gateway to Ethereum, DeFi, NFTs, and Financial Freedom.\n Fast, Low-cost, & Secure',
-  labelTitleLite: 'Loopring Earn',
+  labelTitleLite: 'Loopring DeFi',
   labelLoopringProtocol: 'Loopring Protocol',
   labelLoopringProtocolDes:
     "The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for trading.",
