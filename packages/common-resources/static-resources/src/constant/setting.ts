@@ -47,7 +47,7 @@ export const Bridge = 'https://bridge.loopring.io/#/'
 export const ExchangeIO = 'https://loopring.io'
 export const Exchange = 'https://loopring.io/#/'
 export const ExchangePro = 'https://loopring.io/#/pro'
-export const Earnlite = 'https://earn.loopring.io/#/'
+export const Earnlite = 'https://defi.loopring.io/#/'
 export const WalletSite = 'https://wallet.loopring.io'
 export const LOOPRING_DOC = 'https://docs.loopring.io'
 
