@@ -20,4 +20,5 @@ export interface Confirmation {
   showAutoDefault: boolean
   confirmationNeeded: boolean
   confirmedOpenVaultPosition: boolean
+  showTaikoLaunchBanner: boolean
 }

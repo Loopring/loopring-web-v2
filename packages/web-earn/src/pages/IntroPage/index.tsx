@@ -1,18 +1,66 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { ToRightTopArrow, hexToRGB } from '@loopring-web/common-resources';
+import { CloseIcon, ToRightTopArrow, hexToRGB } from '@loopring-web/common-resources';
 import { useSettings } from '@loopring-web/component-lib';
 import { SoursURL } from '@loopring-web/loopring-sdk';
 import { Box, BoxProps, Button, ContainerProps, useMediaQuery } from '@mui/material';
 // import { styled } from '@mui/material';
-import { Container, Typography, Card, CardMedia, CardContent, Grid } from '@mui/material';
+import { Container, Typography, IconButton, Card, CardMedia, CardContent, Grid } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
+import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation';
+// import { confirmation } from '@loopring-web/core';
 
-interface IntroProps {
-  
-}
+const LoopringDeFiLaunchPopup = ({ onClose }) => {
+  const theme =useTheme()
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        maxWidth: '95%',
+        width: '428px',
+        backgroundColor: theme.mode === 'dark' ? 'var(--color-global-bg)' : '#F9F9FE',
+        padding: 4,
+        boxShadow: 3,
+        borderRadius: '24px',
+        textAlign: 'center',
+        zIndex: 10,
+        left: 90,
+        top: 200,
+      }}
+    >
+      <CloseIcon
+        className='tag'
+        sx={{
+          position: 'absolute',
+          right: 16,
+          top: 20,
+          color: 'var(--color-text-primary)',
+          cursor: 'pointer',
+        }}
+        style={{ width: 20, height: 20 }}
+        onClick={onClose}
+        component={'svg'}
+      />
+      <Typography variant='h3' sx={{ marginBottom: 2 }} mt={3}>
+        Loopring DeFi Launches on Taiko!
+      </Typography>
+      <Box display='flex' justifyContent='center' mb={3} width={'100%'}>
+        <Box
+          src={`${SoursURL}earn/taiko_up.png`}
+          alt='Loopring DeFi Launch'
+          style={{ width: '95%' }}
+          component={'img'}
+        />
+      </Box>
+      <Typography variant='body1'>
+        Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first deployment will be on Taiko. Join us for an exciting journey ahead!
+
+      </Typography>
+    </Box>
+  )
+};
 
 const AnimationCard = styled(Box)<{ highlighted: boolean; isMobile: boolean }>`
   display: flex;
@@ -152,6 +200,10 @@ const Section: React.FC<SectionProps> = (props) => {
   )
 }
 
+interface IntroProps {
+  
+}
+
 const Intro: React.FC<IntroProps> = ({  }) => {
   const { isMobile } = useSettings()
   
@@ -163,12 +215,16 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const isCompact = useMediaQuery('(max-width:720px)');
   const history = useHistory()
   const dual = React.useRef(null)
+  const {setShowTaikoLaunchBanner, confirmation} = useConfirmation()
   return (
     <Box
       marginTop={'calc(var(--header-height) * -1)'}
       position={'relative'}
       sx={{ bgcolor: theme.mode === 'light' ? '#F5F7FC' : '#25282E' }}
     >
+      {confirmation.showTaikoLaunchBanner && <LoopringDeFiLaunchPopup onClose={() => {
+        setShowTaikoLaunchBanner(false)
+      }}/>} 
       <Box
         component={'img'}
         src={`${SoursURL}earn/intro_bg_2.png`}
@@ -216,14 +272,23 @@ const Intro: React.FC<IntroProps> = ({  }) => {
         <Typography
           width={'1152px'}
           maxWidth={'90%'}
-          marginBottom={15}
-          fontSize={'30px'}
+          marginBottom={4}
+          fontSize={'40px'}
           textAlign={'center'}
         >
           {' '}
           {t('labelIntroDes1')}
           <br />
           {t('labelIntroDes2')}
+        </Typography>
+        <Typography
+          width={'1152px'}
+          maxWidth={'90%'}
+          marginBottom={15}
+          fontSize={'20px'}
+          textAlign={'center'}
+        >
+          {t("labelIntroDes3")}
         </Typography>
         <Section
           title={t('labelInvestDualTitle')}

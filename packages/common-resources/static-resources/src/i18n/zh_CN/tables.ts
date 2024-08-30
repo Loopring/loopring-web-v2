@@ -234,7 +234,7 @@ export default {
   labelInvestmentStatusDelivering: 'Delivering',
   labelInvestmentStatusSubscribe: 'Earning',
   labelDualAssetProduct: 'Product',
-  labelDualAssetFrozen: 'Frozen',
+  labelDualAssetFrozen: 'Invest',
   labelDualAssetPrice: 'Target Price',
   labelDualAssetSettlement_Date: 'Settlement Date',
   labelDualAssetAPR: 'APR',
@@ -397,4 +397,5 @@ export default {
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelDetail: 'Detail',
   labelVaultcloseoutForced: 'Forced Liquidation',
+  labelInvest: 'Invest',
 }

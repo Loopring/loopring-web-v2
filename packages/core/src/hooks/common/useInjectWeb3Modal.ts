@@ -1,6 +1,6 @@
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
-import { SUPPORTING_NETWORKS, SagaStatus, myLog } from '@loopring-web/common-resources'
+import { SUPPORTING_NETWORKS, SagaStatus, SoursURL, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
 import { accountServices, checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
@@ -59,6 +59,9 @@ export const web3Modal = createWeb3Modal({
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration,
   featuredWalletIds: [],
+  chainImages: {
+    167000: `${SoursURL}earn/taiko.svg`,
+  }
 })
 
 export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN') => {
