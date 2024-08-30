@@ -27,7 +27,7 @@ const initialState: SystemStatus = {
   app:
     process.env.REACT_APP_NAME === 'loopring.io'
       ? 'main'
-      : process.env.REACT_APP_NAME === 'loopring earn'
+      : process.env.REACT_APP_NAME === 'loopring defi'
       ? 'earn'
       : process.env.REACT_APP_NAME === 'loopring guardian'
       ? 'guardian'

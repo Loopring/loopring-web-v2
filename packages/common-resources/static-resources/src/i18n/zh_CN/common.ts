@@ -1792,7 +1792,7 @@ export default {
   labelInvestDefiDes: 'Earn ETH staking rewards',
   labelInvestChoseProduct: 'Choose the product you want',
   labelInvestTotalEarnings: 'Total Earnings',
-  labelInvestLoopringEarn: 'Loopring Earn',
+  labelInvestLoopringEarn: 'Loopring DeFi',
   labelInvestLoopringEarnDes: 'Earn stable profits with professional asset management',
   labelInvestLRCDes: 'Earn LRC staking rewards',
   labelHadUnknownCollectionTitle: 'Import Collection for Legacy NFT',
