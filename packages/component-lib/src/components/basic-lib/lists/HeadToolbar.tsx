@@ -8,7 +8,7 @@ export const TabItemPlus = styled<any>(MenuItem)`
     }
 
     margin: 0;
-    padding: 0 ${({ theme }) => theme.unit}px;
+    padding: 0 ${({ theme }) => 0.5 * theme.unit}px;
 
     &:hover {
       background-color: transparent;
