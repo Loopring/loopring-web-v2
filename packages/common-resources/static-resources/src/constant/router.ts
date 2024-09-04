@@ -616,10 +616,6 @@ export const FOOTER_LIST_MAP = {
       linkHref: FEED_BACK_LINK,
     },
     {
-      linkName: 'CreatorGrants', // Creator Grants
-      linkHref: 'https://www.loopringgrants.org/',
-    },
-    {
       linkName: 'TokenListing',
       linkHref: 'https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com',
     },
@@ -645,11 +641,6 @@ export const FOOTER_LIST_MAP = {
     {
       linkName: 'BugBounty', //BugBounty
       linkHref: LOOPRING_DOCUMENT + 'bug_bounty_en.md',
-    },
-    {
-      linkName: 'Subgraph', //Subgraph
-      linkHref:
-        'https://thegraph.com/explorer/subgraph?id=HgnaENC2oG5hJFsWoHvULBbj7djTJ7TZnqa58iTWA3Rd',
     },
   ],
 }
