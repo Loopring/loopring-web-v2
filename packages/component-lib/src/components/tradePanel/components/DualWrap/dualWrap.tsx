@@ -156,6 +156,7 @@ export const DualWrap = <
         ? getValuePrecisionThousand(
             sdk
               .toBig(dualCalcData?.lessEarnVol ?? 0)
+              .times(sdk.toBig(1).plus(dualCalcData!.dualViewInfo.settleRatio))
               .div('1e' + tokenMap[dualCalcData.lessEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
@@ -172,6 +173,7 @@ export const DualWrap = <
         ? getValuePrecisionThousand(
             sdk
               .toBig(dualCalcData?.greaterEarnVol)
+              .times(sdk.toBig(1).plus(dualCalcData!.dualViewInfo.settleRatio))
               .div('1e' + tokenMap[dualCalcData.greaterEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
