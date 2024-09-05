@@ -361,7 +361,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                     [] as JSX.Element[],
                   )}
 
-                <Box marginX={3}>{Reflect.ownKeys(_obj).length !== index + 1 && <Divider />}</Box>
+                <Box marginX={2}>{Reflect.ownKeys(_obj).length !== index + 1 && <Divider />}</Box>
               </Box>
             )
           })
