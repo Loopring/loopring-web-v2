@@ -902,7 +902,7 @@ export const DualDetail = ({
                           symbol:
                             (greaterEarnView === '0' ? EmptyValueTag : greaterEarnView) +
                             ' ' +
-                            quoteAlice,
+                            quote,
                         })}
                     </Typography>
                   </Box>
