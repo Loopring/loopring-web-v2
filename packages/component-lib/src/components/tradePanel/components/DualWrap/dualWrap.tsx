@@ -156,6 +156,7 @@ export const DualWrap = <
         ? getValuePrecisionThousand(
             sdk
               .toBig(dualCalcData?.lessEarnVol ?? 0)
+              .times(sdk.toBig(1).plus(dualCalcData!.dualViewInfo.settleRatio))
               .div('1e' + tokenMap[dualCalcData.lessEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
             tokenMap[dualCalcData.lessEarnTokenSymbol].precision,
@@ -164,7 +165,7 @@ export const DualWrap = <
             { floor: true },
           )
         : EmptyValueTag,
-    [dualCalcData.lessEarnTokenSymbol, dualCalcData.lessEarnVol, tokenMap],
+    [dualCalcData.lessEarnTokenSymbol, dualCalcData.lessEarnVol, tokenMap, dualCalcData!.dualViewInfo.settleRatio],
   )
   const greaterEarnView = React.useMemo(
     () =>
@@ -172,6 +173,7 @@ export const DualWrap = <
         ? getValuePrecisionThousand(
             sdk
               .toBig(dualCalcData?.greaterEarnVol)
+              .times(sdk.toBig(1).plus(dualCalcData!.dualViewInfo.settleRatio))
               .div('1e' + tokenMap[dualCalcData.greaterEarnTokenSymbol].decimals),
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
             tokenMap[dualCalcData.greaterEarnTokenSymbol].precision,
@@ -180,7 +182,7 @@ export const DualWrap = <
             { floor: true },
           )
         : EmptyValueTag,
-    [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap],
+    [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap, dualCalcData.dualViewInfo.settleRatio],
   )
 
   const totalQuota = React.useMemo(
