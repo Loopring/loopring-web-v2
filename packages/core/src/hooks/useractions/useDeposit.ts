@@ -67,8 +67,7 @@ export const useDeposit = <
   const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
-  const { exchangeInfo: _exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus, app } = useSystem()
-  const exchangeInfo = {..._exchangeInfo, exchangeAddress: '0x1'}
+  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus, app } = useSystem()
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
