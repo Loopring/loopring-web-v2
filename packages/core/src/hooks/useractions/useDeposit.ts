@@ -67,7 +67,8 @@ export const useDeposit = <
   const { t } = useTranslation('common')
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [isToAddressEditable, setIsToAddressEditable] = React.useState(false)
-  const { exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus, app } = useSystem()
+  const { exchangeInfo: _exchangeInfo, chainId, gasPrice, allowTrade, baseURL, status: systemStatus, app } = useSystem()
+  const exchangeInfo = {..._exchangeInfo, exchangeAddress: '0x1'}
   const { defaultNetwork } = useSettings()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -521,12 +522,16 @@ export const useDeposit = <
           let response
           try {
             const exchangeInfoResponse = await LoopringAPI.exchangeAPI.getExchangeInfo()
+            // if chaindId from response is not equal to the chainId from wallet, 
+            // or exchangeAddress on redux is not same as from response, throw error
             if (
               exchangeInfoResponse.exchangeInfo.chainId !== _chainId ||
               exchangeInfoResponse.exchangeInfo.exchangeAddress.toLowerCase() !==
                 exchangeInfo.exchangeAddress.toLowerCase()
             ) {
-              throw 'data not matched'
+              throw {
+                message: 'data not matched',
+              } 
             }
             response = await sdk.deposit(
               connectProvides.usedWeb3,
