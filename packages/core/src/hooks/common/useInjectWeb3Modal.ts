@@ -6,7 +6,7 @@ import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 import { accountServices, checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { updateSystem } from '@loopring-web/core/src/stores/system/reducer'
+import { clearSystem, updateSystem } from '@loopring-web/core/src/stores/system/reducer'
 import { updateAccountStatus, cleanAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
 import { useDispatch } from 'react-redux'
 import { providers } from 'ethers'
@@ -100,6 +100,9 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     ;(async () => {
       if (address && walletProvider) {
         if ((address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
+          store.dispatch(
+            clearSystem(undefined)
+          );
           store.dispatch(
             updateSystem({
               chainId,
