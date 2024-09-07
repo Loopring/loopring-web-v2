@@ -520,7 +520,14 @@ export const useDeposit = <
           // const realChainId = chainId === 'unknown' ? 1 : chainId
           let response
           try {
-            //response = { result: "xxxxxxxx" };
+            const exchangeInfoResponse = await LoopringAPI.exchangeAPI.getExchangeInfo()
+            if (
+              exchangeInfoResponse.exchangeInfo.chainId !== _chainId ||
+              exchangeInfoResponse.exchangeInfo.exchangeAddress.toLowerCase() !==
+                exchangeInfo.exchangeAddress.toLowerCase()
+            ) {
+              throw 'data not matched'
+            }
             response = await sdk.deposit(
               connectProvides.usedWeb3,
               account.accAddress,
