@@ -520,7 +520,18 @@ export const useDeposit = <
           // const realChainId = chainId === 'unknown' ? 1 : chainId
           let response
           try {
-            //response = { result: "xxxxxxxx" };
+            const exchangeInfoResponse = await LoopringAPI.exchangeAPI.getExchangeInfo()
+            // if chaindId from response is not equal to the chainId from wallet, 
+            // or exchangeAddress on redux is not same as from response, throw error
+            if (
+              exchangeInfoResponse.exchangeInfo.chainId !== _chainId ||
+              exchangeInfoResponse.exchangeInfo.exchangeAddress.toLowerCase() !==
+                exchangeInfo.exchangeAddress.toLowerCase()
+            ) {
+              throw {
+                message: 'data not matched',
+              } 
+            }
             response = await sdk.deposit(
               connectProvides.usedWeb3,
               account.accAddress,
