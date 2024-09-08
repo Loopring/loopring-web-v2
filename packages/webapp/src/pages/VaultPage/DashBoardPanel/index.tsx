@@ -25,6 +25,10 @@ import {
   VaultLoanType,
   SUBMIT_PANEL_CHECK,
   SUBMIT_PANEL_AUTO_CLOSE,
+  WarningIcon,
+  AlertIcon,
+  WarningIcon2,
+  hexToRGB,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -199,9 +203,9 @@ export const VaultDashBoardPanel = ({
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
   const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex } = useVaultMap()
-  const {  tokenPrices: nonVaultTokenPrices } = useTokenPrices()
-  const { tokenMap, idIndex } = useTokenMap()
-  
+  const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
+  const { tokenMap, idIndex, } = useTokenMap()
+  coinJson
   const history = useHistory()
   const {vaultTickerMap} = useVaultTicker()
   
@@ -230,7 +234,7 @@ export const VaultDashBoardPanel = ({
       // @ts-ignore
       const dust: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.dust
       return new Decimal(asset.total).greaterThan('0') 
-      // && new Decimal(asset.total).lessThanOrEqualTo(dust)
+      && new Decimal(asset.total).lessThanOrEqualTo(dust)
     })
   const dusts = dustsAssets
     ?.map((asset) => {
@@ -272,6 +276,7 @@ export const VaultDashBoardPanel = ({
         },
       }
     })
+  console.log('dustsAssets', dustsAssets,tokenMap, tokenPrices)
   const totalDustsInUSDT = dustsAssets
     ? numberStringListSum(
         dustsAssets.map((asset) => {
@@ -336,6 +341,52 @@ export const VaultDashBoardPanel = ({
       modalStatus: 'noModal'
     })
     updateVaultLayer2({})
+    // dustTransfers.map(x => )
+    const dustList = dustsAssets.map(dust => {
+      const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
+      const token = tokenMap[idIndex[vaultToken.tokenId]]
+      const price = nonVaultTokenPrices[token.symbol]
+
+      return {
+        symbol: token.symbol,
+        coinJSON: coinJson[token.symbol],
+        amount: numberFormat(utils.formatUnits(dust.total, token.decimals), {
+          fixed: token.precision,
+        }),
+        amountRaw: utils.formatUnits(dust.total, token.decimals),
+        valueInCurrency: price
+          ? fiatNumberDisplay(
+              getValueInCurrency(
+                new Decimal(price).mul(utils.formatUnits(dust.total, token.decimals)).toString(),
+              ),
+              currency,
+            )
+          : undefined,
+        valueInCurrencyRaw: price
+          ? getValueInCurrency(
+              new Decimal(price).mul(utils.formatUnits(dust.total, token.decimals)).toString(),
+            )
+          : undefined,
+      }
+    })
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.VaultDustCollector_In_Progress,
+      info: {
+        totalValueInCurrency: fiatNumberDisplay(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), currency),
+        convertedInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), {fixed: 2}),
+        repaymentInUSDT: undefined, // todo
+        time: undefined,
+        dusts: dustList.map(dust => {
+          return {
+            symbol: dust.symbol,
+            coinJSON: dust.coinJSON,
+            amount: dust.amount,
+            valueInCurrency: dust.valueInCurrency,
+          }
+        })
+      },
+    })
     await sdk.sleep(SUBMIT_PANEL_CHECK)
     const response2 = await LoopringAPI?.vaultAPI?.getVaultGetOperationByHash(
       {
@@ -347,29 +398,32 @@ export const VaultDashBoardPanel = ({
     if (response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
       throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
     } 
-    const status = response2?.raw_data?.operation?.status && [sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED].includes(
-      response2?.raw_data?.operation?.status,
-    ) ? 'labelSuccessfully' : 'labelPending'
     
+    const status =
+      response2?.raw_data?.operation?.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+        ? 'success'
+        : 'pending'
+
+
     setShowAccount({
       isShow: store.getState().modals.isShowAccount.isShow,
       step:
-        status == 'labelSuccessfully'
+        status == 'success'
           ? AccountStep.VaultDustCollector_Success
           : AccountStep.VaultDustCollector_In_Progress,
       info: {
-        totalValueInCurrency: 'totalValueInCurrency', 
-        convertedInUSDT: 'convertedInUSDT',
-        repaymentInUSDT: 'repaymentInUSDT', 
-        time: 'time',
-        dusts: [
-          {
-            symbol: 'LRC',
-            coinJSON: '',
-            amount: '1',
-            valueInCurrency: '1'
+        totalValueInCurrency: fiatNumberDisplay(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), currency),
+        convertedInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), {fixed: 2}),
+        repaymentInUSDT: undefined, 
+        time: response2?.operation.createdAt,
+        dusts: dustList.map(dust => {
+          return {
+            symbol: dust.symbol,
+            coinJSON: dust.coinJSON,
+            amount: dust.amount,
+            valueInCurrency: dust.valueInCurrency,
           }
-        ]
+        })
       },
     })
     await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
@@ -397,7 +451,8 @@ export const VaultDashBoardPanel = ({
     })
   }, [])
     
-
+  const showMarginLevelAlert =
+    vaultAccountInfo?.marginLevel && new Decimal(vaultAccountInfo.marginLevel).lessThan('1.15')
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -411,7 +466,30 @@ export const VaultDashBoardPanel = ({
         <ViewAccountTemplate
           activeViewTemplate={
             <>
-              <Grid container spacing={3} marginTop={3}>
+              {showMarginLevelAlert && (
+                <Box
+                  paddingY={1}
+                  paddingX={2.5}
+                  borderRadius={'8px'}
+                  bgcolor={hexToRGB(theme.colorBase.error, 0.2)}
+                  display={'flex'}
+                  marginTop={3}
+                >
+                  <WarningIcon2
+                    color={'error'}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                    }}
+                  />
+                  <Typography marginLeft={0.5}>
+                    Your margin level has reached a critical point. Please review your positions and
+                    considering adding additional collateral. Failure to address the margin call may
+                    result in forced liquidation.
+                  </Typography>
+                </Box>
+              )}
+              <Grid container spacing={3} marginTop={showMarginLevelAlert ? -1 : 3}>
                 <Grid item sm={9} xs={12} flex={1} display={'flex'}>
                   <Box
                     border={'var(--color-border) 1px solid'}
@@ -892,7 +970,7 @@ export const VaultDashBoardPanel = ({
                   onClickDustCollector={() => {
                     setLocalState({
                       ...localState,
-                      modalStatus: 'dustCollector'
+                      modalStatus: 'dustCollector',
                     })
                   }}
                   showFilter
@@ -1390,7 +1468,11 @@ export const VaultDashBoardPanel = ({
                             )
                           : EmptyValueTag,
                       onClick: () => {
-                        setShowVaultLoan({ isShow: true, info: {symbol: vaultSymbol}, type: VaultLoanType.Repay })
+                        setShowVaultLoan({
+                          isShow: true,
+                          info: { symbol: vaultSymbol },
+                          type: VaultLoanType.Repay,
+                        })
                       },
                     }
                   })}
@@ -1419,8 +1501,8 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
               />
-              <DustCollectorModal 
-                open={localState.modalStatus==='dustCollector'}
+              <DustCollectorModal
+                open={localState.modalStatus === 'dustCollector'}
                 onClose={() => {
                   setLocalState({
                     ...localState,
@@ -1431,7 +1513,7 @@ export const VaultDashBoardPanel = ({
                 onClickConvert={() => {
                   convert()
                 }}
-                convertBtnDisabled={false}
+                convertBtnDisabled={dusts?.find((dust) => dust.checked) ? false : true}
                 totalValueInCurrency={totalDustsInCurrency}
                 totalValueInUSDT={totalDustsInUSDT ?? EmptyValueTag}
                 onClickRecords={() => {

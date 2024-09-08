@@ -1082,7 +1082,7 @@ const DustCollectorDes = (
           Details
         </Typography>
         <Box marginBottom={2}>
-          {dusts.map((dust) => {
+          {dusts && dusts.map((dust) => {
             return (
               <SpaceBetweenBox
                 borderRadius={'8px'}
