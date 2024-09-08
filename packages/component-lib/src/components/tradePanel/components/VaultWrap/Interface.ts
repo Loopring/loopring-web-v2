@@ -50,6 +50,16 @@ export type VaultBorrowBaseProps<T, I, B> = {
   tradeData: T
   onRefreshData: () => void
   refreshRef: React.Ref<any>
+  marginLevelChange: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  } | undefined
 }
 export type VaultBorrowWrapProps<T, I, B> = BasicACoinTradeViewProps<T, I> &
   VaultBorrowBaseProps<T, I, B>
@@ -65,4 +75,14 @@ export type VaultRepayWrapProps<T, I, VR> = BasicACoinTradeViewProps<T, I> & {
   tradeData: T
   forexMap: ForexMap<sdk.Currency>
   tokenInfo?: sdk.VaultToken
+  marginLevelChange: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  } | undefined
 }

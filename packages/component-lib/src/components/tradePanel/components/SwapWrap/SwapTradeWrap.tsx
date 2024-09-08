@@ -28,6 +28,9 @@ import { useSettings } from '../../../../stores'
 import { ButtonStyle, IconButtonStyled, TabsStyle } from '../Styled'
 import { useHistory } from 'react-router-dom'
 import styled from '@emotion/styled'
+import { marginLevelTypeToColor } from '../VaultWrap/utils'
+import { numberFormat } from '@loopring-web/core'
+import EastIcon from '@mui/icons-material/East';
 
 const GridStyle = styled(Grid)`
   .buyInput {
@@ -60,6 +63,7 @@ export const SwapTradeWrap = <
   onCancelClick,
   BtnEle,
   covertOnClickPreCheck,
+  marginLevelChange,
   ...rest
 }: SwapTradeProps<T, I, TCD> & WithTranslation) => {
   const sellRef = React.useRef()
@@ -475,10 +479,56 @@ export const SwapTradeWrap = <
                 alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Tooltip
-                  title={t('labelHourlyInterestRateTips')}
-                  placement={'top'}
+                <Typography
+                  component={'p'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  display={'inline-flex'}
+                  alignItems={'center'}
                 >
+                  <Info2Icon
+                    fontSize={'small'}
+                    color={'inherit'}
+                    sx={{ marginX: 1 / 2, opacity: 0 }}
+                  />
+                  Margin Level
+                </Typography>
+
+                <Typography component={'p'} variant='body2' color={'textPrimary'}>
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    marginLeft={0.5}
+                    component={'p'}
+                    variant='body2'
+                    color={'textPrimary'}
+                  >
+                    {marginLevelChange ? (
+                      <>
+                        <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                          {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                        </Typography>
+                        <EastIcon sx={{marginX: 0.5}}/>
+                        <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                          {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                        </Typography>
+                      </>
+                    ) : (
+                      EmptyValueTag
+                    )}
+                  </Typography>
+                </Typography>
+              </Grid>
+            ) : undefined}
+            {(tradeCalcData as any)?.isVault && tradeCalcData && tradeCalcData.borrowVol ? (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
+                <Tooltip title={t('labelHourlyInterestRateTips')} placement={'top'}>
                   <Typography
                     component={'p'}
                     variant='body2'
@@ -491,8 +541,12 @@ export const SwapTradeWrap = <
                   </Typography>
                 </Tooltip>
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
-                  {tradeCalcData && (tradeCalcData as any).hourlyRateInPercent && (tradeCalcData as any).yearlyRateInPercent 
-                  && `${(tradeCalcData as any).hourlyRateInPercent}% (APR: ${(tradeCalcData as any).yearlyRateInPercent}%)`}
+                  {tradeCalcData &&
+                    (tradeCalcData as any).hourlyRateInPercent &&
+                    (tradeCalcData as any).yearlyRateInPercent &&
+                    `${(tradeCalcData as any).hourlyRateInPercent}% (APR: ${
+                      (tradeCalcData as any).yearlyRateInPercent
+                    }%)`}
                 </Typography>
               </Grid>
             ) : undefined}

@@ -19,6 +19,9 @@ import { useSettings } from '../../../../stores'
 import { Grid, Typography, Divider, Box } from '@mui/material'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { ButtonStyle } from '../Styled'
+import { marginLevelTypeToColor } from './utils'
+import { numberFormat } from '@loopring-web/core'
+import EastIcon from '@mui/icons-material/East';
 
 export const VaultBorrowWrap = <
   T extends IBData<I> & { erc20Symbol: string },
@@ -36,6 +39,7 @@ export const VaultBorrowWrap = <
   tradeData,
   coinMap,
   propsExtends,
+  marginLevelChange,
   ...rest
 }: VaultBorrowWrapProps<T, I, V>) => {
   const inputBtnRef = React.useRef()
@@ -199,6 +203,42 @@ export const VaultBorrowWrap = <
                     (vaultBorrowData as any).yearlyRateInPercent
                   }%)`
                 : EmptyValueTag}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            Margin Level
+          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            <Typography display={'flex'} alignItems={'center'} marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+              {marginLevelChange ? (
+                <>
+                  <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                    {numberFormat(marginLevelChange.from.marginLevel, {fixed: 2})}
+                  </Typography>
+                  <EastIcon sx={{marginX: 0.5}}/>
+                  <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                    {numberFormat(marginLevelChange.to.marginLevel, {fixed: 2})}
+                  </Typography>
+                </>
+              ) : (
+                EmptyValueTag
+              )}
             </Typography>
           </Box>
         </Grid>

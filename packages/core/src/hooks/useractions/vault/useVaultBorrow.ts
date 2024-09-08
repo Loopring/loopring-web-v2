@@ -23,6 +23,7 @@ import {
   store,
   useSystem,
   useTokenMap,
+  useTokenPrices,
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
@@ -35,6 +36,8 @@ import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
 import { l2CommonService } from '../../../services'
 import { keys } from 'lodash'
+import Decimal from 'decimal.js'
+import { calcMarinLevel, marginLevelType } from './utils'
 export type VaultBorrowTradeData = IBData<any> & {
   erc20Symbol: string
   borrowed: string
@@ -139,6 +142,7 @@ export const useVaultBorrow = <
 
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex: erc20IdIndex } = useTokenMap()
+  const { tokenPrices } = useTokenPrices()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
@@ -496,6 +500,64 @@ export const useVaultBorrow = <
     submitCallback,
   })
 
+  
+  const moreToBorrowInUSD = (vaultBorrowData.tradeData && tokenPrices[vaultBorrowData.tradeData.erc20Symbol])
+    ? new Decimal(vaultBorrowData.tradeData.tradeValue ?? '0')
+        .mul(tokenPrices[vaultBorrowData.tradeData.erc20Symbol])
+        .toString()
+    : undefined
+  const nextMarginLevel =
+    vaultAccountInfo?.marginLevel && moreToBorrowInUSD
+      ? calcMarinLevel(
+          vaultAccountInfo?.marginLevel,
+          vaultAccountInfo?.totalBorrowedOfUsdt,
+          moreToBorrowInUSD,
+        )
+      : vaultAccountInfo?.marginLevel
+  
+  console.log('asjdkasjdk', tokenPrices,vaultBorrowData.tradeData&&tokenPrices[vaultBorrowData.tradeData.erc20Symbol],vaultAccountInfo?.marginLevel,vaultAccountInfo?.totalBorrowedOfUsdt,moreToBorrowInUSD, vaultAccountInfo, {
+    handlePanelEvent,
+    vaultBorrowBtnStatus: btnStatus,
+    vaultBorrowBtnI18nKey: btnLabel,
+    onVaultBorrowClick: onBtnClick,
+    walletMap: walletMap as unknown as any,
+    coinMap: keys(walletMap ?? {}).reduce((prev, key) => {
+      return {
+        ...prev,
+        [key]: {
+          ...vaultCoinMap[key?.toString() ?? ''],
+          erc20Symbol: vaultCoinMap[key?.toString() ?? '']?.simpleName.slice(2),
+          belongAlice: vaultCoinMap[key?.toString() ?? '']?.simpleName.slice(2),
+        },
+      }
+    }, {}),
+    tradeData: vaultBorrowData.tradeData as any,
+    vaultBorrowData: vaultBorrowData as V,
+    onRefreshData,
+    refreshRef,
+    tokenProps: {
+      decimalsLimit:
+        vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts
+        ?.qtyStepScale
+        ? true
+        : false,
+    },
+    marginLevelChange:
+      vaultAccountInfo && nextMarginLevel
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
+  })
+
   return {
     handlePanelEvent,
     vaultBorrowBtnStatus: btnStatus,
@@ -524,5 +586,18 @@ export const useVaultBorrow = <
         ? true
         : false,
     },
+    marginLevelChange:
+      (vaultAccountInfo && nextMarginLevel && vaultBorrowData.tradeValue)
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
   }
 }

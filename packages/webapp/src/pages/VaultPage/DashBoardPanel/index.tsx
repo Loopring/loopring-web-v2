@@ -205,7 +205,7 @@ export const VaultDashBoardPanel = ({
   const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex } = useVaultMap()
   const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
   const { tokenMap, idIndex, } = useTokenMap()
-  coinJson
+
   const history = useHistory()
   const {vaultTickerMap} = useVaultTicker()
   
