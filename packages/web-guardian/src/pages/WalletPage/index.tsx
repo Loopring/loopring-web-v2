@@ -462,7 +462,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               setApprovalRequests({
                 ...approvalRequests,
                 codeApprovalStatus: 'sharing',
-                guardianSign: data!.signature.slice(0, data!.signature!.length - 2),
+                guardianSign: data!.signature,
                 approveHash: data!.hash
               })
             }}
@@ -507,7 +507,7 @@ export const GuardianPage = withTranslation(['common'])(({ t, ..._rest }: WithTr
               setApprovalRequests({
                 ...approvalRequests,
                 codeApprovalStatus: 'sharing',
-                guardianSign: data!.signature.slice(0, data!.signature!.length - 2),
+                guardianSign: data!.signature,
                 approveHash: data!.hash
               })
             }}

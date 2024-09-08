@@ -22,6 +22,7 @@ import {
   EmptyValueTag,
   FailedIcon,
   getValuePrecisionThousand,
+  HiddenTag,
   INVEST_TABS,
   InvestAssetRouter,
   // InvestTab,
@@ -266,7 +267,6 @@ const MyLiquidity: any = withTranslation('common')(
     const showEmptyHint = !assetPanelProps.isLoading && !showDual && !showPortal && !dualLoading
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
-
         <MaxWidthContainer
           marginBottom={3}
           minHeight={'80vh'}
@@ -277,14 +277,16 @@ const MyLiquidity: any = withTranslation('common')(
           }}
         >
           <Typography marginY={3.5} color={'var(--color-text-third)'}>
-            {t("labelTotalBalance")}:{' '}
-            {nanToEmptyTag(
-              sdk
-                .toBig(defiTotalInUSD)
-                .times(forexMap[currency] ?? 0)
-                .toFixed(2, 1),
-              PriceTag[CurrencyToTag[currency]],
-            )}
+            {t('labelTotalBalance')}:{' '}
+            {hideAssets
+              ? HiddenTag
+              : nanToEmptyTag(
+                  sdk
+                    .toBig(defiTotalInUSD)
+                    .times(forexMap[currency] ?? 0)
+                    .toFixed(2, 1),
+                  PriceTag[CurrencyToTag[currency]],
+                )}
           </Typography>
           {showDual && (
             <Box
@@ -303,10 +305,12 @@ const MyLiquidity: any = withTranslation('common')(
                   src={SoursURL + 'images/icon-dual.svg'}
                 />
                 <Box>
-                  <Typography variant='h4'>{t("labelInvestDualTitle")}</Typography>
+                  <Typography variant='h4'>{t('labelInvestDualTitle')}</Typography>
                   <Typography color={'var(--color-text-third)'}>
-                    {t("labelBalance")}:{' '}
-                    {dualStakeDollar && !Number.isNaN(dualStakeDollar)
+                    {t('labelBalance')}:{' '}
+                    {hideAssets
+                      ? HiddenTag
+                      : dualStakeDollar && !Number.isNaN(dualStakeDollar)
                       ? nanToEmptyTag(
                           sdk
                             .toBig(dualStakeDollar?.replaceAll(sdk.SEP))

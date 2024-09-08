@@ -27,7 +27,7 @@ const initialState: SystemStatus = {
   app:
     process.env.REACT_APP_NAME === 'loopring.io'
       ? 'main'
-      : process.env.REACT_APP_NAME === 'loopring earn'
+      : process.env.REACT_APP_NAME === 'loopring defi'
       ? 'earn'
       : process.env.REACT_APP_NAME === 'loopring guardian'
       ? 'guardian'
@@ -111,11 +111,16 @@ const systemSlice: Slice<SystemStatus> = createSlice({
       }
       state.status = SagaStatus.DONE
     },
+    clearSystem(state, _: PayloadAction<undefined>) {
+      Object.keys(state).forEach(key => {
+        state[key] = initialState[key]
+      })
+    },
     statusUnset: (state) => {
       state.status = SagaStatus.UNSET
     },
   },
 })
-const { updateSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj } =
+const { updateSystem, clearSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj } =
   systemSlice.actions
-export { systemSlice, updateSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj }
+export { systemSlice, updateSystem, clearSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj }
