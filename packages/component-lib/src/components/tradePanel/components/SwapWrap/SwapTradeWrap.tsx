@@ -491,7 +491,7 @@ export const SwapTradeWrap = <
                     color={'inherit'}
                     sx={{ marginX: 1 / 2, opacity: 0 }}
                   />
-                  Margin Level
+                  {t('labelVaultMarginLevel')}
                 </Typography>
 
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
@@ -508,7 +508,7 @@ export const SwapTradeWrap = <
                         <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
                           {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
                         </Typography>
-                        <EastIcon sx={{marginX: 0.5}}/>
+                        <EastIcon sx={{ marginX: 0.5 }} />
                         <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
                           {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
                         </Typography>

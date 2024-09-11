@@ -1039,6 +1039,7 @@ const DustCollectorDes = (
 ) => {
   const theme = useTheme()
   const { status, totalValueInCurrency, convertedInUSDT, repaymentInUSDT, time, dusts } = props
+  const { t } = useTranslation()
   return (
     <>
       <Box
@@ -1057,29 +1058,29 @@ const DustCollectorDes = (
           paddingY={1}
         >
           <SpaceBetweenBox
-            leftNode={<Typography color={'var(--color-text-third)'}>Total Value</Typography>}
+            leftNode={<Typography color={'var(--color-text-third)'}>{t('labelTotalValue')}</Typography>}
             rightNode={<Typography>{totalValueInCurrency}</Typography>}
             marginBottom={2}
           />
           <SpaceBetweenBox
-            leftNode={<Typography color={'var(--color-text-third)'}>Converted</Typography>}
+            leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultConvert')}</Typography>}
             rightNode={<Typography>{convertedInUSDT ? (convertedInUSDT + ' USDT') : '--'} </Typography>}
             marginBottom={2}
           />
           {status === 'success' && (
             <SpaceBetweenBox
-              leftNode={<Typography color={'var(--color-text-third)'}>Repayment</Typography>}
+              leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>}
               rightNode={<Typography>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>}
               marginBottom={2}
             />
           )}
           <SpaceBetweenBox
-            leftNode={<Typography color={'var(--color-text-third)'}>Time</Typography>}
+            leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultTime')}</Typography>}
             rightNode={<Typography>{time}</Typography>}
           />
         </Box>
         <Typography marginTop={0.5} marginBottom={1.5}>
-          Details
+          {t('labelVaultDetails')}
         </Typography>
         <Box marginBottom={2}>
           {dusts && dusts.map((dust) => {
@@ -1126,7 +1127,7 @@ const DustCollectorDes = (
             bgcolor={hexToRGB(theme.colorBase.error, 0.2)}
           >
             <ErrorIcon sx={{ color: 'var(--color-error)', marginRight: 1 / 2 }} />
-            <Typography>An error has occurred. Please try again later.</Typography>
+            <Typography>{t('labelVaultErrorOccurred')}</Typography>
           </Box>
         )}
       </Box>

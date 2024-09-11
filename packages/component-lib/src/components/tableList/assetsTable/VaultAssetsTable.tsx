@@ -366,10 +366,19 @@ export const VaultAssetsTable = withTranslation('tables')(
               />
             </Box>
 
-            <Typography sx={{cursor: 'pointer'}} component={'span'} onClick={onClickDustCollector} width={'140px'} color={'var(--color-text-secondary)'} display={'flex'} alignItems={'center'}>
-              <BrushIcon 
-                sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }} 
-              /> Dust Collector
+            <Typography
+              sx={{ cursor: 'pointer' }}
+              component={'span'}
+              onClick={onClickDustCollector}
+              width={'140px'}
+              color={'var(--color-text-secondary)'}
+              display={'flex'}
+              alignItems={'center'}
+            >
+              <BrushIcon
+                sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }}
+              />{' '}
+              {t('labelVaultDustCollector')}
             </Typography>
           </Box>
         )}
@@ -387,7 +396,6 @@ export const VaultAssetsTable = withTranslation('tables')(
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
           showloading={isLoading}
-          // onScroll={handleScroll}
           columnMode={(isMobile ? getColumnMobileAssets(t) : getColumnModeAssets(t)) as any}
         />
         {hasMore && (

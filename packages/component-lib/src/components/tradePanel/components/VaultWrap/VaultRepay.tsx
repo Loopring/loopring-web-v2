@@ -228,7 +228,7 @@ export const VaultRepayWrap = <
             display={'inline-flex'}
             alignItems={'center'}
           >
-            Margin Level
+            {t('labelVaultMarginLevel')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
           <Typography display={'flex'} alignItems={'center'} marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>

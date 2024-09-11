@@ -20,13 +20,11 @@ import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
 import { BasicACoinInput } from '../BasicACoinInput'
-import {
-  CoinIcon,
-} from '@loopring-web/component-lib'
-import InfoIcon from '@mui/icons-material/Info';
+import { CoinIcon } from '@loopring-web/component-lib'
+import InfoIcon from '@mui/icons-material/Info'
 import { numberFormat } from '@loopring-web/core'
 import { marginLevelTypeToColor } from './utils'
-import EastIcon from '@mui/icons-material/East';
+import EastIcon from '@mui/icons-material/East'
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -130,10 +128,14 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             },
             placeholderText: '0.00',
             inputBtnRef,
-            tokenNotEnough: t(rest.isAddOrRedeem === 'Add' ? `labelVaultJoinNotEnough` : `labelVaultRedeemNotEnough`, {arg: tradeData.belong}),
+            tokenNotEnough: t(
+              rest.isAddOrRedeem === 'Add'
+                ? `labelVaultJoinNotEnough`
+                : `labelVaultRedeemNotEnough`,
+              { arg: tradeData.belong },
+            ),
             ...tokenProps,
           }}
-          
         />
       </Grid>
       <Grid item alignSelf={'stretch'}>
@@ -156,7 +158,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                     display={'flex'}
                   >
                     <Trans i18nKey={'labelVaultTotalQuote'}>
-                      Total Quota
+                      {t('labelVaultQuota')}
                       <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                     </Trans>
                   </Typography>
@@ -186,7 +188,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                     alignItems={'center'}
                     display={'flex'}
                   >
-                    Holding Collateral
+                    {t('labelVaultHoldingCollateral')}
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                   </Typography>
                 </Tooltip>
@@ -257,26 +259,25 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                   alignItems={'center'}
                   display={'inline-flex'}
                 >
-                  Margin Level
+                  {t('labelVaultMarginLevel')}
                   <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                 </Typography>
               </Tooltip>
               <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-              {marginLevelChange ? (
-                      <>
-                        <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
-                          {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
-                        </Typography>
-                        <EastIcon sx={{marginX: 0.5}}/>
-                        <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
-                          {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
-                        </Typography>
-                      </>
-                    ) : (
-                      EmptyValueTag
-                    )}
+                {marginLevelChange ? (
+                  <>
+                    <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                      {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                    </Typography>
+                    <EastIcon sx={{ marginX: 0.5 }} />
+                    <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                      {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                    </Typography>
+                  </>
+                ) : (
+                  EmptyValueTag
+                )}
               </Box>
-              
             </Grid>
           </Grid>
 
@@ -284,8 +285,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             <Grid item display={'flex'}>
               <InfoIcon sx={{ marginX: 1, color: 'var(--color-text-secondary)' }} />
               <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
-                Collateral with a value more than 2 times of your total debt can be redeemed out of
-                your portal account.
+                {t('labelVaultRedeemAlert')}
               </Typography>
             </Grid>
           )}

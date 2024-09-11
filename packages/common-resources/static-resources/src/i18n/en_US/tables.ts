@@ -402,4 +402,12 @@ export default {
   labelVaultconvert: 'Convert',
   labelVaultredeem: 'Redeem',
   labelVaultJoinRedeem: 'Redeem',
+  labelFailed: 'Failed',
+  labelTotalValue: 'Total Value',
+  labelVaultConvert: 'Converted',
+  labelVaultRepayment: 'Repayment',
+  labelVaultTime: 'Time',
+  labelVaultDetails: 'Details',
+  labelVaultErrorOccurred: 'An error has occurred. Please try again later.',
+  labelVaultDustCollector: 'Dust Collector',
 }

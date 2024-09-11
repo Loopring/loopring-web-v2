@@ -1,4 +1,14 @@
-import { Box, Container, Typography, Grid, Modal, Tooltip, Button, Divider, IconButton } from '@mui/material'
+import {
+  Box,
+  Container,
+  Typography,
+  Grid,
+  Modal,
+  Tooltip,
+  Button,
+  Divider,
+  IconButton,
+} from '@mui/material'
 import React from 'react'
 import {
   ConvertToIcon,
@@ -25,8 +35,6 @@ import {
   VaultLoanType,
   SUBMIT_PANEL_CHECK,
   SUBMIT_PANEL_AUTO_CLOSE,
-  WarningIcon,
-  AlertIcon,
   WarningIcon2,
   hexToRGB,
 } from '@loopring-web/common-resources'
@@ -41,17 +49,41 @@ import {
   useSettings,
   VaultAssetsTable,
   Button as MyButton,
-  SpaceBetweenBox,
-  AccountStep
+  AccountStep,
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
-import { DAYS, fiatNumberDisplay, getTimestampDaysLater, LoopringAPI, makeVaultLayer2, numberFormat, numberFormatThousandthPlace, numberStringListSum, store, useAccount, useSystem, useTokenMap, useTokenPrices, useVaultLayer2, useVaultMap, useVaultTicker, VaultAccountInfoStatus, ViewAccountTemplate } from '@loopring-web/core'
+import {
+  DAYS,
+  fiatNumberDisplay,
+  getTimestampDaysLater,
+  LoopringAPI,
+  makeVaultLayer2,
+  numberFormat,
+  numberFormatThousandthPlace,
+  numberStringListSum,
+  store,
+  useAccount,
+  useSystem,
+  useTokenMap,
+  useTokenPrices,
+  useVaultLayer2,
+  useVaultMap,
+  useVaultTicker,
+  VaultAccountInfoStatus,
+  ViewAccountTemplate,
+} from '@loopring-web/core'
 import { useGetVaultAssets } from './hook'
 import moment from 'moment'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory } from 'react-router'
-import { CollateralDetailsModal, DebtModal, DustCollectorModal, LeverageModal, MaximumCreditModal } from './modals'
+import {
+  CollateralDetailsModal,
+  DebtModal,
+  DustCollectorModal,
+  LeverageModal,
+  MaximumCreditModal,
+} from './modals'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
 
@@ -60,20 +92,22 @@ export const VaultDashBoardPanel = ({
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
-  const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } = _vaultAccountInfo
+  const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
+    _vaultAccountInfo
   const { t } = useTranslation()
-  console.log('collateralTokens', collateralTokens)
 
   const { forexMap, etherscanBaseUrl, getValueInCurrency, exchangeInfo } = useSystem()
-  const { isMobile, currency, hideL2Assets: hideAssets, upColor, defaultNetwork, coinJson } = useSettings()
+  const {
+    isMobile,
+    currency,
+    hideL2Assets: hideAssets,
+    upColor,
+    defaultNetwork,
+    coinJson,
+  } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
-    // setShowNoVaultAccount,
-    modals: {
-      isShowVaultJoin,
-      isShowAccount
-      // isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
-    },
+    modals: { isShowVaultJoin },
     setShowAccount,
     setShowVaultLoan,
   } = useOpenModals()
@@ -204,79 +238,83 @@ export const VaultDashBoardPanel = ({
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
   const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex } = useVaultMap()
   const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
-  const { tokenMap, idIndex, } = useTokenMap()
+  const { tokenMap, idIndex } = useTokenMap()
 
   const history = useHistory()
-  const {vaultTickerMap} = useVaultTicker()
-  
-  const [localState, setLocalState] = React.useState({
-    modalStatus: 'noModal' as 'noModal' | 'collateralDetails' | 'collateralDetailsMaxCredit' | 'leverage' | 'leverageMaxCredit' | 'debt' | 'dustCollector',
-    selectedDustSymbol: [] as string[]
-  })
+  const { vaultTickerMap } = useVaultTicker()
 
-  console.log('vaultTokenMap', vaultTokenMap)
-  const {account}=useAccount()
-  const {updateVaultLayer2} = useVaultLayer2()
+  const [localState, setLocalState] = React.useState({
+    modalStatus: 'noModal' as
+      | 'noModal'
+      | 'collateralDetails'
+      | 'collateralDetailsMaxCredit'
+      | 'leverage'
+      | 'leverageMaxCredit'
+      | 'debt'
+      | 'dustCollector',
+    selectedDustSymbol: [] as string[],
+  })
+  const { account } = useAccount()
+  const { updateVaultLayer2 } = useVaultLayer2()
 
   const changeLeverage = async (leverage: number) => {
     await LoopringAPI.vaultAPI?.submitLeverage({
       request: {
         accountId: account.accountId.toString(),
-        leverage: leverage.toString()
+        leverage: leverage.toString(),
       },
-      apiKey: account.apiKey
+      apiKey: account.apiKey,
     })
     updateVaultLayer2({})
   }
 
-  const dustsAssets = vaultAccountInfo?.userAssets
-    ?.filter((asset) => {
-      // @ts-ignore
-      const dust: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.dust
-      return new Decimal(asset.total).greaterThan('0') 
-      && new Decimal(asset.total).lessThanOrEqualTo(dust)
-    })
-  const dusts = dustsAssets
-    ?.map((asset) => {
-      // @ts-ignore
-      const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
-      const vaultSymbol = token.symbol
-      const originSymbol = vaultSymbol.slice(2)
-      const checked = localState.selectedDustSymbol.includes(originSymbol)
-      const price = tokenPrices[vaultSymbol]
-      return {
-        symbol: originSymbol,
-        coinJSON: coinJson[originSymbol],
-        amount: numberFormat(utils.formatUnits(asset.total, token.decimals), {
-          fixed: token.precision,
-        }),
-        checked,
-        valueInCurrency: price
-          ? fiatNumberDisplay(
-              getValueInCurrency(
-                new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
-              ),
-              currency,
-            )
-          : EmptyValueTag,
-        onCheck() {
-          if (checked) {
-            setLocalState({
-              ...localState,
-              selectedDustSymbol: localState.selectedDustSymbol.filter(
-                (symbol) => symbol !== originSymbol,
-              ),
-            })
-          } else {
-            setLocalState({
-              ...localState,
-              selectedDustSymbol: localState.selectedDustSymbol.concat(originSymbol),
-            })
-          }
-        },
-      }
-    })
-  console.log('dustsAssets', dustsAssets,tokenMap, tokenPrices)
+  const dustsAssets = vaultAccountInfo?.userAssets?.filter((asset) => {
+    // @ts-ignore
+    const dust: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.dust
+    return (
+      new Decimal(asset.total).greaterThan('0') && new Decimal(asset.total).lessThanOrEqualTo(dust)
+    )
+  })
+  const dusts = dustsAssets?.map((asset) => {
+    // @ts-ignore
+    const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
+    const vaultSymbol = token.symbol
+    const originSymbol = vaultSymbol.slice(2)
+    const checked = localState.selectedDustSymbol.includes(originSymbol)
+    const price = tokenPrices[vaultSymbol]
+    return {
+      symbol: originSymbol,
+      coinJSON: coinJson[originSymbol],
+      amount: numberFormat(utils.formatUnits(asset.total, token.decimals), {
+        fixed: token.precision,
+      }),
+      checked,
+      valueInCurrency: price
+        ? fiatNumberDisplay(
+            getValueInCurrency(
+              new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
+            ),
+            currency,
+          )
+        : EmptyValueTag,
+      onCheck() {
+        if (checked) {
+          setLocalState({
+            ...localState,
+            selectedDustSymbol: localState.selectedDustSymbol.filter(
+              (symbol) => symbol !== originSymbol,
+            ),
+          })
+        } else {
+          setLocalState({
+            ...localState,
+            selectedDustSymbol: localState.selectedDustSymbol.concat(originSymbol),
+          })
+        }
+      },
+    }
+  })
+  console.log('dustsAssets', dustsAssets, tokenMap, tokenPrices)
   const totalDustsInUSDT = dustsAssets
     ? numberStringListSum(
         dustsAssets.map((asset) => {
@@ -291,13 +329,13 @@ export const VaultDashBoardPanel = ({
   const totalDustsInCurrency = totalDustsInUSDT
     ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
     : EmptyValueTag
-  
+
   const convert = async () => {
     if (!dustsAssets || !exchangeInfo) return
     const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
       type: 4,
     })!
-    const checkedDusts = dustsAssets.filter(asset => {
+    const checkedDusts = dustsAssets.filter((asset) => {
       const token = vaultTokenMap[vaultIdIndex[asset.tokenId!]]
       const vaultSymbol = token.symbol
       const originSymbol = vaultSymbol.slice(2)
@@ -331,24 +369,24 @@ export const VaultDashBoardPanel = ({
           validUntil: getTimestampDaysLater(DAYS),
           memo: '',
         }
-      })
-    ) 
+      }),
+    )
     const response = await LoopringAPI.vaultAPI?.submitDustCollector({
       dustTransfers: dustTransfers,
       apiKey: account.apiKey,
       accountId: account.accountId,
-      eddsaKey: account.eddsaKey.sk
+      eddsaKey: account.eddsaKey.sk,
     })
-    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response){
+    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response) {
       throw response
     }
     setLocalState({
       ...localState,
-      modalStatus: 'noModal'
+      modalStatus: 'noModal',
     })
     updateVaultLayer2({})
-    
-    const dustList = checkedDusts.map(dust => {
+
+    const dustList = checkedDusts.map((dust) => {
       const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
       const token = tokenMap[idIndex[vaultToken.tokenId]]
       const price = nonVaultTokenPrices[token.symbol]
@@ -378,18 +416,24 @@ export const VaultDashBoardPanel = ({
       isShow: true,
       step: AccountStep.VaultDustCollector_In_Progress,
       info: {
-        totalValueInCurrency: fiatNumberDisplay(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), currency),
-        convertedInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), {fixed: 2}),
+        totalValueInCurrency: fiatNumberDisplay(
+          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+          currency,
+        ),
+        convertedInUSDT: numberFormat(
+          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+          { fixed: 2 },
+        ),
         repaymentInUSDT: undefined,
         time: undefined,
-        dusts: dustList.map(dust => {
+        dusts: dustList.map((dust) => {
           return {
             symbol: dust.symbol,
             coinJSON: dust.coinJSON,
             amount: dust.amount,
             valueInCurrency: dust.valueInCurrency,
           }
-        })
+        }),
       },
     })
     await sdk.sleep(SUBMIT_PANEL_CHECK)
@@ -402,13 +446,12 @@ export const VaultDashBoardPanel = ({
     )
     if (response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
       throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-    } 
-    
+    }
+
     const status =
       response2?.raw_data?.operation?.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
         ? 'success'
         : 'pending'
-
 
     setShowAccount({
       isShow: store.getState().modals.isShowAccount.isShow,
@@ -417,45 +460,30 @@ export const VaultDashBoardPanel = ({
           ? AccountStep.VaultDustCollector_Success
           : AccountStep.VaultDustCollector_In_Progress,
       info: {
-        totalValueInCurrency: fiatNumberDisplay(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), currency),
-        convertedInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), {fixed: 2}),
-        repaymentInUSDT: undefined, 
+        totalValueInCurrency: fiatNumberDisplay(
+          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+          currency,
+        ),
+        convertedInUSDT: numberFormat(
+          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+          { fixed: 2 },
+        ),
+        repaymentInUSDT: undefined,
         time: response2?.operation.createdAt,
-        dusts: dustList.map(dust => {
+        dusts: dustList.map((dust) => {
           return {
             symbol: dust.symbol,
             coinJSON: dust.coinJSON,
             amount: dust.amount,
             valueInCurrency: dust.valueInCurrency,
           }
-        })
+        }),
       },
     })
     await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
     updateVaultLayer2({})
   }
-  React.useEffect(() => {
-    return
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.VaultDustCollector_Failed,
-      info: {
-        totalValueInCurrency: 'totalValueInCurrency', 
-        convertedInUSDT: 'convertedInUSDT',
-        repaymentInUSDT: 'repaymentInUSDT', 
-        time: 'time',
-        dusts: [
-          {
-            symbol: 'LRC',
-            coinJSON: '',
-            amount: '1',
-            valueInCurrency: '1'
-          }
-        ]
-      },
-    })
-  }, [])
-    
+
   const showMarginLevelAlert =
     vaultAccountInfo?.marginLevel && new Decimal(vaultAccountInfo.marginLevel).lessThan('1.15')
   return (
@@ -488,9 +516,7 @@ export const VaultDashBoardPanel = ({
                     }}
                   />
                   <Typography marginLeft={0.5}>
-                    Your margin level has reached a critical point. Please review your positions and
-                    considering adding additional collateral. Failure to address the margin call may
-                    result in forced liquidation.
+                    {t('labelVaultMarginLevelAlert')}
                   </Typography>
                 </Box>
               )}
@@ -686,7 +712,7 @@ export const VaultDashBoardPanel = ({
                                 })
                               }}
                             >
-                              Detail
+                              {t('labelVaultDetail')}
                             </Typography>
                           </Typography>
                         </Box>
@@ -741,13 +767,13 @@ export const VaultDashBoardPanel = ({
                                 })
                               }}
                             >
-                              Detail
+                              {t('labelVaultDetail')}
                             </Typography>
                           </Typography>
                         </Box>
                         <Box position={'relative'} width={'120px'}>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                            Default Leverage
+                            {t('labelVaultDefaultLeverage')}
                           </Typography>
                           <Typography
                             component={'span'}
@@ -773,7 +799,7 @@ export const VaultDashBoardPanel = ({
                                 })
                               }}
                             >
-                              Detail
+                              {t('labelVaultDetail')}
                             </Typography>
                           </Typography>
                           <Typography
@@ -782,7 +808,7 @@ export const VaultDashBoardPanel = ({
                             color={'var(--color-text-secondary)'}
                             variant={'body2'}
                           >
-                            Maximum Credit:{' '}
+                            {t('labelVaultMaximumCredit')}:{' '}
                             {vaultAccountInfo?.maxBorrowableOfUsdt
                               ? fiatNumberDisplay(
                                   getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
@@ -1252,7 +1278,6 @@ export const VaultDashBoardPanel = ({
                             size={'medium'}
                             onClick={() => {
                               setShowDetail({ isShow: false })
-
                               _vaultAccountInfo.onJoinPop({})
                             }}
                             loading={'false'}

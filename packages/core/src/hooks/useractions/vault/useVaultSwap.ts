@@ -1852,11 +1852,15 @@ export const useVaultSwap = <
     }
   }, [market, tradeVault, tradeData, tradeCalcData, setTradeCalcData])
   
-  const moreToBorrowInUSD = (tradeCalcData.borrowStr && new Decimal(tradeCalcData.borrowStr).greaterThan('0') && tradeCalcData.belongSellAlice && tokenPrices[tradeCalcData.belongSellAlice])
-    ? new Decimal(tradeCalcData.borrowStr ?? '0')
-        .mul(tokenPrices[tradeCalcData.belongSellAlice])
-        .toString()
-    : undefined
+  const moreToBorrowInUSD =
+    tradeCalcData.borrowStr &&
+    new Decimal(tradeCalcData.borrowStr).greaterThan('0') &&
+    tradeCalcData.belongSellAlice &&
+    tokenPrices[tradeCalcData.belongSellAlice]
+      ? new Decimal(tradeCalcData.borrowStr ?? '0')
+          .mul(tokenPrices[tradeCalcData.belongSellAlice])
+          .toString()
+      : undefined
   const nextMarginLevel =
     vaultAccountInfo && moreToBorrowInUSD
       ? calcMarinLevel(
@@ -1864,46 +1868,9 @@ export const useVaultSwap = <
           vaultAccountInfo.totalEquityOfUsdt,
           vaultAccountInfo.totalDebtOfUsdt,
           moreToBorrowInUSD,
-          '0'
+          '0',
         )
       : undefined
-  console.log('vaultLayer2 nextMarginLevel', 
-    {
-      isMarketInit,
-      toastOpen,
-      closeToast,
-      tradeCalcData,
-      tradeData,
-      onSwapClick,
-      swapBtnI18nKey,
-      swapBtnStatus: btnStatus,
-      handleSwapPanelEvent,
-      should15sRefresh,
-      refreshRef,
-      tradeVault,
-      vaultAccountInfo,
-      isSwapLoading,
-      market,
-      isMobile,
-      setToastOpen,
-      disabled: false,
-      // vaultBorrowSubmit,
-      // vaultSwapSubmit,
-      cancelBorrow: (shouldClose = false) => {
-        if (borrowHash?.current?.hash && account) {
-          updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
-        }
-        setIsSwapLoading(false)
-        resetMarket(market as any, 'sell')
-        if (shouldClose) {
-          setShowVaultSwap({ isShow: false })
-        }
-      },
-      borrowedAmount,
-      nextMarginLevel
-    }
-    )
-  // myLog('vaultLayer2 swapBtnStatus', btnStatus)
   return {
     isMarketInit,
     toastOpen,

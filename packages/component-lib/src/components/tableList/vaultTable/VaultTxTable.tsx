@@ -2,7 +2,7 @@ import { WithTranslation, useTranslation, withTranslation } from 'react-i18next'
 import { useSettings } from '../../../stores'
 import React from 'react'
 import { Column, EmptyDefault, SpaceBetweenBox, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Button, Divider, IconButton, Tooltip, Typography, Checkbox } from '@mui/material'
+import { Box, BoxProps, Button, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
@@ -14,11 +14,9 @@ import {
   globalSetup,
   Info2Icon,
   LoadingIcon,
-  myLog,
   RowInvestConfig,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
-  CheckBoxIcon, CheckedIcon, CloseIcon, OrderListIcon,
   hexToRGB,
   ErrorIcon
 } from '@loopring-web/common-resources'
@@ -898,39 +896,47 @@ export const VaultTradeDetail = withTranslation(['common'])(
 )
 
 type VaultConvertDetailProps = {
-  totalValueInCurrency: string,
-  convertedInUSDT: string,
-  repaymentInUSDT?: string, 
-  time: number,
+  totalValueInCurrency: string
+  convertedInUSDT: string
+  repaymentInUSDT?: string
+  time: number
   dusts: {
-    symbol: string,
-    coinJSON: any,
-    amount: string,
+    symbol: string
+    coinJSON: any
+    amount: string
     valueInCurrency: string
   }[]
-  status: "success" | "processing" | "failed"
+  status: 'success' | 'processing' | 'failed'
 }
 
 export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
-  const {
-    totalValueInCurrency,
-    convertedInUSDT,
-    repaymentInUSDT,
-    time,
-    dusts,
-    status
-  } = props
+  const { totalValueInCurrency, convertedInUSDT, repaymentInUSDT, time, dusts, status } = props
   const theme = useTheme()
+  const { t } = useTranslation()
   const iconDiv = React.useMemo(() => {
     switch (status) {
       case 'failed':
-        return <Box width={'100%'} marginBottom={2} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-          <FailedIcon style={{ color: 'var(--color-error)', width: 64, height: 64 }} />
-          <Typography marginTop={1}>Failed</Typography>
-        </Box>
+        return (
+          <Box
+            width={'100%'}
+            marginBottom={2}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <FailedIcon style={{ color: 'var(--color-error)', width: 64, height: 64 }} />
+            <Typography marginTop={1}>{t('labelVaultVAULT_STATUS_FAILED')}</Typography>
+          </Box>
+        )
       case 'success':
         return (
-          <Box width={'100%'} marginBottom={2} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <Box
+            width={'100%'}
+            marginBottom={2}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
             <DoneIcon
               style={{
                 color: 'var(--color-success)',
@@ -938,111 +944,123 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
                 height: 64,
               }}
             />
-            <Typography marginTop={1}>Successful</Typography>
+            <Typography marginTop={1}>{t('labelVaultVAULT_STATUS_SUCCEED')}</Typography>
           </Box>
         )
       case 'processing':
-        return <Box width={'100%'} marginBottom={2} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-          <LoadingIcon color={'primary'} style={{ width: 64, height: 64 }} />
-          <Typography marginTop={1}>Pending</Typography>
-        </Box>
+        return (
+          <Box
+            width={'100%'}
+            marginBottom={2}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <LoadingIcon color={'primary'} style={{ width: 64, height: 64 }} />
+            <Typography marginTop={1}>{t('labelVaultVAULT_STATUS_PROCESSING')}</Typography>
+          </Box>
+        )
     }
   }, [status])
   return (
     <Box
-    justifySelf={'stretch'}
-    display={'flex'}
-    flexDirection={'column'}
-    width={'100%'}
-    justifyContent={'center'}
-    marginTop={2}
-    paddingX={3}
-  >
-    {iconDiv}
-    <Box
-      borderRadius={'8px'}
-      bgcolor={'var(--color-box-secondary)'}
-      paddingX={2.5}
-      paddingY={1}
+      justifySelf={'stretch'}
+      display={'flex'}
+      flexDirection={'column'}
+      width={'100%'}
+      justifyContent={'center'}
+      marginTop={2}
+      paddingX={3}
     >
-      <SpaceBetweenBox
-        leftNode={<Typography color={'var(--color-text-third)'}>Total Value</Typography>}
-        rightNode={<Typography>{totalValueInCurrency}</Typography>}
-        marginBottom={2}
-      />
-      <SpaceBetweenBox
-        leftNode={<Typography color={'var(--color-text-third)'}>Converted</Typography>}
-        rightNode={<Typography>{convertedInUSDT ? (convertedInUSDT + ' USDT') : '--'} </Typography>}
-        marginBottom={2}
-      />
-      {status === 'success' && (
+      {iconDiv}
+      <Box borderRadius={'8px'} bgcolor={'var(--color-box-secondary)'} paddingX={2.5} paddingY={1}>
         <SpaceBetweenBox
-          leftNode={<Typography color={'var(--color-text-third)'}>Repayment</Typography>}
-          rightNode={<Typography>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>}
+          leftNode={
+            <Typography color={'var(--color-text-third)'}>{t('labelTotalValue')}</Typography>
+          }
+          rightNode={<Typography>{totalValueInCurrency}</Typography>}
           marginBottom={2}
         />
-      )}
-      <SpaceBetweenBox
-        leftNode={<Typography color={'var(--color-text-third)'}>Time</Typography>}
-        rightNode={<Typography>{
-          time
-            ? moment(time).format(YEAR_DAY_MINUTE_FORMAT)
-            : '--'
-          }</Typography>}
-      />
-    </Box>
-    <Typography marginTop={0.5} marginBottom={1.5}>
-      Details
-    </Typography>
-    <Box marginBottom={2}>
-      {dusts && dusts.map((dust) => {
-        return (
+        <SpaceBetweenBox
+          leftNode={
+            <Typography color={'var(--color-text-third)'}>{t('labelVaultConvert')}</Typography>
+          }
+          rightNode={<Typography>{convertedInUSDT ? convertedInUSDT + ' USDT' : '--'} </Typography>}
+          marginBottom={2}
+        />
+        {status === 'success' && (
           <SpaceBetweenBox
-            borderRadius={'8px'}
-            border={'1px solid var(--color-border)'}
-            paddingY={1.5}
-            paddingX={2}
-            marginBottom={1}
-            alignItems={'center'}
-            key={dust.symbol}
             leftNode={
-              <Box alignItems={'center'} display={'flex'}>
-                <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
-                <Typography marginLeft={1}>{dust.symbol}</Typography>
-              </Box>
+              <Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>
             }
             rightNode={
-              <Box display={'flex'} alignItems={'center'}>
-                <Box marginRight={1}>
-                  <Typography textAlign={'right'}>{dust.amount}</Typography>
-                  <Typography
-                    color={'var(--color-text-secondary)'}
-                    textAlign={'right'}
-                    variant={'subtitle2'}
-                  >
-                    {dust.valueInCurrency}
-                  </Typography>
-                </Box>
-              </Box>
+              <Typography>{repaymentInUSDT ? repaymentInUSDT + ' USDT' : '--'} </Typography>
             }
+            marginBottom={2}
           />
-        )
-      })}
-    </Box>
-    {status === 'failed' && (
-      <Box
-        borderRadius={'8px'}
-        display={'flex'}
-        alignItems={'center'}
-        paddingX={2.5}
-        paddingY={1.5}
-        bgcolor={hexToRGB(theme.colorBase.error, 0.2)}
-      >
-        <ErrorIcon sx={{ color: 'var(--color-error)', marginRight: 1 / 2 }} />
-        <Typography>An error has occurred. Please try again later.</Typography>
+        )}
+        <SpaceBetweenBox
+          leftNode={
+            <Typography color={'var(--color-text-third)'}>{t('labelVaultTime')}</Typography>
+          }
+          rightNode={
+            <Typography>{time ? moment(time).format(YEAR_DAY_MINUTE_FORMAT) : '--'}</Typography>
+          }
+        />
       </Box>
-    )}
-  </Box>
+      <Typography marginTop={0.5} marginBottom={1.5}>
+        {t('labelDetails')}
+      </Typography>
+      <Box marginBottom={2}>
+        {dusts &&
+          dusts.map((dust) => {
+            return (
+              <SpaceBetweenBox
+                borderRadius={'8px'}
+                border={'1px solid var(--color-border)'}
+                paddingY={1.5}
+                paddingX={2}
+                marginBottom={1}
+                alignItems={'center'}
+                key={dust.symbol}
+                leftNode={
+                  <Box alignItems={'center'} display={'flex'}>
+                    <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
+                    <Typography marginLeft={1}>{dust.symbol}</Typography>
+                  </Box>
+                }
+                rightNode={
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Box marginRight={1}>
+                      <Typography textAlign={'right'}>{dust.amount}</Typography>
+                      <Typography
+                        color={'var(--color-text-secondary)'}
+                        textAlign={'right'}
+                        variant={'subtitle2'}
+                      >
+                        {dust.valueInCurrency}
+                      </Typography>
+                    </Box>
+                  </Box>
+                }
+              />
+            )
+          })}
+      </Box>
+      {status === 'failed' && (
+        <Box
+          borderRadius={'8px'}
+          display={'flex'}
+          alignItems={'center'}
+          paddingX={2.5}
+          paddingY={1.5}
+          bgcolor={hexToRGB(theme.colorBase.error, 0.2)}
+        >
+          <ErrorIcon sx={{ color: 'var(--color-error)', marginRight: 1 / 2 }} />
+          <Typography>{t('labelVaultErrorOccurred')}</Typography>
+        </Box>
+      )}
+    </Box>
   )
 }
 

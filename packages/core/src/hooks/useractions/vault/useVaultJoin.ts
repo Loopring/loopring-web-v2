@@ -537,7 +537,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     isLoading,
     submitCallback,
   })
-  
+
   const {
     modals: {
       isShowVaultJoin: { isShow, symbol },
@@ -704,51 +704,26 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
   // btnStatus, enableBtn, disableBtn
-
-  console.log('aaa',{
-    handleError: undefined,
-    type: TRADE_TYPE.TOKEN,
-    baseURL,
-    btnI18nKey: btnLabel,
-    btnStatus,
-    isActiveAccount,
-    disabled: false,
-    onSubmitClick: (_data: T) => onBtnClick(),
-    propsExtends: {},
-    tradeData: vaultJoinData.tradeData as unknown as T,
-    handlePanelEvent,
-    onRefreshData,
-    refreshRef,
-    walletMap: vaultJoinData.walletMap as WalletMap<any>,
-    vaultJoinData,
-    coinMap: walletAllowCoin,
-    tokenProps: {
-      decimalsLimit: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
-      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale
-        ? true
-        : false,
-    },
-    onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
-      setIsAddOrRedeem(value)
-    },
-    isAddOrRedeem
-  })
   
-  const moreToCollateralizeInUSD = (vaultJoinData.tradeData && vaultJoinData.tradeData.tradeValue &&new Decimal(vaultJoinData.tradeData.tradeValue).gt(0)  && tokenPrices[vaultJoinData.tradeData.belong as string])
-    ? new Decimal(vaultJoinData.tradeData.tradeValue ?? '0')
-        .mul(tokenPrices[vaultJoinData.tradeData.belong as string])
-        .mul(isAddOrRedeem === 'Add' ? 1 : -1)
-        .toString()
-    : undefined
+  const moreToCollateralizeInUSD =
+    vaultJoinData.tradeData &&
+    vaultJoinData.tradeData.tradeValue &&
+    new Decimal(vaultJoinData.tradeData.tradeValue).gt(0) &&
+    tokenPrices[vaultJoinData.tradeData.belong as string]
+      ? new Decimal(vaultJoinData.tradeData.tradeValue ?? '0')
+          .mul(tokenPrices[vaultJoinData.tradeData.belong as string])
+          .mul(isAddOrRedeem === 'Add' ? 1 : -1)
+          .toString()
+      : undefined
   const nextMarginLevel =
-    vaultAccountInfo && moreToCollateralizeInUSD 
+    vaultAccountInfo && moreToCollateralizeInUSD
       ? calcMarinLevel(
-        vaultAccountInfo.totalCollateralOfUsdt,
-        vaultAccountInfo.totalEquityOfUsdt,
-        vaultAccountInfo.totalDebtOfUsdt,
-        '0',
-        moreToCollateralizeInUSD
-      )
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalEquityOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
+          '0',
+          moreToCollateralizeInUSD,
+        )
       : undefined
 
   const ercToken = vaultJoinData.tradeData && tokenMap[vaultJoinData.tradeData.belong as string]
@@ -794,14 +769,17 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             },
           }
         : undefined,
-    holdingCollateral: (vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken) ? 
-          numberFormat(
-            utils.formatUnits(vaultAccountInfo?.collateralInfo.collateralTokenAmount, ercToken.decimals),
+    holdingCollateral:
+      vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken
+        ? numberFormat(
+            utils.formatUnits(
+              vaultAccountInfo?.collateralInfo.collateralTokenAmount,
+              ercToken.decimals,
+            ),
             {
               fixed: ercToken.precision,
-            }
+            },
           )
-          : undefined,
-
+        : undefined,
   }
 }

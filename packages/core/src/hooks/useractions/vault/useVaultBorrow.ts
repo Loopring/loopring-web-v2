@@ -517,48 +517,6 @@ export const useVaultBorrow = <
         )
       : vaultAccountInfo?.marginLevel
   
-  console.log('asjdkasjdk', tokenPrices,vaultBorrowData.tradeData&&tokenPrices[vaultBorrowData.tradeData.erc20Symbol],vaultAccountInfo?.marginLevel,vaultAccountInfo?.totalBorrowedOfUsdt,moreToBorrowInUSD, vaultAccountInfo, {
-    handlePanelEvent,
-    vaultBorrowBtnStatus: btnStatus,
-    vaultBorrowBtnI18nKey: btnLabel,
-    onVaultBorrowClick: onBtnClick,
-    walletMap: walletMap as unknown as any,
-    coinMap: keys(walletMap ?? {}).reduce((prev, key) => {
-      return {
-        ...prev,
-        [key]: {
-          ...vaultCoinMap[key?.toString() ?? ''],
-          erc20Symbol: vaultCoinMap[key?.toString() ?? '']?.simpleName.slice(2),
-          belongAlice: vaultCoinMap[key?.toString() ?? '']?.simpleName.slice(2),
-        },
-      }
-    }, {}),
-    tradeData: vaultBorrowData.tradeData as any,
-    vaultBorrowData: vaultBorrowData as V,
-    onRefreshData,
-    refreshRef,
-    tokenProps: {
-      decimalsLimit:
-        vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
-      allowDecimals: vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts
-        ?.qtyStepScale
-        ? true
-        : false,
-    },
-    marginLevelChange:
-      vaultAccountInfo && nextMarginLevel
-        ? {
-            from: {
-              marginLevel: vaultAccountInfo.marginLevel,
-              type: marginLevelType(vaultAccountInfo.marginLevel),
-            },
-            to: {
-              marginLevel: nextMarginLevel,
-              type: marginLevelType(nextMarginLevel),
-            },
-          }
-        : undefined,
-  })
 
   return {
     handlePanelEvent,

@@ -1543,7 +1543,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                 return item
               },
             )
-            console.log('data', data)
             setVaultOrderData(data)
           }
         }
@@ -1861,8 +1860,6 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
           }
         }
         case 'VAULT_CONVERT': {
-          
-          // console.log('operation.executionHistory', (operation as any).executionHistory)
           const executionHistory = (operation as any).executionHistory as string[]
           const dustList : {
             symbol: string;

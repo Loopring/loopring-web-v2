@@ -435,12 +435,13 @@ export const useVaultRepay = <
     submitCallback,
   })
 
-  const moreToBorrowInUSD = (vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.erc20Symbol])
-    ? new Decimal(vaultRepayData.tradeData.tradeValue?.toString() ?? '0')
-        .mul(tokenPrices[vaultRepayData.tradeData.erc20Symbol])
-        .mul('-1')
-        .toString()
-    : undefined
+  const moreToBorrowInUSD =
+    vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.erc20Symbol]
+      ? new Decimal(vaultRepayData.tradeData.tradeValue?.toString() ?? '0')
+          .mul(tokenPrices[vaultRepayData.tradeData.erc20Symbol])
+          .mul('-1')
+          .toString()
+      : undefined
   const nextMarginLevel =
     vaultAccountInfo?.marginLevel && moreToBorrowInUSD
       ? calcMarinLevel(
@@ -448,17 +449,9 @@ export const useVaultRepay = <
           vaultAccountInfo.totalEquityOfUsdt,
           vaultAccountInfo.totalDebtOfUsdt,
           moreToBorrowInUSD,
-          '0'
+          '0',
         )
       : vaultAccountInfo?.marginLevel
-  // console.log(
-  //   'moreToBorrowInUSD',
-  //   moreToBorrowInUSD,
-  //   nextMarginLevel,
-  //   vaultAccountInfo?.marginLevel,
-  //   vaultAccountInfo?.totalBorrowedOfUsdt,
-  //   moreToBorrowInUSD,
-  // )
   return {
     handlePanelEvent,
     vaultRepayBtnStatus: btnStatus,
@@ -478,11 +471,10 @@ export const useVaultRepay = <
         belongAlice: value?.simpleName.slice(2),
       }
     }),
-    tradeData: { 
+    tradeData: {
       ...vaultRepayData.tradeData,
       erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
       belongAlice: vaultRepayData.tradeData?.belong.slice(2),
-
     },
     vaultRepayData: {
       ...vaultRepayData,
@@ -492,7 +484,7 @@ export const useVaultRepay = <
         ...vaultRepayData?.tradeData,
         erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
         belongAlice: vaultRepayData.tradeData?.belong.slice(2),
-      }
+      },
     } as unknown as V,
     tokenInfo: vaultTokenMap[vaultRepayData?.belong],
     tokenProps: {
@@ -503,7 +495,7 @@ export const useVaultRepay = <
         : false,
     },
     marginLevelChange:
-      (vaultAccountInfo && nextMarginLevel && vaultRepayData.tradeValue)
+      vaultAccountInfo && nextMarginLevel && vaultRepayData.tradeValue
         ? {
             from: {
               marginLevel: vaultAccountInfo.marginLevel,
@@ -515,6 +507,5 @@ export const useVaultRepay = <
             },
           }
         : undefined,
-
   }
 }

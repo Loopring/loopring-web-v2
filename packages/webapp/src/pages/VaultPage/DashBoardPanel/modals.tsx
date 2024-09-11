@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import _ from 'lodash';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { useTranslation } from 'react-i18next';
 
 type CollateralDetailsModalProps = {
   open: boolean
@@ -24,6 +25,7 @@ type CollateralDetailsModalProps = {
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
   const { open, onClose, collateralTokens, totalCollateral, maxCredit,onClickMaxCredit,coinJSON } = props
+  const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -42,7 +44,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
             justifyContent={'space-between'}
             alignItems={'center'}
           >
-            <Typography variant={'h5'}>Collateral Details</Typography>
+            <Typography variant={'h5'}>{t('labelVaultCollateralDetails')}</Typography>
             <CloseIcon
               style={{
                 height: '20px',
@@ -67,13 +69,13 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
             >
               <SpaceBetweenBox
                 leftNode={
-                  <Typography color={'var(--color-text-third)'}>Total Collateral</Typography>
+                  <Typography color={'var(--color-text-third)'}>{t('labelVaultTotalCollateral')}</Typography>
                 }
                 rightNode={<Typography>{totalCollateral}</Typography>}
               />
               <SpaceBetweenBox
                 marginTop={2}
-                leftNode={<Typography color={'var(--color-text-third)'}>Maximum Credit</Typography>}
+                leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultMaximumCredit')}</Typography>}
                 rightNode={<Typography>{maxCredit}</Typography>}
               />
             </Box>
@@ -83,9 +85,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              Maximum Credit means the maximum amount of money you can borrow from Portal based on
-              your collateral. It is calculated by taking the total value of your collateral,
-              adjusted for price factor and the maximum leverage.
+              {t('labelVaultMaximumCreditDes')}
               <Typography
                 component={'span'}
                 onClick={onClickMaxCredit}
@@ -93,7 +93,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                 color={'var(--color-primary)'}
                 sx={{ cursor: 'pointer' }}
               >
-                Learn More
+                {t('labelLearnMore2')}
               </Typography>
             </Typography>
             {collateralTokens.map((token) => {
@@ -110,13 +110,6 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                     alignItems={'center'}
                     leftNode={
                       <Box display={'flex'} alignItems={'center'}>
-                        {/* <Box
-                          component={'img'}
-                          src={token.logo}
-                          width={32}
-                          height={32}
-                          marginRight={1}
-                        /> */}
                         <CoinIcons  type={TokenType.single} tokenIcon={[coinJSON]}/>
                         <Typography marginLeft={1}>{token.name}</Typography>
                       </Box>
@@ -155,6 +148,7 @@ type MaximumCreditModalProps = {
 }
 export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
   const { open, onClose, onClickBack, collateralFactors, maxLeverage } = props
+  const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -175,7 +169,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
           >
             <Box display={'flex'} alignItems={'center'}>
               <BackIcon sx={{ marginRight: 2,cursor: 'pointer' }} onClick={onClickBack}/>
-              <Typography variant={'h5'}>Maximum Credit</Typography>
+              <Typography variant={'h5'}>{t('labelVaultMaximumCredit')}</Typography>
             </Box>
             <CloseIcon
               style={{
@@ -199,16 +193,13 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              Maximum Credit means the maximum amount of money you can borrow from Portal based on
-              your collateral. It is calculated by taking the total value of your collateral,
-              adjusted for price factor and the maximum leverage.
+              {t('labelVaultMaximumCreditDes')}
             </Typography>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
-              Maximum Credit = Sum ( Token_MarketPrice * Token_Amount * Token_PriceFactor ) *
-              Maximum_Leverage
+              {t('labelVaultMaximumCreditFormula')}
             </Typography>
             <Typography color={'var(--color-text-secondary)'} variant='h5'>
-              The Price Factor of each collateral
+              {t('labelVaultPriceFactor')}
             </Typography>
             <Box
               marginTop={2}
@@ -233,7 +224,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
               })}
             </Box>
             <Typography marginBottom={2} color={'var(--color-text-secondary)'} variant='h5'>
-              Maximum Leverage
+              {t('labelVaultMaximumLeverage')}
             </Typography>
             <Box
               padding={2.5}
@@ -242,7 +233,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
             >
               <SpaceBetweenBox
                 leftNode={
-                  <Typography color={'var(--color-text-third)'}>Maximum Leverage</Typography>
+                  <Typography color={'var(--color-text-third)'}>{t('labelVaultMaximumLeverage')}</Typography>
                 }
                 rightNode={<Typography>{maxLeverage}x</Typography>}
               />
@@ -282,6 +273,7 @@ export const LeverageModal = (props: LeverageModalProps) => {
   borrowed,
   maximumCredit,
   } = props
+  const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -300,7 +292,7 @@ export const LeverageModal = (props: LeverageModalProps) => {
             justifyContent={'space-between'}
             alignItems={'center'}
           >
-            <Typography variant={'h5'}>Leverage</Typography>
+            <Typography variant={'h5'}>{t('labelVaultLeverage')}</Typography>
             <CloseIcon
               style={{
                 height: '20px',
@@ -377,19 +369,19 @@ export const LeverageModal = (props: LeverageModalProps) => {
             >
               <SpaceBetweenBox
                 leftNode={
-                  <Typography color={'var(--color-text-secondary)'}>Available Borrow</Typography>
+                  <Typography color={'var(--color-text-secondary)'}>{t('labelVaultAvailableBorrow')}</Typography>
                 }
                 rightNode={<Typography>{borrowAvailable}</Typography>}
                 marginBottom={2}
               />
               <SpaceBetweenBox
-                leftNode={<Typography color={'var(--color-text-secondary)'}>Borrowed</Typography>}
+                leftNode={<Typography color={'var(--color-text-secondary)'}>{t('labelVaultBorrowed')}</Typography>}
                 rightNode={<Typography>{borrowed}</Typography>}
                 marginBottom={2}
               />
               <SpaceBetweenBox
                 leftNode={
-                  <Typography color={'var(--color-text-secondary)'}>Maximum Credit</Typography>
+                  <Typography color={'var(--color-text-secondary)'}>{t('labelVaultMaximumCredit')}</Typography>
                 }
                 rightNode={<Typography>{maximumCredit}</Typography>}
               />
@@ -400,9 +392,7 @@ export const LeverageModal = (props: LeverageModalProps) => {
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              Maximum Credit means the maximum amount of money you can borrow from Portal based on
-              your collateral. It is calculated by taking the total value of your collateral,
-              adjusted for price factor and the maximum leverage.
+              {t('labelVaultMaximumCreditDes')}
               <Typography
                 component={'span'}
                 onClick={onClickMaxCredit}
@@ -410,24 +400,20 @@ export const LeverageModal = (props: LeverageModalProps) => {
                 color={'var(--color-primary)'}
                 sx={{ cursor: 'pointer' }}
               >
-                Learn More
+                {t('labelLearnMore2')}
               </Typography>
             </Typography>
           </Box>
           <Divider style={{ marginTop: '-1px', width: '100%' }} />
           <Box paddingX={3} marginTop={3}>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
-              {' '}
-              · Selecting higher leverage will increase your liquidation risk.
+              {t('labelVaultLeverageRisk1')}
             </Typography>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
-              {' '}
-              · Available Borrow is based on the upper limit corresponding to the leverage you
-              choose. The total value of all your borrowed tokens will not exceed Available Borrow.
+              {t('labelVaultLeverageRisk2')}
             </Typography>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
-              {' '}
-              · Maximum Credit is the maximum amount you can borrow based on your collateral.
+              {t('labelVaultLeverageRisk3')}
             </Typography>
           </Box>
         </Box>
@@ -460,6 +446,7 @@ export const DebtModal = (props: DebtModalProps) => {
     totalBorrowed,
     totalDebt,
   } = props
+  const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -478,7 +465,7 @@ export const DebtModal = (props: DebtModalProps) => {
             justifyContent={'space-between'}
             alignItems={'center'}
           >
-            <Typography variant={'h5'}>Debt</Typography>
+            <Typography variant={'h5'}>{t('labelVaultDebt')}</Typography>
             <CloseIcon
               style={{
                 height: '20px',
@@ -498,19 +485,16 @@ export const DebtModal = (props: DebtModalProps) => {
             <Box
               borderRadius={'8px'}
               padding={2}
-              // justifyContent={'space-between'}
               marginTop={4}
               marginBottom={2}
-              // display={'flex'}
               bgcolor={'var(--color-box-secondary)'}
-              // alignItems={'center'}
             >
-              <Typography marginBottom={2} fontSize={'16px'}>Details</Typography>
+              <Typography marginBottom={2} fontSize={'16px'}>{t('labelVaultDebtDetails')}</Typography>
               <SpaceBetweenBox
                 marginBottom={2}
                 leftNode={
                   <Typography color={'var(--color-text-secondary)'}>
-                    Total Debt
+                    {t('labelVaultTotalDebt')}
                   </Typography>
                 }
                 rightNode={
@@ -523,7 +507,7 @@ export const DebtModal = (props: DebtModalProps) => {
                 marginBottom={2}
                 leftNode={
                   <Typography color={'var(--color-text-secondary)'}>
-                    Total Borrowed
+                    {t('labelVaultTotalBorrowed')}
                   </Typography>
                 }
                 rightNode={
@@ -535,7 +519,7 @@ export const DebtModal = (props: DebtModalProps) => {
               <SpaceBetweenBox
                 leftNode={
                   <Typography color={'var(--color-text-secondary)'}>
-                    Total Funding Fee
+                    {t('labelVaultTotalFundingFee')}
                   </Typography>
                 }
                 rightNode={
@@ -545,7 +529,7 @@ export const DebtModal = (props: DebtModalProps) => {
                 }
               />
             </Box>  
-            <Typography fontSize={'16px'} marginBottom={2}>Borrowed</Typography>
+            <Typography fontSize={'16px'} marginBottom={2}>{t('labelVaultBorrowed')}</Typography>
           </Box>
           <Divider style={{ width: '100%' }} />
           <Box paddingX={3} marginTop={3}>
@@ -623,6 +607,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
     convertBtnDisabled,
     onClickRecords,
   } = props
+  const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
@@ -641,7 +626,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
             justifyContent={'space-between'}
             alignItems={'center'}
           >
-            <Typography variant={'h5'}>Dust Collector</Typography>
+            <Typography variant={'h5'}>{t('labelDustCollectorDetail')}</Typography>
             <Box>
               <OrderListIcon
                 style={{
@@ -711,7 +696,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
               marginTop={3}
               leftNode={
                 <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'}>
-                  Value (est.)
+                  {t('labelVaultValueEst')}
                   <Tooltip
                     title={
                       'The token price changes dynamically, the dust value you see here may be inconsistent with the final value.'
@@ -732,10 +717,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
               }
             />
             <Typography marginBottom={3} color={'var(--color-text-secondary)'} marginTop={5}>
-              The accumulated dust will be converted into corresponding USDT. If you do not have any
-              USDT to be repaid, the converted amount will be deposited into your portal's USDT.
-              However, if you have USDT to be repaid, the converted amount will be prioritized to
-              repay the debt. 
+              {t('labelVaultDustCollectorDes')}
             </Typography>
             <Button
               sx={{ marginBottom: 4 }}
@@ -744,7 +726,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
               onClick={onClickConvert}
               variant={'contained'}
             >
-              Convert
+              {t('labelVaultConvert')}
             </Button>
           </Box>
         </Box>

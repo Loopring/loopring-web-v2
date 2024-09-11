@@ -193,9 +193,6 @@ export const VaultBorrowWrap = <
               />
             ) : undefined}
             <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
-              {/* {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt
-                ? vaultBorrowData.borrowedStr + ' ' + (vaultBorrowData as any).erc20Symbol
-                : EmptyValueTag} */}
               {vaultBorrowData &&
               (vaultBorrowData as any).hourlyRateInPercent &&
               (vaultBorrowData as any).yearlyRateInPercent
@@ -222,7 +219,7 @@ export const VaultBorrowWrap = <
             display={'inline-flex'}
             alignItems={'center'}
           >
-            Margin Level
+            {t('labelVaultMarginLevel')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
             <Typography display={'flex'} alignItems={'center'} marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
