@@ -912,7 +912,7 @@ type VaultConvertDetailProps = {
 export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
   const { totalValueInCurrency, convertedInUSDT, repaymentInUSDT, time, dusts, status } = props
   const theme = useTheme()
-  const { t } = useTranslation()
+  const { t } = useTranslation('tables')
   const iconDiv = React.useMemo(() => {
     switch (status) {
       case 'failed':
