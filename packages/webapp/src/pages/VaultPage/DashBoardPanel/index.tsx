@@ -297,8 +297,14 @@ export const VaultDashBoardPanel = ({
     const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
       type: 4,
     })!
+    const checkedDusts = dustsAssets.filter(asset => {
+      const token = vaultTokenMap[vaultIdIndex[asset.tokenId!]]
+      const vaultSymbol = token.symbol
+      const originSymbol = vaultSymbol.slice(2)
+      return localState.selectedDustSymbol.includes(originSymbol)
+    })
     const dustTransfers = await Promise.all(
-      dustsAssets.map(async (asset) => {
+      checkedDusts.map(async (asset) => {
         const tokenId = asset.tokenId as unknown as number
         const { offchainId } = await LoopringAPI.userAPI?.getNextStorageId(
           {
@@ -341,12 +347,11 @@ export const VaultDashBoardPanel = ({
       modalStatus: 'noModal'
     })
     updateVaultLayer2({})
-    // dustTransfers.map(x => )
-    const dustList = dustsAssets.map(dust => {
+    
+    const dustList = checkedDusts.map(dust => {
       const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
       const token = tokenMap[idIndex[vaultToken.tokenId]]
       const price = nonVaultTokenPrices[token.symbol]
-
       return {
         symbol: token.symbol,
         coinJSON: coinJson[token.symbol],
@@ -375,7 +380,7 @@ export const VaultDashBoardPanel = ({
       info: {
         totalValueInCurrency: fiatNumberDisplay(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), currency),
         convertedInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), {fixed: 2}),
-        repaymentInUSDT: undefined, // todo
+        repaymentInUSDT: undefined,
         time: undefined,
         dusts: dustList.map(dust => {
           return {

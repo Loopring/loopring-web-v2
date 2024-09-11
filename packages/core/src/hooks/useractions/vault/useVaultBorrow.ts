@@ -507,11 +507,13 @@ export const useVaultBorrow = <
         .toString()
     : undefined
   const nextMarginLevel =
-    vaultAccountInfo?.marginLevel && moreToBorrowInUSD
+    vaultAccountInfo && moreToBorrowInUSD
       ? calcMarinLevel(
-          vaultAccountInfo?.marginLevel,
-          vaultAccountInfo?.totalBorrowedOfUsdt,
-          moreToBorrowInUSD,
+        vaultAccountInfo.totalCollateralOfUsdt,
+        vaultAccountInfo.totalEquityOfUsdt,
+        vaultAccountInfo.totalDebtOfUsdt,
+        moreToBorrowInUSD,
+        '0'
         )
       : vaultAccountInfo?.marginLevel
   

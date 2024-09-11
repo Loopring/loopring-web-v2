@@ -1063,13 +1063,13 @@ const DustCollectorDes = (
           />
           <SpaceBetweenBox
             leftNode={<Typography color={'var(--color-text-third)'}>Converted</Typography>}
-            rightNode={<Typography>{convertedInUSDT}</Typography>}
+            rightNode={<Typography>{convertedInUSDT ? (convertedInUSDT + ' USDT') : '--'} </Typography>}
             marginBottom={2}
           />
           {status === 'success' && (
             <SpaceBetweenBox
               leftNode={<Typography color={'var(--color-text-third)'}>Repayment</Typography>}
-              rightNode={<Typography>{repaymentInUSDT}</Typography>}
+              rightNode={<Typography>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>}
               marginBottom={2}
             />
           )}
@@ -1089,6 +1089,7 @@ const DustCollectorDes = (
                 border={'1px solid var(--color-border)'}
                 paddingY={1.5}
                 paddingX={2}
+                marginBottom={1}
                 alignItems={'center'}
                 key={dust.symbol}
                 leftNode={

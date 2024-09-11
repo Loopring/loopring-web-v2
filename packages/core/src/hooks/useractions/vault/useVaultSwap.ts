@@ -1858,11 +1858,13 @@ export const useVaultSwap = <
         .toString()
     : undefined
   const nextMarginLevel =
-    vaultAccountInfo?.marginLevel && moreToBorrowInUSD
+    vaultAccountInfo && moreToBorrowInUSD
       ? calcMarinLevel(
-          vaultAccountInfo?.marginLevel,
-          vaultAccountInfo?.totalBorrowedOfUsdt,
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalEquityOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
           moreToBorrowInUSD,
+          '0'
         )
       : undefined
   console.log('vaultLayer2 nextMarginLevel', 

@@ -24,6 +24,17 @@ export type VaultJoinExtendProps<T, I, C = IBData<I>> = {
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
   tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
   onBack: () => {}
+  marginLevelChange: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  } | undefined
+  holdingCollateral?: string
 }
 export type VaultJoinWrapProps<T, I, V> = VaultJoinBaseProps<T, I, V> & VaultJoinExtendProps<T, I>
 

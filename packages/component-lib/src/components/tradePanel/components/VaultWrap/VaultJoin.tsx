@@ -24,6 +24,9 @@ import {
   CoinIcon,
 } from '@loopring-web/component-lib'
 import InfoIcon from '@mui/icons-material/Info';
+import { numberFormat } from '@loopring-web/core'
+import { marginLevelTypeToColor } from './utils'
+import EastIcon from '@mui/icons-material/East';
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -38,6 +41,8 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   // coinAPrecision,
   // coinBPrecision,
   tokenProps,
+  marginLevelChange,
+  holdingCollateral,
   ...rest
 }: VaultJoinWrapProps<T, I, V>) => {
   const { t, ...i18n } = useTranslation()
@@ -119,46 +124,82 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             type: TRADE_TYPE.TOKEN,
             disabled,
             onChangeEvent: onChangeEvent as any,
-            inputButtonDefaultProps: { ...inputButtonDefaultProps, disableBelong: !isActiveAccount },
+            inputButtonDefaultProps: {
+              ...inputButtonDefaultProps,
+              disableBelong: !isActiveAccount,
+            },
             placeholderText: '0.00',
             inputBtnRef,
+            tokenNotEnough: t(rest.isAddOrRedeem === 'Add' ? `labelVaultJoinNotEnough` : `labelVaultRedeemNotEnough`, {arg: tradeData.belong}),
             ...tokenProps,
           }}
+          
         />
       </Grid>
       <Grid item alignSelf={'stretch'}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              height={24}
-            >
-              <Tooltip title={t('labelVaultTotalQuoteDes').toString()}>
-                <Typography
-                  component={'span'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  alignItems={'center'}
-                  display={'flex'}
-                >
-                  <Trans i18nKey={'labelVaultTotalQuote'}>
-                    Total Quota
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Trans>
-                </Typography>
-              </Tooltip>
+            {rest.isAddOrRedeem === 'Add' ? (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                height={24}
+              >
+                <Tooltip title={t('labelVaultTotalQuoteDes').toString()}>
+                  <Typography
+                    component={'span'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    alignItems={'center'}
+                    display={'flex'}
+                  >
+                    <Trans i18nKey={'labelVaultTotalQuote'}>
+                      Total Quota
+                      <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    </Trans>
+                  </Typography>
+                </Tooltip>
 
-              {vaultJoinData && vaultJoinData?.maxShowVal ? (
-                <Typography component={'span'} variant='body2' color={'textPrimary'}>
-                  {vaultJoinData?.maxShowVal + ' ' + vaultJoinData?.belong}
-                </Typography>
-              ) : (
-                EmptyValueTag
-              )}
-            </Grid>
+                {vaultJoinData && vaultJoinData?.maxShowVal ? (
+                  <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                    {vaultJoinData?.maxShowVal + ' ' + vaultJoinData?.belong}
+                  </Typography>
+                ) : (
+                  EmptyValueTag
+                )}
+              </Grid>
+            ) : (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                height={24}
+              >
+                <Tooltip title={t('Holding Collateral tooltip todo').toString()}>
+                  <Typography
+                    component={'span'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    alignItems={'center'}
+                    display={'flex'}
+                  >
+                    Holding Collateral
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  </Typography>
+                </Tooltip>
+
+                {holdingCollateral ? (
+                  <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                    {holdingCollateral + ' ' + (vaultJoinData?.belong as string)}
+                  </Typography>
+                ) : (
+                  EmptyValueTag
+                )}
+              </Grid>
+            )}
 
             <Grid
               container
@@ -201,14 +242,53 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 )}
               </>
             </Grid>
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Tooltip title={t('Margin Level tooltip todo').toString()}>
+                <Typography
+                  component={'span'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  alignItems={'center'}
+                  display={'inline-flex'}
+                >
+                  Margin Level
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Typography>
+              </Tooltip>
+              <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+              {marginLevelChange ? (
+                      <>
+                        <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                          {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                        </Typography>
+                        <EastIcon sx={{marginX: 0.5}}/>
+                        <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                          {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                        </Typography>
+                      </>
+                    ) : (
+                      EmptyValueTag
+                    )}
+              </Box>
+              
+            </Grid>
           </Grid>
-          
-          {rest.isAddOrRedeem === 'Redeem' && <Grid item display={'flex'} >
-            <InfoIcon sx={{marginX: 1, color: 'var(--color-text-secondary)'}} />
-            <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
-            Collateral with a value more than 2 times of your total debt can be redeemed out of your portal account.
-            </Typography>
-          </Grid>}
+
+          {rest.isAddOrRedeem === 'Redeem' && (
+            <Grid item display={'flex'}>
+              <InfoIcon sx={{ marginX: 1, color: 'var(--color-text-secondary)' }} />
+              <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
+                Collateral with a value more than 2 times of your total debt can be redeemed out of
+                your portal account.
+              </Typography>
+            </Grid>
+          )}
           <Grid item>
             <ButtonStyle
               variant={'contained'}

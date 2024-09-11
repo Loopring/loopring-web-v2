@@ -674,6 +674,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
             {dusts?.map((dust) => {
               return (
                 <SpaceBetweenBox
+                  marginBottom={1}
                   key={dust.symbol}
                   leftNode={
                     <Box display={'flex'} alignItems={'center'}>

@@ -436,7 +436,7 @@ export const useVaultRepay = <
   })
 
   const moreToBorrowInUSD = (vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.erc20Symbol])
-    ? new Decimal(vaultRepayData.tradeData.tradeValue ?? '0')
+    ? new Decimal(vaultRepayData.tradeData.tradeValue?.toString() ?? '0')
         .mul(tokenPrices[vaultRepayData.tradeData.erc20Symbol])
         .mul('-1')
         .toString()
@@ -444,9 +444,11 @@ export const useVaultRepay = <
   const nextMarginLevel =
     vaultAccountInfo?.marginLevel && moreToBorrowInUSD
       ? calcMarinLevel(
-          vaultAccountInfo?.marginLevel,
-          vaultAccountInfo?.totalBorrowedOfUsdt,
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalEquityOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
           moreToBorrowInUSD,
+          '0'
         )
       : vaultAccountInfo?.marginLevel
   // console.log(

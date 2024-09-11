@@ -2379,4 +2379,6 @@ export default {
   labelSmartWalletDepositError1: 'Currently, only EOA wallets are supported.',
   labelSmartWalletDepositError2: 'Loopring Smart Wallet support is coming soon ',
   labelSmartWalletDepositError3: 'stay tuned for updates!',
+  labelDustCollectorDetail: 'Dust Collector',
+  labelVaultRedeem: 'Redeem',
 }

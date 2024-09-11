@@ -399,4 +399,7 @@ export default {
   labelDetail: 'Detail',
   labelVaultcloseoutForced: 'Forced Liquidation',
   labelInvest: 'Invest',
+  labelVaultconvert: 'Convert',
+  labelVaultredeem: 'Redeem',
+  labelVaultJoinRedeem: 'Redeem',
 }

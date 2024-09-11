@@ -22,8 +22,8 @@ export function useSystem(): SystemStatus & {
       [dispatch],
     ),
     getValueInCurrency: (valueInUSD: string) => {
-      return system.forexMap[currency] && 
-      new Decimal(valueInUSD).mul(system.forexMap[currency]).toString()
+      return system.forexMap && system.forexMap[currency] &&
+        new Decimal(valueInUSD).mul(system.forexMap[currency]).toString()
     },
     clearSystem: React.useCallback(
       () => dispatch(clearSystem(undefined)),
