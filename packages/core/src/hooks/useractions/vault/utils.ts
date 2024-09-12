@@ -2,23 +2,24 @@ import Decimal from 'decimal.js'
 
 export const calcMarinLevel = (
   originMarginInUSD: string,
-  originEquityInUSD: string,
   originDebtInUSD: string,
+  totalBalanceInUSD: string,
   moreToBorrowInUSD: string,
   moreToCollateralizeInUSD: string,
 ) => {
   const originMarginDecimal = new Decimal(originMarginInUSD)
-  const originEquityDecimal = new Decimal(originEquityInUSD)
+  const totalBalanceInUSDDecimal = new Decimal(totalBalanceInUSD)
   const moreToBorrowDecimal = new Decimal(moreToBorrowInUSD ?? '0')
   const moreToCollateralizeDecimal = new Decimal(moreToCollateralizeInUSD ?? '0')
   const originDebtDecimal = new Decimal(originDebtInUSD ?? '0')
-  if (originEquityDecimal.add(originDebtDecimal).add(moreToBorrowDecimal).eq('0')) {
+  if (originDebtDecimal.add(moreToBorrowDecimal).eq('0')) {
     return '999'
   } else {
     return originMarginDecimal
       .add(moreToCollateralizeDecimal)
-      .div(originDebtDecimal.sub(originEquityDecimal).add(moreToBorrowDecimal))
-      .add('1')
+      .add(totalBalanceInUSDDecimal)
+      .add(moreToBorrowDecimal)
+      .div(originDebtDecimal.add(moreToBorrowDecimal))
       .toString()
   }
 }

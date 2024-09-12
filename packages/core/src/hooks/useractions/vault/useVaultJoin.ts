@@ -617,12 +617,12 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       })
       initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
     }
-    const maxRedeemCollateral = utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[initSymbol].decimals)
-
+    const maxRedeemCollateral = vaultAccountInfo 
+      ? utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[initSymbol].decimals)
+      : undefined
     walletInfo = {
       belong: initSymbol,
-      balance: isAddOrRedeem === 'Add' ? walletMap[initSymbol]?.count ?? 0 : 
-      maxRedeemCollateral,
+      balance: isAddOrRedeem === 'Add' ? walletMap[initSymbol]?.count ?? 0 : maxRedeemCollateral,
       tradeValue: undefined,
     }
     updateVaultJoin({
@@ -719,8 +719,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultAccountInfo && moreToCollateralizeInUSD
       ? calcMarinLevel(
           vaultAccountInfo.totalCollateralOfUsdt,
-          vaultAccountInfo.totalEquityOfUsdt,
           vaultAccountInfo.totalDebtOfUsdt,
+          vaultAccountInfo.totalBalanceOfUsdt,
           '0',
           moreToCollateralizeInUSD,
         )

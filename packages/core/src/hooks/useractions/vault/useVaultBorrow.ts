@@ -510,8 +510,8 @@ export const useVaultBorrow = <
     vaultAccountInfo && moreToBorrowInUSD
       ? calcMarinLevel(
         vaultAccountInfo.totalCollateralOfUsdt,
-        vaultAccountInfo.totalEquityOfUsdt,
         vaultAccountInfo.totalDebtOfUsdt,
+        vaultAccountInfo.totalBalanceOfUsdt,
         moreToBorrowInUSD,
         '0'
         )
