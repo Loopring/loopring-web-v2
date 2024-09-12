@@ -71,6 +71,7 @@ export type VaultBorrowBaseProps<T, I, B> = {
       type: 'safe' | 'warning' | 'danger'
     }
   } | undefined
+  userLeverage: string
 }
 export type VaultBorrowWrapProps<T, I, B> = BasicACoinTradeViewProps<T, I> &
   VaultBorrowBaseProps<T, I, B>

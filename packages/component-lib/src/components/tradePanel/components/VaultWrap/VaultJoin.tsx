@@ -138,7 +138,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
           }}
         />
       </Grid>
-      <Grid item alignSelf={'stretch'}>
+      <Grid item alignSelf={'stretch'} marginTop={rest.isAddOrRedeem === 'Redeem' ? 2 : 6}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
             {rest.isAddOrRedeem === 'Add' ? (
@@ -180,18 +180,15 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 alignItems={'center'}
                 height={24}
               >
-                <Tooltip title={t('Holding Collateral tooltip todo').toString()}>
-                  <Typography
-                    component={'span'}
-                    variant='body2'
-                    color={'textSecondary'}
-                    alignItems={'center'}
-                    display={'flex'}
-                  >
-                    {t('labelVaultHoldingCollateral')}
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Typography>
-                </Tooltip>
+                <Typography
+                  component={'span'}
+                  variant='body2'
+                  color={'textSecondary'}
+                  alignItems={'center'}
+                  display={'flex'}
+                >
+                  {t('labelVaultHoldingCollateral')}
+                </Typography>
 
                 {holdingCollateral ? (
                   <Typography component={'span'} variant='body2' color={'textPrimary'}>
@@ -251,18 +248,15 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               alignItems={'center'}
               marginTop={1 / 2}
             >
-              <Tooltip title={t('Margin Level tooltip todo').toString()}>
-                <Typography
-                  component={'span'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  alignItems={'center'}
-                  display={'inline-flex'}
-                >
-                  {t('labelVaultMarginLevel')}
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                </Typography>
-              </Tooltip>
+              <Typography
+                component={'span'}
+                variant='body2'
+                color={'textSecondary'}
+                alignItems={'center'}
+                display={'inline-flex'}
+              >
+                {t('labelVaultMarginLevel')}
+              </Typography>
               <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
                 {marginLevelChange ? (
                   <>
@@ -282,8 +276,8 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
           </Grid>
 
           {rest.isAddOrRedeem === 'Redeem' && (
-            <Grid item display={'flex'}>
-              <InfoIcon sx={{ marginX: 1, color: 'var(--color-text-secondary)' }} />
+            <Grid item display={'flex'} marginBottom={1}>
+              <InfoIcon sx={{ marginRight: 1, color: 'var(--color-text-secondary)' }} />
               <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
                 {t('labelVaultRedeemAlert')}
               </Typography>

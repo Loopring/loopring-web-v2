@@ -7,6 +7,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import _ from 'lodash';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useTranslation } from 'react-i18next';
+import Decimal from 'decimal.js';
 
 type CollateralDetailsModalProps = {
   open: boolean
@@ -656,7 +657,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
           </Box>
           <Divider style={{ marginTop: '-1px', width: '100%' }} />
           <Box paddingX={3} paddingTop={5} paddingBottom={4}>
-            {dusts?.map((dust) => {
+            {(dusts && dusts.length > 0) ? dusts.map((dust) => {
               return (
                 <SpaceBetweenBox
                   marginBottom={1}
@@ -688,7 +689,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                   }
                 />
               )
-            })}
+            }) : <Typography textAlign={'center'} color={'var(--color-text-third)'} >{t('labelVaultNoDust')}</Typography>}
           </Box>
           <Divider style={{ width: '100%' }} />
           <Box paddingX={3}>
@@ -712,7 +713,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
               }
               rightNode={
                 <Typography>
-                  {totalValueInUSDT} / {totalValueInCurrency}
+                  {new Decimal(totalValueInUSDT).gt(0) ? `${totalValueInUSDT} / ${totalValueInCurrency}` : EmptyValueTag}
                 </Typography>
               }
             />

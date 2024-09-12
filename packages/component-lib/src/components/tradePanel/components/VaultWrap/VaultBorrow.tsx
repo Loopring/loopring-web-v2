@@ -40,6 +40,7 @@ export const VaultBorrowWrap = <
   coinMap,
   propsExtends,
   marginLevelChange,
+  userLeverage,
   ...rest
 }: VaultBorrowWrapProps<T, I, V>) => {
   const inputBtnRef = React.useRef()
@@ -132,7 +133,31 @@ export const VaultBorrowWrap = <
         />
       </Box>
       <Divider sx={{ width: '100%', marginY: 3 }} />
-      <Grid container spacing={1} marginTop={10} alignItems={'stretch'}>
+      <Grid container spacing={1} marginTop={0} alignItems={'stretch'}>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelVaultLeverage')}
+          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>            
+            <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+              {userLeverage}x
+            </Typography>
+          </Box>
+        </Grid>
         <Grid
           item
           xs={12}
@@ -166,6 +191,7 @@ export const VaultBorrowWrap = <
             </Typography>
           </Box>
         </Grid>
+        
         <Grid
           item
           xs={12}

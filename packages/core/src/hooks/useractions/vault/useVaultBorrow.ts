@@ -559,5 +559,6 @@ export const useVaultBorrow = <
             },
           }
         : undefined,
+    userLeverage: vaultAccountInfo?.leverage,
   }
 }

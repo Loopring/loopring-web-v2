@@ -2411,4 +2411,5 @@ export default {
   labelDetails: 'Details',
   labelVaultErrorOccurred: 'An error has occurred. Please try again later.',
   labelVaultDetails: 'Details',
+  labelVaultNoDust: 'No Dust to Collect',
 }
