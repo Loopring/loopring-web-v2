@@ -705,9 +705,8 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                     placement={'top'}
                   >
                     <IconButton>
-                      <Info2Icon sx={{ color: 'var(--color-text-secondary)',marginLeft: 1 / 2 }} />
+                      <Info2Icon sx={{ color: 'var(--color-text-secondary)', marginLeft: 1 / 2 }} />
                     </IconButton>
-                    
                   </Tooltip>
                 </Typography>
               }
