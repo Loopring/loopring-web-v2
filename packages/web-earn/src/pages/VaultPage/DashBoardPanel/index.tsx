@@ -314,7 +314,6 @@ export const VaultDashBoardPanel = ({
       },
     }
   })
-  console.log('dustsAssets', dustsAssets, tokenMap, tokenPrices)
   const totalDustsInUSDT = dustsAssets
     ? numberStringListSum(
         dustsAssets.map((asset) => {
