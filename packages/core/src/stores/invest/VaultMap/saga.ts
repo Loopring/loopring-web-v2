@@ -32,7 +32,7 @@ const getVaultMapApi = async () => {
 
   try {
     const [tokenMapRaw, marketRaw] = await Promise.all([
-      LoopringAPI.vaultAPI.getVaultTokens().then((response) => {
+      LoopringAPI.vaultAPI.getVaultTokens('1').then((response) => {
         if (
           !response ||
           (response as sdk.RESULT_INFO).code ||
