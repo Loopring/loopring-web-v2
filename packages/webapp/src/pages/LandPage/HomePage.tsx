@@ -199,16 +199,16 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <RoundIndicator
               iconURL={SoursURL + 'images/landPage/homepage_network.svg'}
-              text={'Supported networks: Ethereum & Taiko'}
+              text={t('labelSupportedNetworkDes')}
             />
             <TitleGroup
-              title={'Loopring DeFi'}
+              title={t('labelNavEarn')}
               description={
-                'Revolutionizing Decentralized Finance with Cutting-Edge\nEarning and Trading Solutions'
+                t('labelTitleLiteDes')
               }
               mb={15}
               link={'https://defi.loopring.io/'}
-              buttonText={'Launch'}
+              buttonText={t('labelLaunch')}
               descriptionTextColor={'var(--color-text-primary)'}
             />
           </Box>
@@ -221,8 +221,8 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           >
             <RoundBoxStyled p={8} pb={0} height={'100%'} width={'49.5%'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
               <TitleDes
-                title={'Leading On-Chain Structured Product'}
-                description={'Buy the dip or sell at a higher price—all while earning high yields.'}
+                title={t('labelLeadingOnChainStructuredProduct')}
+                description={t('labelLeadingOnChainStructuredProductDes')}
               />
               <Box
                 component={'img'}
@@ -238,9 +238,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
 
             <RoundBoxStyled p={8} pb={0} height={'100%'} width={'49.5%'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
               <TitleDes
-                title={'Trade with CEX Liquidity'}
+                title={t('labelTradeWithCEXLiquidity')}
                 description={
-                  'Effortlessly trade tokens with near-zero slippage, leveraging a unified liquidity pool that combines both CEX and DEX liquidity to generate the best execution price.'
+                  t('labelTradeWithCEXLiquidityDes')
                 }
               />
               <Box
@@ -265,9 +265,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             alignItems={'center'}
           >
             <TitleDes
-              title={'Unlock the Power of Leveraged Trading'}
+              title={t('labelUnlockThePowerOfLeveragedTrading')}
               description={
-                'Experience secure futures trading with up to 50x leverage, giving you more buying power to potentially amplify your gains. Our unique design ensures your leveraged positions remain safe, even during extreme market volatility.'
+                t('labelUnlockThePowerOfLeveragedTradingDes')
               }
               mr={2}
             />
@@ -284,17 +284,17 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           py={15}
         >
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-            <RoundIndicator iconURL={SoursURL + 'images/landPage/homepage_ethereum.svg'} text={'Ethereum-only'} />
+            <RoundIndicator iconURL={SoursURL + 'images/landPage/homepage_ethereum.svg'} text={t('labelEthereumOnly')} />
             <TitleGroup
               mb={15}
-              title={'Loopring Layer 2'}
+              title={t('labelLoopringLayer2')}
               description={
-                'Unlock the full features of Loopring Layer 2, including Loopring DeFi,\nNFTs, Red Packets, and more.'
+                t('labelLoopringLayer2Des')
               }
               onClickLink={() => {
                 history.push('/pro')
               }}
-              buttonText={'Launch'}
+              buttonText={t('labelLaunch')}
             />
           </Box>
           <Box
@@ -315,8 +315,8 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               alignItems={'center'}
             >
               <TitleDes
-                title={'Trade'}
-                description={'A wide variety of trading methods to choose from'}
+                title={t('labelTrade')}
+                description={t('labelTradeDes')}
               />
               <Box width={'70%'} component={'img'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p4_dark.png' : 'images/landPage/homepage_p4_light.png')} />
             </RoundBoxStyled>
@@ -336,8 +336,8 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 justifyContent={'space-between'}
               >
                 <TitleDes
-                  title={'Earn'}
-                  description={'Choose from a variety of financial products'}
+                  title={t('labelEarn')}
+                  description={t('labelEarnDes')}
                   mr={4}
                 />
                 <Box component={'img'} height={'70%'} src={SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_p5_dark.png' : 'images/landPage/homepage_p5_light.png')} />
@@ -350,7 +350,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 alignItems={'center'}
                 justifyContent={'space-between'}
               >
-                <TitleDes title={'NFT'} description={'Manage and display your NFT collections'} mr={4} />
+                <TitleDes title={t('labelNFT')} description={t('labelNFTDes')} mr={4} />
                 <Box component={'img'} height={'90%'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p6_dark.png' : 'images/landPage/homepage_p6_light.png')} />
               </RoundBoxStyled>
               <RoundBoxStyled
@@ -362,8 +362,8 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 justifyContent={'space-between'}
               >
                 <TitleDes
-                  title={'Red Packets'}
-                  description={'Explore the possibilities with our revolutionary Red Packets'}
+                  title={t('labelRedPackets2')}
+                  description={t('labelRedPacketsDes2')}
                   mr={4}
                 />
                 <Box component={'img'} height={'90%'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p7_dark.png' : 'images/landPage/homepage_p7_light.png')} />
@@ -375,10 +375,10 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
         <MaxWidthContainer display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} containerProps={{}} py={15}>
           <TitleGroup
             mb={15}
-            title={'Loopring Smart Wallet'}
-            description={'Trade on the go - anytime, anywhere'}
+            title={t('labelLoopringSmartWallet')}
+            description={t('labelLoopringSmartWalletDes2')}
             link={'https://wallet.loopring.io/'}
-            buttonText={'Explore'}
+            buttonText={t('labelExplore')}
           />
           <Box mt={10} ml={'9.5%'} width={'80%'} component={'img'} src={SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_p8_dark.png' : 'images/landPage/homepage_p8_light.png')} />
         </MaxWidthContainer>
@@ -388,10 +388,10 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
         >
           <TitleGroup
             mb={15}
-            title={'Loopring Protocol'}
-            description={`The world's first ZKRollup implementation designed to scale Ethereum fully optimized for trading`}
+            title={t('labelLoopringProtocol')}
+            description={t('labelLoopringProtocolDes')}
             link={'https://loopring.org'}
-            buttonText={'Explore'}
+            buttonText={t('labelExplore')}
           />
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
             <RoundBoxStyled
@@ -403,11 +403,10 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             >
               <Box width={'36px'} component={'img'} src={SoursURL + 'images/landPage/homepage_icon1.svg'} />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
-                Proven App-Specific ZK-Rollup
+                {t('labelProvenAppSpecificZKRollup')}
               </Typography>
               <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
-                Loopring processes 2,000+ trades per second with the security guarantees of
-                Ethereum.
+                {t('labelProvenAppSpecificZKRollupDes')}
               </Typography>
             </RoundBoxStyled>
             <RoundBoxStyled
@@ -419,11 +418,10 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             >
               <Box width={'36px'} component={'img'} src={SoursURL + 'images/landPage/homepage_icon2.svg'} />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
-                Audited and Secure
+                {t('labelAuditedAndSecure')}
               </Typography>
               <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
-                Loopring's smart contracts and ZK Circuits have been audited by third-party security
-                firms.
+                {t('labelAuditedAndSecureDes')}
               </Typography>
             </RoundBoxStyled>
             <RoundBoxStyled
@@ -435,10 +433,10 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             >
               <Box width={'36px'} component={'img'} src={SoursURL + 'images/landPage/homepage_icon3.svg'} />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
-                Bringing CEX to DeFi
+                {t('labelBringingCEXToDeFi')}
               </Typography>
               <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
-                Loopring brings the high-performance of CEXs to DeFi, without sacrificing security.
+                {t('labelBringingCEXToDeFiDes')}
               </Typography>
             </RoundBoxStyled>
           </Box>
@@ -452,10 +450,10 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           }
         }} py={15}>
           <TitleGroup
-            title={'Ready for Developers'}
-            description={`Build scalable payment apps, decentralized exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested ZK-Rollup technology. Get started with open-source protocols, documentation, a robust API, SDK, and a fully secure mainnet.`}
+            title={t('labelReadyForDevelopers')}
+            description={t('labelReadyForDevelopersDes2')}
             link={'https://docs.loopring.io'}
-            buttonText={'Explore'}
+            buttonText={t('labelExplore')}
           />
         </MaxWidthContainer>
       </ContainerStyle>
