@@ -185,8 +185,18 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           marginTop: 'calc(var(--header-height) * -1)',
         }}
       >
-        <MaxWidthContainer containerProps={{}} pb={8} pt={20}>
-          <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <MaxWidthContainer containerProps={{
+          sx: {
+            backgroundImage: `url('${SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_bg_dark.png' : 'images/landPage/homepage_bg_light.png')}')`,
+            backgroundSize: '100% auto',
+            backgroundPosition: 'center 130px',
+            backgroundRepeat: 'no-repeat',
+          }
+        }} pb={8} pt={20}>
+          <Box sx={{
+
+              
+          }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <RoundIndicator
               iconURL={SoursURL + 'images/landPage/homepage_network.svg'}
               text={'Supported networks: Ethereum & Taiko'}
@@ -433,7 +443,14 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             </RoundBoxStyled>
           </Box>
         </MaxWidthContainer>
-        <MaxWidthContainer containerProps={{}} py={15}>
+        <MaxWidthContainer containerProps={{
+          sx: {
+            backgroundImage: `url('${SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_bg2_dark.png' : 'images/landPage/homepage_bg2_light.png')}')`,
+            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }
+        }} py={15}>
           <TitleGroup
             title={'Ready for Developers'}
             description={`Build scalable payment apps, decentralized exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested ZK-Rollup technology. Get started with open-source protocols, documentation, a robust API, SDK, and a fully secure mainnet.`}
