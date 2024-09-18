@@ -214,7 +214,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           {searchParams && searchParams.has('noheader') ? (
             <></>
           ) : (
-            <Header isHideOnScroll={true} isLandPage landBtn={<LandBtn />} />
+            <Header isHideOnScroll={true} isLandPage  />
             // <Header isHideOnScroll={true} isLandPage />
           )}
           <HomePage />

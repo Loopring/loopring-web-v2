@@ -148,4 +148,5 @@ export default {
   labelVault2: 'Portfolio',
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
+  labelNavDoc: 'Documentation',
 }

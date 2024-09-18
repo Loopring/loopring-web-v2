@@ -347,13 +347,6 @@ export const ammDisableList = ['Liquidity']
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: 'loopringPro',
-      i18nKey: 'labelNavPro',
-    },
-    router: { path: ExchangePro },
-  },
-  {
-    label: {
       id: 'loopringLite',
       i18nKey: 'labelNavEarn',
     },
@@ -361,10 +354,24 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
+      id: 'loopringPro',
+      i18nKey: 'labelNavPro',
+    },
+    router: { path: ExchangePro },
+  },
+  {
+    label: {
       id: 'wallet',
       i18nKey: 'labelNavWallet',
     },
     router: { path: WalletSite },
+  },
+  {
+    label: {
+      id: 'doc',
+      i18nKey: 'labelNavDoc',
+    },
+    router: { path: LOOPRING_DOC },
   },
 ]
 export const subMenuLayer2 = {
