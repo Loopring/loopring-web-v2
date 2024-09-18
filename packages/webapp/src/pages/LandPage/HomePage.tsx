@@ -87,6 +87,7 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
   descriptionTextColor,
   ...rest
 }) => {
+  const theme = useTheme()
   return (
     <Box
       textAlign='center'
@@ -111,7 +112,7 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
         variant='h3'
         fontWeight={400}
         component='p'
-        color={descriptionTextColor ?? 'var(--color-text-third)'}
+        color={descriptionTextColor ?? (theme.mode === 'light' ?  '#292C33' : 'var(--color-text-third)')}
         fontSize={'28px'}
         mb={8}
         lineHeight={'40px'}
