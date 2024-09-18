@@ -1,7 +1,10 @@
 import React from 'react'
 import {
+  fiatNumberDisplay,
   LoopringAPI,
   makeDualOrderedItem,
+  numberFormat,
+  numberStringListSum,
   store,
   tradeItemToTableDataItem,
   useAccount,
@@ -9,6 +12,7 @@ import {
   useDualMap,
   useSystem,
   useTokenMap,
+  useTokenPrices,
   useVaultMap,
   useWalletLayer2,
   volumeToCount,
@@ -58,6 +62,9 @@ import BigNumber from 'bignumber.js'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { useDualAsset } from './useDualAsset'
 import { isEmpty } from 'lodash'
+import { number } from 'prop-types'
+import { utils } from 'ethers'
+import Decimal from 'decimal.js'
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -1274,10 +1281,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   const {
     account: { accountId, apiKey },
   } = useAccount()
-  const { currency } = useSettings()
-  const { forexMap } = useSystem()
+  const { currency, coinJson } = useSettings()
+  const { forexMap, getValueInCurrency } = useSystem()
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, erc20Map } = useVaultMap()
   const { tokenMap, idIndex } = useTokenMap()
+  
+  const { tokenPrices } = useTokenPrices()
   const { setShowAccount } = useOpenModals()
   const getVaultOrderList = React.useCallback(
     async (
@@ -1302,13 +1311,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
             operateTypes:
               props?.operateTypes ??
               [
-                0, 1, 2, 3, 4, 5,
-                // sdk.VaultOperationType.VAULT_OPEN_POSITION,
-                // sdk.VaultOperationType.VAULT_MARGIN_CALL,
-                // sdk.VaultOperationType.VAULT_BORROW,
-                // sdk.VaultOperationType.VAULT_REPAY,
-                // sdk.VaultOperationType.VAULT_TRADE,
-                // sdk.VaultOperationType.VAULT_CLOSE_OUT,
+                0, 1, 2, 3, 4, 5, 6, 7
               ].join(','),
           },
           apiKey,
@@ -1365,9 +1368,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                 switch (operateType) {
                   case sdk.VaultOperationType.VAULT_OPEN_POSITION:
                   case sdk.VaultOperationType.VAULT_MARGIN_CALL:
+                  case sdk.VaultOperationType.VAULT_JOIN_REDEEM:
                     type =
                       sdk.VaultOperationType.VAULT_OPEN_POSITION == operateType
                         ? VaultRecordType.open
+                        : sdk.VaultOperationType.VAULT_JOIN_REDEEM == operateType
+                        ? VaultRecordType.redeem
                         : VaultRecordType.margin
                     //@ts-ignore
                     const erc20Token = tokenMap[idIndex[tokenS ?? '']]
@@ -1381,7 +1387,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
                     percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
-                    const amountStr = amount.gte(0)
+                    const amountStr = !amount.eq(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
                     mainContentRender = `${amountStr} ${erc20Symbol}`
@@ -1494,6 +1500,22 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                         : EmptyValueTag
                     } ${tokenBSymbol}`
                     break
+                  case sdk.VaultOperationType.VAULT_CONVERT:
+                    type = VaultRecordType.convert
+                    const buyAmountList : string[] = (operation as any).executionHistory.map((item: string) => {
+                      const itemObj = JSON.parse(item)
+                      const {
+                        amountOut,
+                        tokenOut,
+                      } = itemObj
+                      const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[tokenOut]]
+                      const buyTokenInfo = tokenMap[idIndex[vTokenBuyInfo.tokenId]]
+                      const buyAmount = numberFormat(utils.formatUnits(amountOut, buyTokenInfo.decimals), {fixed: buyTokenInfo.precision})
+                      return buyAmount
+                    })
+                    const repaymentInUSDT = numberFormat(numberStringListSum(buyAmountList), {fixed: 2});
+                    mainContentRender = repaymentInUSDT + ' USDT'
+                    break
                 }
 
                 let item = {
@@ -1534,7 +1556,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         isShow: true
         detail:
           | {
-              type: 'VAULT_OPEN_POSITION' | 'VAULT_MARGIN_CALL' | 'VAULT_BORROW' | 'VAULT_REPAY'
+              type: 'VAULT_OPEN_POSITION' | 'VAULT_MARGIN_CALL' | 'VAULT_BORROW' | 'VAULT_REPAY' | 'VAULT_JOIN_REDEEM'
               statusColor: string
               statusLabel: string
               statusType: "success" | "processing" | "failed"
@@ -1563,6 +1585,20 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
           | {
               type: 'VAULT_CLOSE_OUT'
               vaultCloseDetail: any
+            }
+          | {
+              type: 'VAULT_CONVERT',
+              status: "success" | "processing" | "failed"
+              totalValueInCurrency: string,
+              convertedInUSDT: string,
+              repaymentInUSDT: string,
+              time: number,
+              dusts: Array<{
+                symbol: string,
+                coinJSON: any,
+                amount: string,
+                valueInCurrency: string,
+              }>,
             }
       }
     | { isShow: false }
@@ -1606,6 +1642,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
       switch (operation.operateType) {
         case 'VAULT_BORROW':
         case 'VAULT_MARGIN_CALL':
+        case 'VAULT_JOIN_REDEEM':
         case 'VAULT_REPAY':
         case 'VAULT_OPEN_POSITION': {
           const collateralToken = tokenMap[idIndex[operation.tokenIn]]
@@ -1819,6 +1856,61 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                 },
               ),
               time: order.createdAt,
+            },
+          }
+        }
+        case 'VAULT_CONVERT': {
+          const executionHistory = (operation as any).executionHistory as string[]
+          const dustList : {
+            symbol: string;
+            coinJSON: any;
+            amount: string;
+            amountRaw: string;
+            valueInCurrency: string | undefined;
+            valueInCurrencyRaw: string | undefined;
+            buyAmount: string | undefined;
+          }[] = executionHistory.map(item => {
+            const itemObj = JSON.parse(item)
+            const {
+              tokenIn,
+              amountIn,
+              amountOut,
+              tokenOut,
+            } = itemObj
+            const vTokenSellInfo = vaultTokenMap[vaultIdIndex[tokenIn]]
+            const sellTokenInfo = tokenMap[idIndex[vTokenSellInfo.tokenId]]
+            const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[tokenOut]]
+            const buyTokenInfo = tokenMap[idIndex[vTokenBuyInfo.tokenId]]
+            const amount = numberFormat(utils.formatUnits(amountIn, sellTokenInfo.decimals), {fixed: sellTokenInfo.precision})
+            const buyAmount = numberFormat(utils.formatUnits(amountOut, buyTokenInfo.decimals), {fixed: buyTokenInfo.precision})
+            const sellTokenPrice = tokenPrices[sellTokenInfo.symbol]
+            return {
+              symbol: sellTokenInfo.symbol,
+              coinJSON: coinJson[sellTokenInfo.symbol],
+              amount,
+              amountRaw: amountIn,
+              valueInCurrency: fiatNumberDisplay(
+                getValueInCurrency(new Decimal(amount).times(sellTokenPrice).toString()),
+                currency
+              ),
+              valueInCurrencyRaw: getValueInCurrency(new Decimal(amount).times(sellTokenPrice).toString()),
+              buyAmount,
+            }
+          })
+
+          return {
+            isShow: true,
+            detail: {
+              type: 'VAULT_CONVERT',
+              statusColor,
+              statusLabel,
+              statusType,
+              status: operation.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 'success' : operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED ? 'failed' : 'processing',
+              totalValueInCurrency: fiatNumberDisplay(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), currency),
+              convertedInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.valueInCurrencyRaw ?? '0')), {fixed: 2}),
+              repaymentInUSDT: numberFormat(numberStringListSum(dustList.map(dust => dust.buyAmount ?? '0')), {fixed: 2}), 
+              time: operation.createdAt,
+              dusts: dustList,
             },
           }
         }

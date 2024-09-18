@@ -2746,6 +2746,13 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@babel/runtime@^7.23.9":
+  version "7.25.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.25.6.tgz#9afc3289f7184d8d7f98b099884c26317b9264d2"
+  integrity sha512-VBj9MYyDb9tuLq7yzqjgzt6Q+IBQLrGZfdjOekyEirZPHxXWoTSGUTMrpsfi58Up73d13NfYLv8HT9vmznjzhQ==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/runtime@^7.5.0":
   version "7.23.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.2.tgz#062b0ac103261d68a966c4c7baf2ae3e62ec3885"
@@ -4959,10 +4966,10 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.2.0"
 
-"@loopring-web/loopring-sdk@3.9.7-dev5":
-  version "3.9.7-dev5"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.9.7-dev5.tgz#cd51b56385833583448008a0cdff849f84749acb"
-  integrity sha512-FMTjzxY1dj3yPJ31Rh5bJvgy8YNhiXwsyqIehaj0UMBz2dD9XRN538RcLB1So9U9k47r27np4Reexo1lRAHNPA==
+"@loopring-web/loopring-sdk@3.9.9":
+  version "3.9.9"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.9.9.tgz#4c3f4e0325da9dfa58cf1a964b2e7b916c6cb2fd"
+  integrity sha512-mPMxQfTOhZTpcfchJsnQwUeGQAv8aw+WhN3cqzR4qZ0ZKyPs9n5O6bhwnSLqMq96RZ7bl6Ba7gF4F+WLwoa/Rw==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -5217,6 +5224,13 @@
     clsx "^1.1.1"
     prop-types "^15.7.2"
     react-is "^17.0.2"
+
+"@mui/icons-material@^5.16.6":
+  version "5.16.7"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.16.7.tgz#e27f901af792065efc9f3d75d74a66af7529a10a"
+  integrity sha512-UrGwDJCXEszbDI7yV047BYU5A28eGJ79keTCP4cc74WyncuVrnurlmIRxaHL8YK+LI1Kzq+/JM52IAkNnv4u+Q==
+  dependencies:
+    "@babel/runtime" "^7.23.9"
 
 "@mui/lab@5.0.0-alpha.45":
   version "5.0.0-alpha.45"

@@ -1,4 +1,4 @@
-import { IBData, SoursURL, TRADE_TYPE, VaultJoinData } from '@loopring-web/common-resources'
+import { IBData, SoursURL, TRADE_TYPE, VaultJoinData, VaultLoanType } from '@loopring-web/common-resources'
 import {
   CountDownIcon,
   SwitchPanel,
@@ -6,7 +6,7 @@ import {
   VaultJoinProps,
 } from '@loopring-web/component-lib'
 import React from 'react'
-import { Box, Typography, Divider } from '@mui/material'
+import { Box, Typography, Divider, Tabs, Tab } from '@mui/material'
 import { TradeMenuList, useBasicTrade, VaultJoinWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
 
@@ -19,6 +19,8 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
   onRefreshData,
   refreshRef,
   _width,
+  onToggleAddRedeem,
+  isAddOrRedeem,
   ...rest
 }: VaultJoinProps<T, I, V>) => {
   const { t, i18n } = useTranslation()
@@ -58,6 +60,7 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
                 btnStatus,
                 walletMap,
                 coinMap,
+                isAddOrRedeem,
               }}
             />
           ),
@@ -70,15 +73,30 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
             btnStatus,
             walletMap,
             coinMap,
+            isAddOrRedeem,
           ],
         ),
         toolBarItem: React.useMemo(
           () => (
             <>
-              <Box className={'toolbarTitle'}>
-                <Typography marginBottom={1.5} variant={'h5'} component={'span'} paddingX={3}>
-                  {t(isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'))}
-                </Typography>
+              <Box sx={{ height: '55px' }} className={'toolbarTitle'}>
+                {isActiveAccount ? (
+                  <Typography marginBottom={1.5} variant={'h5'} component={'span'} paddingX={3}>
+                    {t('labelVaultJoinTitle')}
+                  </Typography>
+                ) : (
+                  <Tabs
+                    value={isAddOrRedeem}
+                    onChange={(_, value) => {
+                      onToggleAddRedeem(value)
+                    }}
+                    sx={{marginLeft: 1.5}}
+                  >
+                    <Tab label={'Add'} value={'Add'} />
+                    <Tab label={'Redeem'} value={'Redeem'} />
+                  </Tabs>
+                )}
+
                 <Typography
                   display={'inline-block'}
                   marginLeft={2}
@@ -89,11 +107,11 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
                 >
                   <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
                 </Typography>
-                <Divider />
+                <Divider style={{ marginTop: '2px' }}/>
               </Box>
             </>
           ),
-          [],
+          [isAddOrRedeem, isActiveAccount],
         ),
       },
       {
@@ -125,7 +143,7 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
   }
   return !switchData.tradeData?.belong ? (
     <Box
-      height={'var(--min-height)'}
+      height={'580px'}
       width={'var(--modal-width)'}
       display={'flex'}
       justifyContent={'center'}

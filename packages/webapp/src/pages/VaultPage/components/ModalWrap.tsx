@@ -69,7 +69,8 @@ export const ModalVaultWrap = () => {
     isMobile,
     disabled,
     cancelBorrow,
-    borrowedAmount
+    borrowedAmount,
+    marginLevelChange
   } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -181,20 +182,19 @@ export const ModalVaultWrap = () => {
                         minValue: tradeCalcData.sellMinAmtStr,
                       }),
               }}
-              {...{
-                campaignTagConfig,
-                tradeCalcData,
-                tradeData: tradeData as any,
-                onSwapClick,
-                swapBtnI18nKey,
-                swapBtnStatus,
-                handleSwapPanelEvent,
-                should15sRefresh,
-                refreshRef,
-                tradeVault,
-                market,
-                isMobile,
-              }}
+              campaignTagConfig={campaignTagConfig}
+              tradeCalcData={tradeCalcData}
+              tradeData={tradeData as any}
+              onSwapClick={onSwapClick}
+              swapBtnI18nKey={swapBtnI18nKey}
+              swapBtnStatus={swapBtnStatus}
+              handleSwapPanelEvent={handleSwapPanelEvent}
+              should15sRefresh={should15sRefresh}
+              refreshRef={refreshRef}
+              tradeVault={tradeVault}
+              market={market}
+              isMobile={isMobile}
+              marginLevelChange={marginLevelChange!}
             />
           ) : (
             <></>

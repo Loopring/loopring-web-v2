@@ -1,5 +1,6 @@
 import {
   BackIcon,
+  EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   L1L2_NAME_DEFINED,
@@ -19,6 +20,9 @@ import { BasicACoinTrade } from '../BasicACoinTrade'
 import {
   CoinIcon,
 } from '@loopring-web/component-lib'
+import { numberFormat } from '@loopring-web/core'
+import { marginLevelTypeToColor } from './utils'
+import EastIcon from '@mui/icons-material/East';
 
 export const VaultRepayWrap = <
   T extends IBData<any> & { borrowed: string; max: string },
@@ -37,6 +41,7 @@ export const VaultRepayWrap = <
   walletMap,
   tokenInfo,
   handleError,
+  marginLevelChange,
   ...rest
 }: VaultRepayWrapProps<T, I, VR>) => {
   const { defaultNetwork } = useSettings()
@@ -135,7 +140,7 @@ export const VaultRepayWrap = <
           }}
         />
       </Box>
-      <Divider sx={{ width: '100%', marginY: 3 }} />
+      <Divider sx={{ width: '100%', marginY: 2 }} />
       <Grid container spacing={1} alignItems={'stretch'}>
         <Grid
           item
@@ -207,9 +212,45 @@ export const VaultRepayWrap = <
             </Typography>
           </Box>
         </Grid>
+        <Grid
+          item
+          xs={12}
+          direction={'row'}
+          display={'flex'}
+          marginBottom={1}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <Typography
+            component={'p'}
+            variant='body2'
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelVaultMarginLevel')}
+          </Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+          <Typography display={'flex'} alignItems={'center'} marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+              {marginLevelChange ? (
+                <>
+                  <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                    {numberFormat(marginLevelChange.from.marginLevel, {fixed: 2})}
+                  </Typography>
+                  <EastIcon sx={{marginX: 0.5}}/>
+                  <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                    {numberFormat(marginLevelChange.to.marginLevel, {fixed: 2})}
+                  </Typography>
+                </>
+              ) : (
+                EmptyValueTag
+              )}
+            </Typography>
+          </Box>
+        </Grid>
       </Grid>
 
-      <Grid marginTop={3} container spacing={2}>
+      <Grid marginTop={2} container spacing={2}>
         <Grid item xs={6}>
           <ButtonStyle
             variant={'outlined'}

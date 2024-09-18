@@ -70,6 +70,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     scenario = SCENARIO.SWAP,
     hideSecondConfirmation,
     bTradeTutorial,
+    marginLevelChange,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
     let history = useHistory()
@@ -157,6 +158,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   tokenSellProps,
                   tokenBuyProps,
                   handleError,
+                  marginLevelChange
                 }}
               />
             )

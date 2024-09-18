@@ -2316,7 +2316,7 @@ export default {
   labelVaultPendingDes:
     'The request is being processed and is expected to take 1-2 minutes. Please be patient.',
   labelVaultTotalDebtTooltips:
-    'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
+    'Total Debt is comprised of two parts: Loans and Interest. The maximum you can borrow is maximum credit.',
   labelVaultMarginLevelTooltips:
     'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
   labelVaultActiveLoanAlert:
@@ -2378,6 +2378,30 @@ export default {
     'Borrowed {{value}} {{symbol}} successful.',
   labelVaultAmount: 'Amount',
   labelVaultOpenPositionDes: 'Please open a position first.' ,
+  labelHourlyInterestRate: 'Hourly Interest Rate',
+  labelHourlyInterestRateTips: 'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.',
+
+  labelVaultMarginLevelTooltips2:
+    'Margin Level = (Balance +Collateral) / Total Debt',
+  labelVaultMarginLevelTooltips3:
+    'Default Margin Level is 999.00',
+  labelVaultMarginLevelTooltips4:
+    'Low Risk    Margin Level ≥ 1.5',
+  labelVaultMarginLevelTooltips5:
+    'At Low Risk, your collateral is relatively sufficient. You should mainly focus on whether the market fluctuates violently and causes liquidation.',
+  labelVaultMarginLevelTooltips6:
+    'Middle Risk    1.15 ≤ Margin Level < 1.5',
+  labelVaultMarginLevelTooltips7:
+    'At Middle Risk, it is recommended that you always pay attention to changes in market conditions and add collateral or repay borrowed tokens to reduce the risk of liquidation.',
+  labelVaultMarginLevelTooltips8:
+    'High Risk    1.1 ≤ Margin Level < 1.15',
+  labelVaultMarginLevelTooltips9:
+    'At High Risk, it is strongly recommended that you add collateral or repay borrowed tokens immediately to reduce the risk of liquidation.',
+  labelVaultMarginLevelTooltips10:
+    'Liquidation    Margin Level < 1.1',
+  labelVaultMarginLevelTooltips11:
+    'When Margin Level is lower than 1.1, the position will be liquidated.',
+  labelVaultCollateralManagement: 'Collateral Management',
   labelGuardianCodeNetworkError: 'Network not match',
   labelGuardianCodeAccountError: 'guardian not match current account',
   labelGuardianCodeFormatError: 'wrong data format',
@@ -2427,5 +2451,38 @@ export default {
   labelSmartWalletDepositError1: 'Currently, only EOA wallets are supported.',
   labelSmartWalletDepositError2: 'Loopring Smart Wallet support is coming soon ',
   labelSmartWalletDepositError3: 'stay tuned for updates!',
+  labelDustCollectorDetail: 'Dust Collector',
+  labelVaultRedeem: 'Redeem',
+  labelVaultRedeemNotEnough: 'Exceeded the maximum {{arg}} redemption value',
+  labelVaultJoinRedeem: 'Redeem',
+  labelVaultCollateralDetails: 'Collateral Details',
+  labelVaultMaximumCredit: 'Maximum Credit',
+  labelVaultMaximumCreditDes: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral. It is calculated by taking the total value of your collateral, adjusted for price factor and the maximum leverage.',
+  labelVaultMaximumCreditFormula: 'Maximum Credit = Sum ( Token_MarketPrice * Token_Amount * Token_PriceFactor ) * Maximum_Leverage',
+  labelVaultPriceFactor: 'The Price Factor of each collateral',
+  labelVaultMaximumLeverage: 'Maximum Leverage',
+  labelVaultLeverage: 'Leverage',
+  labelVaultAvailableBorrow: 'Available Borrow',
+  labelVaultLeverageRisk1: '· Selecting higher leverage will increase your liquidation risk.',
+  labelVaultLeverageRisk2: '· Available Borrow is based on the upper limit corresponding to the leverage you choose. The total value of all your borrowed tokens will not exceed Available Borrow.',
+  labelVaultLeverageRisk3: '· Maximum Credit is the maximum amount you can borrow based on your collateral.',
+  labelVaultDebt: 'Debt',
+  labelVaultDebtDetails: 'Details',
+  labelVaultTotalBorrowed: 'Total Borrowed',
+  labelVaultTotalFundingFee: 'Total Funding Fee',
+  labelVaultValueEst: 'Value (est.)',
+  labelVaultDustCollectorDes: `The accumulated dust will be converted into corresponding USDT. If you do not have any USDT to be repaid, the converted amount will be deposited into your portal's USDT. However, if you have USDT to be repaid, the converted amount will be prioritized to repay the debt. `,
+  labelVaultConvert: 'Convert',
+  labelVaultMarginLevelAlert: 'Your margin level has reached a critical point. Please review your positions and considering adding additional collateral. Failure to address the margin call may result in forced liquidation.',
+  labelVaultDetail: 'Detail',
+  labelVaultDefaultLeverage: 'Default Leverage',
+  labelVaultHoldingCollateral: 'Holding Collateral',
+  labelVaultRedeemAlert: 'Collateral with a value more than 2 times of your total debt can be redeemed out of your portal account.',
+  labelTotalValue: 'Total Value',
+  labelVaultRepayment: 'Repayment',
+  labelDetails: 'Details',
+  labelVaultErrorOccurred: 'An error has occurred. Please try again later.',
+  labelVaultDetails: 'Details',
+  labelVaultNoDust: 'No Dust to Collect',
 }
 

@@ -67,6 +67,8 @@ import {
   vaultSwapDependAsync,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
+import Decimal from 'decimal.js'
+import { calcMarinLevel, marginLevelType } from './utils'
 const makeVaultSell = (sellSymbol: string) => {
   const {
     tokenMap: { idIndex: erc20IdIndex },
@@ -1673,6 +1675,8 @@ export const useVaultSwap = <
           minimumConverted,
           supportBorrowData,
           showHasBorrow,
+          hourlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100, 6, false),
+          yearlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100 * 24 * 365, 2, false)
         }
         let _edit = {}
 
@@ -1847,12 +1851,46 @@ export const useVaultSwap = <
       updateTradeVault({ market, tradeCalcData: _tradeCalcData })
     }
   }, [market, tradeVault, tradeData, tradeCalcData, setTradeCalcData])
-  // myLog('vaultLayer2 swapBtnStatus', btnStatus)
+  
+  const moreToBorrowInUSD =
+    tradeCalcData.borrowStr &&
+    new Decimal(tradeCalcData.borrowStr).greaterThan('0') &&
+    tradeCalcData.belongSellAlice &&
+    tokenPrices[tradeCalcData.belongSellAlice]
+      ? new Decimal(tradeCalcData.borrowStr ?? '0')
+          .mul(tokenPrices[tradeCalcData.belongSellAlice])
+          .toString()
+      : undefined
+  const nextMarginLevel =
+    vaultAccountInfo && moreToBorrowInUSD
+      ? calcMarinLevel(
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
+          vaultAccountInfo.totalBalanceOfUsdt,
+          moreToBorrowInUSD,
+          '0',
+        )
+      : undefined
   return {
     isMarketInit,
     toastOpen,
     closeToast,
-    tradeCalcData,
+    tradeCalcData: {
+      ...tradeCalcData,
+      marginLevelChange:
+        vaultAccountInfo && nextMarginLevel && tradeCalcData.borrowStr
+          ? {
+              from: {
+                marginLevel: vaultAccountInfo.marginLevel,
+                type: marginLevelType(vaultAccountInfo.marginLevel),
+              },
+              to: {
+                marginLevel: nextMarginLevel,
+                type: marginLevelType(nextMarginLevel),
+              },
+            }
+          : undefined,
+    },
     tradeData,
     onSwapClick,
     swapBtnI18nKey,
@@ -1879,6 +1917,19 @@ export const useVaultSwap = <
         setShowVaultSwap({ isShow: false })
       }
     },
-    borrowedAmount
+    borrowedAmount,
+    marginLevelChange:
+      vaultAccountInfo && nextMarginLevel && tradeCalcData.borrowStr
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
   }
 }

@@ -349,8 +349,16 @@ export const MuiSvgIcon = () => {
           width: 'auto',
           height: 'auto',
         },
+        '&.custom-size': {
+          width: '1em',
+          height: '1em',
+        },
+        
       },
+
+      
     },
+    
   }
 }
 //@ts-ignore

@@ -20,9 +20,11 @@ import { ButtonStyle } from '../Styled'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import { InputButtonDefaultProps } from '../Interface'
 import { BasicACoinInput } from '../BasicACoinInput'
-import {
-  CoinIcon,
-} from '@loopring-web/component-lib'
+import { CoinIcon } from '@loopring-web/component-lib'
+import InfoIcon from '@mui/icons-material/Info'
+import { numberFormat } from '@loopring-web/core'
+import { marginLevelTypeToColor } from './utils'
+import EastIcon from '@mui/icons-material/East'
 
 export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   disabled,
@@ -37,6 +39,8 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
   // coinAPrecision,
   // coinBPrecision,
   tokenProps,
+  marginLevelChange,
+  holdingCollateral,
   ...rest
 }: VaultJoinWrapProps<T, I, V>) => {
   const { t, ...i18n } = useTranslation()
@@ -78,7 +82,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             },
       )
     } else {
-      return t(isActiveAccount ? `labelVaultJoinBtn` : `labelVaultAddBtn`, {
+      return t(isActiveAccount ? `labelVaultJoinBtn` : `labelVaultConfirm`, {
         l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
         loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
         l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
@@ -87,53 +91,6 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
       })
     }
   }, [btnI18nKey, isActiveAccount, network, t])
-  const inputEle = React.useMemo(() => {
-    return !isActiveAccount ? (
-      <BasicACoinInput
-        {...{
-          ...rest,
-          ...i18n,
-          t,
-          tReady: true,
-          tradeData: tradeData as any,
-          type: TRADE_TYPE.TOKEN,
-          disabled,
-          onChangeEvent: onChangeEvent as any,
-          inputCoinDefaultProps: inputButtonDefaultProps,
-          inputCoinRef: inputBtnRef,
-          ...tokenProps,
-          // inputCoinProps: rest?.inputCoinProps,
-        }}
-      />
-    ) : (
-      <BasicACoinTrade
-        {...{
-          ...rest,
-          ...i18n,
-          t,
-          tReady: true,
-          tradeData: tradeData as any,
-          type: TRADE_TYPE.TOKEN,
-          disabled,
-          onChangeEvent: onChangeEvent as any,
-          inputButtonDefaultProps: { ...inputButtonDefaultProps, disableBelong: !isActiveAccount },
-          placeholderText: '0.00',
-          inputBtnRef,
-          ...tokenProps,
-        }}
-      />
-    )
-  }, [
-    disabled,
-    i18n,
-    inputButtonDefaultProps,
-    isActiveAccount,
-    onChangeEvent,
-    rest,
-    t,
-    tokenProps,
-    tradeData,
-  ])
 
   return (
     <Grid
@@ -155,19 +112,74 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
         alignItems={'stretch'}
         flexDirection={'column'}
       >
-        {inputEle}
+        <BasicACoinTrade
+          {...{
+            ...rest,
+            ...i18n,
+            t,
+            tReady: true,
+            tradeData: tradeData as any,
+            type: TRADE_TYPE.TOKEN,
+            disabled,
+            onChangeEvent: onChangeEvent as any,
+            inputButtonDefaultProps: {
+              ...inputButtonDefaultProps,
+              disableBelong: !isActiveAccount,
+            },
+            placeholderText: '0.00',
+            inputBtnRef,
+            tokenNotEnough: t(
+              rest.isAddOrRedeem === 'Add'
+                ? `labelVaultJoinNotEnough`
+                : `labelVaultRedeemNotEnough`,
+              { arg: tradeData.belong },
+            ),
+            ...tokenProps,
+          }}
+        />
       </Grid>
-      <Grid item alignSelf={'stretch'}>
+      <Grid item alignSelf={'stretch'} marginTop={rest.isAddOrRedeem === 'Redeem' ? 2 : 6}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              height={24}
-            >
-              <Tooltip title={t('labelVaultTotalQuoteDes').toString()}>
+          <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
+            {rest.isAddOrRedeem === 'Add' ? (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                height={24}
+              >
+                <Tooltip title={t('labelVaultTotalQuoteDes').toString()}>
+                  <Typography
+                    component={'span'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    alignItems={'center'}
+                    display={'flex'}
+                  >
+                    <Trans i18nKey={'labelVaultTotalQuote'}>
+                      {t('labelVaultQuota')}
+                      <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    </Trans>
+                  </Typography>
+                </Tooltip>
+
+                {vaultJoinData && vaultJoinData?.maxShowVal ? (
+                  <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                    {vaultJoinData?.maxShowVal + ' ' + vaultJoinData?.belong}
+                  </Typography>
+                ) : (
+                  EmptyValueTag
+                )}
+              </Grid>
+            ) : (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                height={24}
+              >
                 <Typography
                   component={'span'}
                   variant='body2'
@@ -175,21 +187,18 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                   alignItems={'center'}
                   display={'flex'}
                 >
-                  <Trans i18nKey={'labelVaultTotalQuote'}>
-                    Total Quota
-                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                  </Trans>
+                  {t('labelVaultHoldingCollateral')}
                 </Typography>
-              </Tooltip>
 
-              {vaultJoinData && vaultJoinData?.maxShowVal ? (
-                <Typography component={'span'} variant='body2' color={'textPrimary'}>
-                  {vaultJoinData?.maxShowVal + ' ' + vaultJoinData?.belong}
-                </Typography>
-              ) : (
-                EmptyValueTag
-              )}
-            </Grid>
+                {holdingCollateral ? (
+                  <Typography component={'span'} variant='body2' color={'textPrimary'}>
+                    {holdingCollateral + ' ' + (vaultJoinData?.belong as string)}
+                  </Typography>
+                ) : (
+                  EmptyValueTag
+                )}
+              </Grid>
+            )}
 
             <Grid
               container
@@ -211,7 +220,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 </Typography>
               </Tooltip>
               <>
-                {(vaultJoinData && vaultJoinData?.tradeValue) ? (
+                {vaultJoinData && vaultJoinData?.tradeValue ? (
                   <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
                     <CoinIcon
                       tokenImageKey={vaultJoinData.belong}
@@ -232,7 +241,48 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 )}
               </>
             </Grid>
+            <Grid
+              container
+              justifyContent={'space-between'}
+              direction={'row'}
+              alignItems={'center'}
+              marginTop={1 / 2}
+            >
+              <Typography
+                component={'span'}
+                variant='body2'
+                color={'textSecondary'}
+                alignItems={'center'}
+                display={'inline-flex'}
+              >
+                {t('labelVaultMarginLevel')}
+              </Typography>
+              <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+                {marginLevelChange ? (
+                  <>
+                    <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                      {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                    </Typography>
+                    <EastIcon sx={{ marginX: 0.5 }} />
+                    <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                      {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                    </Typography>
+                  </>
+                ) : (
+                  EmptyValueTag
+                )}
+              </Box>
+            </Grid>
           </Grid>
+
+          {rest.isAddOrRedeem === 'Redeem' && (
+            <Grid item display={'flex'} marginBottom={1}>
+              <InfoIcon sx={{ marginRight: 1, color: 'var(--color-text-secondary)' }} />
+              <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
+                {t('labelVaultRedeemAlert')}
+              </Typography>
+            </Grid>
+          )}
           <Grid item>
             <ButtonStyle
               variant={'contained'}
