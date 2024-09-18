@@ -72,7 +72,7 @@ export default {
   labelTitleLite: 'Loopring DeFi',
   labelLoopringProtocol: 'Loopring Protocol',
   labelLoopringProtocolDes:
-    "The world's first ZKRollup implementation designed to scale Ethereum, fully optimized for trading.",
+    "The world's first ZKRollup implementation designed to scale Ethereum,\n fully optimized for trading.",
   labelUltimateSecurity: 'Ultimate Security',
   labelUltimateSecurityDes:
     'Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.',
@@ -125,7 +125,7 @@ export default {
   labelUnlockThePowerOfLeveragedTradingDes: 'Seamlessly borrow tokens against your collateral, paving the way for leveraged trading opportunities. By bridging decentralized and centralized exchanges, Loopring Portal broadens your trading horizon, granting access to tokens beyond the Ethereum network.',
   labelEthereumOnly: 'Ethereum-only',
   labelLoopringLayer2: 'Loopring Layer 2',
-  labelLoopringLayer2Des: 'Unlock the full features of Loopring Layer 2, including Loopring DeFi, NFTs, Red Packets, and more.',
+  labelLoopringLayer2Des: 'Unlock the full features of Loopring Layer 2, including Loopring DeFi,\n NFTs, Red Packets, and more.',
   labelTrade: 'Trade',
   labelTradeDes: 'A wide variety of trading methods to choose from',
   labelEarn: 'Earn',
