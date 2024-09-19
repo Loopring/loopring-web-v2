@@ -49,6 +49,7 @@ type TitleGroupProps = {
   onClickLink?: () => void
   buttonText: string
   descriptionTextColor?: string
+  desFontSize?: string
 } & BoxProps
 
 const RoundIndicator = ({
@@ -85,6 +86,7 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
   onClickLink,
   buttonText,
   descriptionTextColor,
+  desFontSize,
   ...rest
 }) => {
   const theme = useTheme()
@@ -113,7 +115,7 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
         fontWeight={400}
         component='p'
         color={descriptionTextColor ?? (theme.mode === 'light' ?  '#292C33' : 'var(--color-text-third)')}
-        fontSize={'28px'}
+        fontSize={desFontSize ?? '28px'}
         mb={8}
         lineHeight={'40px'}
       >
@@ -319,7 +321,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 title={t('labelTrade')}
                 description={t('labelTradeDes')}
               />
-              <Box width={'70%'} component={'img'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p4_dark.png' : 'images/landPage/homepage_p4_light.png')} />
+              <Box width={'85%'} component={'img'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p4_dark.png' : 'images/landPage/homepage_p4_light.png')} />
             </RoundBoxStyled>
             <Box
               width={'49.5%'}
@@ -455,6 +457,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             description={t('labelReadyForDevelopersDes2')}
             link={'https://docs.loopring.io'}
             buttonText={t('labelExplore')}
+            desFontSize={'24px'}
           />
         </MaxWidthContainer>
       </ContainerStyle>
