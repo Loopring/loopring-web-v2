@@ -73,7 +73,12 @@ const RoundIndicator = ({
       }}
       {...rest}
     >
-      <Box component={'img'} src={iconURL} alt='Network Icon' sx={{ marginRight: 1, width: '24px', height: '24px' }} />
+      <Box
+        component={'img'}
+        src={iconURL}
+        alt='Network Icon'
+        sx={{ marginRight: 1, width: '24px', height: '24px' }}
+      />
       <Typography color='var(--color-text-primary)'>{text}</Typography>
     </Box>
   )
@@ -90,12 +95,15 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
   ...rest
 }) => {
   const theme = useTheme()
+  const { isMobile } = useSettings()
   return (
     <Box
       textAlign='center'
       display={'flex'}
       flexDirection={'column'}
       alignItems={'center'}
+      width={isMobile ? '80%' : undefined}
+      mt={isMobile ? 2 : 0}
       {...rest}
     >
       <Typography
@@ -105,31 +113,35 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
         fontWeight={700}
         mb={4}
         color={'var(--color-text-primary)'}
-        fontSize='80px'
-        lineHeight={'80px'}
+        fontSize={isMobile ? '40px' : '80px'}
+        lineHeight={isMobile ? '48px' : '80px'}
       >
         {title}
       </Typography>
       <Typography
         variant='h3'
-        fontWeight={400}
+        fontWeight={isMobile ? 300 : 400}
         component='p'
-        color={descriptionTextColor ?? (theme.mode === 'light' ?  '#292C33' : 'var(--color-text-third)')}
-        fontSize={desFontSize ?? '28px'}
+        color={
+          descriptionTextColor ?? (theme.mode === 'light' ? '#292C33' : 'var(--color-text-third)')
+        }
+        fontSize={isMobile ? '20px' : desFontSize ?? '28px'}
         mb={8}
-        lineHeight={'40px'}
+        lineHeight={isMobile ? '24px' : '40px'}
       >
-        {description.split('\n').map((line, index) => (
-          <React.Fragment key={index}>
-            {line}
-            <br />
-          </React.Fragment>
-        ))}
+        {isMobile
+          ? description.replace('\n', ' ')
+          : description.split('\n').map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}
       </Typography>
       <Button
         sx={{ borderRadius: '8px' }}
         variant='contained'
-        size='large'
+        size={isMobile ? 'small' : 'large'}
         endIcon={<ToRightTopArrow />}
         href={link ? link : undefined}
         color={'primary'}
@@ -146,7 +158,11 @@ const RoundBoxStyled = styled(Box)<{ bgcolor?: string }>(({ theme, bgcolor }) =>
   borderRadius: '25px',
 }))
 
-const TitleDes = ({ title, description, ...rest }: { title: string; description: string } & BoxProps) => {
+const TitleDes = ({
+  title,
+  description,
+  ...rest
+}: { title: string; description: string } & BoxProps) => {
   return (
     <Box {...rest}>
       <Typography mb={2} fontSize={'24px'} color={'var(--color-text-primary)'}>
@@ -177,7 +193,12 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
     }
   }, [searchParams?.has('goProd')])
 
-  console.log(SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_p5_dark.png' : 'images/landPage/homepage_p5_light.png'))
+  console.log(
+    SoursURL +
+      (theme.mode === 'dark'
+        ? 'images/landPage/homepage_p5_dark.png'
+        : 'images/landPage/homepage_p5_light.png'),
+  )
 
   return (
     <>
@@ -188,28 +209,32 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           marginTop: 'calc(var(--header-height) * -1)',
         }}
       >
-        <MaxWidthContainer containerProps={{
-          sx: {
-            backgroundImage: `url('${SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_bg_dark.png' : 'images/landPage/homepage_bg_light.png')}')`,
-            backgroundSize: '100% auto',
-            backgroundPosition: 'center 130px',
-            backgroundRepeat: 'no-repeat',
-          }
-        }} pb={8} pt={20}>
-          <Box sx={{
-
-              
-          }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <MaxWidthContainer
+          containerProps={{
+            sx: {
+              backgroundImage: `url('${
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'images/landPage/homepage_bg_dark.png'
+                  : 'images/landPage/homepage_bg_light.png')
+              }')`,
+              backgroundSize: '100% auto',
+              backgroundPosition: 'center 130px',
+              backgroundRepeat: 'no-repeat',
+            },
+          }}
+          pb={8}
+          pt={20}
+        >
+          <Box sx={{}} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <RoundIndicator
               iconURL={SoursURL + 'images/landPage/homepage_network.svg'}
               text={t('labelSupportedNetworkDes')}
             />
             <TitleGroup
               title={t('labelNavEarn')}
-              description={
-                t('labelTitleLiteDes')
-              }
-              mb={15}
+              description={t('labelTitleLiteDes')}
+              mb={isMobile ? 10 : 15}
               link={'https://defi.loopring.io/'}
               buttonText={t('labelLaunch')}
               descriptionTextColor={'var(--color-text-primary)'}
@@ -217,12 +242,21 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           </Box>
 
           <Box
-            height={'550px'}
+            height={isMobile ? 'auto' : '550px'}
             display={'flex'}
-            flexDirection={'row'}
+            flexDirection={isMobile ? 'column' : 'row'}
             justifyContent={'space-between'}
           >
-            <RoundBoxStyled p={8} pb={0} height={'100%'} width={'49.5%'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
+            <RoundBoxStyled
+              p={8}
+              pb={0}
+              height={isMobile ? 'auto' : '100%'}
+              width={isMobile ? '100%' : '49.5%'}
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+            >
               <TitleDes
                 title={t('labelLeadingOnChainStructuredProduct')}
                 description={t('labelLeadingOnChainStructuredProductDes')}
@@ -235,16 +269,25 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     ? 'earn/intro_screenshot_1.png'
                     : 'earn/intro_screenshot_1_light.png')
                 }
-                sx={{ width: '70%', }}
+                mt={isMobile ? 8 : 0}
+                width={isMobile ? '90%' : '70%'}
               />
             </RoundBoxStyled>
 
-            <RoundBoxStyled p={8} pb={0} height={'100%'} width={'49.5%'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
+            <RoundBoxStyled
+              mt={isMobile ? 3 : 0}
+              p={8}
+              pb={0}
+              height={isMobile ? 'auto' : '100%'}
+              width={isMobile ? '100%' : '49.5%'}
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+            >
               <TitleDes
                 title={t('labelTradeWithCEXLiquidity')}
-                description={
-                  t('labelTradeWithCEXLiquidityDes')
-                }
+                description={t('labelTradeWithCEXLiquidityDes')}
               />
               <Box
                 component={'img'}
@@ -254,32 +297,38 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                     ? 'earn/intro_screenshot_3.png'
                     : 'earn/intro_screenshot_3_light.png')
                 }
-                sx={{ width: '70%', }}/>
+                mt={isMobile ? 8 : 0}
+                width={isMobile ? '90%' : '70%'}
+              />
             </RoundBoxStyled>
           </Box>
           <RoundBoxStyled
-            height={'300px'}
+            height={isMobile ? 'auto' : '300px'}
             p={8}
             width={'100%'}
             mt={3}
             display={'flex'}
-            flexDirection={'row'}
+            flexDirection={isMobile ? 'column' : 'row'}
             justifyContent={'space-between'}
             alignItems={'center'}
           >
             <TitleDes
               title={t('labelUnlockThePowerOfLeveragedTrading')}
-              description={
-                t('labelUnlockThePowerOfLeveragedTradingDes')
-              }
+              description={t('labelUnlockThePowerOfLeveragedTradingDes')}
               mr={2}
             />
-            <Box component={'img'} width={'25%'} height={'auto'} src={
-                  SoursURL +
-                  (theme.mode === 'dark'
-                    ? 'earn/intro_screenshot_2.png'
-                    : 'earn/intro_screenshot_2_light.png')
-                } />
+            <Box
+              component={'img'}
+              width={isMobile ? '90%' : '25%'}
+              mt={isMobile ? 8 : 0}
+              height={'auto'}
+              src={
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'earn/intro_screenshot_2.png'
+                  : 'earn/intro_screenshot_2_light.png')
+              }
+            />
           </RoundBoxStyled>
         </MaxWidthContainer>
         <MaxWidthContainer
@@ -287,13 +336,14 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           py={15}
         >
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-            <RoundIndicator iconURL={SoursURL + 'images/landPage/homepage_ethereum.svg'} text={t('labelEthereumOnly')} />
+            <RoundIndicator
+              iconURL={SoursURL + 'images/landPage/homepage_ethereum.svg'}
+              text={t('labelEthereumOnly')}
+            />
             <TitleGroup
-              mb={15}
+              mb={isMobile ? 10 : 15}
               title={t('labelLoopringLayer2')}
-              description={
-                t('labelLoopringLayer2Des')
-              }
+              description={t('labelLoopringLayer2Des')}
               onClickLink={() => {
                 history.push('/pro')
               }}
@@ -301,9 +351,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             />
           </Box>
           <Box
-            height={'600px'}
+            height={isMobile ? 'auto' : '600px'}
             display={'flex'}
-            flexDirection={'row'}
+            flexDirection={isMobile ? 'column' : 'row'}
             justifyContent={'space-between'}
           >
             <RoundBoxStyled
@@ -311,20 +361,26 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               px={4}
               py={8}
               pb={0}
-              width={'49.5%'}
+              width={isMobile ? '100%' : '49.5%'}
               display={'flex'}
               flexDirection={'column'}
               justifyContent={'space-between'}
               alignItems={'center'}
             >
-              <TitleDes
-                title={t('labelTrade')}
-                description={t('labelTradeDes')}
+              <TitleDes title={t('labelTrade')} description={t('labelTradeDes')} />
+              <Box
+                width={'85%'}
+                component={'img'}
+                src={
+                  SoursURL +
+                  (theme.mode === 'dark'
+                    ? 'images/landPage/homepage_p4_dark.png'
+                    : 'images/landPage/homepage_p4_light.png')
+                }
               />
-              <Box width={'85%'} component={'img'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p4_dark.png' : 'images/landPage/homepage_p4_light.png')} />
             </RoundBoxStyled>
             <Box
-              width={'49.5%'}
+              width={isMobile ? '100%' : '49.5%'}
               display={'flex'}
               flexDirection={'column'}
               justifyContent={'space-between'}
@@ -333,33 +389,50 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 bgcolor={theme.mode === 'light' ? 'white' : undefined}
                 px={4}
                 // py={8}
-                height={'32%'}
+                height={isMobile ? '150px' : '32%'}
+                mt={isMobile ? 3 : 0}
                 display={'flex'}
                 alignItems={'center'}
                 justifyContent={'space-between'}
               >
-                <TitleDes
-                  title={t('labelEarn')}
-                  description={t('labelEarnDes')}
-                  mr={4}
+                <TitleDes title={t('labelEarn')} description={t('labelEarnDes')} mr={4} />
+                <Box
+                  component={'img'}
+                  height={'70%'}
+                  src={
+                    SoursURL +
+                    (theme.mode === 'dark'
+                      ? 'images/landPage/homepage_p5_dark.png'
+                      : 'images/landPage/homepage_p5_light.png')
+                  }
                 />
-                <Box component={'img'} height={'70%'} src={SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_p5_dark.png' : 'images/landPage/homepage_p5_light.png')} />
               </RoundBoxStyled>
               <RoundBoxStyled
                 bgcolor={theme.mode === 'light' ? 'white' : undefined}
                 px={4}
-                height={'32%'}
+                height={isMobile ? '150px' : '32%'}
+                mt={isMobile ? 3 : 0}
                 display={'flex'}
                 alignItems={'center'}
                 justifyContent={'space-between'}
               >
                 <TitleDes title={t('labelNFT')} description={t('labelNFTDes')} mr={4} />
-                <Box component={'img'} height={'90%'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p6_dark.png' : 'images/landPage/homepage_p6_light.png')} />
+                <Box
+                  component={'img'}
+                  height={'90%'}
+                  src={
+                    SoursURL +
+                    (theme.mode === 'dark'
+                      ? 'images/landPage/homepage_p6_dark.png'
+                      : 'images/landPage/homepage_p6_light.png')
+                  }
+                />
               </RoundBoxStyled>
               <RoundBoxStyled
                 bgcolor={theme.mode === 'light' ? 'white' : undefined}
                 px={4}
-                height={'32%'}
+                height={isMobile ? '150px' : '32%'}
+                mt={isMobile ? 3 : 0}
                 display={'flex'}
                 alignItems={'center'}
                 justifyContent={'space-between'}
@@ -369,42 +442,84 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   description={t('labelRedPacketsDes2')}
                   mr={4}
                 />
-                <Box component={'img'} height={'90%'} src={SoursURL +  (theme.mode === 'dark' ? 'images/landPage/homepage_p7_dark.png' : 'images/landPage/homepage_p7_light.png')} />
+                <Box
+                  component={'img'}
+                  height={'90%'}
+                  src={
+                    SoursURL +
+                    (theme.mode === 'dark'
+                      ? 'images/landPage/homepage_p7_dark.png'
+                      : 'images/landPage/homepage_p7_light.png')
+                  }
+                />
               </RoundBoxStyled>
             </Box>
           </Box>
         </MaxWidthContainer>
 
-        <MaxWidthContainer display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} containerProps={{}} py={15}>
+        <MaxWidthContainer
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          containerProps={{}}
+          py={15}
+        >
           <TitleGroup
-            mb={15}
+            mb={isMobile ? 10 : 15}
             title={t('labelLoopringSmartWallet')}
             description={t('labelLoopringSmartWalletDes2')}
             link={'https://wallet.loopring.io/'}
             buttonText={t('labelExplore')}
           />
-          <Box mt={10} ml={'9.5%'} width={'80%'} component={'img'} src={SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_p8_dark.png' : 'images/landPage/homepage_p8_light.png')} />
+          <Box
+            mt={10}
+            ml={'9.5%'}
+            width={isMobile ? '95%' : '80%'}
+            component={'img'}
+            src={
+              SoursURL +
+              (theme.mode === 'dark'
+                ? 'images/landPage/homepage_p8_dark.png'
+                : 'images/landPage/homepage_p8_light.png')
+            }
+          />
         </MaxWidthContainer>
         <MaxWidthContainer
-          containerProps={{ bgcolor: theme.mode === 'light' ? '#F8F8F8' : undefined }}
+          containerProps={{
+            bgcolor: theme.mode === 'light' ? '#F8F8F8' : undefined,
+          }}
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
           py={15}
         >
           <TitleGroup
-            mb={15}
+            mb={isMobile ? 10 : 15}
             title={t('labelLoopringProtocol')}
             description={t('labelLoopringProtocolDes')}
             link={'https://loopring.org'}
             buttonText={t('labelExplore')}
           />
-          <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+          <Box
+            display={'flex'}
+            flexDirection={isMobile ? 'column' : 'row'}
+            justifyContent={'space-between'}
+          >
             <RoundBoxStyled
               bgcolor={theme.mode === 'light' ? 'white' : undefined}
               px={3}
               py={4}
               borderRadius={'12px'}
-              width={'32%'}
+              width={isMobile ? '100%' : '32%'}
+              mb={isMobile ? 3 : 0}
             >
-              <Box width={'36px'} component={'img'} src={SoursURL + 'images/landPage/homepage_icon1.svg'} />
+              <Box
+                width={'36px'}
+                component={'img'}
+                src={SoursURL + 'images/landPage/homepage_icon1.svg'}
+              />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
                 {t('labelProvenAppSpecificZKRollup')}
               </Typography>
@@ -417,9 +532,14 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               px={3}
               py={4}
               borderRadius={'12px'}
-              width={'32%'}
+              width={isMobile ? '100%' : '32%'}
+              mb={isMobile ? 3 : 0}
             >
-              <Box width={'36px'} component={'img'} src={SoursURL + 'images/landPage/homepage_icon2.svg'} />
+              <Box
+                width={'36px'}
+                component={'img'}
+                src={SoursURL + 'images/landPage/homepage_icon2.svg'}
+              />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
                 {t('labelAuditedAndSecure')}
               </Typography>
@@ -432,9 +552,14 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               px={3}
               py={4}
               borderRadius={'12px'}
-              width={'32%'}
+              width={isMobile ? '100%' : '32%'}
+              mb={isMobile ? 3 : 0}
             >
-              <Box width={'36px'} component={'img'} src={SoursURL + 'images/landPage/homepage_icon3.svg'} />
+              <Box
+                width={'36px'}
+                component={'img'}
+                src={SoursURL + 'images/landPage/homepage_icon3.svg'}
+              />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
                 {t('labelBringingCEXToDeFi')}
               </Typography>
@@ -444,14 +569,26 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             </RoundBoxStyled>
           </Box>
         </MaxWidthContainer>
-        <MaxWidthContainer containerProps={{
-          sx: {
-            backgroundImage: `url('${SoursURL + (theme.mode === 'dark' ? 'images/landPage/homepage_bg2_dark.png' : 'images/landPage/homepage_bg2_light.png')}')`,
-            backgroundSize: 'auto 100%',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }
-        }} py={15}>
+        <MaxWidthContainer
+          containerProps={{
+            sx: {
+              backgroundImage: `url('${
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'images/landPage/homepage_bg2_dark.png'
+                  : 'images/landPage/homepage_bg2_light.png')
+              }')`,
+              backgroundSize: 'auto 100%',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            },
+          }}
+          py={15}
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
+        >
           <TitleGroup
             title={t('labelReadyForDevelopers')}
             description={t('labelReadyForDevelopersDes2')}
