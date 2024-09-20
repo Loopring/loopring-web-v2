@@ -617,7 +617,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       })
       initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
     }
-    const maxRedeemCollateral = vaultAccountInfo 
+    const maxRedeemCollateral = (vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral) 
       ? utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[initSymbol].decimals)
       : undefined
     walletInfo = {
