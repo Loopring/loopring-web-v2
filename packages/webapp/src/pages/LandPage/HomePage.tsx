@@ -235,7 +235,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               title={t('labelNavEarn')}
               description={t('labelTitleLiteDes')}
               mb={isMobile ? 10 : 15}
-              link={'https://defi.loopring.io/'}
+              onClickLink={() => {
+                window.open('https://defi.loopring.io/', '_blank')
+              }}
               buttonText={t('labelLaunch')}
               descriptionTextColor={'var(--color-text-primary)'}
             />
@@ -345,7 +347,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               title={t('labelLoopringLayer2')}
               description={t('labelLoopringLayer2Des')}
               onClickLink={() => {
-                history.push('/pro')
+                window.open('/#/pro', '_blank')
               }}
               buttonText={t('labelLaunch')}
             />
@@ -469,7 +471,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             mb={isMobile ? 10 : 15}
             title={t('labelLoopringSmartWallet')}
             description={t('labelLoopringSmartWalletDes2')}
-            link={'https://wallet.loopring.io/'}
+            onClickLink={() => {
+              window.open('https://wallet.loopring.io/', '_blank')
+            }}
             buttonText={t('labelExplore')}
           />
           <Box
@@ -499,7 +503,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             mb={isMobile ? 10 : 15}
             title={t('labelLoopringProtocol')}
             description={t('labelLoopringProtocolDes')}
-            link={'https://loopring.org'}
+            onClickLink={() => {
+              window.open('https://loopring.org', '_blank')
+            }}
             buttonText={t('labelExplore')}
           />
           <Box
@@ -592,7 +598,9 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           <TitleGroup
             title={t('labelReadyForDevelopers')}
             description={t('labelReadyForDevelopersDes2')}
-            link={'https://docs.loopring.io'}
+            onClickLink={() => {
+              window.open('https://docs.loopring.io', '_blank')
+            }}
             buttonText={t('labelExplore')}
             desFontSize={'24px'}
           />
