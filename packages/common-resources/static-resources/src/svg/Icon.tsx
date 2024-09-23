@@ -1703,4 +1703,3 @@ export const RedPacketIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
-
