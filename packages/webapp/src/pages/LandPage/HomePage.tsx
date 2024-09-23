@@ -161,14 +161,15 @@ const RoundBoxStyled = styled(Box)<{ bgcolor?: string }>(({ theme, bgcolor }) =>
 const TitleDes = ({
   title,
   description,
+  desColor,
   ...rest
-}: { title: string; description: string } & BoxProps) => {
+}: { title: string; description: string, desColor?: string } & BoxProps) => {
   return (
     <Box {...rest}>
       <Typography mb={2} fontSize={'24px'} color={'var(--color-text-primary)'}>
         {title}
       </Typography>
-      <Typography fontSize={'16px'} color={'var(--color-text-third)'}>
+      <Typography fontSize={'16px'} color={desColor ?? 'var(--color-text-third)'}>
         {description}
       </Typography>
     </Box>
@@ -262,6 +263,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               <TitleDes
                 title={t('labelLeadingOnChainStructuredProduct')}
                 description={t('labelLeadingOnChainStructuredProductDes')}
+                desColor={'var(--color-text-secondary)'}
               />
               <Box
                 component={'img'}
@@ -290,6 +292,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               <TitleDes
                 title={t('labelTradeWithCEXLiquidity')}
                 description={t('labelTradeWithCEXLiquidityDes')}
+                desColor={'var(--color-text-secondary)'}
               />
               <Box
                 component={'img'}
@@ -317,6 +320,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             <TitleDes
               title={t('labelUnlockThePowerOfLeveragedTrading')}
               description={t('labelUnlockThePowerOfLeveragedTradingDes')}
+              desColor={'var(--color-text-secondary)'}
               mr={2}
             />
             <Box
@@ -369,7 +373,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               justifyContent={'space-between'}
               alignItems={'center'}
             >
-              <TitleDes title={t('labelTrade')} description={t('labelTradeDes')} />
+              <TitleDes title={t('labelTrade')} desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined} description={t('labelTradeDes')} />
               <Box
                 width={'85%'}
                 component={'img'}
@@ -397,7 +401,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 alignItems={'center'}
                 justifyContent={'space-between'}
               >
-                <TitleDes title={t('labelEarn')} description={t('labelEarnDes')} mr={4} />
+                <TitleDes desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined} title={t('labelEarn')} description={t('labelEarnDes')} mr={4} />
                 <Box
                   component={'img'}
                   height={'70%'}
@@ -418,7 +422,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 alignItems={'center'}
                 justifyContent={'space-between'}
               >
-                <TitleDes title={t('labelNFT')} description={t('labelNFTDes')} mr={4} />
+                <TitleDes desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined} title={t('labelNFT')} description={t('labelNFTDes')} mr={4} />
                 <Box
                   component={'img'}
                   height={'90%'}
@@ -442,6 +446,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 <TitleDes
                   title={t('labelRedPackets2')}
                   description={t('labelRedPacketsDes2')}
+                  desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined}
                   mr={4}
                 />
                 <Box
