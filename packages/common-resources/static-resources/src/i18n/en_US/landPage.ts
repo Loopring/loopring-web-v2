@@ -72,7 +72,7 @@ export default {
   labelTitleLite: 'Loopring DeFi',
   labelLoopringProtocol: 'Loopring Protocol',
   labelLoopringProtocolDes:
-    "The world's first ZKRollup implementation designed to scale Ethereum,\n fully optimized for trading.",
+    "The world's first ZK-rollup implementation designed to scale Ethereum,\n fully optimized for trading.",
   labelUltimateSecurity: 'Ultimate Security',
   labelUltimateSecurityDes:
     'Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.',
@@ -130,12 +130,12 @@ export default {
   labelTradeDes: 'A wide variety of trading methods to choose from',
   labelEarn: 'Earn',
   labelEarnDes: 'Choose from a variety of financial products',
-  labelNFT: 'NFT',
+  labelNFT: 'NFTs',
   labelNFTDes: 'Manage and display your NFT collections',
   labelRedPackets2: 'Red Packets',
   labelRedPacketsDes2:
     'Explore the possibilities with our revolutionary Red Packets',  
-  labelLoopringSmartWalletDes2: 'Trade on the go - anytime, anywhere',
+  labelLoopringSmartWalletDes2: 'Trade on the go — anytime, anywhere',
   labelExplore: 'Explore',
   labelLoopringProtocolDes2: 'The world\'s first ZKRollup implementation designed to scale Ethereum fully optimized for trading',
   labelProvenAppSpecificZKRollup: 'Proven App-Specific ZK-Rollup',
@@ -143,6 +143,6 @@ export default {
   labelAuditedAndSecure: 'Bulletproof Security',
   labelAuditedAndSecureDes: 'Assets on the Loopring Protocol are just as secure as they are on the underlying networks where the protocol is deployed',
   labelBringingCEXToDeFi: 'Bringing CeFi to DeFi',
-  labelBringingCEXToDeFiDes: 'Seamlessly bring CeFi use cases into the DeFi world in a truly trustless manner.',
+  labelBringingCEXToDeFiDes: 'Seamlessly bring CeFi use cases into the DeFi world in a truly trustless manner',
   labelReadyForDevelopersDes2: `Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested ZK-rollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.`,
 }
