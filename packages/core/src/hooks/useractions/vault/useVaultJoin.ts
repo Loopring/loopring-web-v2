@@ -31,6 +31,8 @@ import {
   useL2CommonSocket,
   l2CommonService,
   NETWORKEXTEND,
+  useTokenPrices,
+  numberFormat,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -42,6 +44,9 @@ import { useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { keys } from 'lodash'
+import { calcMarinLevel, marginLevelType } from './utils'
+import Decimal from 'decimal.js'
+import { utils } from 'ethers'
 
 const DATE_IN_TEN_YEARS = 2027988026
 
@@ -54,6 +59,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { account } = useAccount()
   const { updateVaultJoin, vaultJoinData, resetVaultJoin } = useTradeVault()
   const [isLoading, setIsLoading] = React.useState(false)
+  const [isAddOrRedeem, setIsAddOrRedeem] = React.useState<'Add' | 'Redeem'>('Add')
+  const { tokenPrices } = useTokenPrices()
 
   const isActiveAccount =
     [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
@@ -128,7 +135,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     } else if (sdk.toBig(vaultJoinData.tradeValue ?? 0).gt(vaultJoinData.balance ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultJoinNotEnough|${vaultJoinData.belong}`,
+        label: isAddOrRedeem === 'Add' ? `labelVaultJoinNotEnough|${vaultJoinData.belong}` : `labelVaultRedeemNotEnough|${vaultJoinData.belong}`,
       }
     } else if (sdk.toBig(vaultJoinData.amount ?? 0).gt(vaultJoinData.maxAmount ?? 0)) {
       return {
@@ -148,6 +155,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultJoinData.maxAmount,
     vaultJoinData.minAmount,
     vaultJoinData.belong,
+    isAddOrRedeem
   ])
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
     // const { apiKey, connectName, eddsaKey } = account
@@ -215,8 +223,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 ? AccountStep.VaultJoin_Success
                 : AccountStep.VaultJoin_In_Progress,
             info: {
-              title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-              type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+              title: isActiveAccount
+                ? t('labelVaultJoinTitle')
+                : isAddOrRedeem === 'Add'
+                ? t('labelVaultJoinAdd')
+                : t('labelVaultRedeem'),
+              type: isActiveAccount
+                ? t('labelVaultJoin')
+                : isAddOrRedeem === 'Redeem'
+                ? t('labelVaultRedeem')
+                : t('labelVaultMarginCall'),
               status: t(status),
               amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
                 ? getValuePrecisionThousand(
@@ -298,8 +314,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           isShow: true,
           step: AccountStep.VaultJoin_In_Progress,
           info: {
-            title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-            type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+            title: isActiveAccount
+              ? t('labelVaultJoinTitle')
+              : isAddOrRedeem === 'Add'
+              ? t('labelVaultJoinAdd')
+              : t('labelVaultRedeem'),
+            type: isActiveAccount
+              ? t('labelVaultJoin')
+              : isAddOrRedeem === 'Redeem'
+              ? t('labelVaultRedeem')
+              : t('labelVaultMarginCall'),
             status: t('labelPending'),
             percentage: '0',
             amount: EmptyValueTag,
@@ -400,7 +424,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
         //step 2: get a NFT
         const [avaiableNFT, storageId] = await Promise.all([
-          isActiveAccount
+          (isActiveAccount)
             ? LoopringAPI.vaultAPI
                 .getVaultGetAvailableNFT(
                   {
@@ -439,9 +463,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ) {
           throw storageId
         }
-        const amount = sdk
-          .toBig(vaultJoinData.amount)
-          .plus(isActiveAccount ? 0 : vaultAccountInfo?.collateralInfo?.collateralTokenAmount ?? 0)
+        const amount = isActiveAccount 
+          ? sdk.toBig(vaultJoinData.amount)
+          : isAddOrRedeem === 'Add' 
+            ? sdk.toBig(vaultAccountInfo?.collateralInfo?.collateralTokenAmount).plus(vaultJoinData.amount)
+            : sdk.toBig(vaultAccountInfo?.collateralInfo?.collateralTokenAmount).minus(vaultJoinData.amount)  
         const takerOrder: sdk.VaultJoinRequest = {
           exchange: exchangeInfo.exchangeAddress,
           accountId: account.accountId,
@@ -476,8 +502,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         isShow: true,
         step: AccountStep.VaultJoin_Failed,
         info: {
-          title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+          title: isActiveAccount
+            ? t('labelVaultJoinTitle')
+            : isAddOrRedeem === 'Add'
+            ? t('labelVaultJoinAdd')
+            : t('labelVaultRedeem'),
+          type: isActiveAccount
+            ? t('labelVaultJoin')
+            : isAddOrRedeem === 'Redeem'
+            ? t('labelVaultRedeem')
+            : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
@@ -503,6 +537,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     isLoading,
     submitCallback,
   })
+
   const {
     modals: {
       isShowVaultJoin: { isShow, symbol },
@@ -582,9 +617,12 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       })
       initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
     }
+    const maxRedeemCollateral = (vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral) 
+      ? utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[initSymbol].decimals)
+      : undefined
     walletInfo = {
       belong: initSymbol,
-      balance: walletMap[initSymbol]?.count ?? 0,
+      balance: isAddOrRedeem === 'Add' ? walletMap[initSymbol]?.count ?? 0 : maxRedeemCollateral,
       tradeValue: undefined,
     }
     updateVaultJoin({
@@ -629,7 +667,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     return () => {
       clearTimeout(time)
     }
-  }, [isShow])
+  }, [isShow, isAddOrRedeem])
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
     l2CommonService.sendUserUpdate()
@@ -640,9 +678,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const handlePanelEvent = async (data: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
     const walletMap = makeWalletLayer2ForVault()
     const tokenSymbol = data.tradeData.belong
+    const maxRedeemCollateral = utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[tokenSymbol as string].decimals)
     let walletInfo: any = {
       ...walletMap[tokenSymbol],
-      balance: walletMap[tokenSymbol]?.count ?? 0,
+      balance: isAddOrRedeem === 'Add' ? (walletMap[tokenSymbol]?.count ?? 0) : maxRedeemCollateral,
       tradeValue: data.tradeData?.tradeValue,
       belong: tokenSymbol
     }
@@ -652,7 +691,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ...vaultJoinData,
         amount: sdk
           .toBig(walletInfo.tradeValue ?? 0)
-          .times('1e' + tokenMap[tokenSymbol].decimals)
+          .times('1e' + tokenMap[tokenSymbol as string].decimals)
           .toString(),
         tradeData: walletInfo,
         ...walletInfo,
@@ -665,6 +704,31 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
   // btnStatus, enableBtn, disableBtn
+  
+  const moreToCollateralizeInUSD =
+    vaultJoinData.tradeData &&
+    vaultJoinData.tradeData.tradeValue &&
+    new Decimal(vaultJoinData.tradeData.tradeValue).gt(0) &&
+    tokenPrices[vaultJoinData.tradeData.belong as string]
+      ? new Decimal(vaultJoinData.tradeData.tradeValue ?? '0')
+          .mul(tokenPrices[vaultJoinData.tradeData.belong as string])
+          .mul(isAddOrRedeem === 'Add' ? 1 : -1)
+          .toString()
+      : undefined
+  const nextMarginLevel =
+    vaultAccountInfo && moreToCollateralizeInUSD
+      ? calcMarinLevel(
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
+          vaultAccountInfo.totalBalanceOfUsdt,
+          '0',
+          moreToCollateralizeInUSD,
+        )
+      : undefined
+
+  const ercToken = vaultJoinData.tradeData && tokenMap[vaultJoinData.tradeData.belong as string]
+  
+
   return {
     handleError: undefined,
     type: TRADE_TYPE.TOKEN,
@@ -688,5 +752,34 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ? true
         : false,
     },
+    onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
+      setIsAddOrRedeem(value)
+    },
+    isAddOrRedeem,
+    marginLevelChange:
+      vaultAccountInfo && nextMarginLevel
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
+    holdingCollateral:
+      vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken
+        ? numberFormat(
+            utils.formatUnits(
+              vaultAccountInfo?.collateralInfo.collateralTokenAmount,
+              ercToken.decimals,
+            ),
+            {
+              fixed: ercToken.precision,
+            },
+          )
+        : undefined,
   }
 }

@@ -17,6 +17,7 @@ import {
   useAccount,
   useSystem,
   useTokenMap,
+  useTokenPrices,
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
@@ -32,6 +33,8 @@ import { getTimestampDaysLater } from '../../../utils'
 import { DAYS } from '../../../defs'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { mapValues } from 'lodash'
+import Decimal from 'decimal.js'
+import { calcMarinLevel, marginLevelType } from './utils'
 export const useVaultRepay = <
   T extends IBData<I> & {
     borrowed: string
@@ -49,6 +52,7 @@ export const useVaultRepay = <
   const { account } = useAccount()
   const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
+  const { tokenPrices } = useTokenPrices()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
   const { exchangeInfo, chainId } = useSystem()
@@ -430,6 +434,24 @@ export const useVaultRepay = <
     isLoading,
     submitCallback,
   })
+
+  const moreToBorrowInUSD =
+    vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.erc20Symbol]
+      ? new Decimal(vaultRepayData.tradeData.tradeValue?.toString() ?? '0')
+          .mul(tokenPrices[vaultRepayData.tradeData.erc20Symbol])
+          .mul('-1')
+          .toString()
+      : undefined
+  const nextMarginLevel =
+    vaultAccountInfo?.marginLevel && moreToBorrowInUSD
+      ? calcMarinLevel(
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
+          vaultAccountInfo.totalBalanceOfUsdt,
+          moreToBorrowInUSD,
+          '0',
+        )
+      : vaultAccountInfo?.marginLevel
   return {
     handlePanelEvent,
     vaultRepayBtnStatus: btnStatus,
@@ -449,11 +471,10 @@ export const useVaultRepay = <
         belongAlice: value?.simpleName.slice(2),
       }
     }),
-    tradeData: { 
+    tradeData: {
       ...vaultRepayData.tradeData,
       erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
       belongAlice: vaultRepayData.tradeData?.belong.slice(2),
-
     },
     vaultRepayData: {
       ...vaultRepayData,
@@ -463,7 +484,7 @@ export const useVaultRepay = <
         ...vaultRepayData?.tradeData,
         erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
         belongAlice: vaultRepayData.tradeData?.belong.slice(2),
-      }
+      },
     } as unknown as V,
     tokenInfo: vaultTokenMap[vaultRepayData?.belong],
     tokenProps: {
@@ -473,5 +494,18 @@ export const useVaultRepay = <
         ? true
         : false,
     },
+    marginLevelChange:
+      vaultAccountInfo && nextMarginLevel && vaultRepayData.tradeValue
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
   }
 }

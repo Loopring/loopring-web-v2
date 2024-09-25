@@ -23,6 +23,7 @@ import {
   store,
   useSystem,
   useTokenMap,
+  useTokenPrices,
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
@@ -35,6 +36,8 @@ import { useSubmitBtn } from '../../common'
 import BigNumber from 'bignumber.js'
 import { l2CommonService } from '../../../services'
 import { keys } from 'lodash'
+import Decimal from 'decimal.js'
+import { calcMarinLevel, marginLevelType } from './utils'
 export type VaultBorrowTradeData = IBData<any> & {
   erc20Symbol: string
   borrowed: string
@@ -115,6 +118,8 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
       borrowAmt: tradeValue ?? 0,
       totalQuote: totalQuote.toString(),
       coinInfoMap: vaultCoinMap,
+      hourlyRateInPercent: sdk.toFixed(sdk.toNumber(borrowToken.interestRate) * 100, 6, false),
+      yearlyRateInPercent: sdk.toFixed(sdk.toNumber(borrowToken.interestRate) * 100 * 24 * 365, 2, false)
     }
   }
   return {
@@ -137,6 +142,7 @@ export const useVaultBorrow = <
 
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex: erc20IdIndex } = useTokenMap()
+  const { tokenPrices } = useTokenPrices()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
@@ -494,6 +500,24 @@ export const useVaultBorrow = <
     submitCallback,
   })
 
+  
+  const moreToBorrowInUSD = (vaultBorrowData.tradeData && tokenPrices[vaultBorrowData.tradeData.erc20Symbol])
+    ? new Decimal(vaultBorrowData.tradeData.tradeValue ?? '0')
+        .mul(tokenPrices[vaultBorrowData.tradeData.erc20Symbol])
+        .toString()
+    : undefined
+  const nextMarginLevel =
+    vaultAccountInfo && moreToBorrowInUSD
+      ? calcMarinLevel(
+        vaultAccountInfo.totalCollateralOfUsdt,
+        vaultAccountInfo.totalDebtOfUsdt,
+        vaultAccountInfo.totalBalanceOfUsdt,
+        moreToBorrowInUSD,
+        '0'
+        )
+      : vaultAccountInfo?.marginLevel
+  
+
   return {
     handlePanelEvent,
     vaultBorrowBtnStatus: btnStatus,
@@ -522,5 +546,19 @@ export const useVaultBorrow = <
         ? true
         : false,
     },
+    marginLevelChange:
+      (vaultAccountInfo && nextMarginLevel && vaultBorrowData.tradeValue)
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
+    userLeverage: vaultAccountInfo?.leverage,
   }
 }

@@ -25,11 +25,17 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
     vaultAccountInfo,
     userBalances,
     history,
-    wait
+    wait,
+    tokenFactors, 
+    maxLeverage,
+    collateralTokens
+
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
     let promise: any[] = [
       LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey),
       LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey),
+      LoopringAPI.vaultAPI.getCredit({ accountId }, apiKey),
+      LoopringAPI.vaultAPI.getCollaterals({ accountId }, apiKey),
     ]
     try {
       if (activeInfo && activeInfo.hash && activeInfo.isInActive) {
@@ -43,7 +49,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
           ),
         )
       }
-      ;[vaultAccountInfo, { userBalances }, history] = await Promise.all(promise)
+      ;[vaultAccountInfo, { userBalances }, {tokenFactors, maxLeverage }, {collateralTokens},history] = await Promise.all(promise)
       if (
         (vaultAccountInfo as sdk.RESULT_INFO).code ||
         (vaultAccountInfo as sdk.RESULT_INFO).message
@@ -102,7 +108,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       throw error
     }
   }
-  return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, __timer__ }
+  return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ }
 }
 export function* getPostsSaga({
   payload,
@@ -110,12 +116,12 @@ export function* getPostsSaga({
   payload: { activeInfo?: { hash: string; isInActive: boolean } | undefined }
 }) {
   try {
-    let { vaultLayer2, vaultAccountInfo, activeInfo, __timer__ } = yield call(
+    let { vaultLayer2, vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ } = yield call(
       getVaultLayer2Balance,
       payload.activeInfo,
     )
 
-    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo, __timer__ }))
+    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ }))
   } catch (err) {
     yield put(getVaultLayer2Status({ error: err }))
   }
