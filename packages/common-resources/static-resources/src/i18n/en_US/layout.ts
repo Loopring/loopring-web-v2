@@ -133,13 +133,13 @@ export default {
   labelInvestLeverageETHDes: 'Gain higher APY aggressively',
   labelDualInvest: 'Dual Investment',
   labelVault: 'Portal',
-  labelNavPro: 'Loopring pro',
+  labelNavPro: 'Loopring Layer 2',
   labelNavEarn: 'Loopring DeFi',
   labelNavWallet: 'Wallet',
 
   labelDashBoard: 'Dashboard',
   labelRecord: 'Records',
-  labelHome: 'Loopring Pro',
+  labelHome: 'Loopring Layer 2',
   labelVaultDes: '',
   labelVaultHome: 'Home',
   labelVaultHomeDes: 'Access the available portfolio',
@@ -148,4 +148,5 @@ export default {
   labelVault2: 'Portfolio',
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
+  labelNavDoc: 'Documentation',
 }
