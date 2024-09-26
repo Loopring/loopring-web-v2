@@ -759,8 +759,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       setIsAddOrRedeem(value)
     },
     isAddOrRedeem,
-    marginLevelChange:
-      vaultAccountInfo && nextMarginLevel
+    marginLevelChange: vaultAccountInfo
+      ? nextMarginLevel
         ? {
             from: {
               marginLevel: vaultAccountInfo.marginLevel,
@@ -771,7 +771,17 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               type: marginLevelType(nextMarginLevel),
             },
           }
-        : undefined,
+        : {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+          }
+      : undefined,
     holdingCollateral:
       vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken
         ? numberFormat(

@@ -496,8 +496,8 @@ export const useVaultRepay = <
         ? true
         : false,
     },
-    marginLevelChange:
-      vaultAccountInfo && nextMarginLevel && vaultRepayData.tradeValue
+    marginLevelChange: vaultAccountInfo
+      ? nextMarginLevel && vaultRepayData.tradeValue
         ? {
             from: {
               marginLevel: vaultAccountInfo.marginLevel,
@@ -508,6 +508,16 @@ export const useVaultRepay = <
               type: marginLevelType(nextMarginLevel),
             },
           }
-        : undefined,
+        : {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+          }
+      : undefined,
   }
 }

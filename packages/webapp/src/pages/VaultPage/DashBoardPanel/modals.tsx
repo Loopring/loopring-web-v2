@@ -329,7 +329,7 @@ export const LeverageModal = (props: LeverageModalProps) => {
 
               <Typography>
                 {currentLeverage
-                  ? `${numberFormat(currentLeverage, { fixed: 1 })}x`
+                  ? `${numberFormat(currentLeverage, { fixed: 0 })}x`
                   : EmptyValueTag}
               </Typography>
               <IconButton onClick={onClickAdd}>
@@ -345,16 +345,17 @@ export const LeverageModal = (props: LeverageModalProps) => {
             <Box sx={{ width: '100%' }}>
               <Slider
                 aria-label='Always visible'
-                value={currentLeverage ? (currentLeverage / maxLeverage) * 100 : 0}
-                step={maxLeverage}
+                value={currentLeverage ? ((currentLeverage - 1) / maxLeverage) * 100 : 0}
                 onChange={(_, _value) => {
                   const value = _value as number
-                  const leverage = value / 100 * maxLeverage
-                  onClickLeverage(leverage)
+                  const leverage = value / 100 * maxLeverage + 1
+                  
+                  onClickLeverage(Math.round(leverage))
                 }}
+                max={90}
                 marks={_.range(0, maxLeverage).map((number) => ({
                   value: (number / maxLeverage) * 100,
-                  label: number === 0 ? '' : `${number}x`,
+                  label: `${number + 1}x`,
                 }))}
               />
             </Box>
