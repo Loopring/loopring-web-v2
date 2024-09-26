@@ -41,6 +41,7 @@ export const VaultBorrowWrap = <
   propsExtends,
   marginLevelChange,
   userLeverage,
+  onClickLeverage,
   ...rest
 }: VaultBorrowWrapProps<T, I, V>) => {
   const inputBtnRef = React.useRef()
@@ -153,7 +154,7 @@ export const VaultBorrowWrap = <
             {t('labelVaultLeverage')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>            
-            <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+            <Typography onClick={onClickLeverage} marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'} sx={{ cursor: 'pointer', textDecoration: 'underline' }}>
               {userLeverage}x
             </Typography>
           </Box>
