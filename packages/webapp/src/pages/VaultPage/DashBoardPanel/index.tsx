@@ -127,8 +127,8 @@ export const VaultDashBoardPanel = ({
   const colors = ['var(--color-success)', 'var(--color-error)', 'var(--color-warning)']
   const profitUI = React.useMemo(() => {
     const profit = sdk
-      .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
-      .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+      .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
+      .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
     const colorsId = upColor === UpColor.green ? [0, 1] : [1, 0]
     const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
     return (
@@ -647,7 +647,7 @@ export const VaultDashBoardPanel = ({
                                   {t('labelVaultMarginLevelTooltips9')}
                                 </Typography>
                                 <Typography
-                                  color={'var(--color-error'}
+                                  color={'var(--color-text-primary)'}
                                   marginBottom={1}
                                   variant={'body2'}
                                 >
@@ -773,7 +773,7 @@ export const VaultDashBoardPanel = ({
                         </Box>
                         <Box position={'relative'} width={'120px'}>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                            {t('labelVaultDefaultLeverage')}
+                            {t('labelVaultLeverage')}
                           </Typography>
                           <Typography
                             component={'span'}
@@ -809,9 +809,9 @@ export const VaultDashBoardPanel = ({
                             variant={'body2'}
                           >
                             {t('labelVaultMaximumCredit')}:{' '}
-                            {vaultAccountInfo?.maxBorrowableOfUsdt
+                            {(vaultAccountInfo as any)?.maxCredit
                               ? fiatNumberDisplay(
-                                  getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                                  getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                                   currency,
                                 )
                               : EmptyValueTag}
@@ -1324,6 +1324,7 @@ export const VaultDashBoardPanel = ({
                       amount: amount
                         ? numberFormat(amount, {
                             fixed: tokenMap[tokenSymbol].precision,
+                            removeTrailingZero: true,
                           })
                         : EmptyValueTag,
                       logo: '',

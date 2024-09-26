@@ -51,7 +51,7 @@ export const numberFormatShowInPercent = (number: string | number, format?: {
 
 export const fiatNumberDisplay = (number: string | number, currency: CurrencyToTag) => {
   const numberStr = typeof number === 'number' ? number.toString() : number
-  const fixed = new Decimal(numberStr).lessThan('1') ? 6 : 2
+  const fixed = new Decimal(numberStr).lessThan('1') && new Decimal(numberStr).greaterThan('0') ? 6 : 2
   return numberFormatThousandthPlace(number, {
     fixed,
     currency

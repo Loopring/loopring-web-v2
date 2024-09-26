@@ -62,31 +62,35 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
           </Box>
           <Divider style={{ marginTop: '-1px', width: '100%' }} />
           <Box paddingX={3}>
-            <Box
-              marginTop={4}
-              padding={2.5}
-              bgcolor={'var(--color-box-secondary)'}
-              borderRadius={'8px'}
-            >
-              <SpaceBetweenBox
-                leftNode={
-                  <Typography color={'var(--color-text-third)'}>{t('labelVaultTotalCollateral')}</Typography>
-                }
-                rightNode={<Typography>{totalCollateral}</Typography>}
-              />
-              <SpaceBetweenBox
-                marginTop={2}
-                leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultMaximumCredit')}</Typography>}
-                rightNode={<Typography>{maxCredit}</Typography>}
-              />
+            <Box marginTop={3}>
+              <Box>
+                <Typography variant={'body2'} color={'var(--color-text-third)'}>
+                  {t('labelVaultTotalCollateral')}
+                </Typography>
+                <Typography mt={0.5} variant={'h4'}>
+                  {totalCollateral}
+                </Typography>
+              </Box>
+              <Box mt={3}>
+                <Typography variant={'body2'} color={'var(--color-text-third)'}>
+                  {t('labelVaultMaximumCredit')}
+                </Typography>
+                <Typography mt={0.5} variant={'h4'}>
+                  {maxCredit}
+                </Typography>
+              </Box>
             </Box>
             <Typography
               marginBottom={3}
               marginTop={2}
               variant='body2'
               color={'var(--color-text-secondary)'}
+              px={2.5}
+              py={1}
+              bgcolor={'var(--color-box-secondary)'}
+              borderRadius={'8px'}
             >
-              {t('labelVaultMaximumCreditDes')}
+              {t('labelVaultMaximumCreditDes')}{' '}
               <Typography
                 component={'span'}
                 onClick={onClickMaxCredit}
@@ -111,7 +115,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                     alignItems={'center'}
                     leftNode={
                       <Box display={'flex'} alignItems={'center'}>
-                        <CoinIcons  type={TokenType.single} tokenIcon={[coinJSON]}/>
+                        <CoinIcons type={TokenType.single} tokenIcon={[coinJSON]} />
                         <Typography marginLeft={1}>{token.name}</Typography>
                       </Box>
                     }
@@ -534,7 +538,7 @@ export const DebtModal = (props: DebtModalProps) => {
           </Box>
           <Divider style={{ width: '100%' }} />
           <Box paddingX={3} marginTop={3}>
-            {borrowedVaultTokens?.map(token => {
+            {borrowedVaultTokens && borrowedVaultTokens.length > 0 ? borrowedVaultTokens.map(token => {
               return (
                 <SpaceBetweenBox
                   key={token.symbol}
@@ -571,7 +575,7 @@ export const DebtModal = (props: DebtModalProps) => {
                   }
                 />
               )
-            })}
+            }) : <Typography mt={4} textAlign={'center'} color={'var(--color-text-third)'} >{t('labelEmptyDefault')}</Typography>}
           </Box>
         </Box>
       </Box>

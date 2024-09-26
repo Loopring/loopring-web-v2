@@ -200,14 +200,14 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
               </Grid>
             )}
 
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Tooltip title={t('labelVaultTokenQuoteDes').toString()}>
+            {!isActiveAccount ? (
+              <Grid
+                container
+                justifyContent={'space-between'}
+                direction={'row'}
+                alignItems={'center'}
+                marginTop={1 / 2}
+              >
                 <Typography
                   component={'span'}
                   variant='body2'
@@ -215,64 +215,25 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                   alignItems={'center'}
                   display={'inline-flex'}
                 >
-                  {t('labelVaultTotalToken')}
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                  {t('labelVaultMarginLevel')}
                 </Typography>
-              </Tooltip>
-              <>
-                {vaultJoinData && vaultJoinData?.tradeValue ? (
-                  <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-                    <CoinIcon
-                      tokenImageKey={vaultJoinData.belong}
-                      symbol={vaultJoinData.vaultSymbol!}
-                      type={TokenType.vault}
-                    />
-                    <Typography component={'span'} variant='body2' color={'textPrimary'}>
-                      {`${getValuePrecisionThousand(
-                        vaultJoinData?.tradeValue,
-                        vaultJoinData?.vaultTokenInfo?.decimals,
-                        vaultJoinData?.vaultTokenInfo?.decimals,
-                        undefined,
-                      )} ${vaultJoinData?.belong}`}
-                    </Typography>
-                  </Box>
-                ) : (
-                  EmptyValueTag
-                )}
-              </>
-            </Grid>
-            <Grid
-              container
-              justifyContent={'space-between'}
-              direction={'row'}
-              alignItems={'center'}
-              marginTop={1 / 2}
-            >
-              <Typography
-                component={'span'}
-                variant='body2'
-                color={'textSecondary'}
-                alignItems={'center'}
-                display={'inline-flex'}
-              >
-                {t('labelVaultMarginLevel')}
-              </Typography>
-              <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-                {marginLevelChange ? (
-                  <>
-                    <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
-                      {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
-                    </Typography>
-                    <EastIcon sx={{ marginX: 0.5 }} />
-                    <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
-                      {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
-                    </Typography>
-                  </>
-                ) : (
-                  EmptyValueTag
-                )}
-              </Box>
-            </Grid>
+                <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+                  {marginLevelChange ? (
+                    <>
+                      <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                        {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                      </Typography>
+                      <EastIcon sx={{ marginX: 0.5 }} />
+                      <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                        {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                      </Typography>
+                    </>
+                  ) : (
+                    EmptyValueTag
+                  )}
+                </Box>
+              </Grid>
+            ) : null}
           </Grid>
 
           {rest.isAddOrRedeem === 'Redeem' && (
