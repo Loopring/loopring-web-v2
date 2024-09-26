@@ -264,7 +264,7 @@ export const VaultDashBoardPanel = ({
         leverage: leverage.toString(),
       },
       apiKey: account.apiKey,
-    })
+    }, '1')
     updateVaultLayer2({})
   }
   const dustsAssets = vaultAccountInfo?.userAssets?.filter((asset) => {
@@ -375,7 +375,7 @@ export const VaultDashBoardPanel = ({
       apiKey: account.apiKey,
       accountId: account.accountId,
       eddsaKey: account.eddsaKey.sk,
-    })
+    }, '1')
     if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response) {
       throw response
     }
@@ -442,6 +442,7 @@ export const VaultDashBoardPanel = ({
         hash: response.hash,
       },
       account.apiKey,
+      '1'
     )
     if (response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
       throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED

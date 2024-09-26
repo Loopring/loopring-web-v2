@@ -406,7 +406,7 @@ export const vaultSwapDependAsync = ({
             limit,
           },
           tokenMap,
-        }),
+        }, '1'),
       ])
         .then(([responseDepth]) => {
           resolve({

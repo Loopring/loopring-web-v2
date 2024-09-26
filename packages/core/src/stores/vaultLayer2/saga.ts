@@ -32,10 +32,10 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
 
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
     let promise: any[] = [
-      LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey),
-      LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey),
-      LoopringAPI.vaultAPI.getCredit({ accountId }, apiKey),
-      LoopringAPI.vaultAPI.getCollaterals({ accountId }, apiKey),
+      LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey, '1'),
+      LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey, '1'),
+      LoopringAPI.vaultAPI.getCredit({ accountId }, apiKey, '1'),
+      LoopringAPI.vaultAPI.getCollaterals({ accountId }, apiKey, '1'),
     ]
     try {
       if (activeInfo && activeInfo.hash && activeInfo.isInActive) {
@@ -46,6 +46,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
               hash: activeInfo.hash,
             },
             apiKey,
+            '1'
           ),
         )
       }
