@@ -15,12 +15,14 @@ export const calcMarinLevel = (
   if (originDebtDecimal.add(moreToBorrowDecimal).eq('0')) {
     return '999'
   } else {
-    return originMarginDecimal
-      .add(moreToCollateralizeDecimal)
-      .add(totalBalanceInUSDDecimal)
-      .add(moreToBorrowDecimal)
-      .div(originDebtDecimal.add(moreToBorrowDecimal))
-      .toString()
+    return Decimal.min(
+      originMarginDecimal
+        .add(moreToCollateralizeDecimal)
+        .add(totalBalanceInUSDDecimal)
+        .add(moreToBorrowDecimal)
+        .div(originDebtDecimal.add(moreToBorrowDecimal)),
+      '999',
+    ).toString()
   }
 }
 

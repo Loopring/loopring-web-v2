@@ -264,8 +264,7 @@ export const VaultDashBoardPanel = ({
         leverage: leverage.toString(),
       },
       apiKey: account.apiKey,
-      '1'
-    })
+    }, '1')
     updateVaultLayer2({})
   }
 

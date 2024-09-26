@@ -547,8 +547,8 @@ export const useVaultBorrow = <
         ? true
         : false,
     },
-    marginLevelChange:
-      (vaultAccountInfo && nextMarginLevel && vaultBorrowData.tradeValue)
+    marginLevelChange: vaultAccountInfo
+      ? nextMarginLevel && vaultBorrowData.tradeValue
         ? {
             from: {
               marginLevel: vaultAccountInfo.marginLevel,
@@ -559,7 +559,17 @@ export const useVaultBorrow = <
               type: marginLevelType(nextMarginLevel),
             },
           }
-        : undefined,
+        : {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+          }
+      : undefined,
     userLeverage: vaultAccountInfo?.leverage,
   }
 }

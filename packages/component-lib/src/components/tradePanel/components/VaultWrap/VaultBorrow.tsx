@@ -212,13 +212,6 @@ export const VaultBorrowWrap = <
             {t('labelHourlyInterestRate')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-            {vaultBorrowData.borrowedAmt !== '0' && vaultBorrowData.borrowedAmt ? (
-              <CoinIcon
-                tokenImageKey={vaultBorrowData.erc20Symbol}
-                symbol={vaultBorrowData.belong}
-                type={TokenType.vault}
-              />
-            ) : undefined}
             <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
               {vaultBorrowData &&
               (vaultBorrowData as any).hourlyRateInPercent &&
