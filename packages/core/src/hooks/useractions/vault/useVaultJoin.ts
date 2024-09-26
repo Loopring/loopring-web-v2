@@ -172,7 +172,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           chainId: chainId === 'unknown' ? 1 : chainId,
           walletType: (ConnectProvidersSignMap[account.connectName] ??
             account.connectName) as unknown as sdk.ConnectorNames,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
@@ -199,6 +199,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               hash: (response as any).hash,
             },
             account.apiKey,
+            '1'
           )
           let status = ''
           if (
@@ -348,6 +349,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 tokens: '',
               },
               account.apiKey,
+              '1'
             )
 
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
@@ -413,6 +415,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                           accountId: account.accountId,
                           counterFactualInfo: account.eddsaKey.counterFactualInfo,
                         },
+                        '1'
                       )
                     )
                   }),

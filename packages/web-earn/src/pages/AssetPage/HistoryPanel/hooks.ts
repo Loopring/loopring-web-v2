@@ -1301,6 +1301,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               ].join(','),
           },
           apiKey,
+          '1'
         )
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           const errorItem = SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001]

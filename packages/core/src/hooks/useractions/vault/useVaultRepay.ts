@@ -263,6 +263,7 @@ export const useVaultRepay = <
             accountId: account.accountId,
             counterFactualInfo: account.eddsaKey.counterFactualInfo,
           },
+          '1'
         )
 
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
@@ -278,6 +279,7 @@ export const useVaultRepay = <
               hash: (response as any).hash,
             },
             account.apiKey,
+            '1'
           )
           let status = ''
           if (

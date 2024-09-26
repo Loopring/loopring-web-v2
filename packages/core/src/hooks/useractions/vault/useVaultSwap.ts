@@ -844,7 +844,7 @@ export const useVaultSwap = <
           request,
           privateKey: account.eddsaKey.sk,
           apiKey: account.apiKey,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw new CustomErrorWithCode({
             code: (response as sdk.RESULT_INFO).code,
@@ -869,6 +869,7 @@ export const useVaultSwap = <
                 hash: response.hash,
               },
               account.apiKey,
+              '1'
             )
             const item = {
               fromSymbol: sellToken.symbol,
@@ -1127,7 +1128,7 @@ export const useVaultSwap = <
           request: vaultBorrowRequest,
           privateKey: account.eddsaKey?.sk,
           apiKey: account.apiKey,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }

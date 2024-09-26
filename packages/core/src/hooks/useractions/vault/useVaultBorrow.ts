@@ -324,7 +324,7 @@ export const useVaultBorrow = <
           request: request ?? vaultBorrowData.request,
           privateKey: eddsaKey?.sk,
           apiKey: apiKey,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
@@ -342,6 +342,7 @@ export const useVaultBorrow = <
             hash: (response as any).hash,
           },
           apiKey,
+          '1'
         )
         let status = ''
         if (

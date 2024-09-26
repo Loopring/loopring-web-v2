@@ -57,7 +57,7 @@ const getVaultMapApi = async () => {
           
         }
       }),
-      LoopringAPI.vaultAPI.getVaultMarkets().then((response) => {
+      LoopringAPI.vaultAPI.getVaultMarkets('1').then((response) => {
         if (
           !response ||
           (response as sdk.RESULT_INFO).code ||

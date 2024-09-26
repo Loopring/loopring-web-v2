@@ -145,7 +145,7 @@ export const useVaultRedeem = () => {
           request: request,
           privateKey: eddsaKey.sk,
           apiKey,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
@@ -158,6 +158,7 @@ export const useVaultRedeem = () => {
             hash: (response as any).hash,
           },
           apiKey,
+          '1'
         )
         let status = ''
         if (
@@ -202,6 +203,7 @@ export const useVaultRedeem = () => {
               hash: (response as any).hash,
             },
             apiKey,
+            '1'
           ).then(x => {
             if (x.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED) {
               setShowNoVaultAccount({ isShow: false })
