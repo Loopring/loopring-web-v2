@@ -271,7 +271,7 @@ export const VaultDashBoardPanel = ({
     // @ts-ignore
     const minimum: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.minimum
     return (
-      new Decimal(asset.total).greaterThan('0') && new Decimal(asset.total).lessThanOrEqualTo(minimum)
+      new Decimal(asset.total).greaterThan('0') && new Decimal(asset.total).lessThan(minimum)
     )
   })
   const dusts = dustsAssets?.map((asset) => {
