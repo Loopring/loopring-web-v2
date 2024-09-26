@@ -195,10 +195,17 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
             <Typography
               marginTop={2}
               marginBottom={2}
+              color={'var(--color-warning)'}
+            >
+              {t('labelVaultMaximumLeverage')}: {maxLeverage}x
+            </Typography>
+            <Typography
+              marginTop={3}
+              marginBottom={2}
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              {t('labelVaultMaximumCreditDes')}
+              {t('labelVaultMaximumCreditDes')}{' '}
             </Typography>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
               {t('labelVaultMaximumCreditFormula')}
@@ -207,7 +214,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
               {t('labelVaultPriceFactor')}
             </Typography>
             <Box
-              marginTop={2}
+              marginTop={6}
               marginBottom={3}
               padding={2.5}
               bgcolor={'var(--color-box-secondary)'}
@@ -228,21 +235,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
                 )
               })}
             </Box>
-            <Typography marginBottom={2} color={'var(--color-text-secondary)'} variant='h5'>
-              {t('labelVaultMaximumLeverage')}
-            </Typography>
-            <Box
-              padding={2.5}
-              bgcolor={'var(--color-box-secondary)'}
-              borderRadius={'8px'}
-            >
-              <SpaceBetweenBox
-                leftNode={
-                  <Typography color={'var(--color-text-third)'}>{t('labelVaultMaximumLeverage')}</Typography>
-                }
-                rightNode={<Typography>{maxLeverage}x</Typography>}
-              />
-            </Box>
+            
           </Box>
         </Box>
       </Box>
@@ -397,7 +390,7 @@ export const LeverageModal = (props: LeverageModalProps) => {
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              {t('labelVaultMaximumCreditDes')}
+              {t('labelVaultMaximumCreditDes')}{' '}
               <Typography
                 component={'span'}
                 onClick={onClickMaxCredit}
