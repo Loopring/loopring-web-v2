@@ -89,8 +89,12 @@ import Decimal from 'decimal.js'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
+  setShowLeverage,
+  showLeverage,
 }: {
-  vaultAccountInfo: VaultAccountInfoStatus
+  vaultAccountInfo: VaultAccountInfoStatus,
+  setShowLeverage: (showLeverage: boolean) => void
+  showLeverage: boolean
 }) => {
   const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
     _vaultAccountInfo
@@ -486,6 +490,7 @@ export const VaultDashBoardPanel = ({
 
   const showMarginLevelAlert =
     vaultAccountInfo?.marginLevel && new Decimal(vaultAccountInfo.marginLevel).lessThan('1.15')
+  
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -1297,7 +1302,7 @@ export const VaultDashBoardPanel = ({
                 </SwitchPanelStyled>
               </Modal>
               <CollateralDetailsModal
-                open={localState.modalStatus === 'collateralDetails'}
+                open={localState.modalStatus === 'collateralDetails' && !showLeverage}
                 onClose={() => {
                   setLocalState({
                     ...localState,
@@ -1373,8 +1378,8 @@ export const VaultDashBoardPanel = ({
               />
               <MaximumCreditModal
                 open={
-                  localState.modalStatus === 'leverageMaxCredit' ||
-                  localState.modalStatus === 'collateralDetailsMaxCredit'
+                  (localState.modalStatus === 'leverageMaxCredit' ||
+                  localState.modalStatus === 'collateralDetailsMaxCredit') && !showLeverage
                 }
                 onClose={() => {
                   setLocalState({
@@ -1406,8 +1411,9 @@ export const VaultDashBoardPanel = ({
                 maxLeverage={maxLeverage ?? EmptyValueTag}
               />
               <LeverageModal
-                open={localState.modalStatus === 'leverage'}
+                open={localState.modalStatus === 'leverage' || showLeverage}
                 onClose={() => {
+                  setShowLeverage(false)
                   setLocalState({
                     ...localState,
                     modalStatus: 'noModal',
@@ -1466,7 +1472,7 @@ export const VaultDashBoardPanel = ({
                 }
               />
               <DebtModal
-                open={localState.modalStatus === 'debt'}
+                open={localState.modalStatus === 'debt' && !showLeverage}
                 onClose={() => {
                   setLocalState({
                     ...localState,
@@ -1533,7 +1539,7 @@ export const VaultDashBoardPanel = ({
                 }
               />
               <DustCollectorModal
-                open={localState.modalStatus === 'dustCollector'}
+                open={localState.modalStatus === 'dustCollector' && !showLeverage}
                 onClose={() => {
                   setLocalState({
                     ...localState,
