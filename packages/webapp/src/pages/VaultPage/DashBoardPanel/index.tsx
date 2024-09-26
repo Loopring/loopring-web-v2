@@ -252,7 +252,7 @@ export const VaultDashBoardPanel = ({
       | 'leverageMaxCredit'
       | 'debt'
       | 'dustCollector',
-    selectedDustSymbol: [] as string[],
+    unselectedDustSymbol: [] as string[],
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
@@ -267,12 +267,11 @@ export const VaultDashBoardPanel = ({
     })
     updateVaultLayer2({})
   }
-
   const dustsAssets = vaultAccountInfo?.userAssets?.filter((asset) => {
     // @ts-ignore
-    const dust: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.dust
+    const minimum: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.minimum
     return (
-      new Decimal(asset.total).greaterThan('0') && new Decimal(asset.total).lessThanOrEqualTo(dust)
+      new Decimal(asset.total).greaterThan('0') && new Decimal(asset.total).lessThanOrEqualTo(minimum)
     )
   })
   const dusts = dustsAssets?.map((asset) => {
@@ -280,7 +279,7 @@ export const VaultDashBoardPanel = ({
     const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
     const vaultSymbol = token.symbol
     const originSymbol = vaultSymbol.slice(2)
-    const checked = localState.selectedDustSymbol.includes(originSymbol)
+    const checked = !localState.unselectedDustSymbol.includes(originSymbol)
     const price = tokenPrices[vaultSymbol]
     return {
       symbol: originSymbol,
@@ -301,14 +300,15 @@ export const VaultDashBoardPanel = ({
         if (checked) {
           setLocalState({
             ...localState,
-            selectedDustSymbol: localState.selectedDustSymbol.filter(
-              (symbol) => symbol !== originSymbol,
-            ),
+            
+            unselectedDustSymbol: localState.unselectedDustSymbol.concat(originSymbol),
           })
         } else {
           setLocalState({
             ...localState,
-            selectedDustSymbol: localState.selectedDustSymbol.concat(originSymbol),
+            unselectedDustSymbol: localState.unselectedDustSymbol.filter(
+              (symbol) => symbol !== originSymbol,
+            ),
           })
         }
       },
@@ -338,7 +338,7 @@ export const VaultDashBoardPanel = ({
       const token = vaultTokenMap[vaultIdIndex[asset.tokenId!]]
       const vaultSymbol = token.symbol
       const originSymbol = vaultSymbol.slice(2)
-      return localState.selectedDustSymbol.includes(originSymbol)
+      return !localState.unselectedDustSymbol.includes(originSymbol)
     })
     const dustTransfers = await Promise.all(
       checkedDusts.map(async (asset) => {
