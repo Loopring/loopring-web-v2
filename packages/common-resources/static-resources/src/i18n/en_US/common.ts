@@ -2398,7 +2398,7 @@ export default {
   labelVaultMarginLevelTooltips9:
     'At High Risk, it is strongly recommended that you add collateral or repay borrowed tokens immediately to reduce the risk of liquidation.',
   labelVaultMarginLevelTooltips10:
-    'Liquidation    Margin Level < 1.1',
+    'Liquidation Margin Level < 1.1',
   labelVaultMarginLevelTooltips11:
     'When Margin Level is lower than 1.1, the position will be liquidated.',
   labelVaultCollateralManagement: 'Collateral Management',
@@ -2457,7 +2457,7 @@ export default {
   labelVaultJoinRedeem: 'Redeem',
   labelVaultCollateralDetails: 'Collateral Details',
   labelVaultMaximumCredit: 'Maximum Credit',
-  labelVaultMaximumCreditDes: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral. It is calculated by taking the total value of your collateral, adjusted for price factor and the maximum leverage.',
+  labelVaultMaximumCreditDes: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral.',
   labelVaultMaximumCreditFormula: 'Maximum Credit = Sum ( Token_MarketPrice * Token_Amount * Token_PriceFactor ) * Maximum_Leverage',
   labelVaultPriceFactor: 'The Price Factor of each collateral',
   labelVaultMaximumLeverage: 'Maximum Leverage',
@@ -2466,7 +2466,7 @@ export default {
   labelVaultLeverageRisk1: '· Selecting higher leverage will increase your liquidation risk.',
   labelVaultLeverageRisk2: '· Available Borrow is based on the upper limit corresponding to the leverage you choose. The total value of all your borrowed tokens will not exceed Available Borrow.',
   labelVaultLeverageRisk3: '· Maximum Credit is the maximum amount you can borrow based on your collateral.',
-  labelVaultDebt: 'Debt',
+  labelVaultDebt: 'Debt Details',
   labelVaultDebtDetails: 'Details',
   labelVaultTotalBorrowed: 'Total Borrowed',
   labelVaultTotalFundingFee: 'Total Funding Fee',
