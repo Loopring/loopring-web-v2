@@ -1391,7 +1391,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = !amount.eq(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${amountStr} ${erc20Symbol}`
+                    mainContentRender = `${Decimal.abs(amountStr).toString()} ${erc20Symbol}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow

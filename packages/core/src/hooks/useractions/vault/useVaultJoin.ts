@@ -289,7 +289,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           ),
           symbol: ercToken.symbol,
           vSymbol: vaultJoinData.vaultSymbol,
-          time: new Date(),
+          time: Date.now(),
         },
         error,
       })
@@ -324,7 +324,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               ? t('labelVaultJoin')
               : isAddOrRedeem === 'Redeem'
               ? t('labelVaultRedeem')
-              : t('labelVaultMarginCall'),
+              : t('labelVaultJoinAdd'),
             status: t('labelPending'),
             percentage: '0',
             amount: EmptyValueTag,
@@ -521,7 +521,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           sum: EmptyValueTag,
           symbol: ercToken.symbol,
           vSymbol: vaultJoinData.vaultSymbol,
-          time: new Date(),
+          time: Date.now(),
         },
         error: {
           ...(e as any),
@@ -620,9 +620,22 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       })
       initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
     }
-    const maxRedeemCollateral = (vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral) 
-      ? utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[initSymbol].decimals)
-      : undefined
+    const maxRedeemCollateral =
+      vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
+        ? Decimal.max(
+            numberFormat(
+              utils.formatUnits(
+                (vaultAccountInfo as any).maxRedeemCollateral as string,
+                tokenMap[initSymbol].decimals,
+              ),
+              {
+                fixed: tokenMap[initSymbol].precision,
+                removeTrailingZero: true,
+              },
+            ),
+            '0',
+          ).toString()
+        : undefined
     walletInfo = {
       belong: initSymbol,
       balance: isAddOrRedeem === 'Add' ? walletMap[initSymbol]?.count ?? 0 : maxRedeemCollateral,

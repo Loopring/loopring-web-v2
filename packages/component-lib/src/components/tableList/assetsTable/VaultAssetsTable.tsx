@@ -371,7 +371,7 @@ export const VaultAssetsTable = withTranslation('tables')(
               component={'span'}
               onClick={onClickDustCollector}
               width={'140px'}
-              color={'var(--color-text-secondary)'}
+              color={'var(--color-text-primary)'}
               display={'flex'}
               alignItems={'center'}
             >
