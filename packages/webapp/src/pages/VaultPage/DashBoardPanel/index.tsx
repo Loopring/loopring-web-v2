@@ -86,6 +86,7 @@ import {
 } from './modals'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
+import { keys } from 'lodash'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
@@ -240,7 +241,7 @@ export const VaultDashBoardPanel = ({
   const tableRef = React.useRef<HTMLDivElement>()
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-  const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex } = useVaultMap()
+  const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex, marketMap, marketArray } = useVaultMap()
   const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
   const { tokenMap, idIndex } = useTokenMap()
 
@@ -272,12 +273,19 @@ export const VaultDashBoardPanel = ({
     updateVaultLayer2({})
   }
   const dustsAssets = vaultAccountInfo?.userAssets?.filter((asset) => {
-    // @ts-ignore
-    const minimum: string = vaultTokenMap[vaultIdIndex[asset.tokenId]].orderAmounts.minimum
+    const foundKey = keys(marketMap).find((key) => {
+      const market = marketMap[key]
+      // @ts-ignore
+      return market.baseTokenId === asset.tokenId
+    })
+    const minimum = foundKey && marketMap[foundKey].minAmount.base
     return (
-      new Decimal(asset.total).greaterThan('0') && new Decimal(asset.total).lessThan(minimum)
+      minimum &&
+      new Decimal(asset.total).greaterThan('0') &&
+      new Decimal(asset.total).lessThan(minimum)
     )
   })
+  console.log('dustsAssets', dustsAssets)
   const dusts = dustsAssets?.map((asset) => {
     // @ts-ignore
     const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]

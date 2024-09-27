@@ -547,7 +547,7 @@ export const useVaultBorrow = <
         ? true
         : false,
     },
-    marginLevelChange: vaultAccountInfo
+    marginLevelChange: vaultAccountInfo?.marginLevel
       ? nextMarginLevel && vaultBorrowData.tradeValue
         ? {
             from: {

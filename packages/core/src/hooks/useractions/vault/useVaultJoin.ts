@@ -759,7 +759,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       setIsAddOrRedeem(value)
     },
     isAddOrRedeem,
-    marginLevelChange: vaultAccountInfo
+    marginLevelChange: vaultAccountInfo?.marginLevel
       ? nextMarginLevel
         ? {
             from: {

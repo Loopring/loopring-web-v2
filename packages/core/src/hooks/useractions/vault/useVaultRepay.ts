@@ -496,7 +496,7 @@ export const useVaultRepay = <
         ? true
         : false,
     },
-    marginLevelChange: vaultAccountInfo
+    marginLevelChange: vaultAccountInfo?.marginLevel
       ? nextMarginLevel && vaultRepayData.tradeValue
         ? {
             from: {
