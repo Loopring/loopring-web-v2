@@ -648,6 +648,35 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       tradeData: walletInfo,
     })
   }
+  React.useEffect(() => {
+    if (isAddOrRedeem === 'Redeem') {
+      const symbol = vaultJoinData.belong as string
+      const maxRedeemCollateral =
+        vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
+          ? Decimal.max(
+              numberFormat(
+                utils.formatUnits(
+                  (vaultAccountInfo as any).maxRedeemCollateral as string,
+                  tokenMap[symbol].decimals,
+                ),
+                {
+                  fixed: tokenMap[symbol].precision,
+                  removeTrailingZero: true,
+                },
+              ),
+              '0',
+            ).toString()
+          : undefined
+      updateVaultJoin({
+        ...vaultJoinData,
+        tradeData: {
+          ...vaultJoinData.tradeData,
+          // @ts-ignore
+          balance: maxRedeemCollateral,
+        }
+      })
+    }
+  }, [(vaultAccountInfo as any).maxRedeemCollateral, isAddOrRedeem])
   const vaultLayer2Callback = React.useCallback(() => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     let walletMap = makeWalletLayer2ForVault()

@@ -2399,7 +2399,7 @@ export default {
   labelVaultTotalBorrowed: 'Total Borrowed',
   labelVaultTotalFundingFee: 'Total Funding Fee',
   labelVaultValueEst: 'Value (est.)',
-  labelVaultDustCollectorDes: `The accumulated dust will be converted into corresponding USDT. If you do not have any USDT to be repaid, the converted amount will be deposited into your portal's USDT. However, if you have USDT to be repaid, the converted amount will be prioritized to repay the debt. `,
+  labelVaultDustCollectorDes: `The accumulated dust will be converted into corresponding USDT. If you do not have any USDT to be repaid, the converted amount will be deposited into your portal's USDT. `,
   labelVaultConvert: 'Convert',
   labelVaultMarginLevelAlert: 'Your margin level has reached a critical point. Please review your positions and considering adding additional collateral. Failure to address the margin call may result in forced liquidation.',
   labelVaultDetail: 'Detail',

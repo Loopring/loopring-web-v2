@@ -87,6 +87,8 @@ import {
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
 import { keys } from 'lodash'
+import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
+import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
@@ -204,9 +206,7 @@ export const VaultDashBoardPanel = ({
     colors,
   ])
   const marginUI = React.useMemo(() => {
-    const item = vaultAccountInfo?.marginLevel ?? 0
-    //@ts-ignore
-    const colorIs = sdk.toBig('1.5').lte(item) ? 0 : sdk.toBig('1.3').lte(item) ? 2 : 1
+    const item = vaultAccountInfo?.marginLevel ?? '0'
     return (
       <>
         {vaultAccountInfo?.marginLevel ? (
@@ -216,7 +216,7 @@ export const VaultDashBoardPanel = ({
             alignItems={'center'}
             marginTop={1}
             variant={'body1'}
-            color={colors[colorIs]}
+            color={marginLevelTypeToColor(marginLevelType(item))}
           >
             <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
             {item}
@@ -285,7 +285,6 @@ export const VaultDashBoardPanel = ({
       new Decimal(asset.total).lessThan(minimum)
     )
   })
-  console.log('dustsAssets', dustsAssets)
   const dusts = dustsAssets?.map((asset) => {
     // @ts-ignore
     const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
