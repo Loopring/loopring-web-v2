@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import {
   onchainHashInfo,
   store,
+  useAccount,
   useSystem,
   useTokenMap,
   useTokenPrices,
@@ -38,6 +39,8 @@ import { l2CommonService } from '../../../services'
 import { keys } from 'lodash'
 import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from './utils'
+import { numberFormat } from '../../../utils'
+
 export type VaultBorrowTradeData = IBData<any> & {
   erc20Symbol: string
   borrowed: string
@@ -143,7 +146,7 @@ export const useVaultBorrow = <
   const { exchangeInfo, forexMap } = useSystem()
   const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenPrices } = useTokenPrices()
-  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap } = useVaultMap()
+  const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap, tokenPrices: vaultTokenPrices } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
     return vaultAvaiable2Map
@@ -154,8 +157,9 @@ export const useVaultBorrow = <
 
   const { vaultAccountInfo, status: vaultAccountInfoStatus } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
+  const { account } = useAccount()
   // const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
-  const initData = () => {
+  const initData = async () => {
     let vaultBorrowData: any = {}
     let initSymbol = marketCoins[0]
     if (isShowVaultLoan.info?.symbol) {
@@ -178,9 +182,22 @@ export const useVaultBorrow = <
       erc20Symbol: initSymbol.slice(2)
     }
     const supportdata = calcSupportBorrowData(walletInfo)
+    const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable({
+      accountId: account.accountId,
+      symbol: initSymbol.slice(2)
+    }, account.apiKey, '1')
+    const tokenPrice = vaultTokenPrices[initSymbol]
+    const vToken = vaultTokenMap[initSymbol]
+    const balance = numberFormat(
+      new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(),
+      {
+        fixed: vToken.precision,
+        removeTrailingZero: true,
+      },
+    )
     walletInfo = {
       ...walletInfo,
-      balance: supportdata.balance,
+      balance,
       borrowedAmt: walletInfo.borrowed,
     }
     vaultBorrowData = {
@@ -233,7 +250,7 @@ export const useVaultBorrow = <
 
   const handlePanelEvent = React.useCallback(async (data: SwitchData<T>) => {
     let vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
-    return new Promise<void>((res: any) => {
+    return new Promise<void>(async (res: any) => {
       if (data.to === 'button') {
         let { vaultAvaiable2Map } = makeVaultAvaiable2({})
         setWalletMap(vaultAvaiable2Map)
@@ -245,9 +262,19 @@ export const useVaultBorrow = <
             borrowedAmt: walletInfo.borrowed,
           }
           const supportdata = calcSupportBorrowData(walletInfo)
+          const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable({
+            accountId: account.accountId,
+            symbol: (data.tradeData?.belong as string).slice(2)
+          }, account.apiKey, '1')
+          const tokenPrice = vaultTokenPrices[(data.tradeData?.belong as string)]
+          const vToken = vaultTokenMap[data.tradeData.belong as string]
+          const balance = numberFormat(new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(), {
+            fixed: vToken.precision,
+            removeTrailingZero: true,
+          })
           walletInfo = {
             ...walletInfo,
-            balance: supportdata.balance,
+            balance
           }
           vaultBorrowData = {
             ...vaultBorrowData,
