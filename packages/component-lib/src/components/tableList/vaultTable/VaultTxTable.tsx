@@ -30,6 +30,7 @@ import {
   CoinIcon,
 } from '@loopring-web/component-lib'
 import { useTheme } from '@mui/material'
+import Decimal from 'decimal.js'
 
 const TableWrapperStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -575,7 +576,7 @@ export const VaultOperationDetail = (props: {
           order={9}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY'
+            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY' || type === 'VAULT_JOIN_REDEEM'
               ? t('labelVaultAmount')
               : t('labelVaultCollateral')}
           </Typography>
@@ -594,7 +595,7 @@ export const VaultOperationDetail = (props: {
                   type={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? TokenType.single : TokenType.vault}
                   tokenIcon={[coinJson[amountSymbol], undefined]}
                 />{' '}
-                <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{amount} {amountSymbol}</Typography>
+                <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{Decimal.abs(amount).toString()} {amountSymbol}</Typography>
               </>
             ) : (
               EmptyValueTag
