@@ -58,7 +58,6 @@ import {
   useSystem,
   useToast,
   useTokenMap,
-  useTokenPrices,
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
@@ -1851,13 +1850,14 @@ export const useVaultSwap = <
       updateTradeVault({ market, tradeCalcData: _tradeCalcData })
     }
   }, [market, tradeVault, tradeData, tradeCalcData, setTradeCalcData])
-  
   const moreToBorrowInUSD =
     tradeCalcData.borrowVol &&
     new Decimal(tradeCalcData.borrowVol).greaterThan('0') &&
     tradeData?.sell.belong &&
+    tokenMap[tradeData?.sell.belong as string] &&
     vaultTokenPrices[tradeData?.sell.belong as string]
       ? new Decimal(tradeCalcData.borrowVol ?? '0')
+          .div(Decimal.pow(10, tokenMap[tradeData?.sell.belong as string].decimals))
           .mul(vaultTokenPrices[tradeData?.sell.belong as string])
           .toString()
       : undefined
