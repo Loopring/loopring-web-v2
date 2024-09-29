@@ -96,7 +96,7 @@ export const makeVaultLayer2 = <
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev
       }
-      const erc20Symbol = erc20IdIndex[vaultToken?.tokenId ?? '']
+      const erc20Symbol = erc20IdIndex && erc20IdIndex[vaultToken?.tokenId ?? '']
       return {
         ...prev,
         [symbol]: {
