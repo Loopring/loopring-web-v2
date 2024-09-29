@@ -732,3 +732,49 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
     </Modal>
   )
 }
+
+export const DustCollectorUnAvailableModal = (props: { open: boolean, onClose: () => void }) => {
+  const {
+    open,
+    onClose,
+  } = props
+  const { t } = useTranslation()
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-box)'}
+          width={'var(--modal-width)'}
+          height={'200px'}
+          borderRadius={1}
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          position={'relative'}
+        >
+          <CloseIcon
+            style={{
+              height: '20px',
+              width: '20px',
+            }}
+            sx={{
+              cursor: 'pointer',
+              fontSize: '24px',
+              marginRight: 1.5,
+              color: 'var(--color-text-third)',
+              position: 'absolute',
+              top: 16,
+              right: 16,
+            }}
+            onClick={onClose}
+          />
+          <Typography variant={'h3'}>{t('labelVaultDustCollectorUnavailableTitle')}</Typography>
+          <Typography color={'var(--color-text-secondary)'} mt={6}>
+            {t('labelVaultDustCollectorUnavailableDes')}
+          </Typography>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}

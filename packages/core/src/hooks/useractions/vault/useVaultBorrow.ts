@@ -144,8 +144,6 @@ export const useVaultBorrow = <
   const [isLoading, setIsLoading] = React.useState(false)
 
   const { exchangeInfo, forexMap } = useSystem()
-  const { idIndex: erc20IdIndex } = useTokenMap()
-  const { tokenPrices } = useTokenPrices()
   const { tokenMap: vaultTokenMap, coinMap: vaultCoinMap, marketCoins, getVaultMap, tokenPrices: vaultTokenPrices } = useVaultMap()
   const [walletMap, setWalletMap] = React.useState(() => {
     const { vaultAvaiable2Map } = makeVaultAvaiable2({})
@@ -220,7 +218,7 @@ export const useVaultBorrow = <
     } else {
       resetVaultBorrow()
     }
-  }, [isShowVaultLoan.isShow])
+  }, [isShowVaultLoan.isShow, vaultAccountInfo?.leverage])
   const refreshRef = React.createRef()
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
@@ -529,9 +527,9 @@ export const useVaultBorrow = <
   })
 
   
-  const moreToBorrowInUSD = (vaultBorrowData.tradeData && tokenPrices[vaultBorrowData.tradeData.erc20Symbol])
+  const moreToBorrowInUSD = (vaultBorrowData.tradeData && vaultTokenPrices[vaultBorrowData.tradeData.belong as string])
     ? new Decimal(vaultBorrowData.tradeData.tradeValue ?? '0')
-        .mul(tokenPrices[vaultBorrowData.tradeData.erc20Symbol])
+        .mul(vaultTokenPrices[vaultBorrowData.tradeData.belong as string])
         .toString()
     : undefined
   const nextMarginLevel =

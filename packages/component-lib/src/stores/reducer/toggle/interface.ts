@@ -28,6 +28,7 @@ export type ToggleState = {
     enable: boolean
     reason?: string
   }
+  VaultDustCollector: { enable: boolean; reason?: string }
   // @ts-ignore
   send: {
     orbiter: string[]

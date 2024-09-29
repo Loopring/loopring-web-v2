@@ -196,8 +196,7 @@ export const useVaultSwap = <
   const borrowHash = React.useRef<null | { hash: string; timer?: any }>(null)
   const { idIndex: erc20IdIndex } = useTokenMap()
   const { account } = useAccount()
-  const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap } = useVaultMap()
-  const { tokenPrices } = useTokenPrices()
+  const { tokenMap, marketMap, coinMap, marketArray, marketCoins, getVaultMap, tokenPrices: vaultTokenPrices } = useVaultMap()
   const {
     setShowSupport,
     setShowTradeIsFrozen,
@@ -551,7 +550,7 @@ export const useVaultSwap = <
     tradeBtnStatus: TradeBtnStatus
     label: string | undefined
   } => {
-    if (!tokenMap && !tokenPrices && tradeData?.sell) {
+    if (!tokenMap && !vaultTokenPrices && tradeData?.sell) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -1854,14 +1853,15 @@ export const useVaultSwap = <
   }, [market, tradeVault, tradeData, tradeCalcData, setTradeCalcData])
   
   const moreToBorrowInUSD =
-    tradeCalcData.borrowStr &&
-    new Decimal(tradeCalcData.borrowStr).greaterThan('0') &&
-    tradeCalcData.belongSellAlice &&
-    tokenPrices[tradeCalcData.belongSellAlice]
-      ? new Decimal(tradeCalcData.borrowStr ?? '0')
-          .mul(tokenPrices[tradeCalcData.belongSellAlice])
+    tradeCalcData.borrowVol &&
+    new Decimal(tradeCalcData.borrowVol).greaterThan('0') &&
+    tradeData?.sell.belong &&
+    vaultTokenPrices[tradeData?.sell.belong as string]
+      ? new Decimal(tradeCalcData.borrowVol ?? '0')
+          .mul(vaultTokenPrices[tradeData?.sell.belong as string])
           .toString()
       : undefined
+
   const nextMarginLevel =
     vaultAccountInfo && moreToBorrowInUSD
       ? calcMarinLevel(

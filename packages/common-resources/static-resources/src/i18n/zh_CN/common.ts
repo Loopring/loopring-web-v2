@@ -2413,4 +2413,6 @@ export default {
   labelVaultDetails: 'Details',
   labelVaultNoDust: 'No Dust to Collect',
   labelVaultJoinAdd: 'Add Collateral',
+  labelVaultChangeLeverageFailed: 'Change Leverage Failed',
+  labelVaultChangeLeverageFailedTooSmall: `Can’t change to leverage that small.`,
 }
