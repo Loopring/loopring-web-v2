@@ -17,3 +17,4 @@ export {
 export {
   numberStringListSum
 } from './calculation'
+export {getOptionalDecimal} from './decimal'
