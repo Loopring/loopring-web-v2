@@ -479,20 +479,18 @@ export const SwapTradeWrap = <
                 alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Typography
-                  component={'p'}
-                  variant='body2'
-                  color={'textSecondary'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
-                >
-                  <Info2Icon
-                    fontSize={'small'}
-                    color={'inherit'}
-                    sx={{ marginX: 1 / 2, opacity: 0 }}
-                  />
-                  {t('labelVaultMarginLevel')}
-                </Typography>
+                <Tooltip title={t('labelVaultMarginLevel')} placement={'top'}>
+                  <Typography
+                    component={'p'}
+                    variant='body2'
+                    color={'textSecondary'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                  >
+                    <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                    {' ' + t('labelVaultMarginLevel')}
+                  </Typography>
+                </Tooltip>
 
                 <Typography component={'p'} variant='body2' color={'textPrimary'}>
                   <Typography

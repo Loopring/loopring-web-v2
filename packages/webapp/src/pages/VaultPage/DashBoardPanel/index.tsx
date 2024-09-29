@@ -50,6 +50,7 @@ import {
   VaultAssetsTable,
   Button as MyButton,
   AccountStep,
+  useToggle,
 } from '@loopring-web/component-lib'
 import { useTranslation, Trans } from 'react-i18next'
 import {
@@ -81,6 +82,7 @@ import {
   CollateralDetailsModal,
   DebtModal,
   DustCollectorModal,
+  DustCollectorUnAvailableModal,
   LeverageModal,
   MaximumCreditModal,
 } from './modals'
@@ -92,12 +94,12 @@ import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/
 
 export const VaultDashBoardPanel = ({
   vaultAccountInfo: _vaultAccountInfo,
-  setShowLeverage,
+  closeShowLeverage,
   showLeverage,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus,
-  setShowLeverage: (showLeverage: boolean) => void
-  showLeverage: boolean
+  closeShowLeverage: () => void
+  showLeverage: {show: boolean, closeAfterChange:boolean}
 }) => {
   const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
     _vaultAccountInfo
@@ -256,20 +258,44 @@ export const VaultDashBoardPanel = ({
       | 'leverage'
       | 'leverageMaxCredit'
       | 'debt'
-      | 'dustCollector',
+      | 'dustCollector'
+      | 'dustCollectorUnavailable',
     unselectedDustSymbol: [] as string[],
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
+  const { toggle: { VaultDustCollector } } = useToggle()
 
   const changeLeverage = async (leverage: number) => {
-    await LoopringAPI.vaultAPI?.submitLeverage({
+    const response = await LoopringAPI.vaultAPI?.submitLeverage({
       request: {
         accountId: account.accountId.toString(),
         leverage: leverage.toString(),
       },
       apiKey: account.apiKey,
     }, '1')
+    if ((response as any)?.resultInfo?.code) {
+      if (response.resultInfo.message.includes('ERR_VAULT_LEVERAGE_TOO_LARGE')) {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.General_Failed,
+          info: {
+            errorMessage: t('labelVaultChangeLeverageFailedTooSmall') ,
+            title: t('labelVaultChangeLeverageFailed'),
+          },
+        })
+      } else {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.General_Failed,
+          info: {
+            errorMessage: t('labelUnknown') ,
+            title: t('labelVaultChangeLeverageFailed'),
+          },
+        })
+      }
+      throw response
+    }
     updateVaultLayer2({})
   }
   const dustsAssets = vaultAccountInfo?.userAssets?.filter((asset) => {
@@ -527,9 +553,7 @@ export const VaultDashBoardPanel = ({
                       height: '24px',
                     }}
                   />
-                  <Typography marginLeft={0.5}>
-                    {t('labelVaultMarginLevelAlert')}
-                  </Typography>
+                  <Typography marginLeft={0.5}>{t('labelVaultMarginLevelAlert')}</Typography>
                 </Box>
               )}
               <Grid container spacing={3} marginTop={showMarginLevelAlert ? -1 : 3}>
@@ -1011,10 +1035,17 @@ export const VaultDashBoardPanel = ({
                     })
                   }}
                   onClickDustCollector={() => {
-                    setLocalState({
-                      ...localState,
-                      modalStatus: 'dustCollector',
-                    })
+                    if (VaultDustCollector.enable) {
+                      setLocalState({
+                        ...localState,
+                        modalStatus: 'dustCollector',
+                      })
+                    } else {
+                      setLocalState({
+                        ...localState,
+                        modalStatus: 'dustCollectorUnavailable',
+                      })
+                    }
                   }}
                   showFilter
                 />
@@ -1309,7 +1340,7 @@ export const VaultDashBoardPanel = ({
                 </SwitchPanelStyled>
               </Modal>
               <CollateralDetailsModal
-                open={localState.modalStatus === 'collateralDetails' && !showLeverage}
+                open={localState.modalStatus === 'collateralDetails' && !showLeverage.show}
                 onClose={() => {
                   setLocalState({
                     ...localState,
@@ -1386,7 +1417,7 @@ export const VaultDashBoardPanel = ({
               <MaximumCreditModal
                 open={
                   (localState.modalStatus === 'leverageMaxCredit' ||
-                  localState.modalStatus === 'collateralDetailsMaxCredit') && !showLeverage
+                    (localState.modalStatus === 'collateralDetailsMaxCredit' && !showLeverage.show))
                 }
                 onClose={() => {
                   setLocalState({
@@ -1418,9 +1449,9 @@ export const VaultDashBoardPanel = ({
                 maxLeverage={maxLeverage ?? EmptyValueTag}
               />
               <LeverageModal
-                open={localState.modalStatus === 'leverage' || showLeverage}
+                open={localState.modalStatus === 'leverage' || (showLeverage.show && localState.modalStatus !== 'leverageMaxCredit')}
                 onClose={() => {
-                  setShowLeverage(false)
+                  closeShowLeverage()
                   setLocalState({
                     ...localState,
                     modalStatus: 'noModal',
@@ -1433,18 +1464,25 @@ export const VaultDashBoardPanel = ({
                   })
                 }}
                 maxLeverage={maxLeverage ? Number(maxLeverage) : 0}
-                onClickReduce={() => {
-                  if (vaultAccountInfo?.leverage) {
-                    changeLeverage(Number(vaultAccountInfo?.leverage) - 1)
+                onClickReduce={async () => {
+                  if (!vaultAccountInfo?.leverage) return
+                  await changeLeverage(Number(vaultAccountInfo?.leverage) - 1)
+                  if (showLeverage.show && showLeverage.closeAfterChange) {
+                    closeShowLeverage()
                   }
                 }}
-                onClickAdd={() => {
-                  if (vaultAccountInfo?.leverage) {
-                    changeLeverage(Number(vaultAccountInfo?.leverage) + 1)
+                onClickAdd={async () => {
+                  if (vaultAccountInfo?.leverage) return
+                  await changeLeverage(Number(vaultAccountInfo?.leverage) + 1)
+                  if (showLeverage.show && showLeverage.closeAfterChange) {
+                    closeShowLeverage()
                   }
                 }}
-                onClickLeverage={(leverage) => {
-                  changeLeverage(leverage)
+                onClickLeverage={async (leverage) => {
+                  await changeLeverage(leverage)
+                  if (showLeverage.show && showLeverage.closeAfterChange) {
+                    closeShowLeverage()
+                  }
                 }}
                 currentLeverage={
                   vaultAccountInfo?.leverage ? Number(vaultAccountInfo?.leverage) : 0
@@ -1479,7 +1517,7 @@ export const VaultDashBoardPanel = ({
                 }
               />
               <DebtModal
-                open={localState.modalStatus === 'debt' && !showLeverage}
+                open={localState.modalStatus === 'debt' && !showLeverage.show}
                 onClose={() => {
                   setLocalState({
                     ...localState,
@@ -1546,7 +1584,7 @@ export const VaultDashBoardPanel = ({
                 }
               />
               <DustCollectorModal
-                open={localState.modalStatus === 'dustCollector' && !showLeverage}
+                open={localState.modalStatus === 'dustCollector' && !showLeverage.show}
                 onClose={() => {
                   setLocalState({
                     ...localState,
@@ -1562,6 +1600,15 @@ export const VaultDashBoardPanel = ({
                 totalValueInUSDT={totalDustsInUSDT ?? EmptyValueTag}
                 onClickRecords={() => {
                   history.push('/l2assets/history/VaultRecords')
+                }}
+              />
+              <DustCollectorUnAvailableModal
+                open={localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show}
+                onClose={() => {
+                  setLocalState({
+                    ...localState,
+                    modalStatus: 'noModal',
+                  })
                 }}
               />
             </>

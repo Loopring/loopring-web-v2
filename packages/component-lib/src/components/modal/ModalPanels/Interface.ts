@@ -39,6 +39,7 @@ export enum AccountStep {
   Deposit_Submit,
 
   //L2
+  General_Failed,
 
   ContinuousBanxaOrder,
   CheckingActive,

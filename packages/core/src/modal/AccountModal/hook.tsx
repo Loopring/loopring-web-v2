@@ -156,6 +156,7 @@ import {
   VaultDustCollector_Success,
   VaultDustCollector_Failed,
   VaultDustCollector_In_Progress,
+  General_Failed,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -1922,7 +1923,14 @@ export function useAccountModalForUI({
           />
         ),
       },
-
+      [AccountStep.General_Failed]: {
+        view: (
+          <General_Failed
+            t={t}
+            {...rest}
+          />
+        ),
+      },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
