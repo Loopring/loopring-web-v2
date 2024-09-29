@@ -1374,7 +1374,7 @@ export const VaultDashBoardPanel = ({
                         : EmptyValueTag,
                       logo: '',
                       valueInCurrency:
-                        amount && tokenPrices['LV' + tokenSymbol]
+                        amount && tokenPrices['LV' + tokenSymbol] && forexMap && forexMap[currency]
                           ? fiatNumberDisplay(
                               getValueInCurrency(
                                 new Decimal(tokenPrices['LV' + tokenSymbol])
