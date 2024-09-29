@@ -410,4 +410,5 @@ export default {
   labelVaultDetails: 'Details',
   labelVaultErrorOccurred: 'An error has occurred. Please try again later.',
   labelVaultDustCollector: 'Dust Collector',
+  labelDetails: 'Details',
 }

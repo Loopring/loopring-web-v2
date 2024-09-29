@@ -237,7 +237,7 @@ export const VaultDashBoardPanel = ({
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
   const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex } = useVaultMap()
-  const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
+  // const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
   const { tokenMap, idIndex } = useTokenMap()
 
   const history = useHistory()
@@ -287,6 +287,7 @@ export const VaultDashBoardPanel = ({
       coinJSON: coinJson[originSymbol],
       amount: numberFormat(utils.formatUnits(asset.total, token.decimals), {
         fixed: token.precision,
+        removeTrailingZero: true,
       }),
       checked,
       valueInCurrency: price
@@ -388,7 +389,7 @@ export const VaultDashBoardPanel = ({
     const dustList = checkedDusts.map((dust) => {
       const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
       const token = tokenMap[idIndex[vaultToken.tokenId]]
-      const price = nonVaultTokenPrices[token.symbol]
+      const price = tokenPrices[vaultToken.symbol]
       return {
         symbol: token.symbol,
         coinJSON: coinJson[token.symbol],
@@ -1329,10 +1330,10 @@ export const VaultDashBoardPanel = ({
                         : EmptyValueTag,
                       logo: '',
                       valueInCurrency:
-                        amount && nonVaultTokenPrices[tokenSymbol]
+                        amount && tokenPrices['LV' + tokenSymbol]
                           ? fiatNumberDisplay(
                               getValueInCurrency(
-                                new Decimal(nonVaultTokenPrices[tokenSymbol])
+                                new Decimal(tokenPrices['LV' + tokenSymbol])
                                   .mul(amount)
                                   .toString(),
                               ),
