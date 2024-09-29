@@ -244,7 +244,6 @@ export const VaultDashBoardPanel = ({
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
   const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex, marketMap, marketArray } = useVaultMap()
-  const { tokenPrices: nonVaultTokenPrices } = useTokenPrices()
   const { tokenMap, idIndex } = useTokenMap()
 
   const history = useHistory()
@@ -323,6 +322,7 @@ export const VaultDashBoardPanel = ({
       coinJSON: coinJson[originSymbol],
       amount: numberFormat(utils.formatUnits(asset.total, token.decimals), {
         fixed: token.precision,
+        removeTrailingZero: true,
       }),
       checked,
       valueInCurrency: price
@@ -368,6 +368,7 @@ export const VaultDashBoardPanel = ({
 
   const convert = async () => {
     if (!dustsAssets || !exchangeInfo) return
+    
     const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
       type: 4,
     })!
@@ -407,43 +408,28 @@ export const VaultDashBoardPanel = ({
         }
       }),
     )
-    const response = await LoopringAPI.vaultAPI?.submitDustCollector({
-      dustTransfers: dustTransfers,
-      apiKey: account.apiKey,
-      accountId: account.accountId,
-      eddsaKey: account.eddsaKey.sk,
-    }, '1')
-    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response) {
-      throw response
-    }
-    setLocalState({
-      ...localState,
-      modalStatus: 'noModal',
-    })
-    updateVaultLayer2({})
-
     const dustList = checkedDusts.map((dust) => {
       const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
-      const token = tokenMap[idIndex[vaultToken.tokenId]]
-      const price = nonVaultTokenPrices[token.symbol]
+      const price = tokenPrices[vaultToken.symbol]
+      const originTokenSymbol = vaultToken.symbol.slice(2)
       return {
-        symbol: token.symbol,
-        coinJSON: coinJson[token.symbol],
-        amount: numberFormat(utils.formatUnits(dust.total, token.decimals), {
-          fixed: token.precision,
+        symbol: originTokenSymbol,
+        coinJSON: coinJson[originTokenSymbol],
+        amount: numberFormat(utils.formatUnits(dust.total, vaultToken.decimals), {
+          fixed: vaultToken.precision,
         }),
-        amountRaw: utils.formatUnits(dust.total, token.decimals),
+        amountRaw: utils.formatUnits(dust.total, vaultToken.decimals),
         valueInCurrency: price
           ? fiatNumberDisplay(
               getValueInCurrency(
-                new Decimal(price).mul(utils.formatUnits(dust.total, token.decimals)).toString(),
+                new Decimal(price).mul(utils.formatUnits(dust.total, vaultToken.decimals)).toString(),
               ),
               currency,
             )
           : undefined,
         valueInCurrencyRaw: price
           ? getValueInCurrency(
-              new Decimal(price).mul(utils.formatUnits(dust.total, token.decimals)).toString(),
+              new Decimal(price).mul(utils.formatUnits(dust.total, vaultToken.decimals)).toString(),
             )
           : undefined,
       }
@@ -472,6 +458,22 @@ export const VaultDashBoardPanel = ({
         }),
       },
     })
+    
+    const response = await LoopringAPI.vaultAPI?.submitDustCollector({
+      dustTransfers: dustTransfers,
+      apiKey: account.apiKey,
+      accountId: account.accountId,
+      eddsaKey: account.eddsaKey.sk,
+    }, '1')
+    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response) {
+      throw response
+    }
+    setLocalState({
+      ...localState,
+      modalStatus: 'noModal',
+      unselectedDustSymbol: [],
+    })
+    updateVaultLayer2({})
     await sdk.sleep(SUBMIT_PANEL_CHECK)
     const response2 = await LoopringAPI?.vaultAPI?.getVaultGetOperationByHash(
       {
@@ -1372,10 +1374,10 @@ export const VaultDashBoardPanel = ({
                         : EmptyValueTag,
                       logo: '',
                       valueInCurrency:
-                        amount && nonVaultTokenPrices[tokenSymbol]
+                        amount && tokenPrices['LV' + tokenSymbol]
                           ? fiatNumberDisplay(
                               getValueInCurrency(
-                                new Decimal(nonVaultTokenPrices[tokenSymbol])
+                                new Decimal(tokenPrices['LV' + tokenSymbol])
                                   .mul(amount)
                                   .toString(),
                               ),
@@ -1537,10 +1539,10 @@ export const VaultDashBoardPanel = ({
                       ? utils.formatUnits(asset.borrowed, vaultToken.decimals)
                       : undefined
                     return {
-                      symbol: vaultSymbol,
+                      symbol: vaultSymbol.slice(2),
                       coinJSON: coinJson[originSymbol],
                       amount: borrowedAmount
-                        ? numberFormat(borrowedAmount, { fixed: vaultToken?.precision })
+                        ? numberFormat(borrowedAmount, { fixed: vaultToken?.precision, removeTrailingZero: true})
                         : EmptyValueTag,
                       valueInCurrency:
                         price && borrowedAmount
@@ -1589,6 +1591,7 @@ export const VaultDashBoardPanel = ({
                   setLocalState({
                     ...localState,
                     modalStatus: 'noModal',
+                    unselectedDustSymbol: [],
                   })
                 }}
                 dusts={dusts}
