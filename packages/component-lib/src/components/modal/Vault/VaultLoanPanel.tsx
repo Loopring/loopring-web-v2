@@ -147,7 +147,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
               {...{
                 ...(vaultBorrowProps as any),
                 t,
-                _height: 350,
+                _height: 360,
               }}
             />
           </Box>
@@ -160,7 +160,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             height={'100%'}
           >
             <VaultRepayPanel
-              {...{ ...(vaultRepayProps as any), t, _height: 350 }}
+              {...{ ...(vaultRepayProps as any), t, _height: 360 }}
               forexMap={forexMap}
             />
           </Box>

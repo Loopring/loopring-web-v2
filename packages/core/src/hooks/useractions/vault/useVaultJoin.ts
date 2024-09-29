@@ -676,7 +676,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         }
       })
     }
-  }, [(vaultAccountInfo as any).maxRedeemCollateral, isAddOrRedeem])
+  }, [(vaultAccountInfo as any)?.maxRedeemCollateral, isAddOrRedeem])
   const vaultLayer2Callback = React.useCallback(() => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     let walletMap = makeWalletLayer2ForVault()

@@ -100,7 +100,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
       justifyContent={'space-between'}
       alignItems={'center'}
       flex={1}
-      height={'290px'}
+      height={'310px'}
       paddingX={3}
     >
       <Grid

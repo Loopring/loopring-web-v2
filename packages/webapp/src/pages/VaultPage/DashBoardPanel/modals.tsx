@@ -125,7 +125,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                         <Typography
                           color={'var(--color-text-secondary)'}
                           textAlign={'right'}
-                          variant={'subtitle2'}
+                          variant={'body2'}
                         >
                           {token.valueInCurrency}
                         </Typography>
@@ -164,6 +164,9 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
           borderRadius={1}
           display={'flex'}
           flexDirection={'column'}
+          sx={{
+            overflowY: 'scroll'
+          }}
         >
           <Box
             paddingX={1.5}
@@ -205,16 +208,16 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              {t('labelVaultMaximumCreditDes')}{' '}
+              {t('labelVaultMaximumCreditDesLong')}{' '}
             </Typography>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
               {t('labelVaultMaximumCreditFormula')}
             </Typography>
-            <Typography color={'var(--color-text-secondary)'} variant='h5'>
+            <Typography  marginTop={4} color={'var(--color-text-secondary)'} variant='h5'>
               {t('labelVaultPriceFactor')}
             </Typography>
             <Box
-              marginTop={6}
+              marginTop={2}
               marginBottom={3}
               padding={2.5}
               bgcolor={'var(--color-box-secondary)'}
@@ -531,7 +534,7 @@ export const DebtModal = (props: DebtModalProps) => {
             <Typography fontSize={'16px'} marginBottom={2}>{t('labelVaultBorrowed')}</Typography>
           </Box>
           <Divider style={{ width: '100%' }} />
-          <Box paddingX={3} marginTop={3}>
+          <Box paddingX={3} marginTop={3} sx={{ overflowY: 'scroll', }}>
             {borrowedVaultTokens && borrowedVaultTokens.length > 0 ? borrowedVaultTokens.map(token => {
               return (
                 <SpaceBetweenBox
@@ -559,7 +562,7 @@ export const DebtModal = (props: DebtModalProps) => {
                         <Typography
                           color={'var(--color-text-secondary)'}
                           textAlign={'right'}
-                          variant={'subtitle2'}
+                          variant={'body2'}
                         >
                           {token.valueInCurrency}
                         </Typography>
@@ -679,7 +682,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                       <Typography
                         color={'var(--color-text-secondary)'}
                         textAlign={'right'}
-                        variant={'subtitle2'}
+                        variant={'body2'}
                       >
                         {dust.valueInCurrency}
                       </Typography>

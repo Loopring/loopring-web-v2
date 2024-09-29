@@ -198,16 +198,15 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
               variant='body2'
               color={'var(--color-text-secondary)'}
             >
-              {t('labelVaultMaximumCreditDes')}
+              {t('labelVaultMaximumCreditDesLong')}
             </Typography>
             <Typography marginBottom={2} variant='body2' color={'var(--color-text-secondary)'}>
               {t('labelVaultMaximumCreditFormula')}
             </Typography>
-            <Typography color={'var(--color-text-secondary)'} variant='h5'>
+            <Typography marginTop={6} color={'var(--color-text-secondary)'} variant='h5'>
               {t('labelVaultPriceFactor')}
             </Typography>
             <Box
-              marginTop={2}
               marginBottom={3}
               padding={2.5}
               bgcolor={'var(--color-box-secondary)'}
