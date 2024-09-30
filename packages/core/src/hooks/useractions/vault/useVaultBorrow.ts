@@ -179,7 +179,7 @@ export const useVaultBorrow = <
       const balance = numberFormat(
         new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(),
         {
-          fixed: vToken.precision,
+          fixed: vToken.vaultTokenAmounts.qtyStepScale,
           removeTrailingZero: true,
         },
       )
@@ -290,7 +290,7 @@ export const useVaultBorrow = <
           const tokenPrice = vaultTokenPrices[(data.tradeData?.belong as string)]
           const vToken = vaultTokenMap[data.tradeData.belong as string]
           const balance = numberFormat(new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(), {
-            fixed: vToken.precision,
+            fixed: vToken.vaultTokenAmounts.qtyStepScale,
             removeTrailingZero: true,
           })
           walletInfo = {
