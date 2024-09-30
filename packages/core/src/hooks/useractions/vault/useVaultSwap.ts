@@ -1,5 +1,5 @@
 import * as sdk from '@loopring-web/loopring-sdk'
-import React from 'react'
+import React, { useRef } from 'react'
 
 import {
   AccountStatus,
@@ -46,6 +46,7 @@ import {
   makeVaultLayer2,
   MAPFEEBIPS,
   marketInitCheck,
+  numberFormat,
   onchainHashInfo,
   reCalcStoB,
   store,
@@ -92,15 +93,10 @@ const makeVaultSell = (sellSymbol: string) => {
         BigNumber.min(totalQuote, (vaultAvaiable2Map && vaultAvaiable2Map[sellSymbol]?.count) ?? 0),
       )
       .toFixed(sellToken?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN)
-    const balance = sdk
-      .toBig(count ?? 0)
-      .plus(borrowAvailable)
-      .toString()
     return {
       borrowAvailable,
       count,
       countBig,
-      balance,
       erc20Symbol: erc20IdIndex[sellToken.tokenId],
     }
   } else {
@@ -391,6 +387,7 @@ export const useVaultSwap = <
     if (isShowVaultSwap.isShow) {
       resetMarket(`${isShowVaultSwap?.symbol ?? '#null'}-#null`, 'sell')
     } else {
+      timerRef.current && clearInterval(timerRef.current)
       resetTradeVault()
       setIsSwapLoading(false)
       if (market) {
@@ -1206,6 +1203,46 @@ export const useVaultSwap = <
     isLoading: !!isMarketInit,
     submitCallback: vaultSwapSubmit,
   })
+  
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const updateVaultBorrowDataRepeatly = async () => {
+    console.log('updateVaultBorrowDataRepeatly')
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+    }
+    const fn = async () => {
+      const sellToken = tokenMap[tradeData?.sell.belong as string]
+      const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable(
+        {
+          accountId: account.accountId,
+          symbol: sellToken.symbol.slice(2),
+        },
+        account.apiKey,
+        '1',
+      )
+      const tokenPrice = vaultTokenPrices[sellToken.symbol]
+      const balance = numberFormat(
+        new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(),
+        {
+          fixed: sellToken.precision,
+          removeTrailingZero: true,
+        },
+      )
+
+      setTradeData((prevState) => {
+        if (!prevState) return prevState;
+        return {
+          ...prevState,
+          sell: {
+            ...prevState.sell,
+            balance: Number(balance),
+          }
+        }
+      })
+    }
+    timerRef.current = setInterval(fn, 15 * 1000)
+    fn()
+  }
 
   const should15sRefresh = React.useCallback(() => {
     myLog('useVaultSwap: should15sRefresh', market)
@@ -1418,6 +1455,7 @@ export const useVaultSwap = <
 
   React.useEffect(() => {
     if (market) {
+      updateVaultBorrowDataRepeatly()
       //@ts-ignore
       if (refreshRef.current) {
         // @ts-ignore
@@ -1519,12 +1557,6 @@ export const useVaultSwap = <
           slipBips: slippage,
         })
 
-        const supportBorrowData = calcSupportBorrowData({
-          belong: sellToken.symbol,
-          ...((vaultAvaiable2Map && vaultAvaiable2Map[sellToken.symbol]) ?? {}),
-          tradeValue: undefined,
-          erc20Symbol: erc20IdIndex[tokenMap[sellToken.symbol].tokenId],
-        } as unknown as VaultBorrowTradeData)
         const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
         if (chainInfos.vaultBorrowHashes && chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
           showHasBorrow = true
@@ -1672,7 +1704,6 @@ export const useVaultSwap = <
           belongSellAlice: sellToken.symbol.slice(2),
           belongBuyAlice: buyToken.symbol.slice(2),
           minimumConverted,
-          supportBorrowData,
           showHasBorrow,
           hourlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100, 6, false),
           yearlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100 * 24 * 365, 2, false)

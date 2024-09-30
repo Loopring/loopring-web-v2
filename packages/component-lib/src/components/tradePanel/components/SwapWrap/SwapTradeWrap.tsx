@@ -401,8 +401,8 @@ export const SwapTradeWrap = <
         ) : (
           <></>
         )}
-
         {(tradeCalcData as any)?.isVault && (tradeCalcData as any).step !== VaultSwapStep.Edit && (
+          
           <Box className={'cover'} onClick={onCancelClick} />
         )}
       </Grid>

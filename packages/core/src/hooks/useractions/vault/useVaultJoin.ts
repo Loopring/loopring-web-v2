@@ -276,8 +276,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         isShow: true,
         step: AccountStep.VaultJoin_Failed,
         info: {
-          title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+          title: isActiveAccount
+            ? t('labelVaultJoinTitle')
+            : isAddOrRedeem === 'Add'
+            ? t('labelVaultJoinAdd')
+            : t('labelVaultRedeem'),
+          type: isActiveAccount
+            ? t('labelVaultJoin')
+            : isAddOrRedeem === 'Redeem'
+            ? t('labelVaultRedeem')
+            : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
@@ -652,7 +660,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     if (isAddOrRedeem === 'Redeem') {
       const symbol = vaultJoinData.belong as string
       const maxRedeemCollateral =
-        vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
+        vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral && tokenMap[symbol]
           ? Decimal.max(
               numberFormat(
                 utils.formatUnits(
@@ -723,7 +731,22 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const handlePanelEvent = async (data: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
     const walletMap = makeWalletLayer2ForVault()
     const tokenSymbol = data.tradeData.belong
-    const maxRedeemCollateral = utils.formatUnits((vaultAccountInfo as any).maxRedeemCollateral as string, tokenMap[tokenSymbol as string].decimals)
+    const maxRedeemCollateral =
+      vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
+        ? Decimal.max(
+            numberFormat(
+              utils.formatUnits(
+                (vaultAccountInfo as any).maxRedeemCollateral as string,
+                tokenMap[tokenSymbol as string].decimals,
+              ),
+              {
+                fixed: tokenMap[tokenSymbol as string].precision,
+                removeTrailingZero: true,
+              },
+            ),
+            '0',
+          ).toString()
+        : undefined
     let walletInfo: any = {
       ...walletMap[tokenSymbol],
       balance: isAddOrRedeem === 'Add' ? (walletMap[tokenSymbol]?.count ?? 0) : maxRedeemCollateral,
@@ -833,6 +856,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
             ),
             {
               fixed: ercToken.precision,
+              removeTrailingZero: true,
             },
           )
         : undefined,

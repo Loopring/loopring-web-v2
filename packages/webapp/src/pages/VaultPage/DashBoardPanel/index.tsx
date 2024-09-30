@@ -260,19 +260,32 @@ export const VaultDashBoardPanel = ({
       | 'dustCollector'
       | 'dustCollectorUnavailable',
     unselectedDustSymbol: [] as string[],
+    leverageLoading: false
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
   const { toggle: { VaultDustCollector } } = useToggle()
 
   const changeLeverage = async (leverage: number) => {
+    setLocalState({
+      ...localState,
+      leverageLoading: true
+    })
     const response = await LoopringAPI.vaultAPI?.submitLeverage({
       request: {
         accountId: account.accountId.toString(),
         leverage: leverage.toString(),
       },
       apiKey: account.apiKey,
-    }, '1')
+    }, '1').finally(() => {
+      setTimeout(() => {
+        setLocalState({
+          ...localState,
+          leverageLoading: false
+        })
+      }, 500);
+    })
+    
     if ((response as any)?.resultInfo?.code) {
       if (response.resultInfo.message.includes('ERR_VAULT_LEVERAGE_TOO_LARGE')) {
         setShowAccount({
@@ -1377,9 +1390,7 @@ export const VaultDashBoardPanel = ({
                         amount && tokenPrices['LV' + tokenSymbol] && forexMap && forexMap[currency]
                           ? fiatNumberDisplay(
                               getValueInCurrency(
-                                new Decimal(tokenPrices['LV' + tokenSymbol])
-                                  .mul(amount)
-                                  .toString(),
+                                new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
                               ),
                               currency,
                             )
@@ -1388,10 +1399,10 @@ export const VaultDashBoardPanel = ({
                   }) ?? []
                 }
                 maxCredit={
-                  vaultAccountInfo?.maxBorrowableOfUsdt &&
-                  getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt)
+                  (vaultAccountInfo as any)?.maxCredit &&
+                  getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
                     ? numberFormatThousandthPlace(
-                        getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                         {
                           fixed: 2,
                           currency,
@@ -1418,8 +1429,8 @@ export const VaultDashBoardPanel = ({
               />
               <MaximumCreditModal
                 open={
-                  (localState.modalStatus === 'leverageMaxCredit' ||
-                    (localState.modalStatus === 'collateralDetailsMaxCredit' && !showLeverage.show))
+                  localState.modalStatus === 'leverageMaxCredit' ||
+                  (localState.modalStatus === 'collateralDetailsMaxCredit' && !showLeverage.show)
                 }
                 onClose={() => {
                   setLocalState({
@@ -1451,7 +1462,11 @@ export const VaultDashBoardPanel = ({
                 maxLeverage={maxLeverage ?? EmptyValueTag}
               />
               <LeverageModal
-                open={localState.modalStatus === 'leverage' || (showLeverage.show && localState.modalStatus !== 'leverageMaxCredit')}
+                isLoading={localState.leverageLoading}
+                open={
+                  localState.modalStatus === 'leverage' ||
+                  (showLeverage.show && localState.modalStatus !== 'leverageMaxCredit')
+                }
                 onClose={() => {
                   closeShowLeverage()
                   setLocalState({
@@ -1474,7 +1489,7 @@ export const VaultDashBoardPanel = ({
                   }
                 }}
                 onClickAdd={async () => {
-                  if (vaultAccountInfo?.leverage) return
+                  if (!vaultAccountInfo?.leverage) return
                   await changeLeverage(Number(vaultAccountInfo?.leverage) + 1)
                   if (showLeverage.show && showLeverage.closeAfterChange) {
                     closeShowLeverage()
@@ -1490,9 +1505,9 @@ export const VaultDashBoardPanel = ({
                   vaultAccountInfo?.leverage ? Number(vaultAccountInfo?.leverage) : 0
                 }
                 maximumCredit={
-                  vaultAccountInfo?.maxBorrowableOfUsdt
+                  (vaultAccountInfo as any)?.maxCredit
                     ? fiatNumberDisplay(
-                        getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                         currency,
                       )
                     : EmptyValueTag
@@ -1542,7 +1557,10 @@ export const VaultDashBoardPanel = ({
                       symbol: vaultSymbol.slice(2),
                       coinJSON: coinJson[originSymbol],
                       amount: borrowedAmount
-                        ? numberFormat(borrowedAmount, { fixed: vaultToken?.precision, removeTrailingZero: true})
+                        ? numberFormat(borrowedAmount, {
+                            fixed: vaultToken?.precision,
+                            removeTrailingZero: true,
+                          })
                         : EmptyValueTag,
                       valueInCurrency:
                         price && borrowedAmount

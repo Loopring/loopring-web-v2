@@ -100,7 +100,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
       justifyContent={'space-between'}
       alignItems={'center'}
       flex={1}
-      height={'310px'}
+      height={'290px'}
       paddingX={3}
     >
       <Grid
@@ -138,7 +138,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
           }}
         />
       </Grid>
-      <Grid item alignSelf={'stretch'} marginTop={rest.isAddOrRedeem === 'Redeem' ? 2 : 6}>
+      <Grid item alignSelf={'stretch'} marginTop={2}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
           <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
             {rest.isAddOrRedeem === 'Add' ? (
@@ -236,14 +236,12 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             ) : null}
           </Grid>
 
-          {rest.isAddOrRedeem === 'Redeem' && (
-            <Grid item display={'flex'} marginBottom={1}>
-              <InfoIcon sx={{ marginRight: 1, color: 'var(--color-text-secondary)' }} />
-              <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
-                {t('labelVaultRedeemAlert')}
-              </Typography>
-            </Grid>
-          )}
+          <Grid sx={{opacity: rest.isAddOrRedeem === 'Redeem' ? 1 : 0}} item display={'flex'} marginBottom={1}>
+            <InfoIcon sx={{ marginRight: 1, color: 'var(--color-text-secondary)' }} />
+            <Typography color={'var(--color-text-secondary)'} variant={'body2'}>
+              {t('labelVaultRedeemAlert')}
+            </Typography>
+          </Grid>
           <Grid item>
             <ButtonStyle
               variant={'contained'}
