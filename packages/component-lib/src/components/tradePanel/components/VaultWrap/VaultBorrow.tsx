@@ -44,6 +44,7 @@ export const VaultBorrowWrap = <
   onClickLeverage,
   ...rest
 }: VaultBorrowWrapProps<T, I, V>) => {
+  
   const inputBtnRef = React.useRef()
   const { t, i18n } = useTranslation()
   const { defaultNetwork } = useSettings()
@@ -96,7 +97,6 @@ export const VaultBorrowWrap = <
       })
     }
   }, [vaultBorrowBtnI18nKey])
-
   return (
     <Box
       className={vaultBorrowData ? '' : 'loading'}
@@ -105,7 +105,7 @@ export const VaultBorrowWrap = <
       alignItems={'center'}
       flex={1}
       display={'flex'}
-      height={'300px'}
+      height={'auto'}
     >
       <Box
         flexDirection={'column'}
@@ -262,7 +262,7 @@ export const VaultBorrowWrap = <
       </Grid>
 
       <Box
-        marginTop={1}
+        marginTop={1.5}
         alignSelf={'stretch'}
         display={'flex'}
         flexDirection={'column'}

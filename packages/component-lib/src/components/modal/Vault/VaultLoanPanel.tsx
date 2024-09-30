@@ -57,7 +57,6 @@ const WrapStyle = styled(Box)<
 
   .MuiToolbar-root {
     justify-content: space-between;
-    padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px;
   }
 
   .vaultRepay {
@@ -147,7 +146,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
               {...{
                 ...(vaultBorrowProps as any),
                 t,
-                _height: 360,
+                _height: 400,
               }}
             />
           </Box>
@@ -160,7 +159,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             height={'100%'}
           >
             <VaultRepayPanel
-              {...{ ...(vaultRepayProps as any), t, _height: 360 }}
+              {...{ ...(vaultRepayProps as any), t, _height: 400 }}
               forexMap={forexMap}
             />
           </Box>

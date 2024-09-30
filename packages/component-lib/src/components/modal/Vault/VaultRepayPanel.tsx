@@ -156,11 +156,12 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
     <SwitchPanel _width={'var(--modal-width)'} {...{ ...rest, i18n, t, tReady: true, ...props }} />
   ) : (
     <Box
-      height={'var(--min-height)'}
+      // height={'var(--min-height)'}
       display={'flex'}
       justifyContent={'center'}
       flexDirection={'column'}
       alignItems={'center'}
+      height={rest._height as number}
     >
       <EmptyDefault
         height={'100%'}

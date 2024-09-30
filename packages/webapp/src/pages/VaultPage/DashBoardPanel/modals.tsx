@@ -1,6 +1,6 @@
 import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip } from '@mui/material'
-import { AvatarCoin, Button, CoinIcons, SpaceBetweenBox } from '@loopring-web/component-lib'
-import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, OrderListIcon, TokenType } from '@loopring-web/common-resources'
+import { AvatarCoin, Button, CoinIcons, Loading, LoadingStyled, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, InfoIcon, OrderListIcon, TokenType } from '@loopring-web/common-resources'
 import { numberFormat } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -25,7 +25,7 @@ type CollateralDetailsModalProps = {
 }
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
-  const { open, onClose, collateralTokens, totalCollateral, maxCredit,onClickMaxCredit,coinJSON } = props
+  const { open, onClose, collateralTokens, totalCollateral, maxCredit, onClickMaxCredit, coinJSON } = props
   const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
@@ -80,26 +80,30 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                 </Typography>
               </Box>
             </Box>
+            
             <Typography
               marginBottom={3}
               marginTop={2}
               variant='body2'
               color={'var(--color-text-secondary)'}
-              px={2.5}
+              px={2}
               py={1}
               bgcolor={'var(--color-box-secondary)'}
               borderRadius={'8px'}
+              display={'flex'}
+              flexDirection={'row'}
             >
-              {t('labelVaultMaximumCreditDes')}{' '}
+              <InfoIcon sx={{ mt: 0.5, marginRight: 1, color: 'var(--color-text-secondary)' }} />
+              <Typography>{t('labelVaultMaximumCreditDes')}{' '}
               <Typography
                 component={'span'}
                 onClick={onClickMaxCredit}
-                variant='body2'
                 color={'var(--color-primary)'}
                 sx={{ cursor: 'pointer' }}
               >
                 {t('labelLearnMore2')}
-              </Typography>
+              </Typography></Typography>
+              
             </Typography>
             {collateralTokens.map((token) => {
               return (
@@ -258,6 +262,7 @@ type LeverageModalProps = {
   borrowAvailable: string
   borrowed: string
   maximumCredit: string
+  isLoading: boolean
 }
 
 export const LeverageModal = (props: LeverageModalProps) => {
@@ -271,13 +276,20 @@ export const LeverageModal = (props: LeverageModalProps) => {
     maxLeverage,
     onClickLeverage,
     borrowAvailable,
-  borrowed,
-  maximumCredit,
+    borrowed,
+    maximumCredit,
+    isLoading
   } = props
   const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
-      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} position={'relative'}>
+        {isLoading && <Loading size={40} sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}/>}
         <Box
           bgcolor={'var(--color-box)'}
           width={'var(--modal-width)'}
@@ -713,7 +725,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
               }
               rightNode={
                 <Typography>
-                  {totalValueInUSDT} / {totalValueInCurrency}
+                  {totalValueInUSDT} USDT / {totalValueInCurrency}
                 </Typography>
               }
             />
