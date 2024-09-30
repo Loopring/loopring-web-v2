@@ -17,7 +17,6 @@ import {
   useAccount,
   useSystem,
   useTokenMap,
-  useTokenPrices,
   useTradeVault,
   useVaultLayer2,
   useVaultMap,
@@ -51,8 +50,7 @@ export const useVaultRepay = <
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { account } = useAccount()
   const { idIndex: erc20IdIndex } = useTokenMap()
-  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
-  const { tokenPrices } = useTokenPrices()
+  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap, tokenPrices } = useVaultMap()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
   const { exchangeInfo, chainId } = useSystem()
@@ -438,12 +436,14 @@ export const useVaultRepay = <
   })
 
   const moreToBorrowInUSD =
-    vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.erc20Symbol]
+    vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.belong as string]
       ? new Decimal(vaultRepayData.tradeData.tradeValue?.toString() ?? '0')
-          .mul(tokenPrices[vaultRepayData.tradeData.erc20Symbol])
+          .mul(tokenPrices[vaultRepayData.tradeData.belong as string])
           .mul('-1')
           .toString()
       : undefined
+  
+
   const nextMarginLevel =
     vaultAccountInfo?.marginLevel && moreToBorrowInUSD
       ? calcMarinLevel(
@@ -454,6 +454,7 @@ export const useVaultRepay = <
           '0',
         )
       : vaultAccountInfo?.marginLevel
+      
   return {
     handlePanelEvent,
     vaultRepayBtnStatus: btnStatus,

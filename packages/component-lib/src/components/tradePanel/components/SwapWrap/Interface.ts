@@ -36,6 +36,10 @@ export type SwapTradeBaseProps<T, I, TCD> = {
       type: 'safe' | 'warning' | 'danger'
     }
   }
+  vaultLeverage?: {
+    leverage: string
+    onClickLeverage: () => void
+  }
 }
 export type SwapTradeBaseEventProps<T, I> = {
   onSwapClick: () => void | any

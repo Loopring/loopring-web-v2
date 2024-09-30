@@ -195,6 +195,10 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
               market={market}
               isMobile={isMobile}
               marginLevelChange={marginLevelChange!}
+              vaultLeverage={{
+                onClickLeverage: onClickLeverage,
+                leverage: vaultAccountInfo?.leverage ?? '0'
+              }}
             />
           ) : (
             <></>

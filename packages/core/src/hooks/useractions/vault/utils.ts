@@ -14,7 +14,10 @@ export const calcMarinLevel = (
   const originDebtDecimal = new Decimal(originDebtInUSD ?? '0')
   if (originDebtDecimal.add(moreToBorrowDecimal).eq('0')) {
     return '999'
-  } else {
+  }else if (originDebtDecimal.add(moreToBorrowDecimal).lt('0')) {
+    return undefined
+  }
+   else {
     return Decimal.min(
       originMarginDecimal
         .add(moreToCollateralizeDecimal)
