@@ -637,7 +637,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 tokenMap[initSymbol].decimals,
               ),
               {
-                fixed: tokenMap[initSymbol].precision,
+                fixed: vaultTokenMap['LV' + initSymbol].vaultTokenAmounts.qtyStepScale,
                 removeTrailingZero: true,
               },
             ),
@@ -668,7 +668,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                   tokenMap[symbol].decimals,
                 ),
                 {
-                  fixed: tokenMap[symbol].precision,
+                  fixed: vaultTokenMap['LV' + symbol].vaultTokenAmounts.qtyStepScale,
                   removeTrailingZero: true,
                 },
               ),
@@ -740,7 +740,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 tokenMap[tokenSymbol as string].decimals,
               ),
               {
-                fixed: tokenMap[tokenSymbol as string].precision,
+                fixed: vaultTokenMap['LV' + (tokenSymbol as string)].vaultTokenAmounts.qtyStepScale,
                 removeTrailingZero: true,
               },
             ),
