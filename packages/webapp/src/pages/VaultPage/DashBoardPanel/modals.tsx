@@ -632,6 +632,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
           borderRadius={1}
           display={'flex'}
           flexDirection={'column'}
+          sx={{ overflowY: 'scroll' }}
         >
           <Box
             paddingX={1.5}
@@ -733,7 +734,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
               {t('labelVaultDustCollectorDes')}
             </Typography>
             <Button
-              sx={{ marginBottom: 4 }}
+              sx={{ marginTop: 6, marginBottom: 4 }}
               disabled={convertBtnDisabled}
               fullWidth
               onClick={onClickConvert}

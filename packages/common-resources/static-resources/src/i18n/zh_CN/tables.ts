@@ -398,7 +398,7 @@ export default {
   labelDetail: 'Detail',
   labelVaultcloseoutForced: 'Forced Liquidation',
   labelInvest: 'Invest',
-  labelVaultconvert: 'Convert',
+  labelVaultconvert: 'Dust Collector',
   labelVaultredeem: 'Redeem Collateral',
   labelVaultJoinRedeem: 'Redeem Collateral',
   labelFailed: 'Failed',
