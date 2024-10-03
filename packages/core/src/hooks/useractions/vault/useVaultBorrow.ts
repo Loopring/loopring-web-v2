@@ -165,17 +165,17 @@ export const useVaultBorrow = <
     }
     const fn = async () => {
       const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
-      let initSymbol = marketCoins[0]
+      let symbol = vaultBorrowData.belong as string
       const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable(
         {
           accountId: account.accountId,
-          symbol: initSymbol.slice(2),
+          symbol: symbol.slice(2),
         },
         account.apiKey,
         '1',
       )
-      const tokenPrice = vaultTokenPrices[initSymbol]
-      const vToken = vaultTokenMap[initSymbol]
+      const tokenPrice = vaultTokenPrices[symbol]
+      const vToken = vaultTokenMap[symbol]
       const balance = numberFormat(
         new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(),
         {
@@ -235,13 +235,8 @@ export const useVaultBorrow = <
   }
 
   React.useEffect(() => {
-    if (isShowVaultLoan.isShow) {
-      initData()
-    } else {
-      timerRef.current && clearInterval(timerRef.current)
-      resetVaultBorrow()
-    }
-  }, [isShowVaultLoan.isShow, vaultAccountInfo?.leverage])
+    updateVaultBorrowDataRepeatly()
+  }, [vaultAccountInfo?.leverage])
   const refreshRef = React.createRef()
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
@@ -261,6 +256,7 @@ export const useVaultBorrow = <
         }
       }, 500)
     } else {
+      timerRef.current && clearInterval(timerRef.current)
       resetVaultBorrow()
     }
     return () => {
@@ -318,7 +314,7 @@ export const useVaultBorrow = <
       }
       res()
     })
-  }, [])
+  }, [account])
 
   const availableTradeCheck = React.useCallback(() => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData

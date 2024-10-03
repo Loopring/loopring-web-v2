@@ -120,6 +120,7 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
                   )
                 },
               }}
+              filterWithBorrowed={true}
             />
           ),
           [rest, onChangeEvent, switchData.tradeData, walletMap, coinMap],
@@ -161,7 +162,7 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
       justifyContent={'center'}
       flexDirection={'column'}
       alignItems={'center'}
-      height={rest._height as number}
+      height={rest._height}
     >
       <EmptyDefault
         height={'100%'}

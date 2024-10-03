@@ -365,7 +365,8 @@ export const VaultDashBoardPanel = ({
     }
   })
   const totalDustsInUSDT = dustsAssets
-    ? numberStringListSum(
+    ? numberFormat(
+      numberStringListSum(
         dustsAssets.map((asset) => {
           // @ts-ignore
           const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
@@ -373,7 +374,9 @@ export const VaultDashBoardPanel = ({
           const price = tokenPrices[vaultSymbol]
           return new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString()
         }),
-      )
+      ),
+      { fixed: 2 , removeTrailingZero: true} // 2 is USDT precision
+    ) 
     : undefined
   const totalDustsInCurrency = totalDustsInUSDT
     ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
