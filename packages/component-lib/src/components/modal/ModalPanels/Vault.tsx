@@ -388,7 +388,7 @@ const JoinDes2 = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultCollateral')}
+            {props.t('labelVaultAmount')}
           </Typography>
           <Typography
             variant={'body1'}

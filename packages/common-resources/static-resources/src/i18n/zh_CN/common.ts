@@ -2414,6 +2414,6 @@ export default {
   labelVaultNoDust: 'No Dust to Collect',
   labelVaultJoinAdd: 'Add Collateral',
   labelVaultChangeLeverageFailed: 'Change Leverage Failed',
-  labelVaultChangeLeverageFailedTooSmall: `Can’t change to leverage that small.`,
+  labelVaultChangeLeverageFailedTooSmall: `Leverage is smaller than permitted. Insufficient Available Borrow amount.`,
   labelVaultMaximumCreditDesLong: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral. It is calculated by taking the total value of your collateral, adjusted for price factor and the maximum leverage.',
 }

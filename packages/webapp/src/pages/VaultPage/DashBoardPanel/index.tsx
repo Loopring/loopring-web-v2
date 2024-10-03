@@ -1516,21 +1516,17 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 borrowed={
-                  vaultAccountInfo?.totalDebtOfUsdt
+                  vaultAccountInfo?.totalBorrowedOfUsdt
                     ? fiatNumberDisplay(
-                        getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt),
+                        getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt),
                         currency,
                       )
                     : EmptyValueTag
                 }
                 borrowAvailable={
-                  vaultAccountInfo?.totalDebtOfUsdt && vaultAccountInfo?.maxBorrowableOfUsdt
+                  vaultAccountInfo?.maxBorrowableOfUsdt
                     ? fiatNumberDisplay(
-                        getValueInCurrency(
-                          new Decimal(vaultAccountInfo.maxBorrowableOfUsdt)
-                            .sub(vaultAccountInfo.totalDebtOfUsdt)
-                            .toString(),
-                        ),
+                        getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
                         currency,
                       )
                     : EmptyValueTag
