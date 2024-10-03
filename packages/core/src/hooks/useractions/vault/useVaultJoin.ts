@@ -732,7 +732,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const walletMap = makeWalletLayer2ForVault()
     const tokenSymbol = data.tradeData.belong
     const maxRedeemCollateral =
-      vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
+      vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral && tokenMap[tokenSymbol as string]
         ? Decimal.max(
             numberFormat(
               utils.formatUnits(

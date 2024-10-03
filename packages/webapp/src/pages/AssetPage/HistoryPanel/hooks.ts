@@ -1664,7 +1664,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
           } else if (operation.operateType === 'VAULT_REPAY') {
             const vAmountToken = vaultTokenMap[vaultIdIndex[operation.tokenIn]]
             amount = getValuePrecisionThousand(
-              sdk.toBig(operation.amountIn ?? 0).div('1e' + vAmountToken.decimals),
+              sdk.toBig(operation.amountIn ?? 0).div('1e' + vAmountToken.decimals).abs(),
               vAmountToken.precision,
               vAmountToken.precision,
               undefined,

@@ -649,7 +649,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                           time={vaultOperationDetail.time}
                           type={vaultOperationDetail.type}
                           statusType={vaultOperationDetail.statusType}
-                          amount={vaultOperationDetail.amount ? Decimal.abs(vaultOperationDetail.amount).toString() : ''}
+                          amount={vaultOperationDetail.amount ? vaultOperationDetail.amount : ''}
                           amountSymbol={vaultOperationDetail.amountSymbol}
                         />
                       )}

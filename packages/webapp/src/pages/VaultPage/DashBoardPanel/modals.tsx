@@ -233,7 +233,7 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
                     key={collateralFactor.name}
                     marginTop={index === 0 ? 0 : 2}
                     leftNode={
-                      <Typography color={'var(--color-text-third)'}>
+                      <Typography color={'var(--color-text-secondary)'}>
                         {collateralFactor.name}
                       </Typography>
                     }

@@ -586,7 +586,7 @@ export const useVaultSwap = <
       .lt(tradeData?.sell?.tradeValue ?? 0)
 
     const sellExceed = sellMaxAmtInfo ? sdk.toBig(sellMaxAmtInfo).lt(tradeValue ?? 0) : false
-
+    
     if (sellExceed) {
       validAmt = false
     }
@@ -1205,8 +1205,7 @@ export const useVaultSwap = <
   })
   
   const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const updateVaultBorrowDataRepeatly = async () => {
-    console.log('updateVaultBorrowDataRepeatly')
+  const updateBalanceRepeatly = async () => {
     if (timerRef.current) {
       clearInterval(timerRef.current)
     }
@@ -1220,21 +1219,25 @@ export const useVaultSwap = <
         account.apiKey,
         '1',
       )
+      
       const tokenPrice = vaultTokenPrices[sellToken.symbol]
+      const sell = makeVaultSell(tradeData?.sell.belong as string)
       const balance = numberFormat(
-        new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(),
+        new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).add(sell.count ?? '0').toString(),
         {
-          fixed: sellToken.precision,
+          fixed: marketMap[market!].qtyStepScale,
           removeTrailingZero: true,
         },
       )
 
       setTradeData((prevState) => {
         if (!prevState) return prevState;
+        
         return {
           ...prevState,
           sell: {
             ...prevState.sell,
+            ...sell,
             balance: Number(balance),
           }
         }
@@ -1455,7 +1458,7 @@ export const useVaultSwap = <
 
   React.useEffect(() => {
     if (market) {
-      updateVaultBorrowDataRepeatly()
+      updateBalanceRepeatly()
       //@ts-ignore
       if (refreshRef.current) {
         // @ts-ignore
@@ -1557,6 +1560,12 @@ export const useVaultSwap = <
           slipBips: slippage,
         })
 
+        const supportBorrowData = calcSupportBorrowData({
+          belong: sellToken.symbol,
+          ...((vaultAvaiable2Map && vaultAvaiable2Map[sellToken.symbol]) ?? {}),
+          tradeValue: undefined,
+          erc20Symbol: erc20IdIndex[tokenMap[sellToken.symbol].tokenId],
+        } as unknown as VaultBorrowTradeData)
         const amountVol = tokenMap[sellToken?.symbol]?.vaultTokenAmounts?.maxAmount
         if (chainInfos.vaultBorrowHashes && chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
           showHasBorrow = true
@@ -1704,6 +1713,7 @@ export const useVaultSwap = <
           belongSellAlice: sellToken.symbol.slice(2),
           belongBuyAlice: buyToken.symbol.slice(2),
           minimumConverted,
+          supportBorrowData,
           showHasBorrow,
           hourlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100, 6, false),
           yearlyRateInPercent: sdk.toFixed(sdk.toNumber(sellToken.interestRate) * 100 * 24 * 365, 2, false)

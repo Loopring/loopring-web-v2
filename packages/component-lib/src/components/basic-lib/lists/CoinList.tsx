@@ -27,6 +27,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
     height = '100px',
     tokenType,
     className,
+    filterWithBorrowed,
     ...rest
   }: CoinMenuProps<C, I> & WithTranslation,
   _ref: React.Ref<HTMLUListElement>,
@@ -57,7 +58,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>(
               const walletCoin: WalletCoin<C> = walletMap[key]
                 ? walletMap[key]
                 : { belong: key, count: 0 }
-              if ((nonZero && walletMap[key] && walletMap[key].count > 0) || !nonZero) {
+              if ((nonZero && walletMap[key] && (filterWithBorrowed ? walletMap[key].borrowed > 0 : walletMap[key].count > 0) ) || !nonZero) {
                 list.push({ walletCoin, key: key })
                 if (select === key) {
                   rowIndex = list.length - 1
