@@ -201,7 +201,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             variant={'text'}
             onClick={(event) => handleOnClick(event, name ?? 'inputBtnDefault', ref)}
             endIcon={
-              <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
+              disabled || disableBelong ? (
+                <></>
+              ) : (
+                <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
+              )
             }
             disabled={disabled || disableBelong}
           >

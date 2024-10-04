@@ -14,19 +14,18 @@ export const calcMarinLevel = (
   const originDebtDecimal = new Decimal(originDebtInUSD ?? '0')
   if (originDebtDecimal.add(moreToBorrowDecimal).eq('0')) {
     return '999'
-  }else if (originDebtDecimal.add(moreToBorrowDecimal).lt('0')) {
-    return undefined
-  }
-   else {
-    return Decimal.min(
-      originMarginDecimal
-        .add(moreToCollateralizeDecimal)
-        .add(totalBalanceInUSDDecimal)
-        .add(moreToBorrowDecimal)
-        .div(originDebtDecimal.add(moreToBorrowDecimal)),
-      '999',
-    ).toString()
-  }
+  } else {
+    const calculated = originMarginDecimal
+    .add(moreToCollateralizeDecimal)
+    .add(totalBalanceInUSDDecimal)
+    .add(moreToBorrowDecimal)
+    .div(originDebtDecimal.add(moreToBorrowDecimal))
+    if (calculated.lt('0')) {
+      return undefined
+    } else {
+      return calculated.toString()
+    }
+  } 
 }
 
 export const marginLevelType: (marginLevel: string) => 'danger' | 'safe' | 'warning' = (
