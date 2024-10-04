@@ -1170,6 +1170,14 @@ export const useVaultSwap = <
     }
   }
 
+  const [showSmallTradePrompt, setShowSmallTradePrompt] = React.useState({
+    show: false,
+    estimatedFee: undefined as string | undefined,
+    minimumReceived: undefined as string | undefined,
+    feePercentage: undefined as string | undefined,
+  })
+
+
   /*** Btn related function ***/
   const vaultSwapSubmit = React.useCallback(async () => {
     if (!allowTrade?.order?.enable) {
@@ -1183,12 +1191,37 @@ export const useVaultSwap = <
       })
       setIsSwapLoading(false)
       return
+    } else if (tradeVault.smallTradePromptAmt && new Decimal(tradeVault.smallTradePromptAmt).gt(tradeData?.sell.tradeValue!)) {
+      if (showSmallTradePrompt.show) {
+        setShowSmallTradePrompt({
+          show: false,
+          feePercentage: undefined,
+          estimatedFee: undefined,
+          minimumReceived: undefined,
+        })
+        if (tradeCalcData.isRequiredBorrow) {
+          vaultBorrowSubmit()
+        } else {
+          sendRequest()
+        }
+      } else {
+        setShowSmallTradePrompt({
+          show: true,
+          feePercentage:
+            tradeCalcData.fee && tradeData?.buy.tradeValue
+              ? new Decimal(tradeCalcData.fee).div(tradeData?.buy.tradeValue).times(100).toFixed(2)
+              : '',
+          estimatedFee: tradeCalcData.fee + ' ' + (tradeData?.buy.belong as string).slice(2),
+          minimumReceived: tradeCalcData.minimumReceived + ' ' + (tradeData?.buy.belong as string).slice(2),
+        })
+      }
+      return
     } else if (tradeCalcData.isRequiredBorrow) {
       vaultBorrowSubmit()
     } else {
       sendRequest()
     }
-  }, [market, marketMap, VaultInvest, tradeCalcData.isRequiredBorrow])
+  }, [market, marketMap, VaultInvest, tradeCalcData.isRequiredBorrow, tradeData?.sell.tradeValue, tradeVault.smallTradePromptAmt, showSmallTradePrompt])
 
   // vaultBorrowSubmit
 
@@ -1205,41 +1238,39 @@ export const useVaultSwap = <
   })
   
   const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const updateBalanceRepeatly = async () => {
+  const updateBalanceRepeatedly = async () => {
     if (timerRef.current) {
       clearInterval(timerRef.current)
     }
     const fn = async () => {
-      const sellToken = tokenMap[tradeData?.sell.belong as string]
+      const sellToken = store.getState()._router_tradeVault.tradeVault.sellToken
+      const tokenInfo = tokenMap[sellToken]
       const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable(
         {
           accountId: account.accountId,
-          symbol: sellToken.symbol.slice(2),
+          symbol: tokenInfo.symbol.slice(2),
         },
         account.apiKey,
         '1',
       )
-      
-      const tokenPrice = vaultTokenPrices[sellToken.symbol]
-      const sell = makeVaultSell(tradeData?.sell.belong as string)
+      const tokenPrice = vaultTokenPrices[tokenInfo.symbol]
+      const vaultMade = makeVaultSell(sellToken)
       const balance = numberFormat(
-        new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).add(sell.count ?? '0').toString(),
+        new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).add(vaultMade.count ?? '0').toString(),
         {
           fixed: marketMap[market!].qtyStepScale,
           removeTrailingZero: true,
         },
       )
-
       setTradeData((prevState) => {
         if (!prevState) return prevState;
-        
         return {
           ...prevState,
           sell: {
             ...prevState.sell,
-            ...sell,
-            balance: Number(balance),
-          }
+            ...vaultMade,
+            ...{ balance: Number(balance) },
+          },
         }
       })
     }
@@ -1449,6 +1480,7 @@ export const useVaultSwap = <
             },
           }
         })
+        updateBalanceRepeatedly()
         break
       default:
         // resetTradeCalcData(undefined, market);
@@ -1458,7 +1490,7 @@ export const useVaultSwap = <
 
   React.useEffect(() => {
     if (market) {
-      updateBalanceRepeatly()
+      updateBalanceRepeatedly()
       //@ts-ignore
       if (refreshRef.current) {
         // @ts-ignore
@@ -1523,6 +1555,8 @@ export const useVaultSwap = <
         let minimumReceived: any
         let minimumConverted: string | undefined = undefined
         let sellMinAmtInfo: any = undefined
+        let smallTradePromptAmt: string | undefined = undefined
+        let upSlippageFeeBips: number | undefined = undefined
         let sellMaxAmtInfo: any = undefined
         let sellMaxL2AmtInfo: any = undefined
         let totalFeeRaw: any = undefined
@@ -1531,7 +1565,17 @@ export const useVaultSwap = <
         let isRequiredBorrow: boolean = false
         let borrowVol = sdk.toBig(0)
         const info = marketMap[market] as sdk.VaultMarket
-        let maxFeeBips = info.feeBips ?? MAPFEEBIPS
+        const { l2Amount, minTradeAmount, minTradePromptAmount } = info
+        smallTradePromptAmt = new BigNumber(sellBuyStr == market ? minTradePromptAmount.base : minTradePromptAmount.quote)
+          .div('1e' + sellToken.decimals)
+          .toString()
+      
+        upSlippageFeeBips = info.upSlippageFeeBips as unknown as number;
+        let maxFeeBips =
+          (tradeData?.sell.tradeValue &&
+          new Decimal(smallTradePromptAmt).gt(tradeData?.sell.tradeValue)
+            ? upSlippageFeeBips
+            : info.feeBips) ?? MAPFEEBIPS
 
         let slippage = sdk
           .toBig(
@@ -1541,8 +1585,6 @@ export const useVaultSwap = <
           )
           .times(100)
           .toString()
-        const { minAmount, l2Amount } = info
-
         const calcDexOutput = sdk.calcDex<sdk.VaultMarket>({
           info,
           input:
@@ -1556,7 +1598,7 @@ export const useVaultSwap = <
           tokenMap,
           marketMap: marketMap as any,
           depth,
-          feeBips: maxFeeBips.toString(),
+          feeBips:maxFeeBips.toString(),
           slipBips: slippage,
         })
 
@@ -1597,10 +1639,11 @@ export const useVaultSwap = <
         }
         sellMinAmtInfo = BigNumber.max(
           sellToken.orderAmounts.dust,
-          sellBuyStr == market ? minAmount.base : minAmount.quote,
+          sellBuyStr == market ? minTradeAmount.base : minTradeAmount.quote,
         )
           .div('1e' + sellToken.decimals)
           .toString()
+        
 
         if (calcDexOutput) {
           totalFeeRaw = sdk
@@ -1801,6 +1844,8 @@ export const useVaultSwap = <
             totalFeeRaw: totalFeeRaw?.toString(),
             lastStepAt: type,
             sellMinAmtInfo: sellMinAmtInfo as any,
+            smallTradePromptAmt,
+            upSlippageFeeBips: upSlippageFeeBips.toString(),
             sellMaxL2AmtInfo: sellMaxL2AmtInfo as any,
             sellMaxAmtInfo: sellMaxAmtInfo as any,
             tradeCalcData: _tradeCalcData,
@@ -1973,5 +2018,7 @@ export const useVaultSwap = <
             },
           }
         : undefined,
+    showSmallTradePrompt,
+    setShowSmallTradePrompt
   }
 }

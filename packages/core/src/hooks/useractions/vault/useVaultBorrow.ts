@@ -156,6 +156,7 @@ export const useVaultBorrow = <
   const { vaultAccountInfo, status: vaultAccountInfoStatus } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
   const { account } = useAccount()
+
   // const [tradeData, setTradeData] = React.useState<T | undefined>(undefined)
   
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -165,7 +166,10 @@ export const useVaultBorrow = <
     }
     const fn = async () => {
       const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
-      let symbol = vaultBorrowData.belong as string
+      let symbol = vaultBorrowData.belong as string | undefined
+      if (!symbol) {
+        return
+      }
       const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable(
         {
           accountId: account.accountId,
@@ -266,7 +270,6 @@ export const useVaultBorrow = <
   }, [isShowVaultLoan.isShow])
 
   const handlePanelEvent = React.useCallback(async (data: SwitchData<T>) => {
-    let vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
     return new Promise<void>(async (res: any) => {
       if (data.to === 'button') {
         let { vaultAvaiable2Map } = makeVaultAvaiable2({})
@@ -279,6 +282,15 @@ export const useVaultBorrow = <
             borrowedAmt: walletInfo.borrowed,
           }
           const supportdata = calcSupportBorrowData(walletInfo)
+
+          updateVaultBorrow({
+            ...store.getState()._router_tradeVault.vaultBorrowData,
+            ...vaultBorrowData,
+            ...walletInfo,
+            ...supportdata,
+            walletMap: vaultAvaiable2Map,
+            tradeData: walletInfo,
+          })
           const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable({
             accountId: account.accountId,
             symbol: (data.tradeData?.belong as string).slice(2)
@@ -289,20 +301,9 @@ export const useVaultBorrow = <
             fixed: vToken.vaultTokenAmounts.qtyStepScale,
             removeTrailingZero: true,
           })
-          walletInfo = {
-            ...walletInfo,
-            balance
-          }
-          vaultBorrowData = {
-            ...vaultBorrowData,
-            ...walletInfo,
-            ...supportdata,
-            walletMap: vaultAvaiable2Map,
-            tradeData: walletInfo,
-          }
-
           updateVaultBorrow({
-            ...vaultBorrowData,
+            ...store.getState()._router_tradeVault.vaultBorrowData,
+            balance: Number(balance)
           })
         } else {
           updateVaultBorrow({
@@ -314,7 +315,7 @@ export const useVaultBorrow = <
       }
       res()
     })
-  }, [account])
+  }, [account, updateVaultBorrow])
 
   const availableTradeCheck = React.useCallback(() => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData

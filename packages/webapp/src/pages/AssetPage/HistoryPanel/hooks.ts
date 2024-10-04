@@ -1283,10 +1283,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
   } = useAccount()
   const { currency, coinJson } = useSettings()
   const { forexMap, getValueInCurrency } = useSystem()
-  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, erc20Map } = useVaultMap()
+  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, erc20Map, tokenPrices: vaultTokenPrices } = useVaultMap()
   const { tokenMap, idIndex } = useTokenMap()
   
-  const { tokenPrices } = useTokenPrices()
+  // const { tokenPrices } = useTokenPrices()
   const { setShowAccount } = useOpenModals()
   const getVaultOrderList = React.useCallback(
     async (
@@ -1878,15 +1878,13 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               tokenOut,
             } = itemObj
             const vTokenSellInfo = vaultTokenMap[vaultIdIndex[tokenIn]]
-            const sellTokenInfo = tokenMap[idIndex[vTokenSellInfo.tokenId]]
             const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[tokenOut]]
-            const buyTokenInfo = tokenMap[idIndex[vTokenBuyInfo.tokenId]]
-            const amount = numberFormat(utils.formatUnits(amountIn, sellTokenInfo.decimals), {fixed: sellTokenInfo.precision})
-            const buyAmount = numberFormat(utils.formatUnits(amountOut, buyTokenInfo.decimals), {fixed: buyTokenInfo.precision})
-            const sellTokenPrice = tokenPrices[sellTokenInfo.symbol]
+            const amount = numberFormat(utils.formatUnits(amountIn, vTokenSellInfo.decimals), {fixed: vTokenSellInfo.precision})
+            const buyAmount = numberFormat(utils.formatUnits(amountOut, vTokenBuyInfo.decimals), {fixed: vTokenBuyInfo.precision})
+            const sellTokenPrice = vaultTokenPrices[vTokenSellInfo.symbol]
             return {
-              symbol: sellTokenInfo.symbol,
-              coinJSON: coinJson[sellTokenInfo.symbol],
+              symbol: vTokenSellInfo.symbol.slice(2),
+              coinJSON: coinJson[vTokenSellInfo.symbol.slice(2)],
               amount,
               amountRaw: amountIn,
               valueInCurrency: fiatNumberDisplay(

@@ -433,6 +433,7 @@ export const VaultDashBoardPanel = ({
         coinJSON: coinJson[originTokenSymbol],
         amount: numberFormat(utils.formatUnits(dust.total, vaultToken.decimals), {
           fixed: vaultToken.precision,
+          removeTrailingZero: true,
         }),
         amountRaw: utils.formatUnits(dust.total, vaultToken.decimals),
         valueInCurrency: price
@@ -523,7 +524,10 @@ export const VaultDashBoardPanel = ({
           numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
           { fixed: 2 },
         ),
-        repaymentInUSDT: undefined,
+        repaymentInUSDT: numberFormat(
+          utils.formatUnits(response2!.operation.amountOut, 6),
+          {fixed: 2}
+        ) ,
         time: response2?.operation.createdAt,
         dusts: dustList.map((dust) => {
           return {
