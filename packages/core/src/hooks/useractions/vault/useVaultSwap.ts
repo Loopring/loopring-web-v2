@@ -69,6 +69,8 @@ import {
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from './utils'
+import { utils } from 'ethers'
+
 const makeVaultSell = (sellSymbol: string) => {
   const {
     tokenMap: { idIndex: erc20IdIndex },
@@ -1499,6 +1501,9 @@ export const useVaultSwap = <
       }
     }
   }, [market])
+  React.useEffect(() => {
+    updateBalanceRepeatedly()
+  }, [vaultAccountInfo?.leverage])
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {
     if (market && LoopringAPI.defiAPI && marketMap && marketMap[market]) {
@@ -1637,12 +1642,17 @@ export const useVaultSwap = <
             : EmptyValueTag
           sellMaxAmtInfo = BigNumber.min(sellDeepStr, _tradeData.sell.balance ?? 0)
         }
-        sellMinAmtInfo = BigNumber.max(
-          sellToken.orderAmounts.dust,
-          sellBuyStr == market ? minTradeAmount.base : minTradeAmount.quote,
-        )
-          .div('1e' + sellToken.decimals)
-          .toString()
+        
+        // ethers
+        // format
+        sellMinAmtInfo = utils.formatUnits(
+          BigNumber.max(
+            sellToken.orderAmounts.dust,
+            sellBuyStr == market ? minTradeAmount.base : minTradeAmount.quote,
+          ).toString(),
+          sellToken.decimals
+        ) 
+
         
 
         if (calcDexOutput) {
@@ -1726,12 +1736,9 @@ export const useVaultSwap = <
           slippage: sdk.toBig(slippage).div(100).toString(),
           isReverse: calcDexOutput?.isReverse,
           lastStepAt: type,
-          sellMinAmtStr: getValuePrecisionThousand(
-            sdk.toBig(sellMinAmtInfo ?? 0),
-            sellToken.vaultTokenAmounts?.qtyStepScale,
-            sellToken.vaultTokenAmounts?.qtyStepScale,
-            sellToken.vaultTokenAmounts?.qtyStepScale,
-            false,
+          sellMinAmtStr: numberFormat(
+            sellMinAmtInfo ?? '0',
+            { fixed: sellToken.vaultTokenAmounts?.qtyStepScale, removeTrailingZero: true, fixedRound: Decimal.ROUND_UP}
           ),
           sellMaxL2AmtStr: getValuePrecisionThousand(
             sdk.toBig(sellMaxL2AmtInfo ?? 0),
@@ -1958,6 +1965,70 @@ export const useVaultSwap = <
           '0',
         )
       : undefined
+
+  console.log('faskljdflkjsadlkfj', {
+    isMarketInit,
+    toastOpen,
+    closeToast,
+    tradeCalcData: {
+      ...tradeCalcData,
+      marginLevelChange:
+        vaultAccountInfo && nextMarginLevel && tradeCalcData.borrowStr
+          ? {
+              from: {
+                marginLevel: vaultAccountInfo.marginLevel,
+                type: marginLevelType(vaultAccountInfo.marginLevel),
+              },
+              to: {
+                marginLevel: nextMarginLevel,
+                type: marginLevelType(nextMarginLevel),
+              },
+            }
+          : undefined,
+    },
+    tradeData,
+    onSwapClick,
+    swapBtnI18nKey,
+    swapBtnStatus: btnStatus,
+    handleSwapPanelEvent,
+    should15sRefresh,
+    refreshRef,
+    tradeVault,
+    vaultAccountInfo,
+    isSwapLoading,
+    market,
+    isMobile,
+    setToastOpen,
+    disabled: false,
+    // vaultBorrowSubmit,
+    // vaultSwapSubmit,
+    cancelBorrow: (shouldClose = false) => {
+      if (borrowHash?.current?.hash && account) {
+        updateVaultBorrowHash(borrowHash?.current?.hash, account.accAddress)
+      }
+      setIsSwapLoading(false)
+      resetMarket(market as any, 'sell')
+      if (shouldClose) {
+        setShowVaultSwap({ isShow: false })
+      }
+    },
+    borrowedAmount,
+    marginLevelChange:
+      vaultAccountInfo && nextMarginLevel && tradeCalcData.borrowStr
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : undefined,
+    showSmallTradePrompt,
+    setShowSmallTradePrompt
+  })
   return {
     isMarketInit,
     toastOpen,

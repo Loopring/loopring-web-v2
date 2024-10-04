@@ -125,6 +125,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
             inputButtonDefaultProps: {
               ...inputButtonDefaultProps,
               disableBelong: !isActiveAccount,
+              label: "Amount",
             },
             placeholderText: '0.00',
             inputBtnRef,

@@ -545,6 +545,10 @@ export const VaultDashBoardPanel = ({
 
   const showMarginLevelAlert =
     vaultAccountInfo?.marginLevel && new Decimal(vaultAccountInfo.marginLevel).lessThan('1.15')
+
+  const collateralToken = (vaultAccountInfo && vaultAccountInfo.collateralInfo && tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]])
+    ? tokenFactors.find(token => token.symbol === tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]].symbol)
+    : undefined
   
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -1468,6 +1472,7 @@ export const VaultDashBoardPanel = ({
                 }
                 maxLeverage={maxLeverage ?? EmptyValueTag}
               />
+              
               <LeverageModal
                 isLoading={localState.leverageLoading}
                 open={
@@ -1528,9 +1533,16 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 borrowAvailable={
-                  vaultAccountInfo?.maxBorrowableOfUsdt
+                  vaultAccountInfo && collateralToken
                     ? fiatNumberDisplay(
-                        getValueInCurrency(vaultAccountInfo?.maxBorrowableOfUsdt),
+                        getValueInCurrency(
+                          new Decimal(vaultAccountInfo.totalEquityOfUsdt)
+                          .add(vaultAccountInfo.totalCollateralOfUsdt)
+                          .mul(vaultAccountInfo.leverage)
+                          .mul(collateralToken.factor)
+                          .minus(vaultAccountInfo.totalBorrowedOfUsdt)
+                          .toString()
+                        ),
                         currency,
                       )
                     : EmptyValueTag
@@ -1575,7 +1587,7 @@ export const VaultDashBoardPanel = ({
                       onClick: () => {
                         setShowVaultLoan({
                           isShow: true,
-                          info: { symbol: vaultSymbol },
+                          info: { symbol: vaultSymbol.slice(2) },
                           type: VaultLoanType.Repay,
                         })
                       },

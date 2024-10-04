@@ -12,7 +12,8 @@
     "cross-env": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "ethers": "^5.5.4"
   },
   "scripts": {
     "rollup:build": "rollup --config --no-stdin",
