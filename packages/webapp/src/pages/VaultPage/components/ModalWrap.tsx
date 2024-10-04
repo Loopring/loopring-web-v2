@@ -10,6 +10,7 @@ import {
 } from '@loopring-web/core'
 import {
   Modal,
+  SmallOrderAlert,
   SwapPanel,
   Toast,
   useOpenModals,
@@ -70,7 +71,9 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     disabled,
     cancelBorrow,
     borrowedAmount,
-    marginLevelChange
+    marginLevelChange,
+    showSmallTradePrompt,
+    setShowSmallTradePrompt
   } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -204,6 +207,23 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
             <></>
           )
         }
+      />
+      <SmallOrderAlert
+        open={showSmallTradePrompt.show}
+        handleClose={() => {
+          setShowSmallTradePrompt({
+            show: false,
+            estimatedFee: undefined,
+            minimumReceived: undefined,
+            feePercentage: undefined,
+          })
+        }}
+        handleConfirm={() => {
+          onSwapClick()
+        }}
+        estimatedFee={showSmallTradePrompt.estimatedFee ?? ''}
+        feePercentage={showSmallTradePrompt.feePercentage ?? ''}
+        minimumReceived={showSmallTradePrompt.minimumReceived ?? ''}
       />
       <Modal
         contentClassName={'vault-wrap'}

@@ -974,21 +974,9 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
       paddingX={3}
     >
       {iconDiv}
+      <Typography textAlign={'center'} variant='h4'>{convertedInUSDT ? (convertedInUSDT + ' USDT') : '--'} </Typography>
+      <Typography textAlign={'center'} mt={1} mb={2} color={'var(--color-text-third)'}>{totalValueInCurrency} </Typography>
       <Box borderRadius={'8px'} bgcolor={'var(--color-box-secondary)'} paddingX={2.5} paddingY={1}>
-        <SpaceBetweenBox
-          leftNode={
-            <Typography color={'var(--color-text-third)'}>{t('labelTotalValue')}</Typography>
-          }
-          rightNode={<Typography>{totalValueInCurrency}</Typography>}
-          marginBottom={2}
-        />
-        <SpaceBetweenBox
-          leftNode={
-            <Typography color={'var(--color-text-third)'}>{t('labelVaultConvert')}</Typography>
-          }
-          rightNode={<Typography>{convertedInUSDT ? convertedInUSDT + ' USDT' : '--'} </Typography>}
-          marginBottom={2}
-        />
         {status === 'success' && (
           <SpaceBetweenBox
             leftNode={
@@ -1009,16 +997,11 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
           }
         />
       </Box>
-      <Typography marginTop={0.5} marginBottom={1.5}>
-        {t('labelDetails')}
-      </Typography>
-      <Box marginBottom={2}>
+      <Box marginBottom={2} mt={2}>
         {dusts &&
           dusts.map((dust) => {
             return (
               <SpaceBetweenBox
-                borderRadius={'8px'}
-                border={'1px solid var(--color-border)'}
                 paddingY={1.5}
                 paddingX={2}
                 marginBottom={1}

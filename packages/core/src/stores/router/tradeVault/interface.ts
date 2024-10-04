@@ -30,6 +30,8 @@ export type TradeVault = {
   buyUserOrderInfo?: undefined | null | sdk.OrderInfo
   minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>
   info: sdk.VaultMarket
+  smallTradePromptAmt?: string
+  upSlippageFeeBips?: string
 }
 
 export type TradeVaultStatus = {
