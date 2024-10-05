@@ -316,7 +316,7 @@ export const VaultDashBoardPanel = ({
       // @ts-ignore
       return market.baseTokenId === asset.tokenId
     })
-    const minimum = foundKey && marketMap[foundKey].minAmount.base
+    const minimum = foundKey && marketMap[foundKey].minTradeAmount.base
     return (
       minimum &&
       new Decimal(asset.total).greaterThan('0') &&

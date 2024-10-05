@@ -214,7 +214,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
           setShowSmallTradePrompt({
             show: false,
             estimatedFee: undefined,
-            minimumReceived: undefined,
+            minimumConverted: undefined,
             feePercentage: undefined,
           })
         }}
@@ -223,7 +223,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
         }}
         estimatedFee={showSmallTradePrompt.estimatedFee ?? ''}
         feePercentage={showSmallTradePrompt.feePercentage ?? ''}
-        minimumReceived={showSmallTradePrompt.minimumReceived ?? ''}
+        minimumReceived={showSmallTradePrompt.minimumConverted ?? ''}
       />
       <Modal
         contentClassName={'vault-wrap'}

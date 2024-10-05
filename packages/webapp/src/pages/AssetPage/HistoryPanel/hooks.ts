@@ -1798,8 +1798,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
           }
         }
         case 'VAULT_TRADE': {
-          const vTokenSellInfo = vaultTokenMap[vaultIdIndex[order.tokenS]]
-          const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[order.tokenB]]
+          const vTokenSellInfo = (vaultTokenMap && vaultIdIndex) ? vaultTokenMap[vaultIdIndex[order.tokenS]] : undefined
+          const vTokenBuyInfo = (vaultTokenMap && vaultIdIndex) ? vaultTokenMap[vaultIdIndex[order.tokenB]] : undefined
 
           return {
             isShow: true,
@@ -1808,9 +1808,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               statusColor,
               statusLabel,
               statusType,
-              fromSymbol: vTokenSellInfo.symbol.slice(2),
-              toSymbol: vTokenBuyInfo.symbol.slice(2),
-              placedAmount: getValuePrecisionThousand(
+              fromSymbol: vTokenSellInfo && vTokenSellInfo.symbol.slice(2),
+              toSymbol: vTokenBuyInfo && vTokenBuyInfo.symbol.slice(2),
+              placedAmount: vTokenSellInfo && getValuePrecisionThousand(
                 sdk.toBig(order.amountS).div('1e' + vTokenSellInfo.decimals),
                 vTokenSellInfo.precision,
                 vTokenSellInfo.precision,
@@ -1820,7 +1820,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   floor: false,
                 },
               ),
-              executedAmount: getValuePrecisionThousand(
+              executedAmount: vTokenSellInfo && getValuePrecisionThousand(
                 sdk.toBig(order.fillAmountS).div('1e' + vTokenSellInfo.decimals),
                 vTokenSellInfo.precision,
                 vTokenSellInfo.precision,
@@ -1833,7 +1833,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               executedRate:
                 sdk.toBig(order.fillAmountS).div(order.amountS).multipliedBy('100').toFixed(2) +
                 '%',
-              convertedAmount: getValuePrecisionThousand(
+              convertedAmount: vTokenBuyInfo && getValuePrecisionThousand(
                 sdk.toBig(order.fillAmountB).div('1e' + vTokenBuyInfo.decimals),
                 vTokenBuyInfo.precision,
                 vTokenBuyInfo.precision,
@@ -1844,8 +1844,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                 },
               ),
               price: order.price,
-              feeSymbol: vTokenBuyInfo.symbol.slice(2),
-              feeAmount: getValuePrecisionThousand(
+              feeSymbol: vTokenBuyInfo && vTokenBuyInfo.symbol.slice(2),
+              feeAmount: vTokenBuyInfo && getValuePrecisionThousand(
                 sdk.toBig(order.fee).div('1e' + vTokenBuyInfo.decimals),
                 vTokenBuyInfo.precision,
                 vTokenBuyInfo.precision,
