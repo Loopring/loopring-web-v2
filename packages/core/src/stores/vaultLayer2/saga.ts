@@ -7,7 +7,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 type VaultLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>
 }
-var timer = undefined as undefined | NodeJS.Timeout
+var getVaultLayer2BalancTtimer = undefined as undefined | NodeJS.Timeout
 const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInfo?: {
   hash: string
   isInActive: boolean
@@ -83,15 +83,13 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         wait = Infinity
       }
 
-      if (__timer__ && __timer__ !== -1) {
-        clearTimeout(__timer__)
+      if (getVaultLayer2BalancTtimer) {
+        clearTimeout(getVaultLayer2BalancTtimer)
       }
       if (wait !== Infinity) {
-        __timer__ = setTimeout(() => {
+        getVaultLayer2BalancTtimer = setTimeout(() => {
           store.dispatch(updateVaultLayer2({ activeInfo }))
         }, wait)
-      } else {
-        __timer__ = -1
       }
 
       // if(vaultAccountInfo.userAssets)
