@@ -98,4 +98,5 @@ export type VaultRepayWrapProps<T, I, VR> = BasicACoinTradeViewProps<T, I> & {
       type: 'safe' | 'warning' | 'danger'
     }
   } | undefined
+  initialSymbol: string | undefined
 }

@@ -16,7 +16,7 @@ import {
   useSettings,
   VaultRepayProps,
 } from '@loopring-web/component-lib'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 import { TradeMenuList, useBasicTrade, VaultRepayWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +26,7 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
   _width,
   type = TRADE_TYPE.TOKEN,
   forexMap,
+  initialSymbol,
   ...rest
 }: VaultRepayProps<T, I, V>) => {
   const { currency } = useSettings()
@@ -37,6 +38,17 @@ export const VaultRepayPanel = <T extends IBData<I>, V extends VaultRepayData<I>
     walletMap,
     coinMap,
   } as any)
+  useEffect(() => {
+    if (initialSymbol) {
+      onChangeEvent(1, {
+        to: 'button',
+        tradeData: {
+          ...switchData.tradeData,
+          belong: initialSymbol as any,
+        },
+      })
+    }
+  }, [initialSymbol])
   const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {
     index: index, // show default show
     panelList: [
