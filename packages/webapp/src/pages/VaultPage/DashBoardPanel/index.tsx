@@ -1587,7 +1587,7 @@ export const VaultDashBoardPanel = ({
                       onClick: () => {
                         setShowVaultLoan({
                           isShow: true,
-                          info: { symbol: vaultSymbol.slice(2) },
+                          info: { symbol: vaultSymbol },
                           type: VaultLoanType.Repay,
                         })
                       },

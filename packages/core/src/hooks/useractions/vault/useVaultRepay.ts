@@ -41,7 +41,7 @@ export const useVaultRepay = <
   },
   V extends VaultRepayData<T>,
   I,
->() => {
+>(initialSymbol: string | undefined) => {
   const {
     modals: { isShowVaultLoan },
     setShowAccount,
@@ -64,6 +64,9 @@ export const useVaultRepay = <
     let supportData = {}
     if (tradeData?.belong) {
       const vaultToken = vaultTokenMap[tradeData.belong as any]
+      if(!vaultToken) {
+        return {}
+      }
       const borrowed = tradeData.borrowed
       let minRepayVol = BigNumber.max(
         // orderAmounts.dust,
@@ -520,5 +523,6 @@ export const useVaultRepay = <
             },
           }
       : undefined,
+    initialSymbol
   }
 }
