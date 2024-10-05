@@ -974,7 +974,7 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
       paddingX={3}
     >
       {iconDiv}
-      <Typography textAlign={'center'} variant='h4'>{convertedInUSDT ? (convertedInUSDT + ' USDT') : '--'} </Typography>
+      <Typography textAlign={'center'} variant='h4'>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>
       <Typography textAlign={'center'} mt={1} mb={2} color={'var(--color-text-third)'}>{totalValueInCurrency} </Typography>
       <Box borderRadius={'8px'} bgcolor={'var(--color-box-secondary)'} paddingX={2.5} paddingY={1}>
         {status === 'success' && (

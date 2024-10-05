@@ -1051,7 +1051,7 @@ const DustCollectorDes = (
         marginTop={2}
         paddingX={3}
       >
-        <Typography textAlign={'center'} variant='h4'>{convertedInUSDT ? (convertedInUSDT + ' USDT') : '--'} </Typography>
+        <Typography textAlign={'center'} variant='h4'>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>
         <Typography textAlign={'center'} mt={1} mb={2} color={'var(--color-text-third)'}>{totalValueInCurrency} </Typography>
         <Box
           borderRadius={'8px'}
