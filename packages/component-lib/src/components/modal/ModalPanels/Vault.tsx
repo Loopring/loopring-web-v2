@@ -1059,13 +1059,11 @@ const DustCollectorDes = (
           paddingX={2.5}
           paddingY={1}
         >
-          {status === 'success' && (
-            <SpaceBetweenBox
-              leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>}
-              rightNode={<Typography>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>}
-              marginBottom={2}
-            />
-          )}
+          <SpaceBetweenBox
+            leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>}
+            rightNode={<Typography>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>}
+            marginBottom={2}
+          />
           <SpaceBetweenBox
             leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultTime')}</Typography>}
             rightNode={<Typography>{moment(time).format(YEAR_DAY_MINUTE_FORMAT)}</Typography>}

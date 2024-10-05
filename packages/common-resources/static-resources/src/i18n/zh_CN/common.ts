@@ -2407,7 +2407,7 @@ export default {
   labelVaultHoldingCollateral: 'Holding Collateral',
   labelVaultRedeemAlert: 'Collateral with a value more than 2 times of your total debt can be redeemed out of your portal account.',
   labelTotalValue: 'Total Value',
-  labelVaultRepayment: 'Repayment',
+  labelVaultRepayment: 'Payment',
   labelDetails: 'Details',
   labelVaultErrorOccurred: 'An error has occurred. Please try again later.',
   labelVaultDetails: 'Details',

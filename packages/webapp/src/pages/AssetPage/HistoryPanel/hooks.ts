@@ -1879,8 +1879,8 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
             } = itemObj
             const vTokenSellInfo = vaultTokenMap[vaultIdIndex[tokenIn]]
             const vTokenBuyInfo = vaultTokenMap[vaultIdIndex[tokenOut]]
-            const amount = numberFormat(utils.formatUnits(amountIn, vTokenSellInfo.decimals), {fixed: vTokenSellInfo.precision})
-            const buyAmount = numberFormat(utils.formatUnits(amountOut, vTokenBuyInfo.decimals), {fixed: vTokenBuyInfo.precision})
+            const amount = numberFormat(utils.formatUnits(amountIn, vTokenSellInfo.decimals), {fixed: vTokenSellInfo.precision, removeTrailingZero: true})
+            const buyAmount = numberFormat(utils.formatUnits(amountOut, vTokenBuyInfo.decimals), {fixed: vTokenBuyInfo.precision, removeTrailingZero: true})
             const sellTokenPrice = vaultTokenPrices[vTokenSellInfo.symbol]
             return {
               symbol: vTokenSellInfo.symbol.slice(2),

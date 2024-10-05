@@ -20,7 +20,9 @@ export const calcMarinLevel = (
     .add(totalBalanceInUSDDecimal)
     .add(moreToBorrowDecimal)
     .div(originDebtDecimal.add(moreToBorrowDecimal))
-    if (calculated.lt('0')) {
+    if (calculated.gte('999')) {
+      return '999'
+    } else if (calculated.lt('0')) {
       return undefined
     } else {
       return calculated.toString()
