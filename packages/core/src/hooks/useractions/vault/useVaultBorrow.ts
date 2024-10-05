@@ -240,7 +240,7 @@ export const useVaultBorrow = <
 
   React.useEffect(() => {
     updateVaultBorrowDataRepeatly()
-  }, [vaultAccountInfo?.leverage])
+  }, [vaultAccountInfo?.leverage, vaultBorrowData?.tradeData?.belong])
   const refreshRef = React.createRef()
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
@@ -289,23 +289,13 @@ export const useVaultBorrow = <
             ...walletInfo,
             ...supportdata,
             walletMap: vaultAvaiable2Map,
-            tradeData: walletInfo,
-          })
-          const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable({
-            accountId: account.accountId,
-            symbol: (data.tradeData?.belong as string).slice(2)
-          }, account.apiKey, '1')
-          const tokenPrice = vaultTokenPrices[(data.tradeData?.belong as string)]
-          const vToken = vaultTokenMap[data.tradeData.belong as string]
-          const balance = numberFormat(new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).toString(), {
-            fixed: vToken.vaultTokenAmounts.qtyStepScale,
-            removeTrailingZero: true,
-          })
-          updateVaultBorrow({
-            ...store.getState()._router_tradeVault.vaultBorrowData,
-            balance: Number(balance)
+            tradeData: {
+              ...store.getState()._router_tradeVault.vaultBorrowData.tradeData,
+              ...walletInfo
+            },
           })
         } else {
+
           updateVaultBorrow({
             belong: undefined,
             tradeValue: undefined,
@@ -506,7 +496,6 @@ export const useVaultBorrow = <
           },
           timestamp: Date.now(),
         }
-
         updateVaultBorrow({
           ...vaultBorrowData,
           request: vaultBorrowRequest,
