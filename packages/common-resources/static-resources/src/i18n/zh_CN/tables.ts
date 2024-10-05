@@ -404,7 +404,7 @@ export default {
   labelFailed: 'Failed',
   labelTotalValue: 'Total Value',
   labelVaultConvert: 'Converted',
-  labelVaultRepayment: 'Repayment',
+  labelVaultRepayment: 'Payment',
   labelVaultTime: 'Time',
   labelVaultDetails: 'Details',
   labelVaultErrorOccurred: 'An error has occurred. Please try again later.',

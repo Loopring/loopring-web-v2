@@ -977,17 +977,16 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
       <Typography textAlign={'center'} variant='h4'>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>
       <Typography textAlign={'center'} mt={1} mb={2} color={'var(--color-text-third)'}>{totalValueInCurrency} </Typography>
       <Box borderRadius={'8px'} bgcolor={'var(--color-box-secondary)'} paddingX={2.5} paddingY={1}>
-        {status === 'success' && (
-          <SpaceBetweenBox
-            leftNode={
-              <Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>
-            }
-            rightNode={
-              <Typography>{repaymentInUSDT ? repaymentInUSDT + ' USDT' : '--'} </Typography>
-            }
-            marginBottom={2}
-          />
-        )}
+
+        <SpaceBetweenBox
+          leftNode={
+            <Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>
+          }
+          rightNode={
+            <Typography>{repaymentInUSDT ? repaymentInUSDT + ' USDT' : '--'} </Typography>
+          }
+          marginBottom={2}
+        />
         <SpaceBetweenBox
           leftNode={
             <Typography color={'var(--color-text-third)'}>{t('labelVaultTime')}</Typography>
@@ -1020,7 +1019,7 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
                       <Typography
                         color={'var(--color-text-secondary)'}
                         textAlign={'right'}
-                        variant={'subtitle2'}
+                        variant={'body2'}
                       >
                         {dust.valueInCurrency}
                       </Typography>
