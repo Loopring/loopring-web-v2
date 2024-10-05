@@ -32,7 +32,6 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
     collateralTokens
 
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
-    console.log('vault network')
     let promise: any[] = [
       LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey, '1'),
       LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey, '1'),
@@ -84,12 +83,6 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         wait = Infinity
       }
 
-      // if (timer) {
-      //   clearTimeout(timer)
-      //   timer = setTimeout(() => {
-      //     store.dispatch(updateVaultLayer2({ activeInfo }))
-      //   }, wait)
-      // }
       if (__timer__ && __timer__ !== -1) {
         clearTimeout(__timer__)
       }
@@ -100,19 +93,6 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       } else {
         __timer__ = -1
       }
-      // __timer__ 
-      // __timer__ = ((__timer__) => {
-      //   if (__timer__ && __timer__ !== -1) {
-      //     clearTimeout(__timer__)
-      //   }
-      //   if (wait !== Infinity) {
-      //     return setTimeout(() => {
-      //       store.dispatch(updateVaultLayer2({ activeInfo }))
-      //     }, wait)
-      //   } else {
-      //     return -1
-      //   }
-      // })(__timer__)
 
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
