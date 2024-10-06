@@ -17,7 +17,6 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
   walletMap = {},
   coinMap = {},
   onRefreshData,
-  refreshRef,
   _width,
   onToggleAddRedeem,
   isAddOrRedeem,
@@ -105,7 +104,7 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
                   height={0}
                   width={0}
                 >
-                  <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+                  <CountDownIcon onRefreshData={onRefreshData} />
                 </Typography>
                 <Divider style={{ marginTop: '2px' }}/>
               </Box>

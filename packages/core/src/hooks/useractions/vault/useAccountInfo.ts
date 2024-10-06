@@ -48,7 +48,6 @@ export const useAccountInfo = () => {
     maxLeverage,
     activeInfo,
   } = useVaultLayer2()
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const { erc20Map } = useVaultMap()
   const { idIndex } = useTokenMap()
 
@@ -283,28 +282,6 @@ export const useAccountInfo = () => {
     })
   }, [])
 
-  const refresh = () => {
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as any)
-    }
-    updateVaultLayer2({})
-    nodeTimer.current = setTimeout(() => {
-      refresh()
-    }, 10000)
-  }
-  React.useEffect(() => {
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as any)
-    }
-    refresh()
-    return () => {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as any)
-      }
-    }
-  }, [vaultAccountInfo?.accountStatus])
-
-  // myLog('useAccountInfo', vaultAccountInfo)
   return {
     joinBtnStatus,
     joinBtnLabel: label(joinBtnLabel),

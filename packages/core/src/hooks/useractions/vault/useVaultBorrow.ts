@@ -249,22 +249,11 @@ export const useVaultBorrow = <
   }, [])
 
   React.useEffect(() => {
-    let time: any = -1
     if (isShowVaultLoan.isShow) {
       onRefreshData()
       initData()
-      time = setTimeout(() => {
-        if (refreshRef.current) {
-          // @ts-ignore
-          refreshRef.current.firstElementChild.click()
-        }
-      }, 500)
     } else {
-      timerRef.current && clearInterval(timerRef.current)
       resetVaultBorrow()
-    }
-    return () => {
-      clearTimeout(time)
     }
     // @ts-ignore
   }, [isShowVaultLoan.isShow])
@@ -572,7 +561,6 @@ export const useVaultBorrow = <
     tradeData: vaultBorrowData.tradeData as any,
     vaultBorrowData: vaultBorrowData as V,
     onRefreshData,
-    refreshRef,
     tokenProps: {
       decimalsLimit:
         vaultTokenMap[vaultBorrowData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,

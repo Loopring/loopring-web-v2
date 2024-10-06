@@ -1258,10 +1258,11 @@ export const useVaultSwap = <
       )
       const tokenPrice = vaultTokenPrices[sellTokenInfo.symbol]
       const vaultMade = makeVaultSell(sellToken)
+
       const balance = numberFormat(
         new Decimal(maxBorrowable!.maxBorrowableOfUsdt).div(tokenPrice).add(vaultMade.count ?? '0').toString(),
         {
-          fixed: marketMap[market!].qtyStepScale,
+          fixed: sellTokenInfo.vaultTokenAmounts.qtyStepScale,
           removeTrailingZero: true,
           fixedRound: Decimal.ROUND_FLOOR
         },

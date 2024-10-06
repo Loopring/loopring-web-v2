@@ -7,7 +7,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { LocalStorageConfigKey, myLog } from '@loopring-web/common-resources'
 import { makeVault } from '../../../hooks'
 import { VaultMap } from './interface'
-
 const getVaultMapApi = async () => {
   if (!LoopringAPI.vaultAPI) {
     return undefined
@@ -16,19 +15,16 @@ const getVaultMapApi = async () => {
   const vaultMapStorage = window.localStorage.getItem(LocalStorageConfigKey.vaultMarkets)
   const vaultTokenMapStorage = window.localStorage.getItem(LocalStorageConfigKey.vaultTokenMap)
   let { __timer__ } = store.getState().invest.vaultMap
-  __timer__ = (() => {
-    if (__timer__ && __timer__ !== -1) {
-      clearTimeout(__timer__)
+
+  if (__timer__) {
+    clearTimeout(__timer__)
+  }
+  __timer__ = setTimeout(async () => {
+    if (!LoopringAPI.defiAPI) {
+      return undefined
     }
-    return setTimeout(async () => {
-      if (!LoopringAPI.defiAPI) {
-        return undefined
-      }
-      // let { markets, pairs, tokenArr, tokenArrStr, marketArr, marketArrStr } =
-      //   await LoopringAPI.defiAPI.getDefiMarkets();
-      store.dispatch(getVaultMap(undefined))
-    }, 30 * 1000) //15*60*1000 //900000
-  })()
+    store.dispatch(getVaultMap(undefined))
+  }, 30 * 1000)
 
   try {
     const [tokenMapRaw, marketRaw] = await Promise.all([
@@ -102,6 +98,7 @@ const getVaultMapApi = async () => {
         tokenMapRaw,
         marketRaw,
       },
+      __timer__
     }
   } catch (error) {
     throw error

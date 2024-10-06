@@ -704,25 +704,17 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   }, [])
   useL2CommonSocket({ walletLayer2Callback, vaultLayer2Callback })
   React.useEffect(() => {
-    let time: any = -1
     if (isShow) {
       onRefreshData()
       initData()
-      time = setTimeout(() => {
-        if (refreshRef.current) {
-          // @ts-ignore
-          refreshRef.current.firstElementChild.click()
-        }
-      }, 500)
     } else {
       resetVaultJoin()
     }
     return () => {
-      clearTimeout(time)
     }
   }, [isShow, isAddOrRedeem])
   const onRefreshData = React.useCallback(() => {
-    myLog('useVaultSwap: onRefreshData')
+    myLog('useVaultJoin: onRefreshData')
     l2CommonService.sendUserUpdate()
     getVaultMap()
   }, [])
@@ -815,8 +807,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultJoinData,
     coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
     tokenProps: {
-      decimalsLimit: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
-      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale
+      decimalsLimit: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale
         ? true
         : false,
     },
