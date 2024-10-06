@@ -23,7 +23,6 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
   _width,
   type = TRADE_TYPE.TOKEN,
   onRefreshData,
-  refreshRef,
   ...rest
 }: VaultBorrowProps<T, I, V>) => {
   const { t, i18n } = useTranslation()
@@ -73,7 +72,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
                 height={0}
                 width={0}
               >
-                <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+                <CountDownIcon onRefreshData={onRefreshData} />
               </Typography>
             </>
           ),

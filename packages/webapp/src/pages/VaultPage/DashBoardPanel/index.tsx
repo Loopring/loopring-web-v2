@@ -364,10 +364,17 @@ export const VaultDashBoardPanel = ({
       },
     }
   })
-  const totalDustsInUSDT = dustsAssets
+  const checkedDusts = dustsAssets?.filter((asset) => {
+    const token = vaultTokenMap[vaultIdIndex[asset.tokenId!]]
+    const vaultSymbol = token.symbol
+    const originSymbol = vaultSymbol.slice(2)
+    return !localState.unselectedDustSymbol.includes(originSymbol)
+  })
+
+  const totalDustsInUSDT = checkedDusts
     ? numberFormat(
       numberStringListSum(
-        dustsAssets.map((asset) => {
+        checkedDusts.map((asset) => {
           // @ts-ignore
           const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
           const vaultSymbol = token.symbol
@@ -383,17 +390,11 @@ export const VaultDashBoardPanel = ({
     : EmptyValueTag
 
   const convert = async () => {
-    if (!dustsAssets || !exchangeInfo) return
+    if (!checkedDusts || !exchangeInfo) return
     
     const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
       type: 4,
     })!
-    const checkedDusts = dustsAssets.filter((asset) => {
-      const token = vaultTokenMap[vaultIdIndex[asset.tokenId!]]
-      const vaultSymbol = token.symbol
-      const originSymbol = vaultSymbol.slice(2)
-      return !localState.unselectedDustSymbol.includes(originSymbol)
-    })
     const dustTransfers = await Promise.all(
       checkedDusts.map(async (asset) => {
         const tokenId = asset.tokenId as unknown as number
