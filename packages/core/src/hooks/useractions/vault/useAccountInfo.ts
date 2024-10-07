@@ -1,5 +1,6 @@
 import {
   store,
+  useAccount,
   useSubmitBtn,
   useTokenMap,
   useVaultLayer2,
@@ -281,6 +282,10 @@ export const useAccountInfo = () => {
       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     })
   }, [])
+  const { account } = useAccount()
+  React.useEffect(() => {
+    if (account.apiKey) updateVaultLayer2({})
+  }, [account.apiKey])
 
   return {
     joinBtnStatus,

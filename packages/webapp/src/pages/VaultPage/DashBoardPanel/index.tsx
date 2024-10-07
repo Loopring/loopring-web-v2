@@ -389,159 +389,175 @@ export const VaultDashBoardPanel = ({
     ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
     : EmptyValueTag
 
+  const [converting, setConverting] = React.useState(false)
   const convert = async () => {
     if (!checkedDusts || !exchangeInfo) return
-    
-    const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
-      type: 4,
-    })!
-    const dustTransfers = await Promise.all(
-      checkedDusts.map(async (asset) => {
-        const tokenId = asset.tokenId as unknown as number
-        const { offchainId } = await LoopringAPI.userAPI?.getNextStorageId(
-          {
-            accountId: account.accountId,
-            sellTokenId: tokenId,
-          },
-          account.apiKey,
-        )!
+    setConverting(true)
+    try {
+      const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+        type: 4,
+      })!
+      const dustTransfers = await Promise.all(
+        checkedDusts.map(async (asset) => {
+          const tokenId = asset.tokenId as unknown as number
+          const { offchainId } = await LoopringAPI.userAPI?.getNextStorageId(
+            {
+              accountId: account.accountId,
+              sellTokenId: tokenId,
+            },
+            account.apiKey,
+          )!
+          return {
+            exchange: exchangeInfo.exchangeAddress,
+            payerAddr: account.accAddress,
+            payerId: account.accountId,
+            payeeId: 0,
+            payeeAddr: broker,
+            storageId: offchainId,
+            token: {
+              tokenId: tokenId,
+              volume: asset.total,
+            },
+            maxFee: {
+              tokenId: tokenId,
+              volume: '0',
+            },
+            validUntil: getTimestampDaysLater(DAYS),
+            memo: '',
+          }
+        }),
+      )
+      const dustList = checkedDusts.map((dust) => {
+        const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
+        const price = tokenPrices[vaultToken.symbol]
+        const originTokenSymbol = vaultToken.symbol.slice(2)
         return {
-          exchange: exchangeInfo.exchangeAddress,
-          payerAddr: account.accAddress,
-          payerId: account.accountId,
-          payeeId: 0,
-          payeeAddr: broker,
-          storageId: offchainId,
-          token: {
-            tokenId: tokenId,
-            volume: asset.total,
-          },
-          maxFee: {
-            tokenId: tokenId,
-            volume: '0',
-          },
-          validUntil: getTimestampDaysLater(DAYS),
-          memo: '',
+          symbol: originTokenSymbol,
+          coinJSON: coinJson[originTokenSymbol],
+          amount: numberFormat(utils.formatUnits(dust.total, vaultToken.decimals), {
+            fixed: vaultToken.precision,
+            removeTrailingZero: true,
+          }),
+          amountRaw: utils.formatUnits(dust.total, vaultToken.decimals),
+          valueInCurrency: price
+            ? fiatNumberDisplay(
+                getValueInCurrency(
+                  new Decimal(price)
+                    .mul(utils.formatUnits(dust.total, vaultToken.decimals))
+                    .toString(),
+                ),
+                currency,
+              )
+            : undefined,
+          valueInCurrencyRaw: price
+            ? getValueInCurrency(
+                new Decimal(price)
+                  .mul(utils.formatUnits(dust.total, vaultToken.decimals))
+                  .toString(),
+              )
+            : undefined,
         }
-      }),
-    )
-    const dustList = checkedDusts.map((dust) => {
-      const vaultToken = vaultTokenMap[vaultIdIndex[dust.tokenId!]]
-      const price = tokenPrices[vaultToken.symbol]
-      const originTokenSymbol = vaultToken.symbol.slice(2)
-      return {
-        symbol: originTokenSymbol,
-        coinJSON: coinJson[originTokenSymbol],
-        amount: numberFormat(utils.formatUnits(dust.total, vaultToken.decimals), {
-          fixed: vaultToken.precision,
-          removeTrailingZero: true,
-        }),
-        amountRaw: utils.formatUnits(dust.total, vaultToken.decimals),
-        valueInCurrency: price
-          ? fiatNumberDisplay(
-              getValueInCurrency(
-                new Decimal(price).mul(utils.formatUnits(dust.total, vaultToken.decimals)).toString(),
-              ),
-              currency,
-            )
-          : undefined,
-        valueInCurrencyRaw: price
-          ? getValueInCurrency(
-              new Decimal(price).mul(utils.formatUnits(dust.total, vaultToken.decimals)).toString(),
-            )
-          : undefined,
+      })
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.VaultDustCollector_In_Progress,
+        info: {
+          totalValueInCurrency: fiatNumberDisplay(
+            numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+            currency,
+          ),
+          convertedInUSDT: numberFormat(
+            numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+            { fixed: 2 },
+          ),
+          repaymentInUSDT: undefined,
+          time: undefined,
+          dusts: dustList.map((dust) => {
+            return {
+              symbol: dust.symbol,
+              coinJSON: dust.coinJSON,
+              amount: dust.amount,
+              valueInCurrency: dust.valueInCurrency,
+            }
+          }),
+        },
+      })
+
+      const response = await LoopringAPI.vaultAPI?.submitDustCollector(
+        {
+          dustTransfers: dustTransfers,
+          apiKey: account.apiKey,
+          accountId: account.accountId,
+          eddsaKey: account.eddsaKey.sk,
+        },
+        '1',
+      )
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message ||
+        !response
+      ) {
+        throw response
       }
-    })
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.VaultDustCollector_In_Progress,
-      info: {
-        totalValueInCurrency: fiatNumberDisplay(
-          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
-          currency,
-        ),
-        convertedInUSDT: numberFormat(
-          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
-          { fixed: 2 },
-        ),
-        repaymentInUSDT: undefined,
-        time: undefined,
-        dusts: dustList.map((dust) => {
-          return {
-            symbol: dust.symbol,
-            coinJSON: dust.coinJSON,
-            amount: dust.amount,
-            valueInCurrency: dust.valueInCurrency,
-          }
-        }),
-      },
-    })
-    
-    const response = await LoopringAPI.vaultAPI?.submitDustCollector({
-      dustTransfers: dustTransfers,
-      apiKey: account.apiKey,
-      accountId: account.accountId,
-      eddsaKey: account.eddsaKey.sk,
-    }, '1')
-    if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message || !response) {
-      throw response
-    }
-    setLocalState({
-      ...localState,
-      modalStatus: 'noModal',
-      unselectedDustSymbol: [],
-    })
-    updateVaultLayer2({})
-    await sdk.sleep(SUBMIT_PANEL_CHECK)
-    const response2 = await LoopringAPI?.vaultAPI?.getVaultGetOperationByHash(
-      {
-        accountId: account?.accountId?.toString(),
-        hash: response.hash,
-      },
-      account.apiKey,
-      '1'
-    )
-    if (response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-      throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
-    }
+      setLocalState({
+        ...localState,
+        modalStatus: 'noModal',
+        unselectedDustSymbol: [],
+      })
+      updateVaultLayer2({})
+      await sdk.sleep(SUBMIT_PANEL_CHECK)
+      const response2 = await LoopringAPI?.vaultAPI?.getVaultGetOperationByHash(
+        {
+          accountId: account?.accountId?.toString(),
+          hash: response.hash,
+        },
+        account.apiKey,
+        '1',
+      )
+      if (response2?.raw_data?.operation?.status == sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+        throw sdk.VaultOperationStatus.VAULT_STATUS_FAILED
+      }
+      setConverting(false)
 
-    const status =
-      response2?.raw_data?.operation?.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
-        ? 'success'
-        : 'pending'
+      const status =
+        response2?.raw_data?.operation?.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
+          ? 'success'
+          : 'pending'
 
-    setShowAccount({
-      isShow: store.getState().modals.isShowAccount.isShow,
-      step:
-        status == 'success'
-          ? AccountStep.VaultDustCollector_Success
-          : AccountStep.VaultDustCollector_In_Progress,
-      info: {
-        totalValueInCurrency: fiatNumberDisplay(
-          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
-          currency,
-        ),
-        convertedInUSDT: numberFormat(
-          numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
-          { fixed: 2 },
-        ),
-        repaymentInUSDT: numberFormat(
-          utils.formatUnits(response2!.operation.amountOut, 6),
-          {fixed: 2}
-        ) ,
-        time: response2?.operation.createdAt,
-        dusts: dustList.map((dust) => {
-          return {
-            symbol: dust.symbol,
-            coinJSON: dust.coinJSON,
-            amount: dust.amount,
-            valueInCurrency: dust.valueInCurrency,
-          }
-        }),
-      },
-    })
-    await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-    updateVaultLayer2({})
+      setShowAccount({
+        isShow: store.getState().modals.isShowAccount.isShow,
+        step:
+          status == 'success'
+            ? AccountStep.VaultDustCollector_Success
+            : AccountStep.VaultDustCollector_In_Progress,
+        info: {
+          totalValueInCurrency: fiatNumberDisplay(
+            numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+            currency,
+          ),
+          convertedInUSDT: numberFormat(
+            numberStringListSum(dustList.map((dust) => dust.valueInCurrencyRaw ?? '0')),
+            { fixed: 2 },
+          ),
+          repaymentInUSDT: numberFormat(utils.formatUnits(response2!.operation.amountOut, 6), {
+            fixed: 2,
+          }),
+          time: response2?.operation.createdAt,
+          dusts: dustList.map((dust) => {
+            return {
+              symbol: dust.symbol,
+              coinJSON: dust.coinJSON,
+              amount: dust.amount,
+              valueInCurrency: dust.valueInCurrency,
+            }
+          }),
+        },
+      })
+      await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
+      updateVaultLayer2({})
+    } finally {
+      setConverting(false)
+    }
   }
 
   const showMarginLevelAlert =
@@ -1620,6 +1636,7 @@ export const VaultDashBoardPanel = ({
                 }
               />
               <DustCollectorModal
+                converting={converting}
                 open={localState.modalStatus === 'dustCollector' && !showLeverage.show}
                 onClose={() => {
                   setLocalState({
@@ -1632,7 +1649,7 @@ export const VaultDashBoardPanel = ({
                 onClickConvert={() => {
                   convert()
                 }}
-                convertBtnDisabled={dusts?.find((dust) => dust.checked) ? false : true}
+                convertBtnDisabled={(dusts?.find((dust) => dust.checked) ? false : true) || converting}
                 totalValueInCurrency={totalDustsInCurrency}
                 totalValueInUSDT={totalDustsInUSDT ?? EmptyValueTag}
                 onClickRecords={() => {

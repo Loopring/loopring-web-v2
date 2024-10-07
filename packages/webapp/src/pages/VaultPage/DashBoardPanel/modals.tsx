@@ -594,6 +594,7 @@ export const DebtModal = (props: DebtModalProps) => {
 
 type DustCollectorProps = {
   open: boolean
+  converting: boolean
   onClose: () => void
   dusts?: {
     symbol: string
@@ -612,6 +613,7 @@ type DustCollectorProps = {
 
 export const DustCollectorModal = (props: DustCollectorProps) => {
   const {
+    converting,
     open,
     onClose,
     dusts,
@@ -633,7 +635,14 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
           display={'flex'}
           flexDirection={'column'}
           sx={{ overflowY: 'scroll' }}
+          position={'relative'}
         >
+          {converting && <Loading size={40} sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)'
+          }}/>}
           <Box
             paddingX={1.5}
             paddingY={1.5}
