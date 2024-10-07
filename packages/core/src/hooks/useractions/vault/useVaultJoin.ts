@@ -33,6 +33,7 @@ import {
   NETWORKEXTEND,
   useTokenPrices,
   numberFormat,
+  useUserWallets,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -55,6 +56,8 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { tokenMap: vaultTokenMap, joinTokenMap, erc20Map, getVaultMap } = useVaultMap()
   const { tokenMap, coinMap, idIndex } = useTokenMap()
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
+  const { updateUserWallets } = useUserWallets()
+
   const { exchangeInfo, chainId, baseURL } = useSystem()
   const { account } = useAccount()
   const { updateVaultJoin, vaultJoinData, resetVaultJoin } = useTradeVault()
@@ -179,7 +182,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         } else {
-          l2CommonService.sendUserUpdate()
+          updateUserWallets()
           updateVaultLayer2(
             isActiveAccount
               ? {
@@ -710,13 +713,10 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     } else {
       resetVaultJoin()
     }
-    return () => {
-    }
   }, [isShow, isAddOrRedeem])
   const onRefreshData = React.useCallback(() => {
-    myLog('useVaultJoin: onRefreshData')
-    l2CommonService.sendUserUpdate()
     getVaultMap()
+    updateUserWallets()
   }, [])
   const refreshRef = React.createRef()
 
