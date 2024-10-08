@@ -167,9 +167,7 @@ export const useVaultBorrow = <
     const fn = async () => {
       const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
       let symbol = vaultBorrowData.belong as string | undefined
-      if (!symbol) {
-        return
-      }
+      if (!symbol) { return }
       const maxBorrowable = await LoopringAPI.vaultAPI?.getMaxBorrowable(
         {
           accountId: account.accountId,
@@ -178,6 +176,9 @@ export const useVaultBorrow = <
         account.apiKey,
         '1',
       )
+      const vaultBorrowData2 = store.getState()._router_tradeVault.vaultBorrowData
+      let symbol2 = vaultBorrowData2.belong as string | undefined
+      if (symbol2 !== symbol) { return }
       const tokenPrice = vaultTokenPrices[symbol]
       const vToken = vaultTokenMap[symbol]
       const balance = numberFormat(
@@ -241,7 +242,7 @@ export const useVaultBorrow = <
   React.useEffect(() => {
     updateVaultBorrowDataRepeatly()
   }, [vaultAccountInfo?.leverage, vaultBorrowData?.tradeData?.belong])
-  const refreshRef = React.createRef()
+
   const onRefreshData = React.useCallback(() => {
     myLog('useVaultSwap: onRefreshData')
     l2CommonService.sendUserUpdate()
