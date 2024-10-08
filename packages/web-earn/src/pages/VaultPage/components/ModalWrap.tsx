@@ -10,6 +10,7 @@ import {
 } from '@loopring-web/core'
 import {
   Modal,
+  SmallOrderAlert,
   SwapPanel,
   Toast,
   useOpenModals,
@@ -31,7 +32,7 @@ import { useVaultSwapExtends } from './useVaultSwapExtends'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const ModalVaultWrap = () => {
+export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void}) => {
   const { t } = useTranslation()
   const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex, coinMap } = useVaultMap()
   const theme = useTheme()
@@ -70,7 +71,9 @@ export const ModalVaultWrap = () => {
     disabled,
     cancelBorrow,
     borrowedAmount,
-    marginLevelChange
+    marginLevelChange,
+    showSmallTradePrompt,
+    setShowSmallTradePrompt
   } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -195,11 +198,32 @@ export const ModalVaultWrap = () => {
               market={market}
               isMobile={isMobile}
               marginLevelChange={marginLevelChange!}
+              vaultLeverage={{
+                onClickLeverage: onClickLeverage,
+                leverage: vaultAccountInfo?.leverage ?? '0'
+              }}
             />
           ) : (
             <></>
           )
         }
+      />
+      <SmallOrderAlert
+        open={showSmallTradePrompt.show}
+        handleClose={() => {
+          setShowSmallTradePrompt({
+            show: false,
+            estimatedFee: undefined,
+            minimumConverted: undefined,
+            feePercentage: undefined,
+          })
+        }}
+        handleConfirm={() => {
+          onSwapClick()
+        }}
+        estimatedFee={showSmallTradePrompt.estimatedFee ?? ''}
+        feePercentage={showSmallTradePrompt.feePercentage ?? ''}
+        minimumReceived={showSmallTradePrompt.minimumConverted ?? ''}
       />
       <Modal
         contentClassName={'vault-wrap'}
@@ -218,7 +242,7 @@ export const ModalVaultWrap = () => {
         content={
           <VaultLoanPanel
             vaultRepayProps={vaultRepayProps as any}
-            vaultBorrowProps={vaultBorrowProps as any}
+            vaultBorrowProps={{...vaultBorrowProps, onClickLeverage} as any}
             vaultLoanType={vaultLoanType as VaultLoanType}
             handleTabChange={handleTabChange}
           />
