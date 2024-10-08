@@ -1657,17 +1657,27 @@ export const useVaultSwap = <
           sellMaxAmtInfo = BigNumber.min(sellDeepStr, _tradeData.sell.balance ?? 0)
         }
         
-        // ethers
-        // format
-        sellMinAmtInfo = utils.formatUnits(
-          BigNumber.max(
-            sellToken.orderAmounts.dust,
-            sellBuyStr == market ? minTradeAmount.base : minTradeAmount.quote,
-          ).toString(),
-          sellToken.decimals
+        const baseTokenPrice = vaultTokenPrices
+          ? vaultTokenPrices[
+              sellBuyStr == market
+                ? (tradeData?.sell.belong as string)
+                : (tradeData?.buy.belong as string)
+            ]
+          : undefined
+        const _quoteMinAmtInfo = utils.formatUnits(
+          minTradeAmount.quote,
+          sellBuyStr == market ? buyToken.decimals: sellToken.decimals,
         )
-
-        
+        const sellDust = utils.formatUnits(
+          sellToken.orderAmounts.dust,
+          sellToken.decimals,
+        )
+        sellMinAmtInfo = BigNumber.max(
+          sellDust,
+          sellBuyStr == market 
+          ? baseTokenPrice ? new BigNumber(_quoteMinAmtInfo).div(baseTokenPrice).toString() : '0'
+          : _quoteMinAmtInfo
+        ).toString()
 
         if (calcDexOutput) {
           totalFeeRaw = sdk

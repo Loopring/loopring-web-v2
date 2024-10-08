@@ -479,7 +479,7 @@ export const SwapTradeWrap = <
                 alignItems={'center'}
                 marginTop={1 / 2}
               >
-                <Tooltip title={t('labelVaultMarginLevel')} placement={'top'}>
+                <Tooltip title={t('labelVaultMarginLevelDes')} placement={'top'}>
                   <Typography
                     component={'p'}
                     variant='body2'
@@ -488,7 +488,7 @@ export const SwapTradeWrap = <
                     alignItems={'center'}
                   >
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {' ' + t('labelVaultMarginLevelDes')}
+                    {' ' + t('labelVaultMarginLevel')}
                   </Typography>
                 </Tooltip>
 
