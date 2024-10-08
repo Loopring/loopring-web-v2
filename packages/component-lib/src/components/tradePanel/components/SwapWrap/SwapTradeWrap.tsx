@@ -488,7 +488,7 @@ export const SwapTradeWrap = <
                     alignItems={'center'}
                   >
                     <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                    {' ' + t('labelVaultMarginLevel')}
+                    {' ' + t('labelVaultMarginLevelDes')}
                   </Typography>
                 </Tooltip>
 
