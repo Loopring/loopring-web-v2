@@ -33,7 +33,7 @@ import React, { useRef } from 'react'
 import { makeVaultAvaiable2 } from '../../help'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../../api_wrapper'
-import { useSubmitBtn } from '../../common'
+import { useSubmitBtn, useUserWallets } from '../../common'
 import BigNumber from 'bignumber.js'
 import { l2CommonService } from '../../../services'
 import { keys } from 'lodash'
@@ -153,7 +153,7 @@ export const useVaultBorrow = <
   const { updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
   // chainInfos[defaultNetwork].vaultBorrowHashes
 
-  const { vaultAccountInfo, status: vaultAccountInfoStatus } = useVaultLayer2()
+  const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { vaultBorrowData, updateVaultBorrow, resetVaultBorrow } = useTradeVault()
   const { account } = useAccount()
 
@@ -242,10 +242,8 @@ export const useVaultBorrow = <
   React.useEffect(() => {
     updateVaultBorrowDataRepeatly()
   }, [vaultAccountInfo?.leverage, vaultBorrowData?.tradeData?.belong])
-
   const onRefreshData = React.useCallback(() => {
-    myLog('useVaultSwap: onRefreshData')
-    l2CommonService.sendUserUpdate()
+    updateVaultLayer2({})
     getVaultMap()
   }, [])
 
