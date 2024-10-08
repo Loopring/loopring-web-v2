@@ -189,8 +189,8 @@ export const useVaultBorrow = <
         },
       )
       updateVaultBorrow({
-        ...vaultBorrowData,
-        tradeData: { ...vaultBorrowData.tradeData, balance: Number(balance) },
+        ...vaultBorrowData2,
+        tradeData: { ...vaultBorrowData2.tradeData, balance: Number(balance) },
       })
     }
     timerRef.current = setInterval(fn, 10 * 1000)
@@ -259,8 +259,8 @@ export const useVaultBorrow = <
     // @ts-ignore
   }, [isShowVaultLoan.isShow])
 
-  const handlePanelEvent = React.useCallback(async (data: SwitchData<T>) => {
-    return new Promise<void>(async (res: any) => {
+  const handlePanelEvent = React.useCallback(
+    (data: SwitchData<T>) => {
       if (data.to === 'button') {
         let { vaultAvaiable2Map } = makeVaultAvaiable2({})
         setWalletMap(vaultAvaiable2Map)
@@ -281,11 +281,10 @@ export const useVaultBorrow = <
             walletMap: vaultAvaiable2Map,
             tradeData: {
               ...store.getState()._router_tradeVault.vaultBorrowData.tradeData,
-              ...walletInfo
+              ...walletInfo,
             },
           })
         } else {
-
           updateVaultBorrow({
             belong: undefined,
             tradeValue: undefined,
@@ -293,9 +292,9 @@ export const useVaultBorrow = <
           })
         }
       }
-      res()
-    })
-  }, [account, updateVaultBorrow])
+    },
+    [account, updateVaultBorrow],
+  )
 
   const availableTradeCheck = React.useCallback(() => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
