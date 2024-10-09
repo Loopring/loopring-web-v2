@@ -58,8 +58,8 @@ export const useVaultRedeem = () => {
               : undefined
             : vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
             ? sdk
-                .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
-                .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+                .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
+                .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
             : undefined
         return {
           profit: profit
