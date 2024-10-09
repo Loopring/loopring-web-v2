@@ -548,7 +548,7 @@ export const useVaultSwap = <
     tradeBtnStatus: TradeBtnStatus
     label: string | undefined
   } => {
-    if (!tokenMap && !vaultTokenPrices && tradeData?.sell) {
+    if (!tokenMap || !vaultTokenPrices && tradeData?.sell) {
       return {
         label: undefined,
         tradeBtnStatus: TradeBtnStatus.DISABLED,
