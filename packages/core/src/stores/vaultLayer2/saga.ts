@@ -69,7 +69,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         )
       ) {
         _activeInfo = undefined
-        wait = 1000 * 60
+        wait = 1000 * 10
       } else if (
         activeInfo &&
         [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED, ''].includes(
@@ -77,7 +77,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         )
       ) {
         _activeInfo = activeInfo
-        wait = 1000 * 15
+        wait = 1000 * 10
       } else {
         wait = Infinity
       }

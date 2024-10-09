@@ -223,7 +223,7 @@ export const useVaultSwap = <
   myLog('setIsSwapLoading isSwapLoading', isSwapLoading)
   
 
-  const refreshRef = React.createRef()
+  const refreshRef = React.useRef()
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { isMobile } = useSettings()
 
@@ -817,7 +817,7 @@ export const useVaultSwap = <
                   undefined,
                   undefined,
                   tokenMap[item.fromSymbol].precision,
-                  true,
+                  false,
                   { isAbbreviate: true },
                 )} ${sellToken.symbol.slice(2)}`
               : EmptyValueTag,
@@ -916,7 +916,7 @@ export const useVaultSwap = <
                       undefined,
                       undefined,
                       tokenMap[item.fromSymbol].precision,
-                      true,
+                      false,
                       { isAbbreviate: true },
                     )} ${item.fromSymbol.slice(2)}`
                   : EmptyValueTag,
@@ -931,7 +931,7 @@ export const useVaultSwap = <
                       undefined,
                       undefined,
                       tokenMap[item.fromSymbol].precision,
-                      true,
+                      false,
                       { isAbbreviate: true },
                     )} ${sellToken.symbol.slice(2)}`
                   : EmptyValueTag,
@@ -958,7 +958,7 @@ export const useVaultSwap = <
                       undefined,
                       undefined,
                       tokenMap[item.toSymbol].precision,
-                      true,
+                      false,
                       { isAbbreviate: true },
                     )} ${buyToken.symbol.slice(2)}`
                   : EmptyValueTag,
@@ -973,7 +973,7 @@ export const useVaultSwap = <
                       undefined,
                       undefined,
                       tokenMap[item.toSymbol].precision,
-                      true,
+                      false,
                       { isAbbreviate: true },
                     )} ${item.toSymbol}`
                   : EmptyValueTag,
@@ -1237,13 +1237,43 @@ export const useVaultSwap = <
     isLoading: !!isMarketInit,
     submitCallback: vaultSwapSubmit,
   })
-  
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const updateBalanceRepeatedly = async () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-    }
-    const fn = async () => {
+  const {updateVaultLayer2} = useVaultLayer2()
+  const refreshData = async () => {
+    myLog('useVaultSwap: refreshData', market)
+    if (market) {
+      getVaultMap()
+      callPairDetailInfoAPIs()
+      updateVaultLayer2({})
+      
+      if (chainInfos.vaultBorrowHashes && chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
+        chainInfos.vaultBorrowHashes[account.accAddress].forEach(({ hash }) => {
+          const { account } = store.getState()
+          LoopringAPI?.vaultAPI
+            .getVaultGetOperationByHash(
+              {
+                accountId: account.accountId?.toString(),
+                hash,
+              },
+              account.apiKey,
+            )
+            .then(({ operation }) => {
+              if (
+                [
+                  sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
+                  sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
+                ].includes(operation.status)
+              ) {
+                updateVaultBorrowHash(
+                  operation.hash,
+                  account.accAddress,
+                  sdk.VaultOperationStatus.VAULT_STATUS_FAILED ? 'failed' : 'success',
+                )
+              }
+            })
+        })
+      }
+
+      // update balance
       const sellToken = store.getState()._router_tradeVault.tradeVault.sellToken
       const buyToken = store.getState()._router_tradeVault.tradeVault.buyToken
       const depth = store.getState()._router_tradeVault.tradeVault.depth
@@ -1290,44 +1320,9 @@ export const useVaultSwap = <
         sellMaxAmtInfo: sellMaxAmtInfo as any
       })
     }
-    timerRef.current = setInterval(fn, 15 * 1000)
-    fn()
   }
 
-  const should15sRefresh = React.useCallback(() => {
-    myLog('useVaultSwap: should15sRefresh', market)
-    if (market) {
-      getVaultMap()
-      callPairDetailInfoAPIs()
-      if (chainInfos.vaultBorrowHashes && chainInfos.vaultBorrowHashes[account.accAddress]?.length) {
-        chainInfos.vaultBorrowHashes[account.accAddress].forEach(({ hash }) => {
-          const { account } = store.getState()
-          LoopringAPI?.vaultAPI
-            .getVaultGetOperationByHash(
-              {
-                accountId: account.accountId?.toString(),
-                hash,
-              },
-              account.apiKey,
-            )
-            .then(({ operation }) => {
-              if (
-                [
-                  sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED,
-                  sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
-                ].includes(operation.status)
-              ) {
-                updateVaultBorrowHash(
-                  operation.hash,
-                  account.accAddress,
-                  sdk.VaultOperationStatus.VAULT_STATUS_FAILED ? 'failed' : 'success',
-                )
-              }
-            })
-        })
-      }
-    }
-  }, [market])
+  
 
   React.useEffect(() => {
     const {
@@ -1496,28 +1491,26 @@ export const useVaultSwap = <
             },
           }
         })
-        updateBalanceRepeatedly()
+        refreshData()
         break
       default:
         // resetTradeCalcData(undefined, market);
         break
     }
   }
-
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null)
   React.useEffect(() => {
     if (market) {
-      updateBalanceRepeatedly()
-      //@ts-ignore
-      if (refreshRef.current) {
-        // @ts-ignore
-        refreshRef.current.firstElementChild.click()
-        should15sRefresh()
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
       }
+      refreshRef.current && (refreshRef.current as any).firstElementChild.click()
+      timerRef.current = setInterval(() => {
+        refreshRef.current && (refreshRef.current as any).firstElementChild.click()
+      }, 10 * 1000)
     }
-  }, [market])
-  React.useEffect(() => {
-    updateBalanceRepeatedly()
-  }, [vaultAccountInfo?.leverage])
+  }, [market, vaultAccountInfo?.leverage])
+  
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {
     if (market && LoopringAPI.defiAPI && marketMap && marketMap[market]) {
@@ -1657,27 +1650,33 @@ export const useVaultSwap = <
           sellMaxAmtInfo = BigNumber.min(sellDeepStr, _tradeData.sell.balance ?? 0)
         }
         
-        const baseTokenPrice = vaultTokenPrices
-          ? vaultTokenPrices[
-              sellBuyStr == market
-                ? (tradeData?.sell.belong as string)
-                : (tradeData?.buy.belong as string)
-            ]
-          : undefined
-        const _quoteMinAmtInfo = utils.formatUnits(
-          minTradeAmount.quote,
-          sellBuyStr == market ? buyToken.decimals: sellToken.decimals,
-        )
-        const sellDust = utils.formatUnits(
-          sellToken.orderAmounts.dust,
-          sellToken.decimals,
-        )
-        sellMinAmtInfo = BigNumber.max(
-          sellDust,
-          sellBuyStr == market 
-          ? baseTokenPrice ? new BigNumber(_quoteMinAmtInfo).div(baseTokenPrice).toString() : '0'
-          : _quoteMinAmtInfo
-        ).toString()
+        if (sellBuyStr == market) {
+          const baseTokenPrice = vaultTokenPrices
+            ? vaultTokenPrices[tradeData?.sell.belong as string]
+            : undefined
+          const quoteMinAmtInfo = utils.formatUnits(minTradeAmount.quote, buyToken.decimals)
+          const sellDust = utils.formatUnits(sellToken.orderAmounts.dust, sellToken.decimals)
+          
+          // slippage
+          sellMinAmtInfo = BigNumber.max(
+            sellDust,
+            baseTokenPrice ? new BigNumber(quoteMinAmtInfo)
+              .div(baseTokenPrice)
+              .times(10000)
+              .div(new BigNumber(10000).minus(slippage))
+              .toString() : '0',
+          ).toString()
+        } else {
+          const quoteMinAmtInfo = utils.formatUnits(
+            minTradeAmount.quote,
+            sellToken.decimals
+          )
+          const sellDust = utils.formatUnits(sellToken.orderAmounts.dust, sellToken.decimals)
+          sellMinAmtInfo = BigNumber.max(
+            sellDust,
+            quoteMinAmtInfo,
+          ).toString()
+        }
 
         if (calcDexOutput) {
           totalFeeRaw = sdk
@@ -1891,15 +1890,15 @@ export const useVaultSwap = <
   )
   const refreshWhenDepthUp = React.useCallback(() => {
     const { depth, lastStepAt, tradePair, market } = tradeVault
+    
 
+    
     if (
       (depth && depth.symbol === market) ||
       (tradeData &&
         lastStepAt &&
         tradeCalcData.coinSell === tradeData['sell'].belong &&
-        tradeCalcData.coinBuy === tradeData['buy'].belong &&
-        tradeData[lastStepAt].tradeValue &&
-        tradeData[lastStepAt].tradeValue !== 0)
+        tradeCalcData.coinBuy === tradeData['buy'].belong)
     ) {
       reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt)
     } else if (
@@ -2015,7 +2014,7 @@ export const useVaultSwap = <
     swapBtnI18nKey,
     swapBtnStatus: btnStatus,
     handleSwapPanelEvent,
-    should15sRefresh,
+    refreshData,
     refreshRef,
     tradeVault,
     vaultAccountInfo,

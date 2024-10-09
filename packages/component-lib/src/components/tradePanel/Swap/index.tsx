@@ -72,6 +72,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     bTradeTutorial,
     marginLevelChange,
     vaultLeverage,
+    refreshTime,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
     let history = useHistory()
@@ -366,7 +367,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                     </PopoverStyled>
                   </Typography>
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
-                    <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+                    <CountDownIcon countDownSeconds={refreshTime} onRefreshData={onRefreshData} ref={refreshRef} />
                   </Typography>
                   <Typography
                     display={'inline-block'}

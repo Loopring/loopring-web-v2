@@ -87,7 +87,7 @@ export const makeVaultLayer2 = <
   } = store.getState()
   const { readyState } = store.getState().account
   let vaultLayer2Map: WalletMap<C> | undefined
-  if (vaultAccountInfo?.userAssets) {
+  if (vaultAccountInfo?.userAssets && idIndex) {
     vaultLayer2Map = vaultAccountInfo?.userAssets.reduce((prev, item) => {
       const symbol = idIndex[item.tokenId]
       const vaultToken = tokenMap[symbol]

@@ -135,9 +135,14 @@ export const VaultDashBoardPanel = ({
   } = useGetVaultAssets({ vaultAccountInfo: _vaultAccountInfo })
   const colors = ['var(--color-success)', 'var(--color-error)', 'var(--color-warning)']
   const profitUI = React.useMemo(() => {
-    const profit = sdk
+    const profit = 
+    (vaultAccountInfo as any)?.accountType === 0
+    ?  sdk
       .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
       .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
+    : sdk
+    .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
+    .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
     const colorsId = upColor === UpColor.green ? [0, 1] : [1, 0]
     const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
     return (
