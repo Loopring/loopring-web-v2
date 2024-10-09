@@ -736,6 +736,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               {
                 fixed: vaultTokenMap['LV' + (tokenSymbol as string)].vaultTokenAmounts.qtyStepScale,
                 removeTrailingZero: true,
+                fixedRound: Decimal.ROUND_FLOOR
               },
             ),
             '0',
