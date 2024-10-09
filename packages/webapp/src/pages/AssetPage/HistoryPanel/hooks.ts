@@ -1702,9 +1702,11 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         }
         case 'VAULT_CLOSE_OUT': {
           const profit =
-            operation?.Collateral && operation?.Collateral
+            (operation as any).accountType === 0 
+            ? (operation?.Collateral && operation?.Collateral
               ? sdk.toBig(operation?.totalEquity ?? 0).minus(operation?.Collateral ?? 0)
-              : undefined
+              : undefined)
+            : (operation as any)?.profit as string
           const outTokenInfo = tokenMap[idIndex[operation.tokenOut]]
           const amount = sdk.toBig(operation.amountOut).div('1e' + outTokenInfo.decimals)
 
@@ -1743,17 +1745,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                   : EmptyValueTag,
                 profitPercent:
                   profit && Number(operation?.Collateral ?? 0)
-                    ? getValuePrecisionThousand(
-                        profit.div(operation?.Collateral).times(100) ?? '0',
-                        2,
-                        2,
-                        undefined,
-                        false,
-                        {
-                          isFait: false,
-                          floor: true,
-                        },
-                      ) + '%'
+                    ? numberFormat(new Decimal(profit.toString()).div(operation?.Collateral).times(100).toString(), {fixed: 2}) + '%'
                     : EmptyValueTag,
                 usdValue: operation?.totalBalance
                   ? PriceTag[CurrencyToTag[currency]] +

@@ -165,6 +165,7 @@ export const useVaultBorrow = <
       clearInterval(timerRef.current)
     }
     const fn = async () => {
+      onRefreshData()
       const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
       let symbol = vaultBorrowData.belong as string | undefined
       if (!symbol) { return }
@@ -190,6 +191,7 @@ export const useVaultBorrow = <
       )
       updateVaultBorrow({
         ...vaultBorrowData2,
+        balance: Number(balance),
         tradeData: { ...vaultBorrowData2.tradeData, balance: Number(balance) },
       })
     }
@@ -249,7 +251,6 @@ export const useVaultBorrow = <
 
   React.useEffect(() => {
     if (isShowVaultLoan.isShow) {
-      onRefreshData()
       initData()
     } else {
       resetVaultBorrow()
@@ -260,13 +261,14 @@ export const useVaultBorrow = <
   const handlePanelEvent = React.useCallback(
     (data: SwitchData<T>) => {
       if (data.to === 'button') {
+
         let { vaultAvaiable2Map } = makeVaultAvaiable2({})
         setWalletMap(vaultAvaiable2Map)
         if (vaultAvaiable2Map && data?.tradeData?.belong) {
           let walletInfo: any = vaultAvaiable2Map[data?.tradeData?.belong as string]
           walletInfo = {
             ...walletInfo,
-            tradeValue: data.tradeData?.tradeValue,
+            tradeValue: data?.tradeData?.belong !== store.getState()._router_tradeVault.vaultBorrowData.tradeData.belong ? undefined : data.tradeData?.tradeValue,
             borrowedAmt: walletInfo.borrowed,
           }
           const supportdata = calcSupportBorrowData(walletInfo)
@@ -307,17 +309,10 @@ export const useVaultBorrow = <
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelVaultBorrowMini|${vaultBorrowData.minBorrowStr} ${vaultBorrowData.belong.slice(2)}`,
       }
-    } else if (sdk.toBig(vaultBorrowData.tradeValue ?? 0).gt(vaultBorrowData.balance ?? 0)) {
+    } else if (sdk.toBig(vaultBorrowData.tradeData.tradeValue ?? 0).gt(BigNumber.min(vaultBorrowData.totalQuote, vaultBorrowData.tradeData.balance))) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelVaultBorrowNotEnough|${vaultBorrowData.belong}`,
-      }
-    } else if (
-      sdk.toBig(vaultBorrowData.tradeValue ?? 0).gt(vaultBorrowData.maxBorrowAmount ?? 0)
-    ) {
-      return {
-        tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultBorrowMax|${vaultBorrowData.maxBorrowStr} ${vaultBorrowData.belong}`,
       }
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
@@ -331,6 +326,7 @@ export const useVaultBorrow = <
     vaultBorrowData.balance,
     vaultBorrowData.maxBorrowAmount,
     vaultBorrowData.minBorrowAmount,
+    vaultBorrowData.tradeData
   ])
   const processRequest = async (request?: sdk.VaultBorrowRequest) => {
     const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData

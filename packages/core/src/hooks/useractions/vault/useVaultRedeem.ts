@@ -50,7 +50,13 @@ export const useVaultRedeem = () => {
     if (vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING) {
       setInfo(() => {
         const profit =
-          vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
+          (vaultAccountInfo as any)?.accountType === 0
+            ? vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
+              ? sdk
+                  .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+                  .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+              : undefined
+            : vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
             ? sdk
                 .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
                 .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)

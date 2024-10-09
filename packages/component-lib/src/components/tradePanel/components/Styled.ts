@@ -12,6 +12,7 @@ import { css } from '@emotion/react'
 import { Button } from '../../basic-lib'
 import { DropDownIcon } from '@loopring-web/common-resources'
 
+
 export const FeeTokenItemWrapper = styled(Box)`
   background-color: var(--color-global-bg);
 ` as typeof Box
@@ -111,7 +112,7 @@ const cssAutoRefresh = (_props: any) => css`
     }
   }
 `
-export const CountDownStyled = styled(Box)`
+export const CountDownStyled = styled(Box)<{countDownSeconds?: number}>`
   ${({ theme }) => cssAutoRefresh({ theme })}
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
@@ -152,7 +153,7 @@ export const CountDownStyled = styled(Box)`
       left: 50%;
       top: 50%;
       transform: translate3d(-50%, -50%, 0);
-      animation: container var(--durationInternal) steps(1) infinite;
+      animation: container ${({countDownSeconds}) => countDownSeconds ? `${(countDownSeconds - 1) * 2}s` : 'var(--durationInternal)'} steps(1) infinite;
       overflow: hidden;
 
       &::before,
@@ -168,7 +169,7 @@ export const CountDownStyled = styled(Box)`
         width: 1em;
         transform: rotate(45deg);
         animation-timing-function: linear, steps(1);
-        animation-duration: var(--durationInternal), var(--durationInternal);
+        animation-duration: ${({countDownSeconds}) => countDownSeconds ? `${(countDownSeconds - 1) * 2}s` : 'var(--durationInternal)'}, ${({countDownSeconds}) => countDownSeconds ? `${(countDownSeconds - 1) * 2}s` : 'var(--durationInternal)'};
         animation-iteration-count: infinite, infinite;
       }
 
@@ -186,7 +187,7 @@ export const CountDownStyled = styled(Box)`
           color
             ? `${color} ${color} transparent transparent`
             : 'var(--auto-refresh-color) var(--auto-refresh-color) transparent transparent'};
-        animation-delay: var(--delay), var(--delay);
+        animation-delay: ${({countDownSeconds}) => countDownSeconds ? `${(countDownSeconds - 1) / 2}s` : 'var(--delay)'}, ${({countDownSeconds}) => countDownSeconds ? `${(countDownSeconds - 1) / 2}s` : 'var(--delay)'};
         animation-name: rotate, hide2;
         right: 0;
       }

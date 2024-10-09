@@ -61,7 +61,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     swapBtnI18nKey,
     swapBtnStatus,
     handleSwapPanelEvent,
-    should15sRefresh,
+    refreshData,
     refreshRef,
     onSwapClick,
     tradeVault,
@@ -73,7 +73,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     borrowedAmount,
     marginLevelChange,
     showSmallTradePrompt,
-    setShowSmallTradePrompt
+    setShowSmallTradePrompt,
   } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -192,7 +192,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
               swapBtnI18nKey={swapBtnI18nKey}
               swapBtnStatus={swapBtnStatus}
               handleSwapPanelEvent={handleSwapPanelEvent}
-              should15sRefresh={should15sRefresh}
+              onRefreshData={refreshData}
               refreshRef={refreshRef}
               tradeVault={tradeVault}
               market={market}
@@ -202,6 +202,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
                 onClickLeverage: onClickLeverage,
                 leverage: vaultAccountInfo?.leverage ?? '0'
               }}
+              refreshTime={10}
             />
           ) : (
             <></>
