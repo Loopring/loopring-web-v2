@@ -252,6 +252,9 @@ export const useVaultBorrow = <
     if (isShowVaultLoan.isShow) {
       initData()
     } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
       resetVaultBorrow()
     }
     // @ts-ignore
