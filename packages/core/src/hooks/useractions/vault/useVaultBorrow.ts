@@ -238,7 +238,6 @@ export const useVaultBorrow = <
       ...vaultBorrowData,
       ...calcSupportBorrowData(walletInfo),
     })
-    updateVaultBorrowDataRepeatly()
   }
 
   React.useEffect(() => {
