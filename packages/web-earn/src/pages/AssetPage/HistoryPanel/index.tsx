@@ -51,7 +51,7 @@ import {
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { RecordEarnMap } from '../../../constant/router'
 import { Modal } from '@mui/material'
-import { VaultConvertDetail, VaultOperationDetail, VaultTradeDetail } from '@loopring-web/component-lib/src/components/tableList/vaultTable/VaultTxTable'
+import { VaultCloseDetail, VaultConvertDetail, VaultOperationDetail, VaultTradeDetail } from '@loopring-web/component-lib/src/components/tableList/vaultTable/VaultTxTable'
 import Decimal from 'decimal.js'
 
 
