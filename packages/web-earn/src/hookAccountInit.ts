@@ -98,9 +98,11 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2()
-            updateVaultLayer2({})
             updateWalletL2NFTCollection({ page: 1 })
             updateWalletL2Collection({ page: 1 })
+          }
+          if (vaultLayer2Status !== SagaStatus.PENDING) {
+            updateVaultLayer2({})
           }
           sendSocketTopic({})
           updateLegacyContracts()
