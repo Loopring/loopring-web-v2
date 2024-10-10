@@ -212,7 +212,6 @@ export const VaultDashBoardPanel = ({
     forexMap,
     colors,
   ])
-  console.log('(vaultAccountInfo as any)?.accountType', (vaultAccountInfo as any)?.accountType)
   const marginUI = React.useMemo(() => {
     const item = vaultAccountInfo?.marginLevel ?? '0'
     return (
