@@ -26,6 +26,7 @@ import {
   ExportAccount_Failed,
   ExportAccount_Success,
   ExportAccount_User_Denied,
+  General_Failed,
   HadAccount,
   NoAccount,
   Transfer_Failed,
@@ -255,6 +256,14 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
 
   const { nameList2, accountList2 } = React.useMemo(() => {
     const accountMap = {
+      [AccountStep.General_Failed]: {
+        view: (
+          <General_Failed
+            providerName={account.connectName as ConnectProviders}
+            {...rest}
+          />
+        ),
+      },
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
           <Transfer_WaitForAuth

@@ -10,6 +10,7 @@ import {
 } from '@loopring-web/core'
 import {
   Modal,
+  SmallOrderAlert,
   SwapPanel,
   Toast,
   useOpenModals,
@@ -31,7 +32,7 @@ import { useVaultSwapExtends } from './useVaultSwapExtends'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 
-export const ModalVaultWrap = () => {
+export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void}) => {
   const { t } = useTranslation()
   const { getVaultMap, tokenMap: vaultTokenMao, idIndex: vaultIndex, coinMap } = useVaultMap()
   const theme = useTheme()
@@ -60,7 +61,7 @@ export const ModalVaultWrap = () => {
     swapBtnI18nKey,
     swapBtnStatus,
     handleSwapPanelEvent,
-    should15sRefresh,
+    refreshData,
     refreshRef,
     onSwapClick,
     tradeVault,
@@ -69,7 +70,10 @@ export const ModalVaultWrap = () => {
     isMobile,
     disabled,
     cancelBorrow,
-    borrowedAmount
+    borrowedAmount,
+    marginLevelChange,
+    showSmallTradePrompt,
+    setShowSmallTradePrompt,
   } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -181,25 +185,46 @@ export const ModalVaultWrap = () => {
                         minValue: tradeCalcData.sellMinAmtStr,
                       }),
               }}
-              {...{
-                campaignTagConfig,
-                tradeCalcData,
-                tradeData: tradeData as any,
-                onSwapClick,
-                swapBtnI18nKey,
-                swapBtnStatus,
-                handleSwapPanelEvent,
-                should15sRefresh,
-                refreshRef,
-                tradeVault,
-                market,
-                isMobile,
+              campaignTagConfig={campaignTagConfig}
+              tradeCalcData={tradeCalcData}
+              tradeData={tradeData as any}
+              onSwapClick={onSwapClick}
+              swapBtnI18nKey={swapBtnI18nKey}
+              swapBtnStatus={swapBtnStatus}
+              handleSwapPanelEvent={handleSwapPanelEvent}
+              onRefreshData={refreshData}
+              refreshRef={refreshRef}
+              tradeVault={tradeVault}
+              market={market}
+              isMobile={isMobile}
+              marginLevelChange={marginLevelChange!}
+              vaultLeverage={{
+                onClickLeverage: onClickLeverage,
+                leverage: vaultAccountInfo?.leverage ?? '0'
               }}
+              refreshTime={10}
             />
           ) : (
             <></>
           )
         }
+      />
+      <SmallOrderAlert
+        open={showSmallTradePrompt.show}
+        handleClose={() => {
+          setShowSmallTradePrompt({
+            show: false,
+            estimatedFee: undefined,
+            minimumConverted: undefined,
+            feePercentage: undefined,
+          })
+        }}
+        handleConfirm={() => {
+          onSwapClick()
+        }}
+        estimatedFee={showSmallTradePrompt.estimatedFee ?? ''}
+        feePercentage={showSmallTradePrompt.feePercentage ?? ''}
+        minimumReceived={showSmallTradePrompt.minimumConverted ?? ''}
       />
       <Modal
         contentClassName={'vault-wrap'}
@@ -218,7 +243,7 @@ export const ModalVaultWrap = () => {
         content={
           <VaultLoanPanel
             vaultRepayProps={vaultRepayProps as any}
-            vaultBorrowProps={vaultBorrowProps as any}
+            vaultBorrowProps={{...vaultBorrowProps, onClickLeverage} as any}
             vaultLoanType={vaultLoanType as VaultLoanType}
             handleTabChange={handleTabChange}
           />

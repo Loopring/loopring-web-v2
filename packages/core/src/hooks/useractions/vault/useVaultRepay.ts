@@ -32,6 +32,8 @@ import { getTimestampDaysLater } from '../../../utils'
 import { DAYS } from '../../../defs'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { mapValues } from 'lodash'
+import Decimal from 'decimal.js'
+import { calcMarinLevel, marginLevelType } from './utils'
 export const useVaultRepay = <
   T extends IBData<I> & {
     borrowed: string
@@ -39,7 +41,7 @@ export const useVaultRepay = <
   },
   V extends VaultRepayData<T>,
   I,
->() => {
+>(initialSymbol: string | undefined) => {
   const {
     modals: { isShowVaultLoan },
     setShowAccount,
@@ -48,7 +50,7 @@ export const useVaultRepay = <
   const { vaultAccountInfo, status: vaultAccountInfoStatus, updateVaultLayer2 } = useVaultLayer2()
   const { account } = useAccount()
   const { idIndex: erc20IdIndex } = useTokenMap()
-  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap } = useVaultMap()
+  const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap, tokenPrices } = useVaultMap()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
   const { exchangeInfo, chainId } = useSystem()
@@ -62,6 +64,9 @@ export const useVaultRepay = <
     let supportData = {}
     if (tradeData?.belong) {
       const vaultToken = vaultTokenMap[tradeData.belong as any]
+      if(!vaultToken) {
+        return {}
+      }
       const borrowed = tradeData.borrowed
       let minRepayVol = BigNumber.max(
         // orderAmounts.dust,
@@ -259,6 +264,7 @@ export const useVaultRepay = <
             accountId: account.accountId,
             counterFactualInfo: account.eddsaKey.counterFactualInfo,
           },
+          '1'
         )
 
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
@@ -274,6 +280,7 @@ export const useVaultRepay = <
               hash: (response as any).hash,
             },
             account.apiKey,
+            '1'
           )
           let status = ''
           if (
@@ -430,6 +437,27 @@ export const useVaultRepay = <
     isLoading,
     submitCallback,
   })
+
+  const moreToBorrowInUSD =
+    vaultRepayData.tradeData && tokenPrices[vaultRepayData.tradeData.belong as string]
+      ? new Decimal(vaultRepayData.tradeData.tradeValue?.toString() ?? '0')
+          .mul(tokenPrices[vaultRepayData.tradeData.belong as string])
+          .mul('-1')
+          .toString()
+      : undefined
+  
+
+  const nextMarginLevel =
+    vaultAccountInfo?.marginLevel && moreToBorrowInUSD
+      ? calcMarinLevel(
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
+          vaultAccountInfo.totalBalanceOfUsdt,
+          moreToBorrowInUSD,
+          '0',
+        )
+      : vaultAccountInfo?.marginLevel
+      
   return {
     handlePanelEvent,
     vaultRepayBtnStatus: btnStatus,
@@ -449,11 +477,10 @@ export const useVaultRepay = <
         belongAlice: value?.simpleName.slice(2),
       }
     }),
-    tradeData: { 
+    tradeData: {
       ...vaultRepayData.tradeData,
       erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
       belongAlice: vaultRepayData.tradeData?.belong.slice(2),
-
     },
     vaultRepayData: {
       ...vaultRepayData,
@@ -463,7 +490,7 @@ export const useVaultRepay = <
         ...vaultRepayData?.tradeData,
         erc20Symbol: vaultRepayData.tradeData?.belong.slice(2),
         belongAlice: vaultRepayData.tradeData?.belong.slice(2),
-      }
+      },
     } as unknown as V,
     tokenInfo: vaultTokenMap[vaultRepayData?.belong],
     tokenProps: {
@@ -473,5 +500,29 @@ export const useVaultRepay = <
         ? true
         : false,
     },
+    marginLevelChange: vaultAccountInfo?.marginLevel
+      ? nextMarginLevel && vaultRepayData.tradeValue
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+          }
+      : undefined,
+    initialSymbol
   }
 }

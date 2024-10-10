@@ -61,7 +61,8 @@ import {
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { useDualAsset } from './useDualAsset'
 import * as sdk from '@loopring-web/loopring-sdk'
-import { VaultOperationDetail, VaultTradeDetail } from '@loopring-web/component-lib/src/components/tableList/vaultTable/VaultTxTable'
+import { VaultConvertDetail, VaultOperationDetail, VaultTradeDetail } from '@loopring-web/component-lib/src/components/tableList/vaultTable/VaultTxTable'
+import Decimal from 'decimal.js'
 export const l2assetsRouter = `${RouterPath.l2records}/:tab/:orderTab?`
 
 
@@ -611,6 +612,10 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                             ? t('labelRepayDetail')
                             : vaultOperationDetail.type === 'VAULT_TRADE'
                             ? t('labelTradeDetail')
+                            : vaultOperationDetail.type === 'VAULT_CONVERT'
+                            ? t('labelDustCollectorDetail')
+                            : vaultOperationDetail.type === 'VAULT_JOIN_REDEEM'
+                            ? t('labelVaultJoinRedeem')
                             : t('labelCloseOutDetail'))
                             }
                       </Typography>
@@ -636,6 +641,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                       (vaultOperationDetail.type === 'VAULT_BORROW' ||
                         vaultOperationDetail.type === 'VAULT_MARGIN_CALL' ||
                         vaultOperationDetail.type === 'VAULT_OPEN_POSITION' ||
+                        vaultOperationDetail.type === 'VAULT_JOIN_REDEEM' ||
                         vaultOperationDetail.type === 'VAULT_REPAY') && (
                         <VaultOperationDetail
                           statusColor={vaultOperationDetail.statusColor}
@@ -643,7 +649,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                           time={vaultOperationDetail.time}
                           type={vaultOperationDetail.type}
                           statusType={vaultOperationDetail.statusType}
-                          amount={vaultOperationDetail.amount}
+                          amount={vaultOperationDetail.amount ? vaultOperationDetail.amount : ''}
                           amountSymbol={vaultOperationDetail.amountSymbol}
                         />
                       )}
@@ -667,6 +673,16 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         feeAmount={vaultOperationDetail.feeAmount}
                         time={vaultOperationDetail.time}
                         statusType={vaultOperationDetail.statusType}
+                      />
+                    )}
+                    {vaultOperationDetail && vaultOperationDetail.type === 'VAULT_CONVERT' && (
+                      <VaultConvertDetail
+                        totalValueInCurrency={vaultOperationDetail.totalValueInCurrency}
+                        convertedInUSDT={vaultOperationDetail.convertedInUSDT}
+                        repaymentInUSDT={vaultOperationDetail.repaymentInUSDT}
+                        time={vaultOperationDetail.time}
+                        dusts={vaultOperationDetail.dusts}
+                        status={vaultOperationDetail.status}
                       />
                     )}
                   </Box>

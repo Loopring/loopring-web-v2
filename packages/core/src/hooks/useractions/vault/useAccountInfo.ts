@@ -1,5 +1,6 @@
 import {
   store,
+  useAccount,
   useSubmitBtn,
   useTokenMap,
   useVaultLayer2,
@@ -43,9 +44,11 @@ export const useAccountInfo = () => {
     vaultAccountInfo,
     status: vaultAccountInfoStatus,
     updateVaultLayer2,
+    tokenFactors,
+    collateralTokens,
+    maxLeverage,
     activeInfo,
   } = useVaultLayer2()
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const { erc20Map } = useVaultMap()
   const { idIndex } = useTokenMap()
 
@@ -279,29 +282,11 @@ export const useAccountInfo = () => {
       ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
     })
   }, [])
-
-  const refresh = () => {
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as any)
-    }
-    updateVaultLayer2({})
-    nodeTimer.current = setTimeout(() => {
-      refresh()
-    }, 10000)
-  }
+  const { account } = useAccount()
   React.useEffect(() => {
-    if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer.current as any)
-    }
-    refresh()
-    return () => {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as any)
-      }
-    }
-  }, [vaultAccountInfo?.accountStatus])
+    if (account.apiKey) updateVaultLayer2({})
+  }, [account.apiKey])
 
-  // myLog('useAccountInfo', vaultAccountInfo)
   return {
     joinBtnStatus,
     joinBtnLabel: label(joinBtnLabel),
@@ -320,6 +305,9 @@ export const useAccountInfo = () => {
     onRepayPop,
     repayBtnLabel: label(repayBtnLabel),
     vaultAccountInfoStatus,
+    tokenFactors,
+    maxLeverage,
+    collateralTokens
 
     // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus

@@ -153,6 +153,10 @@ import {
   VaultRepay_Success,
   VaultRepay_Failed,
   VaultRepay_In_Progress,
+  VaultDustCollector_Success,
+  VaultDustCollector_Failed,
+  VaultDustCollector_In_Progress,
+  General_Failed,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -1919,7 +1923,14 @@ export function useAccountModalForUI({
           />
         ),
       },
-
+      [AccountStep.General_Failed]: {
+        view: (
+          <General_Failed
+            t={t}
+            {...rest}
+          />
+        ),
+      },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
@@ -3401,6 +3412,24 @@ export function useAccountModalForUI({
       [AccountStep.VaultRepay_In_Progress]: {
         view: (
           <VaultRepay_In_Progress
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.VaultDustCollector_Success]: {
+        view: (
+          <VaultDustCollector_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultDustCollector_Failed]: {
+        view: (
+          <VaultDustCollector_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+        ),
+      },
+      [AccountStep.VaultDustCollector_In_Progress]: {
+        view: (
+          <VaultDustCollector_In_Progress
             btnInfo={undefined}
             {...{ info: isShowAccount?.info, t, ...rest }}
           />

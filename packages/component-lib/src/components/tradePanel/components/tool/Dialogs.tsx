@@ -600,7 +600,6 @@ export const SmallOrderAlert = ({
   estimatedFee: string
   feePercentage: string
   minimumReceived: string
-  symbol: string
 }) => {
   const { t } = useTranslation('common')
   const label: RiskInformation[] = [

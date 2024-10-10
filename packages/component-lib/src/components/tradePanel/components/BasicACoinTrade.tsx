@@ -4,6 +4,7 @@ import React from 'react'
 import { BasicACoinTradeProps } from './Interface'
 import { InputButton, InputButtonProps, InputMaxButton } from '../../basic-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { getOptionalDecimal } from '@loopring-web/core'
 
 export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
   t,
@@ -58,7 +59,7 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
       const maxValue = inputButtonProps?.maxValue
       if (
         (typeof tradeValue !== 'undefined' && balance && balance < tradeValue) ||
-        (tradeValue && !balance)
+        (getOptionalDecimal(tradeValue)?.gt('0') && !balance)
       ) {
         return {
           error: true,

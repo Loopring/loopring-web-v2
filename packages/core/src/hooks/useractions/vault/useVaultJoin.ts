@@ -31,6 +31,9 @@ import {
   useL2CommonSocket,
   l2CommonService,
   NETWORKEXTEND,
+  useTokenPrices,
+  numberFormat,
+  useUserWallets,
 } from '@loopring-web/core'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -42,6 +45,9 @@ import { useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
 import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { keys } from 'lodash'
+import { calcMarinLevel, marginLevelType } from './utils'
+import Decimal from 'decimal.js'
+import { utils } from 'ethers'
 
 const DATE_IN_TEN_YEARS = 2027988026
 
@@ -50,10 +56,14 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const { tokenMap: vaultTokenMap, joinTokenMap, erc20Map, getVaultMap } = useVaultMap()
   const { tokenMap, coinMap, idIndex } = useTokenMap()
   const { status: vaultAccountInfoStatus, vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
+  const { updateUserWallets } = useUserWallets()
+
   const { exchangeInfo, chainId, baseURL } = useSystem()
   const { account } = useAccount()
   const { updateVaultJoin, vaultJoinData, resetVaultJoin } = useTradeVault()
   const [isLoading, setIsLoading] = React.useState(false)
+  const [isAddOrRedeem, setIsAddOrRedeem] = React.useState<'Add' | 'Redeem'>('Add')
+  const { tokenPrices } = useTokenPrices()
 
   const isActiveAccount =
     [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
@@ -128,7 +138,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     } else if (sdk.toBig(vaultJoinData.tradeValue ?? 0).gt(vaultJoinData.balance ?? 0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultJoinNotEnough|${vaultJoinData.belong}`,
+        label: isAddOrRedeem === 'Add' ? `labelVaultJoinNotEnough|${vaultJoinData.belong}` : `labelVaultRedeemNotEnough|${vaultJoinData.belong}`,
       }
     } else if (sdk.toBig(vaultJoinData.amount ?? 0).gt(vaultJoinData.maxAmount ?? 0)) {
       return {
@@ -148,6 +158,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultJoinData.maxAmount,
     vaultJoinData.minAmount,
     vaultJoinData.belong,
+    isAddOrRedeem
   ])
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
     // const { apiKey, connectName, eddsaKey } = account
@@ -164,14 +175,14 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           chainId: chainId === 'unknown' ? 1 : chainId,
           walletType: (ConnectProvidersSignMap[account.connectName] ??
             account.connectName) as unknown as sdk.ConnectorNames,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         } else {
-          l2CommonService.sendUserUpdate()
+          updateUserWallets()
           updateVaultLayer2(
             isActiveAccount
               ? {
@@ -191,6 +202,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
               hash: (response as any).hash,
             },
             account.apiKey,
+            '1'
           )
           let status = ''
           if (
@@ -215,8 +227,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 ? AccountStep.VaultJoin_Success
                 : AccountStep.VaultJoin_In_Progress,
             info: {
-              title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-              type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+              title: isActiveAccount
+                ? t('labelVaultJoinTitle')
+                : isAddOrRedeem === 'Add'
+                ? t('labelVaultJoinAdd')
+                : t('labelVaultRedeem'),
+              type: isActiveAccount
+                ? t('labelVaultJoin')
+                : isAddOrRedeem === 'Redeem'
+                ? t('labelVaultRedeem')
+                : t('labelVaultMarginCall'),
               status: t(status),
               amount: sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED
                 ? getValuePrecisionThousand(
@@ -259,8 +279,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         isShow: true,
         step: AccountStep.VaultJoin_Failed,
         info: {
-          title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+          title: isActiveAccount
+            ? t('labelVaultJoinTitle')
+            : isAddOrRedeem === 'Add'
+            ? t('labelVaultJoinAdd')
+            : t('labelVaultRedeem'),
+          type: isActiveAccount
+            ? t('labelVaultJoin')
+            : isAddOrRedeem === 'Redeem'
+            ? t('labelVaultRedeem')
+            : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
@@ -272,7 +300,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           ),
           symbol: ercToken.symbol,
           vSymbol: vaultJoinData.vaultSymbol,
-          time: new Date(),
+          time: Date.now(),
         },
         error,
       })
@@ -298,8 +326,16 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           isShow: true,
           step: AccountStep.VaultJoin_In_Progress,
           info: {
-            title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-            type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+            title: isActiveAccount
+              ? t('labelVaultJoinTitle')
+              : isAddOrRedeem === 'Add'
+              ? t('labelVaultJoinAdd')
+              : t('labelVaultRedeem'),
+            type: isActiveAccount
+              ? t('labelVaultJoin')
+              : isAddOrRedeem === 'Redeem'
+              ? t('labelVaultRedeem')
+              : t('labelVaultJoinAdd'),
             status: t('labelPending'),
             percentage: '0',
             amount: EmptyValueTag,
@@ -324,6 +360,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                 tokens: '',
               },
               account.apiKey,
+              '1'
             )
 
             if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
@@ -389,6 +426,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                           accountId: account.accountId,
                           counterFactualInfo: account.eddsaKey.counterFactualInfo,
                         },
+                        '1'
                       )
                     )
                   }),
@@ -400,7 +438,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
         //step 2: get a NFT
         const [avaiableNFT, storageId] = await Promise.all([
-          isActiveAccount
+          (isActiveAccount)
             ? LoopringAPI.vaultAPI
                 .getVaultGetAvailableNFT(
                   {
@@ -439,9 +477,11 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ) {
           throw storageId
         }
-        const amount = sdk
-          .toBig(vaultJoinData.amount)
-          .plus(isActiveAccount ? 0 : vaultAccountInfo?.collateralInfo?.collateralTokenAmount ?? 0)
+        const amount = isActiveAccount 
+          ? sdk.toBig(vaultJoinData.amount)
+          : isAddOrRedeem === 'Add' 
+            ? sdk.toBig(vaultAccountInfo?.collateralInfo?.collateralTokenAmount).plus(vaultJoinData.amount)
+            : sdk.toBig(vaultAccountInfo?.collateralInfo?.collateralTokenAmount).minus(vaultJoinData.amount)  
         const takerOrder: sdk.VaultJoinRequest = {
           exchange: exchangeInfo.exchangeAddress,
           accountId: account.accountId,
@@ -476,15 +516,23 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         isShow: true,
         step: AccountStep.VaultJoin_Failed,
         info: {
-          title: isActiveAccount ? t('labelVaultJoinTitle') : t('labelVaultJoinMarginTitle'),
-          type: isActiveAccount ? t('labelVaultJoin') : t('labelVaultMarginCall'),
+          title: isActiveAccount
+            ? t('labelVaultJoinTitle')
+            : isAddOrRedeem === 'Add'
+            ? t('labelVaultJoinAdd')
+            : t('labelVaultRedeem'),
+          type: isActiveAccount
+            ? t('labelVaultJoin')
+            : isAddOrRedeem === 'Redeem'
+            ? t('labelVaultRedeem')
+            : t('labelVaultMarginCall'),
           status: t('labelFailed'),
           percentage: '0',
           amount: EmptyValueTag,
           sum: EmptyValueTag,
           symbol: ercToken.symbol,
           vSymbol: vaultJoinData.vaultSymbol,
-          time: new Date(),
+          time: Date.now(),
         },
         error: {
           ...(e as any),
@@ -503,6 +551,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     isLoading,
     submitCallback,
   })
+
   const {
     modals: {
       isShowVaultJoin: { isShow, symbol },
@@ -582,9 +631,26 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       })
       initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
     }
+    const maxRedeemCollateral =
+      vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
+        ? Decimal.max(
+            numberFormat(
+              utils.formatUnits(
+                (vaultAccountInfo as any).maxRedeemCollateral as string,
+                tokenMap[initSymbol].decimals,
+              ),
+              {
+                fixed: vaultTokenMap['LV' + initSymbol].vaultTokenAmounts.qtyStepScale,
+                removeTrailingZero: true,
+                fixedRound: Decimal.ROUND_FLOOR
+              },
+            ),
+            '0',
+          ).toString()
+        : undefined
     walletInfo = {
       belong: initSymbol,
-      balance: walletMap[initSymbol]?.count ?? 0,
+      balance: isAddOrRedeem === 'Add' ? walletMap[initSymbol]?.count ?? 0 : maxRedeemCollateral,
       tradeValue: undefined,
     }
     updateVaultJoin({
@@ -594,6 +660,36 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       tradeData: walletInfo,
     })
   }
+  React.useEffect(() => {
+    if (isAddOrRedeem === 'Redeem') {
+      const symbol = vaultJoinData.belong as string
+      const maxRedeemCollateral =
+        vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral && tokenMap[symbol]
+          ? Decimal.max(
+              numberFormat(
+                utils.formatUnits(
+                  (vaultAccountInfo as any).maxRedeemCollateral as string,
+                  tokenMap[symbol].decimals,
+                ),
+                {
+                  fixed: vaultTokenMap['LV' + symbol].vaultTokenAmounts.qtyStepScale,
+                  removeTrailingZero: true,
+                  fixedRound: Decimal.ROUND_FLOOR
+                },
+              ),
+              '0',
+            ).toString()
+          : undefined
+      updateVaultJoin({
+        ...vaultJoinData,
+        tradeData: {
+          ...vaultJoinData.tradeData,
+          // @ts-ignore
+          balance: maxRedeemCollateral,
+        }
+      })
+    }
+  }, [(vaultAccountInfo as any)?.maxRedeemCollateral, isAddOrRedeem])
   const vaultLayer2Callback = React.useCallback(() => {
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
     let walletMap = makeWalletLayer2ForVault()
@@ -613,36 +709,42 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   }, [])
   useL2CommonSocket({ walletLayer2Callback, vaultLayer2Callback })
   React.useEffect(() => {
-    let time: any = -1
     if (isShow) {
       onRefreshData()
       initData()
-      time = setTimeout(() => {
-        if (refreshRef.current) {
-          // @ts-ignore
-          refreshRef.current.firstElementChild.click()
-        }
-      }, 500)
     } else {
       resetVaultJoin()
     }
-    return () => {
-      clearTimeout(time)
-    }
-  }, [isShow])
+  }, [isShow, isAddOrRedeem])
   const onRefreshData = React.useCallback(() => {
-    myLog('useVaultSwap: onRefreshData')
-    l2CommonService.sendUserUpdate()
     getVaultMap()
+    updateUserWallets()
   }, [])
   const refreshRef = React.createRef()
 
   const handlePanelEvent = async (data: SwitchData<T>, _switchType: 'Tomenu' | 'Tobutton') => {
     const walletMap = makeWalletLayer2ForVault()
     const tokenSymbol = data.tradeData.belong
+    const maxRedeemCollateral =
+      vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral && tokenMap[tokenSymbol as string]
+        ? Decimal.max(
+            numberFormat(
+              utils.formatUnits(
+                (vaultAccountInfo as any).maxRedeemCollateral as string,
+                tokenMap[tokenSymbol as string].decimals,
+              ),
+              {
+                fixed: vaultTokenMap['LV' + (tokenSymbol as string)].vaultTokenAmounts.qtyStepScale,
+                removeTrailingZero: true,
+                fixedRound: Decimal.ROUND_FLOOR
+              },
+            ),
+            '0',
+          ).toString()
+        : undefined
     let walletInfo: any = {
       ...walletMap[tokenSymbol],
-      balance: walletMap[tokenSymbol]?.count ?? 0,
+      balance: isAddOrRedeem === 'Add' ? (walletMap[tokenSymbol]?.count ?? 0) : maxRedeemCollateral,
       tradeValue: data.tradeData?.tradeValue,
       belong: tokenSymbol
     }
@@ -652,7 +754,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         ...vaultJoinData,
         amount: sdk
           .toBig(walletInfo.tradeValue ?? 0)
-          .times('1e' + tokenMap[tokenSymbol].decimals)
+          .times('1e' + tokenMap[tokenSymbol as string].decimals)
           .toString(),
         tradeData: walletInfo,
         ...walletInfo,
@@ -665,6 +767,31 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
   // btnStatus, enableBtn, disableBtn
+  
+  const moreToCollateralizeInUSD =
+    vaultJoinData.tradeData &&
+    vaultJoinData.tradeData.tradeValue &&
+    new Decimal(vaultJoinData.tradeData.tradeValue).gt(0) &&
+    tokenPrices[vaultJoinData.tradeData.belong as string]
+      ? new Decimal(vaultJoinData.tradeData.tradeValue ?? '0')
+          .mul(tokenPrices[vaultJoinData.tradeData.belong as string])
+          .mul(isAddOrRedeem === 'Add' ? 1 : -1)
+          .toString()
+      : undefined
+  const nextMarginLevel =
+    vaultAccountInfo && moreToCollateralizeInUSD
+      ? calcMarinLevel(
+          vaultAccountInfo.totalCollateralOfUsdt,
+          vaultAccountInfo.totalDebtOfUsdt,
+          vaultAccountInfo.totalBalanceOfUsdt,
+          '0',
+          moreToCollateralizeInUSD,
+        )
+      : undefined
+
+  const ercToken = vaultJoinData.tradeData && tokenMap[vaultJoinData.tradeData.belong as string]
+  
+
   return {
     handleError: undefined,
     type: TRADE_TYPE.TOKEN,
@@ -683,10 +810,50 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultJoinData,
     coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
     tokenProps: {
-      decimalsLimit: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale,
-      allowDecimals: erc20Map[vaultJoinData?.tradeData?.belong]?.vaultTokenAmounts?.qtyStepScale
+      decimalsLimit: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale,
+      allowDecimals: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale
         ? true
         : false,
     },
+    onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
+      setIsAddOrRedeem(value)
+    },
+    isAddOrRedeem,
+    marginLevelChange: vaultAccountInfo?.marginLevel
+      ? nextMarginLevel
+        ? {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: nextMarginLevel,
+              type: marginLevelType(nextMarginLevel),
+            },
+          }
+        : {
+            from: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+            to: {
+              marginLevel: vaultAccountInfo.marginLevel,
+              type: marginLevelType(vaultAccountInfo.marginLevel),
+            },
+          }
+      : undefined,
+    holdingCollateral:
+      vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken
+        ? numberFormat(
+            utils.formatUnits(
+              vaultAccountInfo?.collateralInfo.collateralTokenAmount,
+              ercToken.decimals,
+            ),
+            {
+              fixed: ercToken.precision,
+              removeTrailingZero: true,
+            },
+          )
+        : undefined,
   }
 }

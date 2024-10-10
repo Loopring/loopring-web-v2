@@ -14,6 +14,8 @@ export type VaultJoinBaseProps<T, I, V> = {
   isActiveAccount: boolean
   onRefreshData: () => void
   refreshRef: React.Ref<any>
+  onToggleAddRedeem: (value: 'Add' | 'Redeem') => void;
+  isAddOrRedeem: 'Add' | 'Redeem'
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type VaultJoinExtendProps<T, I, C = IBData<I>> = {
@@ -22,6 +24,17 @@ export type VaultJoinExtendProps<T, I, C = IBData<I>> = {
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void
   tokenProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>
   onBack: () => {}
+  marginLevelChange: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  } | undefined
+  holdingCollateral?: string
 }
 export type VaultJoinWrapProps<T, I, V> = VaultJoinBaseProps<T, I, V> & VaultJoinExtendProps<T, I>
 
@@ -48,6 +61,18 @@ export type VaultBorrowBaseProps<T, I, B> = {
   tradeData: T
   onRefreshData: () => void
   refreshRef: React.Ref<any>
+  marginLevelChange: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  } | undefined
+  userLeverage: string
+  onClickLeverage: () => void
 }
 export type VaultBorrowWrapProps<T, I, B> = BasicACoinTradeViewProps<T, I> &
   VaultBorrowBaseProps<T, I, B>
@@ -63,4 +88,15 @@ export type VaultRepayWrapProps<T, I, VR> = BasicACoinTradeViewProps<T, I> & {
   tradeData: T
   forexMap: ForexMap<sdk.Currency>
   tokenInfo?: sdk.VaultToken
+  marginLevelChange: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  } | undefined
+  initialSymbol: string | undefined
 }

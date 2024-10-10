@@ -93,6 +93,7 @@ export type CoinMenuProps<R, I> = {
   walletMap: WalletMap<R, I extends CoinInfo<R> ? WalletCoin<R> : WalletCoin<R>> | {}
   handleSelect?: (event: React.MouseEvent, selected: CoinKey<R>) => void
   className?: string
+  filterWithBorrowed?: boolean
 }
 
 export type CollectionListProps<Co> = {

@@ -646,7 +646,20 @@ export const VaultTradeBase = (props: PanelProps & { showTitle: boolean }) => {
     />
   )
 }
-
+export const VaultDustCollectorBase = (
+  props: PanelProps & {
+    showTitle: boolean
+  },
+) => {
+  const { showTitle } = props
+  return (
+    <BasicPanel
+      title={showTitle ? 'Dust Collector' : undefined}
+      legacyTitleStyle={false}
+      {...props}
+    />
+  )
+}
 export const RedPacketBase = (props: PanelProps) => {
   const propsPatch = {
     title: 'labelSendRedPacketTitle',

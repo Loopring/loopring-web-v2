@@ -25,11 +25,17 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
     vaultAccountInfo,
     userBalances,
     history,
-    wait
+    wait,
+    tokenFactors, 
+    maxLeverage,
+    collateralTokens
+
   if (apiKey && accountId && accountId >= 10000 && LoopringAPI.vaultAPI) {
     let promise: any[] = [
-      LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey),
-      LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey),
+      LoopringAPI.vaultAPI.getVaultInfoAndBalance({ accountId }, apiKey, '1'),
+      LoopringAPI.vaultAPI.getVaultBalance({ accountId, tokens: '' }, apiKey, '1'),
+      LoopringAPI.vaultAPI.getCredit({ accountId }, apiKey, '1'),
+      LoopringAPI.vaultAPI.getCollaterals({ accountId }, apiKey, '1'),
     ]
     try {
       if (activeInfo && activeInfo.hash && activeInfo.isInActive) {
@@ -40,10 +46,11 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
               hash: activeInfo.hash,
             },
             apiKey,
+            '1'
           ),
         )
       }
-      ;[vaultAccountInfo, { userBalances }, history] = await Promise.all(promise)
+      ;[vaultAccountInfo, { userBalances }, {tokenFactors, maxLeverage }, {collateralTokens},history] = await Promise.all(promise)
       if (
         (vaultAccountInfo as sdk.RESULT_INFO).code ||
         (vaultAccountInfo as sdk.RESULT_INFO).message
@@ -62,7 +69,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         )
       ) {
         _activeInfo = undefined
-        wait = 1000 * 60
+        wait = 1000 * 10
       } else if (
         activeInfo &&
         [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED, ''].includes(
@@ -70,22 +77,19 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         )
       ) {
         _activeInfo = activeInfo
-        wait = 1000 * 15
+        wait = 1000 * 10
       } else {
         wait = Infinity
       }
-      __timer__ = ((__timer__) => {
-        if (__timer__ && __timer__ !== -1) {
-          clearTimeout(__timer__)
-        }
-        if (wait !== Infinity) {
-          return setTimeout(() => {
-            store.dispatch(updateVaultLayer2({ activeInfo }))
-          }, wait)
-        } else {
-          return -1
-        }
-      })(__timer__)
+
+      if (__timer__) {
+        clearTimeout(__timer__)
+      }
+      if (wait !== Infinity) {
+        __timer__ = setTimeout(() => {
+          store.dispatch(updateVaultLayer2({ activeInfo }))
+        }, wait)
+      }
 
       // if(vaultAccountInfo.userAssets)
       if (vaultAccountInfo.userAssets) {
@@ -102,7 +106,7 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
       throw error
     }
   }
-  return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, __timer__ }
+  return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ }
 }
 export function* getPostsSaga({
   payload,
@@ -110,12 +114,12 @@ export function* getPostsSaga({
   payload: { activeInfo?: { hash: string; isInActive: boolean } | undefined }
 }) {
   try {
-    let { vaultLayer2, vaultAccountInfo, activeInfo, __timer__ } = yield call(
+    let { vaultLayer2, vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ } = yield call(
       getVaultLayer2Balance,
       payload.activeInfo,
     )
 
-    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo, __timer__ }))
+    yield put(getVaultLayer2Status({ vaultLayer2, vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ }))
   } catch (err) {
     yield put(getVaultLayer2Status({ error: err }))
   }

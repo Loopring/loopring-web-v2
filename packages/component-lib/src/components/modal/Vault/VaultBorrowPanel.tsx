@@ -23,20 +23,20 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
   _width,
   type = TRADE_TYPE.TOKEN,
   onRefreshData,
-  refreshRef,
   ...rest
 }: VaultBorrowProps<T, I, V>) => {
   const { t, i18n } = useTranslation()
-  const { onChangeEvent, index, switchData } = useBasicTrade({
-    ...rest,
-    type,
-    walletMap,
-    coinMap,
-  } as any)
-  const [panelIndex, setPanelIndex] = React.useState(index)
-  React.useEffect(() => {
-    setPanelIndex(index)
-  }, [index])
+  const [panelIndex, setPanelIndex] = React.useState(0)
+  const onChangeEvent = (index, data) => {
+    if (index !== panelIndex) {
+      if (data.tradeData.belong !== rest.tradeData.belong) {
+        rest.handlePanelEvent && rest.handlePanelEvent(data, "Tobutton")
+      }
+      setPanelIndex(index)
+    } else {
+      rest.handlePanelEvent && rest.handlePanelEvent(data, "Tobutton")
+    }
+  }
 
   const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {
     index: panelIndex, // show default show
@@ -51,7 +51,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
               {...{
                 ...rest,
                 type,
-                tradeData: switchData.tradeData,
+                // tradeData: switchData.tradeData,
                 onChangeEvent,
                 disabled: !!rest.disabled,
                 walletMap,
@@ -59,7 +59,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
               }}
             />
           ),
-          [rest, switchData.tradeData, onChangeEvent, walletMap, coinMap],
+          [rest, onChangeEvent, walletMap, coinMap],
         ),
         toolBarItem: React.useMemo(
           () => (
@@ -72,7 +72,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
                 height={0}
                 width={0}
               >
-                <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+                <CountDownIcon onRefreshData={onRefreshData} />
               </Typography>
             </>
           ),
@@ -92,8 +92,8 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
                 ...rest,
                 onChangeEvent,
                 //rest.walletMap,
-                selected: switchData.tradeData.belong,
-                tradeData: switchData.tradeData,
+                selected: rest.tradeData.belong,
+                tradeData: rest.tradeData,
                 walletMap,
                 coinMap,
                 tokenType: TokenType.vault,
@@ -101,13 +101,13 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
               }}
             />
           ),
-          [rest, onChangeEvent, switchData.tradeData, walletMap, coinMap],
+          [rest, walletMap, coinMap],
         ),
         toolBarItem: undefined,
       },
     ],
   }
-  return !switchData.tradeData?.belong ? (
+  return !rest.tradeData?.belong ? (
     <Box
       height={'var(--min-height)'}
       display={'flex'}

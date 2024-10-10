@@ -9,9 +9,10 @@ import { useL2CommonSocket } from '../../../services'
 export const useVaultLoan = () => {
   const {
     modals: {
-      isShowVaultLoan: { type, isShow, symbol },
+      isShowVaultLoan: { type, isShow, info },
     },
   } = useOpenModals()
+
   const [vaultLoanType, setVaultLoanType] = React.useState(type ?? VaultLoanType.Borrow)
   const handleTabChange = (index: VaultLoanType) => {
     setVaultLoanType(index)
@@ -27,7 +28,7 @@ export const useVaultLoan = () => {
   useL2CommonSocket({})
 
   return {
-    vaultRepayProps: useVaultRepay(),
+    vaultRepayProps: useVaultRepay(info?.symbol),
     vaultBorrowProps: useVaultBorrow(),
     vaultLoanType,
     handleTabChange,

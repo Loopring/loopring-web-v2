@@ -71,6 +71,7 @@ export type TradeMenuListProps<T, I> = {
   className?: string
   hasCancel?: boolean
   contentEle?: ({ ele }: { ele: any }) => JSX.Element
+  filterWithBorrowed?: boolean
 }
 
 /**

@@ -9,7 +9,7 @@ import { useTheme } from '@emotion/react'
 export const CountDownIcon = React.memo(
   React.forwardRef(
     (
-      { onRefreshData, wait = globalSetup.wait }: { wait?: number; onRefreshData?: () => void },
+      { onRefreshData, wait = globalSetup.wait, countDownSeconds }: { wait?: number; onRefreshData?: () => void, countDownSeconds?: number },
       ref,
     ) => {
       const countDownRef = React.useRef<any>()
@@ -104,6 +104,7 @@ export const CountDownIcon = React.memo(
             className={'clock-loading outlined logo'}
             onClick={refresh}
             color={theme.colorBase.logo}
+            countDownSeconds={countDownSeconds}
           >
             <Typography component={'span'} className={'text-count'}></Typography>
             <Box className={'circle'} />

@@ -19,6 +19,7 @@ export const TradeMenuList = <T extends IBData<I>, I>({
   tokenType,
   className,
   hasCancel = true,
+  filterWithBorrowed,
   ...rest
 }: TradeMenuListProps<T, I> & WithTranslation) => {
   const ref = React.useRef<any>(null)
@@ -81,6 +82,7 @@ export const TradeMenuList = <T extends IBData<I>, I>({
           t,
           ...rest,
         }}
+        filterWithBorrowed={filterWithBorrowed}
         ref={ref}
       />
     )

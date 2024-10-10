@@ -7,6 +7,8 @@ export enum VaultRecordType {
   margin = 'margin',
   repay = 'repay',
   trade = 'trade',
+  convert = 'convert',
+  redeem = 'redeem',
 }
 
 export type RawDataVaultTxItem = {

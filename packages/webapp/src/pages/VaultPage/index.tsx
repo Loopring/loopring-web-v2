@@ -84,6 +84,7 @@ export const VaultPage = () => {
   const {setConfirmedOpenVaultPosition} = useConfirmation()
 
   const [error, setError] = React.useState(false)
+  const [showLeverage, setShowLeverage] = React.useState({show: false, closeAfterChange: false})
   React.useEffect(() => {
     const { marketArray } = store.getState().invest.vaultMap
     if (vaultStatus === SagaStatus.UNSET && marketArray?.length) {
@@ -159,9 +160,17 @@ export const VaultPage = () => {
       <Divider />
       {!error && marketArray?.length ? (
         <>
-          <ModalVaultWrap />
+          <ModalVaultWrap
+            onClickLeverage={() =>
+              setShowLeverage({ show: !showLeverage.show, closeAfterChange: true })
+            }
+          />
           {tabIndex == VaultKey.VAULT_DASHBOARD && (
-            <VaultDashBoardPanel vaultAccountInfo={vaultAccountInfo} />
+            <VaultDashBoardPanel
+              vaultAccountInfo={vaultAccountInfo}
+              closeShowLeverage={() => setShowLeverage({ show: false, closeAfterChange: false })}
+              showLeverage={showLeverage}
+            />
           )}
           {tabIndex == VaultKey.VAULT_HOME && (
             <VaultHomePanel vaultAccountInfo={vaultAccountInfo} />

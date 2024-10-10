@@ -39,6 +39,7 @@ export enum AccountStep {
   Deposit_Submit,
 
   //L2
+  General_Failed,
 
   ContinuousBanxaOrder,
   CheckingActive,
@@ -212,6 +213,9 @@ export enum AccountStep {
   VaultRepay_Success,
   VaultRepay_Failed,
   VaultRepay_In_Progress,
+  VaultDustCollector_Success,
+  VaultDustCollector_Failed,
+  VaultDustCollector_In_Progress,
 }
 
 /**

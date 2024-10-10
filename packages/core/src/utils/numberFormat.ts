@@ -5,6 +5,7 @@ import { CurrencyToTag, PriceTag } from "@loopring-web/common-resources"
 
 export const numberFormat = (number: string | number, format?: {
   fixed?: number,
+  fixedRound?: Decimal.Rounding
   thousandthPlace?: boolean,
   showInPercent?: boolean,
   currency?: CurrencyToTag,
@@ -13,12 +14,15 @@ export const numberFormat = (number: string | number, format?: {
   removeTrailingZero?: boolean
 }) => {
   const numberStr1 = typeof number === 'number' ? number.toString() : number
-  const numberStr3 = format?.fixed !== undefined
-    ? new Decimal(numberStr1).toFixed(format?.fixed)
-    : numberStr1
+  const numberStr2 =
+    format?.fixed !== undefined
+      ? format.fixedRound
+        ? new Decimal(numberStr1).toFixed(format?.fixed, format.fixedRound)
+        : new Decimal(numberStr1).toFixed(format?.fixed)
+      : numberStr1
   const numberStr4 = format?.removeTrailingZero
-    ? new Decimal(numberStr3).toString()
-    : numberStr3
+    ? new Decimal(numberStr2).toString()
+    : numberStr2
   const numberStr5 = format?.thousandthPlace
     ? numberStr4.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
     : numberStr4
@@ -51,7 +55,7 @@ export const numberFormatShowInPercent = (number: string | number, format?: {
 
 export const fiatNumberDisplay = (number: string | number, currency: CurrencyToTag) => {
   const numberStr = typeof number === 'number' ? number.toString() : number
-  const fixed = new Decimal(numberStr).lessThan('1') ? 6 : 2
+  const fixed = new Decimal(numberStr).lessThan('1') && new Decimal(numberStr).greaterThan('0') ? 6 : 2
   return numberFormatThousandthPlace(number, {
     fixed,
     currency

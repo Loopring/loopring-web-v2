@@ -2,6 +2,7 @@ import {
   IconType,
   PanelProps,
   VaultBorrowBase,
+  VaultDustCollectorBase,
   VaultExitBase,
   VaultJoinBase,
   VaultRepayBase,
@@ -11,6 +12,7 @@ import { Box, Tooltip, Typography } from '@mui/material'
 import {
   AlertIcon,
   EmptyValueTag,
+  ErrorIcon,
   hexToRGB,
   Info2Icon,
   TokenType,
@@ -22,6 +24,7 @@ import { useSettings } from '../../../stores'
 import { useTheme } from '@emotion/react'
 import { CoinIcons } from '../../tableList'
 import { useTranslation } from 'react-i18next'
+import { SpaceBetweenBox } from '../../../components/basic-lib'
 
 const TradeDes2 = (props: PanelProps) => {
   const { isMobile, coinJson } = useSettings()
@@ -385,7 +388,7 @@ const JoinDes2 = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelVaultCollateral')}
+            {props.t('labelVaultAmount')}
           </Typography>
           <Typography
             variant={'body1'}
@@ -1027,4 +1030,142 @@ export const VaultRepay_In_Progress = (props: PanelProps) => {
     describe2: props.info && <RepayDes2 {...props} isPending={true} />,
   }
   return <VaultRepayBase showTitle={true} {...propsPatch} {...props} />
+}
+
+const DustCollectorDes = (
+  props: PanelProps & {
+    isPending?: boolean
+  },
+) => {
+  const theme = useTheme()
+  const { status, totalValueInCurrency, convertedInUSDT, repaymentInUSDT, time, dusts } = props
+  const { t } = useTranslation()
+  return (
+    <>
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        width={'100%'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={3}
+      >
+        <Typography textAlign={'center'} variant='h4'>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>
+        <Typography textAlign={'center'} mt={1} mb={2} color={'var(--color-text-third)'}>{totalValueInCurrency} </Typography>
+        <Box
+          borderRadius={'8px'}
+          bgcolor={'var(--color-box-secondary)'}
+          paddingX={2.5}
+          paddingY={1}
+        >
+          <SpaceBetweenBox
+            leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultRepayment')}</Typography>}
+            rightNode={<Typography>{repaymentInUSDT ? (repaymentInUSDT + ' USDT') : '--'} </Typography>}
+            marginBottom={2}
+          />
+          <SpaceBetweenBox
+            leftNode={<Typography color={'var(--color-text-third)'}>{t('labelVaultTime')}</Typography>}
+            rightNode={<Typography>{moment(time).format(YEAR_DAY_MINUTE_FORMAT)}</Typography>}
+          />
+        </Box>
+        
+        <Box marginBottom={2} mt={2}>
+          {dusts && dusts.map((dust) => {
+            return (
+              <SpaceBetweenBox
+                paddingY={1.5}
+                paddingX={2}
+                marginBottom={1}
+                alignItems={'center'}
+                key={dust.symbol}
+                leftNode={
+                  <Box alignItems={'center'} display={'flex'}>
+                    <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
+                    <Typography marginLeft={1}>{dust.symbol}</Typography>
+                  </Box>
+                }
+                rightNode={
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Box marginRight={1}>
+                      <Typography textAlign={'right'}>{dust.amount}</Typography>
+                      <Typography
+                        color={'var(--color-text-secondary)'}
+                        textAlign={'right'}
+                        variant={'body2'}
+                      >
+                        {dust.valueInCurrency}
+                      </Typography>
+                    </Box>
+                  </Box>
+                }
+              />
+            )
+          })}
+        </Box>
+        {status === 'failed' && (
+          <Box
+            borderRadius={'8px'}
+            display={'flex'}
+            alignItems={'center'}
+            paddingX={2.5}
+            paddingY={1.5}
+            bgcolor={hexToRGB(theme.colorBase.error, 0.2)}
+          >
+            <ErrorIcon sx={{ color: 'var(--color-error)', marginRight: 1 / 2 }} />
+            <Typography>{t('labelVaultErrorOccurred')}</Typography>
+          </Box>
+        )}
+      </Box>
+    </>
+  )
+}
+
+export const VaultDustCollector_Success = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    describe1: props.t('labelVaultRepaySuccess', {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+    describe2: props.info && <DustCollectorDes status={'success'} {...props} />,
+  }
+  return <VaultDustCollectorBase showTitle={true} {...propsPatch} {...props} />
+}
+export const VaultDustCollector_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t('labelVaultRepayFailed', {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+    describe2: (
+      <>
+        {props.info && <DustCollectorDes status={'failed'} {...props} />}
+        {props?.error && props.error?.message && (
+          <Typography
+            width={'var(--modal-min-width)'}
+            variant={'body1'}
+            component={'span'}
+            color={'warning'}
+            marginTop={2}
+          >
+            {props.error?.message}
+          </Typography>
+        )}
+      </>
+    ),
+  }
+  return <VaultDustCollectorBase showTitle={true} {...propsPatch} {...props} />
+}
+export const VaultDustCollector_In_Progress = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t('labelVaultRepayInProgress', {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+    describe2: props.info && <DustCollectorDes status={'inProgress'} {...props} isPending={true} />,
+  }
+  return <VaultDustCollectorBase showTitle={true} {...propsPatch} {...props} />
 }

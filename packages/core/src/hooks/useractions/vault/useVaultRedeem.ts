@@ -50,10 +50,16 @@ export const useVaultRedeem = () => {
     if (vaultAccountInfo?.accountStatus == sdk.VaultAccountStatus.IN_STAKING) {
       setInfo(() => {
         const profit =
-          vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
+          (vaultAccountInfo as any)?.accountType === 0
+            ? vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
+              ? sdk
+                  .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+                  .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+              : undefined
+            : vaultAccountInfo?.totalCollateralOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
             ? sdk
-                .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
-                .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+                .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
+                .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
             : undefined
         return {
           profit: profit
@@ -145,7 +151,7 @@ export const useVaultRedeem = () => {
           request: request,
           privateKey: eddsaKey.sk,
           apiKey,
-        })
+        }, '1')
         if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
           throw response
         }
@@ -158,6 +164,7 @@ export const useVaultRedeem = () => {
             hash: (response as any).hash,
           },
           apiKey,
+          '1'
         )
         let status = ''
         if (
@@ -202,6 +209,7 @@ export const useVaultRedeem = () => {
               hash: (response as any).hash,
             },
             apiKey,
+            '1'
           ).then(x => {
             if (x.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED) {
               setShowNoVaultAccount({ isShow: false })

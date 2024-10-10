@@ -72,6 +72,8 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
         isRequiredBorrow,
         // VaultMarket,
         maxFeeBips,
+        smallTradePromptAmt,
+        upSlippageFeeBips,
         ...rest
       } = action.payload
       if (market !== state.tradeVault.market && market && tradePair) {
@@ -137,6 +139,12 @@ const tradeVaultSlice: Slice<TradeVaultStatus> = createSlice({
 
         if (sellMinAmtInfo !== undefined) {
           state.tradeVault.sellMinAmtInfo = sellMinAmtInfo
+        }
+        if (smallTradePromptAmt !== undefined) {
+          state.tradeVault.smallTradePromptAmt = smallTradePromptAmt
+        }
+        if (upSlippageFeeBips !== undefined) {
+          state.tradeVault.upSlippageFeeBips = upSlippageFeeBips
         }
         if (sellMaxL2AmtInfo !== undefined) {
           state.tradeVault.sellMaxL2AmtInfo = sellMaxL2AmtInfo

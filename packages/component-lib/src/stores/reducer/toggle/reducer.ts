@@ -38,6 +38,7 @@ const initialState: ToggleState = {
   redpacket_exclusive: { enable: true },
   dual_reinvest: { enable: true },
   VaultInvest: { enable: true },
+  VaultDustCollector: { enable: true },
   whiteList: {},
   isSupperUser: false as any,
 }

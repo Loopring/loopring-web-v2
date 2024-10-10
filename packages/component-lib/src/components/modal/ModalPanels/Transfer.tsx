@@ -1,7 +1,8 @@
-import { IconType, PanelProps, TransferBase } from './BasicPanel'
+import { BasicPanel, IconType, PanelProps, TransferBase } from './BasicPanel'
 import { sanitize } from 'dompurify'
 import { useSettings } from '../../../stores'
 import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
+import { Typography } from '@mui/material'
 
 // value symbol
 export const Transfer_WaitForAuth = (props: PanelProps) => {
@@ -204,4 +205,17 @@ export const NFTBurn_Failed = (props: PanelProps) => {
   }
   return <TransferBase {...propsPatch} {...props} />
 }
-
+// value symbol
+export const General_Failed = (props: PanelProps) => {
+  return (
+    <BasicPanel
+      iconType={IconType.FailedIcon}
+      describe1={
+        <Typography color={'var(--color-error)'}>
+          {props.errorMessage}
+        </Typography>
+      }
+      {...props}
+    />
+  )
+}

@@ -70,6 +70,9 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
     scenario = SCENARIO.SWAP,
     hideSecondConfirmation,
     bTradeTutorial,
+    marginLevelChange,
+    vaultLeverage,
+    refreshTime,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation & {}) => {
     let history = useHistory()
@@ -157,6 +160,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                   tokenSellProps,
                   tokenBuyProps,
                   handleError,
+                  marginLevelChange
                 }}
               />
             )
@@ -288,7 +292,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             />
                           </Box>
                         )}
-                        {!hideSecondConfirmation && (
+                        {(tradeCalcData as any).isVault && (
                           <Grid
                             container
                             justifyContent={'space-between'}
@@ -296,6 +300,41 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             alignItems={'center'}
                             height={24}
                             marginTop={2.5}
+                          >
+                            <Typography
+                              component={'span'}
+                              variant='body2'
+                              color={'textSecondary'}
+                              display={'inline-flex'}
+                              alignItems={'center'}
+                            >
+                              {' ' + rest.t('labelVaultLeverage')}
+                            </Typography>
+                            <Typography
+                              component={'span'}
+                              variant='body2'
+                              color={'textSecondary'}
+                              display={'inline-flex'}
+                              alignItems={'center'}
+                              sx={{textDecoration: 'underline', cursor: 'pointer'}}
+                              mr={1.5}
+                              onClick={() => {
+                                vaultLeverage?.onClickLeverage && vaultLeverage?.onClickLeverage()
+                              }}
+                            >
+                              {vaultLeverage?.leverage}x
+                            </Typography>
+                            
+                          </Grid>
+                        )}
+                        {!hideSecondConfirmation && (
+                          <Grid
+                            container
+                            justifyContent={'space-between'}
+                            direction={'row'}
+                            alignItems={'center'}
+                            height={24}
+                            marginTop={1}
                           >
                             <Tooltip
                               title={rest.t('labelSwapSettingSecondConfirmTootip').toString()}
@@ -328,7 +367,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                     </PopoverStyled>
                   </Typography>
                   <Typography display={'inline-block'} marginLeft={2} component={'span'}>
-                    <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+                    <CountDownIcon countDownSeconds={refreshTime} onRefreshData={onRefreshData} ref={refreshRef} />
                   </Typography>
                   <Typography
                     display={'inline-block'}

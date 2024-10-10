@@ -26,6 +26,20 @@ export type SwapTradeBaseProps<T, I, TCD> = {
   tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
   classWrapName?: string
   BtnEle?: JSX.Element
+  marginLevelChange?: {
+    from: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger' 
+    }
+    to: {
+      marginLevel: string
+      type: 'safe' | 'warning' | 'danger'
+    }
+  }
+  vaultLeverage?: {
+    leverage: string
+    onClickLeverage: () => void
+  }
 }
 export type SwapTradeBaseEventProps<T, I> = {
   onSwapClick: () => void | any

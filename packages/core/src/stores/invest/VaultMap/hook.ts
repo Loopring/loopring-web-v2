@@ -15,7 +15,9 @@ export const useVaultMap = (): VaultMapStates & {
   return {
     ...vaultMap,
     statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
-    getVaultMap: React.useCallback(() => dispatch(getVaultMap(undefined)), [dispatch]),
+    getVaultMap: React.useCallback(() => {
+      return dispatch(getVaultMap(undefined))
+    }, [dispatch]),
     updateVaultSyncMap: React.useCallback(
       ({ vaultMap }: { vaultMap: VaultMap }) => dispatch(getVaultMap(vaultMap)),
       [dispatch],
