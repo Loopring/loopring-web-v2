@@ -485,6 +485,7 @@ const MyLiquidity: any = withTranslation('common')(
                     })
                   }}
                   showFilter
+                  hideActions
                 />
               </Box>
             </Box>
