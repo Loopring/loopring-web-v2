@@ -22,6 +22,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { StyleWrapper } from '../DeFiPanel'
 import { MaxWidthContainer, containerColors } from '..'
+import { TaikoLockInput } from './TaikoLockInput'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { ErrorPage } from '../../ErrorPage'
@@ -40,9 +41,9 @@ const ButtonStyled = styled(Button)`
 export const StackTradePanel = ({
   setConfirmedLRCStakeInvestInvest,
   isJoin = true,
-  symbol = 'LRC',
+  symbol,
 }: {
-  symbol?: string
+  symbol: string
   setConfirmedLRCStakeInvestInvest: (state: {
     isShow: boolean
     confirmationNeeded: boolean
@@ -157,10 +158,9 @@ export const StackTradePanel = ({
                   border={'1px solid var(--color-border)'}
                   borderRadius={2}
                 >
-                  <DeFiSideWrap
-                    setShowLRCStakePopup={setShowLRCStakePopup}
+                  <TaikoLockInput
                     isJoin={isJoin}
-                    symbol={'LRC'}
+                    symbol={symbol}
                     {...(stakeWrapProps as any)}
                   />
                 </Box>

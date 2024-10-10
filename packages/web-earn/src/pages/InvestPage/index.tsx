@@ -213,7 +213,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
           </Box>
         )}
         {tabIndex === InvestType.Stack && (
-          <StackTradePanel setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
+          <StackTradePanel symbol='TAIKO' setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
         )}
         {tabIndex === InvestType.LeverageETH &&
           (!CIETHInvest.enable && CIETHInvest.reason === 'no view' ? (

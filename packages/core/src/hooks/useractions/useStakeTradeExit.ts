@@ -185,6 +185,7 @@ export const useStakeTradeExit = <T extends IBData<I>, I, ACD extends DeFiSideRe
   )
   const sendRequest = React.useCallback(async () => {
     const redeemStake = store.getState()._router_redeemStake.redeemStake
+    debugger
     try {
       setIsLoading(true)
       if (
@@ -277,7 +278,8 @@ export const useStakeTradeExit = <T extends IBData<I>, I, ACD extends DeFiSideRe
     ) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
-      } else if (toggle && !toggle[`${coinSellSymbol}StackInvest`].enable) {
+      // } else if (toggle && !toggle[`${coinSellSymbol}StackInvest`].enable) { //todo
+      } else if (toggle && false) {
         setShowTradeIsFrozen({
           isShow: true,
           type: coinSellSymbol + 'StakingRedeemInvest',
