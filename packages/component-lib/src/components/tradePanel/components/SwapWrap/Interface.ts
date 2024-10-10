@@ -38,6 +38,7 @@ export type SwapTradeBaseProps<T, I, TCD> = {
   }
   vaultLeverage?: {
     leverage: string
+    hideLeverage: boolean
     onClickLeverage: () => void
   }
 }
