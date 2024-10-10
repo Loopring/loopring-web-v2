@@ -1695,7 +1695,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         case 'VAULT_CLOSE_OUT': {
           const profit =
             (operation as any).accountType === 0 
-            ? (operation?.Collateral && operation?.Collateral
+            ? (operation?.totalEquity && operation?.Collateral
               ? sdk.toBig(operation?.totalEquity ?? 0).minus(operation?.Collateral ?? 0)
               : undefined)
             : (operation as any)?.profit as string
