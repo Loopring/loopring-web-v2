@@ -138,9 +138,10 @@ export const VaultDashBoardPanel = ({
     const profit =
       (vaultAccountInfo as any)?.accountType === 0
         ? sdk
-            .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
-            .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
-        : sdk.toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+          .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+          .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+        : sdk.toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
+          .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
     const colorsId = upColor === UpColor.green ? [0, 1] : [1, 0]
     const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
     return (
@@ -204,12 +205,14 @@ export const VaultDashBoardPanel = ({
     vaultAccountInfo?.totalEquityOfUsdt,
     vaultAccountInfo?.totalCollateralOfUsdt,
     vaultAccountInfo?.accountStatus,
+    (vaultAccountInfo as any)?.accountType,
     upColor,
     hideAssets,
     currency,
     forexMap,
     colors,
   ])
+  console.log('(vaultAccountInfo as any)?.accountType', (vaultAccountInfo as any)?.accountType)
   const marginUI = React.useMemo(() => {
     const item = vaultAccountInfo?.marginLevel ?? '0'
     return (
@@ -569,6 +572,7 @@ export const VaultDashBoardPanel = ({
   const collateralToken = (vaultAccountInfo && vaultAccountInfo.collateralInfo && tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]])
     ? tokenFactors.find(token => token.symbol === tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]].symbol)
     : undefined
+  const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
   
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -853,7 +857,7 @@ export const VaultDashBoardPanel = ({
                             </Typography>
                           </Typography>
                         </Box>
-                        <Box position={'relative'} width={'120px'}>
+                        {!hideLeverage && <Box position={'relative'} width={'120px'}>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                             {t('labelVaultLeverage')}
                           </Typography>
@@ -898,7 +902,7 @@ export const VaultDashBoardPanel = ({
                                 )
                               : EmptyValueTag}
                           </Typography>
-                        </Box>
+                        </Box>}
                         <Box>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                             {t('labelVaultProfit')}

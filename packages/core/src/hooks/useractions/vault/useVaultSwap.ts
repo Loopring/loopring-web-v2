@@ -2050,6 +2050,7 @@ export const useVaultSwap = <
           }
         : undefined,
     showSmallTradePrompt,
-    setShowSmallTradePrompt
+    setShowSmallTradePrompt,
+    hideLeverage: (vaultAccountInfo as any)?.accountType === 0,
   }
 }
