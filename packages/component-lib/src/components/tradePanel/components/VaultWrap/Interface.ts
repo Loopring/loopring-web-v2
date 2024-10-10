@@ -73,6 +73,7 @@ export type VaultBorrowBaseProps<T, I, B> = {
   } | undefined
   userLeverage: string
   onClickLeverage: () => void
+  hideLeverage?: boolean
 }
 export type VaultBorrowWrapProps<T, I, B> = BasicACoinTradeViewProps<T, I> &
   VaultBorrowBaseProps<T, I, B>

@@ -589,5 +589,6 @@ export const useVaultBorrow = <
           }
       : undefined,
     userLeverage: vaultAccountInfo?.leverage,
+    hideLeverage: (vaultAccountInfo as any)?.accountType === 0,
   }
 }

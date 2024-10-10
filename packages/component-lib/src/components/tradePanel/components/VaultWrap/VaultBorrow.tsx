@@ -42,6 +42,7 @@ export const VaultBorrowWrap = <
   marginLevelChange,
   userLeverage,
   onClickLeverage,
+  hideLeverage,
   ...rest
 }: VaultBorrowWrapProps<T, I, V>) => {
   
@@ -135,7 +136,7 @@ export const VaultBorrowWrap = <
       </Box>
       <Divider sx={{ width: '100%', marginY: 3 }} />
       <Grid container spacing={1} marginTop={0} alignItems={'stretch'}>
-        <Grid
+        {!hideLeverage && <Grid
           item
           xs={12}
           direction={'row'}
@@ -158,7 +159,7 @@ export const VaultBorrowWrap = <
               {userLeverage}x
             </Typography>
           </Box>
-        </Grid>
+        </Grid>}
         <Grid
           item
           xs={12}

@@ -74,6 +74,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     marginLevelChange,
     showSmallTradePrompt,
     setShowSmallTradePrompt,
+    hideLeverage
   } = useVaultSwap({ path: 'portal' })
   const { BtnEle, maxEle } = useVaultSwapExtends({
     tradeCalcData,
@@ -200,7 +201,8 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
               marginLevelChange={marginLevelChange!}
               vaultLeverage={{
                 onClickLeverage: onClickLeverage,
-                leverage: vaultAccountInfo?.leverage ?? '0'
+                leverage: vaultAccountInfo?.leverage ?? '0',
+                hideLeverage
               }}
               refreshTime={10}
             />

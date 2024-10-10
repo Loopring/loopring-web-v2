@@ -292,7 +292,7 @@ export const SwapPanel = withTranslation('common', { withRef: true })(
                             />
                           </Box>
                         )}
-                        {(tradeCalcData as any).isVault && (
+                        {(tradeCalcData as any).isVault && !vaultLeverage?.hideLeverage && (
                           <Grid
                             container
                             justifyContent={'space-between'}
