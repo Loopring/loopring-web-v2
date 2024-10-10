@@ -149,4 +149,5 @@ export default {
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
   labelNavDoc: 'Documentation',
+  labelTaikoFarming: 'Taiko Farming',
 }

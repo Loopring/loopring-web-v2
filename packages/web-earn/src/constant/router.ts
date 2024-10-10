@@ -32,6 +32,7 @@ export enum RouterPath {
   dualIntro = '/dual-intro',
   intro = '/intro',
   portal = '/portal',
+  taikoFarming = '/taiko-farming',
 }
 
 export enum RouterMainKey {
@@ -41,6 +42,8 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   portal = 'portal',
   btrade = 'btrade',
+  taikoFarming = 'taikoFarming',
+
 }
 
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
@@ -76,6 +79,14 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
     router: { path: '/trade/btrade' },
     status: HeaderMenuTabStatus.default,
   },
+  {
+    label: {
+      id: 'taikoFarming',
+      i18nKey: 'labelTaikoFarming',
+    },
+    router: { path: '/taiko-farming' },
+    status: HeaderMenuTabStatus.default,
+  },
 ]
 export const RouterAllowIndex = {
   TAIKOHEKLA: [
@@ -85,6 +96,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
   ETHEREUM: [
     RouterMainKey.l2assets,
@@ -115,6 +127,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
 }
 

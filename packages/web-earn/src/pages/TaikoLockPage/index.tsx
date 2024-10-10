@@ -1,15 +1,17 @@
-import { confirmation, useStakeTradeJOIN, useToast } from '@loopring-web/core'
+import { confirmation, useStakeTradeJOIN, useTaikoLock, useToast } from '@loopring-web/core'
 
 import {
+  boxLiner,
   Button,
   DeFiSideWrap,
   LoadingBlock,
+  MaxWidthContainer,
   Toast,
   ToastType,
   useSettings,
   useToggle,
 } from '@loopring-web/component-lib'
-import { Box, Typography } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 import {
   BackIcon,
@@ -20,13 +22,28 @@ import {
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { StyleWrapper } from '../DeFiPanel'
-import { MaxWidthContainer, containerColors } from '..'
+// import { MaxWidthContainer, containerColors } from '..'
+// MaxWidthContainer
 import { TaikoLockInput } from './TaikoLockInput'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
-import { ErrorPage } from '../../ErrorPage'
+import { ErrorPage } from '../../pages/ErrorPage'
+// import { ErrorPage } from '../../ErrorPage'
+const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
+const StyleWrapper = styled(Box)`
+  position: relative;
+  border-radius: ${({ theme }) => theme.unit}px;
 
+  .loading-block {
+    background: initial;
+  }
+
+  .hasLinerBg {
+    ${({ theme }) => boxLiner({ theme })}
+  }
+
+  border-radius: ${({ theme }) => theme.unit}px;
+` as typeof Grid
 const ButtonStyled = styled(Button)`
   background-color: var(--color-button-outlined);
   color: var(--color-text-primary);
@@ -38,7 +55,7 @@ const ButtonStyled = styled(Button)`
   }
 `
 
-export const StackTradePanel = ({
+export const TaikoLockPage = ({
   setConfirmedLRCStakeInvestInvest,
   isJoin = true,
   symbol,
@@ -59,7 +76,7 @@ export const StackTradePanel = ({
   const { toastOpen, setToastOpen, closeToast } = useToast()
   const { t } = useTranslation()
   const history = useHistory()
-  const { stakeWrapProps } = useStakeTradeJOIN({ setToastOpen, symbol })
+  const { stakeWrapProps } = useTaikoLock({ setToastOpen, symbol })
 
   const { isMobile } = useSettings()
 
@@ -81,64 +98,39 @@ export const StackTradePanel = ({
       />
       {toggle?.LRCStackInvest.enable ? (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-          <MaxWidthContainer
-            display={'flex'}
-            background={containerColors[0]}
-            alignItems={'center'}
-            flexDirection={'column'}
-            containerProps={{
-              borderBottom: `1px solid ${hexToRGB(theme.colorBase.border, 0.5)}`,
+          <MaxWidthContainer mt={5} background={containerColors[0]} paddingY={3} sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
             }}
           >
-            <Box
-              width={'100%'}
-              display={'flex'}
-              alignItems={'center'}
-              justifyItems={'center'}
-              flexDirection={'row'}
-              justifyContent={'space-between'}
-              height={6 * theme.unit}
-            >
-              <Button
-                startIcon={<BackIcon htmlColor={'var(--color-text-primary)'} fontSize={'small'} />}
-                variant={'text'}
-                size={'medium'}
-                sx={{ color: 'var(--color-text-primary)' }}
-                color={'inherit'}
-                onClick={() => history.push(`/invest/overview`)}
-              >
-                {t('labelBack')}
-              </Button>
-              <Button onClick={() => history.push('/invest/balance')} variant={'text'}>
-                {t('labelMyInvestLRCStaking')}{' '}
-                {<BackIcon sx={{ marginLeft: 0.5, transform: 'rotate(180deg)' }} />}
-              </Button>
-            </Box>
-          </MaxWidthContainer>
-          <MaxWidthContainer>
-            <Typography
-              marginTop={2}
+            <Box width={'25%'} marginTop={2}
               borderRadius={2}
               bgcolor={'var(--color-box-third)'}
               paddingY={1.5}
-              paddingX={2}
+              paddingX={2}>
+            <Typography
+            variant='h5'
             >
-              <Trans
-                i18nKey={'labelLRCStakeRiskDes'}
-                tOptions={{
-                  loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                  l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                  l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                  ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                }}
-              >
-                The staked LRC is locked in Loopring L2 and won't be able to used for other purpose
-                although it can be redeemed any time; while if the staking is redeemed before 90
-                days, the accumulated reward will be dismissed.
-              </Trans>
+              Taiko Farming
             </Typography>
-          </MaxWidthContainer>
-          <MaxWidthContainer background={containerColors[0]} paddingY={3}>
+            <Typography
+            mt={1.5}
+            color={'var(--color-text-secondary)'}
+            >
+              Lock your Taiko through Taiko Farming to earn points, which helps you get Taiko airdrops.
+              The locked Taiko cannot be used for other purposes. Once locked, It cannot be unlocked before the unlock date.
+            </Typography>
+            <Typography
+            mt={1.5}
+            color={'var(--color-text-secondary)'}
+            >
+              Unlock Date: 2025-03-15 16:00
+            </Typography>
+
+            </Box>
+            
+
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}
@@ -168,6 +160,7 @@ export const StackTradePanel = ({
                 <LoadingBlock />
               )}
             </StyleWrapper>
+            <Box width={'25%'}/>
           </MaxWidthContainer>
         </Box>
       ) : (

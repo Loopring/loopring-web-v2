@@ -43,6 +43,13 @@ type StakingInputProps<T, I, ACD> = {
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
   btnLabel: string
+  lockedPosition?: {
+    amount: string
+    amountInCurrency: string
+    totalPoints: string
+    dailyEarn: string
+    unlockDate: string
+  }
 }
 
 export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputProps<T, I, ACD>>({
@@ -62,6 +69,8 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   minSellAmount,
   maxSellAmount,
   btnLabel,
+  lockedPosition,
+
   ...rest
 }: StakingInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -134,54 +143,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
     ...rest,
   } as any
 
-  // const label = React.useMemo(() => {
-  //   if (btnInfo?.label) {
-  //     const key = btnInfo?.label.split('|')
-  //     return t(
-  //       key[0],
-  //       key && key[1]
-  //         ? {
-  //             arg: key[1],
-  //             layer2: L1L2_NAME_DEFINED[network].layer2,
-  //             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //           }
-  //         : {
-  //             layer2: L1L2_NAME_DEFINED[network].layer2,
-  //             l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //             loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //           },
-  //     )
-  //   } else {
-  //     return isJoin
-  //       ? t(`labelInvestBtn`, {
-  //           layer2: L1L2_NAME_DEFINED[network].layer2,
-  //           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //         })
-  //       : t(`labelRedeemBtn`, {
-  //           layer2: L1L2_NAME_DEFINED[network].layer2,
-  //           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-  //           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-  //           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-  //           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-  //           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-  //         })
-  //   }
-  // }, [isJoin, t, btnInfo])
-
-  const daysDuration = Math.ceil(
-    Number(deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0) / 86400000,
-  )
+  // const daysDuration = Math.ceil(
+  //   Number(deFiSideCalcData?.stakeViewInfo?.rewardPeriod ?? 0) / 86400000,
+  // )
   let dalyEarn = deFiSideCalcData?.stakeViewInfo?.dalyEarn
     ? getValuePrecisionThousand(
         sdk
@@ -305,7 +269,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
             </Typography>
           </Tooltip>
           <Typography component={'p'}>
-            {} / {}
+            {lockedPosition?.amount ?? '--'} / <Typography component={'span'} color={'textSecondary'}>{lockedPosition?.amountInCurrency ?? '--'}</Typography> 
           </Typography>
         </Grid>
         <Grid
@@ -326,7 +290,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
           </Tooltip>
-          <Typography component={'p'}></Typography>
+          <Typography component={'p'}>{lockedPosition?.totalPoints ?? '--'}</Typography>
         </Grid>
         <Grid
           mb={1}
@@ -346,7 +310,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
           </Tooltip>
-          <Typography component={'p'}></Typography>
+          <Typography component={'p'}>{lockedPosition?.dailyEarn ?? '--'}</Typography>
         </Grid>
         <Grid container justifyContent={'space-between'} direction={'row'} alignItems={'center'}>
           <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
@@ -360,7 +324,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
           </Tooltip>
-          <Typography component={'p'}></Typography>
+          <Typography component={'p'}>{lockedPosition?.unlockDate ?? '--'}</Typography>
         </Grid>
       </Box>
     </GridStyle>

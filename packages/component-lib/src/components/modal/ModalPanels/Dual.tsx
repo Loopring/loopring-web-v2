@@ -507,3 +507,191 @@ export const AMM_Pending = (props: PanelProps) => {
   }
   return <AmmBase {...{ ...props, ...propsPatch }} />
 }
+
+export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    describe1: (
+      <Typography variant={'h5'} color={'var(--color-primary)'} component={'span'}>
+        TAIKO Locked Successfully
+      </Typography>
+    ),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideAmount')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info.amount + ' ' + info.symbol}
+          </Typography>
+        </Typography>
+        {/* <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideProduct')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.productId ?? EmptyValueTag}
+          </Typography>
+        </Typography> */}
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideSubscribeTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {moment(new Date(info.stakeAt))
+              // .utc()
+              // .startOf("days")
+              .format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+        {/* <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideLockDuration')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info.daysDuration
+              ? '≥ ' + info.daysDuration + ' ' + props.t('labelDay')
+              : EmptyValueTag}
+          </Typography>
+        </Typography> */}
+      </Box>
+    ),
+  }
+  return <DualBase showTitle={false} {...propsPatch} {...props} />
+}
+export const Taiko_Farming_Lock_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t('labelStakingFailed', {
+      symbol: props.info?.symbol,
+    }),
+  }
+  return <DualBase showTitle={true} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    describe1: (
+      <Typography variant={'h5'} color={'var(--color-primary)'}>
+        {props.t('labelStakingRedeemSuccess', {
+          symbol: info?.symbol,
+        })}
+      </Typography>
+    ),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDefiStakingRedeem')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info.amount + ' ' + info.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelStakingRedeemRemaining')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info.remainAmount && info.remainAmount != '0'
+              ? info.remainAmount + ' ' + info.symbol
+              : EmptyValueTag}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideProduct')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.productId ?? EmptyValueTag}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelStakingRedeemDate')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {moment(new Date())
+              // .utc()
+              // .startOf("days")
+              .format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+      </Box>
+    ),
+  }
+  return <DualBase showTitle={false} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Redeem_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t('labelStakingFailed', {
+      symbol: props.info?.symbol,
+    }),
+  }
+  return <DualBase showTitle={true} {...propsPatch} {...props} />
+}

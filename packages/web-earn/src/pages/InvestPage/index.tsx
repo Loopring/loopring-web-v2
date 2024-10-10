@@ -18,9 +18,10 @@ import { PoolsPanel } from './PoolsPanel'
 import { DeFiPanel } from './DeFiPanel'
 import { OverviewPanel } from './OverviewPanel'
 import { DualListPanel } from './DualPanel/DualListPanel'
-import { StackTradePanel } from './StakePanel/StackTradePanel'
+// import { StackTradePanel } from './StakePanel/StackTradePanel'
 import LeverageETHPanel from './LeverageETHPanel'
 import styled from '@emotion/styled'
+import { TaikoLockPage } from 'pages/TaikoLockPage'
 
 export enum InvestType {
   MyBalance = 0,
@@ -213,7 +214,7 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
           </Box>
         )}
         {tabIndex === InvestType.Stack && (
-          <StackTradePanel symbol='TAIKO' setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
+          <TaikoLockPage symbol='TAIKO' setConfirmedLRCStakeInvestInvest={setConfirmedLRCStakeInvestInvest} />
         )}
         {tabIndex === InvestType.LeverageETH &&
           (!CIETHInvest.enable && CIETHInvest.reason === 'no view' ? (
