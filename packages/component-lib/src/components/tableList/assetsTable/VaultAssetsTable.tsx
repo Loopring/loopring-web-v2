@@ -22,17 +22,21 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {XOR} from '../../../types/lib'
 import _ from 'lodash'
 
-const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; hideActions?: boolean, lan: string }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
     flex: 1;
-    ${({ isMobile }) =>
-      !isMobile
-        ? `--template-columns: 200px 150px auto auto !important;`
-        : `--template-columns: 54% 40% 6% !important;`}
+    ${({ isMobile, hideActions }) =>
+      hideActions 
+      ? isMobile
+        ? `--template-columns: 50% 50% !important;`
+        : `--template-columns: 20% 40% 40% !important;`
+      : isMobile
+        ? `--template-columns: 54% 40% 6% !important;`
+        :`--template-columns: 200px 150px auto auto !important;`}
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -99,6 +103,7 @@ export type VaultAssetsTableProps<R> = {
   hideAssets?: boolean
   actionRow: (props: { row }) => JSX.Element
   onClickDustCollector: () => void
+  hideActions?: boolean
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -124,6 +129,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       hideAssets,
       searchValue,
       onClickDustCollector,
+      hideActions,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -236,69 +242,77 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: t('labelAmount'),
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-					const {amount, precision} = row
-					return (
-						<Box className={'textAlignRight'}>
-							{hideAssets
-								? HiddenTag
-								: (amount && Number(amount) > 0) ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
-									floor: true,
-								}) : EmptyValueTag}
-						</Box>
-					)
-				},
-			},
-			// {
-			//   key: 'avaiable',
-			//   name: t('labelAvaiable'),
-			//   headerCellClass: 'textAlignRight',
-			//   formatter: ({ row }) => {
-			//     const value = row.available
-			//     const precision = row.precision
-			//     return (
-			//       <Box className={'textAlignRight'}>
-			//         {hideAssets
-			//           ? HiddenTag
-			//           : getValuePrecisionThousand(value, precision, precision, undefined, false, {
-			//             floor: true,
-			//           })}
-			//       </Box>
-			//     )
-			//   },
-			// },
+          const { amount, precision } = row
+          return (
+            <Box className={'textAlignRight'}>
+              {hideAssets
+                ? HiddenTag
+                : amount && Number(amount) > 0
+                ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+                    floor: true,
+                  })
+                : EmptyValueTag}
+            </Box>
+          )
+        },
+      },
+      // {
+      //   key: 'avaiable',
+      //   name: t('labelAvaiable'),
+      //   headerCellClass: 'textAlignRight',
+      //   formatter: ({ row }) => {
+      //     const value = row.available
+      //     const precision = row.precision
+      //     return (
+      //       <Box className={'textAlignRight'}>
+      //         {hideAssets
+      //           ? HiddenTag
+      //           : getValuePrecisionThousand(value, precision, precision, undefined, false, {
+      //             floor: true,
+      //           })}
+      //       </Box>
+      //     )
+      //   },
+      // },
 
-			{
-				key: 'value',
-				name: t('labelVaultAssetsTableValue'),
-				headerCellClass: 'textAlignRight',
-				formatter: ({row}) => {
-					const {amount, tokenValueDollar} = row
-					return (
-						<Box className={'textAlignRight'}>
-							{hideAssets
-								? HiddenTag
-								: (amount && Number(amount) > 0) ? PriceTag[CurrencyToTag[currency]] +
-									getValuePrecisionThousand(
-										(tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-										undefined,
-										undefined,
-										undefined,
-										true,
-										{isFait: true, floor: true},
-									) : EmptyValueTag}
-						</Box>
-					)
-				},
-			},
-			{
-				key: 'actions',
-				name: t('labelActions'),
-				headerCellClass: 'textAlignRight',
-				cellClass: 'textAlignRight',
-				// minWidth: 280,
-				formatter: actionRow,
-			},
-		]
+      {
+        key: 'value',
+        name: t('labelVaultAssetsTableValue'),
+        headerCellClass: 'textAlignRight',
+        formatter: ({ row }) => {
+          const { amount, tokenValueDollar } = row
+          return (
+            <Box className={'textAlignRight'}>
+              {hideAssets
+                ? HiddenTag
+                : amount && Number(amount) > 0
+                ? PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    undefined,
+                    true,
+                    { isFait: true, floor: true },
+                  )
+                : EmptyValueTag}
+            </Box>
+          )
+        },
+      },
+      ...(hideActions
+        ? []
+        : [
+            {
+              key: 'actions',
+              name: t('labelActions'),
+              headerCellClass: 'textAlignRight',
+              cellClass: 'textAlignRight',
+              // minWidth: 280,
+              formatter: actionRow,
+            },
+          ]),
+    ]
 		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
 			{
 				key: 'token',
@@ -341,20 +355,24 @@ export const VaultAssetsTable = withTranslation('tables')(
 					)
 				},
 			},
-			{
-				key: 'actions',
-				name: '',
-				headerCellClass: 'textAlignRight',
-				// minWidth: 280,
-				formatter: actionRow,
-			},
+			...(hideActions
+				? []
+				: [
+					{
+						key: 'actions',
+						name: '',
+						headerCellClass: 'textAlignRight',
+						// minWidth: 280,
+						formatter: actionRow,
+					},
+				]),
 		]
 
 		return (
-      <TableWrap lan={language} isMobile={isMobile}>
+      <TableWrap lan={language} isMobile={isMobile} hideActions={hideActions}>
         {showFilter && (
           <Box marginX={2} display={'flex'} alignItems={'center'}>
-            <Box width={'calc(100% - 130px)'}>
+            <Box width={hideActions ? '100%' : 'calc(100% - 130px)'}>
               <Filter
                 {...{
                   handleFilterChange,
@@ -366,7 +384,7 @@ export const VaultAssetsTable = withTranslation('tables')(
               />
             </Box>
 
-            <Typography
+            {!hideActions && <Typography
               sx={{ cursor: 'pointer' }}
               component={'span'}
               onClick={onClickDustCollector}
@@ -379,7 +397,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                 sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }}
               />{' '}
               {t('labelVaultDustCollector')}
-            </Typography>
+            </Typography>}
           </Box>
         )}
         <Table
