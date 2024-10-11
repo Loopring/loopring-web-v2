@@ -416,9 +416,14 @@ export const useAssetAction = () => {
                 case sdk.LOCK_TYPE.DUAL_BASE:
                   link = `/#${RouterPath.investBalance}/${InvestAssetRouter.DUAL}`
                   break
-                case sdk.LOCK_TYPE.L2STAKING:
-                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.STAKELRC}`
+                case sdk.LOCK_TYPE.L2STAKING: {
+                  if (tokenMap[_item.name].symbol === 'TAIKO') {
+                    link = `/#/taiko-farming`
+                  } else {
+                    link = `/#${RouterPath.investBalance}/${InvestAssetRouter.STAKELRC}`
+                  }
                   break
+                }
                 case sdk.LOCK_TYPE.BTRADE:
                   link = `/#${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}`
                   break
@@ -429,8 +434,11 @@ export const useAssetAction = () => {
                   link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
               }
+              const key = record.lockTag === 'L2STAKING' && _item.name === 'TAIKO'
+                ? 'labelL2TaikoFarming'
+                : `label${record.lockTag}`
               prev.push({
-                key: `label${record.lockTag}`,
+                key: key,
                 value: getValuePrecisionThousand(
                   amount,
                   tokenMap[_item.name].precision,

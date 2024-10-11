@@ -316,7 +316,7 @@ export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCa
     ) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
-      } else if (false) { // todo: revert back
+      } else if (toggle && !toggle[`${coinSellSymbol}StackInvest`].enable) {
         setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
       } else {
         sendRequest()
@@ -468,7 +468,6 @@ export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCa
       },
       btnStatus,
       accStatus: account.readyState,
-      btnLabel: 'skr'
     }
   }, [
     refreshRef,
@@ -484,7 +483,6 @@ export const useStakeTradeJOIN = <T extends IBData<I>, I, ACD extends DeFiSideCa
     coinSellSymbol,
     btnStatus,
   ]) // as ForceWithdrawProps<any, any>;
-  console.log('stakeWrapProps', stakingMap, stakeWrapProps)
   return {
     stakeWrapProps: stakeWrapProps as unknown as DeFiSideWrapProps<T, I, ACD>,
   }

@@ -324,7 +324,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     ) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
-      } else if (false) { // todo: revert back
+      } else if (toggle && !toggle['taikoFarming'].enable) {
         setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
       } else {
         sendRequest()
