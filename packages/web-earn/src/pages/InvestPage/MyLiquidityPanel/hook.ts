@@ -181,7 +181,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const getStakingList = React.useCallback(
     async ({ limit = STAKING_INVEST_LIMIT, offset = 0 }: { limit?: number; offset?: number }) => {
       setStakeShowLoading(true)
-      const LRCStakingSymbol = 'TAIKO'
+      const LRCStakingSymbol = 'LRC'
       if (LoopringAPI.defiAPI && account.readyState === AccountStatus.ACTIVATED) {
         const [response] = await Promise.all([
           LoopringAPI.defiAPI.getStakeSummary(

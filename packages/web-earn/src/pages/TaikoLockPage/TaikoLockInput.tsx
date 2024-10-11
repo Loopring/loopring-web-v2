@@ -7,6 +7,7 @@ import {
   IBData,
   Info2Icon,
   myLog,
+  OrderListIcon,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
@@ -188,6 +189,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
         >
           LOCK
         </Typography>
+        <OrderListIcon sx={{cursor: 'pointer'}} onClick={() => {
+
+        }} fontSize={'large'} />
       </Grid>
       <Grid
         item

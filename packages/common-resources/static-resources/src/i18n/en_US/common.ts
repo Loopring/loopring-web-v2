@@ -2491,5 +2491,6 @@ export default {
   labelVaultDustCollectorUnavailableDes: 'This feature is temporarily unavailable. Please try again later.',
   labelVaultMaximumCreditDesLong: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral. It is calculated by taking the total value of your collateral, adjusted for price factor and the maximum leverage.',
   labelVaultMarginLevelDes: 'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+  labelLayer2HistoryTaikoLockRecords: 'Taiko Farming',
 }
 

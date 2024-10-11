@@ -4,7 +4,6 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   ButtonStyle,
   CancelDualAlert,
-  DefiStakingTable,
   DualAssetTable,
   DualDetail,
   EarningsDetail,
@@ -34,7 +33,6 @@ import {
   PriceTag,
   SagaStatus,
   SoursURL,
-  STAKING_INVEST_LIMIT,
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
@@ -50,7 +48,6 @@ import {
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
-  useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
@@ -99,7 +96,6 @@ const MyLiquidity: any = withTranslation('common')(
     const { forexMap } = useSystem()
     const { tokenMap, idIndex } = useTokenMap()
     const { tokenPrices } = useTokenPrices()
-    const { redeemItemClick } = useStakeRedeemClick()
     const { marketMap: dualMarketMap, status: dualMarketMapStatus } = useDualMap()
     const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
       useGetAssets()
@@ -147,12 +143,8 @@ const MyLiquidity: any = withTranslation('common')(
 
       getStakingList,
       stakedSymbol,
-      totalStakedRewards,
-      stakingList,
-      stakeShowLoading,
-      stakingTotal,
-
-    } = useOverview ({
+      
+    } = useOverview({
       ammActivityMap,
       dualOnInvestAsset,
       hideSmallBalances,
@@ -273,24 +265,6 @@ const MyLiquidity: any = withTranslation('common')(
       }
     }) ? true : false
     const showEmptyHint = !assetPanelProps.isLoading && !showDual && !showPortal && !dualLoading
-
-    const totalClaimableRewardsAmount =
-      rewardsAPIError || !totalClaims
-        ? '0'
-        : getValuePrecisionThousand(
-            sdk
-              .toBig(
-                totalClaims['LRC']?.detail?.find(
-                  (item: EarningsDetail) => item.claimType === sdk.CLAIM_TYPE.LRC_STAKING,
-                )?.amount ?? 0,
-              )
-              .div('1e' + tokenMap[stakedSymbol].decimals),
-            tokenMap[stakedSymbol].precision,
-            tokenMap[stakedSymbol].precision,
-            tokenMap[stakedSymbol].precision,
-            false,
-            { floor: true, isAbbreviate: true },
-          )
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         <MaxWidthContainer
@@ -538,150 +512,6 @@ const MyLiquidity: any = withTranslation('common')(
               />
             </Box>
           )}
-          <TableWrapStyled
-                  ref={sideStakeRef}
-                  className={`table-divide-short min-height`}
-                  marginTop={2}
-                  paddingY={2}
-                  paddingX={0}
-                  flex={1}
-                  marginLeft={-3}
-                >
-                  <Grid container>
-                    <Grid item md={6} xs={12}>
-                      <Typography variant={'h5'} marginBottom={2} marginX={3}>
-                        {t('labelInvestType_LRCSTAKE')}
-                      </Typography>
-                      {summaryMyInvest?.stakeLRCDollar !== undefined ? (
-                        <Typography component={'h4'} variant={'h3'} marginX={3}>
-                          {summaryMyInvest?.stakeLRCDollar
-                            ? hideAssets
-                              ? HiddenTag
-                              : nanToEmptyTag(
-                                  getValuePrecisionThousand(
-                                    sdk
-                                      .toBig(summaryMyInvest?.stakeLRCDollar)
-                                      .times(forexMap[currency] ?? 0),
-                                    undefined,
-                                    undefined,
-                                    2,
-                                    true,
-                                    { isFait: true, floor: true },
-                                  ),
-                                  PriceTag[CurrencyToTag[currency]],
-                                )
-                            : EmptyValueTag}
-                        </Typography>
-                      ) : (
-                        ''
-                      )}
-                    </Grid>
-                    <Grid
-                      item
-                      md={3}
-                      xs={6}
-                      justifyContent={'space-evenly'}
-                      flexDirection={'column'}
-                      alignItems={isMobile ? 'flex-start' : 'flex-end'}
-                      display={'flex '}
-                    >
-                      <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
-                        {t('labelStakingCumulativeEarnings')}
-                      </Typography>
-                      <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
-                        {totalStakedRewards && totalStakedRewards !== '0'
-                          ? hideAssets
-                            ? HiddenTag
-                            : getValuePrecisionThousand(
-                                sdk
-                                  .toBig(totalStakedRewards ?? 0)
-                                  .div('1e' + tokenMap[stakedSymbol].decimals),
-                                tokenMap[stakedSymbol].precision,
-                                tokenMap[stakedSymbol].precision,
-                                tokenMap[stakedSymbol].precision,
-                                false,
-                                { floor: true, isAbbreviate: true },
-                              ) +
-                              ' ' +
-                              stakedSymbol
-                          : EmptyValueTag}
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      md={3}
-                      xs={6}
-                      justifyContent={'space-evenly'}
-                      flexDirection={'column'}
-                      alignItems={'flex-end'}
-                      display={'flex'}
-                    >
-                      <Typography variant={'body1'} marginBottom={1} marginX={3} component={'span'}>
-                        {t('labelStakingClaimableEarnings')}
-                      </Typography>
-                      <Box
-                        marginBottom={1}
-                        marginX={3}
-                        display={'flex'}
-                        flexDirection={'row'}
-                        alignItems={'center'}
-                      >
-                        {rewardsAPIError ? (
-                          <Button
-                            onClick={() => {
-                              getUserRewards && getUserRewards()
-                            }}
-                            size={'small'}
-                            variant={'outlined'}
-                          >
-                            {t('labelRewardRefresh', { ns: 'common' })}
-                          </Button>
-                        ) : totalClaimableRewardsAmount !== '0' ? (
-                          <>
-                            <Typography component={'span'} display={'inline-flex'} paddingRight={2}>
-                              {hideAssets
-                                ? HiddenTag
-                                : totalClaimableRewardsAmount + ' ' + stakedSymbol}
-                            </Typography>
-                            <Button
-                              variant={'contained'}
-                              size={'small'}
-                              onClick={() => {
-                                // history.push(
-                                //   `${RouterPath.l2assetsDetail}/${AssetTabIndex.Rewards}`,
-                                // )
-                              }}
-                            >
-                              {t('labelClaimBtn')}
-                            </Button>
-                          </>
-                        ) : (
-                          <Typography component={'span'} display={'inline-flex'}>
-                            {EmptyValueTag}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Grid>
-                  </Grid>
-
-                  <DefiStakingTable
-                    {...{
-                      rawData: stakingList,
-                      pagination: {
-                        pageSize: STAKING_INVEST_LIMIT,
-                        total: stakingTotal,
-                      },
-                      idIndex,
-                      tokenMap,
-                      redeemItemClick,
-                      geDefiSideStakingList: getStakingList,
-                      showloading: stakeShowLoading,
-                      hideAssets,
-                      ...rest,
-                    }}
-                  />
-                </TableWrapStyled>
         </MaxWidthContainer>
         <Modal
           open={showRefreshError}
