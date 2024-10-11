@@ -16,6 +16,7 @@ import { Box, Grid, Tooltip, Typography } from '@mui/material'
 import { InputCoin, ButtonStyle, InputButtonProps, BtnInfo } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
+import { useHistory } from 'react-router'
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -78,6 +79,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   const coinSellRef = React.useRef()
 
   const { t } = useTranslation()
+  const history = useHistory()
   const getDisabled = React.useMemo(() => {
     return disabled || deFiSideCalcData === undefined
   }, [btnStatus, deFiSideCalcData, disabled])
@@ -189,7 +191,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
         >
           LOCK
         </Typography>
-        <OrderListIcon sx={{cursor: 'pointer'}} onClick={() => {
+        <OrderListIcon 
+        sx={{cursor: 'pointer'}} onClick={() => {
+          history.push(`/l2assets/history/TaikoLockRecords`)
 
         }} fontSize={'large'} />
       </Grid>
