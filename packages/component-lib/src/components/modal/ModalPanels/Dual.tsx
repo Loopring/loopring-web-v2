@@ -538,7 +538,7 @@ export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
             {props.t('labelDeFiSideAmount')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info.amount + ' ' + info.symbol}
+            {info?.amount + ' ' + info?.symbol}
           </Typography>
         </Typography>
         {/* <Typography
@@ -564,7 +564,7 @@ export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
             {props.t('labelDeFiSideSubscribeTime')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {moment(new Date(info.stakeAt))
+            {info?.stakeAt && moment(new Date(info.stakeAt))
               // .utc()
               // .startOf("days")
               .format(YEAR_DAY_MINUTE_FORMAT)}
@@ -632,7 +632,7 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
             {props.t('labelDefiStakingRedeem')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info.amount + ' ' + info.symbol}
+            {info?.amount + ' ' + info?.symbol}
           </Typography>
         </Typography>
         <Typography
@@ -645,8 +645,8 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
             {props.t('labelStakingRedeemRemaining')}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info.remainAmount && info.remainAmount != '0'
-              ? info.remainAmount + ' ' + info.symbol
+            {info?.remainAmount && info?.remainAmount != '0'
+              ? info?.remainAmount + ' ' + info?.symbol
               : EmptyValueTag}
           </Typography>
         </Typography>
