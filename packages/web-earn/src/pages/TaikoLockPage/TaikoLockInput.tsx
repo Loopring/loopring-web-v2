@@ -1,9 +1,12 @@
 import {
   AccountStatus,
+  CheckBoxIcon,
+  CheckedIcon,
   CoinInfo,
   DeFiSideCalcData,
   EmptyValueTag,
   getValuePrecisionThousand,
+  hexToRGB,
   IBData,
   Info2Icon,
   myLog,
@@ -12,11 +15,14 @@ import {
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Grid, Tooltip, Typography } from '@mui/material'
+import { Box, Checkbox, Grid, Tooltip, Typography } from '@mui/material'
 import { InputCoin, ButtonStyle, InputButtonProps, BtnInfo } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router'
+import { useTheme } from '@emotion/react'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -52,6 +58,9 @@ type StakingInputProps<T, I, ACD> = {
     dailyEarn: string
     unlockDate: string
   }
+  taikoFarmingChecked: boolean
+  onCheckBoxChange: () => void
+  buttonDisabled: boolean
 }
 
 export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputProps<T, I, ACD>>({
@@ -72,7 +81,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   maxSellAmount,
   btnLabel,
   lockedPosition,
-
+  taikoFarmingChecked,
+  onCheckBoxChange,
+  buttonDisabled,
   ...rest
 }: StakingInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -163,6 +174,13 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
     : undefined
   dalyEarn = dalyEarn && dalyEarn !== '0' ? dalyEarn + ' ' + tokenSell.symbol : EmptyValueTag
   myLog('deFiSideCalcData.stakeViewInfo', deFiSideCalcData.stakeViewInfo)
+  const theme = useTheme()
+
+  // const checkBoxChecked = false
+  // const onCheckBoxChange = () => {
+
+  // }
+
   return (
     <GridStyle
       className={deFiSideCalcData ? '' : 'loading'}
@@ -191,11 +209,13 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
         >
           LOCK
         </Typography>
-        <OrderListIcon 
-        sx={{cursor: 'pointer'}} onClick={() => {
-          history.push(`/l2assets/history/TaikoLockRecords`)
-
-        }} fontSize={'large'} />
+        <OrderListIcon
+          sx={{ cursor: 'pointer' }}
+          onClick={() => {
+            history.push(`/l2assets/history/TaikoLockRecords`)
+          }}
+          fontSize={'large'}
+        />
       </Grid>
       <Grid
         item
@@ -227,6 +247,47 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
       <Grid
         item
         alignSelf={'stretch'}
+        my={3}
+      >
+        <Box
+          p={1.5}
+          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+          borderRadius={'4px'}
+          display={'flex'}
+        >
+          <Box>
+            {taikoFarmingChecked ? (
+              <RadioButtonCheckedIcon
+                onClick={onCheckBoxChange}
+                className='custom-size'
+                sx={{
+                  color: theme.colorBase.warning,
+                  fontSize: '24px',
+                  cursor: 'pointer'
+                }}
+              />
+            ) : (
+              <RadioButtonUncheckedIcon
+                onClick={onCheckBoxChange}
+                className='custom-size'
+                sx={{ color: theme.colorBase.warning, fontSize: '24px', cursor: 'pointer' }}
+              />
+            )}
+          </Box>
+          <Box ml={1}>
+            <Typography color={'var(--color-warning)'}>
+              I acknowledge and would like to proceed.
+            </Typography>
+            <Typography color={'var(--color-warning)'} mt={0.5}>
+              Unlock Date: You can unlock your TAIKO tokens only after the end of Trailblazer Season
+              2.
+            </Typography>
+          </Box>
+        </Box>
+      </Grid>
+      <Grid
+        item
+        alignSelf={'stretch'}
         marginTop={3}
         pb={6}
         borderBottom={'1px solid var(--color-border)'}
@@ -243,7 +304,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               }}
               loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
               disabled={
-                getDisabled ||
+                buttonDisabled ||
                 btnStatus === TradeBtnStatus.LOADING ||
                 btnStatus === TradeBtnStatus.DISABLED
               }
@@ -277,7 +338,10 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
             </Typography>
           </Tooltip>
           <Typography component={'p'}>
-            {lockedPosition?.amount ?? '--'} / <Typography component={'span'} color={'textSecondary'}>{lockedPosition?.amountInCurrency ?? '--'}</Typography> 
+            {lockedPosition?.amount ?? '--'} /{' '}
+            <Typography component={'span'} color={'textSecondary'}>
+              {lockedPosition?.amountInCurrency ?? '--'}
+            </Typography>
           </Typography>
         </Grid>
         <Grid

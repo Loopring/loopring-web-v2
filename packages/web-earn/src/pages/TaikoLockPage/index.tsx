@@ -17,6 +17,7 @@ import {
   BackIcon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  SoursURL,
   TOAST_TIME,
   hexToRGB,
 } from '@loopring-web/common-resources'
@@ -68,25 +69,19 @@ export const TaikoLockPage = ({
   isJoin?: boolean
 }) => {
   const {
-    setShowLRCStakePopup,
     confirmation: { confirmedLRCStakeInvest },
   } = confirmation.useConfirmation()
   const { toggle } = useToggle()
 
   const { toastOpen, setToastOpen, closeToast } = useToast()
-  const { t } = useTranslation()
-  const history = useHistory()
   const { stakeWrapProps } = useTaikoLock({ setToastOpen, symbol })
 
   const { isMobile } = useSettings()
 
-  const styles = isMobile ? { flex: 1 } : { width: '500px' }
+  const styles = isMobile ? { flex: 1 } : { width: '450px' }
   React.useEffect(() => {
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
-  const theme = useTheme()
-  const { defaultNetwork } = useSettings()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   return (
     <>
       <Toast
@@ -98,38 +93,65 @@ export const TaikoLockPage = ({
       />
       {toggle?.LRCStackInvest.enable ? (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
-          <MaxWidthContainer mt={5} background={containerColors[0]} paddingY={3} sx={{
+          <MaxWidthContainer
+            mt={4}
+            background={containerColors[0]}
+            sx={{
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'flex-start',
             }}
           >
-            <Box width={'25%'} marginTop={2}
+            <Box
+              sx={{
+                backgroundImage: `url("${SoursURL}images/web-earn/taiko_farming_banner.png")`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                width: '100%',
+                height: '100px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              <Typography textAlign={'center'} variant='h4'>
+                Unlock the Value of Your Locked TAIKO !
+              </Typography>
+              <Typography mt={1} textAlign={'center'}>
+                Mint lrTAIKO and use it in Loopring DeFi at zero cost!
+              </Typography>
+            </Box>
+          </MaxWidthContainer>
+          <MaxWidthContainer
+            mt={4}
+            background={containerColors[0]}
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+            }}
+          >
+            <Box
+              width={'25%'}
+              marginTop={2}
               borderRadius={2}
               bgcolor={'var(--color-box-third)'}
               paddingY={1.5}
-              paddingX={2}>
-            <Typography
-            variant='h5'
+              paddingX={2}
             >
-              Taiko Farming
-            </Typography>
-            <Typography
-            mt={1.5}
-            color={'var(--color-text-secondary)'}
-            >
-              Lock your Taiko through Taiko Farming to earn points, which helps you get Taiko airdrops.
-              The locked Taiko cannot be used for other purposes. Once locked, It cannot be unlocked before the unlock date.
-            </Typography>
-            <Typography
-            mt={1.5}
-            color={'var(--color-text-secondary)'}
-            >
-              Unlock Date: 2025-03-15 16:00
-            </Typography>
-
+              <Typography variant='h5'>Taiko Farming</Typography>
+              <Typography mt={1.5} color={'var(--color-text-secondary)'}>
+                Lock your Taiko through Taiko Farming to earn points, which helps you get Taiko
+                airdrops. The locked Taiko cannot be used for other purposes. Once locked, It cannot
+                be unlocked before the unlock date.
+              </Typography>
+              <Typography mt={1.5} color={'var(--color-text-secondary)'}>
+                Unlock Date: 2025-03-15 16:00
+              </Typography>
             </Box>
-            
 
             <StyleWrapper
               display={'flex'}
@@ -150,17 +172,13 @@ export const TaikoLockPage = ({
                   border={'1px solid var(--color-border)'}
                   borderRadius={2}
                 >
-                  <TaikoLockInput
-                    isJoin={isJoin}
-                    symbol={symbol}
-                    {...(stakeWrapProps as any)}
-                  />
+                  <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
                 </Box>
               ) : (
                 <LoadingBlock />
               )}
             </StyleWrapper>
-            <Box width={'25%'}/>
+            <Box width={'25%'} />
           </MaxWidthContainer>
         </Box>
       ) : (

@@ -61,7 +61,11 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
 }) => {
   const { t } = useTranslation(['common'])
   const refreshRef = React.createRef()
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [ isLoading, setIsLoading ] = React.useState(false)
+  const [ taikoFarmingChecked, setTaikoFarmingChecked ] = React.useState(false)
+  const onCheckBoxChange = React.useCallback(() => {
+    setTaikoFarmingChecked(!taikoFarmingChecked)
+  }, [taikoFarmingChecked])
   const { tokenMap } = useTokenMap()
   const { tokenPrices } = useTokenPrices()
   const { account } = useAccount()
@@ -401,7 +405,14 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelStakeNoEnough| ${coinSellSymbol}`,
         }
-      } else {
+      } else if (
+        !taikoFarmingChecked
+      ) {
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: 'labelTaikoFarmingNotChecked',
+        }
+      }else {
         return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
       }
     }
@@ -413,6 +424,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     tradeStake.deFiSideCalcData,
     tokenMap,
     coinSellSymbol,
+    taikoFarmingChecked
   ])
   const {
     btnStatus,
@@ -531,6 +543,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   return {
     stakeWrapProps: {
       disabled: false,
+      buttonDisabled: isLoading || (!taikoFarmingChecked && account.readyState === AccountStatus.ACTIVATED),
       btnInfo,
       isJoin: true,
       isLoading,
@@ -557,6 +570,8 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         dailyEarn: 'dailyEarn todo',
         unlockDate: '2025-03-15 16:00',
       } : undefined,
+      taikoFarmingChecked,
+      onCheckBoxChange,
     } as unknown as DeFiSideWrapProps<T, I, ACD>
   }
 }

@@ -2493,5 +2493,6 @@ export default {
   labelVaultMarginLevelDes: 'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
   labelLayer2HistoryTaikoLockRecords: 'Taiko Farming',
   labelL2TaikoFarming: 'Taiko Farming',
+  labelTaikoFarmingNotChecked: 'Please check the above box',
 }
 
