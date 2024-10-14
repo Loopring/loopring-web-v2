@@ -566,8 +566,8 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       lockedPosition: stakingList && stakingList.length > 0 ? {
         amount: stakingAmount,
         amountInCurrency: stakingAmountInCurrency,
-        totalPoints: 'totalPoints todo',
-        dailyEarn: 'dailyEarn todo',
+        totalPoints: 'Pending...',
+        dailyEarn: 'Pending...',
         unlockDate: '2025-03-15 16:00',
       } : undefined,
       taikoFarmingChecked,
