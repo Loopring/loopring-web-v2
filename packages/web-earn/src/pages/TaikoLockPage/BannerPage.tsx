@@ -3,17 +3,19 @@ import { Box, Typography, Link } from '@mui/material'
 import { MaxWidthContainer } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
 import { SoursURL } from '@loopring-web/common-resources'
+import { useTranslation } from 'react-i18next'
 
 const BannerPage: React.FC = () => {
   const theme = useTheme()
+  const { t } = useTranslation('common')
+
   return (
     <MaxWidthContainer>
       <Typography mt={10} variant='h3'>
-        Taiko Farming
+        {t('labelTaikoFarmingBannerTitle')}
       </Typography>
       <Typography mt={3} variant='h4'>
-        Earn Trailblazer points 5x faster by locking TAIKO and participating in Taiko Farming.
-        Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.
+        {t('labelTaikoFarmingBannerDes')}
       </Typography>
 
       <Box
@@ -37,7 +39,7 @@ const BannerPage: React.FC = () => {
               />
             </Box>
             <Typography width={'45%'} variant='h4'>
-              Worried about missing trading or earning opportunities when locking your valuable TAIKO?
+              {t('labelTaikoFarmingQuestion')}
             </Typography>
           </Box>
           <Box mb={16} display={'flex'} flexDirection={'row-reverse'} alignItems={'center'} justifyContent={'space-between'}>
@@ -49,11 +51,9 @@ const BannerPage: React.FC = () => {
               />
             </Box>
             <Typography width={'45%'} variant='h4'>
-              Loopring lets you mint lrTAIKO at a 1:1 ratio, allowing you to freely use it across
-              all trading and earning options within Loopring DeFi. Plus, you’ll continue farming
-              Trailblazer points.
+              {t('labelTaikoFarmingExplanation')}
               <Typography mt={4} variant='h4' color={'var(--color-text-secondary)'}>
-                The lrTAIKO mint feature is coming soon!
+                {t('labelTaikoFarmingComingSoon')}
               </Typography>
             </Typography>
           </Box>
@@ -66,22 +66,20 @@ const BannerPage: React.FC = () => {
               />
             </Box>
             <Typography width={'45%'} variant='h4'>
-              The first DeFi integration will be with Portal, allowing you to use lrTAIKO as
-              collateral for leveraged trading on select hot tokens. You’ll be able to go LONG or
-              SHORT on your favorite tokens based on market conditions.
+              {t('labelTaikoFarmingPortalIntegration')}
             </Typography>
           </Box>
         </Box>
         <Box mt={12.5}>
           <Typography variant='h4'>
-            Stay tuned for the upcoming release—more exciting use cases are on the way!
+            {t('labelTaikoFarmingStayTuned')}
           </Typography>
           <Typography mt={2} variant='h4'>
-            Take a tour to explore all the current Loopring DeFi use cases{' '}
+            {t('labelTaikoFarmingExploreUseCase')}
             <Link href='#' color='secondary'>
-              {'<here>'}
+              {t('labelTaikoFarmingHereLink')}
             </Link>
-            . You can deposit assets into Loopring DeFi anytime and start enjoying the experience!
+            {t('labelTaikoFarmingDepositAnytime')}
           </Typography>
         </Box>
       </Box>

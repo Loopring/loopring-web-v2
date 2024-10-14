@@ -89,7 +89,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   // @ts-ignore
   const coinSellRef = React.useRef()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const history = useHistory()
   const getDisabled = React.useMemo(() => {
     return disabled || deFiSideCalcData === undefined
@@ -130,10 +130,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               { floor: false, isAbbreviate: true },
             ),
           })
-        : // <Typography variant={"body1"} color={"var(--color-text-third)"}>
-          //
-          // </Typography>
-          '0.00',
+        : '0.00',
     isShowCoinInfo: true,
     isShowCoinIcon: true,
     maxAllow: true,
@@ -207,7 +204,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           alignItems={'center'}
           alignSelf={'self-start'}
         >
-          LOCK
+          {t('labelLock2')}
         </Typography>
         <OrderListIcon
           sx={{ cursor: 'pointer' }}
@@ -226,8 +223,6 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
-        // borderTop={'1px solid var(--color-border)'}
-        // borderBottom={'1px solid var(--color-border)'}
       >
         <InputCoin<T, I, any>
           ref={coinSellRef}
@@ -241,7 +236,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
             coinMap: {},
             coinPrecision: tokenSell.precision,
           }}
-          label={<Typography color={'var(--color-text-secondary)'}>Amount</Typography>}
+          label={<Typography color={'var(--color-text-secondary)'}>{t('labelAmount')}</Typography>}
         />
       </Grid>
       <Grid
@@ -276,10 +271,10 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           </Box>
           <Box ml={1}>
             <Typography color={'var(--color-warning)'}>
-            I acknowledge and would like to proceed.
+              {t('labelAcknowledgeAndProceed')}
             </Typography>
             <Typography color={'var(--color-warning)'} variant={'body2'} mt={0.5}>
-            You can unlock your TAIKO tokens only after the end of Trailblazer Season 2.
+              {t('labelUnlockAfterSeason2')}
             </Typography>
           </Box>
         </Box>
@@ -315,7 +310,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
       </Grid>
       <Box marginTop={3} width={'100%'} borderRadius={1}>
         <Typography mb={2} color={'var(--color-text-secondary)'}>
-          My Current Locked Position
+          {t('labelCurrentLockedPosition')}
         </Typography>
 
         <Grid
@@ -332,7 +327,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               display={'inline-flex'}
               alignItems={'center'}
             >
-              Amount
+              {t('labelAmount')}
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
           </Tooltip>
@@ -357,7 +352,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               display={'inline-flex'}
               alignItems={'center'}
             >
-              Total Points
+              {t('labelTotalPoints')}
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
           </Tooltip>
@@ -377,26 +372,12 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               display={'inline-flex'}
               alignItems={'center'}
             >
-              Daily Earning Points
+              {t('labelDailyEarningPoints')}
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
           </Tooltip>
           <Typography component={'p'}>{lockedPosition?.dailyEarn ?? '--'}</Typography>
         </Grid>
-        {/* <Grid container justifyContent={'space-between'} direction={'row'} alignItems={'center'}>
-          <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
-            <Typography
-              component={'p'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              Unlock Date
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-            </Typography>
-          </Tooltip>
-          <Typography component={'p'}>{lockedPosition?.unlockDate ?? '--'}</Typography>
-        </Grid> */}
       </Box>
     </GridStyle>
   )

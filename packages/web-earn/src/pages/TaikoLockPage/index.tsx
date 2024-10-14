@@ -1,4 +1,5 @@
 import { confirmation, useTaikoLock, useToast } from '@loopring-web/core'
+import { useTranslation } from 'react-i18next'
 
 import {
   boxLiner,
@@ -61,6 +62,7 @@ export const TaikoLockPage = ({
   }) => void
   isJoin?: boolean
 }) => {
+  const { t } = useTranslation('common')
   const {
     confirmation: { confirmedLRCStakeInvest },
   } = confirmation.useConfirmation()
@@ -116,10 +118,10 @@ export const TaikoLockPage = ({
               }}
             >
               <Typography textAlign={'center'} variant='h4'>
-                Unlock the Value of Your Locked TAIKO !
+                {t('labelTaikoFarmingUnlock')}
               </Typography>
               <Typography mt={1} textAlign={'center'}>
-                Mint lrTAIKO and use it in Loopring DeFi at zero cost!
+                {t('labelTaikoFarmingMintInfo')}
               </Typography>
             </Box>
           </MaxWidthContainer>
@@ -140,9 +142,9 @@ export const TaikoLockPage = ({
               paddingY={1.5}
               paddingX={2}
             >
-              <Typography variant='h5'>Taiko Farming</Typography>
+              <Typography variant='h5'>{t('labelTaikoFarming')}</Typography>
               <Typography mt={1.5} color={'var(--color-text-secondary)'}>
-              Earn Trailblazer points 5x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.
+                {t('labelTaikoFarmingDescription')}
               </Typography>
             </Box>
 
