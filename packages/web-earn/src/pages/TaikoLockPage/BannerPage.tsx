@@ -76,7 +76,7 @@ const BannerPage: React.FC = () => {
           </Typography>
           <Typography mt={2} variant='h4'>
             {t('labelTaikoFarmingExploreUseCase')}
-            <Link href='#' color='secondary'>
+            <Link href='/#/portal' color='secondary'>
               {t('labelTaikoFarmingHereLink')}
             </Link>
             {t('labelTaikoFarmingDepositAnytime')}

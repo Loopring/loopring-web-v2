@@ -320,7 +320,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           direction={'row'}
           alignItems={'center'}
         >
-          <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
+          
             <Typography
               component={'p'}
               color={'textSecondary'}
@@ -328,9 +328,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               alignItems={'center'}
             >
               {t('labelAmount')}
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+
             </Typography>
-          </Tooltip>
+
           <Typography component={'p'}>
             {lockedPosition?.amount ?? '--'} /{' '}
             <Typography component={'span'} color={'textSecondary'}>
@@ -345,7 +345,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           direction={'row'}
           alignItems={'center'}
         >
-          <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
+          <Tooltip title={t('labelTotalPointsDes')} placement={'top'} key={'APR'}>
             <Typography
               component={'p'}
               color={'textSecondary'}
@@ -365,7 +365,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           direction={'row'}
           alignItems={'center'}
         >
-          <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
+
             <Typography
               component={'p'}
               color={'textSecondary'}
@@ -373,9 +373,8 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
               alignItems={'center'}
             >
               {t('labelDailyEarningPoints')}
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
-          </Tooltip>
+
           <Typography component={'p'}>{lockedPosition?.dailyEarn ?? '--'}</Typography>
         </Grid>
       </Box>
