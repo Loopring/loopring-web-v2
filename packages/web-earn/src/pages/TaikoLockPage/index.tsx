@@ -1,9 +1,8 @@
-import { confirmation, useStakeTradeJOIN, useTaikoLock, useToast } from '@loopring-web/core'
+import { confirmation, useTaikoLock, useToast } from '@loopring-web/core'
 
 import {
   boxLiner,
   Button,
-  DeFiSideWrap,
   LoadingBlock,
   MaxWidthContainer,
   Toast,
@@ -14,22 +13,16 @@ import {
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 import {
-  BackIcon,
-  L1L2_NAME_DEFINED,
-  MapChainId,
   SoursURL,
   TOAST_TIME,
-  hexToRGB,
 } from '@loopring-web/common-resources'
-import { Trans, useTranslation } from 'react-i18next'
+
 import { useHistory } from 'react-router-dom'
-// import { MaxWidthContainer, containerColors } from '..'
-// MaxWidthContainer
 import { TaikoLockInput } from './TaikoLockInput'
-import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import { ErrorPage } from '../../pages/ErrorPage'
-// import { ErrorPage } from '../../ErrorPage'
+import BannerPage from './BannerPage'
+
 const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -82,6 +75,7 @@ export const TaikoLockPage = ({
   React.useEffect(() => {
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
+  const history = useHistory()
   return (
     <>
       <Toast
@@ -114,7 +108,11 @@ export const TaikoLockPage = ({
                 justifyContent: 'center',
                 flexDirection: 'column',
                 borderRadius: '8px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+              }}
+              component={'div'}
+              onClick={() => {
+                history.push('/taiko-farming/banner')
               }}
             >
               <Typography textAlign={'center'} variant='h4'>
@@ -144,12 +142,7 @@ export const TaikoLockPage = ({
             >
               <Typography variant='h5'>Taiko Farming</Typography>
               <Typography mt={1.5} color={'var(--color-text-secondary)'}>
-                Lock your Taiko through Taiko Farming to earn points, which helps you get Taiko
-                airdrops. The locked Taiko cannot be used for other purposes. Once locked, It cannot
-                be unlocked before the unlock date.
-              </Typography>
-              <Typography mt={1.5} color={'var(--color-text-secondary)'}>
-                Unlock Date: 2025-03-15 16:00
+              Earn Trailblazer points 5x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.
               </Typography>
             </Box>
 
@@ -187,3 +180,5 @@ export const TaikoLockPage = ({
     </>
   )
 }
+
+export { BannerPage as TaikoLockBannerPage }

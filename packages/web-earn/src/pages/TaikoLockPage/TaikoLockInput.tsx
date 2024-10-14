@@ -276,11 +276,10 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           </Box>
           <Box ml={1}>
             <Typography color={'var(--color-warning)'}>
-              I acknowledge and would like to proceed.
+            I acknowledge and would like to proceed.
             </Typography>
-            <Typography color={'var(--color-warning)'} mt={0.5}>
-              Unlock Date: You can unlock your TAIKO tokens only after the end of Trailblazer Season
-              2.
+            <Typography color={'var(--color-warning)'} variant={'body2'} mt={0.5}>
+            You can unlock your TAIKO tokens only after the end of Trailblazer Season 2.
             </Typography>
           </Box>
         </Box>
@@ -384,7 +383,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           </Tooltip>
           <Typography component={'p'}>{lockedPosition?.dailyEarn ?? '--'}</Typography>
         </Grid>
-        <Grid container justifyContent={'space-between'} direction={'row'} alignItems={'center'}>
+        {/* <Grid container justifyContent={'space-between'} direction={'row'} alignItems={'center'}>
           <Tooltip title={t('labelLRCStakeAPRTooltips').toString()} placement={'top'} key={'APR'}>
             <Typography
               component={'p'}
@@ -397,7 +396,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
             </Typography>
           </Tooltip>
           <Typography component={'p'}>{lockedPosition?.unlockDate ?? '--'}</Typography>
-        </Grid>
+        </Grid> */}
       </Box>
     </GridStyle>
   )
