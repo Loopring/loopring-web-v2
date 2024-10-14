@@ -216,6 +216,11 @@ export enum AccountStep {
   VaultDustCollector_Success,
   VaultDustCollector_Failed,
   VaultDustCollector_In_Progress,
+
+  Taiko_Farming_Lock_Success,
+  Taiko_Farming_Lock_Failed,
+  Taiko_Farming_Redeem_Success,
+  Taiko_Farming_Redeem_Failed,
 }
 
 /**
