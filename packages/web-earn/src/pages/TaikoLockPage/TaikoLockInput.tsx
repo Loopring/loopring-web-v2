@@ -359,7 +359,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           >
             {t('labelTaikoFarmingTrailblazerBooster')}
           </Typography>
-          <Typography component={'p'}>5x</Typography>
+          <Typography component={'p'}>60x</Typography>
         </Grid>
         <Grid
           mb={1}
