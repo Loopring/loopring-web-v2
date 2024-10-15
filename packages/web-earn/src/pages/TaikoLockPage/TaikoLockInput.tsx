@@ -334,7 +334,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           <Typography component={'p'}>
             {lockedPosition ? (
               <>
-                {lockedPosition?.amount ?? '--'} /{' '}
+                { lockedPosition?.amount ?? '--'} /{' '}
                 <Typography component={'span'} color={'textSecondary'}>
                   {lockedPosition?.amountInCurrency ?? '--'}
                 </Typography>
@@ -359,7 +359,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           >
             {t('labelTaikoFarmingTrailblazerBooster')}
           </Typography>
-          <Typography component={'p'}>{lockedPosition?.trailblazerBooster ?? '--'}</Typography>
+          <Typography component={'p'}>5x</Typography>
         </Grid>
         <Grid
           mb={1}

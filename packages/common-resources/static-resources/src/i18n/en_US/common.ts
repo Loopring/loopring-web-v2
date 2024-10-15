@@ -2522,6 +2522,6 @@ export default {
   labelTaikoFarmingTrailblazerBooster: 'Trailblazer Booster',
   labelTaikoFarmingPointsToBeTrackedRetroactively: 'Points to be tracked retroactively',
   labelTaikoFarmingPointsToBeTrackedRetroactivelyDes: 'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 5X Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard.',
-
+  labelTaikoFarmingLockSuccess: 'TAIKO Locked Successfully',
 }
 
