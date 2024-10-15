@@ -160,7 +160,9 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           }
           walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
-          deFiSideCalcDataInit.coinSell.balance = numberFormat(walletMap[coinSellSymbol]?.count, {fixed: taikoFarmingPrecision, removeTrailingZero: true})
+          deFiSideCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count 
+            ? numberFormat(walletMap[coinSellSymbol]?.count, {fixed: taikoFarmingPrecision, removeTrailingZero: true})
+            : undefined
         }
 
         if (clearTrade || tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined) {
@@ -453,7 +455,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     ? numberFormatThousandthPlace(stakingAmountRaw, {tokenSymbol: sellToken.symbol, fixed: sellToken.precision, removeTrailingZero: true })
     : undefined
 
-  const stakingAmountInCurrency = stakingAmountRaw && sellToken && tokenPrices[sellToken.symbol] && new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString()
+  const stakingAmountInCurrency = stakingAmountRaw && sellToken && tokenPrices[sellToken.symbol] && new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString() && getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString())
     ? fiatNumberDisplay(getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString()), currency) 
     : undefined
   const updateStakingList = () => {
@@ -472,8 +474,9 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           list: sdk.StakeInfoOrigin[];
         }
         setStakingTotal(resData.totalStaked)
-        
       })
+    } else {
+      setStakingTotal(undefined)
     }
   }
   React.useEffect(() => {
@@ -573,7 +576,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       btnStatus,
       accStatus: account.readyState,
       btnLabel: btnLabel,
-      lockedPosition: stakingTotal ? {
+      lockedPosition: stakingTotal && new Decimal(stakingTotal).gt(0) ? {
         amount: stakingAmount,
         amountInCurrency: stakingAmountInCurrency,
         trailblazerBooster: '5x',

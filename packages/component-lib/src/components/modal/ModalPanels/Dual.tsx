@@ -513,9 +513,10 @@ export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
   const { info } = props
   const propsPatch = {
     iconType: IconType.DoneIcon,
+    title: props.t('labelTaikoFarming'),
     describe1: (
       <Typography variant={'h5'} color={'var(--color-primary)'} component={'span'}>
-        TAIKO Locked Successfully
+        {props.t('labelTaikoFarmingLockSuccess')}
       </Typography>
     ),
     describe2: (
@@ -541,19 +542,6 @@ export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
             {info?.amount + ' ' + info?.symbol}
           </Typography>
         </Typography>
-        {/* <Typography
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          component={'span'}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelDeFiSideProduct')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info?.productId ?? EmptyValueTag}
-          </Typography>
-        </Typography> */}
         <Typography
           component={'span'}
           display={'inline-flex'}
@@ -570,21 +558,6 @@ export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
               .format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Typography>
-        {/* <Typography
-          component={'span'}
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelDeFiSideLockDuration')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info.daysDuration
-              ? '≥ ' + info.daysDuration + ' ' + props.t('labelDay')
-              : EmptyValueTag}
-          </Typography>
-        </Typography> */}
       </Box>
     ),
   }
