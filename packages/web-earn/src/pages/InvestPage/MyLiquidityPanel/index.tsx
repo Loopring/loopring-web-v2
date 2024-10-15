@@ -546,22 +546,10 @@ const MyLiquidity: any = withTranslation('common')(
                 <Typography variant={'h4'}>{t('labelInvestType_TAIKOFarming')}</Typography>
                 <Typography color={'var(--color-text-third)'}>
                   Balance:{' '}
-                  {summaryMyInvest?.taikoFarmingDollar
-                    ? hideAssets
-                      ? HiddenTag
-                      : nanToEmptyTag(
-                          getValuePrecisionThousand(
-                            sdk
-                              .toBig(summaryMyInvest.taikoFarmingDollar)
-                              .times(forexMap[currency] ?? 0),
-                            undefined,
-                            undefined,
-                            2,
-                            true,
-                            { isFait: true, floor: true },
-                          ),
-                          PriceTag[CurrencyToTag[currency]],
-                        )
+                  {hideAssets
+                    ? HiddenTag
+                    : taikoFarmingInfo
+                    ? taikoFarmingInfo.value
                     : EmptyValueTag}
                 </Typography>
               </Box>

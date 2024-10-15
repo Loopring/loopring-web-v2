@@ -453,7 +453,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     ? numberFormatThousandthPlace(stakingAmountRaw, {tokenSymbol: sellToken.symbol, fixed: sellToken.precision, removeTrailingZero: true })
     : undefined
 
-  const stakingAmountInCurrency = stakingAmountRaw && sellToken && tokenPrices[sellToken.symbol]
+  const stakingAmountInCurrency = stakingAmountRaw && sellToken && tokenPrices[sellToken.symbol] && new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString()
     ? fiatNumberDisplay(getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString()), currency) 
     : undefined
   const updateStakingList = () => {
@@ -577,9 +577,6 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         amount: stakingAmount,
         amountInCurrency: stakingAmountInCurrency,
         trailblazerBooster: '5x',
-        // totalPoints: 'Pending...',
-        // dailyEarn: 'Pending...',
-        // unlockDate: '2025-03-15 16:00',
       } : undefined,
       taikoFarmingChecked,
       onCheckBoxChange,
