@@ -388,6 +388,7 @@ const MyLiquidity: any = withTranslation('common')(
                     cancelReInvest={_cancelReInvest as any}
                     getProduct={getProduct}
                     rowConfig={RowEarnConfig}
+                    noMinHeight
                   />
                   <Modal
                     open={dualOpen}
@@ -527,6 +528,7 @@ const MyLiquidity: any = withTranslation('common')(
                   }}
                   showFilter
                   hideActions
+                  noMinHeight
                 />
               </Box>
             </Box>
@@ -569,10 +571,10 @@ const MyLiquidity: any = withTranslation('common')(
                     taikoFarmingInfo
                       ? [
                           {
-                            tokenSymbol: 'lrTAIKO',
+                            tokenSymbol: stakedSymbol,
                             amount: taikoFarmingInfo.amount,
                             value: taikoFarmingInfo.value,
-                            coinJSON: coinJson['TAIKO'],
+                            coinJSON: coinJson[stakedSymbol],
                           },
                         ]
                       : []
@@ -582,6 +584,7 @@ const MyLiquidity: any = withTranslation('common')(
                   getStakingList={getStakingList}
                   isLoading={stakeShowLoading}
                   hideAssets={hideAssets}
+                  noMinHeight
                   {...rest}
                 />
               </Box>

@@ -92,6 +92,7 @@ export const TaikoFarmingPortfolioTable = withTranslation(['tables', 'common'])(
       // onDetailClick,
       redeemItemClick: _redeemItemClick,
       hideAssets,
+      noMinHeight,
       t,
     } = props
     const [openDetail, setOpenDetail] = React.useState(false)
@@ -237,11 +238,14 @@ export const TaikoFarmingPortfolioTable = withTranslation(['tables', 'common'])(
         <TableStyled
           currentheight={
             rawData.length > 0
-              ? 200
+              ? RowInvestConfig.rowHeaderHeight + rawData.length * RowInvestConfig.rowHeight
               : 350
           }
           rowHeight={RowInvestConfig.rowHeight}
           headerRowHeight={RowInvestConfig.rowHeaderHeight}
+          style={{
+            minHeight:noMinHeight ? 0 : undefined
+          }}
           {...{
             ...defaultArgs,
             // rowRenderer: RowRenderer,

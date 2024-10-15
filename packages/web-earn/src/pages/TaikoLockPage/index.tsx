@@ -114,7 +114,7 @@ export const TaikoLockPage = ({
               }}
               component={'div'}
               onClick={() => {
-                history.push('/taiko-farming/banner')
+                window.open('/#/taiko-farming/banner', '_blank');
               }}
             >
               <Typography textAlign={'center'} variant='h4'>
@@ -136,7 +136,7 @@ export const TaikoLockPage = ({
           >
             <Box
               width={'25%'}
-              marginTop={2}
+
               borderRadius={2}
               bgcolor={'var(--color-box-third)'}
               paddingY={1.5}

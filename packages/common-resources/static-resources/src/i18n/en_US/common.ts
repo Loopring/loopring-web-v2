@@ -2519,5 +2519,9 @@ export default {
   labelTaikoFarmingDepositAnytime: ". You can deposit assets into Loopring DeFi anytime and start enjoying the experience!",
   labelTotalPointsDes: 'Please note that Trailblazer points are awarded directly by the Taiko team. The Loopring dashboard provides a reference for the points you may receive from Taiko, but if there are any discrepancies, the official results from Taiko will be the final and trusted source.',
   labelInvestType_TAIKOFarming: 'TAIKO Farming',
+  labelTaikoFarmingTrailblazerBooster: 'Trailblazer Booster',
+  labelTaikoFarmingPointsToBeTrackedRetroactively: 'Points to be tracked retroactively',
+  labelTaikoFarmingPointsToBeTrackedRetroactivelyDes: 'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 5X Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard.',
+
 }
 

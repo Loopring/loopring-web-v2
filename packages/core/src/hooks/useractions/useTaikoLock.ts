@@ -28,6 +28,7 @@ import {
   calcSideStaking,
   fiatNumberDisplay,
   makeWalletLayer2,
+  numberFormat,
   numberFormatThousandthPlace,
   numberStringListSum,
   useStakingMap,
@@ -78,7 +79,10 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   const { toggle } = useToggle()
   const { defaultNetwork, currency } = useSettings()
   const sellToken = tokenMap[coinSellSymbol]
+  const taikoFarmingPrecision = 2
   // const tokenId = tokenMap[coinSellSymbol].tokenId
+
+
 
   const handleOnchange = _.debounce(
     ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
@@ -94,7 +98,12 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       myLog('defi handleOnchange', _oldTradeStake)
 
       if (tradeData && coinSellSymbol) {
-        const inputValue = tradeData?.tradeValue?.toString() ?? '0'
+        const inputValue = tradeData?.tradeValue?.toString() ?? ''
+          // ? numberFormat(tradeData?.tradeValue?.toString(), {
+          //     fixed: taikoFarmingPrecision
+          //   })
+          // : ''
+        
         const tokenSell = tokenMap[coinSellSymbol]
         const { sellVol, deFiSideCalcData } = calcSideStaking({
           inputValue,
@@ -108,7 +117,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           ...deFiSideCalcData,
           coinSell: {
             ...tradeData,
-            tradeValue: tradeData?.tradeValue?.toString(),
+            tradeValue: inputValue,
           },
         }
         updateTradeStake({
@@ -151,7 +160,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           }
           walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
-          deFiSideCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count
+          deFiSideCalcDataInit.coinSell.balance = numberFormat(walletMap[coinSellSymbol]?.count, {fixed: taikoFarmingPrecision, removeTrailingZero: true})
         }
 
         if (clearTrade || tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined) {
@@ -216,7 +225,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
         deFiSideCalcDataInit.coinSell = {
           belong: coinSellSymbol,
-          balance: walletMap[coinSellSymbol]?.count,
+          balance: numberFormat(walletMap[coinSellSymbol]?.count, {fixed: taikoFarmingPrecision, removeTrailingZero: true}),
         }
       } else {
         deFiSideCalcDataInit.coinSell = {
@@ -567,9 +576,10 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       lockedPosition: stakingTotal ? {
         amount: stakingAmount,
         amountInCurrency: stakingAmountInCurrency,
-        totalPoints: 'Pending...',
-        dailyEarn: 'Pending...',
-        unlockDate: '2025-03-15 16:00',
+        trailblazerBooster: '5x',
+        // totalPoints: 'Pending...',
+        // dailyEarn: 'Pending...',
+        // unlockDate: '2025-03-15 16:00',
       } : undefined,
       taikoFarmingChecked,
       onCheckBoxChange,
