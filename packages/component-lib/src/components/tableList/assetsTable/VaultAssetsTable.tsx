@@ -104,6 +104,7 @@ export type VaultAssetsTableProps<R> = {
   actionRow: (props: { row }) => JSX.Element
   onClickDustCollector: () => void
   hideActions?: boolean
+  noMinHeight?: boolean
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -130,6 +131,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       searchValue,
       onClickDustCollector,
       hideActions,
+      noMinHeight,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -406,6 +408,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           {...{ ...rest, t }}
           style={{
             height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
+            minHeight:noMinHeight ? 0 : undefined
           }}
           onRowClick={onRowClick as any}
           rowHeight={rowConfig.rowHeight}

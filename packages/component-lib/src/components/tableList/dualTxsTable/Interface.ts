@@ -33,6 +33,7 @@ export interface DualAssetTableProps<R> {
   }
   getProduct: (item: R) => void
   rowConfig?: typeof RowConfig
+  noMinHeight?: boolean
 }
 
 export interface DualTxsTableProps<R = RawDataDualTxsItem> {

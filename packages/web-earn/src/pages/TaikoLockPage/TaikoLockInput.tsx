@@ -16,13 +16,19 @@ import {
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { Box, Checkbox, Grid, Tooltip, Typography } from '@mui/material'
-import { InputCoin, ButtonStyle, InputButtonProps, BtnInfo } from '@loopring-web/component-lib'
+import {
+  InputCoin,
+  ButtonStyle,
+  InputButtonProps,
+  BtnInfo,
+  InputCoin2,
+} from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router'
 import { useTheme } from '@emotion/react'
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -54,9 +60,10 @@ type StakingInputProps<T, I, ACD> = {
   lockedPosition?: {
     amount: string
     amountInCurrency: string
-    totalPoints: string
-    dailyEarn: string
-    unlockDate: string
+    // totalPoints: string
+    // dailyEarn: string
+    // unlockDate: string
+    trailblazerBooster: string
   }
   taikoFarmingChecked: boolean
   onCheckBoxChange: () => void
@@ -227,23 +234,18 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
         <InputCoin<T, I, any>
           ref={coinSellRef}
           disabled={getDisabled}
-          {...{
-            ...propsSell,
-            name: 'coinSell',
-            isHideError: true,
-            order: 'right',
-            inputData: deFiSideCalcData ? deFiSideCalcData.coinSell : ({} as any),
-            coinMap: {},
-            coinPrecision: tokenSell.precision,
-          }}
+          name='coinSell'
+          isHideError={true}
+          order='right'
+          inputData={deFiSideCalcData ? deFiSideCalcData.coinSell : {}}
+          coinMap={{}}
+          coinPrecision={tokenSell.precision}
+          {...propsSell}
+          decimalsLimit={2}
           label={<Typography color={'var(--color-text-secondary)'}>{t('labelAmount')}</Typography>}
         />
       </Grid>
-      <Grid
-        item
-        alignSelf={'stretch'}
-        my={3}
-      >
+      <Grid item alignSelf={'stretch'} my={3}>
         <Box
           p={1.5}
           bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
@@ -258,7 +260,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
                 sx={{
                   color: theme.colorBase.warning,
                   fontSize: '24px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               />
             ) : (
@@ -320,22 +322,26 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           direction={'row'}
           alignItems={'center'}
         >
-          
-            <Typography
-              component={'p'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              {t('labelAmount')}
-
-            </Typography>
+          <Typography
+            component={'p'}
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelAmount')}
+          </Typography>
 
           <Typography component={'p'}>
-            {lockedPosition?.amount ?? '--'} /{' '}
-            <Typography component={'span'} color={'textSecondary'}>
-              {lockedPosition?.amountInCurrency ?? '--'}
-            </Typography>
+            {lockedPosition ? (
+              <>
+                {lockedPosition?.amount ?? '--'} /{' '}
+                <Typography component={'span'} color={'textSecondary'}>
+                  {lockedPosition?.amountInCurrency ?? '--'}
+                </Typography>
+              </>
+            ) : (
+              '--'
+            )}
           </Typography>
         </Grid>
         <Grid
@@ -345,18 +351,15 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           direction={'row'}
           alignItems={'center'}
         >
-          <Tooltip title={t('labelTotalPointsDes')} placement={'top'} key={'APR'}>
-            <Typography
-              component={'p'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              {t('labelTotalPoints')}
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-            </Typography>
-          </Tooltip>
-          <Typography component={'p'}>{lockedPosition?.totalPoints ?? '--'}</Typography>
+          <Typography
+            component={'p'}
+            color={'textSecondary'}
+            display={'inline-flex'}
+            alignItems={'center'}
+          >
+            {t('labelTaikoFarmingTrailblazerBooster')}
+          </Typography>
+          <Typography component={'p'}>{lockedPosition?.trailblazerBooster ?? '--'}</Typography>
         </Grid>
         <Grid
           mb={1}
@@ -365,17 +368,22 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           direction={'row'}
           alignItems={'center'}
         >
-
+          <Tooltip
+            title={t('labelTaikoFarmingPointsToBeTrackedRetroactivelyDes')}
+            placement={'top'}
+            key={'APR'}
+          >
             <Typography
               component={'p'}
               color={'textSecondary'}
               display={'inline-flex'}
               alignItems={'center'}
             >
-              {t('labelDailyEarningPoints')}
+              {t('labelTaikoFarmingPointsToBeTrackedRetroactively')}
+              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
             </Typography>
-
-          <Typography component={'p'}>{lockedPosition?.dailyEarn ?? '--'}</Typography>
+          </Tooltip>
+          <Typography component={'p'}></Typography>
         </Grid>
       </Box>
     </GridStyle>

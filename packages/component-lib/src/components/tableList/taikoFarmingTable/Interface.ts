@@ -39,6 +39,7 @@ export interface DefiSideStakingTableProps<R = RawDataDefiSideStakingItem> {
   showloading: boolean
   redeemItemClick: (item: R) => void
   hideAssets?: boolean
+  noMinHeight?: boolean
 }
 
 export type RawDataTaikoFarmingTxItem = sdk.STACKING_TRANSACTIONS & {
