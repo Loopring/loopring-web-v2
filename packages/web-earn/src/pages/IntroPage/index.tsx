@@ -291,6 +291,22 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           {t("labelIntroDes3")}
         </Typography>
         <Section
+          title={t('labelInvestTaikoFarmingTitle')}
+          des1={t('labelInvestTaikoFarmingDes1')}
+          des2={t('labelInvestTaikoFarmingDes2')}
+          viewMoreLink='/taiko-farming'
+          imgURL={
+            SoursURL +
+            (theme.mode === 'dark'
+              ? 'earn/intro_screenshot_0.png'
+              : 'earn/intro_screenshot_0_light.png')
+          }
+          marginBottom={6}
+          sx={{
+            bgcolor: theme.mode === 'dark' ? hexToRGB('#303339', 0.8) : '#FFFFFF',
+          }}
+        />
+        <Section
           title={t('labelInvestDualTitle')}
           des1={t('labelInvestDualDes1')}
           des2={t('labelInvestDualDes2')}

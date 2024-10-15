@@ -2517,6 +2517,7 @@ export default {
   labelTaikoFarmingExploreUseCase: "Take a tour to explore all the current Loopring DeFi use cases ",
   labelTaikoFarmingHereLink: "<here>",
   labelTaikoFarmingDepositAnytime: ". You can deposit assets into Loopring DeFi anytime and start enjoying the experience!",
-  labelTotalPointsDes: 'Please note that Trailblazer points are awarded directly by the Taiko team. The Loopring dashboard provides a reference for the points you may receive from Taiko, but if there are any discrepancies, the official results from Taiko will be the final and trusted source.'
+  labelTotalPointsDes: 'Please note that Trailblazer points are awarded directly by the Taiko team. The Loopring dashboard provides a reference for the points you may receive from Taiko, but if there are any discrepancies, the official results from Taiko will be the final and trusted source.',
+  labelInvestType_TAIKOFarming: 'TAIKO Farming',
 }
 
