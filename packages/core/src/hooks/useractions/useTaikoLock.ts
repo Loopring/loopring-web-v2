@@ -579,7 +579,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       lockedPosition: stakingTotal && new Decimal(stakingTotal).gt(0) ? {
         amount: stakingAmount,
         amountInCurrency: stakingAmountInCurrency,
-        trailblazerBooster: '5x',
+        trailblazerBooster: '60x',
       } : undefined,
       taikoFarmingChecked,
       onCheckBoxChange,

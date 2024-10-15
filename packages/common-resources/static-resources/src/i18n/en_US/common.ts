@@ -2497,7 +2497,7 @@ export default {
   labelTaikoFarmingUnlock: "Unlock the Value of Your Locked TAIKO !",
   labelTaikoFarmingMintInfo: "Mint lrTAIKO and use it in Loopring DeFi at zero cost!",
   labelTaikoFarming: "Taiko Farming",
-  labelTaikoFarmingDescription: "Earn Trailblazer points 5x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.",
+  labelTaikoFarmingDescription: "Earn Trailblazer points 60x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.",
   labelLock2: "LOCK",
   labelEnterPaymentToken: "Enter payment token",
   labelMax: "Max",
@@ -2508,7 +2508,7 @@ export default {
   labelTotalPoints: "Total Points",
   labelDailyEarningPoints: "Daily Earning Points",
   labelTaikoFarmingBannerTitle: "Taiko Farming",
-  labelTaikoFarmingBannerDes: "Earn Trailblazer points 5x faster by locking TAIKO and participating in Taiko Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.",
+  labelTaikoFarmingBannerDes: "Earn Trailblazer points 60x faster by locking TAIKO and participating in Taiko Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.",
   labelTaikoFarmingQuestion: "Worried about missing trading or earning opportunities when locking your valuable TAIKO?",
   labelTaikoFarmingExplanation: "Loopring lets you mint lrTAIKO at a 1:1 ratio, allowing you to freely use it across all trading and earning options within Loopring DeFi. Plus, you'll continue farming Trailblazer points.",
   labelTaikoFarmingComingSoon: "The lrTAIKO mint feature is coming soon!",
@@ -2521,7 +2521,7 @@ export default {
   labelInvestType_TAIKOFarming: 'TAIKO Farming',
   labelTaikoFarmingTrailblazerBooster: 'Trailblazer Booster',
   labelTaikoFarmingPointsToBeTrackedRetroactively: 'Points to be tracked retroactively',
-  labelTaikoFarmingPointsToBeTrackedRetroactivelyDes: 'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 5X Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard.',
+  labelTaikoFarmingPointsToBeTrackedRetroactivelyDes: 'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard.',
   labelTaikoFarmingLockSuccess: 'TAIKO Locked Successfully',
 }
 
