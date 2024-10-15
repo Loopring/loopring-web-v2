@@ -435,10 +435,10 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     isLoading,
     submitCallback: onSubmitBtnClick,
   })
-  const [stakingList, setStakingList] = React.useState<sdk.STACKING_TRANSACTIONS[] | undefined>(undefined)
+  const [stakingTotal, setStakingTotal] = React.useState<string | undefined>(undefined)
   
-  const stakingAmountRaw = stakingList && sellToken
-    ? utils.formatUnits(numberStringListSum(stakingList.map((item) => item.amount)), sellToken.decimals)
+  const stakingAmountRaw = stakingTotal && sellToken
+    ? utils.formatUnits(stakingTotal, sellToken.decimals)
     : undefined
   const stakingAmount = stakingAmountRaw && sellToken
     ? numberFormatThousandthPlace(stakingAmountRaw, {tokenSymbol: sellToken.symbol, fixed: sellToken.precision, removeTrailingZero: true })
@@ -449,21 +449,22 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     : undefined
   const updateStakingList = () => {
     if (account.apiKey) {
-      LoopringAPI?.defiAPI?.getStakeTransactions(
-        {
-          accountId: account.accountId,
-          tokenId: sellToken.tokenId,
-          start: 0,
-          end: Date.now(),
-          limit: 100,
-          offset: 0,
-        } as any,
-        account.apiKey,
-      ).then((res) => {
-        setStakingList(res.list)
+      LoopringAPI?.defiAPI?.getStakeSummary({
+        accountId: account.accountId,
+        tokenId: sellToken.tokenId,
+      }, account.apiKey).then((res) => {
+        const resData = res as {
+          raw_data: unknown;
+          totalNum: number;
+          totalStaked: string;
+          totalStakedRewards: string;
+          totalLastDayPendingRewards: string;
+          totalClaimableRewards: string;
+          list: sdk.StakeInfoOrigin[];
+        }
+        setStakingTotal(resData.totalStaked)
+        
       })
-    } else {
-      setStakingList(undefined)
     }
   }
   React.useEffect(() => {
@@ -563,7 +564,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       btnStatus,
       accStatus: account.readyState,
       btnLabel: btnLabel,
-      lockedPosition: stakingList && stakingList.length > 0 ? {
+      lockedPosition: stakingTotal ? {
         amount: stakingAmount,
         amountInCurrency: stakingAmountInCurrency,
         totalPoints: 'Pending...',
