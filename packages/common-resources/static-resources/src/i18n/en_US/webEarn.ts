@@ -117,4 +117,7 @@ export default {
   labelReadyForDevelopersDes:
     "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
   labelLaunch: 'Launch',
+  labelInvestTaikoFarmingTitle: 'Taiko Farming',
+  labelInvestTaikoFarmingDes1: 'Earn 5x Trailblazer Points by Locking TAIKO!',
+  labelInvestTaikoFarmingDes2: 'Earn Trailblazer points 5x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.',
 }
