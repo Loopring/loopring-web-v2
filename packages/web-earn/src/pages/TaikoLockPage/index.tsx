@@ -24,6 +24,7 @@ import { TaikoLockInput } from './TaikoLockInput'
 import styled from '@emotion/styled'
 import { ErrorPage } from '../../pages/ErrorPage'
 import BannerPage from './BannerPage'
+import { useTheme } from '@emotion/react'
 
 const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const StyleWrapper = styled(Box)`
@@ -78,7 +79,7 @@ export const TaikoLockPage = ({
   React.useEffect(() => {
     setConfirmedLRCStakeInvestInvest({ show: !confirmedLRCStakeInvest, confirmationNeeded: true })
   }, [])
-  const history = useHistory()
+  const theme = useTheme()
   return (
     <>
       <Toast
@@ -102,7 +103,7 @@ export const TaikoLockPage = ({
             <Box
               component={'img'}
               height={'28px'}
-              src={SoursURL + 'earn/taiko_farming_banner_wording.png'}
+              src={SoursURL + (theme.mode === 'dark' ? 'earn/taiko_farming_banner_wording.png' : 'earn/taiko_farming_banner_wording_light.png')}
               mb={'2px'}
             />
           </Box>
@@ -156,7 +157,7 @@ export const TaikoLockPage = ({
               flexDirection={'column'}
               justifyContent={'space-between'}
             >
-              <Typography variant={'h5'}>
+              <Typography variant={'h5'} color={theme.colorBase.white}>
                 {t('labelTaikoFarmingUnlockValue')}
               </Typography>
               <Box
