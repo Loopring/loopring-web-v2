@@ -119,5 +119,5 @@ export default {
   labelLaunch: 'Launch',
   labelInvestTaikoFarmingTitle: 'Taiko Farming',
   labelInvestTaikoFarmingDes1: 'Earn 60x Trailblazer Points by Locking TAIKO!',
-  labelInvestTaikoFarmingDes2: 'Earn Trailblazer points 60x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.',
+  labelInvestTaikoFarmingDes2: 'Farm Trailblazer points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
 }
