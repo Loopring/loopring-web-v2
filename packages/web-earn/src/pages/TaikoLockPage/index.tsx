@@ -14,6 +14,7 @@ import {
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 import {
+  hexToRGB,
   SoursURL,
   TOAST_TIME,
 } from '@loopring-web/common-resources'
@@ -89,6 +90,22 @@ export const TaikoLockPage = ({
       />
       {toggle?.LRCStackInvest.enable ? (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+          <Box
+            width={'100%'}
+            height={'48px'}
+            bgcolor={hexToRGB('#EB2FAC', 0.15)}
+            justifyContent={'center'}
+            alignItems={'center'}
+            display={'flex'}
+            mt={4}
+          >
+            <Box
+              component={'img'}
+              height={'28px'}
+              src={SoursURL + 'earn/taiko_farming_banner_wording.png'}
+              mb={'2px'}
+            />
+          </Box>
           <MaxWidthContainer
             mt={4}
             background={containerColors[0]}
@@ -98,56 +115,7 @@ export const TaikoLockPage = ({
               alignItems: 'flex-start',
             }}
           >
-            <Box
-              sx={{
-                backgroundImage: `url("${SoursURL}images/web-earn/taiko_farming_banner.png")`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                width: '100%',
-                height: '100px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                borderRadius: '8px',
-                cursor: 'pointer',
-              }}
-              component={'div'}
-              onClick={() => {
-                window.open('/#/taiko-farming/banner', '_blank');
-              }}
-            >
-              <Typography textAlign={'center'} variant='h4'>
-                {t('labelTaikoFarmingUnlock')}
-              </Typography>
-              <Typography mt={1} textAlign={'center'}>
-                {t('labelTaikoFarmingMintInfo')}
-              </Typography>
-            </Box>
-          </MaxWidthContainer>
-          <MaxWidthContainer
-            mt={4}
-            background={containerColors[0]}
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Box
-              width={'25%'}
-
-              borderRadius={2}
-              bgcolor={'var(--color-box-third)'}
-              paddingY={1.5}
-              paddingX={2}
-            >
-              <Typography variant='h5'>{t('labelTaikoFarming')}</Typography>
-              <Typography mt={1.5} color={'var(--color-text-secondary)'}>
-                {t('labelTaikoFarmingDescription')}
-              </Typography>
-            </Box>
-
+            <Box width={'24%'} />
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}
@@ -173,7 +141,39 @@ export const TaikoLockPage = ({
                 <LoadingBlock />
               )}
             </StyleWrapper>
-            <Box width={'25%'} />
+            <Box
+              width={'24%'}
+              p={2}
+              borderRadius={'8px'}
+              sx={{
+                backgroundImage: `url(${SoursURL + 'earn/taiko_farming_banner_bg.png'})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
+              
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'space-between'}
+            >
+              <Typography variant={'h5'}>
+                {t('labelTaikoFarmingUnlockValue')}
+              </Typography>
+              <Box
+                mt={2}
+                height={'32px'}
+                width={'115.2px'}
+                component={'img'}
+                sx={{
+                  cursor: 'pointer',
+                }}
+                src={SoursURL + 'earn/taiko_farming_banner_button.png'}
+                alignSelf={'end'}
+                onClick={() => {
+                  window.open('/#/taiko-farming/banner', '_blank');
+                }}
+              />
+            </Box>
           </MaxWidthContainer>
         </Box>
       ) : (
