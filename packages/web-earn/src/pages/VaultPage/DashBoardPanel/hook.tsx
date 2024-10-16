@@ -495,9 +495,12 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   }, [vaultAccountInfoStatus])
   const onRowClick = React.useCallback(
     ({ row }: { row: R }) => {
+      
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+        history.push('/portal/portalDashboard')
         onSwapPop({ symbol: row?.token?.value })
       } else {
+        history.push('/portal')
         setShowNoVaultAccount({
           isShow: true,
           whichBtn: VaultAction.VaultJoin,
