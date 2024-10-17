@@ -19,6 +19,7 @@ import { bindHover, usePopupState } from 'material-ui-popup-state/hooks'
 import styled from '@emotion/styled'
 import { useSettings } from '../../../stores'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { useSystem } from '@loopring-web/core'
 
 // type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
@@ -79,6 +80,7 @@ export const WalletConnectBtn = ({
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(['layout', 'common'])
   const { isMobile } = useSettings()
+  const { exchangeInfo } = useSystem()
   
   const {label, btnClassname, icon, isLocked} = React.useMemo(() => {
     const account = accountState?.account
@@ -159,7 +161,7 @@ export const WalletConnectBtn = ({
               {t(label)}
             </Typography>
           </Box>
-          <Button
+          {exchangeInfo && <Button
             color={'error'}
             size={'small'}
             sx={{ borderRadius: '4px', height: '34px' }}
@@ -171,7 +173,7 @@ export const WalletConnectBtn = ({
               {/* Unlock First */}
               {t("labelUnlockFirst")}
             </Typography>
-          </Button>
+          </Button>}
         </Box>
       ) : (
         <WalletConnectBtnStyled
