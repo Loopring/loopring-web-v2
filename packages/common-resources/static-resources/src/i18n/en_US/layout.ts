@@ -140,7 +140,6 @@ export default {
   labelDashBoard: 'Dashboard',
   labelRecord: 'Records',
   labelHome: 'Loopring Layer 2',
-  labelVaultDes: '',
   labelVaultHome: 'Home',
   labelVaultHomeDes: 'Access the available portfolio',
   labelVaultDashboard: 'Dashboard',
@@ -149,4 +148,16 @@ export default {
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
   labelNavDoc: 'Documentation',
+
+  labelNavWalletDes: `Ethereum's most secure wallet, fully integrated with advanced trading functionality and innovative Earn products, unlocking the true potential of Layer 2.`,
+  labelNavEarnDes: 'Revolutionizing Decentralized Finance with Cutting-Edge Earning and Trading Solutions',
+  labelNavProDes: 'Unleash the Power of DeFi and Advanced Trading on Top of an App-Specific ZK-Rollup',
+  labelNavDocDes: 'Our API,SDK, and step-by-step references to building, minting, and trading on Loopring',
+
+  labelAssetsDes: 'Revolutionizing Decentralized Finance with Cutting-Edge Earning and Trading Solutions',
+  labelDualInvestDes: 'Bring structured finance from CeFi to DeFi in a trustless manner. Place orders at your preferred price and earn high yields!',
+  labelVaultDes: 'Trade popular tokens beyond the Ethereum chain, with leverage!',
+  labelBtradeTradeDes: 'Swap tokens securely and trustlessly, tapping into CEX liquidity.',
+  labelTaikoFarmingDes: 'Farm Trailblazer points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
+
 }

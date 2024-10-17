@@ -6,7 +6,7 @@ import {
   ButtonComponentsMap,
   SecurityIcon,
 } from '@loopring-web/common-resources'
-import { ChainId } from '@loopring-web/loopring-sdk'
+import { ChainId, SoursURL } from '@loopring-web/loopring-sdk'
 
 export const toolBarAvailableEarnItem: number[] = [
   ButtonComponentsMap.Download,
@@ -48,33 +48,53 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
     label: {
       id: 'L2Assets',
       i18nKey: 'labelVault2',
+      description: 'labelAssetsDes',
     },
     router: { path: '/l2assets' },
     status: HeaderMenuTabStatus.default,
+    logo: {
+      dark: SoursURL + 'images/earn_nav_assets_dark.png',
+      light: SoursURL + 'images/earn_nav_assets_light.png',
+    }
   },
   {
     label: {
       id: 'dual',
       i18nKey: 'labelDualInvest',
+      description: 'labelDualInvestDes',
     },
     router: { path: '/invest/dual' },
     status: HeaderMenuTabStatus.default,
+    logo: {
+      dark: SoursURL + 'images/earn_nav_dual_dark.png',
+      light: SoursURL + 'images/earn_nav_dual_light.png',
+    }
   },
   {
     label: {
       id: 'portal',
       i18nKey: 'labelVault',
+      description: 'labelVaultDes',
     },
     router: { path: '/portal' },
     status: HeaderMenuTabStatus.default,
+    logo: {
+      dark: SoursURL + 'images/earn_nav_portal_dark.png',
+      light: SoursURL + 'images/earn_nav_portal_light.png',
+    }
   },
   {
     label: {
       id: 'btrade',
       i18nKey: 'labelBtradeTrade',
+      description: 'labelBtradeTradeDes',
     },
     router: { path: '/trade/btrade' },
     status: HeaderMenuTabStatus.default,
+    logo: {
+      dark: SoursURL + 'images/earn_nav_btrade_dark.png',
+      light: SoursURL + 'images/earn_nav_btrade_light.png',
+    }
   },
 ]
 export const RouterAllowIndex = {

@@ -648,9 +648,9 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           headerMenuLandingData.map(item => {
                             return {
                               title: t(item.label.i18nKey),
-                              des: 'des',
+                              des:  item.label.description ? t(item.label.description) : '',
                               link: item.router?.path ?? '',
-                              logo: item.label.icon,
+                              logo: theme.mode === 'dark' ? item.logo?.dark : item.logo?.light,
                               onClick: () => {
                                 window.open(item.router?.path ?? '', '_blank')
                               }
@@ -709,9 +709,9 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           _headerMenuData.map(item => {
                             return {
                               title: t(item.label.i18nKey),
-                              des: 'des',
+                              des: item.label.description ? t(item.label.description) : '',
                               link: item.router?.path ?? '',
-                              logo: item.label.icon,
+                              logo: theme.mode === 'dark' ? item.logo?.dark : item.logo?.light,
                               onClick: () => {
                                 history.push(item.router?.path ?? '')
                                 popupState.close()
