@@ -40,6 +40,7 @@ import { keys } from 'lodash'
 import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from './utils'
 import { numberFormat } from '../../../utils'
+import { utils } from 'ethers'
 
 export type VaultBorrowTradeData = IBData<any> & {
   erc20Symbol: string
@@ -80,17 +81,8 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
     const maxBorrowAmt = sdk
       .toBig(BigNumber.min(totalQuote, tradeData.count))
       .toFixed(borrowToken?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN)
-    const maxBorrowVol = sdk.toBig(maxBorrowAmt).times('1e' + borrowToken.decimals)
     const tradeValue = tradeData.tradeValue
-    // const = tradeData ? tradeData.count : 0
     supportData = {
-      maxBorrowAmount: maxBorrowAmt?.toString(),
-      maxBorrowStr: getValuePrecisionThousand(
-        maxBorrowAmt ?? 0,
-        borrowToken.precision,
-        borrowToken.precision,
-        undefined,
-      ),
       minBorrowAmount: minBorrowAmt?.toString(),
       minBorrowStr: getValuePrecisionThousand(
         minBorrowAmt ?? 0,
@@ -98,7 +90,6 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
         borrowToken.precision,
         undefined,
       ),
-      maxBorrowVol: maxBorrowVol.toString(),
       minBorrowVol: minBorrowVol.toString(),
       maxQuote: orderAmounts.maximum,
       borrowVol: sdk
@@ -189,10 +180,14 @@ export const useVaultBorrow = <
           removeTrailingZero: true,
         },
       )
+      const maxBorrowVol = utils.parseUnits(balance, vToken.decimals).toString()
       updateVaultBorrow({
         ...vaultBorrowData2,
         balance: Number(balance),
         tradeData: { ...vaultBorrowData2.tradeData, balance: Number(balance) },
+        maxBorrowAmount: balance,
+        maxBorrowStr: balance,
+        maxBorrowVol: maxBorrowVol.toString(),
       })
     }
     timerRef.current = setInterval(fn, 10 * 1000)
