@@ -23,8 +23,8 @@ export const useSubmitBtn = ({
   isLoading: boolean
 }) => {
   // let {calcTradeParams} = usePageTradePro();
-  let { account } = useAccount()
-  let { app } = useSystem()
+  let { account,  } = useAccount()
+  let { app, exchangeInfo } = useSystem()
   let { defaultNetwork } = useSettings()
   const { goUpdateAccount } = useUpdateAccount()
   const { setShowDeposit } = useOpenModals()
@@ -48,7 +48,6 @@ export const useSubmitBtn = ({
     | Partial<React.CSSProperties>
     | undefined => {
     if (account.readyState === AccountStatus.ACTIVATED) {
-      // const {tradeBtnStatus}  = availableTradeCheck(rest)
       return undefined
     } else {
       return { backgroundColor: 'var(--color-primary)' }
@@ -63,15 +62,17 @@ export const useSubmitBtn = ({
       },
     ],
   })
-
   const _btnLabel = React.useMemo((): string => {
+    if (!exchangeInfo) {
+      return '...'
+    }
     return accountStaticCallBack(_btnLabelArray, [{
       ...rest,
       chainId: defaultNetwork,
       isEarn: app === 'earn',
       readyState: account.readyState,
     }])
-  }, [_btnLabelArray, rest, app, defaultNetwork, account.readyState])
+  }, [_btnLabelArray, rest, app, defaultNetwork, account.readyState, exchangeInfo])
 
   const btnClickCallbackArray = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [submitCallback],
@@ -110,7 +111,8 @@ export const useSubmitBtn = ({
         },
         taikoEarnDeposit: async () => {
           setShowDeposit({isShow: true})
-        }
+        },
+        exchangeInfoLoaded: exchangeInfo ? true : false,
       }])
     },
     [btnClickCallbackArray, app, defaultNetwork, account],
