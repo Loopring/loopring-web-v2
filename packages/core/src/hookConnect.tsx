@@ -136,33 +136,33 @@ const Icon = ({ label = '' }: { label: string }) => {
   switch (label) {
     case 'GOERLI':
       return (
-        <Avatar component={'span'} variant='circular'>
-          <ChainGOERLIIcon sx={{ width: 20, height: 20 }} />
-        </Avatar>
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <ChainGOERLIIcon style={{width: 20, height: 20}} />
+        </Box>
       )
     case 'ETHEREUM':
       return (
-        <Avatar component={'span'} variant='circular'>
-          <ChainETHEREUMIcon sx={{ width: 20, height: 20 }} />
-        </Avatar>
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <ChainETHEREUMIcon style={{width: 20, height: 20}} />
+        </Box>
       )
     case 'SEPOLIA':
       return (
-        <Avatar component={'span'} variant='circular'>
-          <Box component={'img'} src={createImageFromInitials(24, 'Sepolia', '#56a7c9')}/> 
-        </Avatar>
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <Box component={'img'} src={createImageFromInitials(20, 'Sepolia', '#56a7c9')}/> 
+        </Box>
       )
     case 'TAIKO':
       return (
-        <Avatar component={'span'} variant='circular'>
-          <ChainTAIKOIcon sx={{ width: 20, height: 20 }} />
-        </Avatar>
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <ChainTAIKOIcon style={{width: 20, height: 20}} />
+        </Box>
       )
     case 'TAIKOHEKLA':
       return (
-        <Avatar component={'span'} variant='circular'>
-          <Box component={'img'} src={createImageFromInitials(24, 'TAIKOHEKLA', '#E91898')}/> 
-        </Avatar>
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <Box component={'img'} src={createImageFromInitials(20, 'TAIKOHEKLA', '#E91898')}/> 
+        </Box>
       )
     default:
       const child = label.split(' ')?.map((item) => item[0])
@@ -290,7 +290,11 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
             sx={{ 
               cursor: 'pointer',
               borderRadius: '4px',
-              marginRight: 0.5
+              marginRight: 1,
+              border: '1px solid var(--color-border)',
+              height: isMobile ? '32px' : '36px',
+              minHeight: isMobile ? '32px' : '36px',
+              paddingX: isMobile ? 1 : undefined,
             }}
             onClick={() => open({ view: 'Networks' })}
             disabled={disable(defaultNetwork)}
@@ -302,7 +306,6 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
           >
             <Typography component={'span'} display={'inline-flex'} alignItems={'center'}>
               <Icon label={MapChainId[defaultNetwork]} />
-              <span className={'label'}>{t(NetworkMap[defaultNetwork].label)}</span>
             </Typography>
             <DropDownIcon sx={{marginLeft: 0.5}} />
           </OutlineSelectItemStyle>

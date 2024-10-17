@@ -228,6 +228,38 @@ export let headerToolBarData: {
   },
 }
 
+export let headerToolBarDataMobile: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  // [ButtonComponentsMap.Download]: {
+  //   buttonComponent: ButtonComponentsMap.Download,
+  //   url: WalletSite,
+  // },
+  [ButtonComponentsMap.Notification]: {
+    buttonComponent: ButtonComponentsMap.Notification,
+    label: 'labelNotification',
+  },
+  // [ButtonComponentsMap.Setting]: {
+  //   buttonComponent: ButtonComponentsMap.Setting,
+  //   label: 'labelSetting',
+  // },
+  [ButtonComponentsMap.ProfileMenu]: {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: 'labelProfile',
+    readyState: undefined,
+  },
+  [ButtonComponentsMap.WalletConnect]: {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+}
+
 // export const toolBarMobileAvailableItem = [
 //   ButtonComponentsMap.Download,
 //   ButtonComponentsMap.Notification,

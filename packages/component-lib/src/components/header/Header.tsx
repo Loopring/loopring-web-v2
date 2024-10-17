@@ -7,16 +7,18 @@ import {
   Divider,
   IconButton,
   Slide,
+  SwipeableDrawer,
   Toolbar,
   Typography,
   useScrollTrigger,
 } from '@mui/material'
 import { Link as RouterLink, useHistory, useLocation, useRouteMatch } from 'react-router-dom'
-import { WithTranslation, withTranslation } from 'react-i18next'
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next'
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, PopoverPure, TabItemPlus } from '../basic-lib'
 import { HeaderProps, HeaderToolBarInterface } from './Interface'
 import {
   ButtonComponentsMap,
+  CloseIcon,
   HeaderMenuItemInterface,
   headerMenuLandingData,
   HeaderMenuTabStatus,
@@ -216,6 +218,100 @@ const NodeMenuItem = React.memo(
 export const LAYERMAP = {
   '1': 'l1',
   '2': 'l2',
+}
+
+interface MobileDrawerProps {
+  linkList: {
+    title: string,
+    des: string,
+    link: string,
+    logo: string,
+    onClick: () => void
+  }[]
+  open: boolean
+  onClose: () => void
+  showSetting: boolean
+  showColorSwitch: boolean
+}
+
+const MobileDrawer = (props: MobileDrawerProps) => {
+  const { linkList, showColorSwitch, showSetting } = props
+  const { t } = useTranslation()
+  return (
+    <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
+      <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
+        <Box
+          display={'flex'}
+          height={'28px'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <LoopringLogoIcon
+            fontSize={'large'}
+            style={{ height: 28, width: 28 }}
+            color={'primary'}
+          />
+          <CloseIcon
+            className='custom-size'
+            sx={{
+              fontSize: '24px',
+              cursor: 'pointer',
+            }}
+            onClick={props.onClose}
+          />
+        </Box>
+        <Box my={5} height={'calc(100% - 96px)'} sx={{overflowY: 'scroll'}}>
+          {linkList.map((item) => {
+            return (
+              <Box
+                height={'120px'}
+                borderRadius={'20px'}
+                bgcolor={'var(--color-pop-bg)'}
+                key={item.title}
+                display={'flex'}
+                flexDirection={'row'}
+                alignItems={'center'}
+                mb={3}
+                px={5}
+                onClick={item.onClick}
+              >
+                <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
+                  <Box>
+                    <Typography>{item.title}</Typography>
+                    <Typography mt={3} variant={'body2'} color={'var(--color-text-secondary)'}>
+                      {item.des}
+                    </Typography>
+                  </Box>
+                  <Box
+                    ml={4}
+                    component={'img'}
+                    src={item.logo}
+                    alt={item.title}
+                    width={'44px'}
+                    height={'44px'}
+                  />
+                </Box>
+              </Box>
+            )
+          })}
+        </Box>
+        <Box
+          display={'flex'}
+          height={'28px'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          {/* <Box /> */}
+          <Box>
+            {showSetting && <ToolBarItem t={t} buttonComponent={ButtonComponentsMap.Setting} />}
+          </Box>
+          <Box>
+            {showColorSwitch && <ToolBarItem buttonComponent={ButtonComponentsMap.ColorSwitch} />}
+          </Box>
+        </Box>
+      </Box>
+    </SwipeableDrawer>
+  )
 }
 
 export const Header = withTranslation(['layout', 'landPage', 'common'], { withRef: true })(
@@ -547,33 +643,27 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           // color={"primary"}
                         />
                       </Typography>
-
-                      <PopoverPure
-                        {...bindPopper(popupState)}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'center',
+                      <MobileDrawer
+                        linkList={
+                          headerMenuLandingData.map(item => {
+                            return {
+                              title: t(item.label.i18nKey),
+                              des: 'des',
+                              link: item.router?.path ?? '',
+                              logo: item.label.icon,
+                              onClick: () => {
+                                window.open(item.router?.path ?? '', '_blank')
+                              }
+                            }
+                          })
+                        }
+                        open={popupState.isOpen}
+                        onClose={() => {
+                          popupState.close()
                         }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'center',
-                        }}
-                      >
-                        <Box
-                          className={'mobile'}
-                          display={'flex'}
-                          alignItems={'stretch'}
-                          flexDirection={'column'}
-                        >
-                          {getDrawerChoices({
-                            menuList: headerMenuLandingData, // _headerMenuData,
-                            i18n,
-                            t,
-                            handleListKeyDown: popupState.close,
-                            ...rest,
-                          })}
-                        </Box>
-                      </PopoverPure>
+                        showSetting={false}
+                        showColorSwitch={false}
+                      />
                     </Box>
                   </ClickAwayListener>
                 </>
@@ -613,32 +703,29 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                         />
                       </Typography>
 
-                      <PopoverPure
-                        {...bindPopper(popupState)}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'center',
+
+                      <MobileDrawer
+                        linkList={
+                          _headerMenuData.map(item => {
+                            return {
+                              title: t(item.label.i18nKey),
+                              des: 'des',
+                              link: item.router?.path ?? '',
+                              logo: item.label.icon,
+                              onClick: () => {
+                                history.push(item.router?.path ?? '')
+                                popupState.close()
+                              }
+                            }
+                          })
+                        }
+                        open={popupState.isOpen}
+                        onClose={() => {
+                          popupState.close()
                         }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'center',
-                        }}
-                      >
-                        <Box
-                          className={'mobile'}
-                          display={'flex'}
-                          alignItems={'stretch'}
-                          flexDirection={'column'}
-                        >
-                          {getDrawerChoices({
-                            menuList: _headerMenuData,
-                            i18n,
-                            t,
-                            handleListKeyDown: popupState.close,
-                            ...rest,
-                          })}
-                        </Box>
-                      </PopoverPure>
+                        showSetting={true}
+                        showColorSwitch={true}
+                      />
                     </Box>
                   </ClickAwayListener>
                 </>

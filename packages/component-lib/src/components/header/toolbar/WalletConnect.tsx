@@ -24,11 +24,11 @@ import * as sdk from '@loopring-web/loopring-sdk'
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
+  padding-left: 2px;
+  padding-right: 2px;
 
   &.wallet-btn {
-    //width:;
     justify-content: center;
-    width: var(--walletconnect-width);
   }
 
   i {
@@ -98,7 +98,7 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.LOCKED:
           btnClassname = 'locked'
-          icon = <LockIcon color={'error'}  style={{ width: 16, height: 16 }} />
+          icon = isMobile ? <CircleIcon fontSize={'large'} color={'error'} /> : <LockIcon color={'error'}  style={{ width: 16, height: 16 }} />
           break
         case AccountStatus.ACTIVATED:
           btnClassname = 'unlocked'
@@ -132,24 +132,32 @@ export const WalletConnectBtn = ({
       icon,
       isLocked
     }
-  }, [accountState?.account?.readyState, i18n])
+  }, [accountState?.account?.readyState, i18n, isMobile])
 
   const popupState = usePopupState({
     variant: 'popover',
     popupId: `popupId: 'wallet-connect-notification'`,
   })
+  
   return (
     <>
       {NetWorkItems}
       {!isMobile && <ProviderBox account={accountState?.account} />}
-      {(isLocked && !isMobile) ? (
+      {isLocked && !isMobile ? (
         <Box
           display={'flex'}
           paddingLeft={'1.2rem'}
           borderRadius={'0.4rem'}
           border={'1px solid var(--color-border)'}
         >
-          <Box component={'div'} paddingRight={2} onClick={handleClick} paddingY={'5px'} display={'flex'} alignItems={'center'}>
+          <Box
+            component={'div'}
+            paddingRight={2}
+            onClick={handleClick}
+            paddingY={'5px'}
+            display={'flex'}
+            alignItems={'center'}
+          >
             <CircleIcon
               fontSize={'large'}
               htmlColor={'var(--color-error)'}
@@ -166,10 +174,13 @@ export const WalletConnectBtn = ({
             variant={'contained'}
             onClick={handleClickUnlock}
           >
-            <LockIcon sx={{ marginRight: 1, marginBottom: 0.2 }} style={{ width: 16, height: 16 }} />
+            <LockIcon
+              sx={{ marginRight: 1, marginBottom: 0.2 }}
+              style={{ width: 16, height: 16 }}
+            />
             <Typography component={'span'} variant={'body1'}>
               {/* Unlock First */}
-              {t("labelUnlockFirst")}
+              {t('labelUnlockFirst')}
             </Typography>
           </Button>
         </Box>
@@ -200,6 +211,24 @@ export const WalletConnectBtn = ({
           <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
             {t(label)}
           </Typography>
+          {isLocked && (
+            <Box
+              ml={2}
+              borderRadius={'4px'}
+              bgcolor={'var(--color-error)'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              height={'28px'}
+              width={'28px'}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleClickUnlock(e)
+              }}
+            >
+              <LockIcon style={{ width: 16, height: 16, color: 'var(--color-white)' }} />
+            </Box>
+          )}
         </WalletConnectBtnStyled>
       )}
     </>

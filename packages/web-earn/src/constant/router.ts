@@ -168,15 +168,30 @@ export const earnHeaderToolBarData: {
     buttonComponent: ButtonComponentsMap.Download,
     url: WalletSite,
   },
-  [ButtonComponentsMap.Notification]: {
-    buttonComponent: ButtonComponentsMap.Notification,
-    label: 'labelNotification',
-    hidden: true,
-  },
   [ButtonComponentsMap.Setting]: {
     buttonComponent: ButtonComponentsMap.Setting,
     label: 'labelSetting',
   },
+  [ButtonComponentsMap.ProfileMenu]: {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: 'labelProfile',
+    readyState: undefined,
+  },
+  [ButtonComponentsMap.WalletConnect]: {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+}
+
+export const earnHeaderToolBarDataMobile: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
   [ButtonComponentsMap.ProfileMenu]: {
     buttonComponent: ButtonComponentsMap.ProfileMenu,
     i18nDescription: 'labelProfile',
