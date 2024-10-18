@@ -102,7 +102,7 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.ACTIVATED:
           btnClassname = 'unlocked'
-          icon = <UnlockedIcon stroke='var(--color-success)' sx={{marginBottom: 0.1, marginRight: 0.5}} style={{ width: 16, height: 16 }} />
+          icon = <UnlockedIcon stroke='var(--color-success)' sx={{marginLeft: 1, marginBottom: 0.1, marginRight: 0.5}} style={{ width: 16, height: 16 }} />
           break
         case AccountStatus.NO_ACCOUNT:
           btnClassname = 'no-account'

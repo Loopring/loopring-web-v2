@@ -26,7 +26,7 @@ import { toBig } from '@loopring-web/loopring-sdk'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
-})(({ t, btnLabelProps = {}, btnClickMapProps = {}, className, size = 'large' }: any) => {
+})(({ t, btnLabelProps = {}, btnClickMapProps = {}, className, size = 'large', width }: any) => {
   const { status: accountStatus, account } = useAccount()
   const { defaultNetwork } = useSettings()
   const { app } = useSystem()
@@ -63,6 +63,9 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
       fullWidth={true}
       style={{ maxWidth: '280px' }}
       className={className}
+      sx={{
+        width: width
+      }}
       onClick={() => {
         accountStaticCallBack(_btnClickMap, [{
           chainId: defaultNetwork,
