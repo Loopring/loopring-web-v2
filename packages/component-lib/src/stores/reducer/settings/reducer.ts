@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from './interface'
 import {
-  FeeChargeOrderDefault,
   i18n,
   LanguageKeys,
   layoutConfigs,
@@ -11,6 +10,7 @@ import {
   UpColor,
   CurrencyToTag,
   NetworkMap,
+  FeeChargeOrderDefaultMap,
 } from '@loopring-web/common-resources'
 import moment from 'moment'
 import { Slice } from '@reduxjs/toolkit/src/createSlice'
@@ -25,7 +25,7 @@ const initialState: SettingsState = {
   upColor: UpColor.green, //localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
   coinJson: {},
   slippage: 'N',
-  feeChargeOrder: FeeChargeOrderDefault,
+  feeChargeOrder: FeeChargeOrderDefaultMap.get(sdk.ChainId.MAINNET)!,
   hideL2Assets: false,
   hideL2Action: true,
   hideInvestToken: false,
