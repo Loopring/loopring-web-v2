@@ -102,7 +102,8 @@ export const DepositWrap = <
               l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
               l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
               ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-              symbol: chargeFeeTokenList.map((item) => item.belong ?? ''),
+              symbols: chargeFeeTokenList.slice(0, chargeFeeTokenList.length - 1).map((item) => item.belong ?? '').join(', '),
+              lastSymbol: chargeFeeTokenList[chargeFeeTokenList.length - 1].belong,
             })}
           </Typography>
         )
@@ -153,7 +154,8 @@ export const DepositWrap = <
             l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
             l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
             ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            symbol: chargeFeeTokenList?.map((item) => item.belong ?? '') ?? feeChargeOrder,
+            symbols: chargeFeeTokenList?.slice(0, chargeFeeTokenList.length - 1).map((item) => item.belong ?? '').join(', '),
+            lastSymbol: chargeFeeTokenList ? chargeFeeTokenList[chargeFeeTokenList.length - 1].belong : '',
           })}
         </Typography>
       )
