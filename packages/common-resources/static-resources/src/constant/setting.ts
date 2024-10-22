@@ -29,7 +29,12 @@ export const RowDualInvestConfig = {
   minHeight: 350,
 }
 export const DirectionTag = '\u2192'
-export const FeeChargeOrderDefault = ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']
+export const FeeChargeOrderDefaultMap = new Map([
+  [sdk.ChainId.MAINNET, ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']],
+  [sdk.ChainId.TAIKO, ['ETH', 'USDT', 'LRC', 'USDC']],
+  [sdk.ChainId.SEPOLIA, ['ETH', 'USDT', 'LRC', 'DAI']],
+  [sdk.ChainId.TAIKOHEKLA, ['ETH', 'USDT', 'LRC']],
+])
 export const HEADER_HEIGHT = 64
 export const LandPageHeightConfig = {
   headerHeight: 64,
@@ -41,7 +46,6 @@ export const Lang = {
   en_US: 'en',
   zh_CN: 'zh',
 }
-export const FeeChargeOrderUATDefault = ['USDT', 'ETH', 'LRC', 'DAI']
 export const Explorer = 'https://explorer.loopring.io/'
 export const Bridge = 'https://bridge.loopring.io/#/'
 export const ExchangeIO = 'https://loopring.io'
