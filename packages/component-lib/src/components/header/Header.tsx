@@ -22,6 +22,7 @@ import {
   HeaderMenuItemInterface,
   headerMenuLandingData,
   HeaderMenuTabStatus,
+  hexToRGB,
   L1L2_NAME_DEFINED,
   LoopringLogoIcon,
   MapChainId,
@@ -39,12 +40,14 @@ import {
   WalletConnectBtn,
   WalletConnectL1Btn,
 } from './toolbar'
-import React from 'react'
+import React, { useState } from 'react'
 import { bindPopper } from 'material-ui-popup-state/es'
 import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import { useTheme } from '@emotion/react'
 import _ from 'lodash'
 import { useSettings } from '../../stores'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const logoSVG = SoursURL + 'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
@@ -227,6 +230,7 @@ interface MobileDrawerProps {
     link: string,
     logo: string,
     onClick: () => void
+    imgMarginRight?: number
   }[]
   open: boolean
   onClose: () => void
@@ -234,9 +238,19 @@ interface MobileDrawerProps {
   showColorSwitch: boolean
 }
 
+const mobileDrawerBGColorList = [
+  '#E1E8FF',
+  '#D5FFF0',
+  '#FFE9D9',
+  '#E5E8EE',
+  '#E5E8EE',
+]
+
+
 const MobileDrawer = (props: MobileDrawerProps) => {
   const { linkList, showColorSwitch, showSetting } = props
   const { t } = useTranslation()
+  const theme = useTheme()
   return (
     <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
       <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
@@ -261,12 +275,11 @@ const MobileDrawer = (props: MobileDrawerProps) => {
           />
         </Box>
         <Box my={5} height={'calc(100% - 96px)'} sx={{overflowY: 'scroll'}}>
-          {linkList.map((item) => {
+          {linkList.map((item, index) => {
             return (
               <Box
                 height={'120px'}
                 borderRadius={'20px'}
-                bgcolor={'var(--color-pop-bg)'}
                 key={item.title}
                 display={'flex'}
                 flexDirection={'row'}
@@ -274,6 +287,7 @@ const MobileDrawer = (props: MobileDrawerProps) => {
                 mb={3}
                 px={5}
                 onClick={item.onClick}
+                bgcolor={hexToRGB(mobileDrawerBGColorList[index % mobileDrawerBGColorList.length], theme.mode === 'dark' ? 0.2 : 1) }
               >
                 <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
                   <Box>
@@ -283,14 +297,142 @@ const MobileDrawer = (props: MobileDrawerProps) => {
                     </Typography>
                   </Box>
                   <Box
-                    ml={4}
+                    mr={item.imgMarginRight ?? 0}
                     component={'img'}
                     src={item.logo}
                     alt={item.title}
-                    width={'44px'}
                     height={'44px'}
                   />
                 </Box>
+              </Box>
+            )
+          })}
+        </Box>
+        <Box
+          display={'flex'}
+          height={'28px'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          {/* <Box /> */}
+          <Box>
+            {showSetting && <ToolBarItem t={t} buttonComponent={ButtonComponentsMap.Setting} />}
+          </Box>
+          <Box>
+            {showColorSwitch && <ToolBarItem buttonComponent={ButtonComponentsMap.ColorSwitch} />}
+          </Box>
+        </Box>
+      </Box>
+    </SwipeableDrawer>
+  )
+}
+
+interface NestedMobileDrawerProps {
+  linkList: {
+    title: string,
+    // des: string,
+    link: string,
+    // logo: string,
+    onClick?: () => void
+    id: string
+    subLinkList?: {
+      title: string,
+      des: string,
+      link: string,
+      LogoElement: any,
+      onClick: () => void
+    }[]
+  }[]
+  open: boolean
+  onClose: () => void
+  showSetting: boolean
+  showColorSwitch: boolean
+}
+
+const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
+  const { linkList, showColorSwitch, showSetting } = props
+  const { t } = useTranslation()
+  const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined)
+  
+  return (
+    <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
+      <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
+        <Box
+          display={'flex'}
+          height={'28px'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+        >
+          <LoopringLogoIcon
+            fontSize={'large'}
+            style={{ height: 28, width: 28 }}
+            color={'primary'}
+          />
+          <CloseIcon
+            className='custom-size'
+            sx={{
+              fontSize: '24px',
+              cursor: 'pointer',
+            }}
+            onClick={props.onClose}
+          />
+        </Box>
+        <Box my={9} height={'calc(100% - 112px)'} sx={{overflowY: 'scroll'}}>
+          {linkList.map((item) => {
+            const selected = selectedItem === item.id
+            return (
+              <Box key={item.title} display={'flex'} mb={4} px={4} onClick={item.onClick} flexDirection={'column'}>
+                <Box display={'flex'} alignItems={'center'} onClick={() => {
+                  if (selectedItem === item.id) {
+                    setSelectedItem(undefined)
+                  } else {
+                    setSelectedItem(item.id)
+                  }
+                  }}>
+                  <Typography fontSize={'16px'} mr={1}>
+                    {item.title}
+                  </Typography>
+                  {item.subLinkList && (selected ? (
+                    <KeyboardArrowUpIcon
+                      className='custom-size'
+                      sx={{ color: 'var(--color-text-primary)', fontSize: '16px' }}
+                    />
+                  ) : (
+                    <KeyboardArrowDownIcon
+                      className='custom-size'
+                      sx={{ color: 'var(--color-text-primary)', fontSize: '16px' }}
+                    />
+                  ))}
+                </Box>
+
+                {item.subLinkList && selected && (
+                  <Box mt={4}>
+                    {item.subLinkList.map((subItem) => {
+                      console.log('subItem', subItem)
+                      const LogoElement = subItem.LogoElement
+                      return (
+                        <Box
+                          mb={4}
+                          key={subItem.title}
+                          ml={4}
+                          height={'52px'}
+                          display={'flex'}
+                          alignItems={'center'}
+                          onClick={subItem.onClick}
+                        >
+                          <LogoElement className='custom-size' style={{width: '24px', height: '24px', color: 'var(--color-text-primary)'}}/>
+                          {/* <Box component={'img'} src={subItem.logo} width={'24px'} height={'24px'} /> */}
+                          <Box ml={4}>
+                            <Typography>{subItem.title}</Typography>
+                            <Typography variant='body2' color={'var(--color-text-secondary)'}>
+                              {subItem.des}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      )
+                    })}
+                  </Box>
+                )}
               </Box>
             )
           })}
@@ -585,6 +727,8 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         variant: 'popover',
         popupId: 'mobile',
       })
+      const { defaultNetwork } = useSettings()
+      const network = MapChainId[defaultNetwork] ?? MapChainId[1]
       const displayMobile = React.useMemo(() => {
         const _headerMenuData: HeaderMenuItemInterface[] = (headerMenuData ?? []).reduce(
           (prev, _item) => {
@@ -644,19 +788,20 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                         />
                       </Typography>
                       <MobileDrawer
-                        linkList={
-                          headerMenuLandingData.map(item => {
-                            return {
-                              title: t(item.label.i18nKey),
-                              des:  item.label.description ? t(item.label.description) : '',
-                              link: item.router?.path ?? '',
-                              logo: theme.mode === 'dark' ? item.logo?.dark : item.logo?.light,
-                              onClick: () => {
-                                window.open(item.router?.path ?? '', '_blank')
-                              }
-                            }
-                          })
-                        }
+                        linkList={headerMenuLandingData.map((item) => {
+                          return {
+                            title: t(item.label.i18nKey, {
+                              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                            }),
+                            des: item.label.description ? t(item.label.description) : '',
+                            link: item.router?.path ?? '',
+                            logo: theme.mode === 'dark' ? item.logo?.dark : item.logo?.light,
+                            onClick: () => {
+                              window.open(item.router?.path ?? '', '_blank')
+                            },
+                          }
+                        })}
                         open={popupState.isOpen}
                         onClose={() => {
                           popupState.close()
@@ -703,10 +848,59 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                         />
                       </Typography>
 
-
-                      <MobileDrawer
-                        linkList={
-                          _headerMenuData.map(item => {
+                      {application === 'webapp' ? (
+                        <NestedMobileDrawer
+                          linkList={_headerMenuData.map((item) => {
+                            const childList = Array.isArray(item.child)
+                              ? item.child
+                              : _.values(item.child).flat()
+                            console.log('childList', childList)
+                            const hasChildren = childList && childList.length > 0
+                            return {
+                              title: t(item.label.i18nKey, {
+                                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                              }),
+                              id: item.label.id,
+                              des: item.label.description ? t(item.label.description) : '',
+                              link: item.router?.path ?? '',
+                              logo: theme.mode === 'dark' ? item.logo?.dark : item.logo?.light,
+                              onClick: () => {
+                                if (!hasChildren) {
+                                  history.push(item.router?.path ?? '')
+                                  popupState.close()
+                                }
+                              },
+                              selected: true,
+                              subLinkList:
+                                hasChildren
+                                  ? childList.map((subItem) => {
+                                      return {
+                                        title: t(subItem.label.i18nKey),
+                                        des: subItem.label.description
+                                          ? t(subItem.label.description)
+                                          : '',
+                                        link: subItem.router?.path ?? '',
+                                        LogoElement: subItem.label.icon,
+                                        onClick: () => {
+                                          history.push(subItem.router?.path ?? '')
+                                          popupState.close()
+                                        },
+                                      }
+                                    })
+                                  : undefined,
+                            }
+                          })}
+                          open={popupState.isOpen}
+                          onClose={() => {
+                            popupState.close()
+                          }}
+                          showSetting={true}
+                          showColorSwitch={true}
+                        />
+                      ) : (
+                        <MobileDrawer
+                          linkList={_headerMenuData.map((item) => {
                             return {
                               title: t(item.label.i18nKey),
                               des: item.label.description ? t(item.label.description) : '',
@@ -715,17 +909,18 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                               onClick: () => {
                                 history.push(item.router?.path ?? '')
                                 popupState.close()
-                              }
+                              },
+                              imgMarginRight: item.label.id === 'dual' ? -2 : 0
                             }
-                          })
-                        }
-                        open={popupState.isOpen}
-                        onClose={() => {
-                          popupState.close()
-                        }}
-                        showSetting={true}
-                        showColorSwitch={true}
-                      />
+                          })}
+                          open={popupState.isOpen}
+                          onClose={() => {
+                            popupState.close()
+                          }}
+                          showSetting={true}
+                          showColorSwitch={true}
+                        />
+                      )}
                     </Box>
                   </ClickAwayListener>
                 </>
