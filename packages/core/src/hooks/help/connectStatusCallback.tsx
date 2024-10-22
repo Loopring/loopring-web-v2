@@ -114,7 +114,10 @@ export const btnClickMap: {
   [fnType.DEPOSITING]: [goActiveAccount],
   [fnType.NOT_ACTIVE]: [goActiveAccount],
   [fnType.LOCKED]: [
-    function () {
+    function (info) {
+      if (!info?.exchangeInfoLoaded) {
+        return
+      }
       unlockAccount()
       store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
       store.dispatch(
