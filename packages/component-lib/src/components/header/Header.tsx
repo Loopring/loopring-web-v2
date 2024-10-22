@@ -46,8 +46,8 @@ import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks'
 import { useTheme } from '@emotion/react'
 import _ from 'lodash'
 import { useSettings } from '../../stores'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
 const logoSVG = SoursURL + 'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
@@ -225,10 +225,10 @@ export const LAYERMAP = {
 
 interface MobileDrawerProps {
   linkList: {
-    title: string,
-    des: string,
-    link: string,
-    logo: string,
+    title: string
+    des: string
+    link: string
+    logo: string
     onClick: () => void
     imgMarginRight?: number
   }[]
@@ -238,14 +238,7 @@ interface MobileDrawerProps {
   showColorSwitch: boolean
 }
 
-const mobileDrawerBGColorList = [
-  '#E1E8FF',
-  '#D5FFF0',
-  '#FFE9D9',
-  '#E5E8EE',
-  '#E5E8EE',
-]
-
+const mobileDrawerBGColorList = ['#E1E8FF', '#D5FFF0', '#FFE9D9', '#E5E8EE', '#E5E8EE']
 
 const MobileDrawer = (props: MobileDrawerProps) => {
   const { linkList, showColorSwitch, showSetting } = props
@@ -274,7 +267,7 @@ const MobileDrawer = (props: MobileDrawerProps) => {
             onClick={props.onClose}
           />
         </Box>
-        <Box my={5} height={'calc(100% - 96px)'} sx={{overflowY: 'scroll'}}>
+        <Box my={5} height={'calc(100% - 96px)'} sx={{ overflowY: 'scroll' }}>
           {linkList.map((item, index) => {
             return (
               <Box
@@ -287,7 +280,10 @@ const MobileDrawer = (props: MobileDrawerProps) => {
                 mb={3}
                 px={5}
                 onClick={item.onClick}
-                bgcolor={hexToRGB(mobileDrawerBGColorList[index % mobileDrawerBGColorList.length], theme.mode === 'dark' ? 0.2 : 1) }
+                bgcolor={hexToRGB(
+                  mobileDrawerBGColorList[index % mobileDrawerBGColorList.length],
+                  theme.mode === 'dark' ? 0.2 : 1,
+                )}
               >
                 <Box width={'100%'} display={'flex'} justifyContent={'space-between'}>
                   <Box>
@@ -329,17 +325,17 @@ const MobileDrawer = (props: MobileDrawerProps) => {
 
 interface NestedMobileDrawerProps {
   linkList: {
-    title: string,
+    title: string
     // des: string,
-    link: string,
+    link: string
     // logo: string,
     onClick?: () => void
     id: string
     subLinkList?: {
-      title: string,
-      des: string,
-      link: string,
-      LogoElement: any,
+      title: string
+      des: string
+      link: string
+      LogoElement: any
       onClick: () => void
     }[]
   }[]
@@ -353,7 +349,7 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
   const { linkList, showColorSwitch, showSetting } = props
   const { t } = useTranslation()
   const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined)
-  
+
   return (
     <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
       <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
@@ -377,32 +373,44 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
             onClick={props.onClose}
           />
         </Box>
-        <Box my={9} height={'calc(100% - 112px)'} sx={{overflowY: 'scroll'}}>
+        <Box my={9} height={'calc(100% - 112px)'} sx={{ overflowY: 'scroll' }}>
           {linkList.map((item) => {
             const selected = selectedItem === item.id
             return (
-              <Box key={item.title} display={'flex'} mb={4} px={4} onClick={item.onClick} flexDirection={'column'}>
-                <Box display={'flex'} alignItems={'center'} onClick={() => {
-                  if (selectedItem === item.id) {
-                    setSelectedItem(undefined)
-                  } else {
-                    setSelectedItem(item.id)
-                  }
-                  }}>
+              <Box
+                key={item.title}
+                display={'flex'}
+                mb={4}
+                px={4}
+                onClick={item.onClick}
+                flexDirection={'column'}
+              >
+                <Box
+                  display={'flex'}
+                  alignItems={'center'}
+                  onClick={() => {
+                    if (selectedItem === item.id) {
+                      setSelectedItem(undefined)
+                    } else {
+                      setSelectedItem(item.id)
+                    }
+                  }}
+                >
                   <Typography fontSize={'16px'} mr={1}>
                     {item.title}
                   </Typography>
-                  {item.subLinkList && (selected ? (
-                    <KeyboardArrowUpIcon
-                      className='custom-size'
-                      sx={{ color: 'var(--color-text-primary)', fontSize: '16px' }}
-                    />
-                  ) : (
-                    <KeyboardArrowDownIcon
-                      className='custom-size'
-                      sx={{ color: 'var(--color-text-primary)', fontSize: '16px' }}
-                    />
-                  ))}
+                  {item.subLinkList &&
+                    (selected ? (
+                      <KeyboardArrowUpIcon
+                        className='custom-size'
+                        sx={{ color: 'var(--color-text-primary)', fontSize: '16px' }}
+                      />
+                    ) : (
+                      <KeyboardArrowDownIcon
+                        className='custom-size'
+                        sx={{ color: 'var(--color-text-primary)', fontSize: '16px' }}
+                      />
+                    ))}
                 </Box>
 
                 {item.subLinkList && selected && (
@@ -420,7 +428,14 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
                           alignItems={'center'}
                           onClick={subItem.onClick}
                         >
-                          <LogoElement className='custom-size' style={{width: '24px', height: '24px', color: 'var(--color-text-primary)'}}/>
+                          <LogoElement
+                            className='custom-size'
+                            style={{
+                              width: '24px',
+                              height: '24px',
+                              color: 'var(--color-text-primary)',
+                            }}
+                          />
                           {/* <Box component={'img'} src={subItem.logo} width={'24px'} height={'24px'} /> */}
                           <Box ml={4}>
                             <Typography>{subItem.title}</Typography>
@@ -872,23 +887,22 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                                 }
                               },
                               selected: true,
-                              subLinkList:
-                                hasChildren
-                                  ? childList.map((subItem) => {
-                                      return {
-                                        title: t(subItem.label.i18nKey),
-                                        des: subItem.label.description
-                                          ? t(subItem.label.description)
-                                          : '',
-                                        link: subItem.router?.path ?? '',
-                                        LogoElement: subItem.label.icon,
-                                        onClick: () => {
-                                          history.push(subItem.router?.path ?? '')
-                                          popupState.close()
-                                        },
-                                      }
-                                    })
-                                  : undefined,
+                              subLinkList: hasChildren
+                                ? childList.map((subItem) => {
+                                    return {
+                                      title: t(subItem.label.i18nKey),
+                                      des: subItem.label.description
+                                        ? t(subItem.label.description)
+                                        : '',
+                                      link: subItem.router?.path ?? '',
+                                      LogoElement: subItem.label.icon,
+                                      onClick: () => {
+                                        history.push(subItem.router?.path ?? '')
+                                        popupState.close()
+                                      },
+                                    }
+                                  })
+                                : undefined,
                             }
                           })}
                           open={popupState.isOpen}
@@ -910,7 +924,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                                 history.push(item.router?.path ?? '')
                                 popupState.close()
                               },
-                              imgMarginRight: item.label.id === 'dual' ? -2 : 0
+                              imgMarginRight: item.label.id === 'dual' ? -2 : 0,
                             }
                           })}
                           open={popupState.isOpen}
