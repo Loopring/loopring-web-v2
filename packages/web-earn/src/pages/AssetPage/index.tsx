@@ -23,9 +23,9 @@ import { MaxWidthContainer } from '../InvestPage'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation/hook'
-import { useDualHook } from './AssetPanel/hook'
 import { concat, max } from 'lodash'
 import Decimal from 'decimal.js'
+import { t } from 'i18next'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -199,15 +199,12 @@ export const AssetPage = () => {
                 variant='body2'
                 color={'var(--color-text-primary)'}
               >
-                Loopring DeFi is expanding to various EVM-compatible networks using its trustless,
-                time-tested ZK-Rollup protocol. The first deployment will be on Taiko. Join us for
-                an exciting journey ahead!
+                {t('labelLoopringDeFiIs')}
               </Typography>
             ) : (
               <Typography mt={1.5} textAlign={'center'} fontSize={'16px'}>
-                Loopring DeFi is expanding to various EVM-compatible networks using its trustless,
-                time-tested ZK-Rollup protocol. The first <br /> deployment will be on Taiko. Join
-                us for an exciting journey ahead!
+                {t('labelLoopringDeFiIs21')}<br/>
+                {t('labelLoopringDeFiIs22')}
               </Typography>
             )}
           </Box>
@@ -246,7 +243,7 @@ export const AssetPage = () => {
                 fontSize={isMobile ? '14px' : '16px'}
                 color={'var(--color-text-secondary)'}
               >
-                Loopring DeFi Assets
+                {t("labelLoopringDeFiAssets")}
               </Typography>
               <Typography variant={isMobile ? 'h4' : 'h2'} mt={2}>
                 --

@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Tab, Typography,Box } from '@mui/material'
+import { Tab, Typography, Box } from '@mui/material'
 import {
   AssetsTable,
   AssetTitle,
@@ -36,7 +36,7 @@ export const AssetPanel = withTranslation('common')(
       setHideLpToken,
       setHideSmallBalances,
       totalAvailableInCurrency,
-      totalFrozenInCurrency
+      totalFrozenInCurrency,
       // onTokenLockHold,
       // tokenLockDetail,
     },
@@ -79,7 +79,7 @@ export const AssetPanel = withTranslation('common')(
         setCurrentTab(AssetTabIndex.DefiPortfolio)
       }
     }, [])
-    const hideAssets = assetTitleProps.hideL2Assets;
+    const hideAssets = assetTitleProps.hideL2Assets
 
     return (
       <Box bgcolor={'var(--color-box)'} borderRadius={'24px'} px={3.5} py={5}>

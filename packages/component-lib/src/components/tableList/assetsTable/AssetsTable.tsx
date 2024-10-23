@@ -428,25 +428,6 @@ export const AssetsTable = withTranslation('tables')(
                 <CoinIcons type={token.type} tokenIcon={tokenIcon} />
               </Typography>
               <Typography>{token.value}</Typography>
-              {/* <Typography
-                variant={'body1'}
-                display={'flex'}
-                flexDirection={'row'}
-                justifyContent={'flex-end'}
-                textAlign={'right'}
-                flex={1}
-              >
-                <Typography display={'flex'}>
-                  {hideAssets
-                    ? HiddenTag
-                    : getValuePrecisionThousand(value, precision, precision, undefined, false, {
-                        floor: true,
-                      })}
-                </Typography>
-                <Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
-                  {hideAssets ? HiddenTag : token.value}
-                </Typography>
-              </Typography> */}
             </Box>
           )
         },
@@ -472,48 +453,48 @@ export const AssetsTable = withTranslation('tables')(
           //   tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
           // }
           return (
-            <Box height={'100%'}  display={'flex'} flexDirection={'column'} alignItems={'end'} justifyContent={'center'}>
+            <Box
+              height={'100%'}
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'end'}
+              justifyContent={'center'}
+            >
               <Typography display={'flex'}>
-              {hideAssets
-                ? HiddenTag
-                : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    undefined,
-                    true,
-                    { isFait: true, floor: true },
-                  )}
-                  
-                </Typography>
+                {hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      undefined,
+                      true,
+                      { isFait: true, floor: true },
+                    )}
+              </Typography>
               <Typography variant={'body2'} fontSize={'11px'}>
-                Total/Locked: {hideAssets
-                    ? HiddenTag
-                    : getValuePrecisionThousand(value, precision, precision, undefined, false, {
+                {t('labelTotalLocked')}:{' '}
+                {hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(value, precision, precision, undefined, false, {
+                      floor: true,
+                    })}
+                /
+                {hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                      row['locked'],
+                      precision,
+                      precision,
+                      undefined,
+                      false,
+                      {
                         floor: true,
-                      })}/{hideAssets
-                        ? HiddenTag
-                        : getValuePrecisionThousand(row['locked'], precision, precision, undefined, false, {
-                            floor: true,
-                          })}
-                </Typography>
-
-
+                      },
+                    )}
+              </Typography>
             </Box>
-            // <LockedMemo
-            //   {...{
-            //     ...row,
-            //     HiddenTag,
-            //     onTokenLockHold: (row: any) => {
-            //       if (row) {
-            //         setModalState(true)
-            //         onTokenLockHold && onTokenLockHold(row)
-            //       }
-            //     },
-            //     tokenLockDetail,
-            //   }}
-            // />
           )
         },
       },
@@ -596,7 +577,6 @@ export const AssetsTable = withTranslation('tables')(
               ? getColumnMobileAssets(t, allowTrade)
               : getColumnModeAssets(t, allowTrade)) as any
           }
-          
         />
         {hasMore && (
           <Typography

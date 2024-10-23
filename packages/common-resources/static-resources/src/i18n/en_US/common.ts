@@ -2491,5 +2491,10 @@ export default {
   labelVaultDustCollectorUnavailableDes: 'This feature is temporarily unavailable. Please try again later.',
   labelVaultMaximumCreditDesLong: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral. It is calculated by taking the total value of your collateral, adjusted for price factor and the maximum leverage.',
   labelVaultMarginLevelDes: 'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+  labelTotalPortfolio: 'Total Portfolio',
+  labelLoopringDeFiIs: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first deployment will be on Taiko. Join us for an exciting journey ahead!',
+  labelLoopringDeFiIs21: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first',
+  labelLoopringDeFiIs22: 'deployment will be on Taiko. Join us for an exciting journey ahead!',
+  labelLoopringDeFiAssets: 'Loopring DeFi Assets',
 }
 

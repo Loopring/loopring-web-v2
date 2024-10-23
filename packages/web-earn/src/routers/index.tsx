@@ -303,11 +303,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <EarnPage />
           </ContentWrap>
         </Route>
-        {/* <Route exact path={RouterPath.intro}>
-          <ContentWrap state={state} noPending noContainer value={RouterMainKey.dualIntro}>
-            <Intro />
-          </ContentWrap>
-        </Route> */}
         <Route exact path={[RouterPath.portal, RouterPath.portal + '/*']}>
           <ContentWrap state={state} noContainer value={RouterMainKey.portal}>
             <VaultPage />

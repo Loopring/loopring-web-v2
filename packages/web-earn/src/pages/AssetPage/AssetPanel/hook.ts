@@ -9,7 +9,6 @@ import {
   useBtnStatus,
   useDefiMap,
   useModalData,
-  useSocket,
   useSystem,
   useTokenMap,
   useTokenPrices,
@@ -18,21 +17,18 @@ import {
   volumeToCountAsBigNumber,
 } from '@loopring-web/core'
 import {
-  AccountStep,
   AssetTitleProps,
   TransactionTradeViews,
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
 import {
-  AccountStatus,
   AssetsRawDataItem,
   CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   InvestAssetRouter,
-  myLog,
   PriceTag,
   RecordTabIndex,
   RouterPath,
@@ -41,17 +37,12 @@ import {
   TokenType,
   TradeBtnStatus,
   VaultKey,
-  DualCurrentPrice,
-  DualViewInfo,
-  DualViewType,
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
-import { WsTopicType } from '@loopring-web/loopring-sdk'
 import { omitBy } from 'lodash'
 import Decimal from 'decimal.js'
 
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import _ from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {

@@ -334,20 +334,13 @@ export const AssetTitleMobile = ({
 
 export const AssetTitleMobileEarn = ({
   assetInfo,
-  accountId,
   onShowSend,
   onShowReceive,
   hideL2Assets,
   setHideL2Assets,
 }: AssetTitleMobileProps) => {
-  const { hideL2Action, setHideL2Action, defaultNetwork } = useSettings()
-  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const { t } = useTranslation(['common', 'layout'])
-  let match: any = useRouteMatch('/l2assets/:item')
   const history = useHistory()
-  const label = Reflect.ownKeys(subMenuLayer2)
-    .reduce((pre, item) => [...pre, ...subMenuLayer2[item]], [] as HeaderMenuItemInterface[])
-    .find((item) => RegExp(item?.router?.path ?? '').test(match?.url ?? ''))?.label?.i18nKey
   return (
     <Box display={'flex'} flexDirection={'column'} marginBottom={8}>
       <Box
@@ -356,13 +349,6 @@ export const AssetTitleMobileEarn = ({
         justifyContent={'space-between'}
         position={'relative'}
       >
-        {/* <Typography component={'h3'} variant={'h4'} position={'absolute'} left={2} top={2}>
-          {t(label ?? 'labelAssets', {
-            ns: 'layout',
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          })}
-        </Typography> */}
         <Typography
           component={'span'}
           variant={'body1'}
@@ -371,10 +357,9 @@ export const AssetTitleMobileEarn = ({
           marginBottom={1}
           color={'var(--color-text-secondary)'}
         >
-          Total Portfolio
+          {t('labelTotalPortfolio')}
           <IconButton
             size={'small'}
-            // color={'secondary'}
             onClick={() => setHideL2Assets(!hideL2Assets)}
             aria-label={t('labelShowAccountInfo')}
           >

@@ -86,6 +86,7 @@ export const DepositWrap = <
   const isNewAlert = React.useMemo(() => {
     if (isNewAccount && chargeFeeTokenList && tradeData && tradeData.belong) {
       const index = chargeFeeTokenList?.findIndex(({ belong }) => belong === tradeData.belong)
+
       if (index === -1) {
         setMinFee(undefined)
         return (
