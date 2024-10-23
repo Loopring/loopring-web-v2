@@ -564,6 +564,7 @@ export const AssetsTable = withTranslation('tables')(
               viewData.length > 0
                 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
                 : 350,
+            minHeight: 0
           }}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={isMobile ? 0 : rowConfig.rowHeaderHeight}
