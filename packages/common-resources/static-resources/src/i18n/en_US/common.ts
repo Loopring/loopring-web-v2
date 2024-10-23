@@ -2045,7 +2045,7 @@ export default {
   labelTargetRedpacketNoRedpacketDes:
     'If your prepared but unaddressed Red Packets will be displayed here !',
   labelTargetRedpacketOption2: 'Option 2',
-  labelEarnVaultTitle: 'Total Portfolio',
+  labelEarnVaultTitle: 'Loopring DeFi Assets',
   labelDualBTC: 'ETH - WBTC Dual Investment',
   labelDualBTCDes: 'Select based on Token and Settlement Date',
   labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',
@@ -2524,5 +2524,10 @@ export default {
   labelTaikoFarmingPointsToBeTrackedRetroactivelyDes: 'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard.',
   labelTaikoFarmingLockSuccess: 'TAIKO Locked Successfully',
   labelTaikoFarmingUnlockValue: 'Unlock The Value Of Your Locked TAIKO To Keep Trading Or Earning',
+  labelTotalPortfolio: 'Total Portfolio',
+  labelLoopringDeFiIs: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first deployment will be on Taiko. Join us for an exciting journey ahead!',
+  labelLoopringDeFiIs21: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first',
+  labelLoopringDeFiIs22: 'deployment will be on Taiko. Join us for an exciting journey ahead!',
+  labelLoopringDeFiAssets: 'Loopring DeFi Assets',
 }
 

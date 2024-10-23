@@ -204,7 +204,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MarkdownPage />
           </Container>
         </Route>
-        <Route exact path={'/'} children={ <Redirect to={RouterPath.intro} /> }/>
+        <Route exact path={'/'} children={ <Redirect to={RouterPath.l2assets} /> }/>
         <Route exact path='/notification/:path'>
           {searchParams && searchParams.has('noheader') ? (
             <></>
@@ -302,11 +302,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={RouterPath.dualIntro}>
           <ContentWrap state={state} value={RouterMainKey.dualIntro}>
             <EarnPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={RouterPath.intro}>
-          <ContentWrap state={state} noPending noContainer value={RouterMainKey.dualIntro}>
-            <Intro />
           </ContentWrap>
         </Route>
         <Route exact path={[RouterPath.portal, RouterPath.portal + '/*']}>

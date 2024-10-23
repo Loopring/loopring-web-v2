@@ -83,7 +83,7 @@ export const useMarket = <
         if (!(item as any).vaultTokenAmounts) {
           return false
         }
-        const status = (item as any).vaultTokenAmounts.status as number
+        const status = (item as any).vaultTokenAmounts?.status as number
         return item.enabled && status & 1
       })
       .map((item) => {

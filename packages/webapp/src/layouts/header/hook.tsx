@@ -6,6 +6,7 @@ import {
   headerMenuDataMap,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
+  headerToolBarDataMobile as _initHeaderToolBarDataMobile,
   MapChainId,
   Profile,
   ProfileIndex,
@@ -32,7 +33,7 @@ import { useWeb3Modal } from '@web3modal/ethers5/react'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
-  const { defaultNetwork } = useSettings()
+  const { defaultNetwork, isMobile } = useSettings()
   const { account, setShouldShow, status: accountStatus } = accountTotal
   const { setShowAccount } = useOpenModals()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -75,11 +76,12 @@ export const useHeader = () => {
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
 
   const headerToolBarData = React.useMemo(() => {
+    const toolBarData = isMobile ? _initHeaderToolBarDataMobile : _initHeaderToolBarData
     return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
       ? {
-          ..._initHeaderToolBarData,
+          ...toolBarData,
           [ButtonComponentsMap.WalletConnect]: {
-            ..._initHeaderToolBarData[ButtonComponentsMap.WalletConnect],
+            ...toolBarData[ButtonComponentsMap.WalletConnect],
             handleClick: onWalletBtnConnect,
             handleClickUnlock: () => {
               unlockAccount()
@@ -92,13 +94,13 @@ export const useHeader = () => {
             accountState: { account }
           },
           [ButtonComponentsMap.ProfileMenu]: {
-            ..._initHeaderToolBarData[ButtonComponentsMap.ProfileMenu],
+            ...toolBarData[ButtonComponentsMap.ProfileMenu],
             subMenu: profile.map((item: string) => Profile[item]),
             readyState: account.readyState,
           },
         }
-      : _initHeaderToolBarData
-  }, [accountStatus, account?.readyState, account])
+      : toolBarData
+  }, [accountStatus, account?.readyState, account, isMobile])
 
   const { notifyMap, myNotifyMap } = useNotify()
   const toggle = useToggle()

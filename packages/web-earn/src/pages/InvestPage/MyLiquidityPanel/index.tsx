@@ -76,17 +76,13 @@ import { utils } from 'ethers'
 const MyLiquidity: any = withTranslation('common')(
   ({
     t,
-    isHideTotal,
     hideAssets,
     className,
-    noHeader,
-    /* ammActivityMap, */ ...rest
+    isPortfolio
   }: WithTranslation & {
-    isHideTotal?: boolean
     className?: string
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
     hideAssets?: boolean
-    noHeader?: boolean
+    isPortfolio?: boolean
   }) => {
     let match: any = useRouteMatch('/invest/balance/:type')
 
@@ -311,11 +307,12 @@ const MyLiquidity: any = withTranslation('common')(
         <MaxWidthContainer
           marginBottom={3}
           minHeight={'80vh'}
-          background={containerColors[1]}
+          background={isPortfolio ? undefined : containerColors[1]}
           containerProps={{
-            borderRadius: noHeader ? `${theme.unit}px` : 0,
+            borderRadius: isPortfolio ? `${theme.unit}px` : 0,
             marginTop: 0,
           }}
+          px={isPortfolio ? 0 : undefined}
         >
           <Typography marginY={3.5} color={'var(--color-text-third)'}>
             {t('labelTotalBalance')}:{' '}

@@ -331,3 +331,117 @@ export const AssetTitleMobile = ({
     </Box>
   )
 }
+
+export const AssetTitleMobileEarn = ({
+  assetInfo,
+  onShowSend,
+  onShowReceive,
+  hideL2Assets,
+  setHideL2Assets,
+}: AssetTitleMobileProps) => {
+  const { t } = useTranslation(['common', 'layout'])
+  const history = useHistory()
+  return (
+    <Box display={'flex'} flexDirection={'column'} marginBottom={8}>
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        justifyContent={'space-between'}
+        position={'relative'}
+      >
+        <Typography
+          component={'span'}
+          variant={'body1'}
+          display={'inline-flex'}
+          alignItems={'center'}
+          marginBottom={1}
+          color={'var(--color-text-secondary)'}
+        >
+          {t('labelTotalPortfolio')}
+          <IconButton
+            size={'small'}
+            onClick={() => setHideL2Assets(!hideL2Assets)}
+            aria-label={t('labelShowAccountInfo')}
+          >
+            {!hideL2Assets ? <ViewIcon fontSize={'large'} /> : <HideIcon fontSize={'large'} />}
+          </IconButton>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'flex-start'}
+          marginTop={1}
+        >
+          <Typography component={'span'} paddingRight={1} variant={'h4'}>
+            {assetInfo.priceTag}
+          </Typography>
+          {!hideL2Assets ? (
+            <Typography component={'span'} variant={'h4'}>
+              {assetInfo.totalAsset
+                ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2, 2, true, { floor: true })
+                : '0.00'}
+            </Typography>
+          ) : (
+            <Typography component={'span'} variant={'h4'}>
+              &#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;
+            </Typography>
+          )}
+        </Typography>
+      </Box>
+
+      <Box mt={4}>
+        <Button
+          variant={'contained'}
+          size={'small'}
+          color={'primary'}
+          onClick={() => onShowReceive()}
+          sx={{ mr: 2 }}
+        >
+          {t('labelDeposit')}
+        </Button>
+
+        <Button
+          variant={'outlined'}
+          size={'medium'}
+          color={'primary'}
+          onClick={() => onShowSend()}
+          sx={{ mr: 2 }}
+        >
+          {t('labelWithdrawBtn')}
+        </Button>
+
+        <Button
+          variant={'outlined'}
+          size={'medium'}
+          color={'secondary'}
+          onClick={() => history.push(`${RouterPath.l2records}`)}
+        >
+          {t('labelTransactions')}
+        </Button>
+        {/*<Grid item xs={4}>*/}
+        {/*  <Button*/}
+        {/*    fullWidth*/}
+        {/*    variant={"outlined"}*/}
+        {/*    size={"medium"}*/}
+        {/*    color={"primary"}*/}
+        {/*    onClick={() => onShowTransfer()}*/}
+        {/*  >*/}
+        {/*    {t("labelL2toL2")}*/}
+        {/*  </Button>*/}
+        {/*</Grid>*/}
+        {/*<Grid item xs={4}>*/}
+        {/*  <Button*/}
+        {/*    fullWidth*/}
+        {/*    variant={"outlined"}*/}
+        {/*    size={"medium"}*/}
+        {/*    color={"primary"}*/}
+        {/*    onClick={() => onShowWithdraw()}*/}
+        {/*  >*/}
+        {/*    {t("labelL2toL1")}*/}
+        {/*  </Button>*/}
+        {/*</Grid>*/}
+      </Box>
+    </Box>
+  )
+}
