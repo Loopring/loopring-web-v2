@@ -1,13 +1,15 @@
 import { useRouteMatch } from 'react-router-dom'
 
 import { Box, BoxProps, Button, Typography } from '@mui/material'
-import { AssetTitleMobile, useSettings } from '@loopring-web/component-lib'
+import { AssetTitleMobile, AssetTitleMobileEarn, useSettings } from '@loopring-web/component-lib'
 import { CloseIcon, SoursURL, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
 import {
+  numberFormatShowInPercent,
   useAccount,
+  useDualMap,
   useSocket,
   useSubmitBtn,
   useSystem,
@@ -21,6 +23,9 @@ import { MaxWidthContainer } from '../InvestPage'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation/hook'
+import { useDualHook } from './AssetPanel/hook'
+import { concat, max } from 'lodash'
+import Decimal from 'decimal.js'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -31,6 +36,7 @@ interface BottomSectionProps {
   des: string
   imgSrc: string
   link: string
+  isMobile: boolean
 }
 
 const BottomSection = ({
@@ -39,6 +45,7 @@ const BottomSection = ({
   des,
   imgSrc,
   link,
+  isMobile,
   ...rest
 }: BottomSectionProps & BoxProps) => {
   const theme = useTheme()
@@ -51,14 +58,13 @@ const BottomSection = ({
       bgcolor={'var(--color-box)'}
       display={'flex'}
       flexDirection={'column'}
-      minWidth={'400px'}
-      // alignContent={'space-around'}
+      minWidth={isMobile ? '100%' : '400px'}
       justifyContent={'space-between'}
       {...rest}
     >
       <Box>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography mt={1.5} variant={'h2'}>
+          <Typography mt={1.5} variant={isMobile ? 'h3' : 'h2'}>
             {title}
           </Typography>
           <Box
@@ -67,21 +73,21 @@ const BottomSection = ({
               theme.mode === 'dark' ? 'earn/nav_button_dark.png' : 'earn/nav_button_light.png'
             }`}
             sx={{ cursor: 'pointer' }}
-            height={'44px'}
-            width={'44px'}
+            height={isMobile ? '32px' : '44px'}
+            width={isMobile ? '32px' : '44px'}
             onClick={() => {
               window.open(link, '_blank')
             }}
           />
         </Box>
         {subTitle && <Box mt={2}>{subTitle}</Box>}
-        <Typography color={'var(--color-text-secondary)'} mt={2} mb={8}>
+        <Typography variant={isMobile ? 'body2' : 'body1'} color={'var(--color-text-secondary)'} mt={2} mb={8}>
           {des}
         </Typography>
       </Box>
 
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
-        <Box component={'img'} src={imgSrc} mt={'auto'} height={'160px'} />
+        <Box component={'img'} src={imgSrc} mt={'auto'} height={isMobile ? '120px' : '160px'} />
       </Box>
     </Box>
   )
@@ -95,7 +101,7 @@ export const AssetPage = () => {
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
     useGetAssets()
   const { redPackets } = useTargetRedPackets()
-  
+
   const { sendSocketTopic } = useSocket()
 
   React.useEffect(() => {
@@ -105,21 +111,36 @@ export const AssetPage = () => {
   }, [])
   const theme = useTheme()
   const isUnlocked = useAccount().account.readyState === 'ACTIVATED'
-  const {setShowTaikoLaunchBanner2, confirmation} = useConfirmation()
+  const { setShowTaikoLaunchBanner2, confirmation } = useConfirmation()
+  const { isMobile } = useSettings()
+  const { marketMap: dualMarketMap } = useDualMap()
+
+  const keys = Object.keys(dualMarketMap)
+  const dualAPRUpToRaw = max(
+    concat(
+      keys.map((key) => (dualMarketMap[key] as any).baseTokenApy?.max),
+      keys.map((key) => (dualMarketMap[key] as any).quoteTokenApy?.max) 
+    )
+  )
+  const dualAPRUpTo = dualAPRUpToRaw? numberFormatShowInPercent(
+    new Decimal(dualAPRUpToRaw).mul('100').toString()
+  ) : '--'
+  
+
   if (selected.toLowerCase() === 'history') {
-    return <Box
-    display={'flex'}
-    alignItems={'stretch'}
-    flexDirection={'column'}
-    marginTop={0}
-    flex={1}
-  >
-    <ViewAccountTemplate activeViewTemplate={<MaxWidthContainer marginTop={5}>
-    <HistoryPanel />
-    </MaxWidthContainer>}></ViewAccountTemplate> 
-  </Box>
-    
+    return (
+      <Box display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0} flex={1}>
+        <ViewAccountTemplate
+          activeViewTemplate={
+            <MaxWidthContainer marginTop={5}>
+              <HistoryPanel />
+            </MaxWidthContainer>
+          }
+        ></ViewAccountTemplate>
+      </Box>
+    )
   }
+  
   return (
     <Box
       sx={{
@@ -133,53 +154,81 @@ export const AssetPage = () => {
         height: '100%',
         overflow: 'scroll',
       }}
-
     >
-      {confirmation.showTaikoLaunchBanner2 && <MaxWidthContainer>
-        <Box
-          sx={{
-            backgroundImage: `url(${SoursURL + 'earn/assets_banner.png'})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            height: '140px',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            position: 'relative',
-          }}
-        >
-          <CloseIcon
-            className='custom-size'
+      {confirmation.showTaikoLaunchBanner2 && (
+        <MaxWidthContainer>
+          <Box
             sx={{
-              color: 'var(--color-text-secondary)',
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              cursor: 'pointer',
+              backgroundImage: `url(${SoursURL + 'earn/assets_banner.png'})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              height: '140px',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              position: 'relative',
+              mt: isMobile ? 6 : 4,
             }}
-            style={{ height: 24, width: 24 }}
-            onClick={() => {
-              setShowTaikoLaunchBanner2(false)
-            }}
-          />
-          <Box height={'32px'} component={'img'} src={SoursURL + 'earn/assets_banner_title.png'} />
-          <Typography mt={1.5} textAlign={'center'} fontSize={'16px'}>
-            Loopring DeFi is expanding to various EVM-compatible networks using its trustless,
-            time-tested ZK-Rollup protocol. The first <br /> deployment will be on Taiko. Join us
-            for an exciting journey ahead!
-          </Typography>
-        </Box>
-      </MaxWidthContainer>}
+          >
+            <CloseIcon
+              className='custom-size'
+              sx={{
+                color: 'var(--color-text-secondary)',
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                cursor: 'pointer',
+              }}
+              style={{ height: 24, width: 24 }}
+              onClick={() => {
+                setShowTaikoLaunchBanner2(false)
+              }}
+            />
+            <Box
+              height={isMobile ? '28px' : '32px'}
+              component={'img'}
+              src={SoursURL + 'earn/assets_banner_title.png'}
+            />
+            {isMobile ? (
+              <Typography
+                mt={1.5}
+                textAlign={'center'}
+                variant='body2'
+                color={'var(--color-text-primary)'}
+              >
+                Loopring DeFi is expanding to various EVM-compatible networks using its trustless,
+                time-tested ZK-Rollup protocol. The first deployment will be on Taiko. Join us for
+                an exciting journey ahead!
+              </Typography>
+            ) : (
+              <Typography mt={1.5} textAlign={'center'} fontSize={'16px'}>
+                Loopring DeFi is expanding to various EVM-compatible networks using its trustless,
+                time-tested ZK-Rollup protocol. The first <br /> deployment will be on Taiko. Join
+                us for an exciting journey ahead!
+              </Typography>
+            )}
+          </Box>
+        </MaxWidthContainer>
+      )}
       <MaxWidthContainer mt={confirmation.showTaikoLaunchBanner2 ? 3 : 4}>
         {isUnlocked ? (
+          <>{isMobile && (
+            <AssetTitleMobileEarn
+              forexMap={forexMap}
+              assetBtnStatus={assetBtnStatus}
+              {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
+            />
+          )}
           <AssetPanel
             showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
             assetTitleProps={assetTitleProps}
             assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
           />
+          </>
+          
         ) : (
           <Box
             borderRadius={'24px'}
@@ -190,22 +239,30 @@ export const AssetPage = () => {
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
+            flexDirection={isMobile ? 'column' : 'row'}
           >
-            <Box width={'30%'}>
-              <Typography fontSize={'16px'} color={'var(--color-text-secondary)'}>
+            <Box width={'30%'} alignSelf={'flex-start'}>
+              <Typography
+                fontSize={isMobile ? '14px' : '16px'}
+                color={'var(--color-text-secondary)'}
+              >
                 Loopring DeFi Assets
               </Typography>
-              <Typography variant={'h2'} mt={2}>
+              <Typography variant={isMobile ? 'h4' : 'h2'} mt={2}>
                 --
               </Typography>
             </Box>
-            <Box>{<WalletConnectL2Btn width='180px' size={'large'} />}</Box>
-            <Box width={'30%'} />
+            {isMobile ? (
+              <Box mt={1}>{<WalletConnectL2Btn width='120px' size={'medium'} />}</Box>
+            ) : (
+              <Box>{<WalletConnectL2Btn width='180px' size={'large'} />}</Box>
+            )}
+            {!isMobile && <Box width={'30%'} />}
           </Box>
         )}
       </MaxWidthContainer>
       <MaxWidthContainer mt={3} mb={8}>
-        <Box width={'100%'} display={'flex'} sx={{ overflowX: 'scroll', scrollbarWidth: 'none' }}>
+        <Box width={'100%'} display={'flex'} sx={{ overflowX: 'scroll', scrollbarWidth: 'none' }} flexDirection={isMobile ? 'column' : 'row'}>
           <BottomSection
             title='Taiko Farming'
             subTitle={
@@ -216,7 +273,7 @@ export const AssetPage = () => {
                     ? 'earn/defi_assets_taiko_farming_subtitle_dark.png'
                     : 'earn/defi_assets_taiko_farming_subtitle_light.png'
                 }`}
-                height={'24px'}
+                height={isMobile ? '18px' : '24px'}
               />
             }
             des='Farm Trailblazer points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.'
@@ -226,11 +283,14 @@ export const AssetPage = () => {
                 : 'earn/defi_assets_taiko_farming_light.png'
             }`}
             link='/#/taiko-farming'
-            mr={2}
+            mr={isMobile ? 0 : 2}
+            mb={isMobile ? 4 : 0}
+            width={isMobile ? '100%' : undefined}
+            isMobile={isMobile}
           />
           <BottomSection
             title='Dual Investment'
-            subTitle='todo'
+            subTitle={<Typography color={'var(--color-text-secondary)'} fontSize={isMobile ? '9px' : '12px'}>APR Up To <Typography component={'span'} color={'var(--color-success)'} fontSize={isMobile ? '17px' : '24px'}>{dualAPRUpTo}</Typography> </Typography>}
             des='Bring structured finance from CeFi to DeFi in a trustless manner. Place orders at your preferred price and earn high yields!'
             imgSrc={`${SoursURL}${
               theme.mode === 'dark'
@@ -238,7 +298,10 @@ export const AssetPage = () => {
                 : 'earn/defi_assets_dual_light.png'
             }`}
             link='/#/invest/dual'
-            mr={2}
+            mr={isMobile ? 0 : 2}
+            mb={isMobile ? 4 : 0}
+            width={isMobile ? '100%' : undefined}
+            isMobile={isMobile}
           />
           <BottomSection
             title='Portal'
@@ -249,7 +312,10 @@ export const AssetPage = () => {
                 : 'earn/defi_assets_portal_light.png'
             }`}
             link='/#/portal'
-            mr={2}
+            mr={isMobile ? 0 : 2}
+            mb={isMobile ? 4 : 0}
+            width={isMobile ? '100%' : undefined}
+            isMobile={isMobile}
           />
           <BottomSection
             title='Block Trade'
@@ -260,7 +326,10 @@ export const AssetPage = () => {
                 : 'earn/defi_assets_btrade_light.png'
             }`}
             link='/#/trade/btrade'
-            mr={2}
+            mr={isMobile ? 0 : 2}
+            mb={isMobile ? 4 : 0}
+            width={isMobile ? '100%' : undefined}
+            isMobile={isMobile}
           />
         </Box>
       </MaxWidthContainer>

@@ -819,7 +819,9 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                         })}
                         open={popupState.isOpen}
                         onClose={() => {
+
                           popupState.close()
+                          
                         }}
                         showSetting={false}
                         showColorSwitch={false}

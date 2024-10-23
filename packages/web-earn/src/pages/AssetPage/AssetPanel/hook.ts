@@ -41,12 +41,18 @@ import {
   TokenType,
   TradeBtnStatus,
   VaultKey,
+  DualCurrentPrice,
+  DualViewInfo,
+  DualViewType,
 } from '@loopring-web/common-resources'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { WsTopicType } from '@loopring-web/loopring-sdk'
-import _, { omitBy } from 'lodash'
+import { omitBy } from 'lodash'
 import Decimal from 'decimal.js'
+
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import _ from 'lodash'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
   assetsRawData: R[]
@@ -76,7 +82,7 @@ export const useGetAssets = (): AssetPanelProps & {
   const { account } = useAccount()
   const { allowTrade, forexMap } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
-  const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
+  const { btnStatus: assetBtnStatus, enableBtn } = useBtnStatus()
   const {
     setShowAccount,
     setShowDeposit,
@@ -275,7 +281,7 @@ export const useGetAssets = (): AssetPanelProps & {
     [setShowAccount],
   )
   const onSend = React.useCallback(
-    (token?: any, isToL1?: boolean) => {
+    (token?: any) => {
       setShowAccount({
         isShow: false,
         info: { lastFailed: undefined },

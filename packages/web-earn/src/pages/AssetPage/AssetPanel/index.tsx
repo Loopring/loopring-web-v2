@@ -124,13 +124,10 @@ export const AssetPanel = withTranslation('common')(
           sx={{
             paddingTop: 2.5,
             borderBottom: '1px solid var(--color-border)',
-            
           }}
         >
           <Tabs
-          sx={
-            {ml:-2}
-          }
+            sx={{ ml: -2 }}
             value={currentTab}
             onChange={(_event, value) => handleTabChange(value)}
             aria-label='l2-history-tabs'
@@ -142,63 +139,65 @@ export const AssetPanel = withTranslation('common')(
           </Tabs>
         </Box>
 
-        <Box height={'450px'} sx={{overflowY: 'scroll'}}>
-        {currentTab === AssetTabIndex.Tokens && (
-          <Box>
-            <Box marginBottom={3} marginTop={2} display={'flex'} justifyContent={'start'}>
-              <Typography marginRight={4} color={'var(--color-text-secondary)'}>
-                {t("labelFrozen")}:{' '}
-                {hideAssets ? (
-                  <>
-                    <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
-                  </>
-                ) : (
-                  totalFrozenInCurrency
-                )}
-              </Typography>
-              <Typography color={'var(--color-text-secondary)'}>
-                {t("labelAvailable")}{' '}
-                {hideAssets ? (
-                  <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
-                ) : (
-                  totalAvailableInCurrency
-                )}
-              </Typography>
-            </Box>
+        <Box
+          sx={{
+            overflowY: 'scroll',
+            height: isMobile ? '300px' : '450px',
+          }}
+        >
+          {currentTab === AssetTabIndex.Tokens && (
             <Box>
-              <AssetsTable
-                {...{
-                  rawData: assetsRawData,
-                  disableWithdrawList,
-                  showFilter: true,
-                  allowTrade,
-                  onSend,
-                  onTokenLockHold: onTokenLockHold as any,
-                  tokenLockDetail,
-                  onReceive,
-                  isLoading: assetBtnStatus === TradeBtnStatus.LOADING,
-                  getMarketArrayListCallback: getTokenRelatedMarketArray,
-                  hideInvestToken,
-                  forexMap: forexMap as any,
-                  hideSmallBalances,
-                  setHideLpToken,
-                  setHideSmallBalances,
-                  hideAssets,
-                  isWebEarn: true,
-                  rowConfig: RowEarnConfig,
-                  ...rest,
-                }}
-              />
+              <Box marginBottom={3} marginTop={2} display={'flex'} justifyContent={'start'}>
+                <Typography marginRight={4} color={'var(--color-text-secondary)'}>
+                  {t('labelFrozen')}:{' '}
+                  {hideAssets ? (
+                    <>
+                      <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
+                    </>
+                  ) : (
+                    totalFrozenInCurrency
+                  )}
+                </Typography>
+                <Typography color={'var(--color-text-secondary)'}>
+                  {t('labelAvailable')}{' '}
+                  {hideAssets ? (
+                    <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>
+                  ) : (
+                    totalAvailableInCurrency
+                  )}
+                </Typography>
+              </Box>
+              <Box>
+                <AssetsTable
+                  {...{
+                    rawData: assetsRawData,
+                    disableWithdrawList,
+                    showFilter: true,
+                    allowTrade,
+                    onSend,
+                    onTokenLockHold: onTokenLockHold as any,
+                    tokenLockDetail,
+                    onReceive,
+                    isLoading: assetBtnStatus === TradeBtnStatus.LOADING,
+                    getMarketArrayListCallback: getTokenRelatedMarketArray,
+                    hideInvestToken,
+                    forexMap: forexMap as any,
+                    hideSmallBalances,
+                    setHideLpToken,
+                    setHideSmallBalances,
+                    hideAssets,
+                    isWebEarn: true,
+                    rowConfig: RowEarnConfig,
+                    ...rest,
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-        )}
+          )}
 
-        {currentTab === AssetTabIndex.DefiPortfolio && (
-          <MyLiquidity
-            hideAssets={hideAssets}
-            isPortfolio
-          />
-        )}
+          {currentTab === AssetTabIndex.DefiPortfolio && (
+            <MyLiquidity hideAssets={hideAssets} isPortfolio />
+          )}
         </Box>
       </Box>
     )
