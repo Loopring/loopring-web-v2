@@ -103,12 +103,14 @@ const Header = withTranslation(['common', 'layout', 'landPage'])(
                 toolBarMap={ButtonComponentsMap}
                 headerToolBarData={
                   isLandPage
-                    ? [
-                        {
-                          buttonComponent: ButtonComponentsMap.ColorSwitch,
-                          label: 'labelColors',
-                        },
-                      ]
+                    ? isMobile
+                      ? []
+                      : [
+                          {
+                            buttonComponent: ButtonComponentsMap.ColorSwitch,
+                            label: 'labelColors',
+                          },
+                        ]
                     : headerToolBarData
                 }
                 notification={{ notifyMap, myNotifyMap }}
