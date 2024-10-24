@@ -265,7 +265,7 @@ const MyLiquidity = withTranslation('common')(
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         <MaxWidthContainer
           marginBottom={3}
-          minHeight={'80vh'}
+          // minHeight={'80vh'}
           background={isPortfolio ? undefined : containerColors[1]}
           containerProps={{
             borderRadius: isPortfolio ? `${theme.unit}px` : 0,

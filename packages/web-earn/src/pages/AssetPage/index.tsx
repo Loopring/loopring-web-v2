@@ -2,7 +2,7 @@ import { useRouteMatch } from 'react-router-dom'
 
 import { Box, BoxProps, Button, Typography } from '@mui/material'
 import { AssetTitleMobile, AssetTitleMobileEarn, useSettings } from '@loopring-web/component-lib'
-import { CloseIcon, SoursURL, subMenuLayer2 } from '@loopring-web/common-resources'
+import { CloseIcon, hexToRGB, SoursURL, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
@@ -26,6 +26,7 @@ import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confir
 import { concat, max } from 'lodash'
 import Decimal from 'decimal.js'
 import { t } from 'i18next'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 export * from './HistoryPanel/hooks'
 export const subMenu = subMenuLayer2
@@ -55,7 +56,7 @@ const BottomSection = ({
       px={4}
       py={8}
       minHeight={'100%'}
-      bgcolor={'var(--color-box)'}
+      bgcolor={hexToRGB(theme.colorBase.boxSecondary, 0.6)}
       display={'flex'}
       flexDirection={'column'}
       minWidth={isMobile ? '100%' : '400px'}
@@ -81,7 +82,12 @@ const BottomSection = ({
           />
         </Box>
         {subTitle && <Box mt={2}>{subTitle}</Box>}
-        <Typography variant={isMobile ? 'body2' : 'body1'} color={'var(--color-text-secondary)'} mt={2} mb={8}>
+        <Typography
+          variant={isMobile ? 'body2' : 'body1'}
+          color={'var(--color-text-secondary)'}
+          mt={2}
+          mb={8}
+        >
           {des}
         </Typography>
       </Box>
@@ -89,6 +95,27 @@ const BottomSection = ({
       <Box width={'100%'} display={'flex'} justifyContent={'center'}>
         <Box component={'img'} src={imgSrc} mt={'auto'} height={isMobile ? '120px' : '160px'} />
       </Box>
+    </Box>
+  )
+}
+
+const RightButton = ({ size, sx, ...rest }: { size: number } & BoxProps) => {
+  return (
+    <Box
+      sx={{
+        width: size + 'px',
+        height: size + 'px',
+        borderRadius: '50%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        bgcolor: 'var(--color-border)',
+        cursor: 'pointer',
+        ...sx,
+      }}
+      {...rest}
+    >
+      <ArrowForwardIosIcon className='custome-size' sx={{ fontSize: '16px' }} />
     </Box>
   )
 }
@@ -119,14 +146,28 @@ export const AssetPage = () => {
   const dualAPRUpToRaw = max(
     concat(
       keys.map((key) => (dualMarketMap[key] as any).baseTokenApy?.max),
-      keys.map((key) => (dualMarketMap[key] as any).quoteTokenApy?.max) 
-    )
+      keys.map((key) => (dualMarketMap[key] as any).quoteTokenApy?.max),
+    ),
   )
-  const dualAPRUpTo = dualAPRUpToRaw? numberFormatShowInPercent(
-    new Decimal(dualAPRUpToRaw).mul('100').toString()
-  ) : '--'
-  
+  const dualAPRUpTo = dualAPRUpToRaw
+    ? numberFormatShowInPercent(new Decimal(dualAPRUpToRaw).mul('100').toString())
+    : '--'
 
+  const scrollDivRef = React.useRef<HTMLDivElement>(null)
+  const [reachedRight, setRiachedRight] = React.useState(false)
+  const div = scrollDivRef.current
+  React.useEffect(() => {
+    if (scrollDivRef.current) {
+      const div = scrollDivRef.current
+      const handleScroll = () => {
+        setRiachedRight(div.scrollLeft + div.clientWidth >= div.scrollWidth)
+      }
+      div.addEventListener('scroll', handleScroll)
+      return () => {
+        div.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [div])
   if (selected.toLowerCase() === 'history') {
     return (
       <Box display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0} flex={1}>
@@ -140,7 +181,8 @@ export const AssetPage = () => {
       </Box>
     )
   }
-  
+
+
   return (
     <Box
       sx={{
@@ -203,7 +245,8 @@ export const AssetPage = () => {
               </Typography>
             ) : (
               <Typography mt={1.5} textAlign={'center'} fontSize={'16px'}>
-                {t('labelLoopringDeFiIs21')}<br/>
+                {t('labelLoopringDeFiIs21')}
+                <br />
                 {t('labelLoopringDeFiIs22')}
               </Typography>
             )}
@@ -212,20 +255,20 @@ export const AssetPage = () => {
       )}
       <MaxWidthContainer mt={confirmation.showTaikoLaunchBanner2 ? 3 : 4}>
         {isUnlocked ? (
-          <>{isMobile && (
-            <AssetTitleMobileEarn
-              forexMap={forexMap}
-              assetBtnStatus={assetBtnStatus}
-              {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
+          <>
+            {isMobile && (
+              <AssetTitleMobileEarn
+                forexMap={forexMap}
+                assetBtnStatus={assetBtnStatus}
+                {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
+              />
+            )}
+            <AssetPanel
+              showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
+              assetTitleProps={assetTitleProps}
+              assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
             />
-          )}
-          <AssetPanel
-            showRedpacketReddot={redPackets ? redPackets?.length > 0 : false}
-            assetTitleProps={assetTitleProps}
-            assetPanelProps={{ ...assetPanelProps, assetBtnStatus }}
-          />
           </>
-          
         ) : (
           <Box
             borderRadius={'24px'}
@@ -243,7 +286,7 @@ export const AssetPage = () => {
                 fontSize={isMobile ? '14px' : '16px'}
                 color={'var(--color-text-secondary)'}
               >
-                {t("labelLoopringDeFiAssets")}
+                {t('labelLoopringDeFiAssets')}
               </Typography>
               <Typography variant={isMobile ? 'h4' : 'h2'} mt={2}>
                 --
@@ -258,8 +301,14 @@ export const AssetPage = () => {
           </Box>
         )}
       </MaxWidthContainer>
-      <MaxWidthContainer mt={3} mb={8}>
-        <Box width={'100%'} display={'flex'} sx={{ overflowX: 'scroll', scrollbarWidth: 'none' }} flexDirection={isMobile ? 'column' : 'row'}>
+      <MaxWidthContainer mt={3} position={'relative'} mb={8}>
+        <Box
+          ref={scrollDivRef}
+          width={'100%'}
+          display={'flex'}
+          sx={{ overflowX: 'scroll', scrollbarWidth: 'none' }}
+          flexDirection={isMobile ? 'column' : 'row'}
+        >
           <BottomSection
             title='Taiko Farming'
             subTitle={
@@ -287,7 +336,21 @@ export const AssetPage = () => {
           />
           <BottomSection
             title='Dual Investment'
-            subTitle={<Typography color={'var(--color-text-secondary)'} fontSize={isMobile ? '9px' : '12px'}>APR Up To <Typography component={'span'} color={'var(--color-success)'} fontSize={isMobile ? '17px' : '24px'}>{dualAPRUpTo}</Typography> </Typography>}
+            subTitle={
+              <Typography
+                color={'var(--color-text-secondary)'}
+                fontSize={isMobile ? '9px' : '12px'}
+              >
+                APR Up To{' '}
+                <Typography
+                  component={'span'}
+                  color={'var(--color-success)'}
+                  fontSize={isMobile ? '17px' : '24px'}
+                >
+                  {dualAPRUpTo}
+                </Typography>{' '}
+              </Typography>
+            }
             des='Bring structured finance from CeFi to DeFi in a trustless manner. Place orders at your preferred price and earn high yields!'
             imgSrc={`${SoursURL}${
               theme.mode === 'dark'
@@ -329,6 +392,20 @@ export const AssetPage = () => {
             isMobile={isMobile}
           />
         </Box>
+        {!isMobile && !reachedRight && (
+          <RightButton
+            onClick={() => {
+              const element = scrollDivRef.current
+              if (element) {
+                element.scrollTo({ behavior: 'smooth', left: element.scrollLeft + 1000 })
+              }
+            }}
+            size={64}
+            top={'45%'}
+            right={'32px'}
+            position={'absolute'}
+          />
+        )}
       </MaxWidthContainer>
     </Box>
   )

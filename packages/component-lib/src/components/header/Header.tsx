@@ -823,8 +823,8 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           popupState.close()
                           
                         }}
-                        showSetting={false}
-                        showColorSwitch={false}
+
+                        showColorSwitch
                       />
                     </Box>
                   </ClickAwayListener>

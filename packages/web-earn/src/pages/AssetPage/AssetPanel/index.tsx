@@ -141,8 +141,8 @@ export const AssetPanel = withTranslation('common')(
 
         <Box
           sx={{
-            overflowY: 'scroll',
-            height: isMobile ? '300px' : '450px',
+            // overflowY: 'scroll',
+            // height: isMobile ? '300px' : '450px',
           }}
         >
           {currentTab === AssetTabIndex.Tokens && (
