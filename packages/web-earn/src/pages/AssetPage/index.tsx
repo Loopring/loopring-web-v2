@@ -56,7 +56,7 @@ const BottomSection = ({
       px={4}
       py={8}
       minHeight={'100%'}
-      bgcolor={theme.mode === 'dark' ? hexToRGB(theme.colorBase.black, 0.6) : hexToRGB( theme.colorBase.boxSecondary, 0.6)}
+      bgcolor={hexToRGB(theme.colorBase.boxSecondary, 0.6)}
       display={'flex'}
       flexDirection={'column'}
       minWidth={isMobile ? '100%' : '400px'}
