@@ -56,7 +56,7 @@ const BottomSection = ({
       px={4}
       py={8}
       minHeight={'100%'}
-      bgcolor={'var(--color-box-fourth)'}
+      bgcolor={theme.mode === 'dark' ? hexToRGB(theme.colorBase.black, 0.6) : hexToRGB( theme.colorBase.boxSecondary, 0.6)}
       display={'flex'}
       flexDirection={'column'}
       minWidth={isMobile ? '100%' : '400px'}
@@ -275,7 +275,7 @@ export const AssetPage = () => {
             px={3}
             py={5}
             width={'100%'}
-            bgcolor={'var(--color-box-fourth)'}
+            bgcolor={'var(--color-box)'}
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}

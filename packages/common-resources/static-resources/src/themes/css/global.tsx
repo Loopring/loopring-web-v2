@@ -85,7 +85,6 @@ export const colorBase = ({ theme }: any) => css`
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-box-third: ${theme.colorBase.boxThird};
-    --color-box-fourth: ${theme.colorBase.boxFourth};
     --color-mask: ${theme.colorBase.mask};
     --color-box-enhance: ${theme.colorBase.boxEnhance};
     --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
