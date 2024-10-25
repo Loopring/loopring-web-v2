@@ -82,7 +82,7 @@ export const AssetPanel = withTranslation('common')(
     const hideAssets = assetTitleProps.hideL2Assets
 
     return (
-      <Box bgcolor={'var(--color-box)'} borderRadius={'24px'} px={3.5} py={5}>
+      <Box bgcolor={'var(--color-box-fourth)'} borderRadius={'24px'} px={3.5} py={5}>
         {!isMobile && (
           <Box
             sx={{
