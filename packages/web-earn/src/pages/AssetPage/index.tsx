@@ -56,7 +56,7 @@ const BottomSection = ({
       px={4}
       py={8}
       minHeight={'100%'}
-      bgcolor={hexToRGB(theme.colorBase.boxSecondary, 0.6)}
+      bgcolor={theme.mode === 'dark' ? hexToRGB(theme.colorBase.black, 0.6) : hexToRGB( theme.colorBase.boxSecondary, 0.6)}
       display={'flex'}
       flexDirection={'column'}
       minWidth={isMobile ? '100%' : '400px'}
@@ -218,7 +218,7 @@ export const AssetPage = () => {
             <CloseIcon
               className='custom-size'
               sx={{
-                color: 'var(--color-text-secondary)',
+                color: 'var(--color-white)',
                 position: 'absolute',
                 top: 8,
                 right: 8,
@@ -239,12 +239,12 @@ export const AssetPage = () => {
                 mt={1.5}
                 textAlign={'center'}
                 variant='body2'
-                color={'var(--color-text-primary)'}
+                color={'var(--color-white)'}
               >
                 {t('labelLoopringDeFiIs')}
               </Typography>
             ) : (
-              <Typography mt={1.5} textAlign={'center'} fontSize={'16px'}>
+              <Typography mt={1.5} textAlign={'center'} fontSize={'16px'} color={'var(--color-white)'}>
                 {t('labelLoopringDeFiIs21')}
                 <br />
                 {t('labelLoopringDeFiIs22')}
