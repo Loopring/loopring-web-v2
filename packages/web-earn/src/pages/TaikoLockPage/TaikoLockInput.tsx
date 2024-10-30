@@ -15,13 +15,14 @@ import {
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Checkbox, Grid, Tooltip, Typography } from '@mui/material'
+import { Box, Checkbox, Grid, Input, Tooltip, Typography } from '@mui/material'
 import {
   InputCoin,
   ButtonStyle,
   InputButtonProps,
   BtnInfo,
   InputCoin2,
+  useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
@@ -29,6 +30,7 @@ import { useHistory } from 'react-router'
 import { useTheme } from '@emotion/react'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
+import moment from 'moment'
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -40,7 +42,7 @@ const GridStyle = styled(Grid)`
   }
 `
 
-type StakingInputProps<T, I, ACD> = {
+type TaikoLockInputProps<T, I, ACD> = {
   isJoin: true
   disabled?: boolean
   btnInfo?: BtnInfo
@@ -68,9 +70,32 @@ type StakingInputProps<T, I, ACD> = {
   taikoFarmingChecked: boolean
   onCheckBoxChange: () => void
   buttonDisabled: boolean
+  daysInput: {
+    value: string
+    onInput: (value: string) => void
+  }
+  myPosition:
+    | {
+        totalAmount: string
+        totalAmountInCurrency: string
+        positions: {
+          amount: string
+          unlocked: boolean
+          lockingDays: number
+          unlockTime: string
+          multiplier: string
+        }[]
+      }
+    | undefined
 }
 
-export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputProps<T, I, ACD>>({
+const StyledInput = styled(Input)`
+  input::placeholder {
+    color: var(--color-text-secondary);
+  }
+`
+
+export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInputProps<T, I, ACD>>({
   disabled,
   isJoin,
   btnInfo,
@@ -91,8 +116,10 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   taikoFarmingChecked,
   onCheckBoxChange,
   buttonDisabled,
+  daysInput,
+  myPosition,
   ...rest
-}: StakingInputProps<T, I, ACD>) => {
+}: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
   const coinSellRef = React.useRef()
 
@@ -179,6 +206,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   dalyEarn = dalyEarn && dalyEarn !== '0' ? dalyEarn + ' ' + tokenSell.symbol : EmptyValueTag
   myLog('deFiSideCalcData.stakeViewInfo', deFiSideCalcData.stakeViewInfo)
   const theme = useTheme()
+  const { isMobile } = useSettings()
 
   // const checkBoxChecked = false
   // const onCheckBoxChange = () => {
@@ -186,66 +214,122 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
   // }
 
   return (
-    <GridStyle
-      className={deFiSideCalcData ? '' : 'loading'}
-      container
-      direction={'column'}
-      justifyContent={'space-between'}
-      alignItems={'center'}
-      flex={1}
-      height={'100%'}
+    <Box
+    // className={deFiSideCalcData ? '' : 'loading'}
+    // direction={'column'}
+    // justifyContent={'space-between'}
+    // alignItems={'center'}
+    // flex={1}
+    // height={'100%'}
     >
-      <Grid
-        item
+      <Box
         display={'flex'}
-        justifyContent={'space-between'}
-        alignItems={'center'}
-        flexDirection={'row'}
-        width={'100%'}
-        className={'MuiToolbar-root'}
-      >
-        <Typography
-          height={'100%'}
-          display={'inline-flex'}
-          variant={'h5'}
-          alignItems={'center'}
-          alignSelf={'self-start'}
-        >
-          {t('labelLock2')}
-        </Typography>
-        <OrderListIcon
-          sx={{ cursor: 'pointer' }}
-          onClick={() => {
-            history.push(`/l2assets/history/TaikoLockRecords`)
-          }}
-          fontSize={'large'}
-        />
-      </Grid>
-      <Grid
-        item
-        marginTop={2}
-        paddingTop={2}
+        style={isMobile ? { flex: 1 } : { width: '450px' }}
+        justifyContent={'center'}
+        paddingX={3}
+        paddingTop={3}
         paddingBottom={3}
-        flexDirection={'column'}
-        display={'flex'}
-        alignSelf={'stretch'}
-        alignItems={'stretch'}
+        bgcolor={'var(--color-box-third)'}
+        border={'1px solid var(--color-border)'}
+        borderRadius={2}
       >
-        <InputCoin<T, I, any>
-          ref={coinSellRef}
-          disabled={getDisabled}
-          name='coinSell'
-          isHideError={true}
-          order='right'
-          inputData={deFiSideCalcData ? deFiSideCalcData.coinSell : {}}
-          coinMap={{}}
-          coinPrecision={tokenSell.precision}
-          {...propsSell}
-          decimalsLimit={2}
-          label={<Typography color={'var(--color-text-secondary)'}>{t('labelAmount')}</Typography>}
-        />
-      </Grid>
-      <Grid item alignSelf={'stretch'} my={3}>
+        <GridStyle
+          className={deFiSideCalcData ? '' : 'loading'}
+          container
+          direction={'column'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+          flex={1}
+        >
+          <Grid
+            item
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            flexDirection={'row'}
+            width={'100%'}
+            className={'MuiToolbar-root'}
+          >
+            <Typography
+              height={'100%'}
+              display={'inline-flex'}
+              variant={'h5'}
+              alignItems={'center'}
+              alignSelf={'self-start'}
+            >
+              Stake
+            </Typography>
+            <OrderListIcon
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                history.push(`/l2assets/history/TaikoLockRecords`)
+              }}
+              fontSize={'large'}
+            />
+          </Grid>
+          <Grid
+            item
+            marginTop={2}
+            paddingTop={2}
+            paddingBottom={3}
+            flexDirection={'column'}
+            display={'flex'}
+            alignSelf={'stretch'}
+            alignItems={'stretch'}
+          >
+            <InputCoin<T, I, any>
+              ref={coinSellRef}
+              disabled={getDisabled}
+              name='coinSell'
+              isHideError={true}
+              order='right'
+              inputData={deFiSideCalcData ? deFiSideCalcData.coinSell : {}}
+              coinMap={{}}
+              coinPrecision={tokenSell.precision}
+              {...propsSell}
+              decimalsLimit={2}
+              label={
+                <Typography color={'var(--color-text-secondary)'}>{t('labelAmount')}</Typography>
+              }
+            />
+          </Grid>
+          <Grid
+            item
+            flexDirection={'column'}
+            display={'flex'}
+            alignSelf={'stretch'}
+            alignItems={'stretch'}
+          >
+            <Typography color={'var(--color-text-secondary)'} mb={0.5}>
+              Lock Duration
+            </Typography>
+            <StyledInput
+              sx={{
+                textAlign: 'right',
+                paddingX: 1.5,
+                height: '48px',
+              }}
+              inputProps={{
+                style: {
+                  textAlign: 'right',
+                  fontSize: '20px',
+                  fontFamily: 'Arial',
+                },
+              }}
+              disableUnderline
+              startAdornment={
+                <Typography variant='h4' color={'var(--color-text-primary)'} mb={0.5}>
+                  Days
+                </Typography>
+              }
+              placeholder='≥ 15 Days'
+              onInput={(e) => {
+                daysInput.onInput((e.target as any).value)
+              }}
+              value={daysInput.value}
+            />
+          </Grid>
+          {/* <Grid item alignSelf={'stretch'} my={3}>
         <Box
           p={1.5}
           bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
@@ -280,38 +364,108 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
             </Typography>
           </Box>
         </Box>
-      </Grid>
-      <Grid
-        item
-        alignSelf={'stretch'}
-        marginTop={3}
-        pb={6}
-        borderBottom={'1px solid var(--color-border)'}
-      >
-        <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item>
-            <ButtonStyle
-              fullWidth
-              variant={'contained'}
-              size={'large'}
-              color={'primary'}
-              onClick={() => {
-                onSubmitClick()
-              }}
-              loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-              disabled={
-                buttonDisabled ||
-                btnStatus === TradeBtnStatus.LOADING ||
-                btnStatus === TradeBtnStatus.DISABLED
-              }
-            >
-              {btnLabel}
-            </ButtonStyle>
+      </Grid> */}
+          <Grid item alignSelf={'stretch'} marginTop={10} pb={2}>
+            <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
+              <Grid item>
+                <ButtonStyle
+                  fullWidth
+                  variant={'contained'}
+                  size={'large'}
+                  color={'primary'}
+                  onClick={() => {
+                    onSubmitClick()
+                  }}
+                  loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+                  disabled={
+                    buttonDisabled ||
+                    btnStatus === TradeBtnStatus.LOADING ||
+                    btnStatus === TradeBtnStatus.DISABLED
+                  }
+                >
+                  {btnLabel}
+                </ButtonStyle>
+              </Grid>
+            </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-      <Box marginTop={3} width={'100%'} borderRadius={1}>
-        <Typography mb={2} color={'var(--color-text-secondary)'}>
+        </GridStyle>
+      </Box>
+
+      {myPosition && (
+        <Box
+          display={'flex'}
+          style={isMobile ? { flex: 1 } : { width: '450px' }}
+          justifyContent={'center'}
+          bgcolor={'var(--color-box-third)'}
+          border={'1px solid var(--color-border)'}
+          borderRadius={2}
+          width={'100%'}
+          flexDirection={'column'}
+          p={3}
+          my={5}
+        >
+          <Tooltip title={t('todo')} placement={'top'}>
+            <Typography display={'flex'} alignItems={'center'} variant={'h5'} color={'var(--color-text-primary)'}>
+              My Position
+              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+            </Typography>
+          </Tooltip>
+          <Typography mt={0.5} color={'var(--color-text-secondary)'}>
+            Total Amount: {myPosition.totalAmount} / {myPosition.totalAmountInCurrency}
+          </Typography>
+          <Box mt={2.5}>
+            <Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
+              <Typography color={'var(--color-text-secondary)'}>Amount / Status</Typography>
+              <Typography color={'var(--color-text-secondary)'}>
+                Lock Duration/unlock Date
+              </Typography>
+            </Box>
+
+            {myPosition.positions.map((item, index) => {
+              return (
+                <Box py={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                  <Box>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Typography
+                        component={'span'}
+                        fontSize={'16px'}
+                        color={'var(--color-text-primary)'}
+                      >
+                        {item.amount}
+                      </Typography>
+                      <Box
+                        ml={1}
+                        bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                        color={'var(--color-warning)'}
+                        borderRadius={'4px'}
+                        // py={1}
+                        p={0.5}
+                        fontSize={'11px'}
+                      >
+                        {item.multiplier}
+                      </Box>
+                    </Box>
+
+                    <Typography
+                      color={item.unlocked ? 'var(--color-success)' : 'var(--color-text-secondary)'}
+                    >
+                      {item.unlocked ? 'Unlocked' : 'locked'}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography textAlign={'right'} fontSize={'16px'} color={'var(--color-text-primary)'}>
+                      {item.lockingDays} Days
+                    </Typography>
+                    <Typography textAlign={'right'} color={'var(--color-text-secondary)'}>
+                      {item.unlockTime}{' '}
+                    </Typography>
+                  </Box>
+                </Box>
+              )
+            })}
+          </Box>
+
+          {/* <Typography mb={2} color={'var(--color-text-secondary)'}>
           {t('labelCurrentLockedPosition')}
         </Typography>
 
@@ -334,7 +488,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
           <Typography component={'p'}>
             {lockedPosition ? (
               <>
-                { lockedPosition?.amount ?? '--'} /{' '}
+                {lockedPosition?.amount ?? '--'} /{' '}
                 <Typography component={'span'} color={'textSecondary'}>
                   {lockedPosition?.amountInCurrency ?? '--'}
                 </Typography>
@@ -384,8 +538,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends StakingInputP
             </Typography>
           </Tooltip>
           <Typography component={'p'}></Typography>
-        </Grid>
-      </Box>
-    </GridStyle>
+        </Grid> */}
+        </Box>
+      )}
+    </Box>
   )
 }

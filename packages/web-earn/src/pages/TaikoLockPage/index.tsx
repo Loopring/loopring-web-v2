@@ -13,11 +13,7 @@ import {
 } from '@loopring-web/component-lib'
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
-import {
-  hexToRGB,
-  SoursURL,
-  TOAST_TIME,
-} from '@loopring-web/common-resources'
+import { CloseIcon, hexToRGB, SoursURL, TOAST_TIME } from '@loopring-web/common-resources'
 
 import { useHistory } from 'react-router-dom'
 import { TaikoLockInput } from './TaikoLockInput'
@@ -41,16 +37,6 @@ const StyleWrapper = styled(Box)`
 
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid
-const ButtonStyled = styled(Button)`
-  background-color: var(--color-button-outlined);
-  color: var(--color-text-primary);
-  :hover {
-    background-color: var(--color-button-outlined);
-    ::before {
-      border-radius: 4px;
-    }
-  }
-`
 
 export const TaikoLockPage = ({
   setConfirmedLRCStakeInvestInvest,
@@ -66,7 +52,8 @@ export const TaikoLockPage = ({
 }) => {
   const { t } = useTranslation('common')
   const {
-    confirmation: { confirmedLRCStakeInvest },
+    confirmation: { confirmedLRCStakeInvest, showTaikoLockDescription },
+    setShowTaikoLockDescription,
   } = confirmation.useConfirmation()
   const { toggle } = useToggle()
 
@@ -103,7 +90,12 @@ export const TaikoLockPage = ({
             <Box
               component={'img'}
               height={'28px'}
-              src={SoursURL + (theme.mode === 'dark' ? 'earn/taiko_farming_banner_wording.png' : 'earn/taiko_farming_banner_wording_light.png')}
+              src={
+                SoursURL +
+                (theme.mode === 'dark'
+                  ? 'earn/taiko_farming_banner_wording.png'
+                  : 'earn/taiko_farming_banner_wording_light.png')
+              }
               mb={'2px'}
             />
           </Box>
@@ -125,55 +117,84 @@ export const TaikoLockPage = ({
               flex={1}
             >
               {stakeWrapProps.deFiSideCalcData ? (
-                <Box
-                  display={'flex'}
-                  style={styles}
-                  justifyContent={'center'}
-                  paddingX={3}
-                  paddingTop={3}
-                  paddingBottom={3}
-                  bgcolor={'var(--color-box-third)'}
-                  border={'1px solid var(--color-border)'}
-                  borderRadius={2}
-                >
-                  <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
-                </Box>
+                // <Box
+                //   display={'flex'}
+                //   style={styles}
+                //   justifyContent={'center'}
+                //   paddingX={3}
+                //   paddingTop={3}
+                //   paddingBottom={3}
+                //   bgcolor={'var(--color-box-third)'}
+                //   border={'1px solid var(--color-border)'}
+                //   borderRadius={2}
+                // >
+                <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
+                // </Box>
               ) : (
                 <LoadingBlock />
               )}
             </StyleWrapper>
-            <Box
-              width={'24%'}
-              p={2}
-              borderRadius={'8px'}
-              sx={{
-                backgroundImage: `url(${SoursURL + 'earn/taiko_farming_banner_bg.png'})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-              }}
-              
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'space-between'}
-            >
-              <Typography variant={'h5'} color={theme.colorBase.white}>
-                {t('labelTaikoFarmingUnlockValue')}
-              </Typography>
+            <Box width={'24%'}>
               <Box
-                mt={2}
-                height={'32px'}
-                width={'115.2px'}
-                component={'img'}
+                p={2}
+                borderRadius={'8px'}
                 sx={{
-                  cursor: 'pointer',
+                  backgroundImage: `url(${SoursURL + 'earn/taiko_farming_banner_bg.png'})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
                 }}
-                src={SoursURL + 'earn/taiko_farming_banner_button.png'}
-                alignSelf={'end'}
-                onClick={() => {
-                  window.open('/#/taiko-farming/banner', '_blank');
-                }}
-              />
+                display={'flex'}
+                flexDirection={'column'}
+                justifyContent={'space-between'}
+              >
+                <Typography variant={'h5'} color={theme.colorBase.white}>
+                  {t('labelTaikoFarmingUnlockValue')}
+                </Typography>
+                <Box
+                  mt={2}
+                  height={'32px'}
+                  width={'115.2px'}
+                  component={'img'}
+                  sx={{
+                    cursor: 'pointer',
+                  }}
+                  src={SoursURL + 'earn/taiko_farming_banner_button.png'}
+                  alignSelf={'end'}
+                  onClick={() => {
+                    window.open('/#/taiko-farming/banner', '_blank')
+                  }}
+                />
+              </Box>
+              {showTaikoLockDescription && (
+                <Box
+                  p={4}
+                  borderRadius={'8px'}
+                  bgcolor={'var(--color-box-third)'}
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'space-between'}
+                  pt={5}
+                  mt={6}
+                  position={'relative'}
+                >
+                  <CloseIcon
+                    sx={{
+                      color: 'var(--color-text-secondary)',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setShowTaikoLockDescription(false)
+                    }}
+                  />
+                  <Typography color={'var(--color-text-primary)'}>
+                    TAIKO由EOA Wallet存入并直接被锁定的介绍，TAIKO由EOA Wallet存入并直接被锁定的介绍
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </MaxWidthContainer>
         </Box>

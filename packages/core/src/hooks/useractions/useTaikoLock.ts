@@ -356,6 +356,10 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     setToastOpen,
     t,
   ])
+  
+  const [daysInput, setDaysInput] = React.useState('')
+  const daysInputValid = Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15
+
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
     label: string
@@ -417,13 +421,20 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           label: `labelStakeNoEnough| ${coinSellSymbol}`,
         }
       } else if (
-        !taikoFarmingChecked
+        !daysInput
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: 'labelTaikoFarmingNotChecked',
+          label: 'input days please',
         }
-      }else {
+      } else if (
+        !daysInputValid
+      ) {
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: 'days is not valid',
+        }
+      } else {
         return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
       }
     }
@@ -435,7 +446,8 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     tradeStake.deFiSideCalcData,
     tokenMap,
     coinSellSymbol,
-    taikoFarmingChecked
+    taikoFarmingChecked,
+    daysInput
   ])
   const {
     btnStatus,
@@ -459,7 +471,16 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     ? fiatNumberDisplay(getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString()), currency) 
     : undefined
   const updateStakingList = () => {
+    // LoopringAPI?.defiAPI?.getTaikoFarmingUserSummary
     if (account.apiKey) {
+      LoopringAPI?.defiAPI?.getTaikoFarmingUserSummary({
+        accountId: account.accountId,
+        tokenId: sellToken.tokenId,
+      }, account.apiKey).then((res) => {
+        debugger
+      }).catch(e => {
+        debugger
+      })
       LoopringAPI?.defiAPI?.getStakeSummary({
         accountId: account.accountId,
         tokenId: sellToken.tokenId,
@@ -553,10 +574,11 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   }, [t, btnInfo])
 
   
+  
   return {
     stakeWrapProps: {
       disabled: false,
-      buttonDisabled: isLoading || (!taikoFarmingChecked && account.readyState === AccountStatus.ACTIVATED),
+      buttonDisabled: account.readyState === AccountStatus.ACTIVATED && (isLoading || !daysInput || !daysInputValid),
       btnInfo,
       isJoin: true,
       isLoading,
@@ -576,13 +598,51 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
       btnStatus,
       accStatus: account.readyState,
       btnLabel: btnLabel,
-      lockedPosition: stakingTotal && new Decimal(stakingTotal).gt(0) ? {
-        amount: stakingAmount,
-        amountInCurrency: stakingAmountInCurrency,
-        trailblazerBooster: '60x',
-      } : undefined,
+      lockedPosition:
+        stakingTotal && new Decimal(stakingTotal).gt(0)
+          ? {
+              amount: stakingAmount,
+              amountInCurrency: stakingAmountInCurrency,
+              trailblazerBooster: '60x',
+            }
+          : undefined,
       taikoFarmingChecked,
       onCheckBoxChange,
-    } as unknown as DeFiSideWrapProps<T, I, ACD>
+      daysInput: {
+        value: daysInput,
+        onInput: (input) => {
+          if (Number.isInteger(Number(input)) || input === '') {
+            setDaysInput(input)
+          }
+        },
+      },
+      myPosition: {
+        totalAmount: stakingAmount,
+        totalAmountInCurrency: stakingAmountInCurrency,
+        positions: [
+          {
+            amount: '1000',
+            unlocked: false,
+            lockingDays: 30,
+            unlockTime: '2024-11-15',
+            multiplier: '1x',
+          },
+          {
+            amount: '2000',
+            unlocked: false,
+            lockingDays: 60,
+            unlockTime: '2024-11-15',
+            multiplier: '2x',
+          },
+          {
+            amount: '3000',
+            unlocked: false,
+            lockingDays: 90,
+            unlockTime: '2024-11-15',
+            multiplier: '3x',
+          },
+        ],
+      },
+    } as unknown as DeFiSideWrapProps<T, I, ACD>,
   }
 }

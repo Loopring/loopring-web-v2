@@ -22,7 +22,8 @@ import {
   setShowLeverageETHPopup,
   setShowAutoDefault,
   setConfirmedOpenVaultPosition,
-  setShowTaikoLaunchBanner
+  setShowTaikoLaunchBanner,
+  setShowTaikoLockDescription,
 } from './reducer'
 import { DualInvestConfirmType } from '@loopring-web/common-resources'
 
@@ -45,6 +46,7 @@ export const useConfirmation = (): {
   setShowAutoDefault: (show: boolean) => void
   setConfirmedOpenVaultPosition: () => void
   setShowTaikoLaunchBanner: (show: boolean) => void
+  setShowTaikoLockDescription: (show: boolean) => void
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation,
@@ -119,6 +121,9 @@ export const useConfirmation = (): {
     }, [dispatch]),
     setShowTaikoLaunchBanner: React.useCallback((show: boolean) => {
       dispatch(setShowTaikoLaunchBanner({show}))
+    }, [dispatch]),
+    setShowTaikoLockDescription: React.useCallback((show: boolean) => {
+      dispatch(setShowTaikoLockDescription({show}))
     }, [dispatch]),
   }
 }
