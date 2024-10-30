@@ -408,7 +408,16 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
 export function useTaikoFarmingRecord(setToastOpen: (props: any) => void) {
   const { t } = useTranslation(['error'])
   const { tokenMap } = useTokenMap()
-  const [sideStakingList, setSideStakingRecordList] = React.useState<sdk.STACKING_TRANSACTIONS[]>(
+  const [sideStakingList, setSideStakingRecordList] = React.useState<{
+    accountId: number;
+    tokenId: number;
+    amount: string;
+    productId: string;
+    hash: string;
+    stakingType: "subscribe" | "unsubscribe";
+    createdAt: number;
+    updatedAt: number;
+}[]>(
     [],
   )
   const [sideStakingTotal, setSideStakingTotal] = React.useState(0)
@@ -419,7 +428,7 @@ export function useTaikoFarmingRecord(setToastOpen: (props: any) => void) {
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const response = await LoopringAPI.defiAPI.getStakeTransactions(
+        const response = await LoopringAPI.defiAPI.getTaikoFarmingTransactions(
           {
             accountId,
             tokenId: tokenInfo.tokenId,
@@ -441,7 +450,9 @@ export function useTaikoFarmingRecord(setToastOpen: (props: any) => void) {
                 : (response as sdk.RESULT_INFO).message,
           })
         } else {
-          const result = response.list
+
+          const result = response.transactions
+
           setSideStakingRecordList(result)
           setShowLoading(false)
           setSideStakingTotal(response.totalNum)

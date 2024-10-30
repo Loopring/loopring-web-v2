@@ -108,7 +108,7 @@ export const TaikoLockPage = ({
               alignItems: 'flex-start',
             }}
           >
-            <Box width={'24%'} />
+            <Box width={'26%'} />
             <StyleWrapper
               display={'flex'}
               flexDirection={'column'}
@@ -134,7 +134,35 @@ export const TaikoLockPage = ({
                 <LoadingBlock />
               )}
             </StyleWrapper>
-            <Box width={'24%'}>
+            <Box width={'26%'}>
+            {showTaikoLockDescription && (
+                <Box
+                  p={2}
+                  borderRadius={'8px'}
+                  bgcolor={'var(--color-box-third)'}
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'space-between'}
+                  pt={3}
+                  position={'relative'}
+                >
+                  <CloseIcon
+                    sx={{
+                      color: 'var(--color-text-secondary)',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      setShowTaikoLockDescription(false)
+                    }}
+                  />
+                  <Typography color={'var(--color-text-secondary)'}>
+                  Enjoy complete control over your locking duration by choosing any period that suits you. Trailblazer points will be awarded linearly based on the length of your lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use it as collateral to continue trading and earning, maximizing your capital efficiency even while it’s locked.
+                  </Typography>
+                </Box>
+              )}
               <Box
                 p={2}
                 borderRadius={'8px'}
@@ -147,6 +175,7 @@ export const TaikoLockPage = ({
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'space-between'}
+                mt={6}
               >
                 <Typography variant={'h5'} color={theme.colorBase.white}>
                   {t('labelTaikoFarmingUnlockValue')}
@@ -166,35 +195,7 @@ export const TaikoLockPage = ({
                   }}
                 />
               </Box>
-              {showTaikoLockDescription && (
-                <Box
-                  p={4}
-                  borderRadius={'8px'}
-                  bgcolor={'var(--color-box-third)'}
-                  display={'flex'}
-                  flexDirection={'column'}
-                  justifyContent={'space-between'}
-                  pt={5}
-                  mt={6}
-                  position={'relative'}
-                >
-                  <CloseIcon
-                    sx={{
-                      color: 'var(--color-text-secondary)',
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      setShowTaikoLockDescription(false)
-                    }}
-                  />
-                  <Typography color={'var(--color-text-primary)'}>
-                    TAIKO由EOA Wallet存入并直接被锁定的介绍，TAIKO由EOA Wallet存入并直接被锁定的介绍
-                  </Typography>
-                </Box>
-              )}
+             
             </Box>
           </MaxWidthContainer>
         </Box>

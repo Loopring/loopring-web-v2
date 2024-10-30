@@ -52,6 +52,7 @@ import { useTokenPrices, useTradeStake } from '../../stores'
 import { symbol } from 'prop-types'
 import Decimal from 'decimal.js'
 import { utils } from 'ethers'
+import moment from 'moment'
 
 export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
   setToastOpen,
@@ -62,8 +63,8 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
 }) => {
   const { t } = useTranslation(['common'])
   const refreshRef = React.createRef()
-  const [ isLoading, setIsLoading ] = React.useState(false)
-  const [ taikoFarmingChecked, setTaikoFarmingChecked ] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [taikoFarmingChecked, setTaikoFarmingChecked] = React.useState(false)
   const onCheckBoxChange = React.useCallback(() => {
     setTaikoFarmingChecked(!taikoFarmingChecked)
   }, [taikoFarmingChecked])
@@ -82,8 +83,6 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   const taikoFarmingPrecision = 2
   // const tokenId = tokenMap[coinSellSymbol].tokenId
 
-
-
   const handleOnchange = _.debounce(
     ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
       const tradeStake = store.getState()._router_tradeStake.tradeStake
@@ -99,11 +98,11 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
 
       if (tradeData && coinSellSymbol) {
         const inputValue = tradeData?.tradeValue?.toString() ?? ''
-          // ? numberFormat(tradeData?.tradeValue?.toString(), {
-          //     fixed: taikoFarmingPrecision
-          //   })
-          // : ''
-        
+        // ? numberFormat(tradeData?.tradeValue?.toString(), {
+        //     fixed: taikoFarmingPrecision
+        //   })
+        // : ''
+
         const tokenSell = tokenMap[coinSellSymbol]
         const { sellVol, deFiSideCalcData } = calcSideStaking({
           inputValue,
@@ -160,8 +159,11 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           }
           walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap ?? {}
 
-          deFiSideCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count 
-            ? numberFormat(walletMap[coinSellSymbol]?.count, {fixed: taikoFarmingPrecision, removeTrailingZero: true})
+          deFiSideCalcDataInit.coinSell.balance = walletMap[coinSellSymbol]?.count
+            ? numberFormat(walletMap[coinSellSymbol]?.count, {
+                fixed: taikoFarmingPrecision,
+                removeTrailingZero: true,
+              })
             : undefined
         }
 
@@ -227,7 +229,10 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
         walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
         deFiSideCalcDataInit.coinSell = {
           belong: coinSellSymbol,
-          balance: numberFormat(walletMap[coinSellSymbol]?.count, {fixed: taikoFarmingPrecision, removeTrailingZero: true}),
+          balance: numberFormat(walletMap[coinSellSymbol]?.count, {
+            fixed: taikoFarmingPrecision,
+            removeTrailingZero: true,
+          }),
         }
       } else {
         deFiSideCalcDataInit.coinSell = {
@@ -356,7 +361,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     setToastOpen,
     t,
   ])
-  
+
   const [daysInput, setDaysInput] = React.useState('')
   const daysInputValid = Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15
 
@@ -420,16 +425,12 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: `labelStakeNoEnough| ${coinSellSymbol}`,
         }
-      } else if (
-        !daysInput
-      ) {
+      } else if (!daysInput) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: 'input days please',
         }
-      } else if (
-        !daysInputValid
-      ) {
+      } else if (!daysInputValid) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
           label: 'days is not valid',
@@ -447,7 +448,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     tokenMap,
     coinSellSymbol,
     taikoFarmingChecked,
-    daysInput
+    daysInput,
   ])
   const {
     btnStatus,
@@ -459,45 +460,103 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     submitCallback: onSubmitBtnClick,
   })
   const [stakingTotal, setStakingTotal] = React.useState<string | undefined>(undefined)
-  
-  const stakingAmountRaw = stakingTotal && sellToken
-    ? utils.formatUnits(stakingTotal, sellToken.decimals)
-    : undefined
-  const stakingAmount = stakingAmountRaw && sellToken
-    ? numberFormatThousandthPlace(stakingAmountRaw, {tokenSymbol: sellToken.symbol, fixed: sellToken.precision, removeTrailingZero: true })
-    : undefined
 
-  const stakingAmountInCurrency = stakingAmountRaw && sellToken && tokenPrices[sellToken.symbol] && new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString() && getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString())
-    ? fiatNumberDisplay(getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString()), currency) 
-    : undefined
+  const [stakeInfo, setStakeInfo] = React.useState(
+    undefined as
+      | undefined
+      | {
+          totalStaked: string
+          staking: {
+            accountId: number
+            tokenId: number
+            stakeAt: number
+            initialAmount: string
+            remainAmount: string
+            totalRewards: string
+            productId: string
+            hash: string
+            status: string
+            createdAt: number
+            updatedAt: number
+            claimableTime: number
+            lastDayPendingRewards: string
+            apr: string
+          }[]
+        },
+  )
+
+  const stakingAmountRaw =
+    stakeInfo && sellToken
+      ? utils.formatUnits(stakeInfo.totalStaked, sellToken.decimals)
+      : undefined
+  const stakingAmount =
+    stakingAmountRaw && sellToken
+      ? numberFormatThousandthPlace(stakingAmountRaw, {
+          tokenSymbol: sellToken.symbol,
+          fixed: sellToken.precision,
+          removeTrailingZero: true,
+        })
+      : undefined
+
+  const stakingAmountInCurrency =
+    stakingAmountRaw &&
+    sellToken &&
+    tokenPrices[sellToken.symbol] &&
+    new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString() &&
+    getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString())
+      ? fiatNumberDisplay(
+          getValueInCurrency(
+            new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString(),
+          ),
+          currency,
+        )
+      : undefined
+
+  // const res =
+
   const updateStakingList = () => {
     // LoopringAPI?.defiAPI?.getTaikoFarmingUserSummary
     if (account.apiKey) {
-      LoopringAPI?.defiAPI?.getTaikoFarmingUserSummary({
-        accountId: account.accountId,
-        tokenId: sellToken.tokenId,
-      }, account.apiKey).then((res) => {
-        debugger
-      }).catch(e => {
-        debugger
-      })
-      LoopringAPI?.defiAPI?.getStakeSummary({
-        accountId: account.accountId,
-        tokenId: sellToken.tokenId,
-      }, account.apiKey).then((res) => {
-        const resData = res as {
-          raw_data: unknown;
-          totalNum: number;
-          totalStaked: string;
-          totalStakedRewards: string;
-          totalLastDayPendingRewards: string;
-          totalClaimableRewards: string;
-          list: sdk.StakeInfoOrigin[];
-        }
-        setStakingTotal(resData.totalStaked)
-      })
+      LoopringAPI?.defiAPI
+        ?.getTaikoFarmingUserSummary(
+          {
+            accountId: account.accountId,
+            tokenId: sellToken.tokenId,
+          },
+          account.apiKey,
+        )
+        .then((res) => {
+          setStakeInfo({
+            staking: res.staking,
+            totalStaked: res.totalStaked,
+          })
+        })
+      // LoopringAPI?.defiAPI?.getTaikoFarmingTransactions({
+      //   accountId: account.accountId,
+      //   tokenId: sellToken.tokenId,
+      // }, account.apiKey).then((res) => {
+      //   res
+      //   debugger
+      // }).catch(e => {
+      //   debugger
+      // })
+      // LoopringAPI?.defiAPI?.getStakeSummary({
+      //   accountId: account.accountId,
+      //   tokenId: sellToken.tokenId,
+      // }, account.apiKey).then((res) => {
+      //   const resData = res as {
+      //     raw_data: unknown;
+      //     totalNum: number;
+      //     totalStaked: string;
+      //     totalStakedRewards: string;
+      //     totalLastDayPendingRewards: string;
+      //     totalClaimableRewards: string;
+      //     list: sdk.StakeInfoOrigin[];
+      //   }
+      //   setStakingTotal(resData.totalStaked)
+      // })
     } else {
-      setStakingTotal(undefined)
+      // setStakingTotal(undefined)
     }
   }
   React.useEffect(() => {
@@ -535,7 +594,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     label: tradeMarketI18nKey,
     params: {},
   }
-  
+
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const btnLabel = React.useMemo(() => {
     if (btnInfo?.label) {
@@ -573,12 +632,12 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     }
   }, [t, btnInfo])
 
-  
-  
   return {
     stakeWrapProps: {
       disabled: false,
-      buttonDisabled: account.readyState === AccountStatus.ACTIVATED && (isLoading || !daysInput || !daysInputValid),
+      buttonDisabled:
+        account.readyState === AccountStatus.ACTIVATED &&
+        (isLoading || !daysInput || !daysInputValid),
       btnInfo,
       isJoin: true,
       isLoading,
@@ -616,33 +675,34 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
           }
         },
       },
-      myPosition: {
-        totalAmount: stakingAmount,
-        totalAmountInCurrency: stakingAmountInCurrency,
-        positions: [
-          {
-            amount: '1000',
-            unlocked: false,
-            lockingDays: 30,
-            unlockTime: '2024-11-15',
-            multiplier: '1x',
-          },
-          {
-            amount: '2000',
-            unlocked: false,
-            lockingDays: 60,
-            unlockTime: '2024-11-15',
-            multiplier: '2x',
-          },
-          {
-            amount: '3000',
-            unlocked: false,
-            lockingDays: 90,
-            unlockTime: '2024-11-15',
-            multiplier: '3x',
-          },
-        ],
-      },
+      myPosition: stakeInfo
+        ? {
+            totalAmount: stakingAmount,
+            totalAmountInCurrency: stakingAmountInCurrency,
+            positions: stakeInfo.staking.map((stake) => {
+              const tokenInfo = tokenMap[coinSellSymbol]
+              const lockingDays = Math.ceil(
+                (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
+              )
+
+              return {
+                amount: numberFormatThousandthPlace(
+                  utils.formatUnits(stake.initialAmount, tokenInfo.decimals),
+                  {
+                    fixed: tokenInfo.precision,
+                    removeTrailingZero: true,
+                  },
+                ),
+                unlocked: stake.status !== 'locked',
+                lockingDays,
+                unlockTime: stake.claimableTime
+                  ? moment(stake.claimableTime).format('YYYY-MM-DD')
+                  : '',
+                multiplier: lockingDays + 'x',
+              }
+            }),
+          }
+        : undefined,
     } as unknown as DeFiSideWrapProps<T, I, ACD>,
   }
 }

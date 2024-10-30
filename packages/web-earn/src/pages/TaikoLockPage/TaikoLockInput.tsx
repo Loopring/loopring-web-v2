@@ -329,6 +329,12 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               value={daysInput.value}
             />
           </Grid>
+
+          <Typography sx={{opacity: daysInput.value ? 1 : 0}} width={'100%'} variant='body2' textAlign={'left'} mt={1.5}>
+            * You can unlock your TAIKO tokens after {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
+          </Typography>
+
+          
           {/* <Grid item alignSelf={'stretch'} my={3}>
         <Box
           p={1.5}
@@ -404,7 +410,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
           p={3}
           my={5}
         >
-          <Tooltip title={t('todo')} placement={'top'}>
+          <Tooltip title={'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '} placement={'top'}>
             <Typography display={'flex'} alignItems={'center'} variant={'h5'} color={'var(--color-text-primary)'}>
               My Position
               <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />

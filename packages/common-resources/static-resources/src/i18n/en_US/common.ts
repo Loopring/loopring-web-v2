@@ -81,7 +81,7 @@ export default {
   labelHadChangPassword: 'You changed your keypair {{passDay}} ago.',
   labelTitleForceWithdraw: 'Force Withdraw',
   labelBtnForceWithdraw: 'Force Withdraw',
-  labelTitleExportAccount: 'Export Account',
+  labelTitleExportAccount: 'Export Account1',
   labelDescriptionExportAccount:
     'In order to access the {{loopringL2}} APIs, you will need to export a security key.',
   labelBtnExportAccount: 'Export Account',
