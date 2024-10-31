@@ -741,3 +741,55 @@ export const Taiko_Farming_Mint_Failed = (props: PanelProps) => {
   }
   return <TaikoFarmingMintBase showTitle={true} {...propsPatch} {...props} />
 }
+
+export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t('labelVaultRepayInProgress', {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 3}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            Time
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount + ' ' + info?.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideSubscribeTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+
+      </Box>
+    ),
+  }
+  return <TaikoFarmingMintBase showTitle={true} {...propsPatch} {...props} />
+}

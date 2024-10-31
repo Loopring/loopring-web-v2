@@ -491,21 +491,16 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             })}
 
             <ButtonStyle
-              sx={{ mt: 4, mb: 4 }}
+              sx={{ mt: 4, mb: 4, textTransform: 'none' }}
               fullWidth
               variant={'contained'}
               size={'large'}
               color={'primary'}
               onClick={() => {
                 mintButton.onClick()
-                // onSubmitClick()
               }}
-              // loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
               disabled={
                 mintButton.disabled
-                // buttonDisabled ||
-                // btnStatus === TradeBtnStatus.LOADING ||
-                // btnStatus === TradeBtnStatus.DISABLED
               }
             >
               Mint lrTaiko

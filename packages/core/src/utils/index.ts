@@ -18,3 +18,4 @@ export {
   numberStringListSum
 } from './calculation'
 export {getOptionalDecimal} from './decimal'
+export {isNumberStr} from './validation'

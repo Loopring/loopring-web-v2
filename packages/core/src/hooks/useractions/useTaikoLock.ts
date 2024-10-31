@@ -28,6 +28,7 @@ import {
   calcSideStaking,
   fiatNumberDisplay,
   getTimestampDaysLater,
+  isNumberStr,
   makeWalletLayer2,
   numberFormat,
   numberFormatThousandthPlace,
@@ -36,7 +37,7 @@ import {
   useSubmitBtn,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
-import _ from 'lodash'
+import _, { isNumber } from 'lodash'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -136,6 +137,9 @@ const submitTaikoFarmingMint = async (info: {
     },
     info.apiKey,
   )
+  const claimedTotal = positions && positions[0] && positions[0].claimedTotal
+    ? BigNumber.from(positions[0].claimedTotal)
+    : BigNumber.from('0')
   const preorderHash =
     positions && positions?.length > 0 ? ((positions[0] as any).orderHash as string) : ''
   const taikoFarmingSubmit: sdk.TaikoFarmingSubmitRequest = {
@@ -144,7 +148,7 @@ const submitTaikoFarmingMint = async (info: {
     storageId: storageId!.orderId,
     sellToken: {
       tokenId: info.tokenId,
-      amount: info.amount.toString(),
+      amount: claimedTotal.add(info.amount).toString(),
     },
     buyToken: {
       tokenId: avaiableNFT!.tokenId,
@@ -418,7 +422,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
           walletLayer2Service.sendUserUpdate()
-          updateStakingList()
+          updateStakingState()
         }
       } else {
         throw new Error('api not ready')
@@ -625,9 +629,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   // const res =
 
   // const { exchangeInfo }= useSystem()
-  const updateStakingList = async () => {
-    // LoopringAPI?.defiAPI?.getTaikoFarmingUserSummary
-    if (account.apiKey) {
+  const [mintModalState, setMintModalState] = React.useState({
+    open: false,
+    inputValue: '',
+    warningChecked: false,
+    availableToMint: '',
+  })
+
+  const updateStakingState = async () => {
+    if (account.readyState === AccountStatus.ACTIVATED && account.apiKey) {
       // const a = await submitTaikoFarmingMint({
       //   accountId: account.accountId,
       //   apiKey: account.apiKey,
@@ -709,16 +719,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       //   debugger
       // })
 
-      // LoopringAPI?.defiAPI
-      //   ?.getTaikoFarmingPositionInfo(
-      //     {
-      //       accountId: account.accountId,
-      //     },
-      //     account.apiKey,
-      //   )
-      //   .then((res) => {
-
-      //   })
+      LoopringAPI?.defiAPI
+        ?.getTaikoFarmingPositionInfo(
+          {
+            accountId: account.accountId,
+          },
+          account.apiKey,
+        )
+        .then((res) => {
+          const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
+          
+          setMintModalState({
+            ...mintModalState,
+            availableToMint: availableToMint,
+          })
+        })
       LoopringAPI?.defiAPI
         ?.getTaikoFarmingUserSummary(
           {
@@ -758,13 +773,20 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       //   setStakingTotal(resData.totalStaked)
       // })
     } else {
-      // setStakingTotal(undefined)
+      setStakingTotal(undefined)
+      setStakeInfo(undefined)
+      setMintModalState({
+        open: false,
+        inputValue: '',
+        warningChecked: false,
+        availableToMint: '',
+      })
     }
   }
   React.useEffect(() => {
     getStakingMap()
     walletLayer2Service.sendUserUpdate()
-    updateStakingList()
+    updateStakingState()
   }, [account.apiKey])
   React.useEffect(() => {
     const {
@@ -834,13 +856,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [t, btnInfo])
 
-  const [mintModalState, setMintModalState] = React.useState({
-    open: false,
-    inputValue: '',
-    warningChecked: false,
-    availableToMint: '10'
-  })
-
+  // const isMintInputValid = mintModalState.inputValue ?
+  const availableToMintFormatted = mintModalState.availableToMint
+    ? utils.formatUnits(mintModalState.availableToMint, sellToken.decimals)
+    : undefined
   return {
     stakeWrapProps: {
       disabled: false,
@@ -913,7 +932,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           }
         : undefined,
       mintButton: {
-        onClick: () => {},
+        onClick: () => {
+          setMintModalState({
+            ...mintModalState,
+            open: true,
+          })
+        },
         disabled: false,
       },
       taikoCoinJSON: coinJson['TAIKO'],
@@ -928,7 +952,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         onClickMax: () => {
           setMintModalState({
             ...mintModalState,
-            inputValue: mintModalState.availableToMint,
+            inputValue: utils.formatUnits(mintModalState.availableToMint, sellToken.decimals),
           })
         },
         mintWarningChecked: mintModalState.warningChecked,
@@ -940,26 +964,80 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
         },
         onConfirmBtnClicked: async () => {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Taiko_Farming_Mint_In_Progress,
+            info: {
+              symbol: sellToken.symbol,
+              amount: numberFormatThousandthPlace(mintModalState.inputValue, {
+                fixed: sellToken.precision,
+                removeTrailingZero: true,
+              }),
+              mintAt: Date.now(),
+            },
+          })
+
           const res = await submitTaikoFarmingMint({
             amount: utils.parseUnits(mintModalState.inputValue, sellToken.decimals),
             accountId: account.accountId,
-            apiKey: account.apiKey, 
+            apiKey: account.apiKey,
             exchangeAddress: exchangeInfo!.exchangeAddress,
             tokenId: sellToken.tokenId,
-            eddsaSk: account.eddsaKey.sk
+            eddsaSk: account.eddsaKey.sk,
           })
-          debugger
-
+            .then((res) => {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Taiko_Farming_Mint_Success,
+                info: {
+                  symbol: sellToken.symbol,
+                  amount: numberFormatThousandthPlace(mintModalState.inputValue, {
+                    fixed: sellToken.precision,
+                    removeTrailingZero: true,
+                  }),
+                  mintAt: Date.now(),
+                },
+              })
+            })
+            .catch((e) => {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Taiko_Farming_Mint_Failed,
+                info: {
+                  error: e,
+                },
+              })
+            })
+            .finally(() => {
+              updateStakingState()
+            })
         },
-        onInput: (str) => {
-          setMintModalState({
-            ...mintModalState,
-            inputValue: str,
-          })
+        onInput: (input: string) => {
+          if (isNumberStr(input) || input === '') {
+            setMintModalState({
+              ...mintModalState,
+              inputValue: input,
+            })
+          }
         },
         inputValue: mintModalState.inputValue,
-        confirmBtnDisabled: false,
-        tokenAvailableAmount: mintModalState.availableToMint,
+        // disable confirm button if:
+        // 1. input value is not a valid number
+        // 2. warning checkbox is not checked
+        // 3. available to mint is 0
+        // 4. input value is larger than available to mint
+        confirmBtnDisabled:
+          !isNumberStr(mintModalState.inputValue) ||
+          !mintModalState.warningChecked ||
+          !mintModalState.availableToMint ||
+          new Decimal(availableToMintFormatted!).eq('0') ||
+          !(
+            availableToMintFormatted &&
+            new Decimal(availableToMintFormatted).greaterThanOrEqualTo(mintModalState.inputValue)
+          ),
+        tokenAvailableAmount: availableToMintFormatted
+          ? availableToMintFormatted
+          : '--',
       },
     },
   }
