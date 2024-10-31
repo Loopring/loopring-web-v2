@@ -27,6 +27,7 @@ import {
 import {
   calcSideStaking,
   fiatNumberDisplay,
+  getTimestampDaysLater,
   makeWalletLayer2,
   numberFormat,
   numberFormatThousandthPlace,
@@ -51,10 +52,119 @@ import { useTranslation } from 'react-i18next'
 import { useTokenPrices, useTradeStake } from '../../stores'
 import { symbol } from 'prop-types'
 import Decimal from 'decimal.js'
-import { utils } from 'ethers'
+import { BigNumber, Contract, providers, utils } from 'ethers'
 import moment from 'moment'
+import { on } from 'events'
 
-export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
+// providers
+const depositContractABI = [
+  {
+    inputs: [{ internalType: 'address', name: '_exchange', type: 'address' }],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, internalType: 'address', name: 'from', type: 'address' },
+      { indexed: false, internalType: 'address', name: 'to', type: 'address' },
+      { indexed: false, internalType: 'address', name: 'token', type: 'address' },
+      { indexed: false, internalType: 'uint96', name: 'amount', type: 'uint96' },
+      { indexed: false, internalType: 'uint256', name: 'duration', type: 'uint256' },
+    ],
+    name: 'Deposited',
+    type: 'event',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'from', type: 'address' },
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'address', name: 'tokenAddress', type: 'address' },
+      { internalType: 'uint96', name: 'amount', type: 'uint96' },
+      { internalType: 'uint256', name: 'duration', type: 'uint256' },
+      { internalType: 'bytes', name: 'extraData', type: 'bytes' },
+    ],
+    name: 'deposit',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'exchange',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+const depositContractAddr = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
+
+const depositTaikoWithDuration = async (
+  provider: providers.Web3Provider,
+  amount: BigNumber,
+  duration: BigNumber,
+) => {
+  const contract = new Contract(depositContractAddr, depositContractABI, provider)
+  const tx = await contract.deposit(amount, duration)
+  return tx.wait()
+}
+
+const submitTaikoFarmingMint = async (info: {
+  amount: BigNumber
+  accountId: number
+  apiKey: string
+  exchangeAddress: string
+  tokenId: number
+  eddsaSk: string
+}) => {
+  const storageId = await LoopringAPI?.userAPI?.getNextStorageId(
+    {
+      accountId: info.accountId,
+      sellTokenId: info.tokenId,
+    },
+    info.apiKey,
+  )
+  const avaiableNFT = await LoopringAPI?.defiAPI?.getTaikoFarmingAvailableNft(
+    {
+      accountId: info.accountId,
+    },
+    info.apiKey,
+  )
+  const positions = await LoopringAPI?.defiAPI?.getTaikoFarmingPositionInfo(
+    {
+      accountId: info.accountId,
+    },
+    info.apiKey,
+  )
+  const preorderHash =
+    positions && positions?.length > 0 ? ((positions[0] as any).orderHash as string) : ''
+  const taikoFarmingSubmit: sdk.TaikoFarmingSubmitRequest = {
+    exchange: info.exchangeAddress,
+    accountId: info.accountId,
+    storageId: storageId!.orderId,
+    sellToken: {
+      tokenId: info.tokenId,
+      amount: info.amount.toString(),
+    },
+    buyToken: {
+      tokenId: avaiableNFT!.tokenId,
+      nftData: avaiableNFT!.nftData,
+      amount: '1',
+    },
+    allOrNone: false,
+    fillAmountBOrS: true,
+    validUntil: getTimestampDaysLater(365 * 10),
+    maxFeeBips: 100,
+    preOrderHash: preorderHash,
+  }
+  return LoopringAPI?.defiAPI?.submitTaikoFarmingClaim({
+    request: taikoFarmingSubmit,
+    apiKey: info.apiKey,
+    eddsaKey: info.eddsaSk,
+  })
+}
+
+export const useTaikoLock = <T extends IBData<I>, I>({
   setToastOpen,
   symbol: coinSellSymbol,
 }: {
@@ -78,7 +188,7 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   const { tradeStake, updateTradeStake, resetTradeStake } = useTradeStake()
   const { exchangeInfo, allowTrade, getValueInCurrency } = useSystem()
   const { toggle } = useToggle()
-  const { defaultNetwork, currency } = useSettings()
+  const { defaultNetwork, currency, coinJson } = useSettings()
   const sellToken = tokenMap[coinSellSymbol]
   const taikoFarmingPrecision = 2
   // const tokenId = tokenMap[coinSellSymbol].tokenId
@@ -514,9 +624,101 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
 
   // const res =
 
-  const updateStakingList = () => {
+  // const { exchangeInfo }= useSystem()
+  const updateStakingList = async () => {
     // LoopringAPI?.defiAPI?.getTaikoFarmingUserSummary
     if (account.apiKey) {
+      // const a = await submitTaikoFarmingMint({
+      //   accountId: account.accountId,
+      //   apiKey: account.apiKey,
+      //   exchangeAddress: exchangeInfo!.exchangeAddress,
+      //   preOrderHash: '',
+      //   tokenId: sellToken.tokenId,
+      //   eddsaSk: account.eddsaKey.sk
+      // })
+
+      // setShowAccount({
+      //   isShow: true,
+      //   step: AccountStep.Taiko_Farming_Mint_Success,
+      //   info: {
+      //     symbol: 'ETH',
+      //     amount: '100',
+      //     mintAt: 1
+      //   },
+      // })
+      // setShowAccount({
+      //   isShow: true,
+      //   step: AccountStep.Taiko_Farming_Mint_Failed,
+      //   info: {
+      //     error: {
+      //       msg: 'error'
+      //     },
+      //   },
+      // })
+
+      // const preOrderHash = ''
+      // const storageId  = await LoopringAPI?.userAPI?.getNextStorageId(
+      //   {
+      //     accountId: account.accountId,
+      //     sellTokenId: sellToken.tokenId,
+      //   },
+      //   account.apiKey,
+      // )
+
+      // const avaiableNFT =await LoopringAPI?.defiAPI?.getTaikoFarmingAvailableNft({
+      //   accountId: account.accountId
+      // }, account.apiKey)
+      // const position = await LoopringAPI?.defiAPI?.getTaikoFarmingPositionInfo({
+      //   accountId: account.accountId
+      // }, account.apiKey)
+      // position
+      // debugger
+      // .then((avaiableNFT) => {
+
+      // }).catch((res) => {
+      //   // debugger
+      // })
+
+      // const taikoFarmingSubmit: sdk.TaikoFarmingSubmitRequest = {
+      //   exchange: exchangeInfo!.exchangeAddress,
+      //   accountId: account.accountId,
+      //   storageId: storageId!.orderId,
+      //   sellToken: {
+      //     tokenId: sellToken.tokenId,
+      //     amount: utils.parseUnits('10', 18).toString(),
+      //   },
+      //   buyToken: {
+      //     tokenId: avaiableNFT!.tokenId,
+      //     nftData: avaiableNFT!.nftData,
+      //     amount: '1',
+      //   },
+      //   allOrNone: false,
+      //   fillAmountBOrS: true,
+      //   validUntil: getTimestampDaysLater(365 * 10),
+      //   maxFeeBips: 100,
+      //   preOrderHash: preOrderHash
+      // }
+      // debugger
+      // LoopringAPI?.defiAPI?.submitTaikoFarmingClaim({
+      //   request:taikoFarmingSubmit,
+      //   apiKey: account.apiKey,
+      //   eddsaKey: account.eddsaKey.sk,
+      // }).then((res) => {
+      //   debugger
+      // }).catch((res) => {
+      //   debugger
+      // })
+
+      // LoopringAPI?.defiAPI
+      //   ?.getTaikoFarmingPositionInfo(
+      //     {
+      //       accountId: account.accountId,
+      //     },
+      //     account.apiKey,
+      //   )
+      //   .then((res) => {
+
+      //   })
       LoopringAPI?.defiAPI
         ?.getTaikoFarmingUserSummary(
           {
@@ -632,6 +834,13 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
     }
   }, [t, btnInfo])
 
+  const [mintModalState, setMintModalState] = React.useState({
+    open: false,
+    inputValue: '',
+    warningChecked: false,
+    availableToMint: '10'
+  })
+
   return {
     stakeWrapProps: {
       disabled: false,
@@ -703,6 +912,55 @@ export const useTaikoLock = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
             }),
           }
         : undefined,
-    } as unknown as DeFiSideWrapProps<T, I, ACD>,
+      mintButton: {
+        onClick: () => {},
+        disabled: false,
+      },
+      taikoCoinJSON: coinJson['TAIKO'],
+      mintModal: {
+        open: mintModalState.open,
+        onClose: () => {
+          setMintModalState({
+            ...mintModalState,
+            open: false,
+          })
+        },
+        onClickMax: () => {
+          setMintModalState({
+            ...mintModalState,
+            inputValue: mintModalState.availableToMint,
+          })
+        },
+        mintWarningChecked: mintModalState.warningChecked,
+        // mintWarningText: t('labelTaikoFarmingMintWarningText'),
+        onWarningCheckBoxChange: () => {
+          setMintModalState({
+            ...mintModalState,
+            warningChecked: !mintModalState.warningChecked,
+          })
+        },
+        onConfirmBtnClicked: async () => {
+          const res = await submitTaikoFarmingMint({
+            amount: utils.parseUnits(mintModalState.inputValue, sellToken.decimals),
+            accountId: account.accountId,
+            apiKey: account.apiKey, 
+            exchangeAddress: exchangeInfo!.exchangeAddress,
+            tokenId: sellToken.tokenId,
+            eddsaSk: account.eddsaKey.sk
+          })
+          debugger
+
+        },
+        onInput: (str) => {
+          setMintModalState({
+            ...mintModalState,
+            inputValue: str,
+          })
+        },
+        inputValue: mintModalState.inputValue,
+        confirmBtnDisabled: false,
+        tokenAvailableAmount: mintModalState.availableToMint,
+      },
+    },
   }
 }

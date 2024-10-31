@@ -88,6 +88,7 @@ export type RawDataAssetsItem = {
   smallBalance: boolean
   tokenValueDollar: number
   precision: number
+  hideDepositButton?: boolean
 }
 
 export type AssetsTableProps<R = RawDataAssetsItem> = {
@@ -392,6 +393,8 @@ export const AssetsTable = withTranslation('tables')(
                   onSend,
                   isLeverageETH: false,
                   isWebEarn: isWebEarn,
+                  hideDepositButton: row.hideDepositButton,
+                  
                 }}
               />
             </Box>

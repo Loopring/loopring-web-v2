@@ -161,6 +161,8 @@ import {
   Taiko_Farming_Redeem_Failed,
   Taiko_Farming_Redeem_Success,
   Taiko_Farming_Lock_Failed,
+  Taiko_Farming_Mint_Success,
+  Taiko_Farming_Mint_Failed,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -3466,6 +3468,22 @@ export function useAccountModalForUI({
       [AccountStep.Taiko_Farming_Redeem_Failed]: {
         view: (
           <Taiko_Farming_Redeem_Failed
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.Taiko_Farming_Mint_Success]: {
+        view: (
+          <Taiko_Farming_Mint_Success
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+      [AccountStep.Taiko_Farming_Mint_Failed]: {
+        view: (
+          <Taiko_Farming_Mint_Failed
             btnInfo={undefined}
             {...{ info: isShowAccount?.info, t, ...rest }}
           />

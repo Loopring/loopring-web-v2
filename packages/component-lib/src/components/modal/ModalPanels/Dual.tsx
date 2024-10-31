@@ -1,4 +1,4 @@
-import { AmmBase, BtradeBase, DualBase, IconType, PanelProps } from './BasicPanel'
+import { AmmBase, BtradeBase, DualBase, IconType, PanelProps, TaikoFarmingMintBase, TaikoFarmingStakeBase } from './BasicPanel'
 import { Box, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material'
 import { useSettings } from '../../../stores'
 import {
@@ -656,7 +656,7 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
       </Box>
     ),
   }
-  return <DualBase showTitle={false} {...propsPatch} {...props} />
+  return <TaikoFarmingStakeBase showTitle={false} {...propsPatch} {...props} />
 }
 
 export const Taiko_Farming_Redeem_Failed = (props: PanelProps) => {
@@ -666,5 +666,78 @@ export const Taiko_Farming_Redeem_Failed = (props: PanelProps) => {
       symbol: props.info?.symbol,
     }),
   }
-  return <DualBase showTitle={true} {...propsPatch} {...props} />
+  return <TaikoFarmingStakeBase showTitle={true} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    title: props.t('Mint lrTAIKO'),
+    describe1: (
+      <Typography variant={'h5'} color={'var(--color-text-primary)'} component={'span'}>
+        {/* {props.t('labelTaikoFarmingMintSuccess')} */}
+        Successful
+      </Typography>
+    ),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 3}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            Time
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount + ' ' + info?.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideSubscribeTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+
+        <Typography mt={3}>
+          You can freely use lrTAIKO across all trading and earning options within Loopring DeFi.{' '}
+        </Typography>
+        <Typography
+          component={'p'}
+          onClick={() => window.open('/#/portal/portalHome', '_blank')}
+          sx={{ cursor: 'pointer' }}
+          color={'var(--color-primary)'}
+          mt={1}
+        >{`Visit Portal to use lrTAIKO as collateral to earn >`}</Typography>
+      </Box>
+    ),
+  }
+  return <TaikoFarmingMintBase showTitle={false} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Mint_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t('Mint Failed'),
+  }
+  return <TaikoFarmingMintBase showTitle={true} {...propsPatch} {...props} />
 }

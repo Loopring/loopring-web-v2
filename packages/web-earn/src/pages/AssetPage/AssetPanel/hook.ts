@@ -308,7 +308,7 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
   const { tokenPrices } = useTokenPrices()
-  return {
+  console.log('asdhjajshdjsahdjsa', {
     assetTitleProps,
     assetTitleMobileExtendProps,
     assetsRawData,
@@ -359,6 +359,66 @@ export const useGetAssets = (): AssetPanelProps & {
       .toString(),
       currency
     ),
+  })
+  const {defaultNetwork} = useSettings()
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
+  return {
+    assetTitleProps,
+    assetTitleMobileExtendProps,
+    assetsRawData: assetsRawData.map((asset) => {
+      return isTaiko && asset.name === 'TAIKO' ? { ...asset, hideDepositButton: true } : asset
+    }),
+    assetBtnStatus,
+    hideL2Assets,
+    onSend,
+    onReceive,
+    marketArray,
+    hideInvestToken,
+    allowTrade,
+    setHideL2Assets,
+    setHideLpToken,
+    setHideSmallBalances,
+    themeMode,
+    getTokenRelatedMarketArray,
+    hideSmallBalances,
+    totalAvailableInCurrency:
+      forexMap[currency] &&
+      fiatNumberDisplay(
+        new Decimal(forexMap[currency])
+          .mul(
+            numberStringListSum(
+              assetsRawData.map((asset) => {
+                try {
+                  return new Decimal(asset.available.toString())
+                    .mul(tokenPrices[asset.name])
+                    .toString()
+                } catch {
+                  return '0'
+                }
+              }),
+            ),
+          )
+          .toString(),
+        currency,
+      ),
+    totalFrozenInCurrency:
+      forexMap[currency] &&
+      fiatNumberDisplay(
+        new Decimal(forexMap[currency])
+          .mul(
+            numberStringListSum(
+              assetsRawData.map((asset) => {
+                try {
+                  return new Decimal(asset.locked).mul(tokenPrices[asset.name]).toString()
+                } catch {
+                  return '0'
+                }
+              }),
+            ),
+          )
+          .toString(),
+        currency,
+      ),
   }
 }
 export const useAssetAction = () => {

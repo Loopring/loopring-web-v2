@@ -21,6 +21,7 @@ import styled from '@emotion/styled'
 import { ErrorPage } from '../../pages/ErrorPage'
 import BannerPage from './BannerPage'
 import { useTheme } from '@emotion/react'
+import { MintModal } from './MintModal'
 
 const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const StyleWrapper = styled(Box)`
@@ -145,6 +146,7 @@ export const TaikoLockPage = ({
                   justifyContent={'space-between'}
                   pt={3}
                   position={'relative'}
+                  mb={6}
                 >
                   <CloseIcon
                     sx={{
@@ -175,7 +177,7 @@ export const TaikoLockPage = ({
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'space-between'}
-                mt={6}
+                
               >
                 <Typography variant={'h5'} color={theme.colorBase.white}>
                   {t('labelTaikoFarmingUnlockValue')}
@@ -202,6 +204,29 @@ export const TaikoLockPage = ({
       ) : (
         <ErrorPage messageKey={'errorBase'} />
       )}
+      <MintModal
+      // open={stakeWrapProps.mintModal.open}
+      // // ={localState.modalStatus === 'collateralDetails' && !showLeverage.show}
+      // onClose={stakeWrapProps.mintModal.onClose}
+      // onClickMax={}
+      // mintWarningChecked={true}
+      // // mintWarningText={t('labelTaikoFarmingMintWarningText')}
+      // onWarningCheckBoxChange={() => {
+        
+      // }}
+      // onConfirmBtnClicked={() => {
+        
+      // }}
+      // onInput={(str) => {
+        
+      // }}
+      
+      // inputValue='1'
+      // confirmBtnDisabled={false}
+      // tokenAvailableAmount='10'
+      {...stakeWrapProps.mintModal}
+      logoCoinJSON={stakeWrapProps.taikoCoinJSON}
+      />
     </>
   )
 }

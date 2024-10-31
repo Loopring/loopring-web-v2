@@ -221,6 +221,9 @@ export enum AccountStep {
   Taiko_Farming_Lock_Failed,
   Taiko_Farming_Redeem_Success,
   Taiko_Farming_Redeem_Failed,
+
+  Taiko_Farming_Mint_Success,
+  Taiko_Farming_Mint_Failed,
 }
 
 /**

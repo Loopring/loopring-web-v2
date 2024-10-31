@@ -87,6 +87,10 @@ type TaikoLockInputProps<T, I, ACD> = {
         }[]
       }
     | undefined
+  mintButton: {
+    onClick: () => void
+    disabled: boolean
+  }
 }
 
 const StyledInput = styled(Input)`
@@ -118,6 +122,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   buttonDisabled,
   daysInput,
   myPosition,
+  mintButton,
   ...rest
 }: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -330,11 +335,17 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             />
           </Grid>
 
-          <Typography sx={{opacity: daysInput.value ? 1 : 0}} width={'100%'} variant='body2' textAlign={'left'} mt={1.5}>
-            * You can unlock your TAIKO tokens after {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
+          <Typography
+            sx={{ opacity: daysInput.value ? 1 : 0 }}
+            width={'100%'}
+            variant='body2'
+            textAlign={'left'}
+            mt={1.5}
+          >
+            * You can unlock your TAIKO tokens after{' '}
+            {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
           </Typography>
 
-          
           {/* <Grid item alignSelf={'stretch'} my={3}>
         <Box
           p={1.5}
@@ -410,12 +421,17 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
           p={3}
           my={5}
         >
-          <Tooltip title={'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '} placement={'top'}>
-            <Typography display={'flex'} alignItems={'center'} variant={'h5'} color={'var(--color-text-primary)'}>
-              My Position
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-            </Typography>
-          </Tooltip>
+          {/* <Tooltip title={'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '} placement={'top'}> */}
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'h5'}
+            color={'var(--color-text-primary)'}
+          >
+            My Position
+            {/* <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} /> */}
+          </Typography>
+          {/* </Tooltip> */}
           <Typography mt={0.5} color={'var(--color-text-secondary)'}>
             Total Amount: {myPosition.totalAmount} / {myPosition.totalAmountInCurrency}
           </Typography>
@@ -459,7 +475,11 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                     </Typography>
                   </Box>
                   <Box>
-                    <Typography textAlign={'right'} fontSize={'16px'} color={'var(--color-text-primary)'}>
+                    <Typography
+                      textAlign={'right'}
+                      fontSize={'16px'}
+                      color={'var(--color-text-primary)'}
+                    >
                       {item.lockingDays} Days
                     </Typography>
                     <Typography textAlign={'right'} color={'var(--color-text-secondary)'}>
@@ -469,6 +489,46 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 </Box>
               )
             })}
+
+            <ButtonStyle
+              sx={{ mt: 4, mb: 4 }}
+              fullWidth
+              variant={'contained'}
+              size={'large'}
+              color={'primary'}
+              onClick={() => {
+                mintButton.onClick()
+                // onSubmitClick()
+              }}
+              // loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+              disabled={
+                mintButton.disabled
+                // buttonDisabled ||
+                // btnStatus === TradeBtnStatus.LOADING ||
+                // btnStatus === TradeBtnStatus.DISABLED
+              }
+            >
+              Mint lrTaiko
+            </ButtonStyle>
+            <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+              <Tooltip
+                title={
+                  'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '
+                }
+                placement={'top'}
+              >
+                <Typography
+                  display={'flex'}
+                  alignItems={'center'}
+                  textAlign={'center'}
+                  variant={'body2'}
+                  color={'var(--color-text-secondary)'}
+                >
+                  Points tracked in Taiko Trailblazer Dashboard
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Typography>
+              </Tooltip>
+            </Box>
           </Box>
 
           {/* <Typography mb={2} color={'var(--color-text-secondary)'}>

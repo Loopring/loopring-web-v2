@@ -90,6 +90,7 @@ const makeVaultSell = (sellSymbol: string) => {
       .toBig(countBig)
       .div('1e' + sellToken.decimals)
       .toFixed(sellToken?.vaultTokenAmounts?.qtyStepScale, BigNumber.ROUND_DOWN)
+      console.log('BigNumber.min(totalQuote, (vaultAvaiable2Map && vaultAvaiable2Map[sellSymbol]?.count) ?? 0),', BigNumber.min(totalQuote, (vaultAvaiable2Map && vaultAvaiable2Map[sellSymbol]?.count) ?? 0),)
     const borrowAvailable = sdk
       .toBig(
         BigNumber.min(totalQuote, (vaultAvaiable2Map && vaultAvaiable2Map[sellSymbol]?.count) ?? 0),
