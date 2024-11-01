@@ -115,7 +115,7 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
                 ' ' +
                 tokenInfo.symbol
               : EmptyValueTag
-            // @ts-ignore
+            // alert(JSON.stringify(row))
             switch (row.stakingType) {
               case sdk.StakeTransactionType.subscribe:
                 side = {
@@ -126,13 +126,13 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
               case sdk.StakeTransactionType.redeem:
                 side = {
                   ...side,
-                  color: 'var(--color-error)',
+                  color: 'var(--color-success)',
                 }
                 break
               case sdk.StakeTransactionType.claim:
                 side = {
                   ...side,
-                  color: 'var(--color-warning)',
+                  color: 'var(--color-success)',
                 }
                 break
             }
@@ -178,7 +178,7 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
           width: 'auto',
           cellClass: 'textAlignCenter',
           headerCellClass: 'textAlignCenter',
-          name: t('labelDefiStakingTxHashId'),
+          name: 'Hash',
           formatter: ({ row }) => {
             return <>{row.hash ? getShortAddr(row.hash) : EmptyValueTag}</>
           },
@@ -266,7 +266,7 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
           key: 'Product',
           sortable: false,
           width: 'auto',
-          name: t('labelDefiStakingTxAmount') + '/' + t('labelDefiStakingTxProduct'),
+          name: t('labelDefiStakingTxAmount'),
           cellClass: 'textAlignRight',
           headerCellClass: 'textAlignRight',
           formatter: ({ row }: FormatterProps<R, unknown>) => {
@@ -288,21 +288,16 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
                   tokenInfo.symbol
                 : EmptyValueTag
             return (
-              <Typography
-                component={'span'}
-                flexDirection={'column'}
+              <Box
                 display={'flex'}
                 height={'100%'}
-                textAlign={'right'}
-                alignItems={'flex-end'}
+                width={'100%'}
+                alignItems={'center'}
               >
-                <Typography component={'span'} display={'inline'}>
+                <Typography textAlign={'right'} width={'100%'}>
                   {amountStr}
                 </Typography>
-                <Typography component={'span'} display={'inline'}>
-                  {row.productId}
-                </Typography>
-              </Typography>
+              </Box>
             )
           },
         },

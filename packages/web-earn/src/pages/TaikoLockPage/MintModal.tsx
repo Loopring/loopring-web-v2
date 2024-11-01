@@ -52,6 +52,7 @@ type MintModalProps = {
   onInput: (str: string) => void
   inputValue: string
   tokenAvailableAmount: string
+  confirmBtnWording: string
   // onClickMaxCredit: () => void
   // collateralTokens: {
   //   name: string
@@ -71,7 +72,7 @@ const StyledInput = styled(Input)`
 `
 
 export const MintModal = (props: MintModalProps) => {
-  const { open, onClose, mintWarningChecked, onWarningCheckBoxChange, confirmBtnDisabled, onConfirmBtnClicked, onInput, inputValue, tokenAvailableAmount, onClickMax, logoCoinJSON } = props
+  const { open, onClose, mintWarningChecked, onWarningCheckBoxChange, confirmBtnDisabled, onConfirmBtnClicked, onInput, inputValue, tokenAvailableAmount, onClickMax, logoCoinJSON, confirmBtnWording } = props
   const { t } = useTranslation()
   const theme = useTheme()
   return (
@@ -200,7 +201,7 @@ export const MintModal = (props: MintModalProps) => {
                 confirmBtnDisabled
               }
             >
-              Confirm
+              {confirmBtnWording}
             </ButtonStyle>
           </Box>
         </Box>

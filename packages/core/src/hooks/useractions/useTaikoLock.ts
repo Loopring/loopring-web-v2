@@ -477,7 +477,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   ])
 
   const [daysInput, setDaysInput] = React.useState('')
-  const daysInputValid = Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15
+  const daysInputValid = Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15 && Number(daysInput) <= 60
 
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
@@ -547,7 +547,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       } else if (!daysInputValid) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: 'days is not valid',
+          label: 'Days should be between 15 and 60',
         }
       } else {
         return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
@@ -1035,6 +1035,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             availableToMintFormatted &&
             new Decimal(availableToMintFormatted).greaterThanOrEqualTo(mintModalState.inputValue)
           ),
+        confirmBtnWording: 'Confirm',
         tokenAvailableAmount: availableToMintFormatted
           ? availableToMintFormatted
           : '--',
