@@ -53,11 +53,233 @@ import { useTranslation } from 'react-i18next'
 import { useTokenPrices, useTradeStake, WalletLayer1Map } from '../../stores'
 import { symbol } from 'prop-types'
 import Decimal from 'decimal.js'
-import { BigNumber, Contract, providers, utils } from 'ethers'
+import { BigNumber, constants, Contract, providers, utils } from 'ethers'
 import moment from 'moment'
 import { on } from 'events'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-
+import { erc20 } from '@loopring-web/loopring-sdk/src/api/config/abis/erc20'
+const erc20Abi = [
+  {
+      "constant": true,
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+          {
+              "name": "",
+              "type": "string"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+  },
+  {
+      "constant": false,
+      "inputs": [
+          {
+              "name": "_spender",
+              "type": "address"
+          },
+          {
+              "name": "_value",
+              "type": "uint256"
+          }
+      ],
+      "name": "approve",
+      "outputs": [
+          {
+              "name": "",
+              "type": "bool"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+  },
+  {
+      "constant": true,
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+          {
+              "name": "",
+              "type": "uint256"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+  },
+  {
+      "constant": false,
+      "inputs": [
+          {
+              "name": "_from",
+              "type": "address"
+          },
+          {
+              "name": "_to",
+              "type": "address"
+          },
+          {
+              "name": "_value",
+              "type": "uint256"
+          }
+      ],
+      "name": "transferFrom",
+      "outputs": [
+          {
+              "name": "",
+              "type": "bool"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+  },
+  {
+      "constant": true,
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [
+          {
+              "name": "",
+              "type": "uint8"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+  },
+  {
+      "constant": true,
+      "inputs": [
+          {
+              "name": "_owner",
+              "type": "address"
+          }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+          {
+              "name": "balance",
+              "type": "uint256"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+  },
+  {
+      "constant": true,
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+          {
+              "name": "",
+              "type": "string"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+  },
+  {
+      "constant": false,
+      "inputs": [
+          {
+              "name": "_to",
+              "type": "address"
+          },
+          {
+              "name": "_value",
+              "type": "uint256"
+          }
+      ],
+      "name": "transfer",
+      "outputs": [
+          {
+              "name": "",
+              "type": "bool"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+  },
+  {
+      "constant": true,
+      "inputs": [
+          {
+              "name": "_owner",
+              "type": "address"
+          },
+          {
+              "name": "_spender",
+              "type": "address"
+          }
+      ],
+      "name": "allowance",
+      "outputs": [
+          {
+              "name": "",
+              "type": "uint256"
+          }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+  },
+  {
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "fallback"
+  },
+  {
+      "anonymous": false,
+      "inputs": [
+          {
+              "indexed": true,
+              "name": "owner",
+              "type": "address"
+          },
+          {
+              "indexed": true,
+              "name": "spender",
+              "type": "address"
+          },
+          {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+          }
+      ],
+      "name": "Approval",
+      "type": "event"
+  },
+  {
+      "anonymous": false,
+      "inputs": [
+          {
+              "indexed": true,
+              "name": "from",
+              "type": "address"
+          },
+          {
+              "indexed": true,
+              "name": "to",
+              "type": "address"
+          },
+          {
+              "indexed": false,
+              "name": "value",
+              "type": "uint256"
+          }
+      ],
+      "name": "Transfer",
+      "type": "event"
+  }
+]
 // providers
 const depositContractABI = [
   {
@@ -102,6 +324,7 @@ const depositContractABI = [
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 const depositContractAddrTAIKO = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 
+
 const depositTaikoWithDuration = async (input: {
   provider: providers.Web3Provider,
   amount: BigNumber,
@@ -109,13 +332,26 @@ const depositTaikoWithDuration = async (input: {
   taikoAddress: string,
   from: string,
   to: string,
-  chainId: sdk.ChainId
+  chainId: sdk.ChainId,
 }) => {
   
-  const { provider, amount, duration,taikoAddress, from,to,chainId } = input
+  const { provider, amount, duration,taikoAddress, from,to, chainId } = input
+  const depositContractAddr = chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA
   const signer = provider.getSigner()
+  const tokenContract = new Contract(
+    taikoAddress,
+    erc20Abi, 
+    signer
+  )
+  // const approveTx1 = await tokenContract.approve(depositContractAddr, '0')
+  // await approveTx1.wait()
+  const allowance = await tokenContract.allowance(from, depositContractAddr)
+  if (allowance.lt(amount)) {
+    const approveTx = await tokenContract.approve(depositContractAddr, constants.MaxUint256)
+    await approveTx.wait()
+  }
   const contract = new Contract(
-    chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA, 
+    depositContractAddr, 
     depositContractABI, 
     signer
   )
