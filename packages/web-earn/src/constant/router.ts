@@ -79,6 +79,14 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
     router: { path: '/trade/btrade' },
     status: HeaderMenuTabStatus.default,
   },
+  {
+    label: {
+      id: 'taikoFarming',
+      i18nKey: 'labelTaikoFarming',
+    },
+    router: { path: '/taiko-farming' },
+    status: HeaderMenuTabStatus.default,
+  }
 ]
 
 export const RouterAllowIndex = {
@@ -98,6 +106,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
   GOERLI: [],
   SEPOLIA: [
@@ -107,6 +116,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
   ARBGOERLI: [
     RouterMainKey.l2assets,
@@ -125,22 +135,8 @@ export const RouterAllowIndex = {
 }
 
 export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] } = {
-  TAIKOHEKLA: headerMenuEartData.concat({
-    label: {
-      id: 'taikoFarming',
-      i18nKey: 'labelTaikoFarming',
-    },
-    router: { path: '/taiko-farming' },
-    status: HeaderMenuTabStatus.default,
-  }),
-  TAIKO: headerMenuEartData.concat({
-    label: {
-      id: 'taikoFarming',
-      i18nKey: 'labelTaikoFarming',
-    },
-    router: { path: '/taiko-farming' },
-    status: HeaderMenuTabStatus.default,
-  }),
+  TAIKOHEKLA: headerMenuEartData,
+  TAIKO: headerMenuEartData,
   ETHEREUM: headerMenuEartData,
   GOERLI: headerMenuEartData,
   SEPOLIA: headerMenuEartData,

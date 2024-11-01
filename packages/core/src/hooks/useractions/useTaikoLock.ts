@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   AccountStep,
   DeFiSideWrapProps,
@@ -974,15 +974,20 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         )
       : undefined
 
-  // const res =
-
-  // const { exchangeInfo }= useSystem()
   const [mintModalState, setMintModalState] = React.useState({
     open: false,
     inputValue: '',
     warningChecked: false,
     availableToMint: '',
   })
+
+  useEffect(() => {
+    if (defaultNetwork && ![sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)) {
+      new providers.Web3Provider(provider.walletProvider!).send('wallet_switchEthereumChain', [
+        { chainId: sdk.toHex(sdk.ChainId.TAIKO) },
+      ])
+    }
+  }, [defaultNetwork])
 
   const updateStakingState = async () => {
     if (account.readyState === AccountStatus.ACTIVATED && account.apiKey) {
