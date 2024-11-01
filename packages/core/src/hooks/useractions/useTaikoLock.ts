@@ -570,6 +570,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         })
       }
       setIsLoading(false)
+      setDaysInput('')
     },
     [
       account.readyState,
