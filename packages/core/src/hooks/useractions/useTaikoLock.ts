@@ -99,7 +99,8 @@ const depositContractABI = [
     type: 'function',
   },
 ]
-const depositContractAddr = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
+const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
+const depositContractAddrTAIKO = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 
 const depositTaikoWithDuration = async (input: {
   provider: providers.Web3Provider,
@@ -108,18 +109,13 @@ const depositTaikoWithDuration = async (input: {
   taikoAddress: string,
   from: string,
   to: string,
-
+  chainId: sdk.ChainId
 }) => {
-  const { provider, amount, duration,taikoAddress, from,to } = input
-  // { internalType: 'address', name: 'from', type: 'address' },
-  //     { internalType: 'address', name: 'to', type: 'address' },
-  //     { internalType: 'address', name: 'tokenAddress', type: 'address' },
-  //     { internalType: 'uint96', name: 'amount', type: 'uint96' },
-  //     { internalType: 'uint256', name: 'duration', type: 'uint256' },
-  //     { internalType: 'bytes', name: 'extraData', type: 'bytes' },
+  
+  const { provider, amount, duration,taikoAddress, from,to,chainId } = input
   const signer = provider.getSigner()
   const contract = new Contract(
-    depositContractAddr, 
+    chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA, 
     depositContractABI, 
     signer
   )
@@ -546,6 +542,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               taikoAddress: sellToken.address,
               from: account.accAddress,
               to: account.accAddress,
+              chainId: defaultNetwork
             })
           } else {
             throw {}
