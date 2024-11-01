@@ -561,7 +561,7 @@ export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
       </Box>
     ),
   }
-  return <DualBase showTitle={false} {...propsPatch} {...props} />
+  return <TaikoFarmingStakeBase showTitle={false} {...propsPatch} {...props} />
 }
 export const Taiko_Farming_Lock_Failed = (props: PanelProps) => {
   const propsPatch = {
@@ -570,7 +570,7 @@ export const Taiko_Farming_Lock_Failed = (props: PanelProps) => {
       symbol: props.info?.symbol,
     }),
   }
-  return <DualBase showTitle={true} {...propsPatch} {...props} />
+  return <TaikoFarmingStakeBase showTitle={true} {...propsPatch} {...props} />
 }
 
 export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
