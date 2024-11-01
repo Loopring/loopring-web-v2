@@ -37,7 +37,7 @@ import {
   useSubmitBtn,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
-import _, { isNumber } from 'lodash'
+import _, { has, isNumber } from 'lodash'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -986,18 +986,48 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             eddsaSk: account.eddsaKey.sk,
           })
             .then((res) => {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Taiko_Farming_Mint_Success,
-                info: {
-                  symbol: sellToken.symbol,
-                  amount: numberFormatThousandthPlace(mintModalState.inputValue, {
-                    fixed: sellToken.precision,
-                    removeTrailingZero: true,
-                  }),
-                  mintAt: Date.now(),
-                },
-              })
+              const checkStatus = (hash: string) => {
+                return LoopringAPI.defiAPI?.getTaikoFarmingTransactionByHash({
+                  accountId: account.accountId,
+                  hash: res!.hash,
+                }, account.apiKey).then(async res2 => {
+                  if (res2!.operation.status === 7) {
+                    throw {
+                      msg: 'error'
+                    }
+                  } else if (res2.operation.status < 7) {
+                    setShowAccount({
+                      isShow: true,
+                      step: AccountStep.Taiko_Farming_Mint_In_Progress,
+                      info: {
+                        symbol: sellToken.symbol,
+                        amount: numberFormatThousandthPlace(mintModalState.inputValue, {
+                          fixed: sellToken.precision,
+                          removeTrailingZero: true,
+                        }),
+                      },
+                    })
+                    await sdk.sleep(5 * 1000)
+                    if (store.getState().modals.isShowAccount.isShow && store.getState().modals.isShowAccount.step === AccountStep.Taiko_Farming_Mint_In_Progress) {
+                      return checkStatus(hash)
+                    }
+                  } else {
+                    setShowAccount({
+                      isShow: true,
+                      step: AccountStep.Taiko_Farming_Mint_Success,
+                      info: {
+                        symbol: sellToken.symbol,
+                        amount: numberFormatThousandthPlace(mintModalState.inputValue, {
+                          fixed: sellToken.precision,
+                          removeTrailingZero: true,
+                        }),
+                        mintAt: Date.now(),
+                      },
+                    })
+                  }
+                })
+              }
+              return checkStatus(res!.hash)
             })
             .catch((e) => {
               setShowAccount({
