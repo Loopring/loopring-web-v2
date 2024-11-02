@@ -142,7 +142,7 @@ export const AssetPage = () => {
   const { isMobile } = useSettings()
   const { marketMap: dualMarketMap } = useDualMap()
 
-  const keys = Object.keys(dualMarketMap)
+  const keys = dualMarketMap ? Object.keys(dualMarketMap) : []
   const dualAPRUpToRaw = max(
     concat(
       keys.map((key) => (dualMarketMap[key] as any).baseTokenApy?.max),
