@@ -12,10 +12,10 @@ const BannerPage: React.FC = () => {
   return (
     <MaxWidthContainer>
       <Typography mt={10} variant='h3'>
-        {t('labelTaikoFarmingBannerTitle')}
+        Taiko Lock & Earn
       </Typography>
       <Typography mt={3} variant='h4'>
-        {t('labelTaikoFarmingBannerDes')}
+      Earn Trailblazer points with up to a 60x multiplier by locking your TAIKO.
       </Typography>
 
       <Box
@@ -52,9 +52,6 @@ const BannerPage: React.FC = () => {
             </Box>
             <Typography width={'45%'} variant='h4'>
               {t('labelTaikoFarmingExplanation')}
-              <Typography mt={4} variant='h4' color={'var(--color-text-secondary)'}>
-                {t('labelTaikoFarmingComingSoon')}
-              </Typography>
             </Typography>
           </Box>
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>

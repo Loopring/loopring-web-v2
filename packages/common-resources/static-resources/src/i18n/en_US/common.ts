@@ -177,7 +177,7 @@ export default {
   labelProcessing: 'Processing',
   labelProviderProcessing: 'Connect Wallet with {{name}}...',
   labelProviderCommonProcessDescribe:
-    'Please click the ‘Approve’ button on the {{name}} popup window. If the {{name}} popup window is dismissed, please manually click <5></5> on your browser toolbar.',
+    'Please click the ‘Approve’ button on the Wallet Extension popup window. If the wallet popup window is dismissed, please manually click <5></5> on your browser toolbar.',
   labelWalletConnectProcessDescribe: 'Please wait for WalletConnect provider to confirm processing',
   labelWalletConnectQRCode: 'Please scan the QR code with a WalletConnect compatible application',
   labelSuccessConnect: 'Successfully Connected with {{providerName}}',
@@ -2524,5 +2524,12 @@ export default {
   labelTaikoFarmingPointsToBeTrackedRetroactivelyDes: 'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard.',
   labelTaikoFarmingLockSuccess: 'TAIKO Locked Successfully',
   labelTaikoFarmingUnlockValue: 'Unlock The Value Of Your Locked TAIKO To Keep Trading Or Earning',
+  labelTotalPortfolio: 'Total Portfolio',
+  labelLoopringDeFiIs: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first deployment will be on Taiko. Join us for an exciting journey ahead!',
+  labelLoopringDeFiIs21: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first',
+  labelLoopringDeFiIs22: 'deployment will be on Taiko. Join us for an exciting journey ahead!',
+  labelLoopringDeFiAssets: 'Loopring DeFi Assets',
+  labelL1toL2WaitForAuthTaikoEarn: 'Your {{symbol}} is being deposited into the {{loopringL2}} Protocol and may take a few moments to complete.'
+  
 }
 

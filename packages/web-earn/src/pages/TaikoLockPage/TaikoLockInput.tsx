@@ -233,7 +233,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
         justifyContent={'center'}
         paddingX={3}
         paddingTop={3}
-        paddingBottom={3}
+        paddingBottom={2}
         bgcolor={'var(--color-box-third)'}
         border={'1px solid var(--color-border)'}
         borderRadius={2}
@@ -262,7 +262,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               alignItems={'center'}
               alignSelf={'self-start'}
             >
-              Stake
+              Lock & Earn
             </Typography>
             <OrderListIcon
               sx={{ cursor: 'pointer' }}
@@ -282,6 +282,8 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             alignSelf={'stretch'}
             alignItems={'stretch'}
           >
+            {/* <Typography></Typography>
+            {tokenSell.symbol} */}
             <InputCoin<T, I, any>
               ref={coinSellRef}
               disabled={getDisabled}
@@ -327,7 +329,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   Days
                 </Typography>
               }
-              placeholder='≥ 15 Days'
+              placeholder='15≤Locked Duration≤60'
               onInput={(e) => {
                 daysInput.onInput((e.target as any).value)
               }}
@@ -382,7 +384,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
           </Box>
         </Box>
       </Grid> */}
-          <Grid item alignSelf={'stretch'} marginTop={10} pb={2}>
+          <Grid item alignSelf={'stretch'} marginTop={10} pb={1}>
             <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
               <Grid item>
                 <ButtonStyle
@@ -403,6 +405,25 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   {btnLabel}
                 </ButtonStyle>
               </Grid>
+              <Box mt={2} width={'100%'} display={'flex'} justifyContent={'center'}>
+              <Tooltip
+                title={
+                  'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '
+                }
+                placement={'top'}
+              >
+                <Typography
+                  display={'flex'}
+                  alignItems={'center'}
+                  textAlign={'center'}
+                  variant={'body2'}
+                  color={'var(--color-text-secondary)'}
+                >
+                  Points tracked in Taiko Trailblazer Dashboard
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                </Typography>
+              </Tooltip>
+            </Box>
             </Grid>
           </Grid>
         </GridStyle>
@@ -505,25 +526,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             >
               Mint lrTaiko
             </ButtonStyle>
-            <Box width={'100%'} display={'flex'} justifyContent={'center'}>
-              <Tooltip
-                title={
-                  'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '
-                }
-                placement={'top'}
-              >
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  textAlign={'center'}
-                  variant={'body2'}
-                  color={'var(--color-text-secondary)'}
-                >
-                  Points tracked in Taiko Trailblazer Dashboard
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                </Typography>
-              </Tooltip>
-            </Box>
+            
           </Box>
 
           {/* <Typography mb={2} color={'var(--color-text-secondary)'}>

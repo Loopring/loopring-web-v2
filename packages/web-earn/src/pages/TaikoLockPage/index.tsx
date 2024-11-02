@@ -90,7 +90,7 @@ export const TaikoLockPage = ({
           >
             <Box
               component={'img'}
-              height={'28px'}
+              height={'20px'}
               src={
                 SoursURL +
                 (theme.mode === 'dark'
@@ -130,41 +130,37 @@ export const TaikoLockPage = ({
                 //   borderRadius={2}
                 // >
                 <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
-                // </Box>
               ) : (
+                // </Box>
                 <LoadingBlock />
               )}
             </StyleWrapper>
             <Box width={'26%'}>
-            {showTaikoLockDescription && (
-                <Box
-                  p={2}
-                  borderRadius={'8px'}
-                  bgcolor={'var(--color-box-third)'}
-                  display={'flex'}
-                  flexDirection={'column'}
-                  justifyContent={'space-between'}
-                  pt={3}
-                  position={'relative'}
-                  mb={6}
-                >
-                  <CloseIcon
-                    sx={{
-                      color: 'var(--color-text-secondary)',
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      setShowTaikoLockDescription(false)
-                    }}
-                  />
-                  <Typography color={'var(--color-text-secondary)'}>
-                  Enjoy complete control over your locking duration by choosing any period that suits you. Trailblazer points will be awarded linearly based on the length of your lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use it as collateral to continue trading and earning, maximizing your capital efficiency even while it’s locked.
-                  </Typography>
-                </Box>
-              )}
+              <Box
+                p={2}
+                borderRadius={'8px'}
+                bgcolor={'var(--color-box-third)'}
+                display={'flex'}
+                flexDirection={'column'}
+                justifyContent={'space-between'}
+                position={'relative'}
+                mb={6}
+                sx={{
+                  backgroundImage: `url('${SoursURL}earn/taiko_farming_des_bg.png')`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
+                  backgroundSize: 'cover',
+                }}
+              >
+                <Typography color={'var(--color-text-secondary)'}>
+                  Enjoy complete control over your locking duration by choosing any period that
+                  suits you. Trailblazer points will be awarded linearly based on the length of your
+                  lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use
+                  it as collateral to continue trading and earning, maximizing your capital
+                  efficiency even while it’s locked.
+                </Typography>
+              </Box>
+
               <Box
                 p={2}
                 borderRadius={'8px'}
@@ -177,7 +173,6 @@ export const TaikoLockPage = ({
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'space-between'}
-                
               >
                 <Typography variant={'h5'} color={theme.colorBase.white}>
                   {t('labelTaikoFarmingUnlockValue')}
@@ -197,7 +192,6 @@ export const TaikoLockPage = ({
                   }}
                 />
               </Box>
-             
             </Box>
           </MaxWidthContainer>
         </Box>
@@ -205,27 +199,27 @@ export const TaikoLockPage = ({
         <ErrorPage messageKey={'errorBase'} />
       )}
       <MintModal
-      // open={stakeWrapProps.mintModal.open}
-      // // ={localState.modalStatus === 'collateralDetails' && !showLeverage.show}
-      // onClose={stakeWrapProps.mintModal.onClose}
-      // onClickMax={}
-      // mintWarningChecked={true}
-      // // mintWarningText={t('labelTaikoFarmingMintWarningText')}
-      // onWarningCheckBoxChange={() => {
-        
-      // }}
-      // onConfirmBtnClicked={() => {
-        
-      // }}
-      // onInput={(str) => {
-        
-      // }}
-      
-      // inputValue='1'
-      // confirmBtnDisabled={false}
-      // tokenAvailableAmount='10'
-      {...stakeWrapProps.mintModal}
-      logoCoinJSON={stakeWrapProps.taikoCoinJSON}
+        // open={stakeWrapProps.mintModal.open}
+        // // ={localState.modalStatus === 'collateralDetails' && !showLeverage.show}
+        // onClose={stakeWrapProps.mintModal.onClose}
+        // onClickMax={}
+        // mintWarningChecked={true}
+        // // mintWarningText={t('labelTaikoFarmingMintWarningText')}
+        // onWarningCheckBoxChange={() => {
+
+        // }}
+        // onConfirmBtnClicked={() => {
+
+        // }}
+        // onInput={(str) => {
+
+        // }}
+
+        // inputValue='1'
+        // confirmBtnDisabled={false}
+        // tokenAvailableAmount='10'
+        {...stakeWrapProps.mintModal}
+        logoCoinJSON={stakeWrapProps.taikoCoinJSON}
       />
     </>
   )

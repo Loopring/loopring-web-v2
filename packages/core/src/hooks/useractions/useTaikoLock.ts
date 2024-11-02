@@ -990,7 +990,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }, [defaultNetwork])
 
   const updateStakingState = async () => {
+    setShowAccount({
+      step: AccountStep.Deposit_WaitForAuth,
+      isShow: true,
+    })
     if (account.readyState === AccountStatus.ACTIVATED && account.apiKey) {
+      setShowAccount({
+        step: AccountStep.Deposit_WaitForAuth,
+        isShow: true,
+      })
       // const a = await submitTaikoFarmingMint({
       //   accountId: account.accountId,
       //   apiKey: account.apiKey,
