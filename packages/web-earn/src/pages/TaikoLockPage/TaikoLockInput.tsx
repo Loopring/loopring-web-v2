@@ -524,7 +524,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 mintButton.disabled
               }
             >
-              Mint lrTaiko
+              Mint lrTAIKO
             </ButtonStyle>
             
           </Box>

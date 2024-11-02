@@ -137,7 +137,7 @@ export const MintModal = (props: MintModalProps) => {
                 <Box display={'flex'} alignItems={'center'}>
                   <CoinIcons type={TokenType.single} tokenIcon={[logoCoinJSON]} />
                   <Typography ml={1} color={'var(--color-text-primary)'} >
-                   lrTaiko
+                   lrTAIKO
                   </Typography>
                 </Box>
                 
@@ -156,7 +156,7 @@ export const MintModal = (props: MintModalProps) => {
             {/* <Input sx={{ height: '48px' }} /> */}
             <Box display={'flex'} justifyContent={'space-between'} mt={3} alignItems={'center'}>
               <Typography color={'var(--color-text-secondary)'}>Rate</Typography>
-              <Typography color={'var(--color-text-secondary)'}>1 Taiko = 1 lrTaiko</Typography>
+              <Typography color={'var(--color-text-secondary)'}>1 TAIKO = 1 lrTAIKO</Typography>
             </Box>
             <Box mt={5} display={'flex'} alignItems={'center'}>
               <Box>

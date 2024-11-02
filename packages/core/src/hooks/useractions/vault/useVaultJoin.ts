@@ -791,69 +791,70 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
   const ercToken = vaultJoinData.tradeData && tokenMap[vaultJoinData.tradeData.belong as string]
   
-
-  return {
-    handleError: undefined,
-    type: TRADE_TYPE.TOKEN,
-    baseURL,
-    btnI18nKey: btnLabel,
-    btnStatus,
-    isActiveAccount,
-    disabled: false,
-    onSubmitClick: (_data: T) => onBtnClick(),
-    propsExtends: {},
-    tradeData: vaultJoinData.tradeData as unknown as T,
-    handlePanelEvent,
-    onRefreshData,
-    refreshRef,
-    walletMap: vaultJoinData.walletMap as WalletMap<any>,
-    vaultJoinData,
-    coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
-    tokenProps: {
-      decimalsLimit: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale,
-      allowDecimals: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale
-        ? true
-        : false,
-    },
-    onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
-      setIsAddOrRedeem(value)
-    },
-    isAddOrRedeem,
-    marginLevelChange: vaultAccountInfo?.marginLevel
-      ? nextMarginLevel
-        ? {
-            from: {
-              marginLevel: vaultAccountInfo.marginLevel,
-              type: marginLevelType(vaultAccountInfo.marginLevel),
-            },
-            to: {
-              marginLevel: nextMarginLevel,
-              type: marginLevelType(nextMarginLevel),
-            },
-          }
-        : {
-            from: {
-              marginLevel: vaultAccountInfo.marginLevel,
-              type: marginLevelType(vaultAccountInfo.marginLevel),
-            },
-            to: {
-              marginLevel: vaultAccountInfo.marginLevel,
-              type: marginLevelType(vaultAccountInfo.marginLevel),
-            },
-          }
+  const output = {
+  handleError: undefined,
+  type: TRADE_TYPE.TOKEN,
+  baseURL,
+  btnI18nKey: btnLabel,
+  btnStatus,
+  isActiveAccount,
+  disabled: false,
+  onSubmitClick: (_data: T) => onBtnClick(),
+  propsExtends: {},
+  tradeData: vaultJoinData.tradeData as unknown as T,
+  handlePanelEvent,
+  onRefreshData,
+  refreshRef,
+  walletMap: vaultJoinData.walletMap as WalletMap<any>,
+  vaultJoinData,
+  coinMap: isActiveAccount ? walletAllowMap : walletAllowCoin,
+  tokenProps: {
+    decimalsLimit: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale,
+    allowDecimals: erc20Map && erc20Map[vaultJoinData?.tradeData?.belong as string]?.vaultTokenAmounts?.qtyStepScale
+      ? true
+      : false,
+  },
+  onToggleAddRedeem: (value: 'Add' | 'Redeem') => {
+    setIsAddOrRedeem(value)
+  },
+  isAddOrRedeem,
+  marginLevelChange: vaultAccountInfo?.marginLevel
+    ? nextMarginLevel
+      ? {
+          from: {
+            marginLevel: vaultAccountInfo.marginLevel,
+            type: marginLevelType(vaultAccountInfo.marginLevel),
+          },
+          to: {
+            marginLevel: nextMarginLevel,
+            type: marginLevelType(nextMarginLevel),
+          },
+        }
+      : {
+          from: {
+            marginLevel: vaultAccountInfo.marginLevel,
+            type: marginLevelType(vaultAccountInfo.marginLevel),
+          },
+          to: {
+            marginLevel: vaultAccountInfo.marginLevel,
+            type: marginLevelType(vaultAccountInfo.marginLevel),
+          },
+        }
+    : undefined,
+  holdingCollateral:
+    vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken
+      ? numberFormat(
+          utils.formatUnits(
+            vaultAccountInfo?.collateralInfo.collateralTokenAmount,
+            ercToken.decimals,
+          ),
+          {
+            fixed: ercToken.precision,
+            removeTrailingZero: true,
+          },
+        )
       : undefined,
-    holdingCollateral:
-      vaultAccountInfo && vaultAccountInfo?.collateralInfo && ercToken
-        ? numberFormat(
-            utils.formatUnits(
-              vaultAccountInfo?.collateralInfo.collateralTokenAmount,
-              ercToken.decimals,
-            ),
-            {
-              fixed: ercToken.precision,
-              removeTrailingZero: true,
-            },
-          )
-        : undefined,
-  }
+}
+console.log('asdhasjdhjsadhsja', output)
+  return output
 }

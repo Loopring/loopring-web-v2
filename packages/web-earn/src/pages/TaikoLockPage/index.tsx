@@ -90,7 +90,7 @@ export const TaikoLockPage = ({
           >
             <Box
               component={'img'}
-              height={'20px'}
+              height={'28px'}
               src={
                 SoursURL +
                 (theme.mode === 'dark'
