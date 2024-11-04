@@ -1144,7 +1144,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     getStakingMap()
     walletLayer2Service.sendUserUpdate()
     updateStakingState()
-  }, [account.apiKey])
+  }, [account.readyState])
   React.useEffect(() => {
     const {
       _router_tradeStake: { tradeStake },
@@ -1217,7 +1217,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const availableToMintFormatted = mintModalState.availableToMint
     ? utils.formatUnits(mintModalState.availableToMint, sellToken.decimals)
     : undefined
+  const isInputInvalid = mintModalState.inputValue && 
+    (new Decimal(mintModalState.inputValue).lessThan('50') || new Decimal(mintModalState.inputValue).greaterThan(availableToMintFormatted ?? '0'))
 
+  console.log('asdsajh',  !isNumberStr(mintModalState.inputValue) )   
+  console.log('asdsajh',  !mintModalState.warningChecked )   
+  console.log('asdsajh',  !mintModalState.availableToMint )   
+  console.log('asdsajh',  availableToMintFormatted && new Decimal(availableToMintFormatted!).eq('0') )   
+  console.log('asdsajh',  !isInputInvalid)   
   const output = {
     stakeWrapProps: {
       disabled: false,
@@ -1407,24 +1414,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           }
         },
         inputValue: mintModalState.inputValue,
-        // disable confirm button if:
-        // 1. input value is not a valid number
-        // 2. warning checkbox is not checked
-        // 3. available to mint is 0
-        // 4. input value is larger than available to mint
         confirmBtnDisabled:
           !isNumberStr(mintModalState.inputValue) ||
           !mintModalState.warningChecked ||
           !mintModalState.availableToMint ||
           new Decimal(availableToMintFormatted!).eq('0') ||
-          !(
-            availableToMintFormatted &&
-            new Decimal(availableToMintFormatted).greaterThanOrEqualTo(mintModalState.inputValue)
-          ),
-        confirmBtnWording: 'Confirm',
+          isInputInvalid,
+        confirmBtnWording: (isInputInvalid || !mintModalState.inputValue) 
+          ? ((availableToMintFormatted && new Decimal(availableToMintFormatted).gte('50')) ? `Please input between 50 - ${availableToMintFormatted}` : 'Invalid amount')
+          : !mintModalState.warningChecked 
+            ? 'Please Check Checkbox'
+            : 'Confirm',
         tokenAvailableAmount: availableToMintFormatted
           ? availableToMintFormatted
           : '--',
+        inputPlaceholder: (availableToMintFormatted && new Decimal(availableToMintFormatted).gte('50')) ? `50 - ${availableToMintFormatted}` : '≥ 50'
       },
     },
   }

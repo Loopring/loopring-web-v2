@@ -51,6 +51,7 @@ type MintModalProps = {
   confirmBtnDisabled: boolean
   onInput: (str: string) => void
   inputValue: string
+  inputPlaceholder: string
   tokenAvailableAmount: string
   confirmBtnWording: string
   // onClickMaxCredit: () => void
@@ -72,7 +73,7 @@ const StyledInput = styled(Input)`
 `
 
 export const MintModal = (props: MintModalProps) => {
-  const { open, onClose, mintWarningChecked, onWarningCheckBoxChange, confirmBtnDisabled, onConfirmBtnClicked, onInput, inputValue, tokenAvailableAmount, onClickMax, logoCoinJSON, confirmBtnWording } = props
+  const { open, onClose, mintWarningChecked, onWarningCheckBoxChange, confirmBtnDisabled, onConfirmBtnClicked, onInput, inputValue, tokenAvailableAmount, onClickMax, logoCoinJSON, confirmBtnWording, inputPlaceholder, tokenAvailableAmountRaw } = props
   const { t } = useTranslation()
   const theme = useTheme()
   return (
@@ -123,7 +124,7 @@ export const MintModal = (props: MintModalProps) => {
                 textAlign: 'right',
                 paddingX: 1.5,
                 height: '48px',
-                width: '100%',
+                width: '100%'
               }}
               inputProps={{
                 style: {
@@ -147,7 +148,7 @@ export const MintModal = (props: MintModalProps) => {
                   MAX
                 </Typography>
               }
-              placeholder='100 - 1,000,000'
+              placeholder={inputPlaceholder} 
               onInput={(e) => {
                 onInput((e.target as any).value)
               }}
@@ -189,7 +190,10 @@ export const MintModal = (props: MintModalProps) => {
             Risk Reminder: You can use minted lrTAIKO as collateral across other Loopring DeFi utilities. However, if you incur any losses during your investment, those losses will be deducted from your locked TAIKO upon unlocking.
             </Typography>
             <ButtonStyle
-              sx={{ mt: 4}}
+              sx={{ 
+                mt: 4, 
+                textTransform: 'none'
+              }}
               fullWidth
               variant={'contained'}
               size={'large'}

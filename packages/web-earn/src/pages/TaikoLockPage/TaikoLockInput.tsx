@@ -406,13 +406,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 </ButtonStyle>
               </Grid>
               <Box mt={2} width={'100%'} display={'flex'} justifyContent={'center'}>
-              <Tooltip
-                title={
-                  'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '
-                }
-                placement={'top'}
-              >
-                <Typography
+              <Typography
                   display={'flex'}
                   alignItems={'center'}
                   textAlign={'center'}
@@ -420,9 +414,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   color={'var(--color-text-secondary)'}
                 >
                   Points tracked in Taiko Trailblazer Dashboard
-                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
                 </Typography>
-              </Tooltip>
             </Box>
             </Grid>
           </Grid>
