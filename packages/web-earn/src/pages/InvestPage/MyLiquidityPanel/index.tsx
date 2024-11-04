@@ -574,6 +574,7 @@ const MyLiquidity: any = withTranslation('common')(
                   hideAssets={hideAssets}
                   noMinHeight
                   {...rest}
+                  hideDustCollector
                 />
               </Box>
             </Box>

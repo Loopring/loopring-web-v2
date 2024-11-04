@@ -22,19 +22,15 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {XOR} from '../../../types/lib'
 import _ from 'lodash'
 
-const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; hideActions?: boolean, lan: string }>`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
     flex: 1;
-    ${({ isMobile, hideActions }) =>
-      hideActions 
-      ? isMobile
-        ? `--template-columns: 50% 50% !important;`
-        : `--template-columns: 20% 40% 40% !important;`
-      : isMobile
+    ${({ isMobile }) =>
+    isMobile
         ? `--template-columns: 54% 40% 6% !important;`
         :`--template-columns: 200px 150px auto auto !important;`}
     .rdg-cell:first-of-type {
@@ -105,6 +101,7 @@ export type VaultAssetsTableProps<R> = {
   onClickDustCollector: () => void
   hideActions?: boolean
   noMinHeight?: boolean
+  hideDustCollector?: boolean
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -132,6 +129,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       onClickDustCollector,
       hideActions,
       noMinHeight,
+      hideDustCollector,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -294,7 +292,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                     undefined,
                     undefined,
                     undefined,
-                    true,
+                    false,
                     { isFait: true, floor: true },
                   )
                 : EmptyValueTag}
@@ -302,18 +300,14 @@ export const VaultAssetsTable = withTranslation('tables')(
           )
         },
       },
-      ...(hideActions
-        ? []
-        : [
-            {
-              key: 'actions',
-              name: t('labelActions'),
-              headerCellClass: 'textAlignRight',
-              cellClass: 'textAlignRight',
-              // minWidth: 280,
-              formatter: actionRow,
-            },
-          ]),
+      {
+        key: 'actions',
+        name: t('labelActions'),
+        headerCellClass: 'textAlignRight',
+        cellClass: 'textAlignRight',
+        // minWidth: 280,
+        formatter: actionRow,
+      },
     ]
 		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
 			{
@@ -357,24 +351,20 @@ export const VaultAssetsTable = withTranslation('tables')(
 					)
 				},
 			},
-			...(hideActions
-				? []
-				: [
-					{
-						key: 'actions',
-						name: '',
-						headerCellClass: 'textAlignRight',
-						// minWidth: 280,
-						formatter: actionRow,
-					},
-				]),
+			{
+        key: 'actions',
+        name: '',
+        headerCellClass: 'textAlignRight',
+        // minWidth: 280,
+        formatter: actionRow,
+      },
 		]
 
 		return (
-      <TableWrap lan={language} isMobile={isMobile} hideActions={hideActions}>
+      <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
           <Box marginX={2} display={'flex'} alignItems={'center'}>
-            <Box width={hideActions ? '100%' : 'calc(100% - 130px)'}>
+            <Box width={hideDustCollector ? '100%' : 'calc(100% - 130px)'}>
               <Filter
                 {...{
                   handleFilterChange,
@@ -386,7 +376,7 @@ export const VaultAssetsTable = withTranslation('tables')(
               />
             </Box>
 
-            {!hideActions && <Typography
+            {!hideDustCollector && <Typography
               sx={{ cursor: 'pointer' }}
               component={'span'}
               onClick={onClickDustCollector}

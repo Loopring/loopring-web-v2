@@ -11,7 +11,7 @@ import { Box, Link, ListItemIcon, ListItemText, Modal, Typography } from '@mui/m
 import { SwitchPanelStyled } from '../../styled'
 import {
   DragListIcon,
-  FeeChargeOrderDefault,
+  FeeChargeOrderDefaultMap,
   L1L2_NAME_DEFINED,
   MapChainId,
   myLog,
@@ -35,7 +35,7 @@ export const ModalSettingFee = withTranslation('common', { withRef: true })(
     const { setShowFeeSetting } = useOpenModals()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const [feeChargeValue, setFeeChargeValue] = React.useState<string[]>(
-      feeChargeOrder ?? FeeChargeOrderDefault,
+      feeChargeOrder ?? FeeChargeOrderDefaultMap.get(defaultNetwork)!,
     )
     const onDragEnd = React.useCallback((dropResult: DropResult, provider: ResponderProvided) => {
       myLog('draggableDone', dropResult, provider)
@@ -190,7 +190,7 @@ export const ModalSettingFee = withTranslation('common', { withRef: true })(
                     color: 'var(--color-text-secondary)',
                   }}
                   onClick={() => {
-                    setFeeChargeValue(FeeChargeOrderDefault)
+                    setFeeChargeValue(FeeChargeOrderDefaultMap.get(defaultNetwork)!)
                   }}
                 >
                   {t('labelReset')}
