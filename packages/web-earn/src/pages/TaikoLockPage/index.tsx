@@ -152,7 +152,7 @@ export const TaikoLockPage = ({
                   backgroundSize: 'cover',
                 }}
               >
-                <Typography color={'var(--color-text-secondary)'}>
+                <Typography color={'var(--color-white)'}>
                   Enjoy complete control over your locking duration by choosing any period that
                   suits you. Trailblazer points will be awarded linearly based on the length of your
                   lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use
@@ -165,7 +165,7 @@ export const TaikoLockPage = ({
                 p={2}
                 borderRadius={'8px'}
                 sx={{
-                  backgroundImage: `url(${SoursURL + theme.mode === 'dark' ? 'earn/taiko_farming_banner_bg.png' : 'earn/taiko_farming_banner_bg_light.png'})`,
+                  backgroundImage: `url(${SoursURL + (theme.mode === 'dark' ? 'earn/taiko_farming_banner_bg.png' : 'earn/taiko_farming_banner_bg_light.png')})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
