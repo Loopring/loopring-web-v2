@@ -329,7 +329,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   Days
                 </Typography>
               }
-              placeholder='15≤Locked Duration≤60'
+              placeholder='15 ≤ Locked Duration ≤ 60'
               onInput={(e) => {
                 daysInput.onInput((e.target as any).value)
               }}

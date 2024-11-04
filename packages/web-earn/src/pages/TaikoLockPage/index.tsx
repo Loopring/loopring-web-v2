@@ -146,7 +146,7 @@ export const TaikoLockPage = ({
                 position={'relative'}
                 mb={6}
                 sx={{
-                  backgroundImage: `url('${SoursURL}earn/taiko_farming_des_bg.png')`,
+                  backgroundImage: `url('${SoursURL}earn/taiko_farming_des_bg${theme.mode === 'light' ? '_light' : ''}.png')`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center',
                   backgroundSize: 'cover',
@@ -165,7 +165,7 @@ export const TaikoLockPage = ({
                 p={2}
                 borderRadius={'8px'}
                 sx={{
-                  backgroundImage: `url(${SoursURL + 'earn/taiko_farming_banner_bg.png'})`,
+                  backgroundImage: `url(${SoursURL + theme.mode === 'dark' ? 'earn/taiko_farming_banner_bg.png' : 'earn/taiko_farming_banner_bg_light.png'})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',

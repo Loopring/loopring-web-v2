@@ -690,6 +690,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
         justifyContent={'center'}
         marginTop={2}
         paddingX={isMobile ? 1 : 3}
+        width={'80%'}
       >
         <Typography
           display={'inline-flex'}
@@ -698,7 +699,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            Time
+            Amount
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.amount + ' ' + info?.symbol}
@@ -711,7 +712,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelDeFiSideSubscribeTime')}
+            Time
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
@@ -760,6 +761,7 @@ export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
         justifyContent={'center'}
         marginTop={2}
         paddingX={isMobile ? 1 : 3}
+        width={'80%'}
       >
         <Typography
           display={'inline-flex'}
@@ -768,7 +770,7 @@ export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            Time
+            Amount
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.amount + ' ' + info?.symbol}
@@ -781,7 +783,7 @@ export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelDeFiSideSubscribeTime')}
+            Time
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}

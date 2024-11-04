@@ -1006,7 +1006,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
 
       // setShowAccount({
       //   isShow: true,
-      //   step: AccountStep.Taiko_Farming_Mint_Success,
+      //   step: AccountStep.Taiko_Farming_Mint_In_Progress,
       //   info: {
       //     symbol: 'ETH',
       //     amount: '100',
@@ -1331,9 +1331,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             isShow: true,
             step: AccountStep.Taiko_Farming_Mint_In_Progress,
             info: {
-              symbol: sellToken.symbol,
+              symbol: 'lrTaiko',
               amount: numberFormatThousandthPlace(mintModalState.inputValue, {
-                fixed: sellToken.precision,
+                fixed: 18,
                 removeTrailingZero: true,
               }),
               mintAt: Date.now(),
@@ -1379,9 +1379,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                       isShow: true,
                       step: AccountStep.Taiko_Farming_Mint_Success,
                       info: {
-                        symbol: sellToken.symbol,
+                        symbol: 'lrTaiko',
                         amount: numberFormatThousandthPlace(mintModalState.inputValue, {
-                          fixed: sellToken.precision,
+                          fixed: 18,
                           removeTrailingZero: true,
                         }),
                         mintAt: Date.now(),
@@ -1423,7 +1423,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         confirmBtnWording: (isInputInvalid || !mintModalState.inputValue) 
           ? ((availableToMintFormatted && new Decimal(availableToMintFormatted).gte('50')) ? `Please input between 50 - ${availableToMintFormatted}` : 'Invalid amount')
           : !mintModalState.warningChecked 
-            ? 'Please Check Checkbox'
+            ? 'Please check checkbox'
             : 'Confirm',
         tokenAvailableAmount: availableToMintFormatted
           ? availableToMintFormatted
