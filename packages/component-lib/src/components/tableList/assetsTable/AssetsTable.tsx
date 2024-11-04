@@ -13,6 +13,7 @@ import {
   MarketType,
   PriceTag,
   RowConfig,
+  SPECIAL_TOKEN_NAME_MAP,
   TokenType,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '../../../stores'
@@ -292,7 +293,7 @@ export const AssetsTable = withTranslation('tables')(
                 paddingRight={1}
               >
                 <Typography component={'span'} className={'next-coin'}>
-                  {token.value}
+                  {SPECIAL_TOKEN_NAME_MAP.get(token.value) || token.value}
                 </Typography>
               </Typography>
             </>

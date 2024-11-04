@@ -333,9 +333,10 @@ const depositTaikoWithDuration = async (input: {
   from: string,
   to: string,
   chainId: sdk.ChainId,
+  approveToAddress: string
 }) => {
   
-  const { provider, amount, duration,taikoAddress, from,to, chainId } = input
+  const { provider, amount, duration, taikoAddress, from,to, chainId,approveToAddress } = input
   const depositContractAddr = chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA
   const signer = provider.getSigner()
   const tokenContract = new Contract(
@@ -345,9 +346,9 @@ const depositTaikoWithDuration = async (input: {
   )
   // const approveTx1 = await tokenContract.approve(depositContractAddr, '0')
   // await approveTx1.wait()
-  const allowance = await tokenContract.allowance(from, depositContractAddr)
+  const allowance = await tokenContract.allowance(from, approveToAddress)
   if (allowance.lt(amount)) {
-    const approveTx = await tokenContract.approve(depositContractAddr, constants.MaxUint256)
+    const approveTx = await tokenContract.approve(approveToAddress, constants.MaxUint256)
     await approveTx.wait()
   }
   const contract = new Contract(
@@ -779,7 +780,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               taikoAddress: sellToken.address,
               from: account.accAddress,
               to: account.accAddress,
-              chainId: defaultNetwork
+              chainId: defaultNetwork,
+              approveToAddress: exchangeInfo!.depositAddress,
             })
           } else {
             throw {}
