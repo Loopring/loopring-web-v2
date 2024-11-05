@@ -967,7 +967,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     stakingAmountRaw &&
     sellToken &&
     tokenPrices[sellToken.symbol] &&
-    new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString() &&
     getValueInCurrency(new Decimal(stakingAmountRaw).mul(tokenPrices[sellToken.symbol]).toString())
       ? fiatNumberDisplay(
           getValueInCurrency(
