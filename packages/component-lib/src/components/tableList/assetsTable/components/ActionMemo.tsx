@@ -37,6 +37,7 @@ export type ActionProps = {
   isLeverageETH: boolean
   isWebEarn?: boolean
   hideDepositButton?: boolean
+  hideWithdrawButton?: boolean
 }
 const ActionPopContent = React.memo(
   ({
@@ -201,7 +202,8 @@ const ActionMemo = React.memo((props: ActionProps) => {
     // onShowWithdraw,
     isLeverageETH,
     isWebEarn,
-    hideDepositButton
+    hideDepositButton,
+    hideWithdrawButton
   } = props
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
@@ -291,7 +293,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                     {isWebEarn ? t('labelDeposit') : t('labelReceive')}
                   </Button>
                 </Grid>}
-                <Grid item>
+                {!hideWithdrawButton && <Grid item>
                   <Button
                     variant={'text'}
                     size={'small'}
@@ -300,7 +302,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                   >
                     {isWebEarn ? t('labelWithdraw') : t('labelSend')}
                   </Button>
-                </Grid>
+                </Grid>}
               </>
             )}
           </Box>

@@ -73,7 +73,7 @@ const StyledInput = styled(Input)`
 `
 
 export const MintModal = (props: MintModalProps) => {
-  const { open, onClose, mintWarningChecked, onWarningCheckBoxChange, confirmBtnDisabled, onConfirmBtnClicked, onInput, inputValue, tokenAvailableAmount, onClickMax, logoCoinJSON, confirmBtnWording, inputPlaceholder, tokenAvailableAmountRaw } = props
+  const { open, onClose, mintWarningChecked, onWarningCheckBoxChange, confirmBtnDisabled, onConfirmBtnClicked, onInput, inputValue, tokenAvailableAmount, onClickMax, logoCoinJSON, confirmBtnWording, inputPlaceholder } = props
   const { t } = useTranslation()
   const theme = useTheme()
   return (
@@ -157,7 +157,7 @@ export const MintModal = (props: MintModalProps) => {
             {/* <Input sx={{ height: '48px' }} /> */}
             <Box display={'flex'} justifyContent={'space-between'} mt={3} alignItems={'center'}>
               <Typography color={'var(--color-text-secondary)'}>Rate</Typography>
-              <Typography color={'var(--color-text-secondary)'}>1 TAIKO = 1 lrTAIKO</Typography>
+              <Typography color={'var(--color-text-secondary)'}>1 lrTAIKO = 1 TAIKO</Typography>
             </Box>
             <Box mt={5} display={'flex'} alignItems={'center'}>
               <Box>

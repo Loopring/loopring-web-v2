@@ -90,6 +90,7 @@ export type RawDataAssetsItem = {
   tokenValueDollar: number
   precision: number
   hideDepositButton?: boolean
+  hideWithdrawButton?: boolean
 }
 
 export type AssetsTableProps<R = RawDataAssetsItem> = {
@@ -380,23 +381,21 @@ export const AssetsTable = withTranslation('tables')(
           return (
             <Box marginTop={isWebEarn ? '7px' : 0}>
               <ActionMemo
-                {...{
-                  isInvest,
-                  tokenValue,
-                  getMarketArrayListCallback,
-                  disableWithdrawList,
-                  isLp,
-                  isDefi,
-                  isToL1,
-                  allowTrade,
-                  market: renderMarket,
-                  onReceive,
-                  onSend,
-                  isLeverageETH: false,
-                  isWebEarn: isWebEarn,
-                  hideDepositButton: row.hideDepositButton,
-                  
-                }}
+                isInvest={isInvest}
+                tokenValue={tokenValue}
+                getMarketArrayListCallback={getMarketArrayListCallback}
+                disableWithdrawList={disableWithdrawList}
+                isLp={isLp}
+                isDefi={isDefi}
+                isToL1={isToL1}
+                allowTrade={allowTrade}
+                market={renderMarket}
+                onReceive={onReceive}
+                onSend={onSend}
+                isLeverageETH={false}
+                isWebEarn={isWebEarn}
+                hideDepositButton={row.hideDepositButton}
+                hideWithdrawButton={row.hideWithdrawButton}
               />
             </Box>
           )

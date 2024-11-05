@@ -366,7 +366,11 @@ export const useGetAssets = (): AssetPanelProps & {
     assetTitleProps,
     assetTitleMobileExtendProps,
     assetsRawData: assetsRawData.map((asset) => {
-      return isTaiko && asset.name === 'TAIKO' ? { ...asset, hideDepositButton: true } : asset
+      return isTaiko && asset.name === 'TAIKO'
+        ? { ...asset, hideDepositButton: true }
+        : isTaiko && asset.name === 'LRTAIKO'
+        ? { ...asset, hideDepositButton: true, hideWithdrawButton: true }
+        : asset
     }),
     assetBtnStatus,
     hideL2Assets,

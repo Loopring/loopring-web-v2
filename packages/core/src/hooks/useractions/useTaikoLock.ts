@@ -33,6 +33,7 @@ import {
   numberFormat,
   numberFormatThousandthPlace,
   numberStringListSum,
+  strNumDecimalPlacesLessThan,
   useStakingMap,
   useSubmitBtn,
   useWalletLayer2Socket,
@@ -1086,10 +1087,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         .then((res) => {
           const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
           
-          setMintModalState({
+          setMintModalState(mintModalState => ({
             ...mintModalState,
             availableToMint: availableToMint,
-          })
+          }))
         })
       LoopringAPI?.defiAPI
         ?.getTaikoFarmingUserSummary(
@@ -1331,7 +1332,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             isShow: true,
             step: AccountStep.Taiko_Farming_Mint_In_Progress,
             info: {
-              symbol: 'lrTaiko',
+              symbol: 'lrTAIKO',
               amount: numberFormatThousandthPlace(mintModalState.inputValue, {
                 fixed: 18,
                 removeTrailingZero: true,
@@ -1379,13 +1380,19 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                       isShow: true,
                       step: AccountStep.Taiko_Farming_Mint_Success,
                       info: {
-                        symbol: 'lrTaiko',
+                        symbol: 'lrTAIKO',
                         amount: numberFormatThousandthPlace(mintModalState.inputValue, {
                           fixed: 18,
                           removeTrailingZero: true,
                         }),
                         mintAt: Date.now(),
                       },
+                    })
+                    debugger
+                    setMintModalState({
+                      ...mintModalState,
+                      inputValue: '',
+                      warningChecked: false,
                     })
                   }
                 })
@@ -1406,7 +1413,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
         },
         onInput: (input: string) => {
-          if (isNumberStr(input) || input === '') {
+          if ((isNumberStr(input) && strNumDecimalPlacesLessThan(input, sellToken.precision + 1)) || input === '') {
             setMintModalState({
               ...mintModalState,
               inputValue: input,

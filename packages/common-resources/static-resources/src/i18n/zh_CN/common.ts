@@ -2421,7 +2421,7 @@ export default {
   labelTaikoFarmingUnlock: "Unlock the Value of Your Locked TAIKO !",
   labelTaikoFarmingMintInfo: "Mint lrTAIKO and use it in Loopring DeFi at zero cost!",
   labelTaikoFarming: "Taiko Farming",
-  labelTaikoFarmingDescription: "Earn Trailblazer points 60x faster by locking TAIKO and participating in TAIKO Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.",
+  labelTaikoFarmingDescription: "Earn Trailblazer points 60x faster by locking TAIKO and participating in Taiko Farming. Please note that TAIKO can only be unlocked after the end of Trailblazer Campaign Season 2.",
   labelLock2: "LOCK",
   labelEnterPaymentToken: "Enter payment token",
   labelMax: "Max",
