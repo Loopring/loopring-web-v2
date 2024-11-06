@@ -76,7 +76,8 @@ export const WalletConnectBtn = ({
   accountState,
   handleClick,
   NetWorkItems,
-  handleClickUnlock
+  handleClickUnlock,
+  handleClickSignIn
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(['layout', 'common'])
   const { isMobile } = useSettings()
@@ -133,6 +134,7 @@ export const WalletConnectBtn = ({
       btnClassname,
       icon,
       isLocked
+
     }
   }, [accountState?.account?.readyState, i18n])
 
@@ -144,7 +146,7 @@ export const WalletConnectBtn = ({
     <>
       {NetWorkItems}
       {!isMobile && <ProviderBox account={accountState?.account} />}
-      {(isLocked && !isMobile) ? (
+      { ((isLocked || accountState?.account.readyState === AccountStatus.NOT_ACTIVE) && !isMobile) ? (
         <Box
           display={'flex'}
           paddingLeft={'1.2rem'}
@@ -166,12 +168,12 @@ export const WalletConnectBtn = ({
             size={'small'}
             sx={{ borderRadius: '4px', height: '34px' }}
             variant={'contained'}
-            onClick={handleClickUnlock}
+            onClick={isLocked ? handleClickUnlock : handleClickSignIn}
           >
             <LockIcon sx={{ marginRight: 1, marginBottom: 0.2 }} style={{ width: 16, height: 16 }} />
             <Typography component={'span'} variant={'body1'}>
               {/* Unlock First */}
-              {t("labelUnlockFirst")}
+              {isLocked ? t("labelUnlockFirst") : 'Sign in First'}
             </Typography>
           </Button>}
         </Box>

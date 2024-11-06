@@ -1168,10 +1168,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [stakingMapStatus])
 
-  // const btnInfo = {
-  //   label: tradeMarketI18nKey,
-  //   params: {},
-  // }
+  React.useEffect(() => {
+    clearState()
+  }, [account.accAddress, defaultNetwork])
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const btnLabel =
