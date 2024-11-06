@@ -1,42 +1,8 @@
-import {
-  Box,
-  Typography,
-  Modal,
-  Divider,
-  IconButton,
-  Slider,
-  Checkbox,
-  Tooltip,
-  Input,
-  CircularProgress,
-} from '@mui/material'
-import {
-  AvatarCoin,
-  Button,
-  ButtonStyle,
-  CoinIcons,
-  Loading,
-  LoadingStyled,
-  SpaceBetweenBox,
-} from '@loopring-web/component-lib'
-import {
-  BackIcon,
-  CheckBoxIcon,
-  CheckedIcon,
-  CloseIcon,
-  EmptyValueTag,
-  Info2Icon,
-  InfoIcon,
-  OrderListIcon,
-  TokenType,
-} from '@loopring-web/common-resources'
-import { numberFormat } from '@loopring-web/core'
-import AddIcon from '@mui/icons-material/Add'
-import RemoveIcon from '@mui/icons-material/Remove'
+import { Box, Typography, Modal, Input, CircularProgress } from '@mui/material'
+import { Button, ButtonStyle, CoinIcons } from '@loopring-web/component-lib'
+import { CloseIcon, TokenType } from '@loopring-web/common-resources'
 import _ from 'lodash'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import { useTranslation } from 'react-i18next'
-import Decimal from 'decimal.js'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import { useTheme } from '@emotion/react'
@@ -57,15 +23,6 @@ type MintModalProps = {
   inputPlaceholder: string
   tokenAvailableAmount: string
   confirmBtnWording: string
-  // onClickMaxCredit: () => void
-  // collateralTokens: {
-  //   name: string
-  //   logo: string
-  //   amount: string
-  //   valueInCurrency: string
-  // }[]
-  // totalCollateral: string
-  // maxCredit: string
   logoCoinJSON: any
   status: 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting'
   onClickSignIn: () => void
@@ -151,7 +108,6 @@ export const MintModal = (props: MintModalProps) => {
         }}
         value={inputValue}
       />
-      {/* <Input sx={{ height: '48px' }} /> */}
       <Box display={'flex'} justifyContent={'space-between'} mt={3} alignItems={'center'}>
         <Typography color={'var(--color-text-secondary)'}>Rate</Typography>
         <Typography color={'var(--color-text-secondary)'}>1 lrTAIKO = 1 TAIKO</Typography>
@@ -210,16 +166,15 @@ export const MintModal = (props: MintModalProps) => {
       <Box display={'flex'} justifyContent={'space-between'}>
         <Box width={'75%'} display={'flex'} alignItems={'start'}>
           {status === 'signedIn' ? (
-
-              <CheckCircleRoundedIcon
-                sx={{
-                  color: theme.colorBase.success,
-                  mr: 1,
-                  fontSize: '24px',
-                  mt: 0.4,
-                }}
-                className='custom-size'
-              />
+            <CheckCircleRoundedIcon
+              sx={{
+                color: theme.colorBase.success,
+                mr: 1,
+                fontSize: '24px',
+                mt: 0.4,
+              }}
+              className='custom-size'
+            />
           ) : (
             <RadioButtonCheckedIcon
               sx={{

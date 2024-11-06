@@ -1,13 +1,5 @@
-import {
-  Box,
-  Typography,
-  Modal,
-  Input,
-  CircularProgress,
-} from '@mui/material'
-import {
-  CloseIcon,
-} from '@loopring-web/common-resources'
+import { Box, Typography, Modal, Input, CircularProgress } from '@mui/material'
+import { CloseIcon } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'

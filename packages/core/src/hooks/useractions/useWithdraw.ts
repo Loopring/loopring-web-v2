@@ -802,7 +802,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     },
     ens,
   }
-  console.log('withdrawProps', withdrawProps)
   return {
     withdrawProps,
     retryBtn,

@@ -308,58 +308,6 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
   const { tokenPrices } = useTokenPrices()
-  console.log('asdhjajshdjsahdjsa', {
-    assetTitleProps,
-    assetTitleMobileExtendProps,
-    assetsRawData,
-    assetBtnStatus,
-    hideL2Assets,
-    onSend,
-    onReceive,
-    marketArray,
-    hideInvestToken,
-    allowTrade,
-    setHideL2Assets,
-    setHideLpToken,
-    setHideSmallBalances,
-    themeMode,
-    getTokenRelatedMarketArray,
-    hideSmallBalances,
-    totalAvailableInCurrency: forexMap[currency] && fiatNumberDisplay(
-      new Decimal(forexMap[currency])
-      .mul(
-        numberStringListSum(
-          assetsRawData.map((asset) => {
-            try {
-              return new Decimal(asset.available.toString()).mul(tokenPrices[asset.name]).toString()
-            } catch {
-              return '0'
-            }
-            
-          }),
-        ),
-      )
-      .toString(),
-      currency
-    ) ,
-    totalFrozenInCurrency: forexMap[currency] && fiatNumberDisplay(
-      new Decimal(forexMap[currency])
-      .mul(
-        numberStringListSum(
-          assetsRawData.map((asset) => {
-
-            try {
-              return new Decimal(asset.locked).mul(tokenPrices[asset.name]).toString()
-            } catch {
-              return '0'
-            }
-          }),
-        ),
-      )
-      .toString(),
-      currency
-    ),
-  })
   const {defaultNetwork} = useSettings()
   const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
   return {

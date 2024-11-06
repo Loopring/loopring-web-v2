@@ -134,7 +134,6 @@ export const WalletConnectBtn = ({
       btnClassname,
       icon,
       isLocked
-
     }
   }, [accountState?.account?.readyState, i18n])
 

@@ -15,7 +15,7 @@ const BannerPage: React.FC = () => {
         Taiko Lock & Earn
       </Typography>
       <Typography mt={3} variant='h4'>
-      Earn Trailblazer points with up to a 60x multiplier by locking your TAIKO.
+        Earn Trailblazer points with up to a 60x multiplier by locking your TAIKO.
       </Typography>
 
       <Box
@@ -30,7 +30,13 @@ const BannerPage: React.FC = () => {
         }}
       >
         <Box display={'flex'} flexDirection={'column'}>
-          <Box mb={16} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
+          <Box
+            mb={16}
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
             <Box width={'45%'} display={'flex'} justifyContent={'center'}>
               <Box
                 component={'img'}
@@ -42,7 +48,13 @@ const BannerPage: React.FC = () => {
               {t('labelTaikoFarmingQuestion')}
             </Typography>
           </Box>
-          <Box mb={16} display={'flex'} flexDirection={'row-reverse'} alignItems={'center'} justifyContent={'space-between'}>
+          <Box
+            mb={16}
+            display={'flex'}
+            flexDirection={'row-reverse'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
             <Box width={'45%'} display={'flex'} justifyContent={'center'}>
               <Box
                 component={'img'}
@@ -54,7 +66,12 @@ const BannerPage: React.FC = () => {
               {t('labelTaikoFarmingExplanation')}
             </Typography>
           </Box>
-          <Box display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            alignItems={'center'}
+            justifyContent={'space-between'}
+          >
             <Box width={'45%'} display={'flex'} justifyContent={'center'}>
               <Box
                 component={'img'}
@@ -68,9 +85,7 @@ const BannerPage: React.FC = () => {
           </Box>
         </Box>
         <Box mt={12.5}>
-          <Typography variant='h4'>
-            {t('labelTaikoFarmingStayTuned')}
-          </Typography>
+          <Typography variant='h4'>{t('labelTaikoFarmingStayTuned')}</Typography>
           <Typography mt={2} variant='h4'>
             {t('labelTaikoFarmingExploreUseCase')}
             <Link href='/#/portal' color='secondary'>

@@ -225,7 +225,6 @@ export const TaikoFarmingPortfolioTable = withTranslation(['tables', 'common'])(
       [t, tokenMap, idIndex],
     )
 
-    // const [isDropDown, setIsDropDown] = React.useState(true);
 
     const defaultArgs: any = {
       columnMode: isMobile ? getColumnMobileTransaction() : getColumnModeTransaction(),
@@ -248,7 +247,6 @@ export const TaikoFarmingPortfolioTable = withTranslation(['tables', 'common'])(
           }}
           {...{
             ...defaultArgs,
-            // rowRenderer: RowRenderer,
             ...props,
             rawData,
             showloading,
@@ -283,11 +281,6 @@ export const TaikoFarmingPortfolioTable = withTranslation(['tables', 'common'])(
                     symbol: 'LRC',
                   })}
                 </Typography>
-                {/* <DeFiSideDetail
-                  tokenSell={tokenMap[idIndex[detail.tokenId]]}
-                  order={{ ...detail }}
-                  onRedeem={redeemItemClick as any}
-                /> */}
               </Box>
             )}
           </SwitchPanelStyled>

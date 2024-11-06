@@ -131,12 +131,7 @@ export const TaikoLockPage = ({
                 //   border={'1px solid var(--color-border)'}
                 //   borderRadius={2}
                 // >
-                <TaikoLockInput
-                  isJoin={isJoin}
-                  symbol={symbol}
-                  {...(stakeWrapProps as any)}
-                  
-                />
+                <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
               ) : (
                 // </Box>
                 <LoadingBlock />

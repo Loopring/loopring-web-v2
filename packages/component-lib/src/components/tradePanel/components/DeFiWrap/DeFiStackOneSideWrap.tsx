@@ -640,8 +640,6 @@ export const DeFiSideWrap = <T extends IBData<I>, I, ACD extends DeFiSideCalcDat
   )
 }
 
-
-
 export const DeFiSideWrapV2 = <T extends IBData<I>, I, ACD extends DeFiSideCalcData<T>>({
   disabled,
   isJoin,
@@ -704,10 +702,7 @@ export const DeFiSideWrapV2 = <T extends IBData<I>, I, ACD extends DeFiSideCalcD
               { floor: false, isAbbreviate: true },
             ),
           })
-        : // <Typography variant={"body1"} color={"var(--color-text-third)"}>
-          //
-          // </Typography>
-          '0.00',
+        : '0.00',
     isShowCoinInfo: true,
     isShowCoinIcon: true,
     maxAllow: true,
@@ -831,8 +826,6 @@ export const DeFiSideWrapV2 = <T extends IBData<I>, I, ACD extends DeFiSideCalcD
         display={'flex'}
         alignSelf={'stretch'}
         alignItems={'stretch'}
-        // borderTop={'1px solid var(--color-border)'}
-        // borderBottom={'1px solid var(--color-border)'}
       >
         <InputCoin<T, I, any>
           ref={coinSellRef}

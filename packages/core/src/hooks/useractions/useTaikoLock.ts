@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import {
   AccountStep,
-  DeFiSideWrapProps,
   ToastType,
   useOpenModals,
   useSettings,
@@ -28,20 +27,16 @@ import {
   calcSideStaking,
   fiatNumberDisplay,
   getTimestampDaysLater,
-  goActiveAccount,
   isNumberStr,
-  makeWalletLayer2,
   numberFormat,
   numberFormatThousandthPlace,
-  numberStringListSum,
   strNumDecimalPlacesLessThan,
   unlockAccount,
   useStakingMap,
-  useSubmitBtn,
   useUpdateAccount,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
-import _, { has, isNumber } from 'lodash'
+import _ from 'lodash'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 
@@ -55,13 +50,10 @@ import {
 } from '../../index'
 import { useTranslation } from 'react-i18next'
 import { useTokenPrices, useTradeStake, WalletLayer1Map } from '../../stores'
-import { symbol } from 'prop-types'
 import Decimal from 'decimal.js'
-import { BigNumber, constants, Contract, providers, utils } from 'ethers'
+import { BigNumber, Contract, providers, utils } from 'ethers'
 import moment from 'moment'
-import { on } from 'events'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { erc20 } from '@loopring-web/loopring-sdk/src/api/config/abis/erc20'
 import { updateAccountStatus } from '../../stores/account/reducer'
 import { useDispatch } from 'react-redux'
 const erc20Abi = [
@@ -345,16 +337,13 @@ const depositTaikoWithDuration = async (input: {
     chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA
   const signer = provider.getSigner()
   const tokenContract = new Contract(taikoAddress, erc20Abi, signer)
-  // const approveTx1 = await tokenContract.approve(depositContractAddr, '0')
-  // await approveTx1.wait()
   const allowance = await tokenContract.allowance(from, approveToAddress)
   if (allowance.lt(amount)) {
     const approveTx = await tokenContract.approve(approveToAddress, amount)
     await approveTx.wait()
   }
-  const contract = new Contract(depositContractAddr, depositContractABI, signer);
-  // debugger
-  
+  const contract = new Contract(depositContractAddr, depositContractABI, signer)
+
   const tx = await contract.deposit(from, to, taikoAddress, amount, duration, '0x')
   return tx.wait()
 }
@@ -446,7 +435,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { defaultNetwork, currency, coinJson } = useSettings()
   const sellToken = tokenMap[coinSellSymbol]
   const taikoFarmingPrecision = 2
-  // const tokenId = tokenMap[coinSellSymbol].tokenId
 
   const handleOnchange = _.debounce(
     ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
@@ -458,15 +446,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         ...tradeStake,
         ..._tradeStake,
       }
-      //_.cloneDeep({ ...tradeStake, ..._tradeStake });
       myLog('defi handleOnchange', _oldTradeStake)
 
       if (tradeData && coinSellSymbol) {
         const inputValue = tradeData?.tradeValue?.toString() ?? ''
-        // ? numberFormat(tradeData?.tradeValue?.toString(), {
-        //     fixed: taikoFarmingPrecision
-        //   })
-        // : ''
 
         const tokenSell = tokenMap[coinSellSymbol]
         const { sellVol, deFiSideCalcData } = calcSideStaking({
@@ -529,7 +512,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               removeTrailingZero: true,
             })
           : undefined
-        // }
 
         if (clearTrade || tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined) {
           deFiSideCalcDataInit.coinSell.tradeValue = undefined
@@ -576,43 +558,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     ],
   )
 
-  // const walletLayer2Callback = React.useCallback(async () => {
-  //   let tradeValue: any = undefined
-  //   let deFiSideCalcDataInit: Partial<DeFiSideCalcData<any>> = {
-  //     coinSell: {
-  //       belong: coinSellSymbol,
-  //       balance: undefined,
-  //     },
-  //     ...(tradeStake?.deFiSideCalcData ?? {}),
-  //   }
-  //   if (tradeStake.deFiSideCalcData) {
-  //     tradeValue = tradeStake?.deFiSideCalcData?.coinSell?.tradeValue ?? undefined
-  //   }
-  //   if (deFiSideCalcDataInit?.coinSell?.belong) {
-  //     let walletMap: any
-  //     if (account.readyState === AccountStatus.ACTIVATED) {
-  //       walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
-  //       deFiSideCalcDataInit.coinSell = {
-  //         belong: coinSellSymbol,
-  //         balance: numberFormat(walletMap[coinSellSymbol]?.count, {
-  //           fixed: taikoFarmingPrecision,
-  //           removeTrailingZero: true,
-  //         }),
-  //       }
-  //     } else {
-  //       deFiSideCalcDataInit.coinSell = {
-  //         belong: coinSellSymbol,
-  //         balance: undefined,
-  //       }
-  //     }
-  //     const tradeData = {
-  //       ...deFiSideCalcDataInit.coinSell,
-  //       tradeValue,
-  //     }
-  //     myLog('resetDefault Defi walletLayer2Callback', tradeData)
-  //     handleOnchange({ tradeData })
-  //   }
-  // }, [account.readyState, coinSellSymbol, handleOnchange, tradeStake.deFiSideCalcData])
   const walletLayer1Callback = React.useCallback(async () => {
     let tradeValue: any = undefined
     let deFiSideCalcDataInit: Partial<DeFiSideCalcData<any>> = {
@@ -626,15 +571,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       tradeValue = tradeStake?.deFiSideCalcData?.coinSell?.tradeValue ?? undefined
     }
     if (deFiSideCalcDataInit?.coinSell?.belong) {
-      // let walletMap: any
-      // if (account.readyState === AccountStatus.ACTIVATED) {
-      // makeWalletLayer2
-      //
       const walletLayer1 = store.getState().walletLayer1.walletLayer1 as WalletLayer1Map<any>
 
-      // const { tokenMap } = store.getState().tokenMap
-      // const { readyState } = store.getState().account
-      // walletMap = makeWalletLayer2({ needFilterZero: true }).walletMap
       deFiSideCalcDataInit.coinSell = {
         belong: coinSellSymbol,
         balance: numberFormat(walletLayer1[coinSellSymbol]?.count, {
@@ -642,12 +580,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           removeTrailingZero: true,
         }),
       }
-      // } else {
-      //   deFiSideCalcDataInit.coinSell = {
-      //     belong: coinSellSymbol,
-      //     balance: undefined,
-      //   }
-      // }
       const tradeData = {
         ...deFiSideCalcDataInit.coinSell,
         tradeValue,
@@ -750,10 +682,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   })
   const [pendingTxsModalOpen, setPendingTxsModalOpen] = React.useState(false)
   const onSubmitBtnClick = React.useCallback(async () => {
-    if (
-      tokenMap &&
-      exchangeInfo
-    ) {
+    if (tokenMap && exchangeInfo) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
       } else if (toggle && !toggle['taikoFarming'].enable) {
@@ -790,8 +719,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
             const recursiveCheck = async (hash: string) => {
               const account = store.getState().account
-              const accountId = account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
-            
+              const accountId =
+                account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
+
               return LoopringAPI?.defiAPI
                 ?.getTaikoFarmingDepositDurationList({
                   accountId,
@@ -812,10 +742,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }
             debugger
             recursiveCheck(tx.transactionHash)
-            
-
-
-            
           })
           .catch((e) => {
             setTxSubmitModalState({
@@ -863,7 +789,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     const tradeStake = store.getState()._router_tradeStake.tradeStake
     myLog('tradeStake', tradeStake)
 
-    // if (account.readyState === AccountStatus.ACTIVATED) {
     if (tradeStake?.sellVol === undefined || sdk.toBig(tradeStake?.sellVol).lte(0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -902,10 +827,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           { floor: false, isAbbreviate: true },
         )} ${coinSellSymbol}`,
       }
-      // return {
-      //   tradeBtnStatus: TradeBtnStatus.DISABLED,
-      //   label: `labelDefiNoEnough| ${coinSellSymbol}`,
-      // };
     } else if (
       tradeStake?.deFiSideCalcData?.coinSell?.tradeValue &&
       sdk
@@ -941,30 +862,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     taikoFarmingChecked,
     daysInput,
   ])
-  // const {
-  //   // btnStatus,
-  //   // onBtnClick,
-  //   btnLabel: tradeMarketI18nKey,
-  // } = useSubmitBtn({
-  //   availableTradeCheck,
-  //   isLoading,
-  //   submitCallback: onSubmitBtnClick,
-  // })
   const checked = availableTradeCheck()
   const btnStatus = isLoading ? TradeBtnStatus.LOADING : checked.tradeBtnStatus
-  
-  // React.useMemo(() => {
 
-  // if (isLoading) {
-  //   // myLog("tradeBtnStatus", TradeBtnStatus.LOADING);
-  //   return TradeBtnStatus.LOADING
-  // } else {
-  //   const { tradeBtnStatus } = availableTradeCheck()
-  //   // myLog("tradeBtnStatus", tradeBtnStatus);
-  //   return tradeBtnStatus
-  // }
-
-  // }, [inpu])
   const onBtnClick = onSubmitBtnClick
   const [stakingTotal, setStakingTotal] = React.useState<string | undefined>(undefined)
 
@@ -1051,7 +951,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }, [defaultNetwork])
 
   const updateStakingState = async () => {
-
     const accountId =
       account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
     if (!accountId || accountId === -1) {
@@ -1090,33 +989,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           totalStaked: res.totalStaked,
         })
       })
-    // LoopringAPI?.defiAPI?.getTaikoFarmingTransactions({
-    //   accountId: account.accountId,
-    //   tokenId: sellToken.tokenId,
-    // }, account.apiKey).then((res) => {
-    //   res
-    //   debugger
-    // }).catch(e => {
-    //   debugger
-    // })
-    // LoopringAPI?.defiAPI?.getStakeSummary({
-    //   accountId: account.accountId,
-    //   tokenId: sellToken.tokenId,
-    // }, account.apiKey).then((res) => {
-    //   const resData = res as {
-    //     raw_data: unknown;
-    //     totalNum: number;
-    //     totalStaked: string;
-    //     totalStakedRewards: string;
-    //     totalLastDayPendingRewards: string;
-    //     totalClaimableRewards: string;
-    //     list: sdk.StakeInfoOrigin[];
-    //   }
-    //   setStakingTotal(resData.totalStaked)
-    // })
-    // } else {
-
-    // }
   }
   const clearState = () => {
     setStakingTotal(undefined)
@@ -1158,9 +1030,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     ) {
       resetDefault(true)
     } else if (stakingMapStatus === SagaStatus.UNSET && stakingMap && !stakingMap[coinSellSymbol]) {
-      // setToastOpen({
-      //
-      // })
     }
     return () => {
       resetTradeStake()
@@ -1278,7 +1147,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           : undefined,
       mintButton: {
         onClick: () => {
-          console.log('account.readyState', account.readyState)
           if (account.readyState === AccountStatus.ACTIVATED) {
             setMintModalState({
               ...mintModalState,
@@ -1314,7 +1182,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           const found = Object.keys(feeInfo.fees).find((key) => {
             const fee = feeInfo.fees[key].fee
             const foundBalance = userBalances[feeInfo.fees[key].tokenId]
-            return (foundBalance && sdk.toBig(foundBalance.total).gte(fee)) || sdk.toBig(fee).eq('0')
+            return (
+              (foundBalance && sdk.toBig(foundBalance.total).gte(fee)) || sdk.toBig(fee).eq('0')
+            )
           })
           await goUpdateAccount({
             isFirstTime: true,
@@ -1329,13 +1199,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
           setMintModalState({
             ...mintModalState,
-            status: 'signedIn'
+            status: 'signedIn',
           })
         },
         onClickMint: () => {
           setMintModalState({
             ...mintModalState,
-            status: 'minting'
+            status: 'minting',
           })
         },
         open: mintModalState.open,
@@ -1514,13 +1384,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                     fixed: sellToken.precision,
                     removeTrailingZero: true,
                   },
-                )
+                ),
               }
             })
           : [],
       },
     },
   }
-  console.log('useTaikoLock', output)
   return output
 }

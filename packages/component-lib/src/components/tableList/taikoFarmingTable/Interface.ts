@@ -3,7 +3,6 @@ import * as sdk from '@loopring-web/loopring-sdk'
 export type RawDataDefiTxsItem = Partial<sdk.UserDefiTxsHistory>
 
 export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
-  // etherscanBaseUrl?: string;
   rawData: R[]
   pagination?: {
     pageSize: number
@@ -11,13 +10,8 @@ export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
   }
   idIndex: { [key: string]: string }
   tokenMap: { [key: string]: any }
-
   getDefiTxList: (props: any) => Promise<void>
-  // filterTokens: string[];
-  // showFilter?: boolean;
   showloading: boolean
-  // accAddress: string;
-  // accountId: number;
 }
 
 export interface RawDataDefiSideStakingItem
@@ -27,7 +21,6 @@ export interface RawDataDefiSideStakingItem
 }
 
 export interface DefiSideStakingTableProps<R = RawDataDefiSideStakingItem> {
-  // etherscanBaseUrl?: string;
   rawData: R[]
   pagination?: {
     pageSize: number
@@ -47,7 +40,6 @@ export type RawDataTaikoFarmingTxItem = sdk.STACKING_TRANSACTIONS & {
 }
 
 export interface TaikoFarmingTxTableProps<R = RawDataTaikoFarmingTxItem> {
-  // etherscanBaseUrl?: string;
   rawData: R[]
   pagination?: {
     pageSize: number

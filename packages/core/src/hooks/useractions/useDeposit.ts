@@ -746,7 +746,6 @@ export const useDeposit = <
       setShowDeposit({ isShow: false })
     },
   }
-  console.log('depositProps',depositProps)
 
   return {
     depositProps,

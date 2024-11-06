@@ -161,17 +161,6 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
             )
           },
         },
-        // {
-        //   key: 'Product',
-        //   sortable: false,
-        //   width: 'auto',
-        //   name: t('labelDefiStakingTxProduct'),
-        //   cellClass: 'textAlignCenter',
-        //   headerCellClass: 'textAlignCenter',
-        //   formatter: ({ row }) => {
-        //     return <>{row.productId ? row.productId : EmptyValueTag}</>
-        //   },
-        // },
         {
           key: 'HashID',
           sortable: false,
@@ -322,7 +311,6 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
       [t, tokenMap, idIndex],
     )
 
-    // const [isDropDown, setIsDropDown] = React.useState(true);
 
     const defaultArgs: any = {
       columnMode: isMobile ? getColumnMobileTransaction() : getColumnModeTransaction(),
@@ -330,7 +318,6 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
     React.useEffect(() => {
-      // let filters: any = {};
       updateData.cancel()
       updateData({ currPage: 1 })
 
@@ -344,7 +331,6 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
         <Table
           {...{
             ...defaultArgs,
-            // rowRenderer: RowRenderer,
             ...props,
             rawData,
             showloading,

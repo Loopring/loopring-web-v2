@@ -1,35 +1,28 @@
 import {
   AccountStatus,
-  CheckBoxIcon,
-  CheckedIcon,
   CoinInfo,
-  DeFiSideCalcData,
   EmptyValueTag,
   getValuePrecisionThousand,
   hexToRGB,
   IBData,
-  Info2Icon,
   myLog,
   OrderListIcon,
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Checkbox, CircularProgress, Grid, Input, Tooltip, Typography } from '@mui/material'
+import { Box, CircularProgress, Grid, Input, Tooltip, Typography } from '@mui/material'
 import {
   InputCoin,
   ButtonStyle,
   InputButtonProps,
   BtnInfo,
-  InputCoin2,
   useSettings,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router'
 import { useTheme } from '@emotion/react'
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import moment from 'moment'
 
 const GridStyle = styled(Grid)`
@@ -62,9 +55,6 @@ type TaikoLockInputProps<T, I, ACD> = {
   lockedPosition?: {
     amount: string
     amountInCurrency: string
-    // totalPoints: string
-    // dailyEarn: string
-    // unlockDate: string
     trailblazerBooster: string
   }
   taikoFarmingChecked: boolean
@@ -217,20 +207,8 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   const theme = useTheme()
   const { isMobile } = useSettings()
 
-  // const checkBoxChecked = false
-  // const onCheckBoxChange = () => {
-
-  // }
-
   return (
-    <Box
-    // className={deFiSideCalcData ? '' : 'loading'}
-    // direction={'column'}
-    // justifyContent={'space-between'}
-    // alignItems={'center'}
-    // flex={1}
-    // height={'100%'}
-    >
+    <Box>
       <Box
         display={'flex'}
         style={isMobile ? { flex: 1 } : { width: '450px' }}
@@ -286,8 +264,6 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             alignSelf={'stretch'}
             alignItems={'stretch'}
           >
-            {/* <Typography></Typography>
-            {tokenSell.symbol} */}
             <InputCoin<T, I, any>
               ref={coinSellRef}
               disabled={getDisabled}
@@ -352,42 +328,6 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
           </Typography>
 
-          {/* <Grid item alignSelf={'stretch'} my={3}>
-        <Box
-          p={1.5}
-          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-          borderRadius={'4px'}
-          display={'flex'}
-        >
-          <Box>
-            {taikoFarmingChecked ? (
-              <RadioButtonCheckedIcon
-                onClick={onCheckBoxChange}
-                className='custom-size'
-                sx={{
-                  color: theme.colorBase.warning,
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                }}
-              />
-            ) : (
-              <RadioButtonUncheckedIcon
-                onClick={onCheckBoxChange}
-                className='custom-size'
-                sx={{ color: theme.colorBase.warning, fontSize: '24px', cursor: 'pointer' }}
-              />
-            )}
-          </Box>
-          <Box ml={1}>
-            <Typography color={'var(--color-warning)'}>
-              {t('labelAcknowledgeAndProceed')}
-            </Typography>
-            <Typography color={'var(--color-warning)'} variant={'body2'} mt={0.5}>
-              {t('labelUnlockAfterSeason2')}
-            </Typography>
-          </Box>
-        </Box>
-      </Grid> */}
           <Grid item alignSelf={'stretch'} marginTop={10} pb={1}>
             <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
               <Grid item>
@@ -421,11 +361,16 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 </Typography>
               </Box>
               {hasPendingDeposits && (
-                <Box sx={{cursor: 'pointer'}} onClick={onClickPendingDeposits} display={'flex'} alignItems={'center'} justifyContent={'center'} mt={4}>
+                <Box
+                  sx={{ cursor: 'pointer' }}
+                  onClick={onClickPendingDeposits}
+                  display={'flex'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  mt={4}
+                >
                   <CircularProgress size={18} sx={{ color: 'var(--color-primary)', mr: 1 }} />
-                  <Typography color={'var(--color-primary)'}>
-                    Pending Transaction
-                  </Typography>
+                  <Typography color={'var(--color-primary)'}>Pending Transaction</Typography>
                 </Box>
               )}
             </Grid>
@@ -446,7 +391,6 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
           p={3}
           my={5}
         >
-          {/* <Tooltip title={'Loopring is actively working with the Taiko team to integrate Trailblazer points collected through Taiko Farming. You are guaranteed to receive 60x Trailblazer points by participating in this campaign. However, it may take a few days for the points to be retroactively tracked in the Taiko Trailblazer Leaderboard. '} placement={'top'}> */}
           <Typography
             display={'flex'}
             alignItems={'center'}
@@ -454,9 +398,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             color={'var(--color-text-primary)'}
           >
             My Position
-            {/* <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} /> */}
           </Typography>
-          {/* </Tooltip> */}
           <Typography mt={0.5} color={'var(--color-text-secondary)'}>
             Total Amount: {myPosition.totalAmount} / {myPosition.totalAmountInCurrency}
           </Typography>
@@ -481,17 +423,17 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                         {item.amount}
                       </Typography>
                       <Tooltip title={'Trailblazers Points Multiplier'}>
-                      <Box
-                        ml={1}
-                        bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                        color={'var(--color-warning)'}
-                        borderRadius={'4px'}
-                        // py={1}
-                        p={0.5}
-                        fontSize={'11px'}
-                      >
-                        {item.multiplier}
-                      </Box>
+                        <Box
+                          ml={1}
+                          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                          color={'var(--color-warning)'}
+                          borderRadius={'4px'}
+                          // py={1}
+                          p={0.5}
+                          fontSize={'11px'}
+                        >
+                          {item.multiplier}
+                        </Box>
                       </Tooltip>
                     </Box>
 
@@ -531,81 +473,6 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               Mint lrTAIKO
             </ButtonStyle>
           </Box>
-
-          {/* <Typography mb={2} color={'var(--color-text-secondary)'}>
-          {t('labelCurrentLockedPosition')}
-        </Typography>
-
-        <Grid
-          mb={1}
-          container
-          justifyContent={'space-between'}
-          direction={'row'}
-          alignItems={'center'}
-        >
-          <Typography
-            component={'p'}
-            color={'textSecondary'}
-            display={'inline-flex'}
-            alignItems={'center'}
-          >
-            {t('labelAmount')}
-          </Typography>
-
-          <Typography component={'p'}>
-            {lockedPosition ? (
-              <>
-                {lockedPosition?.amount ?? '--'} /{' '}
-                <Typography component={'span'} color={'textSecondary'}>
-                  {lockedPosition?.amountInCurrency ?? '--'}
-                </Typography>
-              </>
-            ) : (
-              '--'
-            )}
-          </Typography>
-        </Grid>
-        <Grid
-          mb={1}
-          container
-          justifyContent={'space-between'}
-          direction={'row'}
-          alignItems={'center'}
-        >
-          <Typography
-            component={'p'}
-            color={'textSecondary'}
-            display={'inline-flex'}
-            alignItems={'center'}
-          >
-            {t('labelTaikoFarmingTrailblazerBooster')}
-          </Typography>
-          <Typography component={'p'}>60x</Typography>
-        </Grid>
-        <Grid
-          mb={1}
-          container
-          justifyContent={'space-between'}
-          direction={'row'}
-          alignItems={'center'}
-        >
-          <Tooltip
-            title={t('labelTaikoFarmingPointsToBeTrackedRetroactivelyDes')}
-            placement={'top'}
-            key={'APR'}
-          >
-            <Typography
-              component={'p'}
-              color={'textSecondary'}
-              display={'inline-flex'}
-              alignItems={'center'}
-            >
-              {t('labelTaikoFarmingPointsToBeTrackedRetroactively')}
-              <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-            </Typography>
-          </Tooltip>
-          <Typography component={'p'}></Typography>
-        </Grid> */}
         </Box>
       )}
     </Box>
