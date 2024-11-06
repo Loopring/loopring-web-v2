@@ -349,7 +349,7 @@ const depositTaikoWithDuration = async (input: {
   // await approveTx1.wait()
   const allowance = await tokenContract.allowance(from, approveToAddress)
   if (allowance.lt(amount)) {
-    const approveTx = await tokenContract.approve(approveToAddress, constants.MaxUint256)
+    const approveTx = await tokenContract.approve(approveToAddress, amount)
     await approveTx.wait()
   }
   const contract = new Contract(
@@ -526,7 +526,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           throw new Error('no product')
         }
 
-        if (account.readyState === AccountStatus.ACTIVATED) {
+        // if (account.readyState === AccountStatus.ACTIVATED) {
           if (clearTrade === true) {
             walletLayer2Service.sendUserUpdate()
           }
@@ -538,7 +538,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 removeTrailingZero: true,
               })
             : undefined
-        }
+        // }
 
         if (clearTrade || tradeStake.deFiSideCalcData?.coinSell?.tradeValue === undefined) {
           deFiSideCalcDataInit.coinSell.tradeValue = undefined
@@ -636,7 +636,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
     if (deFiSideCalcDataInit?.coinSell?.belong) {
       // let walletMap: any
-      if (account.readyState === AccountStatus.ACTIVATED) {
+      // if (account.readyState === AccountStatus.ACTIVATED) {
         // makeWalletLayer2
         // 
         const walletLayer1 = store.getState().walletLayer1.walletLayer1 as WalletLayer1Map<any>
@@ -651,12 +651,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             removeTrailingZero: true,
           }),
         }
-      } else {
-        deFiSideCalcDataInit.coinSell = {
-          belong: coinSellSymbol,
-          balance: undefined,
-        }
-      }
+      // } else {
+      //   deFiSideCalcDataInit.coinSell = {
+      //     belong: coinSellSymbol,
+      //     balance: undefined,
+      //   }
+      // }
       const tradeData = {
         ...deFiSideCalcDataInit.coinSell,
         tradeValue,
@@ -756,10 +756,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const onSubmitBtnClick = React.useCallback(async () => {
     // const tradeStake = store.getState().router_tradeStake.tradeStake;
     if (
-      account.readyState === AccountStatus.ACTIVATED &&
+      // account.readyState === AccountStatus.ACTIVATED &&
       tokenMap &&
-      exchangeInfo &&
-      account.eddsaKey?.sk
+      exchangeInfo 
+      // account.eddsaKey?.sk
     ) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
         setShowSupport({ isShow: true })
@@ -837,7 +837,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     const account = store.getState().account
     const tradeStake = store.getState()._router_tradeStake.tradeStake
     myLog('tradeStake', tradeStake)
-    if (account.readyState === AccountStatus.ACTIVATED) {
+    
+    // if (account.readyState === AccountStatus.ACTIVATED) {
       if (tradeStake?.sellVol === undefined || sdk.toBig(tradeStake?.sellVol).lte(0)) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -903,7 +904,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       } else {
         return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
       }
-    }
+    // }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' }
   }, [
     tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellVol,
@@ -915,15 +916,31 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     taikoFarmingChecked,
     daysInput,
   ])
-  const {
-    btnStatus,
-    onBtnClick,
-    btnLabel: tradeMarketI18nKey,
-  } = useSubmitBtn({
-    availableTradeCheck,
-    isLoading,
-    submitCallback: onSubmitBtnClick,
-  })
+  // const {
+  //   // btnStatus,
+  //   // onBtnClick,
+  //   btnLabel: tradeMarketI18nKey,
+  // } = useSubmitBtn({
+  //   availableTradeCheck,
+  //   isLoading,
+  //   submitCallback: onSubmitBtnClick,
+  // })
+  const btnStatus = isLoading 
+    ? TradeBtnStatus.LOADING
+    : availableTradeCheck().tradeBtnStatus
+  // React.useMemo(() => {
+
+    // if (isLoading) {
+    //   // myLog("tradeBtnStatus", TradeBtnStatus.LOADING);
+    //   return TradeBtnStatus.LOADING
+    // } else {
+    //   const { tradeBtnStatus } = availableTradeCheck()
+    //   // myLog("tradeBtnStatus", tradeBtnStatus);
+    //   return tradeBtnStatus
+    // }
+    
+  // }, [inpu])
+  const onBtnClick = onSubmitBtnClick
   const [stakingTotal, setStakingTotal] = React.useState<string | undefined>(undefined)
 
   const [stakeInfo, setStakeInfo] = React.useState(
@@ -1171,47 +1188,55 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [stakingMapStatus])
 
-  const btnInfo = {
-    label: tradeMarketI18nKey,
-    params: {},
-  }
+  // const btnInfo = {
+  //   label: tradeMarketI18nKey,
+  //   params: {},
+  // }
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const btnLabel = React.useMemo(() => {
-    if (btnInfo?.label) {
-      const key = btnInfo?.label.split('|')
-      return t(
-        key[0],
-        key && key[1]
-          ? {
-              arg: key[1],
-              layer2: L1L2_NAME_DEFINED[network].layer2,
-              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            }
-          : {
-              layer2: L1L2_NAME_DEFINED[network].layer2,
-              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            },
-      )
-    } else {
-      return t(`labelInvestBtn`, {
-        layer2: L1L2_NAME_DEFINED[network].layer2,
-        l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-      })
-    }
-  }, [t, btnInfo])
+    return t(`labelInvestBtn`, {
+      layer2: L1L2_NAME_DEFINED[network].layer2,
+      l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+      l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+      l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+      ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+    })
+    // if (btnInfo?.label) {
+    //   const key = btnInfo?.label.split('|')
+    //   return t(
+    //     key[0],
+    //     key && key[1]
+    //       ? {
+    //           arg: key[1],
+    //           layer2: L1L2_NAME_DEFINED[network].layer2,
+    //           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+    //           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+    //           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+    //           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+    //           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+    //         }
+    //       : {
+    //           layer2: L1L2_NAME_DEFINED[network].layer2,
+    //           l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+    //           loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+    //           l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+    //           l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+    //           ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+    //         },
+    //   )
+    // } else {
+    //   return t(`labelInvestBtn`, {
+    //     layer2: L1L2_NAME_DEFINED[network].layer2,
+    //     l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+    //     loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+    //     l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+    //     l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+    //     ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+    //   })
+    // }
+  }, [t])
 
   // const isMintInputValid = mintModalState.inputValue ?
   const availableToMintFormatted = mintModalState.availableToMint
@@ -1229,9 +1254,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     stakeWrapProps: {
       disabled: false,
       buttonDisabled:
-        account.readyState === AccountStatus.ACTIVATED &&
-        (isLoading || !daysInput || !daysInputValid),
-      btnInfo,
+        // account.readyState === AccountStatus.ACTIVATED &&
+        isLoading || !daysInput || !daysInputValid,
+      // btnInfo,
       isJoin: true,
       isLoading,
       switchStobEvent: (_isStoB: boolean | ((prevState: boolean) => boolean)) => {},
