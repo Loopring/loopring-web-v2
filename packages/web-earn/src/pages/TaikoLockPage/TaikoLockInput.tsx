@@ -15,7 +15,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Box, Checkbox, Grid, Input, Tooltip, Typography } from '@mui/material'
+import { Box, Checkbox, CircularProgress, Grid, Input, Tooltip, Typography } from '@mui/material'
 import {
   InputCoin,
   ButtonStyle,
@@ -91,6 +91,8 @@ type TaikoLockInputProps<T, I, ACD> = {
     onClick: () => void
     disabled: boolean
   }
+  hasPendingDeposits: boolean
+  onClickPendingDeposits: () => void
 }
 
 const StyledInput = styled(Input)`
@@ -123,6 +125,8 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   daysInput,
   myPosition,
   mintButton,
+  hasPendingDeposits,
+  onClickPendingDeposits,
   ...rest
 }: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -406,7 +410,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 </ButtonStyle>
               </Grid>
               <Box mt={2} width={'100%'} display={'flex'} justifyContent={'center'}>
-              <Typography
+                <Typography
                   display={'flex'}
                   alignItems={'center'}
                   textAlign={'center'}
@@ -415,7 +419,15 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 >
                   Points tracked in Taiko Trailblazer Dashboard
                 </Typography>
-            </Box>
+              </Box>
+              {hasPendingDeposits && (
+                <Box sx={{cursor: 'pointer'}} onClick={onClickPendingDeposits} display={'flex'} alignItems={'center'} justifyContent={'center'} mt={4}>
+                  <CircularProgress size={18} sx={{ color: 'var(--color-primary)', mr: 1 }} />
+                  <Typography color={'var(--color-primary)'}>
+                    Pending Transaction
+                  </Typography>
+                </Box>
+              )}
             </Grid>
           </Grid>
         </GridStyle>
@@ -468,6 +480,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                       >
                         {item.amount}
                       </Typography>
+                      <Tooltip title={'Trailblazers Points Multiplier'}>
                       <Box
                         ml={1}
                         bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
@@ -479,6 +492,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                       >
                         {item.multiplier}
                       </Box>
+                      </Tooltip>
                     </Box>
 
                     <Typography
@@ -512,13 +526,10 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               onClick={() => {
                 mintButton.onClick()
               }}
-              disabled={
-                mintButton.disabled
-              }
+              disabled={mintButton.disabled}
             >
               Mint lrTAIKO
             </ButtonStyle>
-            
           </Box>
 
           {/* <Typography mb={2} color={'var(--color-text-secondary)'}>

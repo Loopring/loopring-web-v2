@@ -22,6 +22,8 @@ import { ErrorPage } from '../../pages/ErrorPage'
 import BannerPage from './BannerPage'
 import { useTheme } from '@emotion/react'
 import { MintModal } from './MintModal'
+import { TxSubmitModal } from './TxSubmitModal'
+import { PendingTxsModal } from './PendingTxsModal'
 
 const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const StyleWrapper = styled(Box)`
@@ -129,7 +131,12 @@ export const TaikoLockPage = ({
                 //   border={'1px solid var(--color-border)'}
                 //   borderRadius={2}
                 // >
-                <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
+                <TaikoLockInput
+                  isJoin={isJoin}
+                  symbol={symbol}
+                  {...(stakeWrapProps as any)}
+                  
+                />
               ) : (
                 // </Box>
                 <LoadingBlock />
@@ -146,7 +153,9 @@ export const TaikoLockPage = ({
                 position={'relative'}
                 mb={6}
                 sx={{
-                  backgroundImage: `url('${SoursURL}earn/taiko_farming_des_bg${theme.mode === 'light' ? '_light' : ''}.png')`,
+                  backgroundImage: `url('${SoursURL}earn/taiko_farming_des_bg${
+                    theme.mode === 'light' ? '_light' : ''
+                  }.png')`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center',
                   backgroundSize: 'cover',
@@ -165,7 +174,12 @@ export const TaikoLockPage = ({
                 p={2}
                 borderRadius={'8px'}
                 sx={{
-                  backgroundImage: `url(${SoursURL + (theme.mode === 'dark' ? 'earn/taiko_farming_banner_bg.png' : 'earn/taiko_farming_banner_bg_light.png')})`,
+                  backgroundImage: `url(${
+                    SoursURL +
+                    (theme.mode === 'dark'
+                      ? 'earn/taiko_farming_banner_bg.png'
+                      : 'earn/taiko_farming_banner_bg_light.png')
+                  })`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
@@ -198,29 +212,9 @@ export const TaikoLockPage = ({
       ) : (
         <ErrorPage messageKey={'errorBase'} />
       )}
-      <MintModal
-        // open={stakeWrapProps.mintModal.open}
-        // // ={localState.modalStatus === 'collateralDetails' && !showLeverage.show}
-        // onClose={stakeWrapProps.mintModal.onClose}
-        // onClickMax={}
-        // mintWarningChecked={true}
-        // // mintWarningText={t('labelTaikoFarmingMintWarningText')}
-        // onWarningCheckBoxChange={() => {
-
-        // }}
-        // onConfirmBtnClicked={() => {
-
-        // }}
-        // onInput={(str) => {
-
-        // }}
-
-        // inputValue='1'
-        // confirmBtnDisabled={false}
-        // tokenAvailableAmount='10'
-        {...stakeWrapProps.mintModal}
-        logoCoinJSON={stakeWrapProps.taikoCoinJSON}
-      />
+      <MintModal {...stakeWrapProps.mintModal} logoCoinJSON={stakeWrapProps.taikoCoinJSON} />
+      <TxSubmitModal {...stakeWrapProps.txSubmitModal} />
+      <PendingTxsModal {...stakeWrapProps.pendingTxsModal} />
     </>
   )
 }
