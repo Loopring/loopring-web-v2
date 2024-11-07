@@ -1406,6 +1406,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                     removeTrailingZero: true,
                   },
                 ),
+                symbol: sellToken.symbol
               }
             })
           : [],

@@ -12,6 +12,7 @@ type PendingTxsModalProps = {
   pendingTxs: {
     amount: string
     hash: string
+    symbol: string
   }[]
 }
 
@@ -68,7 +69,7 @@ export const PendingTxsModal = (props: PendingTxsModalProps) => {
                   alignItems={'center'}
                 >
                   <Typography display={'flex'} alignItems={'center'} fontSize={'16px'}>
-                    Lock {tx.amount}{' '}
+                    Lock {tx.amount} {tx.symbol}{' '}
                     <OpenInNewIcon
                       sx={{
                         ml: 1,
