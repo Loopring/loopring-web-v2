@@ -1383,7 +1383,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     precision = vToken?.precision
                     vSymbol = vToken.symbol
                     erc20Symbol = vToken.symbol.slice(2)
-                    amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals)
+                    amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals).abs()
                     fillAmountS =
                       status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
@@ -1391,7 +1391,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = !amount.eq(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${Decimal.abs(amountStr).toString()} ${mapSpecialTokenName(erc20Symbol)}`
+                    mainContentRender = `${amountStr.toString()} ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow

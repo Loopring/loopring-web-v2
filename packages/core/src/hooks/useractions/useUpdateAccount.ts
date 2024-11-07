@@ -131,6 +131,7 @@ export function useUpdateAccount() {
             })
             break
         }
+        throw error
       }
       setReferralCode('')
     },

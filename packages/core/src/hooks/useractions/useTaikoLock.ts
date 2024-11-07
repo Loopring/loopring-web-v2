@@ -955,6 +955,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }, [defaultNetwork])
 
   const updateStakingState = async () => {
+    const account = store.getState().account
     const accountId =
       account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
     if (!accountId || accountId === -1) {
