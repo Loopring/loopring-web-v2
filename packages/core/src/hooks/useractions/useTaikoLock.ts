@@ -726,8 +726,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               open: true,
               status: 'txSubmitted',
             })
-            const recursiveCheck = async (hash: string) => {
+            const recursiveCheck = async (hash: string, env: {addr: string, chainId: sdk.ChainId}) => {
+              
               const account = store.getState().account
+              const defaultNetwork = store.getState().settings.defaultNetwork
+              if (env.addr !== account.accAddress || defaultNetwork !== env.chainId) {
+                // stop if address, chain changed
+                return
+              }
               const accountId =
                 account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
 
@@ -736,7 +742,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   accountId,
                   tokenId: sellToken.tokenId,
                   statuses: 'locked',
-                  hashes: hash,
+                  // @ts-ignore
+                  txHashes: hash,
                 })
                 .then((res) => {
                   if (res.data && res.data.length > 0) {
@@ -745,11 +752,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                       status: 'depositCompleted',
                     })
                   } else {
-                    return sdk.sleep(5 * 1000).then(() => recursiveCheck(hash))
+                    return sdk.sleep(10 * 1000).then(() => recursiveCheck(hash, env))
                   }
                 })
             }
-            recursiveCheck(tx.transactionHash)
+            recursiveCheck(tx.transactionHash, { addr: account.accAddress, chainId: defaultNetwork} )
           })
           .catch((e) => {
             setTxSubmitModalState({
@@ -1017,7 +1024,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   React.useEffect(() => {
     const timer = setInterval(() => {
       updateStakingState()
-    }, 5 * 1000)
+    }, 1000 * 1000)
     updateStakingState()
     return () => {
       clearInterval(timer)
