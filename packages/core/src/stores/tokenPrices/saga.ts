@@ -18,7 +18,7 @@ export const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
           return { 
             ...prev, 
             [symbol]: _tokenPrices[address as keyof R],
-            ['LRTAIKO']: _tokenPrices[address as keyof R] 
+            ['LRTAIKO']: 0
           }
         } else {
           return { ...prev, [symbol]: _tokenPrices[address as keyof R] }
