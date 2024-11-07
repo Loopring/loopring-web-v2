@@ -152,7 +152,7 @@ export const TxSubmitModal = (props: TxSubmitModalProps) => {
                   >
                     Asset Deposit to Loopring DeFi
                   </Typography>
-                  <Typography color={'var(--color-text-secondary)'}>
+                  <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>
                     Loopring DeFi, an app-specific ZK-Rollup, requires approximately 10 blocks for
                     confirmation. On the Taiko network, settlement may take a few minutes.
                   </Typography>

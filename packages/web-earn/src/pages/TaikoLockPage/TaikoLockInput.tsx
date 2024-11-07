@@ -278,6 +278,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               label={
                 <Typography color={'var(--color-text-secondary)'}>{t('labelAmount')}</Typography>
               }
+              placeholderText='≥1'
             />
           </Grid>
           <Grid
@@ -324,11 +325,20 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             textAlign={'left'}
             mt={1.5}
           >
+            * x{Number(daysInput.value)} Multiplier
+          </Typography>
+          <Typography
+            sx={{ opacity: daysInput.value ? 1 : 0 }}
+            width={'100%'}
+            variant='body2'
+            textAlign={'left'}
+            mt={1}
+          >
             * You can unlock your TAIKO tokens after{' '}
             {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
           </Typography>
 
-          <Grid item alignSelf={'stretch'} marginTop={10} pb={1}>
+          <Grid item alignSelf={'stretch'} marginTop={8} pb={1}>
             <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
               <Grid item>
                 <ButtonStyle
@@ -357,7 +367,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   variant={'body2'}
                   color={'var(--color-text-secondary)'}
                 >
-                  Points tracked in Taiko Trailblazer Dashboard
+                  Points tracked in Taiko Trailblazers Dashboard
                 </Typography>
               </Box>
               {hasPendingDeposits && (

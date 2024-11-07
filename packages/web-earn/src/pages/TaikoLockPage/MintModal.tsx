@@ -191,7 +191,7 @@ export const MintModal = (props: MintModalProps) => {
             <Typography color={'var(--color-text-primary)'} variant='h4' mb={0.5}>
               Complete Sign in
             </Typography>
-            <Typography color={'var(--color-text-secondary)'}>
+            <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>
               You need to activate Loopring DeFi account first before minting. Please sign in to
               proceed.
             </Typography>
@@ -246,7 +246,7 @@ export const MintModal = (props: MintModalProps) => {
             <Typography color={'var(--color-text-primary)'} variant='h4' mb={0.5}>
               Mint
             </Typography>
-            <Typography color={'var(--color-text-secondary)'}>Start Mint lrTAIKO</Typography>
+            <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>Start Mint lrTAIKO</Typography>
           </Box>
         </Box>
         <Button disabled={status !== 'signedIn'} variant='contained' onClick={onClickMint}>
