@@ -1165,7 +1165,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               status: 'minting',
             })
           } else if (account.readyState === AccountStatus.LOCKED) {
+            
             unlockAccount()
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UnlockAccount_WaitForAuth,
+            })
           } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
             setMintModalState({
               ...mintModalState,
