@@ -730,7 +730,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               
               const account = store.getState().account
               const defaultNetwork = store.getState().settings.defaultNetwork
-              if (env.addr !== account.accAddress || defaultNetwork !== env.chainId) {
+              const open = await new Promise<boolean>((res) => {
+                setTxSubmitModalState(state => {
+                  res(state.open)
+                  return state
+                })
+              })
+              if (!open || env.addr !== account.accAddress || defaultNetwork !== env.chainId) {
                 // stop if address, chain changed
                 return
               }
@@ -747,10 +753,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 })
                 .then((res) => {
                   if (res.data && res.data.length > 0) {
-                    setTxSubmitModalState({
-                      open: true,
+                    setTxSubmitModalState(state => ({
+                      ...state,
                       status: 'depositCompleted',
-                    })
+                    }))
                   } else {
                     return sdk.sleep(10 * 1000).then(() => recursiveCheck(hash, env))
                   }
