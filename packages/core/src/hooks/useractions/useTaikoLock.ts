@@ -469,8 +469,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           },
           stakeViewInfo: {
             ...deFiSideCalcData.stakeViewInfo,
-            minSellAmount: '1',
-            minSellVol: utils.parseEther('1').toString(),
           }
         }
         updateTradeStake({
@@ -504,8 +502,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         if (item && stakingMap) {
           deFiSideCalcDataInit.stakeViewInfo = { 
             ...item,
-            minSellAmount: '1',
-            minSellVol: utils.parseEther('1').toString(),
+            // minSellAmount: '1',
+            // minSellVol: utils.parseEther('1').toString(),
           }
         } else {
           throw new Error('no product')
@@ -1165,7 +1163,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               status: 'minting',
             })
           } else if (account.readyState === AccountStatus.LOCKED) {
-            
             unlockAccount()
             setShowAccount({
               isShow: true,
