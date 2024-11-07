@@ -14,7 +14,15 @@ export const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
     const tokenPrices: { [key in keyof R]: number } = Reflect.ownKeys(_tokenPrices).reduce(
       (prev, address) => {
         const symbol = addressIndex[address.toString().toLowerCase()]
-        return { ...prev, [symbol]: _tokenPrices[address as keyof R] }
+        if (symbol === 'TAIKO') {
+          return { 
+            ...prev, 
+            [symbol]: _tokenPrices[address as keyof R],
+            ['LRTAIKO']: _tokenPrices[address as keyof R] 
+          }
+        } else {
+          return { ...prev, [symbol]: _tokenPrices[address as keyof R] }
+        }
       },
       {} as { [key in keyof R]: number },
     )
