@@ -107,7 +107,7 @@ export function useUpdateAccount() {
                 ? AccountStep.ResetAccount_First_Method_Denied
                 : AccountStep.UpdateAccount_First_Method_Denied,
             })
-            return
+            break
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             myLog('activateAccount: USER_DENIED')
@@ -117,8 +117,7 @@ export function useUpdateAccount() {
                 ? AccountStep.ResetAccount_User_Denied
                 : AccountStep.UpdateAccount_User_Denied,
             })
-            return
-
+            break
           default:
             setShowAccount({
               isShow: true,

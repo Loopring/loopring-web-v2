@@ -24,6 +24,7 @@ import {
 } from '@loopring-web/common-resources'
 
 import {
+  accountServices,
   calcSideStaking,
   fiatNumberDisplay,
   getTimestampDaysLater,
@@ -466,6 +467,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             ...tradeData,
             tradeValue: inputValue,
           },
+          stakeViewInfo: {
+            ...deFiSideCalcData.stakeViewInfo,
+            minSellAmount: '1',
+            minSellVol: utils.parseEther('1').toString(),
+          }
         }
         updateTradeStake({
           sellToken: tokenSell,
@@ -478,6 +484,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     },
     globalSetup.wait,
   )
+  console.log('asdasdsa',tradeStake)
 
   const resetDefault = React.useCallback(
     async (clearTrade: boolean = false) => {
@@ -498,7 +505,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           deFiSideCalcDataInit.stakeViewInfo = { 
             ...item,
             minSellAmount: '1',
-            minSellVol: utils.formatEther('1'),
+            minSellVol: utils.parseEther('1').toString(),
           }
         } else {
           throw new Error('no product')
@@ -744,7 +751,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   }
                 })
             }
-            debugger
             recursiveCheck(tx.transactionHash)
           })
           .catch((e) => {
@@ -959,7 +965,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     const accountId =
       account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
     if (!accountId || accountId === -1) {
-      dispatch(updateAccountStatus({}))
+      accountServices.sendCheckAccount(account.accAddress)
       return
     }
     LoopringAPI?.defiAPI
@@ -1202,9 +1208,17 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               feeRaw: feeInfo.fees[found!].fee,
             },
           })
-          setMintModalState({
-            ...mintModalState,
-            status: 'signedIn',
+          .then(() => {
+            setMintModalState({
+              ...mintModalState,
+              status: 'signedIn',
+            })
+          })
+          .catch(() => {
+            setMintModalState({
+              ...mintModalState,
+              status: 'notSignedIn',
+            })
           })
         },
         onClickMint: () => {

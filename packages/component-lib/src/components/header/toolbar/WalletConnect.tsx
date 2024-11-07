@@ -20,6 +20,7 @@ import styled from '@emotion/styled'
 import { useSettings } from '../../../stores'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useSystem } from '@loopring-web/core'
+import { useLocation } from 'react-router'
 
 // type ChainId = sdk.ChainId | ChainIdExtends;
 const WalletConnectBtnStyled = styled(Button)`
@@ -80,8 +81,11 @@ export const WalletConnectBtn = ({
   handleClickSignIn
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(['layout', 'common'])
-  const { isMobile } = useSettings()
+  const { isMobile, defaultNetwork } = useSettings()
   const { exchangeInfo } = useSystem()
+  const location = useLocation()
+  const isTaikoFarmingButNotTaikoNet = location.pathname === '/taiko-farming' && ![sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
+
   
   const {label, btnClassname, icon, isLocked} = React.useMemo(() => {
     const account = accountState?.account
@@ -89,7 +93,14 @@ export const WalletConnectBtn = ({
     var btnClassname: string | undefined
     var icon: JSX.Element | undefined
     const isLocked = account.readyState === AccountStatus.LOCKED
-    if (account) {
+    if (account && isTaikoFarmingButNotTaikoNet) {
+      return {
+        btnClassname: 'wrong-network',
+        label: 'labelWrongNetwork',
+        icon: <UnConnectIcon style={{ width: 16, height: 16 }} />,
+        isLocked
+      }
+    } else if (account) {
       const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined
       if (addressShort) {
         label = addressShort
