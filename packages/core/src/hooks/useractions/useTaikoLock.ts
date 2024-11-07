@@ -495,7 +495,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       try {
         let item = stakingMap[coinSellSymbol]
         if (item && stakingMap) {
-          deFiSideCalcDataInit.stakeViewInfo = { ...item }
+          deFiSideCalcDataInit.stakeViewInfo = { 
+            ...item,
+            minSellAmount: '1',
+            minSellVol: utils.formatEther('1'),
+          }
         } else {
           throw new Error('no product')
         }

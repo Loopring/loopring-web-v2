@@ -53,6 +53,7 @@ import {
   DirectionTag,
   PriceTag,
   CurrencyToTag,
+  mapSpecialTokenName,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
@@ -1377,9 +1378,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                         : VaultRecordType.margin
                     //@ts-ignore
                     const erc20Token = tokenMap[idIndex[tokenS ?? '']]
-                    precision = vToken?.precision
                     //@ts-ignore
                     vToken = vaultTokenMap[vaultIdIndex[erc20Map[erc20Token.symbol]?.vaultTokenId]]
+                    precision = vToken?.precision
                     vSymbol = vToken.symbol
                     erc20Symbol = vToken.symbol.slice(2)
                     amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals)
@@ -1390,7 +1391,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = !amount.eq(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${Decimal.abs(amountStr).toString()} ${erc20Symbol}`
+                    mainContentRender = `${Decimal.abs(amountStr).toString()} ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
@@ -1413,7 +1414,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${erc20Symbol}`
+                    } ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_REPAY:
                     type = VaultRecordType.repay
@@ -1437,7 +1438,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${erc20Symbol}`
+                    } ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_TRADE:
                     type = VaultRecordType.trade
@@ -1472,9 +1473,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
-                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}  ${erc20Symbol} ${DirectionTag} ${
+                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}  ${mapSpecialTokenName(erc20Symbol)} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    } ${erc20SymbolB}`
+                    } ${mapSpecialTokenName(erc20SymbolB)}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
@@ -1498,7 +1499,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${tokenBSymbol}`
+                    } ${mapSpecialTokenName(tokenBSymbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_CONVERT:
                       type = VaultRecordType.convert

@@ -10,10 +10,10 @@ import {
   ForexMap,
   getValuePrecisionThousand,
   HiddenTag,
+  mapSpecialTokenName,
   MarketType,
   PriceTag,
   RowConfig,
-  SPECIAL_TOKEN_NAME_MAP,
   TokenType,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '../../../stores'
@@ -294,7 +294,7 @@ export const AssetsTable = withTranslation('tables')(
                 paddingRight={1}
               >
                 <Typography component={'span'} className={'next-coin'}>
-                  {SPECIAL_TOKEN_NAME_MAP.get(token.value) || token.value}
+                  {mapSpecialTokenName(token.value)}
                 </Typography>
               </Typography>
             </>

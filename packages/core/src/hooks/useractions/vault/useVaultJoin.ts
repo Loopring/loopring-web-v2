@@ -12,6 +12,7 @@ import {
   TradeBtnStatus,
   WalletMap,
   myLog,
+  mapSpecialTokenName,
 } from '@loopring-web/common-resources'
 import React from 'react'
 import {
@@ -133,7 +134,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     } else if (sdk.toBig(vaultJoinData.amount).lt(vaultJoinData.minAmount)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
-        label: `labelVaultJoinMini|${vaultJoinData.minShowVal} ${vaultJoinData.belong}`,
+        label: `labelVaultJoinMini|${vaultJoinData.minShowVal} ${mapSpecialTokenName(vaultJoinData.belong as string)}`,
       }
     } else if (sdk.toBig(vaultJoinData.tradeValue ?? 0).gt(vaultJoinData.balance ?? 0)) {
       return {
@@ -872,5 +873,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           )
         : undefined,
   }
+  console.log('dasdsads', output)
   return output
 }

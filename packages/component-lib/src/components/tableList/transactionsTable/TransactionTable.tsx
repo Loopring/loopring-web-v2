@@ -15,9 +15,9 @@ import {
   globalSetup,
   L1L2_NAME_DEFINED,
   MapChainId,
+  mapSpecialTokenName,
   RedPacketIcon,
   RewardIcon,
-  SPECIAL_TOKEN_NAME_MAP,
   TableType,
   TransferIcon,
   UNIX_TIMESTAMP_FORMAT,
@@ -314,7 +314,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
               >
                 {hasSymbol}
                 {row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW && hasValue
-                  ? `${renderValue} ${SPECIAL_TOKEN_NAME_MAP.get(unit) || unit}`
+                  ? `${renderValue} ${mapSpecialTokenName(unit)}`
                   : renderValue}
               </Box>
             )
