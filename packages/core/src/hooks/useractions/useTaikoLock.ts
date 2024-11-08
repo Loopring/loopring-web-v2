@@ -321,7 +321,7 @@ const depositContractABI = [
   },
 ]
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
-const depositContractAddrTAIKO = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
+const depositContractAddrTAIKO = '0xaD32A362645Ac9139CFb5Ba3A2A46fC4c378812B'
 
 const depositTaikoWithDuration = async (input: {
   provider: providers.Web3Provider
