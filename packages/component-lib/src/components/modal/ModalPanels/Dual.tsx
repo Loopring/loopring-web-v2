@@ -648,8 +648,6 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {moment(new Date())
-              // .utc()
-              // .startOf("days")
               .format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Typography>
@@ -677,8 +675,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
     title: props.t('Mint lrTAIKO'),
     describe1: (
       <Typography variant={'h5'} color={'var(--color-text-primary)'} component={'span'}>
-        {/* {props.t('labelTaikoFarmingMintSuccess')} */}
-        Successful
+        {props.t('labelTaikoFarmingMintSuccess')}
       </Typography>
     ),
     describe2: (
@@ -699,7 +696,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            Amount
+            {props.t("labelAmount")}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.amount + ' ' + info?.symbol}
@@ -712,7 +709,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            Time
+            {props.t("labelTime")}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
@@ -720,7 +717,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
         </Typography>
 
         <Typography mt={3}>
-          You can freely use lrTAIKO across all trading and earning options within Loopring DeFi.{' '}
+          {props.t('labelTaikoFarmingMintInfoDes')}
         </Typography>
         <Typography
           component={'p'}
@@ -728,7 +725,7 @@ export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
           sx={{ cursor: 'pointer' }}
           color={'var(--color-primary)'}
           mt={1}
-        >{`Visit Portal to use lrTAIKO as collateral to earn >`}</Typography>
+        >{props.t('labelTaikoFarmingMintVisitPortal')}</Typography>
       </Box>
     ),
   }
@@ -770,7 +767,7 @@ export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            Amount
+            {props.t("labelAmount")}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.amount + ' ' + info?.symbol}
@@ -783,7 +780,7 @@ export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            Time
+            {props.t("labelTime")}
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
             {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}

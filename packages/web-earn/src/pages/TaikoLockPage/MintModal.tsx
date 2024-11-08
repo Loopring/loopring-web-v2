@@ -54,17 +54,17 @@ export const MintModal = (props: MintModalProps) => {
     onClickSignIn,
     onClickMint,
   } = props
-  const { t } = useTranslation()
+  const { t } = useTranslation("common")
   const theme = useTheme()
 
   const mintingUI = (
     <Box pt={5} px={4} pb={4}>
       <Box display={'flex'} justifyContent={'space-between'}>
         <Typography color={'var(--color-text-secondary)'} mb={0.5}>
-          Amount
+          {t("labelAmount")}
         </Typography>
         <Typography color={'var(--color-text-secondary)'} mb={0.5}>
-          Available: {tokenAvailableAmount}
+          {t("labelAvailable")}: {tokenAvailableAmount}
         </Typography>
       </Box>
 
@@ -99,7 +99,7 @@ export const MintModal = (props: MintModalProps) => {
             ml={1}
             color={'var(--color-primary)'}
           >
-            MAX
+            {t("labelInputMax")}
           </Typography>
         }
         placeholder={inputPlaceholder}
@@ -109,7 +109,7 @@ export const MintModal = (props: MintModalProps) => {
         value={inputValue}
       />
       <Box display={'flex'} justifyContent={'space-between'} mt={3} alignItems={'center'}>
-        <Typography color={'var(--color-text-secondary)'}>Rate</Typography>
+        <Typography color={'var(--color-text-secondary)'}>{t("labelDefiRate")}</Typography>
         <Typography color={'var(--color-text-secondary)'}>1 lrTAIKO = 1 TAIKO</Typography>
       </Box>
       <Box mt={5} display={'flex'} alignItems={'center'}>
@@ -139,9 +139,7 @@ export const MintModal = (props: MintModalProps) => {
         </Box>
       </Box>
       <Typography color={'var(--color-text-secondary)'} mt={4}>
-        Risk Reminder: You can use minted lrTAIKO as collateral across other Loopring DeFi
-        utilities. However, if you incur any losses during your investment, those losses will be
-        deducted from your locked TAIKO upon unlocking.
+        {t("labelTaikoFarmingMintRiskReminder")}
       </Typography>
       <ButtonStyle
         sx={{
@@ -189,18 +187,17 @@ export const MintModal = (props: MintModalProps) => {
 
           <Box>
             <Typography color={'var(--color-text-primary)'} variant='h4' mb={0.5}>
-              Complete Sign in
+              {t("labelCompleteSignIn")}
             </Typography>
             <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>
-              You need to activate Loopring DeFi account first before minting. Please sign in to
-              proceed.
+              {t("labelCompleteSignInDes")}
             </Typography>
           </Box>
         </Box>
         <Box>
           {status === 'notSignedIn' ? (
             <Button variant='contained' onClick={onClickSignIn}>
-              Sign in
+              {t("labelSignIn")}
             </Button>
           ) : status === 'signingIn' ? (
             <Typography
@@ -226,7 +223,7 @@ export const MintModal = (props: MintModalProps) => {
                 }}
                 className='custom-size'
               />{' '}
-              Complete
+              {t("Complete")}
             </Typography>
           )}
         </Box>
@@ -244,13 +241,13 @@ export const MintModal = (props: MintModalProps) => {
           />
           <Box>
             <Typography color={'var(--color-text-primary)'} variant='h4' mb={0.5}>
-              Mint
+              {t("labelMint")}
             </Typography>
-            <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>Start Mint lrTAIKO</Typography>
+            <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>{t("labelStartMintlrTAIKO")}</Typography>
           </Box>
         </Box>
         <Button disabled={status !== 'signedIn'} variant='contained' onClick={onClickMint}>
-          Mint
+        {t("labelMint")}
         </Button>
       </Box>
     </Box>
@@ -274,7 +271,7 @@ export const MintModal = (props: MintModalProps) => {
             alignItems={'center'}
           >
             <Typography color={'var(--color-text-primary)'} variant='h5'>
-              Mint
+              {t("labelMint")}
             </Typography>
             <CloseIcon
               className='custom-size'

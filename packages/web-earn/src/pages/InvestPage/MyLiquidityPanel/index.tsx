@@ -4,7 +4,6 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   ButtonStyle,
   CancelDualAlert,
-  DefiStakingTable,
   DualAssetTable,
   DualDetail,
   EarningsDetail,
@@ -94,11 +93,7 @@ const MyLiquidity: any = withTranslation('common')(
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
 
-    const ammPoolRef = React.useRef(null)
-    const stakingRef = React.useRef(null)
-    const leverageETHRef = React.useRef(null)
     const dualRef = React.useRef(null)
-    const sideStakeRef = React.useRef(null)
     const { ammActivityMap } = useAmmActivityMap()
     const { forexMap, getValueInCurrency } = useSystem()
     const { tokenMap, idIndex } = useTokenMap()
@@ -109,7 +104,6 @@ const MyLiquidity: any = withTranslation('common')(
     const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
       useGetAssets()
     const { account } = useAccount()
-    const history = useHistory()
     const { currency, hideSmallBalances, defaultNetwork, coinJson } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { setShowAutoDefault } = confirmation.useConfirmation()
@@ -151,10 +145,7 @@ const MyLiquidity: any = withTranslation('common')(
       summaryMyInvest,
       getStakingList,
       stakedSymbol,
-      totalStakedRewards,
-      stakingList,
       stakeShowLoading,
-      stakingTotal,
       totalStaked,
     } = useOverview({
       ammActivityMap,
@@ -188,10 +179,6 @@ const MyLiquidity: any = withTranslation('common')(
           }, '0')
         : undefined
     }, [dualOnInvestAsset, tokenPrices])
-    const _summaryMyInvest = sdk
-      .toBig(dualStakeDollar ?? 0)
-      .plus(summaryMyInvest.investDollar ?? 0)
-      .toString()
 
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
@@ -338,13 +325,6 @@ const MyLiquidity: any = withTranslation('common')(
               }}
             >
               <Box display={'flex'}>
-                {/* <Box
-                  component={'img'}
-                  marginRight={1}
-                  width={40}
-                  height={40}
-                  src={SoursURL + 'images/icon-dual.svg'}
-                /> */}
                 <Box>
                   <Typography variant='h4'>{t('labelInvestDualTitle')}</Typography>
                   <Typography color={'var(--color-text-third)'}>
@@ -486,13 +466,6 @@ const MyLiquidity: any = withTranslation('common')(
               }}
             >
               <Box marginBottom={2} display={'flex'}>
-                {/* <Box
-                  component={'img'}
-                  marginRight={1}
-                  width={40}
-                  height={40}
-                  src={SoursURL + 'images/icon-dual.svg'}
-                /> */}
                 <Box>
                   <Typography variant='h4'>Portal</Typography>
                   <Typography color={'var(--color-text-third)'}>
@@ -545,7 +518,7 @@ const MyLiquidity: any = withTranslation('common')(
               <Box>
                 <Typography variant={'h4'}>{t('labelInvestType_TAIKOFarming')}</Typography>
                 <Typography color={'var(--color-text-third)'}>
-                  Balance:{' '}
+                  {t("labelBalance")}:{' '}
                   {hideAssets
                     ? HiddenTag
                     : taikoFarmingInfo

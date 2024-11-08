@@ -12,10 +12,10 @@ const BannerPage: React.FC = () => {
   return (
     <MaxWidthContainer>
       <Typography mt={10} variant='h3'>
-        Taiko Lock & Earn
+        {t("labelTaikoLockEarn")}
       </Typography>
       <Typography mt={3} variant='h4'>
-        Earn Trailblazers points with up to a 60x multiplier by locking your TAIKO.
+        {t("labelTaikoLockEarnDes")}
       </Typography>
 
       <Box

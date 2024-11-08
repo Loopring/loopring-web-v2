@@ -55,8 +55,7 @@ export const TaikoLockPage = ({
 }) => {
   const { t } = useTranslation('common')
   const {
-    confirmation: { confirmedLRCStakeInvest, showTaikoLockDescription },
-    setShowTaikoLockDescription,
+    confirmation: { confirmedLRCStakeInvest},
   } = confirmation.useConfirmation()
   const { toggle } = useToggle()
 
@@ -120,20 +119,8 @@ export const TaikoLockPage = ({
               flex={1}
             >
               {stakeWrapProps.deFiSideCalcData ? (
-                // <Box
-                //   display={'flex'}
-                //   style={styles}
-                //   justifyContent={'center'}
-                //   paddingX={3}
-                //   paddingTop={3}
-                //   paddingBottom={3}
-                //   bgcolor={'var(--color-box-third)'}
-                //   border={'1px solid var(--color-border)'}
-                //   borderRadius={2}
-                // >
                 <TaikoLockInput isJoin={isJoin} symbol={symbol} {...(stakeWrapProps as any)} />
               ) : (
-                // </Box>
                 <LoadingBlock />
               )}
             </StyleWrapper>
@@ -157,11 +144,7 @@ export const TaikoLockPage = ({
                 }}
               >
                 <Typography color={'var(--color-white)'}>
-                  Enjoy complete control over your locking duration by choosing any period that
-                  suits you. Trailblazers points will be awarded linearly based on the length of your
-                  lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use
-                  it as collateral to continue trading and earning, maximizing your capital
-                  efficiency even while it’s locked.
+                  {t("labelTaikoFarmingDes")}
                 </Typography>
               </Box>
 

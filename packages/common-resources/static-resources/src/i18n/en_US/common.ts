@@ -2529,7 +2529,20 @@ export default {
   labelLoopringDeFiIs21: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first',
   labelLoopringDeFiIs22: 'deployment will be on Taiko. Join us for an exciting journey ahead!',
   labelLoopringDeFiAssets: 'Loopring DeFi Assets',
-  labelL1toL2WaitForAuthTaikoEarn: 'Your {{symbol}} is being deposited into the {{loopringL2}} Protocol and may take a few moments to complete.'
-  
+  labelL1toL2WaitForAuthTaikoEarn: 'Your {{symbol}} is being deposited into the {{loopringL2}} Protocol and may take a few moments to complete.',
+  labelTaikoFarmingMintSuccess: 'Successful',
+  labelTime: 'Time',
+  labelTaikoFarmingMintInfoDes: 'You can freely use lrTAIKO across all trading and earning options within Loopring DeFi.',
+  labelTaikoFarmingMintVisitPortal: 'Visit Portal to use lrTAIKO as collateral to earn >',
+  labelLockTAIKO: 'Lock TAIKO',
+  labelTaikoLockEarn: 'Earn Trailblazers points with up to a 60x multiplier by locking your TAIKO.',
+  labelTaikoLockEnjoyComplete: 'Enjoy complete control over your locking duration by choosing any period that suits you. Trailblazers points will be awarded linearly based on the length of your lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use it as collateral to continue trading and earning, maximizing your capital efficiency even while it’s locked.',
+  labelTaikoFarmingMintRiskReminder: 'Risk Reminder: You can use minted lrTAIKO as collateral across other Loopring DeFi utilities. However, if you incur any losses during your investment, those losses will be deducted from your locked TAIKO upon unlocking.',
+  labelCompleteSignIn: 'Complete Sign in',
+  labelSignIn: 'Sign in',
+  labelComplete: 'Complete',
+  labelStartMintlrTAIKO: 'Start Mint lrTAIKO',
+  labelCompleteSignInDes: 'You need to activate Loopring DeFi account first before minting. Please sign in to proceed.',
+
 }
 

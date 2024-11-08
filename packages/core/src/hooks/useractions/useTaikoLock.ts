@@ -26,12 +26,14 @@ import {
 import {
   accountServices,
   calcSideStaking,
+  erc20ABI,
   fiatNumberDisplay,
   getTimestampDaysLater,
   isNumberStr,
   numberFormat,
   numberFormatThousandthPlace,
   strNumDecimalPlacesLessThan,
+  taikoDepositABI,
   unlockAccount,
   useStakingMap,
   useUpdateAccount,
@@ -57,269 +59,7 @@ import moment from 'moment'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { updateAccountStatus } from '../../stores/account/reducer'
 import { useDispatch } from 'react-redux'
-const erc20Abi = [
-  {
-    constant: true,
-    inputs: [],
-    name: 'name',
-    outputs: [
-      {
-        name: '',
-        type: 'string',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: '_spender',
-        type: 'address',
-      },
-      {
-        name: '_value',
-        type: 'uint256',
-      },
-    ],
-    name: 'approve',
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-      },
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'totalSupply',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: '_from',
-        type: 'address',
-      },
-      {
-        name: '_to',
-        type: 'address',
-      },
-      {
-        name: '_value',
-        type: 'uint256',
-      },
-    ],
-    name: 'transferFrom',
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-      },
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'decimals',
-    outputs: [
-      {
-        name: '',
-        type: 'uint8',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '_owner',
-        type: 'address',
-      },
-    ],
-    name: 'balanceOf',
-    outputs: [
-      {
-        name: 'balance',
-        type: 'uint256',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'symbol',
-    outputs: [
-      {
-        name: '',
-        type: 'string',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: '_to',
-        type: 'address',
-      },
-      {
-        name: '_value',
-        type: 'uint256',
-      },
-    ],
-    name: 'transfer',
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-      },
-    ],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: '_owner',
-        type: 'address',
-      },
-      {
-        name: '_spender',
-        type: 'address',
-      },
-    ],
-    name: 'allowance',
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    payable: true,
-    stateMutability: 'payable',
-    type: 'fallback',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'spender',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        name: 'value',
-        type: 'uint256',
-      },
-    ],
-    name: 'Approval',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: 'from',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        name: 'to',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        name: 'value',
-        type: 'uint256',
-      },
-    ],
-    name: 'Transfer',
-    type: 'event',
-  },
-]
-// providers
-const depositContractABI = [
-  {
-    inputs: [{ internalType: 'address', name: '_exchange', type: 'address' }],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'address', name: 'from', type: 'address' },
-      { indexed: false, internalType: 'address', name: 'to', type: 'address' },
-      { indexed: false, internalType: 'address', name: 'token', type: 'address' },
-      { indexed: false, internalType: 'uint96', name: 'amount', type: 'uint96' },
-      { indexed: false, internalType: 'uint256', name: 'duration', type: 'uint256' },
-    ],
-    name: 'Deposited',
-    type: 'event',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: 'from', type: 'address' },
-      { internalType: 'address', name: 'to', type: 'address' },
-      { internalType: 'address', name: 'tokenAddress', type: 'address' },
-      { internalType: 'uint96', name: 'amount', type: 'uint96' },
-      { internalType: 'uint256', name: 'duration', type: 'uint256' },
-      { internalType: 'bytes', name: 'extraData', type: 'bytes' },
-    ],
-    name: 'deposit',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'exchange',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
+
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 const depositContractAddrTAIKO = '0xaD32A362645Ac9139CFb5Ba3A2A46fC4c378812B'
 
@@ -337,13 +77,13 @@ const depositTaikoWithDuration = async (input: {
   const depositContractAddr =
     chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA
   const signer = provider.getSigner()
-  const tokenContract = new Contract(taikoAddress, erc20Abi, signer)
+  const tokenContract = new Contract(taikoAddress, erc20ABI, signer)
   const allowance = await tokenContract.allowance(from, approveToAddress)
   if (allowance.lt(amount)) {
     const approveTx = await tokenContract.approve(approveToAddress, amount)
     await approveTx.wait()
   }
-  const contract = new Contract(depositContractAddr, depositContractABI, signer)
+  const contract = new Contract(depositContractAddr, taikoDepositABI, signer)
 
   const tx = await contract.deposit(from, to, taikoAddress, amount, duration, '0x')
   return tx.wait()
@@ -482,7 +222,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     },
     globalSetup.wait,
   )
-  console.log('asdasdsa',tradeStake)
 
   const resetDefault = React.useCallback(
     async (clearTrade: boolean = false) => {
@@ -1087,7 +826,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               },
         )
-      : 'Lock TAIKO'
+      : t('labelLockTAIKO')
   const availableToMintFormatted = mintModalState.availableToMint
     ? utils.formatUnits(mintModalState.availableToMint, sellToken.decimals)
     : undefined
