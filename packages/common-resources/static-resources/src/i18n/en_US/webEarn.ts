@@ -118,6 +118,6 @@ export default {
     "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's battle-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
   labelLaunch: 'Launch',
   labelInvestTaikoFarmingTitle: 'Taiko Farming',
-  labelInvestTaikoFarmingDes1: 'Earn 60x Trailblazer Points by Locking TAIKO!',
-  labelInvestTaikoFarmingDes2: 'Farm Trailblazer points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
+  labelInvestTaikoFarmingDes1: 'Earn 60x Trailblazers Points by Locking TAIKO!',
+  labelInvestTaikoFarmingDes2: 'Farm Trailblazers points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
 }

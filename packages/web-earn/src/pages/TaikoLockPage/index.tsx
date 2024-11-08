@@ -158,7 +158,7 @@ export const TaikoLockPage = ({
               >
                 <Typography color={'var(--color-white)'}>
                   Enjoy complete control over your locking duration by choosing any period that
-                  suits you. Trailblazer points will be awarded linearly based on the length of your
+                  suits you. Trailblazers points will be awarded linearly based on the length of your
                   lock. Plus, your locked TAIKO remains usable within Loopring’s DeFi ecosystem! Use
                   it as collateral to continue trading and earning, maximizing your capital
                   efficiency even while it’s locked.

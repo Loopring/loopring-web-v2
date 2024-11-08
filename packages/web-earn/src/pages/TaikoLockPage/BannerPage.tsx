@@ -15,7 +15,7 @@ const BannerPage: React.FC = () => {
         Taiko Lock & Earn
       </Typography>
       <Typography mt={3} variant='h4'>
-        Earn Trailblazer points with up to a 60x multiplier by locking your TAIKO.
+        Earn Trailblazers points with up to a 60x multiplier by locking your TAIKO.
       </Typography>
 
       <Box
