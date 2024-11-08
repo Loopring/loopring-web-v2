@@ -144,7 +144,7 @@ export const TaikoLockPage = ({
                 }}
               >
                 <Typography color={'var(--color-white)'}>
-                  {t("labelTaikoFarmingDes")}
+                  {t("labelTaikoLockEnjoyComplete")}
                 </Typography>
               </Box>
 

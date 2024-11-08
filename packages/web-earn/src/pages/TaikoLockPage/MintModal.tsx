@@ -3,8 +3,10 @@ import { Button, ButtonStyle, CoinIcons } from '@loopring-web/component-lib'
 import { CloseIcon, TokenType } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+// import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
@@ -64,7 +66,7 @@ export const MintModal = (props: MintModalProps) => {
           {t("labelAmount")}
         </Typography>
         <Typography color={'var(--color-text-secondary)'} mb={0.5}>
-          {t("labelAvailable")}: {tokenAvailableAmount}
+          {t("labelAvailable")} {tokenAvailableAmount}
         </Typography>
       </Box>
 
@@ -115,20 +117,20 @@ export const MintModal = (props: MintModalProps) => {
       <Box mt={5} display={'flex'} alignItems={'center'}>
         <Box>
           {mintWarningChecked ? (
-            <RadioButtonCheckedIcon
+            <CheckBoxRoundedIcon
               onClick={onWarningCheckBoxChange}
               className='custom-size'
               sx={{
                 color: theme.colorBase.warning,
-                fontSize: '24px',
+                fontSize: '20px',
                 cursor: 'pointer',
               }}
             />
           ) : (
-            <RadioButtonUncheckedIcon
+            <CheckBoxOutlineBlankRoundedIcon
               onClick={onWarningCheckBoxChange}
               className='custom-size'
-              sx={{ color: theme.colorBase.warning, fontSize: '24px', cursor: 'pointer' }}
+              sx={{ color: theme.colorBase.warning, fontSize: '20px', cursor: 'pointer' }}
             />
           )}
         </Box>
