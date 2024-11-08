@@ -1030,7 +1030,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   React.useEffect(() => {
     const timer = setInterval(() => {
       updateStakingState()
-    }, 1000 * 1000)
+    }, 10 * 1000)
     updateStakingState()
     return () => {
       clearInterval(timer)
@@ -1087,7 +1087,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
               },
         )
-      : 'Confirm'
+      : 'Lock TAIKO'
   const availableToMintFormatted = mintModalState.availableToMint
     ? utils.formatUnits(mintModalState.availableToMint, sellToken.decimals)
     : undefined
