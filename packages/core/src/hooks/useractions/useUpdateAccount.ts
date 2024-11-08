@@ -85,7 +85,7 @@ export function useUpdateAccount() {
           })
           setShowAccount({
             isShow: true,
-            step: isReset ? AccountStep.UpdateAccount_Success : AccountStep.ResetAccount_Success,
+            step: isReset ? AccountStep.ResetAccount_Success : AccountStep.UpdateAccount_Success,
           })
           await sdk.sleep(1000)
           setShowAccount({ isShow: false })

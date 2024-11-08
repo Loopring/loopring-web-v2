@@ -182,8 +182,7 @@ export const WalletConnectBtn = ({
           >
             <LockIcon sx={{ marginRight: 1, marginBottom: 0.2 }} style={{ width: 16, height: 16 }} />
             <Typography component={'span'} variant={'body1'}>
-              {/* Unlock First */}
-              {isLocked ? t("labelUnlockFirst") : 'Sign in First'}
+              Sign in First
             </Typography>
           </Button>}
         </Box>
