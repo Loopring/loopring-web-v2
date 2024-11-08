@@ -2824,7 +2824,7 @@ export function useAccountModalForUI({
                 unlockAccount()
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.UnlockAccount_WaitForAuth,
+                  step: AccountStep.UpdateAccount_Approve_WaitForAuth,
                 })
               },
             }}

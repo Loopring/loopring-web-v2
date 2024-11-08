@@ -123,7 +123,7 @@ export const btnClickMap: {
       store.dispatch(
         setShowAccount({
           isShow: true,
-          step: AccountStep.UnlockAccount_WaitForAuth,
+          step: AccountStep.UpdateAccount_Approve_WaitForAuth,
         }),
       )
     },
