@@ -10,7 +10,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 type TxSubmitModalProps = {
   open: boolean
   onClose: () => void
-  status: 'init' | 'txSubmitting' | 'txSubmitted' | 'depositCompleted'
+  status: 'init' | 'tokenApproving' |  'depositing' | 'depositCompleted'
 }
 
 const StyledInput = styled(Input)`
@@ -70,7 +70,7 @@ export const TxSubmitModal = (props: TxSubmitModalProps) => {
                     }}
                     className='custom-size'
                   />
-                ) : status === 'txSubmitting' ? (
+                ) : status === 'tokenApproving' ? (
                   <CircularProgress
                     size={18}
                     sx={{
@@ -101,14 +101,14 @@ export const TxSubmitModal = (props: TxSubmitModalProps) => {
                     fontSize={'16px'}
                     mb={0.5}
                   >
-                    Transaction Submit
+                    Token Approve
                   </Typography>
                 </Box>
               </Box>
             </Box>
             <Box mt={5} display={'flex'} justifyContent={'space-between'}>
               <Box display={'flex'}>
-                {status === 'init' || status === 'txSubmitting' ? (
+                {status === 'init' || status === 'tokenApproving' ? (
                   <RadioButtonCheckedIcon
                     sx={{
                       color: theme.colorBase.textSecondary,
@@ -118,7 +118,7 @@ export const TxSubmitModal = (props: TxSubmitModalProps) => {
                     }}
                     className='custom-size'
                   />
-                ) : status === 'txSubmitted' ? (
+                ) : status === 'depositing' ? (
                   <Box>
                     <CircularProgress
                       size={18}
@@ -143,18 +143,20 @@ export const TxSubmitModal = (props: TxSubmitModalProps) => {
                 <Box>
                   <Typography
                     color={
-                      status === 'init' || status === 'txSubmitting'
+                      status === 'init' || status === 'tokenApproving'
                         ? 'var(--color-text-secondary)'
                         : 'var(--color-text-primary)'
                     }
                     fontSize={'16px'}
                     mb={0.5}
                   >
-                    Asset Deposit to Loopring DeFi
+                    Deposit Token
                   </Typography>
                   <Typography color={'var(--color-text-secondary)'} fontSize={'12px'}>
-                    Loopring DeFi, an app-specific ZK-Rollup, requires approximately 10 blocks for
-                    confirmation. On the Taiko network, settlement may take a few minutes.
+                  Settlement on Loopring, an app-specific ZK-Rollup, may take around 10 blocks, while on the Taiko network, it might take a few minutes.
+                  </Typography>
+                  <Typography color={'var(--color-text-secondary)'} fontSize={'12px'} mt={1}>
+                  You can monitor the status here or close this prompt and return to check it later.
                   </Typography>
                 </Box>
               </Box>

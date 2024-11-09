@@ -63,6 +63,25 @@ import { useDispatch } from 'react-redux'
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 const depositContractAddrTAIKO = '0xaD32A362645Ac9139CFb5Ba3A2A46fC4c378812B'
 
+const depositTaikoWithDurationApprove = async (input: {
+  provider: providers.Web3Provider
+  amount: BigNumber
+  duration: BigNumber
+  taikoAddress: string
+  from: string
+  to: string
+  chainId: sdk.ChainId
+  approveToAddress: string
+}) => {
+  const { provider, amount, duration, taikoAddress, from, to, chainId, approveToAddress } = input
+  const signer = provider.getSigner()
+  const tokenContract = new Contract(taikoAddress, erc20ABI, signer)
+  const allowance = await tokenContract.allowance(from, approveToAddress)
+  if (allowance.lt(amount)) {
+    const approveTx = await tokenContract.approve(approveToAddress, amount)
+    await approveTx.wait()
+  }
+}
 const depositTaikoWithDuration = async (input: {
   provider: providers.Web3Provider
   amount: BigNumber
@@ -77,14 +96,7 @@ const depositTaikoWithDuration = async (input: {
   const depositContractAddr =
     chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA
   const signer = provider.getSigner()
-  const tokenContract = new Contract(taikoAddress, erc20ABI, signer)
-  const allowance = await tokenContract.allowance(from, approveToAddress)
-  if (allowance.lt(amount)) {
-    const approveTx = await tokenContract.approve(approveToAddress, amount)
-    await approveTx.wait()
-  }
   const contract = new Contract(depositContractAddr, taikoDepositABI, signer)
-
   const tx = await contract.deposit(from, to, taikoAddress, amount, duration, '0x')
   return tx.wait()
 }
@@ -426,7 +438,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const [daysInput, setDaysInput] = React.useState('')
   const [txSubmitModalState, setTxSubmitModalState] = React.useState({
     open: false,
-    status: 'init' as 'init' | 'txSubmitting' | 'txSubmitted' | 'depositCompleted',
+    status: 'init' as 'init' | 'tokenApproving' |  'depositing' | 'depositCompleted',
   })
   const [pendingTxsModalOpen, setPendingTxsModalOpen] = React.useState(false)
   const onSubmitBtnClick = React.useCallback(async () => {
@@ -440,13 +452,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           setIsLoading(true)
           setTxSubmitModalState({
             open: true,
-            status: 'txSubmitting',
+            status: 'tokenApproving',
           })
           res(null)
         })
           .then(() => {
             if (tradeStake && tradeStake.deFiSideCalcData) {
-              return depositTaikoWithDuration({
+              return depositTaikoWithDurationApprove({
                 provider: new providers.Web3Provider(provider.walletProvider!),
                 amount: BigNumber.from(tradeStake!.sellVol),
                 duration: BigNumber.from(daysInput).mul('60').mul('60').mul('24'),
@@ -460,11 +472,23 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               throw {}
             }
           })
-          .then((tx) => {
+          .then(() => {
             setTxSubmitModalState({
               open: true,
-              status: 'txSubmitted',
+              status: 'depositing',
             })
+            return depositTaikoWithDuration({
+              provider: new providers.Web3Provider(provider.walletProvider!),
+              amount: BigNumber.from(tradeStake!.sellVol),
+              duration: BigNumber.from(daysInput).mul('60').mul('60').mul('24'),
+              taikoAddress: sellToken.address,
+              from: account.accAddress,
+              to: account.accAddress,
+              chainId: defaultNetwork,
+              approveToAddress: exchangeInfo!.depositAddress,
+            })
+          })
+          .then((tx) => {
             const recursiveCheck = async (hash: string, env: {addr: string, chainId: sdk.ChainId}) => {
               
               const account = store.getState().account

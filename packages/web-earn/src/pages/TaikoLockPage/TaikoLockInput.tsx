@@ -334,7 +334,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             textAlign={'left'}
             mt={1}
           >
-            * You can unlock your TAIKO tokens after{' '}
+            * Your TAIKO token will be unlocked on{' '}
             {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
           </Typography>
 

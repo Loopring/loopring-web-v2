@@ -100,6 +100,7 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
               type: `labelStakeTransactionType${row.stakingType}`,
             }
             const tokenInfo = tokenMap[idIndex[row.tokenId ?? '']]
+            
             const amountStr = row.amount
               ? getValuePrecisionThousand(
                   sdk.toBig(row.amount).div('1e' + tokenInfo.decimals),
@@ -113,9 +114,8 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
                   },
                 ) +
                 ' ' +
-                tokenInfo.symbol
+                (row.stakingType === sdk.StakeTransactionType.claim ? 'lrTAIKO' : tokenInfo.symbol)
               : EmptyValueTag
-            // alert(JSON.stringify(row))
             switch (row.stakingType) {
               case sdk.StakeTransactionType.subscribe:
                 side = {
