@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   AccountStep,
   ToastType,
@@ -99,6 +99,24 @@ const depositTaikoWithDuration = async (input: {
   const contract = new Contract(depositContractAddr, taikoDepositABI, signer)
   const tx = await contract.deposit(from, to, taikoAddress, amount, duration, '0x')
   return tx.wait()
+}
+const depositTaikoWithDurationTx = async (input: {
+  provider: providers.Web3Provider
+  amount: BigNumber
+  duration: BigNumber
+  taikoAddress: string
+  from: string
+  to: string
+  chainId: sdk.ChainId
+  approveToAddress: string
+}) => {
+  const { provider, amount, duration, taikoAddress, from, to, chainId, approveToAddress } = input
+  const depositContractAddr =
+    chainId === sdk.ChainId.TAIKO ? depositContractAddrTAIKO : depositContractAddrTAIKOHEKLA
+  const signer = provider.getSigner()
+  const contract = new Contract(depositContractAddr, taikoDepositABI, signer)
+  return contract.functions['deposit'](from, to, taikoAddress, amount, duration, '0x') 
+  // return tx.wait()
 }
 
 const submitTaikoFarmingMint = async (info: {
@@ -441,6 +459,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     status: 'init' as 'init' | 'tokenApproving' |  'depositing' | 'depositCompleted',
   })
   const [pendingTxsModalOpen, setPendingTxsModalOpen] = React.useState(false)
+  const [localPendingTx, setLocalPendingTx] = useState<{
+    txHash: string
+    amount: string
+  } | undefined>(undefined)
   const onSubmitBtnClick = React.useCallback(async () => {
     if (tokenMap && exchangeInfo) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
@@ -477,7 +499,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               open: true,
               status: 'depositing',
             })
-            return depositTaikoWithDuration({
+            return depositTaikoWithDurationTx({
               provider: new providers.Web3Provider(provider.walletProvider!),
               amount: BigNumber.from(tradeStake!.sellVol),
               duration: BigNumber.from(daysInput).mul('60').mul('60').mul('24'),
@@ -489,8 +511,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
           .then((tx) => {
+            setLocalPendingTx({
+              txHash: tx.transactionHash,
+              amount: tradeStake!.sellVol,
+            })
+            return tx.wait()
+          }).then((txReceipt) => {
             const recursiveCheck = async (hash: string, env: {addr: string, chainId: sdk.ChainId}) => {
-              
               const account = store.getState().account
               const defaultNetwork = store.getState().settings.defaultNetwork
               const open = await new Promise<boolean>((res) => {
@@ -525,7 +552,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   }
                 })
             }
-            recursiveCheck(tx.transactionHash, { addr: account.accAddress, chainId: defaultNetwork} )
+            recursiveCheck(txReceipt.transactionHash, { addr: account.accAddress, chainId: defaultNetwork} )
           })
           .catch((e) => {
             setTxSubmitModalState({
@@ -691,6 +718,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           updatedAt: number
         }[],
   )
+  
 
   const stakingAmountRaw =
     stakeInfo && sellToken
@@ -785,6 +813,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       availableToMint: '',
       status: 'notSignedIn',
     })
+    setLocalPendingTx(undefined)
+    setPendingDeposits(undefined)
   }
   React.useEffect(() => {
     getStakingMap()
@@ -860,6 +890,25 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       new Decimal(mintModalState.inputValue).greaterThan(availableToMintFormatted ?? '0'))
 
   const { goUpdateAccount } = useUpdateAccount()
+  
+  // const localPendingTx = {
+  //   txHash: 'aaa',
+  //   amount: utils.parseUnits('1000.1', sellToken.decimals).toString(),
+  //   createdAt: Date.now(),
+  //   isLocal: true
+  // } as {
+  //   txHash: string
+  //   amount: string
+  //   isLocal: boolean
+  //   createdAt: number
+  // } | undefined
+
+  const pendingDepositsMergeLocal = [
+    ...(pendingDeposits ? pendingDeposits.map(tx => ({...tx, isLocal: false})) : []),
+    ...(localPendingTx ? [
+      {...localPendingTx, isLocal: true}
+    ] : []),
+  ]
   const output = {
     stakeWrapProps: {
       disabled: false,
@@ -986,18 +1035,18 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               feeRaw: feeInfo.fees[found!].fee,
             },
           })
-          .then(() => {
-            setMintModalState({
-              ...mintModalState,
-              status: 'signedIn',
+            .then(() => {
+              setMintModalState({
+                ...mintModalState,
+                status: 'signedIn',
+              })
             })
-          })
-          .catch(() => {
-            setMintModalState({
-              ...mintModalState,
-              status: 'notSignedIn',
+            .catch(() => {
+              setMintModalState({
+                ...mintModalState,
+                status: 'notSignedIn',
+              })
             })
-          })
         },
         onClickMint: () => {
           setMintModalState({
@@ -1155,6 +1204,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       txSubmitModal: {
         open: txSubmitModalState.open,
         onClose: () => {
+          if (txSubmitModalState.status === 'depositing') {
+            setIsLoading(false)
+          }
           setTxSubmitModalState({
             open: false,
             status: 'init',
@@ -1162,7 +1214,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         },
         status: txSubmitModalState.status,
       },
-      hasPendingDeposits: pendingDeposits && pendingDeposits.length > 0,
+      hasPendingDeposits: pendingDepositsMergeLocal && pendingDepositsMergeLocal.length > 0,
       onClickPendingDeposits: () => {
         setPendingTxsModalOpen(true)
       },
@@ -1171,21 +1223,26 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         onClose: () => {
           setPendingTxsModalOpen(false)
         },
-        pendingTxs: pendingDeposits
-          ? pendingDeposits?.map((tx) => {
-              return {
-                hash: tx.txHash,
-                amount: numberFormatThousandthPlace(
-                  utils.formatUnits((tx as any).amount as string, sellToken.decimals),
-                  {
-                    fixed: sellToken.precision,
-                    removeTrailingZero: true,
-                  },
-                ),
-                symbol: sellToken.symbol
-              }
-            })
-          : [],
+        pendingTxs: pendingDepositsMergeLocal?.map((tx) => {
+          return {
+            hash: tx.txHash,
+            amount: numberFormatThousandthPlace(
+              utils.formatUnits((tx as any).amount as string, sellToken.decimals),
+              {
+                fixed: sellToken.precision,
+                removeTrailingZero: true,
+              },
+            ),
+            symbol: sellToken.symbol,
+            isLocal: tx.isLocal,
+          }
+        }),
+        onClickLocking: () => {
+          setTxSubmitModalState({
+            open: true,
+            status: 'depositing',
+          })
+        }
       },
     },
   }

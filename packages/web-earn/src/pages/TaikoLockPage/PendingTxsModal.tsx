@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 type PendingTxsModalProps = {
   open: boolean
   onClose: () => void
@@ -13,7 +14,9 @@ type PendingTxsModalProps = {
     amount: string
     hash: string
     symbol: string
+    isLocal: boolean
   }[]
+  onClickLocking: () => void
 }
 
 const StyledInput = styled(Input)`
@@ -23,7 +26,7 @@ const StyledInput = styled(Input)`
 `
 
 export const PendingTxsModal = (props: PendingTxsModalProps) => {
-  const { open, onClose, pendingTxs } = props
+  const { open, onClose, pendingTxs, onClickLocking } = props
   const { t } = useTranslation()
   const theme = useTheme()
   const { etherscanBaseUrl } = useSystem()
@@ -70,17 +73,35 @@ export const PendingTxsModal = (props: PendingTxsModalProps) => {
                 >
                   <Typography display={'flex'} alignItems={'center'} fontSize={'16px'}>
                     Lock {tx.amount} {tx.symbol}{' '}
-                    <OpenInNewIcon
-                      sx={{
-                        ml: 1,
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        color: 'var(--color-text-primary)',
-                      }}
-                      onClick={() => window.open(`${etherscanBaseUrl}tx/${tx.hash}`)}
-                    />
+                    {!tx.isLocal && (
+                      <OpenInNewIcon
+                        sx={{
+                          ml: 1,
+                          cursor: 'pointer',
+                          fontSize: '16px',
+                          color: 'var(--color-text-primary)',
+                        }}
+                        onClick={() => window.open(`${etherscanBaseUrl}tx/${tx.hash}`)}
+                      />
+                    )}
                   </Typography>
-                  <CircularProgress size={18} sx={{ color: 'var(--color-primary)' }} />
+                  {tx.isLocal ? (
+                    <Typography
+                      color={'var(--color-primary)'}
+                      display={'flex'}
+                      alignItems={'center'}
+                      component={'p'}
+                      onClick={onClickLocking}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      Locking{' '}
+                      <ArrowForwardIosIcon
+                        sx={{ color: 'var(--color-primary)', fontSize: '14px' }}
+                      ></ArrowForwardIosIcon>{' '}
+                    </Typography>
+                  ) : (
+                    <CircularProgress size={18} sx={{ color: 'var(--color-primary)' }} />
+                  )}
                 </Box>
               )
             })}
