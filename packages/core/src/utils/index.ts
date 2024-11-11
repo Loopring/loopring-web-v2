@@ -19,3 +19,5 @@ export {
 } from './calculation'
 export {getOptionalDecimal} from './decimal'
 export {isNumberStr,strNumDecimalPlacesLessThan} from './validation'
+
+export {getStateFnState} from './getStateFnState'

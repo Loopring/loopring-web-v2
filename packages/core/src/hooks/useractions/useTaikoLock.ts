@@ -28,6 +28,7 @@ import {
   calcSideStaking,
   erc20ABI,
   fiatNumberDisplay,
+  getStateFnState,
   getTimestampDaysLater,
   isNumberStr,
   numberFormat,
@@ -495,7 +496,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }
           })
           .then(() => {
-            
+            setTxSubmitModalState({
+              open: true,
+              status: 'depositing',
+            })
             return depositTaikoWithDurationTx({
               provider: new providers.Web3Provider(provider.walletProvider!),
               amount: BigNumber.from(tradeStake!.sellVol),
@@ -508,15 +512,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
           .then((tx) => {
-            setTxSubmitModalState({
-              open: true,
-              status: 'depositing',
-            })
+            
             setDaysInput('')
             setIsLoading(false)
             resetDefault(true)
             setLocalPendingTx({
-              txHash: tx.transactionHash,
+              txHash: tx.hash,
               amount: tradeStake!.sellVol,
             })
             return tx.wait()
@@ -781,11 +782,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         statuses: 'received',
       })
       .then((res) => {
-        const found = res.data.find(tx => tx.txHash === localPendingTx?.txHash)
-        if (found) {
-          setLocalPendingTx(undefined)
-        }
-        setPendingDeposits(res.data)
+        getStateFnState(setLocalPendingTx).then(localPendingTx => {
+          const found = res.data.find((item) => {
+            return item.txHash === localPendingTx?.txHash
+          })
+          if (found) {
+            setLocalPendingTx(undefined)
+          }
+          setPendingDeposits(res.data)
+        })
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingPositionInfo({
