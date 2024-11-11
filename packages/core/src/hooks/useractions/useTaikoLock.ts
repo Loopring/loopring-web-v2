@@ -912,10 +912,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   // } | undefined
 
   const pendingDepositsMergeLocal = [
-    ...(pendingDeposits ? pendingDeposits.map(tx => ({...tx, isLocal: false})) : []),
     ...(localPendingTx ? [
       {...localPendingTx, isLocal: true}
     ] : []),
+    ...(pendingDeposits ? pendingDeposits.map(tx => ({...tx, isLocal: false})) : []),
   ]
   const output = {
     stakeWrapProps: {
