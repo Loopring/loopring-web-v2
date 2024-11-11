@@ -525,13 +525,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             const recursiveCheck = async (hash: string, env: {addr: string, chainId: sdk.ChainId}) => {
               const account = store.getState().account
               const defaultNetwork = store.getState().settings.defaultNetwork
-              const open = await new Promise<boolean>((res) => {
-                setTxSubmitModalState(state => {
-                  res(state.open)
-                  return state
-                })
-              })
-              if (!open || env.addr !== account.accAddress || defaultNetwork !== env.chainId) {
+              if (env.addr !== account.accAddress || defaultNetwork !== env.chainId) {
                 // stop if address, chain changed
                 return
               }
