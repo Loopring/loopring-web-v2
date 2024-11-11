@@ -471,7 +471,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
       } else {
         new Promise((res) => {
-          debugger
           setIsLoading(true)
           setTxSubmitModalState({
             open: true,
