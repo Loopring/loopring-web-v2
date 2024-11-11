@@ -471,6 +471,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
       } else {
         new Promise((res) => {
+          debugger
           setIsLoading(true)
           setTxSubmitModalState({
             open: true,
@@ -495,10 +496,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }
           })
           .then(() => {
-            setTxSubmitModalState({
-              open: true,
-              status: 'depositing',
-            })
+            
             return depositTaikoWithDurationTx({
               provider: new providers.Web3Provider(provider.walletProvider!),
               amount: BigNumber.from(tradeStake!.sellVol),
@@ -511,6 +509,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
           .then((tx) => {
+            setTxSubmitModalState({
+              open: true,
+              status: 'depositing',
+            })
+            setDaysInput('')
+            setIsLoading(false)
+            resetDefault(true)
             setLocalPendingTx({
               txHash: tx.transactionHash,
               amount: tradeStake!.sellVol,
@@ -777,6 +782,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         statuses: 'received',
       })
       .then((res) => {
+        const found = res.data.find(tx => tx.txHash === localPendingTx?.txHash)
+        if (found) {
+          setLocalPendingTx(undefined)
+        }
         setPendingDeposits(res.data)
       })
     LoopringAPI?.defiAPI
@@ -1207,9 +1216,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       txSubmitModal: {
         open: txSubmitModalState.open,
         onClose: () => {
-          if (txSubmitModalState.status === 'depositing') {
-            setIsLoading(false)
-          }
           setTxSubmitModalState({
             open: false,
             status: 'init',
