@@ -83,6 +83,7 @@ type TaikoLockInputProps<T, I, ACD> = {
   }
   hasPendingDeposits: boolean
   onClickPendingDeposits: () => void
+  lockTaikoPlaceholder: string
 }
 
 const StyledInput = styled(Input)`
@@ -117,6 +118,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   mintButton,
   hasPendingDeposits,
   onClickPendingDeposits,
+  lockTaikoPlaceholder,
   ...rest
 }: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -278,7 +280,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               label={
                 <Typography color={'var(--color-text-secondary)'}>{t('labelAmount')}</Typography>
               }
-              placeholderText='≥1'
+              placeholderText={lockTaikoPlaceholder}
             />
           </Grid>
           <Grid

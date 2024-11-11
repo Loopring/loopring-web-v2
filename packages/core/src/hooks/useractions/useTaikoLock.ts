@@ -942,6 +942,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           : undefined,
       taikoFarmingChecked,
       onCheckBoxChange,
+      lockTaikoPlaceholder: tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount
+        ? `≥ ${tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount}`
+        : '',
       daysInput: {
         value: daysInput,
         onInput: (input) => {
