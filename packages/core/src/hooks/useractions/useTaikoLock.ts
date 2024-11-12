@@ -1208,8 +1208,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             ? availableToMintFormatted &&
               mintModalState.minInputAmount &&
               mintModalState.maxInputAmount &&
-              Decimal.min(availableToMintFormatted, availableToMintFormatted).gte(mintModalState.minInputAmount)
-              ? `Please input between ${mintModalState.minInputAmount.toString()} - ${Decimal.min(availableToMintFormatted, availableToMintFormatted).toString()}`
+              Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).gte(mintModalState.minInputAmount)
+              ? `Please input between ${mintModalState.minInputAmount.toString()} - ${Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).toString()}`
               : 'Invalid amount'
             : !mintModalState.warningChecked
             ? 'Please check checkbox'
@@ -1218,14 +1218,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         inputPlaceholder:
           mintModalState.minInputAmount && mintModalState.maxInputAmount
             ? availableToMintFormatted &&
-              Decimal.min(availableToMintFormatted, availableToMintFormatted).gte(
+              Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).gte(
                 mintModalState.minInputAmount,
               )
               ? `${mintModalState.minInputAmount.toString()} - ${Decimal.min(
-                  availableToMintFormatted,
+                  mintModalState.maxInputAmount,
                   availableToMintFormatted,
                 ).toString()}`
-              : '≥ 50'
+              : `≥ ${mintModalState.minInputAmount.toString()}`
             : '',
         status: mintModalState.status,
       },
