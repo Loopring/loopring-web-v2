@@ -751,6 +751,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     warningChecked: false,
     availableToMint: '',
     status: 'notSignedIn' as 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting',
+    minInputAmount: undefined as Decimal | undefined,
+    maxInputAmount: undefined as Decimal | undefined,
   })
 
   useEffect(() => {
@@ -792,10 +794,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
       .then((res) => {
         const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
-
+        const minClaimAmount = (res[0] as any).minClaimAmount as string
+        const maxClaimAmount = (res[0] as any).maxClaimAmount as string
         setMintModalState((mintModalState) => ({
           ...mintModalState,
           availableToMint: availableToMint,
+          minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)) ,
+          maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)) ,
         }))
       })
     LoopringAPI?.defiAPI
@@ -819,6 +824,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       warningChecked: false,
       availableToMint: '',
       status: 'notSignedIn',
+      maxInputAmount: undefined,
+      minInputAmount: undefined,
     })
     setLocalPendingTx(undefined)
     setPendingDeposits(undefined)
@@ -892,9 +899,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     ? utils.formatUnits(mintModalState.availableToMint, sellToken.decimals)
     : undefined
   const isInputInvalid =
-    mintModalState.inputValue &&
-    (new Decimal(mintModalState.inputValue).lessThan('50') ||
-      new Decimal(mintModalState.inputValue).greaterThan(availableToMintFormatted ?? '0'))
+    mintModalState.inputValue && mintModalState.maxInputAmount && mintModalState.minInputAmount &&
+    (new Decimal(mintModalState.inputValue).lessThan(mintModalState.minInputAmount) ||
+      new Decimal(mintModalState.inputValue).greaterThan(Decimal.min(availableToMintFormatted ?? '0', mintModalState.maxInputAmount)))
 
   const { goUpdateAccount } = useUpdateAccount()
   
@@ -1198,17 +1205,28 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           isInputInvalid,
         confirmBtnWording:
           isInputInvalid || !mintModalState.inputValue
-            ? availableToMintFormatted && new Decimal(availableToMintFormatted).gte('50')
-              ? `Please input between 50 - ${availableToMintFormatted}`
+            ? availableToMintFormatted &&
+              mintModalState.minInputAmount &&
+              mintModalState.maxInputAmount &&
+              Decimal.min(availableToMintFormatted, availableToMintFormatted).gte(mintModalState.minInputAmount)
+              ? `Please input between ${mintModalState.minInputAmount.toString()} - ${Decimal.min(availableToMintFormatted, availableToMintFormatted).toString()}`
               : 'Invalid amount'
             : !mintModalState.warningChecked
             ? 'Please check checkbox'
             : 'Confirm',
         tokenAvailableAmount: availableToMintFormatted ? availableToMintFormatted : '--',
         inputPlaceholder:
-          availableToMintFormatted && new Decimal(availableToMintFormatted).gte('50')
-            ? `50 - ${availableToMintFormatted}`
-            : '≥ 50',
+          mintModalState.minInputAmount && mintModalState.maxInputAmount
+            ? availableToMintFormatted &&
+              Decimal.min(availableToMintFormatted, availableToMintFormatted).gte(
+                mintModalState.minInputAmount,
+              )
+              ? `${mintModalState.minInputAmount.toString()} - ${Decimal.min(
+                  availableToMintFormatted,
+                  availableToMintFormatted,
+                ).toString()}`
+              : '≥ 50'
+            : '',
         status: mintModalState.status,
       },
       txSubmitModal: {
@@ -1249,7 +1267,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             open: true,
             status: 'depositing',
           })
-        }
+        },
       },
     },
   }
