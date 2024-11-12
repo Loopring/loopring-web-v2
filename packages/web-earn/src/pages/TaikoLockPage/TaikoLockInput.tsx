@@ -5,6 +5,7 @@ import {
   getValuePrecisionThousand,
   hexToRGB,
   IBData,
+  Info2Icon,
   myLog,
   OrderListIcon,
   TradeBtnStatus,
@@ -18,6 +19,7 @@ import {
   InputButtonProps,
   BtnInfo,
   useSettings,
+  SpaceBetweenBox,
 } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import styled from '@emotion/styled'
@@ -84,6 +86,11 @@ type TaikoLockInputProps<T, I, ACD> = {
   hasPendingDeposits: boolean
   onClickPendingDeposits: () => void
   lockTaikoPlaceholder: string
+  lrTAIKOTradeEarnSummary?: {
+    holdingAmount: string
+    mintedAmount: string
+    pnl: string
+  }
 }
 
 const StyledInput = styled(Input)`
@@ -119,6 +126,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   hasPendingDeposits,
   onClickPendingDeposits,
   lockTaikoPlaceholder,
+  lrTAIKOTradeEarnSummary,
   ...rest
 }: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -485,6 +493,72 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               Mint lrTAIKO
             </ButtonStyle>
           </Box>
+        </Box>
+      )}
+      {lrTAIKOTradeEarnSummary && (
+        <Box
+          display={'flex'}
+          style={isMobile ? { flex: 1 } : { width: '450px' }}
+          justifyContent={'center'}
+          bgcolor={'var(--color-box-third)'}
+          border={'1px solid var(--color-border)'}
+          borderRadius={2}
+          width={'100%'}
+          flexDirection={'column'}
+          p={3}
+          my={5}
+        >
+          <Typography
+            display={'flex'}
+            alignItems={'center'}
+            variant={'h5'}
+            color={'var(--color-text-primary)'}
+            mb={2}
+          >
+            Trade & Earn Summary
+          </Typography>
+          <SpaceBetweenBox
+            mb={2}
+            leftNode={
+              <Typography color={'var(--color-text-secondary)'}>Holding lrTAIKO Amount</Typography>
+            }
+            rightNode={
+              <Typography color={'var(--color-text-primary)'}>
+                {lrTAIKOTradeEarnSummary.holdingAmount}
+              </Typography>
+            }
+          />
+          <SpaceBetweenBox
+            mb={2}
+            leftNode={
+              <Typography color={'var(--color-text-secondary)'}>Minted lrTAIKO Amount</Typography>
+            }
+            rightNode={
+              <Typography color={'var(--color-text-primary)'}>
+                {lrTAIKOTradeEarnSummary.mintedAmount}
+              </Typography>
+            }
+          />
+          <SpaceBetweenBox
+            mb={2}
+            leftNode={
+              <Tooltip
+                title={
+                  <Typography variant='body2'>
+                    {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.` }<br/><br/>
+                    {`If the investment hasn’t been settled yet, the P&L won’t be visible here. To view the unrealized P&L, please navigate to the specific investment portfolio.`}
+                  </Typography>
+                }
+              >
+                <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-secondary)'}>Profit & Loss <Info2Icon sx={{ml:0.5}}/></Typography>
+              </Tooltip>
+            }
+            rightNode={
+              <Typography color={'var(--color-text-primary)'}>
+                {lrTAIKOTradeEarnSummary.pnl}
+              </Typography>
+            }
+          />
         </Box>
       )}
     </Box>

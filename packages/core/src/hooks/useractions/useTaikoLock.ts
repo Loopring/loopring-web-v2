@@ -53,7 +53,7 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
-import { useTokenPrices, useTradeStake, WalletLayer1Map } from '../../stores'
+import { useTokenPrices, useTradeStake, useWalletLayer2, WalletLayer1Map } from '../../stores'
 import Decimal from 'decimal.js'
 import { BigNumber, Contract, providers, utils } from 'ethers'
 import moment from 'moment'
@@ -207,6 +207,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { defaultNetwork, currency, coinJson } = useSettings()
   const sellToken = tokenMap[coinSellSymbol]
   const taikoFarmingPrecision = 2
+  const { walletLayer2 } = useWalletLayer2()
+  const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
+  
+  const holdingLRTAIKO = walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken.decimals
+    ? utils.formatUnits(walletLayer2['LRTAIKO'].total, sellToken.decimals) 
+    : undefined
+  console.log('walletLayer2', holdingLRTAIKO) 
 
   const handleOnchange = _.debounce(
     ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
@@ -802,6 +809,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)) ,
           maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)) ,
         }))
+        
+        setMintedLRTAIKO(utils.formatUnits(res[0].claimedTotal, sellToken.decimals))
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingUserSummary({
@@ -923,6 +932,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     ] : []),
     ...(pendingDeposits ? pendingDeposits.map(tx => ({...tx, isLocal: false})) : []),
   ]
+  
   const output = {
     stakeWrapProps: {
       disabled: false,
@@ -1269,6 +1279,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
         },
       },
+      lrTAIKOTradeEarnSummary: mintedLRTAIKO && holdingLRTAIKO && {
+        holdingAmount: numberFormatThousandthPlace(holdingLRTAIKO, { fixed: sellToken.precision, removeTrailingZero: true }),
+        mintedAmount: numberFormatThousandthPlace(mintedLRTAIKO, { fixed: sellToken.precision, removeTrailingZero: true }),
+        pnl: `${new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'}${
+          numberFormatThousandthPlace(new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(), {fixed: sellToken.precision, removeTrailingZero: true}) 
+        }`,
+      }
     },
   }
   return output
