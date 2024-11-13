@@ -546,7 +546,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 title={
                   <Typography variant='body2'>
                     {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.` }<br/><br/>
-                    {`If the investment hasn’t been settled yet, the P&L won’t be visible here. To view the unrealized P&L, please navigate to the specific investment portfolio.`}
+                    {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
                   </Typography>
                 }
               >
