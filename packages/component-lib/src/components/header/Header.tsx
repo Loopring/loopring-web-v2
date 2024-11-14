@@ -348,10 +348,11 @@ interface NestedMobileDrawerProps {
   onClose: () => void
   showSetting: boolean
   showColorSwitch: boolean
+  selectedLink: string
 }
 
 const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
-  const { linkList, showColorSwitch, showSetting } = props
+  const { linkList, showColorSwitch, showSetting, selectedLink} = props
   const { t } = useTranslation()
   const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined)
 
@@ -401,7 +402,7 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
                     }
                   }}
                 >
-                  <Typography fontSize={'16px'} mr={1}>
+                  <Typography color={selectedLink === item.link ? 'var(--color-primary)' : 'var(--color-text-primary)'} fontSize={'16px'} mr={1}>
                     {item.title}
                   </Typography>
                   {item.subLinkList &&
@@ -421,7 +422,6 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
                 {item.subLinkList && selected && (
                   <Box mt={4}>
                     {item.subLinkList.map((subItem) => {
-                      console.log('subItem', subItem)
                       const LogoElement = subItem.LogoElement
                       return (
                         <Box
@@ -438,13 +438,16 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
                             style={{
                               width: '24px',
                               height: '24px',
-                              color: 'var(--color-text-primary)',
+                              color:
+                                subItem.link === selectedLink
+                                  ? 'var(--color-primary)'
+                                  : 'var(--color-text-primary)',
                             }}
                           />
                           {/* <Box component={'img'} src={subItem.logo} width={'24px'} height={'24px'} /> */}
                           <Box ml={4}>
-                            <Typography>{subItem.title}</Typography>
-                            <Typography variant='body2' color={'var(--color-text-secondary)'}>
+                            <Typography color={subItem.link === selectedLink ? 'var(--color-primary)' : 'var(--color-text-primary)'}>{subItem.title}</Typography>
+                            <Typography variant='body2' color={subItem.link === selectedLink ? 'var(--color-primary)' : 'var(--color-text-secondary)'}>
                               {subItem.des}
                             </Typography>
                           </Box>
@@ -463,9 +466,20 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
           justifyContent={'space-between'}
           alignItems={'center'}
         >
-          {/* <Box /> */}
-          <Box>
-            {showSetting && <ToolBarItem t={t} buttonComponent={ButtonComponentsMap.Setting} />}
+          <Box display={'flex'}>
+            {showSetting && (
+              <>
+                <Box mr={2}>
+                  <ToolBarItem  t={t} buttonComponent={ButtonComponentsMap.Setting} />
+                </Box>
+                <Box mr={2}>
+                  <ToolBarItem t={t} buttonComponent={ButtonComponentsMap.Notification} />
+                </Box>
+                <Box mr={2}>
+                  <ToolBarItem t={t} buttonComponent={ButtonComponentsMap.Download} />
+                </Box>
+              </>
+            )}
           </Box>
           <Box>
             {showColorSwitch && <ToolBarItem buttonComponent={ButtonComponentsMap.ColorSwitch} />}
@@ -880,7 +894,6 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                             const childList = Array.isArray(item.child)
                               ? item.child
                               : _.values(item.child).flat()
-                            console.log('childList', childList)
                             const hasChildren = childList && childList.length > 0
                             return {
                               title: t(item.label.i18nKey, {
@@ -922,6 +935,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           }}
                           showSetting={true}
                           showColorSwitch={true}
+                          selectedLink={history.location.pathname}
                         />
                       ) : (
                         <MobileDrawer

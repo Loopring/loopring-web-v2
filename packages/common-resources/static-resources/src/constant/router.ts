@@ -239,10 +239,10 @@ export let headerToolBarDataMobile: {
   //   buttonComponent: ButtonComponentsMap.Download,
   //   url: WalletSite,
   // },
-  [ButtonComponentsMap.Notification]: {
-    buttonComponent: ButtonComponentsMap.Notification,
-    label: 'labelNotification',
-  },
+  // [ButtonComponentsMap.Notification]: {
+  //   buttonComponent: ButtonComponentsMap.Notification,
+  //   label: 'labelNotification',
+  // },
   // [ButtonComponentsMap.Setting]: {
   //   buttonComponent: ButtonComponentsMap.Setting,
   //   label: 'labelSetting',

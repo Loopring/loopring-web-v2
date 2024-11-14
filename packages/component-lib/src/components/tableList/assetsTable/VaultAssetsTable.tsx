@@ -318,7 +318,7 @@ export const VaultAssetsTable = withTranslation('tables')(
 				key: 'token',
 				name: t('labelToken'),
 				formatter: ({row}) => {
-					const {token, precision, erc20Symbol: symbol, available} = row
+					const {token, precision, erc20Symbol: symbol, available, amount} = row
 					let tokenIcon: [any, any] = [coinJson[symbol], undefined]
 					return (
 						<>
@@ -336,19 +336,14 @@ export const VaultAssetsTable = withTranslation('tables')(
 								<Typography display={'flex'}>
 									{hideAssets
 										? HiddenTag
-										: (available && Number(available) > 0) ? getValuePrecisionThousand(
-											token.value,
-											precision,
-											precision,
-											undefined,
-											false,
-											{
-												floor: true,
-											},
-										) : EmptyValueTag}
+										: amount && Number(amount) > 0
+                    ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+                        floor: true,
+                      })
+										 : EmptyValueTag}
 								</Typography>
 								<Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
-									{hideAssets ? HiddenTag : token.value}
+									{hideAssets ? HiddenTag : token.belongAlice}
 								</Typography>
 							</Typography>
 						</>

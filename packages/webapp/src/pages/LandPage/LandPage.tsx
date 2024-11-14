@@ -323,25 +323,19 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               return (
                 <CardBox
                   key={item.type}
-                  padding={3}
+                  padding={5}
                   onClick={() => history.push(item.router)}
                   className={'hasHover'}
                   marginY={2}
                 >
                   <Box
                     display={'flex'}
-                    justifyContent={'space-between'}
-                    flexDirection={'column'}
-                    alignItems={'left'}
+                    // justifyContent={'space-between'}
+                    flexDirection={'row'}
+                    alignItems={'center'}
                   >
-                    <Avatar
-                      variant='circular'
-                      style={{
-                        height: 'var(--svg-size-huge)',
-                        width: 'var(--svg-size-huge)',
-                      }}
-                      src={item.banner}
-                    />
+                    
+                    <Box>
                     <Typography marginTop={2} component='h4' variant={'h4'} textAlign={'left'}>
                       {t(item.titleI18n, { ns: 'layout' })}
                     </Typography>
@@ -360,11 +354,26 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       rel='noopener'
                       href={`#${item.router}`}
                       endIcon={<GoIcon color='inherit' />}
+                      size='small'
                     >
                       <Trans i18nKey={'labelGo'} ns={['landPage']}>
                         Go
                       </Trans>
                     </Button>
+
+                    </Box>
+                    <Avatar
+                      variant='circular'
+                      style={{
+                        height: 'var(--svg-size-huge)',
+                        width: 'var(--svg-size-huge)',
+                      }}
+                      sx={{
+                        mx: 4,
+                      }}
+                      src={item.banner}
+                    />
+                    
                   </Box>
                 </CardBox>
               )
