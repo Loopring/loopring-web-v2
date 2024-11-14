@@ -18,7 +18,7 @@ import { bindPopper } from 'material-ui-popup-state/es'
 import { PopoverPure, SubMenu, SubMenuList } from '../../basic-lib'
 import { SettingPanel } from '../../block/SettingPanel'
 import { NotificationPanel } from '../../block/NotificationPanel'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { DownloadPanel } from '../../block/DownloadPanel'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
@@ -148,11 +148,13 @@ export const BtnSetting = ({ t, label }: any) => {
   })
   return (
     <Box>
-      <IconButton aria-label={t(label)} {...bindHover(popupState)}>
+      <IconButton
+        aria-label={t(label)}
+        {...bindHover(popupState)}
+      >
         <SettingIcon />
       </IconButton>
       <PopoverPure
-        {...bindPopper(popupState)}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -161,6 +163,41 @@ export const BtnSetting = ({ t, label }: any) => {
           vertical: 'top',
           horizontal: 'center',
         }}
+        {...bindPopper(popupState)}
+      >
+        <Box margin={2} minWidth={320}>
+          <SettingPanel />
+        </Box>
+      </PopoverPure>
+    </Box>
+  )
+}
+
+export const BtnSettingMobile = ({ t, label }: any) => {
+  const [popupMobileOpen, setPopupMobileOpen] = useState(false)
+  const btn = useRef<HTMLButtonElement>(null)
+  return (
+    <Box>
+      <IconButton
+        ref={btn}
+        aria-label={t(label)}
+        onClick={() => setPopupMobileOpen((prev) => !prev)}        
+      >
+        <SettingIcon />
+      </IconButton>
+      <PopoverPure
+        anchorEl={btn.current}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+
+        open={popupMobileOpen}
+        onClose={() => setPopupMobileOpen(false)}
       >
         <Box margin={2} minWidth={320}>
           <SettingPanel />

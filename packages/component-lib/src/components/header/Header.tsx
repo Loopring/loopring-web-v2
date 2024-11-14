@@ -35,6 +35,7 @@ import {
   BtnDownload,
   BtnNotification,
   BtnSetting,
+  BtnSettingMobile,
   ColorSwitch,
   ProfileMenu,
   WalletConnectBtn,
@@ -149,6 +150,7 @@ const ToolBarItem = ({
   ...props
 }: any) => {
   const match = useRouteMatch('/:l1/:l2?')
+  const { isMobile } = useSettings()
   const render = React.useMemo(() => {
     switch (buttonComponent) {
       case ButtonComponentsMap.ProfileMenu:
@@ -164,7 +166,7 @@ const ToolBarItem = ({
           />
         )
       case ButtonComponentsMap.Setting:
-        return <BtnSetting {...props} />
+        return isMobile ? <BtnSettingMobile {...props} /> : <BtnSetting {...props} />
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />
       case ButtonComponentsMap.ColorSwitch:
@@ -246,7 +248,9 @@ const MobileDrawer = (props: MobileDrawerProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   return (
-    <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
+    <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={() => {
+      props.onClose()  
+    }}>
       <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
         <Box
           display={'flex'}
@@ -743,6 +747,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         variant: 'popover',
         popupId: 'mobile',
       })
+      const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
       const { defaultNetwork } = useSettings()
       const network = MapChainId[defaultNetwork] ?? MapChainId[1]
       const displayMobile = React.useMemo(() => {
@@ -767,7 +772,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
               alignItems={'stretch'}
               flexDirection={'row'} //!isMobile ? "row" : "column"}
             >
-              <Typography display={'inline-flex'} alignItems={'center'}>
+              <Typography onClick={() => window.open('https://loopring.io/#', '_blank')} display={'inline-flex'} alignItems={'center'}>
                 <LoopringLogoIcon
                   fontSize={'large'}
                   style={{ height: 28, width: 28 }}
@@ -795,12 +800,15 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                       <Typography
                         display={'inline-flex'}
                         alignItems={'center'}
-                        {...bindTrigger(popupState)}
+                        component={'div'}
+                        onClick={() => {
+                          setMobileMenuOpen(true)
+                        }}
                       >
                         <MenuIcon
                           // fontSize={"large"}
                           style={{ height: 28, width: 28 }}
-                          // color={"primary"}
+                          
                         />
                       </Typography>
                       <MobileDrawer
@@ -818,11 +826,9 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                             },
                           }
                         })}
-                        open={popupState.isOpen}
+                        open={mobileMenuOpen}
                         onClose={() => {
-
-                          popupState.close()
-                          
+                          setMobileMenuOpen(false)
                         }}
 
                         showColorSwitch
@@ -857,7 +863,9 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                       <Typography
                         display={'inline-flex'}
                         alignItems={'center'}
-                        {...bindTrigger(popupState)}
+                        onClick={() => {
+                          setMobileMenuOpen(true)
+                        }}
                       >
                         <MenuIcon
                           // fontSize={"large"}
@@ -886,7 +894,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                               onClick: () => {
                                 if (!hasChildren) {
                                   history.push(item.router?.path ?? '')
-                                  popupState.close()
+                                  setMobileMenuOpen(false)
                                 }
                               },
                               selected: true,
@@ -901,16 +909,16 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                                       LogoElement: subItem.label.icon,
                                       onClick: () => {
                                         history.push(subItem.router?.path ?? '')
-                                        popupState.close()
+                                        setMobileMenuOpen(false)
                                       },
                                     }
                                   })
                                 : undefined,
                             }
                           })}
-                          open={popupState.isOpen}
+                          open={mobileMenuOpen}
                           onClose={() => {
-                            popupState.close()
+                            setMobileMenuOpen(false)
                           }}
                           showSetting={true}
                           showColorSwitch={true}
@@ -925,14 +933,14 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                               logo: theme.mode === 'dark' ? item.logo?.dark : item.logo?.light,
                               onClick: () => {
                                 history.push(item.router?.path ?? '')
-                                popupState.close()
+                                setMobileMenuOpen(false)
                               },
                               imgMarginRight: item.label.id === 'dual' ? -2 : 0,
                             }
                           })}
-                          open={popupState.isOpen}
+                          open={mobileMenuOpen}
                           onClose={() => {
-                            popupState.close()
+                            setMobileMenuOpen(false)
                           }}
                           showSetting={true}
                           showColorSwitch={true}
@@ -957,6 +965,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
         i18n,
         isMaintaining,
         popupState,
+        mobileMenuOpen,
         getDrawerChoices,
         history,
       ])
