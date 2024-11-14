@@ -78,7 +78,7 @@ export const TaikoLockPage = ({
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
-      {toggle?.LRCStackInvest.enable ? (
+      (
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
           <Box
             width={'100%'}
@@ -187,9 +187,7 @@ export const TaikoLockPage = ({
             </Box>
           </MaxWidthContainer>
         </Box>
-      ) : (
-        <ErrorPage messageKey={'errorBase'} />
-      )}
+      )
       <MintModal {...stakeWrapProps.mintModal} logoCoinJSON={stakeWrapProps.taikoCoinJSON} />
       <TxSubmitModal {...stakeWrapProps.txSubmitModal} />
       <PendingTxsModal {...stakeWrapProps.pendingTxsModal} />

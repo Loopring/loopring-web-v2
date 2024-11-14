@@ -23,7 +23,7 @@ import {
   LoopringAPI,
 } from '@loopring-web/core'
 
-import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
@@ -129,10 +129,18 @@ export const useHeader = () => {
   }, [accountStatus, account?.readyState, account])
   
   const { notifyMap } = useNotify()
+  const { toggle: {
+    taikoFarming
+  } } = useToggle()
+  // const taikoFarming={enable: true}
 
   return {
     headerToolBarData,
-    headerMenuData: headerMenuDataEarnMap[network],
+    headerMenuData: headerMenuDataEarnMap[network].filter(data => {
+      return data.label.id === 'taikoFarming' 
+        ? taikoFarming.enable
+        : true
+    }),
     headerMenuLandingData,
     account,
     notifyMap,
