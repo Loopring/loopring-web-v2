@@ -128,8 +128,9 @@ export const LoopringLogo = React.memo(() => {
         edge='start'
         aria-label='menu'
         component={RouterLink}
-        to={'/'}
-        // href={"https://loopring.io/#"}
+        onClick={() => {
+          window.open('https://loopring.io/#', '_blank')
+        }}
         replace={true}
         color={'inherit'}
       >
