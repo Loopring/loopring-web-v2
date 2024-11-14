@@ -120,6 +120,27 @@ const RightButton = ({ size, sx, ...rest }: { size: number } & BoxProps) => {
   )
 }
 
+const LeftButton = ({ size, sx, ...rest }: { size: number } & BoxProps) => {
+  return (
+    <Box
+      sx={{
+        width: size + 'px',
+        height: size + 'px',
+        borderRadius: '50%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        bgcolor: 'var(--color-border)',
+        cursor: 'pointer',
+        ...sx,
+      }}
+      {...rest}
+    >
+      <ArrowForwardIosIcon className='custome-size' sx={{ transform: 'rotate(180deg)' ,fontSize: '16px' }} />
+    </Box>
+  )
+}
+
 export const AssetPage = () => {
   let match: any = useRouteMatch('/l2assets/:item')
   const { forexMap } = useSystem()
@@ -154,13 +175,15 @@ export const AssetPage = () => {
     : '--'
 
   const scrollDivRef = React.useRef<HTMLDivElement>(null)
-  const [reachedRight, setRiachedRight] = React.useState(false)
+  const [reachedRight, setReachedRight] = React.useState(false)
+  const [reachedLeft, setReachedLeft] = React.useState(true)
   const div = scrollDivRef.current
   React.useEffect(() => {
     if (scrollDivRef.current) {
       const div = scrollDivRef.current
       const handleScroll = () => {
-        setRiachedRight(div.scrollLeft + div.clientWidth >= div.scrollWidth)
+        setReachedRight(div.scrollLeft + div.clientWidth >= div.scrollWidth)
+        setReachedLeft(div.scrollLeft === 0)
       }
       div.addEventListener('scroll', handleScroll)
       return () => {
@@ -392,6 +415,20 @@ export const AssetPage = () => {
             isMobile={isMobile}
           />
         </Box>
+        {!isMobile && !reachedLeft && (
+          <LeftButton
+            onClick={() => {
+              const element = scrollDivRef.current
+              if (element) {
+                element.scrollTo({ behavior: 'smooth', left: 0 })
+              }
+            }}
+            size={64}
+            top={'45%'}
+            left={'32px'}
+            position={'absolute'}
+          />
+        )}
         {!isMobile && !reachedRight && (
           <RightButton
             onClick={() => {
