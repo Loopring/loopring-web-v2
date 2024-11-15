@@ -147,7 +147,7 @@ export default {
   labelVault2: 'Portfolio',
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
-  labelNavDoc: 'Documentation',
+  labelNavDoc: 'Developers',
 
   labelNavWalletDes: `Trade on the go — anytime, anywhere`,
   labelNavEarnDes: 'Revolutionizing Decentralized Finance with Cutting-Edge Earning and Trading Solutions',
@@ -158,6 +158,6 @@ export default {
   labelDualInvestDes: 'Bring structured finance from CeFi to DeFi in a trustless manner. Place orders at your preferred price and earn high yields!',
   labelVaultDes: 'Trade popular tokens beyond the Ethereum chain, with leverage!',
   labelBtradeTradeDes: 'Swap tokens securely and trustlessly, tapping into CEX liquidity.',
-  labelTaikoFarmingDes: 'Farm Trailblazer points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
+  labelTaikoFarmingDes: 'Farm Trailblazers points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
 
 }

@@ -926,6 +926,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                                       (history.location.pathname.startsWith('/trade/lite') && subItem.label.id === 'lite') 
                                       || (history.location.pathname.startsWith('/trade/pro') && subItem.label.id === 'pro') 
                                       || (history.location.pathname.startsWith('/trade/btrade') && subItem.label.id === 'btrade') 
+                                      || (history.location.pathname.startsWith('/invest/dual') && subItem.label.id === 'dual') 
                                     ) {
                                       var highlighted = true
                                     } else {
