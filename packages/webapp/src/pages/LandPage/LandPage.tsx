@@ -460,30 +460,28 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 height={'100%'}
                 padding={6}
                 display={'flex'}
-                flexDirection={'column'}
+                flexDirection={isMobile ? 'row-reverse' : 'column'}
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 className={'hasHover'}
                 onClick={() => history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)}
               >
-                <img width='248' src={`./NFT.webp`} />
+                <Box width={isMobile ? '30%' : '248'} src={`./NFT.webp`} component={'img'}/>
 
                 <Box>
                   <Typography
                     component='h4'
-                    variant={'h4'}
-                    textAlign={'center'}
+                    variant={isMobile ? 'h5' :'h4'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     aria-label='Manage and Display Your NFT Collections'
                     marginBottom={1}
                   >
-                    <Trans i18nKey={'labelNFTCollections'} ns={['landPage']}>
-                      Manage and Display Your NFT Collections
-                    </Trans>
+                    {t('labelNFTCollections')}
                   </Typography>
                   <Typography
                     component='p'
                     variant={'body1'}
-                    textAlign={'center'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     color={'textSecondary'}
                     aria-label='In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.'
                   >
@@ -500,19 +498,19 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 padding={6}
                 height={'100%'}
                 display={'flex'}
-                flexDirection={'column'}
+                flexDirection={isMobile ? 'row-reverse' : 'column'}
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 className={'hasHover'}
                 onClick={() => history.push(`${RouterPath.redPacket}`)}
               >
-                <img width='248' src={`./Redpack.webp`} />
+                <Box width={isMobile ? '30%' : '248'} src={`./Redpack.webp`} component={'img'}/>
                 <Box>
                   <Typography
                     component='h4'
-                    variant={'h4'}
+                    variant={isMobile ? 'h5' :'h4'}
                     aria-label='Red Packets'
-                    textAlign={'center'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     marginBottom={1}
                   >
                     <Trans i18nKey={'labelRedPackets'} ns={['landPage']}>
@@ -522,7 +520,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   <Typography
                     component='p'
                     variant={'body1'}
-                    textAlign={'center'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     color={'textSecondary'}
                     aria-label='Explore the various use cases of our revolutionary Red Packets! Send token or NFT gifts directly or gamify the experience with blind boxes.'
                   >
