@@ -953,7 +953,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                             setMobileMenuOpen(false)
                           }}
                           showSetting={true}
-                          showColorSwitch={true}
+                          showColorSwitch={false}
                         />
                       ) : (
                         <MobileDrawer
@@ -975,7 +975,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                             setMobileMenuOpen(false)
                           }}
                           showSetting={true}
-                          showColorSwitch={true}
+                          showColorSwitch={false}
                         />
                       )}
                     </Box>
