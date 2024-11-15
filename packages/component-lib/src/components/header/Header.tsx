@@ -231,7 +231,7 @@ interface MobileDrawerProps {
     title: string
     des: string
     link: string
-    logo: string
+    logo?: string
     onClick: () => void
     imgMarginRight?: number
   }[]
@@ -342,17 +342,18 @@ interface NestedMobileDrawerProps {
       link: string
       LogoElement: any
       onClick: () => void
+      highlighted: boolean
     }[]
+    highlighted: boolean
   }[]
   open: boolean
   onClose: () => void
   showSetting: boolean
   showColorSwitch: boolean
-  selectedLink: string
 }
 
 const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
-  const { linkList, showColorSwitch, showSetting, selectedLink} = props
+  const { linkList, showColorSwitch, showSetting} = props
   const { t } = useTranslation()
   const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined)
 
@@ -402,7 +403,7 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
                     }
                   }}
                 >
-                  <Typography color={selectedLink === item.link ? 'var(--color-primary)' : 'var(--color-text-primary)'} fontSize={'16px'} mr={1}>
+                  <Typography color={item.highlighted ? 'var(--color-primary)' : 'var(--color-text-primary)'} fontSize={'16px'} mr={1}>
                     {item.title}
                   </Typography>
                   {item.subLinkList &&
@@ -439,15 +440,15 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
                               width: '24px',
                               height: '24px',
                               color:
-                                subItem.link === selectedLink
+                                subItem.highlighted
                                   ? 'var(--color-primary)'
                                   : 'var(--color-text-primary)',
                             }}
                           />
                           {/* <Box component={'img'} src={subItem.logo} width={'24px'} height={'24px'} /> */}
                           <Box ml={4}>
-                            <Typography color={subItem.link === selectedLink ? 'var(--color-primary)' : 'var(--color-text-primary)'}>{subItem.title}</Typography>
-                            <Typography variant='body2' color={subItem.link === selectedLink ? 'var(--color-primary)' : 'var(--color-text-secondary)'}>
+                            <Typography color={subItem.highlighted ? 'var(--color-primary)' : 'var(--color-text-primary)'}>{subItem.title}</Typography>
+                            <Typography variant='body2' color={subItem.highlighted ? 'var(--color-primary)' : 'var(--color-text-secondary)'}>
                               {subItem.des}
                             </Typography>
                           </Box>
@@ -895,6 +896,13 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                               ? item.child
                               : _.values(item.child).flat()
                             const hasChildren = childList && childList.length > 0
+
+                            const highlightedMap = new Map([
+                              [ '/pro', '/pro'],
+                              [ '/l2assets/assets/Tokens', '/l2assets'],
+                              [ '/markets', '/markets'],
+                            ])
+                            const highlighted = !hasChildren && highlightedMap.get(history.location.pathname) === item.router?.path
                             return {
                               title: t(item.label.i18nKey, {
                                 loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -910,9 +918,19 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                                   setMobileMenuOpen(false)
                                 }
                               },
-                              selected: true,
+                              highlighted,
                               subLinkList: hasChildren
                                 ? childList.map((subItem) => {
+                                    
+                                    if (
+                                      (history.location.pathname.startsWith('/trade/lite') && subItem.label.id === 'lite') 
+                                      || (history.location.pathname.startsWith('/trade/pro') && subItem.label.id === 'pro') 
+                                      || (history.location.pathname.startsWith('/trade/btrade') && subItem.label.id === 'btrade') 
+                                    ) {
+                                      var highlighted = true
+                                    } else {
+                                      highlighted = history.location.pathname === subItem.router?.path
+                                    }
                                     return {
                                       title: t(subItem.label.i18nKey),
                                       des: subItem.label.description
@@ -924,6 +942,7 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                                         history.push(subItem.router?.path ?? '')
                                         setMobileMenuOpen(false)
                                       },
+                                      highlighted
                                     }
                                   })
                                 : undefined,
@@ -935,7 +954,6 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           }}
                           showSetting={true}
                           showColorSwitch={true}
-                          selectedLink={history.location.pathname}
                         />
                       ) : (
                         <MobileDrawer
