@@ -345,7 +345,7 @@ export const AssetPage = () => {
                 height={isMobile ? '18px' : '24px'}
               />
             }
-            des='Farm Trailblazer points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.'
+            des='Farm Trailblazers points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.'
             imgSrc={`${SoursURL}${
               theme.mode === 'dark'
                 ? 'earn/defi_assets_taiko_farming_dark.png'
