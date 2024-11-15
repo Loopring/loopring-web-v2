@@ -248,10 +248,10 @@ const MobileDrawer = (props: MobileDrawerProps) => {
   const { t } = useTranslation()
   const theme = useTheme()
   return (
-    <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={() => {
+    <SwipeableDrawer PaperProps={{sx: {height: '100%'}}} onOpen={() => {}} open={props.open} anchor='top' onClose={() => {
       props.onClose()  
     }}>
-      <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
+      <Box py={8} px={6} height={'100%'} bgcolor={'var(--color-global-bg)'}>
         <Box
           display={'flex'}
           height={'28px'}
@@ -358,8 +358,8 @@ const NestedMobileDrawer = (props: NestedMobileDrawerProps) => {
   const [selectedItem, setSelectedItem] = useState<string | undefined>(undefined)
 
   return (
-    <SwipeableDrawer onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
-      <Box py={8} px={6} height={'100vh'} bgcolor={'var(--color-global-bg)'}>
+    <SwipeableDrawer PaperProps={{sx: {height: '100%'}}}  onOpen={() => {}} open={props.open} anchor='top' onClose={props.onClose}>
+      <Box py={8} px={6} height={'100%'} bgcolor={'var(--color-global-bg)'}>
         <Box
           display={'flex'}
           height={'28px'}

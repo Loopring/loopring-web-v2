@@ -149,9 +149,9 @@ export default {
   labelVault2: 'Assets',
   labelNavDoc: 'Documentation',
 
-  labelNavWalletDes: `Ethereum's most secure wallet, fully integrated with advanced trading functionality and innovative Earn products, unlocking the true potential of Layer 2.`,
+  labelNavWalletDes: `Trade on the go — anytime, anywhere`,
   labelNavEarnDes: 'Revolutionizing Decentralized Finance with Cutting-Edge Earning and Trading Solutions',
-  labelNavProDes: 'Unleash the Power of DeFi and Advanced Trading on Top of an App-Specific ZK-Rollup',
+  labelNavProDes: 'Unleash the Power of DeFi and Advanced Trading \n on Top of an App-Specific ZK-Rollup',
   labelNavDocDes: 'Our API,SDK, and step-by-step references to building, minting, and trading on Loopring',
 
   labelAssetsDes: 'Revolutionizing Decentralized Finance with Cutting-Edge Earning and Trading Solutions',
