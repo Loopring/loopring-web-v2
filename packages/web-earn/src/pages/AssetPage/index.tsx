@@ -2,11 +2,12 @@ import { useRouteMatch } from 'react-router-dom'
 
 import { Box, BoxProps, Button, Typography } from '@mui/material'
 import { AssetTitleMobile, AssetTitleMobileEarn, useSettings } from '@loopring-web/component-lib'
-import { CloseIcon, hexToRGB, SoursURL, subMenuLayer2 } from '@loopring-web/common-resources'
+import { CloseIcon, hexToRGB, HiddenTag, SoursURL, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
 import React from 'react'
 import {
+  fiatNumberDisplay,
   numberFormatShowInPercent,
   useAccount,
   useDualMap,
@@ -143,7 +144,7 @@ const LeftButton = ({ size, sx, ...rest }: { size: number } & BoxProps) => {
 
 export const AssetPage = () => {
   let match: any = useRouteMatch('/l2assets/:item')
-  const { forexMap } = useSystem()
+  const { forexMap, getValueInCurrency } = useSystem()
 
   const selected = match?.params.item ?? 'assets'
   const { assetTitleProps, assetTitleMobileExtendProps, assetBtnStatus, ...assetPanelProps } =
@@ -160,8 +161,9 @@ export const AssetPage = () => {
   const theme = useTheme()
   const isUnlocked = useAccount().account.readyState === 'ACTIVATED'
   const { setShowTaikoLaunchBanner2, confirmation } = useConfirmation()
-  const { isMobile } = useSettings()
+  const { isMobile, currency } = useSettings()
   const { marketMap: dualMarketMap } = useDualMap()
+  const { account } = useAccount()
 
   const keys = dualMarketMap ? Object.keys(dualMarketMap) : []
   const dualAPRUpToRaw = max(
@@ -267,7 +269,12 @@ export const AssetPage = () => {
                 {t('labelLoopringDeFiIs')}
               </Typography>
             ) : (
-              <Typography mt={1.5} textAlign={'center'} fontSize={'16px'} color={'var(--color-white)'}>
+              <Typography
+                mt={1.5}
+                textAlign={'center'}
+                fontSize={'16px'}
+                color={'var(--color-white)'}
+              >
                 {t('labelLoopringDeFiIs21')}
                 <br />
                 {t('labelLoopringDeFiIs22')}
@@ -312,7 +319,19 @@ export const AssetPage = () => {
                 {t('labelLoopringDeFiAssets')}
               </Typography>
               <Typography variant={isMobile ? 'h4' : 'h2'} mt={2}>
-                --
+                {!assetTitleProps.hideL2Assets
+                  ? assetTitleProps.assetInfo.totalAsset &&
+                    new Decimal(assetTitleProps.assetInfo.totalAsset).gt(0) &&
+                    currency &&
+                    account.readyState !== 'UN_CONNECT' &&
+                    forexMap &&
+                    forexMap[currency]
+                    ? fiatNumberDisplay(
+                        getValueInCurrency(assetTitleProps.assetInfo.totalAsset),
+                        currency,
+                      )
+                    : '--'
+                  : HiddenTag}
               </Typography>
             </Box>
             {isMobile ? (

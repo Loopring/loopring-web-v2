@@ -3,6 +3,7 @@ import {
   fiatNumberDisplay,
   LoopringAPI,
   makeWalletLayer2,
+  makeWalletLayer2NoStatus,
   numberStringListSum,
   store,
   useAccount,
@@ -109,7 +110,7 @@ export const useGetAssets = (): AssetPanelProps & {
           detail: o[1],
         }))
       : []
-    const { walletMap } = makeWalletLayer2({ needFilterZero: false })
+    const { walletMap } = makeWalletLayer2NoStatus({ needFilterZero: false })
     const tokenMap = omitBy(tokenMapRaw, (token) => token.isLpToken)
     if (
       tokenMap &&
