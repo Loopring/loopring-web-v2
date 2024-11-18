@@ -143,7 +143,7 @@ const Icon = ({ label = '' }: { label: string }) => {
     case 'ETHEREUM':
       return (
         <Box component={'span'} display={'flex'} alignItems={'center'}>
-          <ChainETHEREUMIcon style={{width: 20, height: 20}} />
+          <Box sx={{width: 20, height: 20}} component={'img'} src={SoursURL + 'images/eth_walletconnect.webp'}/> 
         </Box>
       )
     case 'SEPOLIA':
