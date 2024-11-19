@@ -280,7 +280,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   </ButtonStyled>
                 </Box>
                 <Box>
-                  <img id='mobileBg' width='533' src={`./desktop_${theme.mode}.webp`} />
+                  <img id='mobileBg' width='533' src={`${SoursURL}images/landPage/homepage_p4_${theme.mode}.png`} />
                 </Box>
               </CardBox>
             </Box>
