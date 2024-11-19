@@ -1,7 +1,7 @@
 import { useRouteMatch } from 'react-router-dom'
 
 import { Box, BoxProps, Button, Typography } from '@mui/material'
-import { AssetTitleMobile, AssetTitleMobileEarn, useSettings } from '@loopring-web/component-lib'
+import { AssetTitleMobile, AssetTitleMobileEarn, useSettings, useToggle } from '@loopring-web/component-lib'
 import { CloseIcon, hexToRGB, HiddenTag, SoursURL, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import HistoryPanel from './HistoryPanel'
@@ -193,6 +193,9 @@ export const AssetPage = () => {
       }
     }
   }, [div])
+  const {
+    toggle: { taikoFarming },
+  } = useToggle()
   if (selected.toLowerCase() === 'history') {
     return (
       <Box display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0} flex={1}>
@@ -351,7 +354,7 @@ export const AssetPage = () => {
           sx={{ overflowX: 'scroll', scrollbarWidth: 'none' }}
           flexDirection={isMobile ? 'column' : 'row'}
         >
-          <BottomSection
+          {taikoFarming.enable && <BottomSection
             title='Taiko Farming'
             subTitle={
               <Box
@@ -375,7 +378,7 @@ export const AssetPage = () => {
             mb={isMobile ? 4 : 0}
             width={isMobile ? '100%' : undefined}
             isMobile={isMobile}
-          />
+          />}
           <BottomSection
             title='Dual Investment'
             subTitle={
