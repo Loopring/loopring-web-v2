@@ -23,6 +23,7 @@ import { useNotify, WalletConnectL2Btn } from '@loopring-web/core'
 import { CoinIcons, useSettings } from '@loopring-web/component-lib'
 import { ContainerStyle, CardBox } from './style'
 import { useTheme } from '@emotion/react'
+import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const BgStyle = styled(Box)`
   position: absolute;
@@ -127,7 +128,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               marginBottom={3}
             >
               <Box width={48} marginRight={1} display={'flex'}>
-                <CoinIcons size={48} type={TokenType.single} tokenIcon={[coinJson['ETH']]} />
+                <Box component={'img'} src={SoursURL + 'images/landPage/eth_logo.png'} width={48} height={48} />
               </Box>
               Ethereum
             </Typography>
