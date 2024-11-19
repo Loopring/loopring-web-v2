@@ -39,6 +39,7 @@ const initialState: ToggleState = {
   dual_reinvest: { enable: true },
   VaultInvest: { enable: true },
   VaultDustCollector: { enable: true },
+  taikoFarming: { enable: true },
   whiteList: {},
   isSupperUser: false as any,
 }

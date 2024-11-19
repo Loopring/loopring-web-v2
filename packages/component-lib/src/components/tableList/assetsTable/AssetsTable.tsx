@@ -34,7 +34,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string; isWe
     ${({ isMobile, isWebEarn }) =>
       isWebEarn
         ? isMobile
-          ? `--template-columns: 54% 40% 6% !important;`
+          ? `--template-columns: 28% 68% 4% !important;`
           : `--template-columns: 200px 150px auto auto 220px !important;`
         : isMobile
         ? `--template-columns: 54% 40% 6% !important;`
@@ -405,7 +405,7 @@ export const AssetsTable = withTranslation('tables')(
     ): Column<RawDataAssetsItem, unknown>[] => [
       {
         key: 'token',
-        name: t('labelToken'),
+        name: '',
         formatter: ({ row, column }) => {
           const token = row[column.key]
           const value = row['amount']
@@ -421,53 +421,80 @@ export const AssetsTable = withTranslation('tables')(
           if (token.type !== 'lp' && head && head !== 'lp') {
             tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
           }
+
           return (
-            <>
-              <Typography width={'56px'} display={'flex'}>
+            <Box display={'flex'} alignItems={'center'}>
+              <Typography width={'32px'} display={'flex'}>
                 <CoinIcons type={token.type} tokenIcon={tokenIcon} />
               </Typography>
-              <Typography
-                variant={'body1'}
-                display={'flex'}
-                flexDirection={'row'}
-                justifyContent={'flex-end'}
-                textAlign={'right'}
-                flex={1}
-              >
-                <Typography display={'flex'}>
-                  {hideAssets
-                    ? HiddenTag
-                    : getValuePrecisionThousand(value, precision, precision, undefined, false, {
-                        floor: true,
-                      })}
-                </Typography>
-                <Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
-                  {hideAssets ? HiddenTag : token.value}
-                </Typography>
-              </Typography>
-            </>
+              <Typography>{token.value}</Typography>
+            </Box>
           )
         },
       },
       {
         key: 'locked',
-        name: t('labelLocked'),
+
+        name: '',
         headerCellClass: 'textAlignRight',
-        formatter: ({ row }) => {
+        formatter: ({ row, column }) => {
+          const token = row[column.key]
+          const value = row['amount']
+          const precision = row['precision']
+          let tokenIcon: [any, any] = [undefined, undefined]
+          // const [head, middle, tail] = token.value.split('-')
+          // if (token.type === 'lp' && middle && tail) {
+          //   tokenIcon =
+          //     coinJson[middle] && coinJson[tail]
+          //       ? [coinJson[middle], coinJson[tail]]
+          //       : [undefined, undefined]
+          // }
+          // if (token.type !== 'lp' && head && head !== 'lp') {
+          //   tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
+          // }
           return (
-            <LockedMemo
-              {...{
-                ...row,
-                HiddenTag,
-                onTokenLockHold: (row: any) => {
-                  if (row) {
-                    setModalState(true)
-                    onTokenLockHold && onTokenLockHold(row)
-                  }
-                },
-                tokenLockDetail,
-              }}
-            />
+            <Box
+              height={'100%'}
+              display={'flex'}
+              flexDirection={'column'}
+              alignItems={'end'}
+              justifyContent={'center'}
+            >
+              <Typography display={'flex'}>
+                {hideAssets
+                  ? HiddenTag
+                  : PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      undefined,
+                      true,
+                      { isFait: true, floor: true },
+                    )}
+              </Typography>
+              <Typography variant={'body2'} fontSize={'11px'}>
+                {t('labelTotalLocked')}:{' '}
+                {hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(value, precision, precision, undefined, false, {
+                      floor: true,
+                    })}
+                /
+                {hideAssets
+                  ? HiddenTag
+                  : getValuePrecisionThousand(
+                      row['locked'],
+                      precision,
+                      precision,
+                      undefined,
+                      false,
+                      {
+                        floor: true,
+                      },
+                    )}
+              </Typography>
+            </Box>
           )
         },
       },
@@ -537,9 +564,10 @@ export const AssetsTable = withTranslation('tables')(
               viewData.length > 0
                 ? rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
                 : 350,
+            minHeight: 0
           }}
           rowHeight={rowConfig.rowHeight}
-          headerRowHeight={rowConfig.rowHeaderHeight}
+          headerRowHeight={isMobile ? 0 : rowConfig.rowHeaderHeight}
           rawData={viewData}
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}

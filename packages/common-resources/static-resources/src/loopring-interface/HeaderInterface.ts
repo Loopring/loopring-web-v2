@@ -17,4 +17,8 @@ export interface HeaderMenuItemInterface {
   router?: { path: string; [key: string]: any; pathName?: string }
   status?: keyof typeof HeaderMenuTabStatus
   extender?: JSX.Element | undefined
+  logo?: {
+    dark: string
+    light: string
+  }
 }

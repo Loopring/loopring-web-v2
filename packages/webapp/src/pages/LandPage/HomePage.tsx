@@ -194,13 +194,6 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
     }
   }, [searchParams?.has('goProd')])
 
-  console.log(
-    SoursURL +
-      (theme.mode === 'dark'
-        ? 'images/landPage/homepage_p5_dark.png'
-        : 'images/landPage/homepage_p5_light.png'),
-  )
-
   return (
     <>
       <ContainerStyle

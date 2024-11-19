@@ -23,6 +23,7 @@ import { useNotify, WalletConnectL2Btn } from '@loopring-web/core'
 import { CoinIcons, useSettings } from '@loopring-web/component-lib'
 import { ContainerStyle, CardBox } from './style'
 import { useTheme } from '@emotion/react'
+import { SoursURL } from '@loopring-web/loopring-sdk'
 
 const BgStyle = styled(Box)`
   position: absolute;
@@ -127,7 +128,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               marginBottom={3}
             >
               <Box width={48} marginRight={1} display={'flex'}>
-                <CoinIcons size={48} type={TokenType.single} tokenIcon={[coinJson['ETH']]} />
+                <Box component={'img'} src={SoursURL + 'images/landPage/eth_logo.png'} width={48} height={48} />
               </Box>
               Ethereum
             </Typography>
@@ -279,7 +280,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   </ButtonStyled>
                 </Box>
                 <Box>
-                  <img id='mobileBg' width='533' src={`./desktop_${theme.mode}.webp`} />
+                  <img id='mobileBg' width='533' src={`${SoursURL}images/landPage/homepage_p4_${theme.mode}.png`} />
                 </Box>
               </CardBox>
             </Box>
@@ -323,25 +324,19 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               return (
                 <CardBox
                   key={item.type}
-                  padding={3}
+                  padding={5}
                   onClick={() => history.push(item.router)}
                   className={'hasHover'}
                   marginY={2}
                 >
                   <Box
                     display={'flex'}
-                    justifyContent={'space-between'}
-                    flexDirection={'column'}
-                    alignItems={'left'}
+                    // justifyContent={'space-between'}
+                    flexDirection={'row'}
+                    alignItems={'center'}
                   >
-                    <Avatar
-                      variant='circular'
-                      style={{
-                        height: 'var(--svg-size-huge)',
-                        width: 'var(--svg-size-huge)',
-                      }}
-                      src={item.banner}
-                    />
+                    
+                    <Box>
                     <Typography marginTop={2} component='h4' variant={'h4'} textAlign={'left'}>
                       {t(item.titleI18n, { ns: 'layout' })}
                     </Typography>
@@ -360,11 +355,26 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       rel='noopener'
                       href={`#${item.router}`}
                       endIcon={<GoIcon color='inherit' />}
+                      size='small'
                     >
                       <Trans i18nKey={'labelGo'} ns={['landPage']}>
                         Go
                       </Trans>
                     </Button>
+
+                    </Box>
+                    <Avatar
+                      variant='circular'
+                      style={{
+                        height: 'var(--svg-size-huge)',
+                        width: 'var(--svg-size-huge)',
+                      }}
+                      sx={{
+                        mx: 4,
+                      }}
+                      src={item.banner}
+                    />
+                    
                   </Box>
                 </CardBox>
               )
@@ -451,30 +461,28 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 height={'100%'}
                 padding={6}
                 display={'flex'}
-                flexDirection={'column'}
+                flexDirection={isMobile ? 'row-reverse' : 'column'}
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 className={'hasHover'}
                 onClick={() => history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)}
               >
-                <img width='248' src={`./NFT.webp`} />
+                <Box width={isMobile ? '30%' : '248'} src={`./NFT.webp`} component={'img'}/>
 
                 <Box>
                   <Typography
                     component='h4'
-                    variant={'h4'}
-                    textAlign={'center'}
+                    variant={isMobile ? 'h5' :'h4'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     aria-label='Manage and Display Your NFT Collections'
                     marginBottom={1}
                   >
-                    <Trans i18nKey={'labelNFTCollections'} ns={['landPage']}>
-                      Manage and Display Your NFT Collections
-                    </Trans>
+                    {t('labelNFTCollections')}
                   </Typography>
                   <Typography
                     component='p'
                     variant={'body1'}
-                    textAlign={'center'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     color={'textSecondary'}
                     aria-label='In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.'
                   >
@@ -491,19 +499,19 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 padding={6}
                 height={'100%'}
                 display={'flex'}
-                flexDirection={'column'}
+                flexDirection={isMobile ? 'row-reverse' : 'column'}
                 justifyContent={'space-between'}
                 alignItems={'center'}
                 className={'hasHover'}
                 onClick={() => history.push(`${RouterPath.redPacket}`)}
               >
-                <img width='248' src={`./Redpack.webp`} />
+                <Box width={isMobile ? '30%' : '248'} src={`./Redpack.webp`} component={'img'}/>
                 <Box>
                   <Typography
                     component='h4'
-                    variant={'h4'}
+                    variant={isMobile ? 'h5' :'h4'}
                     aria-label='Red Packets'
-                    textAlign={'center'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     marginBottom={1}
                   >
                     <Trans i18nKey={'labelRedPackets'} ns={['landPage']}>
@@ -513,7 +521,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                   <Typography
                     component='p'
                     variant={'body1'}
-                    textAlign={'center'}
+                    textAlign={isMobile ? 'left' : 'center'}
                     color={'textSecondary'}
                     aria-label='Explore the various use cases of our revolutionary Red Packets! Send token or NFT gifts directly or gamify the experience with blind boxes.'
                   >

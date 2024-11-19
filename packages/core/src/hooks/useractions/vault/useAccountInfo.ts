@@ -147,13 +147,11 @@ export const useAccountInfo = () => {
       
       updateVaultLayer2({})
       const { vaultAccountInfo } = store.getState().vaultLayer2
-      const vaultAccountInfoSymbol =
-        idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? ''] ?? ''
       switch (vaultAccountInfo?.accountStatus) {
         case sdk.VaultAccountStatus.IN_STAKING:
           setShowVaultSwap({
             isShow: true,
-            symbol: symbol ?? erc20Map[vaultAccountInfoSymbol]?.symbol ?? undefined,
+            symbol: symbol ?? 'ETH',
           })
           break
       }

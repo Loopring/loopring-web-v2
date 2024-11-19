@@ -228,6 +228,38 @@ export let headerToolBarData: {
   },
 }
 
+export let headerToolBarDataMobile: {
+  [key in ButtonComponentsMap]?: {
+    buttonComponent: ButtonComponentsMap
+    handleClick?: (props: any) => void
+    [key: string]: any
+  }
+} = {
+  // [ButtonComponentsMap.Download]: {
+  //   buttonComponent: ButtonComponentsMap.Download,
+  //   url: WalletSite,
+  // },
+  // [ButtonComponentsMap.Notification]: {
+  //   buttonComponent: ButtonComponentsMap.Notification,
+  //   label: 'labelNotification',
+  // },
+  // [ButtonComponentsMap.Setting]: {
+  //   buttonComponent: ButtonComponentsMap.Setting,
+  //   label: 'labelSetting',
+  // },
+  [ButtonComponentsMap.ProfileMenu]: {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: 'labelProfile',
+    readyState: undefined,
+  },
+  [ButtonComponentsMap.WalletConnect]: {
+    buttonComponent: ButtonComponentsMap.WalletConnect,
+    label: 'labelConnectWallet',
+    accountState: undefined,
+    handleClick: undefined,
+  },
+}
+
 // export const toolBarMobileAvailableItem = [
 //   ButtonComponentsMap.Download,
 //   ButtonComponentsMap.Notification,
@@ -349,29 +381,49 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
     label: {
       id: 'loopringLite',
       i18nKey: 'labelNavEarn',
+      description: 'labelNavEarnDes',
     },
     router: { path: Earnlite },
+    logo: {
+      dark: SoursURL + 'images/landing_page_nav_earn_dark.png',
+      light: SoursURL + 'images/landing_page_nav_earn_light.png',
+    }
   },
   {
     label: {
       id: 'loopringPro',
       i18nKey: 'labelNavPro',
+      description: 'labelNavProDes',
     },
     router: { path: ExchangePro },
+    logo: {
+      dark: SoursURL + 'images/landing_page_nav_pro_dark.png',
+      light: SoursURL + 'images/landing_page_nav_pro_light.png',
+    }
   },
   {
     label: {
       id: 'wallet',
       i18nKey: 'labelNavWallet',
+      description: 'labelNavWalletDes',
     },
     router: { path: WalletSite },
+    logo: {
+      dark: SoursURL + 'images/landing_page_nav_wallet_dark.png',
+      light: SoursURL + 'images/landing_page_nav_wallet_light.png',
+    }
   },
   {
     label: {
       id: 'doc',
       i18nKey: 'labelNavDoc',
+      description: 'labelNavDocDes',
     },
     router: { path: LOOPRING_DOC },
+    logo: {
+      dark: SoursURL + 'images/landing_page_nav_doc_dark.png',
+      light: SoursURL + 'images/landing_page_nav_doc_light.png',
+    }
   },
 ]
 export const subMenuLayer2 = {
