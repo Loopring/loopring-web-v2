@@ -1,10 +1,8 @@
 import { withTranslation } from 'react-i18next'
-import { accountStaticCallBack, btnClickMap, btnLabel, LoopringAPI, store, useAccount, useSystem, useUpdateAccount } from '../index'
+import { accountStaticCallBack, btnClickMap, btnLabel, LoopringAPI, useAccount, useSystem, useUpdateAccount } from '../index'
 import {
   Button,
-  setShowConnect,
   useSettings,
-  WalletConnectStep,
   ButtonProps,
   useOpenModals,
 } from '@loopring-web/component-lib'
@@ -17,10 +15,8 @@ import {
   L1L2_NAME_DEFINED,
   LoadingIcon,
   MapChainId,
-  myLog,
   SagaStatus,
 } from '@loopring-web/common-resources'
-import { changeShowModel } from '../stores/account/reducer'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
 import { toBig } from '@loopring-web/loopring-sdk'
 
@@ -29,7 +25,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
 })(({ t, btnLabelProps = {}, btnClickMapProps = {}, className, size = 'large', width }: any) => {
   const { status: accountStatus, account } = useAccount()
   const { defaultNetwork } = useSettings()
-  const { app } = useSystem()
+  const { app, exchangeInfo } = useSystem()
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
@@ -42,15 +38,26 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
     ...btnLabelProps,
   })
 
-  const label = React.useMemo(() => {
-    return (accountStatus === SagaStatus.UNSET || accountStatus === SagaStatus.DONE)
-      ? accountStaticCallBack(_btnLabel, [{
+
+  const labelUI = React.useMemo(() => {
+    if (!exchangeInfo || ![SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus))
+      return <LoadingIcon style={{ width: 18, height: 18, color: 'var(--color-text-button)' }} />
+    return t(
+      accountStaticCallBack(_btnLabel, [
+        {
           chainId: defaultNetwork,
           isEarn: app === 'earn',
-          readyState: account.readyState
-        }])
-      : undefined
-  }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app])
+          readyState: account.readyState,
+        },
+      ]),
+      {
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      },
+    )
+  }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app, exchangeInfo])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
   const { setShowDeposit } = useOpenModals()
@@ -98,20 +105,12 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
           },
           taikoEarnDeposit: async () => {
             setShowDeposit({isShow: true})
-          }
+          },
+          exchangeInfoLoaded: exchangeInfo ? true : false
         }])
       }}
     >
-      {label !== '' ? (
-        t(label, {
-          loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-          l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-          l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-          ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-        })
-      ) : (
-        <LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />
-      )}
+      {labelUI}
     </Button>
   )
 }) as (props: ButtonProps & { [key: string]: any }) => JSX.Element
@@ -123,16 +122,26 @@ export const BtnConnectL1 = withTranslation(['common', 'layout'], {
     status: accountStatus,
     account: { readyState },
   } = useAccount()
-  const [label, setLabel] = React.useState('labelConnectWallet')
-  const _btnLabel = Object.assign(_.cloneDeep(btnLabel))
+  const {
+    exchangeInfo
+  } = useSystem()
+  const labelUI = React.useMemo(() => {
+    if (!exchangeInfo || accountStatus !== SagaStatus.UNSET) return <LoadingIcon style={{ width: 18, height: 18, color: 'var(--color-text-button)' }} />
+    return t(
+      accountStatus === SagaStatus.UNSET
+        ? accountStaticCallBack(Object.assign(_.cloneDeep(btnLabel)))
+        : 'labelConnectWallet',
+      {
+        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+      },
+    )
+  }, [accountStatus, exchangeInfo])
+  
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET) {
-      myLog('readyState', readyState)
-      setLabel(accountStaticCallBack(_btnLabel))
-    }
-  }, [accountStatus])
   const modal = useWeb3Modal()
 
   return (
@@ -147,16 +156,7 @@ export const BtnConnectL1 = withTranslation(['common', 'layout'], {
           modal.open()
         }}
       >
-        {label !== '' ? (
-          t(label, {
-            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-          })
-        ) : (
-          <LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />
-        )}
+        {labelUI}
       </Button>
     </>
   )

@@ -5,8 +5,7 @@ import React from 'react'
 import * as _ from 'lodash'
 import {
   AccountStatus,
-  FeeChargeOrderDefault,
-  FeeChargeOrderUATDefault,
+  FeeChargeOrderDefaultMap,
   FeeInfo,
   globalSetup,
   myLog,
@@ -89,9 +88,8 @@ export function useChargeFees({
     feeRaw: undefined,
   } as FeeInfo)
   const { chainId } = useSystem()
-  let { feeChargeOrder } = useSettings()
-  feeChargeOrder =
-    chainId === sdk.ChainId.MAINNET ? FeeChargeOrderDefault : FeeChargeOrderUATDefault
+  // let { feeChargeOrder } = useSettings()
+  const feeChargeOrder = FeeChargeOrderDefaultMap.get(chainId as sdk.ChainId)
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [chargeFeeTokenList, setChargeFeeTokenList] = React.useState<FeeInfo[]>([])
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<{

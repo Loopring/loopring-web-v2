@@ -424,7 +424,7 @@ export default {
   labelHours: 'Hours',
   labelMinutes: 'Minutes',
   labelSeconds: 'Seconds',
-  labelIsNotFeeToken: 'Please deposit {{symbol}} to activate {{loopringL2}}.',
+  labelIsNotFeeToken: 'Please deposit {{symbols}}, or {{lastSymbol}} to activate your {{loopringL2}} account.',
   labelIsETHDepositAlert: 'Please reserve enough ETH in your account to pay for gas!',
   labelIsNotEnoughFeeToken:
     'Please deposit enough token to cover the activation fee: {{fee}} {{symbol}}. Remaining token will appear in your asset after activation',
