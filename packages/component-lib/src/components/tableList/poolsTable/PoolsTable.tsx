@@ -32,7 +32,7 @@ import { PoolRow, PoolTableProps } from './Interface'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
 
-import { useSettings } from '../../../stores'
+import { useSettings, useToggle } from '../../../stores'
 import { TablePaddingX } from '../../styled'
 import { AmmAPRDetail, AmmPairDetail, TagIconList } from '../../block'
 import { ActionPopContent } from '../myPoolTable/components/ActionPop'
@@ -88,6 +88,7 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
   }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile, coinJson } = useSettings()
     const { search, pathname } = useLocation()
+    const { toggle } = useToggle()
     const searchParams = new URLSearchParams(search)
     const history = useHistory()
     const [filterValue, setFilterValue] = React.useState(_filterValue ?? '')
@@ -547,7 +548,7 @@ export const PoolsTable = withTranslation(['tables', 'common'])(
             popupId: 'testPopup',
             className: 'arrow-none',
             children: <MoreIcon cursor={'pointer'} />,
-            popoverContent: <ActionPopContent {...{ row, handleWithdraw, handleDeposit, t }} />,
+            popoverContent: <ActionPopContent {...{ row, allowTrade: toggle,handleWithdraw, handleDeposit, t }} />,
             anchorOrigin: {
               vertical: 'bottom',
               horizontal: 'right',

@@ -194,7 +194,6 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
     }
   }, [searchParams?.has('goProd')])
 
-
   return (
     <>
       <ContainerStyle

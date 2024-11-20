@@ -413,4 +413,5 @@ export default {
   labelDetails: 'Details',
   labelLock: 'Lock',
   labelLockTime: 'Time',
+  labelTotalLocked: 'Total/Locked',
 }

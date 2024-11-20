@@ -2045,7 +2045,7 @@ export default {
   labelTargetRedpacketNoRedpacketDes:
     'If your prepared but unaddressed Red Packets will be displayed here !',
   labelTargetRedpacketOption2: 'Option 2',
-  labelEarnVaultTitle: 'Total Portfolio',
+  labelEarnVaultTitle: 'Loopring DeFi Assets',
   labelDualBTC: 'ETH - WBTC Dual Investment',
   labelDualBTCDes: 'Select based on Token and Settlement Date',
   labelDualTypeDualBTC: 'ETH - WBTC Dual Investment',

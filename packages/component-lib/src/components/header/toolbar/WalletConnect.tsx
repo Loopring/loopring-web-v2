@@ -26,11 +26,11 @@ import { useLocation } from 'react-router'
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
+  padding-left: 2px;
+  padding-right: 2px;
 
   &.wallet-btn {
-    //width:;
     justify-content: center;
-    width: var(--walletconnect-width);
   }
 
   i {
@@ -112,11 +112,11 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.LOCKED:
           btnClassname = 'locked'
-          icon = <LockIcon color={'error'}  style={{ width: 16, height: 16 }} />
+          icon = isMobile ? <CircleIcon fontSize={'large'} color={'error'} /> : <LockIcon color={'error'}  style={{ width: 16, height: 16 }} />
           break
         case AccountStatus.ACTIVATED:
           btnClassname = 'unlocked'
-          icon = <UnlockedIcon stroke='var(--color-success)' sx={{marginBottom: 0.1, marginRight: 0.5}} style={{ width: 16, height: 16 }} />
+          icon = <UnlockedIcon stroke='var(--color-success)' sx={{marginLeft: 1, marginBottom: 0.1, marginRight: 0.5}} style={{ width: 16, height: 16 }} />
           break
         case AccountStatus.NO_ACCOUNT:
           btnClassname = 'no-account'
@@ -146,12 +146,13 @@ export const WalletConnectBtn = ({
       icon,
       isLocked
     }
-  }, [accountState?.account?.readyState, i18n])
+  }, [accountState?.account?.readyState, i18n, isMobile])
 
   const popupState = usePopupState({
     variant: 'popover',
     popupId: `popupId: 'wallet-connect-notification'`,
   })
+  
   return (
     <>
       {NetWorkItems}
@@ -163,7 +164,14 @@ export const WalletConnectBtn = ({
           borderRadius={'0.4rem'}
           border={'1px solid var(--color-border)'}
         >
-          <Box component={'div'} paddingRight={2} onClick={handleClick} paddingY={'5px'} display={'flex'} alignItems={'center'}>
+          <Box
+            component={'div'}
+            paddingRight={2}
+            onClick={handleClick}
+            paddingY={'5px'}
+            display={'flex'}
+            alignItems={'center'}
+          >
             <CircleIcon
               fontSize={'large'}
               htmlColor={'var(--color-error)'}
@@ -180,7 +188,10 @@ export const WalletConnectBtn = ({
             variant={'contained'}
             onClick={isLocked ? handleClickUnlock : handleClickSignIn}
           >
-            <LockIcon sx={{ marginRight: 1, marginBottom: 0.2 }} style={{ width: 16, height: 16 }} />
+            <LockIcon
+              sx={{ marginRight: 1, marginBottom: 0.2 }}
+              style={{ width: 16, height: 16 }}
+            />
             <Typography component={'span'} variant={'body1'}>
               Sign in First
             </Typography>
@@ -213,6 +224,24 @@ export const WalletConnectBtn = ({
           <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}>
             {t(label)}
           </Typography>
+          {isLocked && (
+            <Box
+              ml={2}
+              borderRadius={'4px'}
+              bgcolor={'var(--color-error)'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+              height={'28px'}
+              width={'28px'}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleClickUnlock(e)
+              }}
+            >
+              <LockIcon style={{ width: 16, height: 16, color: 'var(--color-white)' }} />
+            </Box>
+          )}
         </WalletConnectBtnStyled>
       )}
     </>

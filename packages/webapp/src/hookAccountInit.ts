@@ -85,7 +85,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   const { account, status: accountStatus } = useAccount()
   const { setShowGlobalToast } = useOpenModals()
   React.useEffect(() => {
-    if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
+    if (state === SagaStatus.DONE) {
       offFaitService.banxaEnd()
       const account = store.getState().account
       switch (account.readyState) {

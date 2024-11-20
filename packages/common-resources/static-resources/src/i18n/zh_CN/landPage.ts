@@ -96,7 +96,7 @@ export default {
     "Boost your earnings with CIAN protocol's leveraged ETH staking strategy.",
   labelInvestDefiDes: 'Earn steady income while holding! Stake ETH to accumulate daily rewards.',
   labelInvestAmmDes:
-    'Participate in farming pools; earn additional protocol fee incentives for HOT pools.',
+    'Participate in farming pools, earn additional protocol fee incentives for HOT pools.',
   labelProductsTitleDes: 'A wide variety of trading tools to choose from',
   labelProductsTitle: 'Trading Products',
   labelSpotDes: 'Full access to all trading tools',
@@ -125,7 +125,7 @@ export default {
   labelUnlockThePowerOfLeveragedTradingDes: 'Seamlessly borrow tokens against your collateral, paving the way for leveraged trading opportunities. By bridging decentralized and centralized exchanges, Loopring Portal broadens your trading horizon, granting access to tokens beyond the Ethereum network.',
   labelEthereumOnly: 'Ethereum-only',
   labelLoopringLayer2: 'Loopring Layer 2',
-  labelLoopringLayer2Des: 'Unlock the full features of Loopring Layer 2, including Loopring DeFi, NFTs, Red Packets, and more.',
+  labelLoopringLayer2Des: 'Unleash the Power of DeFi and Advanced \n Trading on Top of an App-Specific ZK-Rollup',
   labelTrade: 'Trade',
   labelTradeDes: 'A wide variety of trading methods to choose from',
   labelEarn: 'Earn',

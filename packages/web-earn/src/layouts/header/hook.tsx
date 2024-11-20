@@ -27,13 +27,13 @@ import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-we
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
-import { earnHeaderToolBarData, EarnProfile, headerMenuDataEarnMap } from '../../constant/router'
+import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, EarnProfile, headerMenuDataEarnMap } from '../../constant/router'
 import { useWeb3Modal } from '@web3modal/scaffold-react'
 import { toBig } from '@loopring-web/loopring-sdk'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
-  const { defaultNetwork } = useSettings()
+  const { defaultNetwork, isMobile } = useSettings()
   const { account, setShouldShow, status: accountStatus } = accountTotal
   const { setShowAccount } = useOpenModals()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -77,11 +77,12 @@ export const useHeader = () => {
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
   const { goUpdateAccount } = useUpdateAccount() 
   const headerToolBarData = React.useMemo(() => {
+    const toolBarData = isMobile ? earnHeaderToolBarDataMobile : earnHeaderToolBarData
     return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
       ? {
-          ...earnHeaderToolBarData,
+          ...toolBarData,
           [ButtonComponentsMap.WalletConnect]: {
-            ...earnHeaderToolBarData[ButtonComponentsMap.WalletConnect],
+            ...toolBarData[ButtonComponentsMap.WalletConnect],
             handleClick: onWalletBtnConnect,
             handleClickUnlock: () => {
               unlockAccount()
@@ -120,13 +121,13 @@ export const useHeader = () => {
             },
           },
           [ButtonComponentsMap.ProfileMenu]: {
-            ...earnHeaderToolBarData[ButtonComponentsMap.ProfileMenu],
+            ...toolBarData[ButtonComponentsMap.ProfileMenu],
             subMenu: profile.map((item: string) => Profile[item]),
             readyState: account.readyState,
           },
         }
-      : earnHeaderToolBarData
-  }, [accountStatus, account?.readyState, account])
+      : toolBarData
+  }, [accountStatus, account?.readyState, account, isMobile])
   
   const { notifyMap } = useNotify()
   const { toggle: {

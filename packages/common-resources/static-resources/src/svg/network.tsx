@@ -27,18 +27,12 @@ export const ChainTAIKOIcon = (props: SvgIconProps) => {
 export const ChainETHEREUMIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon width='36' height='36' {...props} viewBox='0 0 36 36' fill='none'>
-      <path
-        d='M17.5941 4L17.4064 4.63803V23.1523L17.5941 23.3396L26.1882 18.2597L17.5941 4Z'
-        fill='#343434'
-      />
-      <path d='M17.5941 4L9 18.2597L17.5941 23.3397V14.3535V4Z' fill='#8C8C8C' />
-      <path
-        d='M17.594 24.9669L17.4882 25.0958V31.691L17.594 32L26.1932 19.8895L17.594 24.9669Z'
-        fill='#3C3C3B'
-      />
-      <path d='M17.5941 31.9999V24.9668L9 19.8894L17.5941 31.9999Z' fill='#8C8C8C' />
-      <path d='M17.5941 23.3396L26.188 18.2597L17.5941 14.3535V23.3396Z' fill='#141414' />
-      <path d='M9.00006 18.2597L17.594 23.3396V14.3535L9.00006 18.2597Z' fill='#393939' />
+      <path d='M18 3V15.4588L9 18.2603L18 3Z' fill='#8C95B5' />
+      <path d='M18 3V15.4588L27 18.2603L18 3Z' fill='#666B91' />
+      <path d='M18 33.1761V24.5069L9 19.5437L18 33.1761Z' fill='#8D96B6' />
+      <path d='M18 33.1761V24.5069L27 19.5437L18 33.1761Z' fill='#666B91' />
+      <path d='M9 18.2601L18 14.0778V22.6807L9 18.2601Z' fill='#4A4E79' />
+      <path d='M27 18.2601L18 14.0778V22.6807L27 18.2601Z' fill='#4A4E79' />
     </SvgIcon>
   )
 }

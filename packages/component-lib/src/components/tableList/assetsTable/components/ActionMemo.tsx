@@ -54,6 +54,7 @@ const ActionPopContent = React.memo(
     // onShowWithdraw,
     getMarketArrayListCallback,
     isLeverageETH,
+    isWebEarn,
   }: ActionProps) => {
     const history = useHistory()
     const { t } = useTranslation(['tables', 'common'])
@@ -67,10 +68,10 @@ const ActionPopContent = React.memo(
     const tradeList = [
       ...[
         <MenuItem key={'token-Receive'} onClick={() => onReceive(tokenValue)}>
-          <ListItemText>{t('labelReceive')}</ListItemText>
+          <ListItemText>{isWebEarn ? t('labelDeposit') : t('labelReceive')}</ListItemText>
         </MenuItem>,
         <MenuItem key={'token-Send'} onClick={() => onSend(tokenValue, isLp)}>
-          <ListItemText>{t('labelSend')}</ListItemText>
+          <ListItemText>{isWebEarn ? t('labelWithdraw') : t('labelSend')}</ListItemText>
         </MenuItem>,
       ],
       // ...(isToL1
