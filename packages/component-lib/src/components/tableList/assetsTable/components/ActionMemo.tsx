@@ -82,7 +82,8 @@ const ActionPopContent = React.memo(
       //     ]
       //   : []),
     ]
-    const marketList = isLp
+    
+    const marketList = (isLp || isWebEarn)
       ? []
       : getMarketArrayListCallback &&
         market &&
