@@ -11,7 +11,7 @@ import {
   TradeBtnStatus,
 } from '@loopring-web/common-resources'
 import { useTranslation } from 'react-i18next'
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, CircularProgress, Grid, Input, Tooltip, Typography } from '@mui/material'
 import {
   InputCoin,
@@ -26,6 +26,7 @@ import styled from '@emotion/styled'
 import { useHistory } from 'react-router'
 import { useTheme } from '@emotion/react'
 import moment from 'moment'
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 
 const GridStyle = styled(Grid)`
   input::placeholder {
@@ -65,6 +66,8 @@ type TaikoLockInputProps<T, I, ACD> = {
   daysInput: {
     value: string
     onInput: (value: string) => void
+    disabled: boolean
+    unlockTime: string
   }
   myPosition:
     | {
@@ -77,6 +80,8 @@ type TaikoLockInputProps<T, I, ACD> = {
           unlockTime: string
           multiplier: string
         }[]
+        expirationTime: number
+        totalAmountWithNoSymbol: string
       }
     | undefined
   mintButton: {
@@ -91,6 +96,7 @@ type TaikoLockInputProps<T, I, ACD> = {
     mintedAmount: string
     pnl: string
   }
+  showMultiplier: boolean
 }
 
 const StyledInput = styled(Input)`
@@ -127,6 +133,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   onClickPendingDeposits,
   lockTaikoPlaceholder,
   lrTAIKOTradeEarnSummary,
+  showMultiplier,
   ...rest
 }: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -216,6 +223,15 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   myLog('deFiSideCalcData.stakeViewInfo', deFiSideCalcData.stakeViewInfo)
   const theme = useTheme()
   const { isMobile } = useSettings()
+  const myPositionScrollBox = useRef<HTMLDivElement>(null)
+  const [scrollToTopDisabled, setScrollToTopDisabled] = useState<boolean>(true)
+  useEffect(() => {
+    if (myPositionScrollBox.current) {
+      myPositionScrollBox.current.addEventListener('scroll', () => {
+        setScrollToTopDisabled(myPositionScrollBox.current!.scrollTop === 0)
+      })
+    }
+  }, [myPositionScrollBox.current])
 
   return (
     <Box>
@@ -325,18 +341,21 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 daysInput.onInput((e.target as any).value)
               }}
               value={daysInput.value}
+              disabled={daysInput.disabled}
             />
           </Grid>
 
-          <Typography
-            sx={{ opacity: daysInput.value ? 1 : 0 }}
-            width={'100%'}
-            variant='body2'
-            textAlign={'left'}
-            mt={1.5}
-          >
-            * x{Number(daysInput.value)} Multiplier
-          </Typography>
+          {showMultiplier && (
+            <Typography
+              sx={{ opacity: daysInput.value ? 1 : 0 }}
+              width={'100%'}
+              variant='body2'
+              textAlign={'left'}
+              mt={1.5}
+            >
+              * x{Number(daysInput.value)} Multiplier
+            </Typography>
+          )}
           <Typography
             sx={{ opacity: daysInput.value ? 1 : 0 }}
             width={'100%'}
@@ -344,8 +363,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             textAlign={'left'}
             mt={1}
           >
-            * Your TAIKO token will be unlocked on{' '}
-            {moment().add(Number(daysInput.value), 'days').format('YYYY-MM-DD')}
+            * Your TAIKO token will be unlocked on {daysInput.unlockTime}
           </Typography>
 
           <Grid item alignSelf={'stretch'} marginTop={8} pb={1}>
@@ -419,65 +437,139 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
           >
             My Position
           </Typography>
-          <Typography mt={0.5} color={'var(--color-text-secondary)'}>
-            Total Amount: {myPosition.totalAmount} / {myPosition.totalAmountInCurrency}
+          <Typography mt={0.5} variant='body2' color={'var(--color-text-secondary)'}>
+            Expiration date: {moment(myPosition.expirationTime).format('YYYY-MM-DD')}
           </Typography>
-          <Box mt={2.5}>
-            <Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
-              <Typography color={'var(--color-text-secondary)'}>Amount / Status</Typography>
-              <Typography color={'var(--color-text-secondary)'}>
-                Lock Duration/unlock Date
+          <Box mt={2}>
+            <Box mb={1} display={'flex'} alignItems={'center'}>
+              <Typography width={'40%'} variant='body2' color={'var(--color-text-secondary)'}>
+                Item
+              </Typography>
+              <Typography width={'30%'} variant='body2' color={'var(--color-text-secondary)'}>
+                Status
+              </Typography>
+              <Typography
+                width={'30%'}
+                textAlign={'right'}
+                variant='body2'
+                color={'var(--color-text-secondary)'}
+              >
+                Amount
+              </Typography>
+            </Box>
+            <Box mb={1} display={'flex'} alignItems={'center'}>
+              <Typography width={'40%'}>Taiko</Typography>
+              <Typography width={'30%'}>Locked</Typography>
+              <Typography width={'30%'} textAlign={'right'}>
+                {myPosition?.totalAmountWithNoSymbol ?? '--'}
+              </Typography>
+            </Box>
+            <Box mb={1} display={'flex'} alignItems={'center'}>
+              <Tooltip
+                title={
+                  <Typography variant='body2'>
+                    {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.`}
+                    <br />
+                    <br />
+                    {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
+                  </Typography>
+                }
+              >
+                <Typography width={'40%'} display={'flex'} alignItems={'center'}>
+                  Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
+                </Typography>
+              </Tooltip>
+              <Typography width={'30%'}>Unrealized</Typography>
+              <Typography width={'30%'} textAlign={'right'}>
+                {lrTAIKOTradeEarnSummary?.pnl ?? '--'}
               </Typography>
             </Box>
 
-            {myPosition.positions.map((item, index) => {
-              return (
-                <Box py={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                  <Box>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <Typography
-                        component={'span'}
-                        fontSize={'16px'}
-                        color={'var(--color-text-primary)'}
-                      >
-                        {item.amount}
-                      </Typography>
-                      <Tooltip title={'Trailblazers Points Multiplier'}>
-                        <Box
-                          ml={1}
-                          bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                          color={'var(--color-warning)'}
-                          borderRadius={'4px'}
-                          // py={1}
-                          p={0.5}
-                          fontSize={'11px'}
+            <Box
+              pb={1.5}
+              display={'flex'}
+              justifyContent={'center'}
+              borderBottom={'1px solid var(--color-border)'}
+              mt={2}
+            >
+              <KeyboardDoubleArrowUpIcon
+                className='custom-size'
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  color: scrollToTopDisabled ? 'var(--color-text-secondary)' : 'var(--color-text-primary)',
+                  cursor: scrollToTopDisabled ? '' : 'pointer',
+                }}
+                onClick={() => {
+                  if (scrollToTopDisabled) return
+                  myPositionScrollBox.current?.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  })
+                }}
+              />
+            </Box>
+          </Box>
+          <Box mt={2.5}>
+            <Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
+              <Typography color={'var(--color-text-secondary)'}>Amount</Typography>
+              <Typography color={'var(--color-text-secondary)'}>Lock Duration</Typography>
+            </Box>
+            <Box ref={myPositionScrollBox} height={'150px'} sx={{ overflowY: 'scroll' }}>
+              {myPosition.positions.map((item, index) => {
+                return (
+                  <Box
+                    py={2}
+                    display={'flex'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                  >
+                    <Box>
+                      <Box display={'flex'} alignItems={'center'}>
+                        <Typography
+                          component={'span'}
+                          fontSize={'16px'}
+                          color={'var(--color-text-primary)'}
                         >
-                          {item.multiplier}
-                        </Box>
-                      </Tooltip>
-                    </Box>
+                          {item.amount}
+                        </Typography>
+                        <Tooltip title={'Trailblazers Points Multiplier'}>
+                          <Box
+                            ml={1}
+                            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                            color={'var(--color-warning)'}
+                            borderRadius={'4px'}
+                            // py={1}
+                            p={0.5}
+                            fontSize={'11px'}
+                          >
+                            {item.multiplier}
+                          </Box>
+                        </Tooltip>
+                      </Box>
 
-                    <Typography
+                      {/* <Typography
                       color={item.unlocked ? 'var(--color-success)' : 'var(--color-text-secondary)'}
                     >
                       {item.unlocked ? 'Unlocked' : 'locked'}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      textAlign={'right'}
-                      fontSize={'16px'}
-                      color={'var(--color-text-primary)'}
-                    >
-                      {item.lockingDays} Days
-                    </Typography>
-                    <Typography textAlign={'right'} color={'var(--color-text-secondary)'}>
+                    </Typography> */}
+                    </Box>
+                    <Box>
+                      <Typography
+                        textAlign={'right'}
+                        fontSize={'16px'}
+                        color={'var(--color-text-primary)'}
+                      >
+                        {item.lockingDays} Days
+                      </Typography>
+                      {/* <Typography textAlign={'right'} color={'var(--color-text-secondary)'}>
                       {item.unlockTime}{' '}
-                    </Typography>
+                    </Typography> */}
+                    </Box>
                   </Box>
-                </Box>
-              )
-            })}
+                )
+              })}
+            </Box>
 
             <ButtonStyle
               sx={{ mt: 4, mb: 4, textTransform: 'none' }}
@@ -495,7 +587,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
           </Box>
         </Box>
       )}
-      {lrTAIKOTradeEarnSummary && (
+      {/* {lrTAIKOTradeEarnSummary && (
         <Box
           display={'flex'}
           style={isMobile ? { flex: 1 } : { width: '450px' }}
@@ -545,12 +637,20 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               <Tooltip
                 title={
                   <Typography variant='body2'>
-                    {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.` }<br/><br/>
+                    {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.`}
+                    <br />
+                    <br />
                     {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
                   </Typography>
                 }
               >
-                <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-secondary)'}>Profit & Loss <Info2Icon sx={{ml:0.5}}/></Typography>
+                <Typography
+                  display={'flex'}
+                  alignItems={'center'}
+                  color={'var(--color-text-secondary)'}
+                >
+                  Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
+                </Typography>
               </Tooltip>
             }
             rightNode={
@@ -560,7 +660,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             }
           />
         </Box>
-      )}
+      )} */}
     </Box>
   )
 }

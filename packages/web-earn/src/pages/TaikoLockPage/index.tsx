@@ -78,7 +78,7 @@ export const TaikoLockPage = ({
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
       />
-      (
+
         <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
           <Box
             width={'100%'}
@@ -187,7 +187,6 @@ export const TaikoLockPage = ({
             </Box>
           </MaxWidthContainer>
         </Box>
-      )
       <MintModal {...stakeWrapProps.mintModal} logoCoinJSON={stakeWrapProps.taikoCoinJSON} />
       <TxSubmitModal {...stakeWrapProps.txSubmitModal} />
       <PendingTxsModal {...stakeWrapProps.pendingTxsModal} />
