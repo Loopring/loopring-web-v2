@@ -610,31 +610,36 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             ) => {
               const account = store.getState().account
               const defaultNetwork = store.getState().settings.defaultNetwork
-              if (env.addr !== account.accAddress || defaultNetwork !== env.chainId) {
+              
+              if (env.addr.toLowerCase() !== account.accAddress.toLowerCase() || defaultNetwork !== env.chainId) {
                 // stop if address, chain changed
                 return
               }
               const accountId =
                 account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
-
-              return LoopringAPI?.defiAPI
-                ?.getTaikoFarmingDepositDurationList({
+              if (!accountId || accountId === -1) {
+                accountServices.sendCheckAccount(account.accAddress)
+                await sdk.sleep(10 * 1000)
+                return recursiveCheck(hash, env)
+              } else {
+                const res = await LoopringAPI?.defiAPI?.getTaikoFarmingDepositDurationList({
                   accountId,
                   tokenId: sellToken.tokenId,
                   statuses: 'locked',
                   // @ts-ignore
                   txHashes: hash,
                 })
-                .then((res) => {
-                  if (res.data && res.data.length > 0) {
-                    setTxSubmitModalState((state) => ({
-                      ...state,
-                      status: 'depositCompleted',
-                    }))
-                  } else {
-                    return sdk.sleep(10 * 1000).then(() => recursiveCheck(hash, env))
-                  }
-                })
+                if (res?.data && res.data.length > 0) {
+                  setTxSubmitModalState((state) => ({
+                    ...state,
+                    status: 'depositCompleted',
+                  }))
+                  return
+                } else {
+                  await sdk.sleep(10 * 1000)
+                  return recursiveCheck(hash, env)
+                }
+              }
             }
             recursiveCheck(txReceipt.transactionHash, {
               addr: account.accAddress,
