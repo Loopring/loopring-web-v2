@@ -378,11 +378,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                     onSubmitClick()
                   }}
                   loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                  disabled={
-                    buttonDisabled ||
-                    btnStatus === TradeBtnStatus.LOADING ||
-                    btnStatus === TradeBtnStatus.DISABLED
-                  }
+                  disabled={buttonDisabled}
                 >
                   {btnLabel}
                 </ButtonStyle>

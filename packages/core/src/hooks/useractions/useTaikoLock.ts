@@ -435,7 +435,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
           await sdk.sleep(SUBMIT_PANEL_QUICK_AUTO_CLOSE)
           walletLayer2Service.sendUserUpdate()
-          updateStakingState()
+          refreshData()
         }
       } else {
         throw new Error('api not ready')
@@ -469,8 +469,75 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const [pendingTxsModalOpen, setPendingTxsModalOpen] = React.useState(false)
   const [localPendingTx, setLocalPendingTx] = useState<{
     txHash: string
+    lockDuration: number
+    stakeAt: number
     amount: string
   } | undefined>(undefined)
+  
+
+  const daysInputValid =
+    Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15 && Number(daysInput) <= 60
+  const [stakeInfo, setStakeInfo] = React.useState(
+    undefined as
+      | undefined
+      | {
+          totalStaked: string
+          staking: {
+            accountId: number
+            tokenId: number
+            stakeAt: number
+            initialAmount: string
+            remainAmount: string
+            totalRewards: string
+            productId: string
+            hash: string
+            status: string
+            createdAt: number
+            updatedAt: number
+            claimableTime: number
+            lastDayPendingRewards: string
+            apr: string
+          }[]
+        },
+  )
+
+  const [pendingDeposits, setPendingDeposits] = React.useState(
+    undefined as
+      | undefined
+      | {
+          accountId: number
+          tokenId: number
+          stakeAt: number
+          txHash: string
+          eventIndex: number
+          lockDuration: number
+          hash: string
+          status: string
+          createdAt: number
+          updatedAt: number
+        }[],
+  )
+
+  const pendingDepositsMergeLocal = [
+    ...(localPendingTx ? [
+      {...localPendingTx, isLocal: true}
+    ] : []),
+    ...(pendingDeposits ? pendingDeposits.map(tx => ({...tx, isLocal: false})) : []),
+  ]
+
+  const firstLockingPos: { claimableTime: number } | undefined =
+    stakeInfo?.staking && last(stakeInfo.staking)
+      ? { claimableTime: last(stakeInfo.staking)!.claimableTime }
+      : pendingDepositsMergeLocal.length > 0
+      ? {
+          claimableTime:
+            pendingDepositsMergeLocal[0].lockDuration + pendingDepositsMergeLocal[0].stakeAt,
+        }
+      : undefined
+
+
+  const hasNoLockingPos = !firstLockingPos
+
   const onSubmitBtnClick = React.useCallback(async () => {
     if (tokenMap && exchangeInfo) {
       if (allowTrade && !allowTrade.defiInvest.enable) {
@@ -487,10 +554,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           res(null)
         })
           .then(() => {
-            const duration = hasNoLockingPos
+            const duration = stakeInfo && !firstLockingPos
               ? BigNumber.from(daysInput).mul('60').mul('60').mul('24')
-              : stakeInfo?.staking
-              ? BigNumber.from(last(stakeInfo.staking)!.claimableTime).div('1000')
+              : firstLockingPos
+              ? BigNumber.from(firstLockingPos.claimableTime).div('1000')
               : undefined
             if (tradeStake && tradeStake.deFiSideCalcData && duration) {
               return depositTaikoWithDurationApprove({
@@ -529,6 +596,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             setLocalPendingTx({
               txHash: tx.hash,
               amount: tradeStake!.sellVol,
+              stakeAt: Date.now(),
+              lockDuration: firstLockingPos 
+                ? firstLockingPos.claimableTime - Date.now()
+                : Number(daysInput) * 24 * 60 * 60 * 1000,
             })
             return tx.wait()
           })
@@ -605,33 +676,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     t,
   ])
 
-  const daysInputValid =
-    Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15 && Number(daysInput) <= 60
-  const [stakeInfo, setStakeInfo] = React.useState(
-    undefined as
-      | undefined
-      | {
-          totalStaked: string
-          staking: {
-            accountId: number
-            tokenId: number
-            stakeAt: number
-            initialAmount: string
-            remainAmount: string
-            totalRewards: string
-            productId: string
-            hash: string
-            status: string
-            createdAt: number
-            updatedAt: number
-            claimableTime: number
-            lastDayPendingRewards: string
-            apr: string
-          }[]
-        },
-  )
-  const hasNoLockingPos = stakeInfo?.staking && stakeInfo.staking.length === 0
-
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
     label: string
@@ -688,12 +732,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: `labelStakeNoEnough| ${coinSellSymbol}`,
       }
-    } else if (hasNoLockingPos && !daysInput) {
+    } else if (stakeInfo && hasNoLockingPos && !daysInput) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: 'input days please',
       }
-    } else if (hasNoLockingPos && !daysInputValid) {
+    } else if (stakeInfo && hasNoLockingPos && !daysInputValid) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: 'Days should be between 15 and 60',
@@ -701,40 +745,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
     }
-  }, [
-    tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellVol,
-    tradeStake.sellVol,
-    tradeStake.sellToken,
-    tradeStake.deFiSideCalcData,
-    tokenMap,
-    coinSellSymbol,
-    taikoFarmingChecked,
-    daysInput,
-  ])
+  }, [tokenMap, coinSellSymbol, daysInput, stakeInfo, hasNoLockingPos, daysInputValid])
   const checked = availableTradeCheck()
   const btnStatus = isLoading ? TradeBtnStatus.LOADING : checked.tradeBtnStatus
 
   const onBtnClick = onSubmitBtnClick
   const [stakingTotal, setStakingTotal] = React.useState<string | undefined>(undefined)
-
-  
-  const [pendingDeposits, setPendingDeposits] = React.useState(
-    undefined as
-      | undefined
-      | {
-          accountId: number
-          tokenId: number
-          stakeAt: number
-          txHash: string
-          eventIndex: number
-          lockDuration: number
-          hash: string
-          status: string
-          createdAt: number
-          updatedAt: number
-        }[],
-  )
-  
 
   const stakingAmountRaw =
     stakeInfo && sellToken
@@ -787,11 +803,16 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [defaultNetwork])
 
-  const updateStakingState = async () => {
+  const refreshData = async () => {
     const account = store.getState().account
     const accountId =
       account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
     if (!accountId || accountId === -1) {
+      setStakeInfo({
+        totalStaked: '0',
+        staking: [],
+      })
+      // refresh account 
       accountServices.sendCheckAccount(account.accAddress)
       return
     }
@@ -833,6 +854,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       ?.getTaikoFarmingUserSummary({
         accountId: accountId,
         tokenId: sellToken.tokenId,
+        statuses: 'received,locked',
       })
       .then((res) => {
         setStakeInfo({
@@ -861,14 +883,16 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     walletLayer2Service.sendUserUpdate()
   }, [account.readyState])
   React.useEffect(() => {
+    clearState()
     const timer = setInterval(() => {
-      updateStakingState()
+      refreshData()
     }, 10 * 1000)
-    updateStakingState()
+    refreshData()
     return () => {
       clearInterval(timer)
     }
-  }, [])
+  }, [account.accAddress, defaultNetwork, account.accountId, account._accountIdNotActive])
+
   React.useEffect(() => {
     const {
       _router_tradeStake: { tradeStake },
@@ -892,9 +916,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [stakingMapStatus])
 
-  React.useEffect(() => {
-    clearState()
-  }, [account.accAddress, defaultNetwork])
+  
 
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const btnLabel =
@@ -931,17 +953,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
 
   const { goUpdateAccount } = useUpdateAccount()
   
-
-  const pendingDepositsMergeLocal = [
-    ...(localPendingTx ? [
-      {...localPendingTx, isLocal: true}
-    ] : []),
-    ...(pendingDeposits ? pendingDeposits.map(tx => ({...tx, isLocal: false})) : []),
-  ]
-
-  
-  
-  const daysInputInfo = hasNoLockingPos ? {
+  const daysInputInfo = (stakeInfo && hasNoLockingPos) ? {
     value: daysInput,
     onInput: (input) => {
       if (Number.isInteger(Number(input)) || input === '') {
@@ -965,14 +977,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     : ''
     
   }
-  
+
   const output = {
     stakeWrapProps: {
       disabled: false,
       buttonDisabled:
-        // account.readyState === AccountStatus.ACTIVATED &&
-        isLoading ||  (hasNoLockingPos && (!daysInputValid || !daysInput)),
-      // btnInfo,
+        btnStatus !== TradeBtnStatus.AVAILABLE ||
+        !stakeInfo ||
+        (stakeInfo && hasNoLockingPos && (!daysInputValid || !daysInput)),
       isJoin: true,
       isLoading,
       switchStobEvent: (_isStoB: boolean | ((prevState: boolean) => boolean)) => {},
@@ -998,7 +1010,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }
           : undefined,
       taikoFarmingChecked,
-      showMultiplier: hasNoLockingPos,
+      showMultiplier: stakeInfo && hasNoLockingPos,
       onCheckBoxChange,
       lockTaikoPlaceholder: tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount
         ? `≥ ${tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount}`
@@ -1032,7 +1044,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 }
               }),
               expirationTime: last(stakeInfo.staking)?.claimableTime ?? 0,
-              totalAmountWithNoSymbol: stakingAmountWithNoSymbol
+              totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
             }
           : undefined,
       mintButton: {
@@ -1221,7 +1233,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               })
             })
             .finally(() => {
-              updateStakingState()
+              refreshData()
             })
         },
         onInput: (input: string) => {
@@ -1247,8 +1259,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             ? availableToMintFormatted &&
               mintModalState.minInputAmount &&
               mintModalState.maxInputAmount &&
-              Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).gte(mintModalState.minInputAmount)
-              ? `Please input between ${mintModalState.minInputAmount.toString()} - ${Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).toString()}`
+              Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).gte(
+                mintModalState.minInputAmount,
+              )
+              ? `Please input between ${mintModalState.minInputAmount.toString()} - ${Decimal.min(
+                  mintModalState.maxInputAmount,
+                  availableToMintFormatted,
+                ).toString()}`
               : 'Invalid amount'
             : !mintModalState.warningChecked
             ? 'Please check checkbox'
@@ -1308,13 +1325,23 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
         },
       },
-      lrTAIKOTradeEarnSummary: mintedLRTAIKO && holdingLRTAIKO && {
-        holdingAmount: numberFormatThousandthPlace(holdingLRTAIKO, { fixed: sellToken.precision, removeTrailingZero: true }),
-        mintedAmount: numberFormatThousandthPlace(mintedLRTAIKO, { fixed: sellToken.precision, removeTrailingZero: true }),
-        pnl: `${new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'}${
-          numberFormatThousandthPlace(new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(), {fixed: sellToken.precision, removeTrailingZero: true}) 
-        }`,
-      }
+      lrTAIKOTradeEarnSummary: mintedLRTAIKO &&
+        holdingLRTAIKO && {
+          holdingAmount: numberFormatThousandthPlace(holdingLRTAIKO, {
+            fixed: sellToken.precision,
+            removeTrailingZero: true,
+          }),
+          mintedAmount: numberFormatThousandthPlace(mintedLRTAIKO, {
+            fixed: sellToken.precision,
+            removeTrailingZero: true,
+          }),
+          pnl: `${
+            new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
+          }${numberFormatThousandthPlace(
+            new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(),
+            { fixed: sellToken.precision, removeTrailingZero: true },
+          )}`,
+        },
     },
   }
   return output
