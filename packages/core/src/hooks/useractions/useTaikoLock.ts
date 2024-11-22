@@ -963,8 +963,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     disabled: false,
     unlockTime: moment().add(Number(daysInput), 'days').format('YYYY-MM-DD')
   } : {
-    value: stakeInfo?.staking && last(stakeInfo!.staking)?.claimableTime
-      ? moment(last(stakeInfo!.staking)!.claimableTime).diff(moment(), 'days').toString()
+    value: firstLockingPos 
+      ? moment(firstLockingPos!.claimableTime).diff(moment(), 'days').toString()
       : '',
     onInput: (input) => {
       if (Number.isInteger(Number(input)) || input === '') {
