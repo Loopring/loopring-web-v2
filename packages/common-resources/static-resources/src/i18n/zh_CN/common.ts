@@ -1780,7 +1780,7 @@ export default {
     'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
   labelNetworkFee: 'Network Fee',
   labelTradingFee: 'Trading Fee',
-  labelTradingFeeEst: 'Trading Fee(est.)',
+  labelTradingFeeEst: 'Trading Fee (est.)',
   labelStopStopPriceDes:
     'It\'s actually the trigger price for the relayer to place a valid order. When the market price reaches the "Stop Price",  the system will automatically place a limit order at "Limit Price".',
   labelStopPriceDes:
