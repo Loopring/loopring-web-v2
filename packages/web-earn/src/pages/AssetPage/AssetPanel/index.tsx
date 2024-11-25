@@ -149,7 +149,7 @@ export const AssetPanel = withTranslation('common')(
             <Box>
               <Box marginBottom={3} marginTop={2} display={'flex'} justifyContent={'start'}>
                 <Typography marginRight={4} color={'var(--color-text-secondary)'}>
-                  {t('labelFrozen')}:{' '}
+                  {t('labelLocked')}:{' '}
                   {hideAssets ? (
                     <>
                       <>&#10033;&#10033;&#10033;&#10033;&#10033;&#10033;</>

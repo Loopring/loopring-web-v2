@@ -2543,6 +2543,7 @@ export default {
   labelComplete: 'Complete',
   labelStartMintlrTAIKO: 'Start Mint lrTAIKO',
   labelCompleteSignInDes: 'You need to activate Loopring DeFi account first before minting. Please sign in to proceed.',
+  labelLocked: 'Locked',
 
 }
 
