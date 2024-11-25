@@ -124,7 +124,7 @@ export const useVaultMarket = <
           },
           trends: [
             ...quoteTokenTrends?.map((item) => {
-              return item?.list?.map((trend: string[]) => {
+              return item?.list?.reverse().map((trend: string[]) => {
                 const [
                   timestamp,
                   price,
