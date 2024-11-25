@@ -223,15 +223,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   myLog('deFiSideCalcData.stakeViewInfo', deFiSideCalcData.stakeViewInfo)
   const theme = useTheme()
   const { isMobile } = useSettings()
-  const myPositionScrollBox = useRef<HTMLDivElement>(null)
-  const [scrollToTopDisabled, setScrollToTopDisabled] = useState<boolean>(true)
-  useEffect(() => {
-    if (myPositionScrollBox.current) {
-      myPositionScrollBox.current.addEventListener('scroll', () => {
-        setScrollToTopDisabled(myPositionScrollBox.current!.scrollTop === 0)
-      })
-    }
-  }, [myPositionScrollBox.current])
+  const [showPositionList, setShowPositionList] = useState<boolean>(false)
 
   return (
     <Box>
@@ -493,25 +485,23 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 style={{
                   width: '24px',
                   height: '24px',
-                  color: scrollToTopDisabled ? 'var(--color-text-secondary)' : 'var(--color-text-primary)',
-                  cursor: scrollToTopDisabled ? '' : 'pointer',
+                  cursor: 'pointer',
+                  transform: showPositionList ? 'rotate(0deg)' : 'rotate(180deg)',
                 }}
                 onClick={() => {
-                  if (scrollToTopDisabled) return
-                  myPositionScrollBox.current?.scrollTo({
-                    top: 0,
-                    behavior: 'smooth',
-                  })
+                  setShowPositionList(!showPositionList)
                 }}
               />
             </Box>
           </Box>
           <Box mt={2.5}>
-            <Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
+            <>
+            </>
+            {showPositionList && <><Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
               <Typography color={'var(--color-text-secondary)'}>Amount</Typography>
               <Typography color={'var(--color-text-secondary)'}>Lock Duration</Typography>
             </Box>
-            <Box ref={myPositionScrollBox} height={'150px'} sx={{ overflowY: 'scroll' }}>
+            <Box height={'150px'}>
               {myPosition.positions.map((item, index) => {
                 return (
                   <Box
@@ -566,6 +556,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 )
               })}
             </Box>
+            </>}
 
             <ButtonStyle
               sx={{ mt: 4, mb: 4, textTransform: 'none' }}

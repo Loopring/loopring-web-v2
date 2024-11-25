@@ -554,10 +554,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           res(null)
         })
           .then(() => {
+            const oneDay = BigNumber.from('60').mul('60').mul('24')
             const duration = stakeInfo && !firstLockingPos
-              ? BigNumber.from(daysInput).mul('60').mul('60').mul('24')
+              ? BigNumber.from(daysInput).mul(oneDay)
               : firstLockingPos
-              ? BigNumber.from(firstLockingPos.claimableTime).div('1000')
+              ? BigNumber.from(firstLockingPos.claimableTime).sub(Date.now()).div('1000').div(oneDay).mul(oneDay)
               : undefined
             if (tradeStake && tradeStake.deFiSideCalcData && duration) {
               return depositTaikoWithDurationApprove({
@@ -746,6 +747,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: 'Days should be between 15 and 60',
+      }
+    } else if (
+      firstLockingPos && moment(firstLockingPos.claimableTime).diff(moment(), 'days') < 1
+    ) {
+      return {
+        tradeBtnStatus: TradeBtnStatus.DISABLED,
+        label: 'Less than 1 day to unlcok, locking Disabled',
       }
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
@@ -988,8 +996,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       disabled: false,
       buttonDisabled:
         btnStatus !== TradeBtnStatus.AVAILABLE ||
-        !stakeInfo ||
-        (stakeInfo && hasNoLockingPos && (!daysInputValid || !daysInput)),
+        !stakeInfo,
+        // || (stakeInfo && hasNoLockingPos && (!daysInputValid || !daysInput)),
       isJoin: true,
       isLoading,
       switchStobEvent: (_isStoB: boolean | ((prevState: boolean) => boolean)) => {},
