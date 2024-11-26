@@ -224,6 +224,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   const theme = useTheme()
   const { isMobile } = useSettings()
   const [showPositionList, setShowPositionList] = useState<boolean>(false)
+  const realized = false
 
   return (
     <Box>
@@ -467,11 +468,36 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
                 </Typography>
               </Tooltip>
-              <Tooltip title={<Typography variant='body2'>todo</Typography>}>
-                <Typography width={'30%'} display={'flex'} alignItems={'center'}>
-                  Unrealized <Info2Icon sx={{ ml: 0.5 }} />
-                </Typography>
-              </Tooltip>
+              {realized ? (
+                <Tooltip
+                  title={
+                    <Typography variant='body2'>
+                      Your P&L has been finalized. If your current TAIKO holdings are less than the
+                      initially locked amount, it indicates that losses incurred during your DeFi
+                      activities have been deducted from your balance.
+                    </Typography>
+                  }
+                >
+                  <Typography width={'30%'} display={'flex'} alignItems={'center'}>
+                    Realized <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              ) : (
+                <Tooltip
+                  title={
+                    <Typography variant='body2'>
+                      Your P&L is still pending. Once your lock duration expires, any unrealized
+                      losses will result in a portion of your locked TAIKO being transferred to
+                      Loopring.
+                    </Typography>
+                  }
+                >
+                  <Typography width={'30%'} display={'flex'} alignItems={'center'}>
+                    Unrealized <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              )}
+
               <Typography width={'30%'} textAlign={'right'}>
                 {lrTAIKOTradeEarnSummary?.pnl ?? '--'}
               </Typography>
@@ -527,8 +553,8 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                             <Tooltip title={'Trailblazers Points Multiplier'}>
                               <Box
                                 ml={1}
-                                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                                color={'var(--color-warning)'}
+                                bgcolor={hexToRGB('#EA29B6', 0.2)}
+                                color={'#EA29B6'}
                                 borderRadius={'4px'}
                                 // py={1}
                                 p={0.5}
