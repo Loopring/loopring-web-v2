@@ -449,7 +449,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
               <Typography width={'40%'}>Taiko</Typography>
               <Typography width={'30%'}>Locked</Typography>
               <Typography width={'30%'} textAlign={'right'}>
-                {myPosition?.totalAmountWithNoSymbol ?? '--'}
+                {myPosition?.totalAmount ?? '--'}
               </Typography>
             </Box>
             <Box mb={1} display={'flex'} alignItems={'center'}>
@@ -467,7 +467,11 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
                 </Typography>
               </Tooltip>
-              <Typography width={'30%'}>Unrealized</Typography>
+              <Tooltip title={<Typography variant='body2'>todo</Typography>}>
+                <Typography width={'30%'} display={'flex'} alignItems={'center'}>
+                  Unrealized <Info2Icon sx={{ ml: 0.5 }} />
+                </Typography>
+              </Tooltip>
               <Typography width={'30%'} textAlign={'right'}>
                 {lrTAIKOTradeEarnSummary?.pnl ?? '--'}
               </Typography>
@@ -495,68 +499,70 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             </Box>
           </Box>
           <Box mt={2.5}>
-            <>
-            </>
-            {showPositionList && <><Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
-              <Typography color={'var(--color-text-secondary)'}>Amount</Typography>
-              <Typography color={'var(--color-text-secondary)'}>Lock Duration</Typography>
-            </Box>
-            <Box height={'150px'}>
-              {myPosition.positions.map((item, index) => {
-                return (
-                  <Box
-                    py={2}
-                    display={'flex'}
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                  >
-                    <Box>
-                      <Box display={'flex'} alignItems={'center'}>
-                        <Typography
-                          component={'span'}
-                          fontSize={'16px'}
-                          color={'var(--color-text-primary)'}
-                        >
-                          {item.amount}
-                        </Typography>
-                        <Tooltip title={'Trailblazers Points Multiplier'}>
-                          <Box
-                            ml={1}
-                            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-                            color={'var(--color-warning)'}
-                            borderRadius={'4px'}
-                            // py={1}
-                            p={0.5}
-                            fontSize={'11px'}
-                          >
-                            {item.multiplier}
+            <></>
+            {showPositionList && (
+              <>
+                <Box mb={0.5} display={'flex'} justifyContent={'space-between'}>
+                  <Typography color={'var(--color-text-secondary)'}>Amount (TAIKO)</Typography>
+                  <Typography color={'var(--color-text-secondary)'}>Lock Duration</Typography>
+                </Box>
+                <Box>
+                  {myPosition.positions.map((item, index) => {
+                    return (
+                      <Box
+                        py={2}
+                        display={'flex'}
+                        justifyContent={'space-between'}
+                        alignItems={'center'}
+                      >
+                        <Box>
+                          <Box display={'flex'} alignItems={'center'}>
+                            <Typography
+                              component={'span'}
+                              fontSize={'16px'}
+                              color={'var(--color-text-primary)'}
+                            >
+                              {item.amount}
+                            </Typography>
+                            <Tooltip title={'Trailblazers Points Multiplier'}>
+                              <Box
+                                ml={1}
+                                bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+                                color={'var(--color-warning)'}
+                                borderRadius={'4px'}
+                                // py={1}
+                                p={0.5}
+                                fontSize={'11px'}
+                              >
+                                {item.multiplier}
+                              </Box>
+                            </Tooltip>
                           </Box>
-                        </Tooltip>
-                      </Box>
 
-                      {/* <Typography
+                          {/* <Typography
                       color={item.unlocked ? 'var(--color-success)' : 'var(--color-text-secondary)'}
                     >
                       {item.unlocked ? 'Unlocked' : 'locked'}
                     </Typography> */}
-                    </Box>
-                    <Box>
-                      <Typography
-                        textAlign={'right'}
-                        fontSize={'16px'}
-                        color={'var(--color-text-primary)'}
-                      >
-                        {item.lockingDays} Days
-                      </Typography>
-                      {/* <Typography textAlign={'right'} color={'var(--color-text-secondary)'}>
+                        </Box>
+                        <Box>
+                          <Typography
+                            textAlign={'right'}
+                            fontSize={'16px'}
+                            color={'var(--color-text-primary)'}
+                          >
+                            {item.lockingDays} Days
+                          </Typography>
+                          {/* <Typography textAlign={'right'} color={'var(--color-text-secondary)'}>
                       {item.unlockTime}{' '}
                     </Typography> */}
-                    </Box>
-                  </Box>
-                )
-              })}
-            </Box>
-            </>}
+                        </Box>
+                      </Box>
+                    )
+                  })}
+                </Box>
+              </>
+            )}
 
             <ButtonStyle
               sx={{ mt: 4, mb: 4, textTransform: 'none' }}

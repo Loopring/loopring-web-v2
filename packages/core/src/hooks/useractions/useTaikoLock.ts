@@ -482,7 +482,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       | undefined
       | {
           totalStaked: string
-          staking: {
+          stakingReceivedLocked: {
             accountId: number
             tokenId: number
             stakeAt: number
@@ -526,8 +526,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   ]
 
   const firstLockingPos: { claimableTime: number } | undefined =
-    stakeInfo?.staking && last(stakeInfo.staking)
-      ? { claimableTime: last(stakeInfo.staking)!.claimableTime }
+    stakeInfo?.stakingReceivedLocked && last(stakeInfo.stakingReceivedLocked)
+      ? { claimableTime: last(stakeInfo.stakingReceivedLocked)!.claimableTime }
       : pendingDepositsMergeLocal.length > 0
       ? {
           claimableTime:
@@ -749,6 +749,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         label: 'Days should be between 15 and 60',
       }
     } else if (
+      firstLockingPos && firstLockingPos.claimableTime < Date.now()
+    ) {
+      return {
+        tradeBtnStatus: TradeBtnStatus.DISABLED,
+        label: 'posiotions should be redeemed to lock again',
+      }
+    } else if (
       firstLockingPos && moment(firstLockingPos.claimableTime).diff(moment(), 'days') < 1
     ) {
       return {
@@ -823,7 +830,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     if (!accountId || accountId === -1) {
       setStakeInfo({
         totalStaked: '0',
-        staking: [],
+        stakingReceivedLocked: [],
       })
       // refresh account 
       accountServices.sendCheckAccount(account.accAddress)
@@ -871,7 +878,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
       .then((res) => {
         setStakeInfo({
-          staking: res.staking,
+          stakingReceivedLocked: res.staking,
           totalStaked: res.totalStaked,
         })
       })
@@ -977,7 +984,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     unlockTime: moment().add(Number(daysInput), 'days').format('YYYY-MM-DD')
   } : {
     value: firstLockingPos 
-      ? moment(firstLockingPos!.claimableTime).diff(moment(), 'days').toString()
+      ? Math.max(0, moment(firstLockingPos!.claimableTime).diff(moment(), 'days')).toString()
       : '',
     onInput: (input) => {
       if (Number.isInteger(Number(input)) || input === '') {
@@ -985,8 +992,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       }
     },
     disabled: true,
-    unlockTime: stakeInfo?.staking && last(stakeInfo!.staking)?.claimableTime
-    ? moment(last(stakeInfo!.staking)!.claimableTime).format('YYYY-MM-DD')
+    unlockTime: stakeInfo?.stakingReceivedLocked && last(stakeInfo!.stakingReceivedLocked)?.claimableTime
+    ? moment(last(stakeInfo!.stakingReceivedLocked)!.claimableTime).format('YYYY-MM-DD')
     : ''
     
   }
@@ -1034,7 +1041,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           ? {
               totalAmount: stakingAmount,
               totalAmountInCurrency: stakingAmountInCurrency,
-              positions: stakeInfo.staking.map((stake) => {
+              positions: stakeInfo.stakingReceivedLocked.map((stake) => {
                 const tokenInfo = tokenMap[coinSellSymbol]
                 const lockingDays = Math.ceil(
                   (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
@@ -1056,7 +1063,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   multiplier: lockingDays + 'x',
                 }
               }),
-              expirationTime: last(stakeInfo.staking)?.claimableTime ?? 0,
+              expirationTime: last(stakeInfo.stakingReceivedLocked)?.claimableTime ?? 0,
               totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
             }
           : undefined,
@@ -1348,12 +1355,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             fixed: sellToken.precision,
             removeTrailingZero: true,
           }),
-          pnl: `${
-            new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
-          }${numberFormatThousandthPlace(
-            new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(),
-            { fixed: sellToken.precision, removeTrailingZero: true },
-          )}`,
+          // pnl: `${
+          //   new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
+          // }${numberFormatThousandthPlace(
+          //   new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(),
+          //   { fixed: sellToken.precision, removeTrailingZero: true },
+          // )} USDT`,
+          pnl: `--`,
         },
     },
   }
