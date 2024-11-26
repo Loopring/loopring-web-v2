@@ -1355,13 +1355,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             fixed: sellToken.precision,
             removeTrailingZero: true,
           }),
-          // pnl: `${
-          //   new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
-          // }${numberFormatThousandthPlace(
-          //   new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(),
-          //   { fixed: sellToken.precision, removeTrailingZero: true },
-          // )} USDT`,
-          pnl: `--`,
+          pnl: `${
+            new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
+          }${numberFormatThousandthPlace(
+            new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(),
+            { fixed: sellToken.precision, removeTrailingZero: true },
+          )} TAIKO`,
+          // pnl: `--`,
         },
     },
   }
