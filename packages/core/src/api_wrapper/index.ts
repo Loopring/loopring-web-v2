@@ -30,17 +30,17 @@ export class LoopringAPI {
   public static vaultAPI: VaultAPI | undefined = undefined
   public static __chainId__: ChainId | undefined = undefined
   public static InitApi = (chainId: ChainId) => {
-    LoopringAPI.userAPI = new UserAPI({ chainId }, 6000)
-    LoopringAPI.luckTokenAPI = new LuckTokenAPI({ chainId }, 6000)
-    LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId }, 6000)
+    LoopringAPI.userAPI = new UserAPI({ chainId }, 15000)
+    LoopringAPI.luckTokenAPI = new LuckTokenAPI({ chainId }, 15000)
+    LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId }, 15000)
     LoopringAPI.globalAPI = new GlobalAPI({ chainId }, 25000)
-    LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId }, 6000)
-    LoopringAPI.walletAPI = new WalletAPI({ chainId }, 6000)
-    LoopringAPI.wsAPI = new WsAPI({ chainId }, 6000)
-    LoopringAPI.nftAPI = new NFTAPI({ chainId }, 6000)
-    LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000)
+    LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId }, 15000)
+    LoopringAPI.walletAPI = new WalletAPI({ chainId }, 15000)
+    LoopringAPI.wsAPI = new WsAPI({ chainId }, 15000)
+    LoopringAPI.nftAPI = new NFTAPI({ chainId }, 15000)
+    LoopringAPI.delegate = new DelegateAPI({ chainId }, 15000)
     LoopringAPI.defiAPI = new DefiAPI({ chainId }, 12000)
-    LoopringAPI.contactAPI = new ContactAPI({ chainId }, 6000)
+    LoopringAPI.contactAPI = new ContactAPI({ chainId }, 15000)
     LoopringAPI.vaultAPI = new VaultAPI({ chainId }, 15000)
     LoopringAPI.__chainId__ = chainId
   }
