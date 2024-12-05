@@ -14,6 +14,7 @@ import {
   globalSetup,
   IBData,
   L1L2_NAME_DEFINED,
+  LIVE_FEE_TIMES,
   MapChainId,
   myLog,
   SagaStatus,
@@ -26,6 +27,7 @@ import {
 import {
   accountServices,
   calcSideStaking,
+  DAYS,
   erc20ABI,
   fiatNumberDisplay,
   getStateFnState,
@@ -36,14 +38,16 @@ import {
   strNumDecimalPlacesLessThan,
   taikoDepositABI,
   unlockAccount,
+  useAccountModal,
+  useChargeFees,
   useStakingMap,
   useUpdateAccount,
+  useVaultBorrow,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
 import _, { has, last } from 'lodash'
-
 import * as sdk from '@loopring-web/loopring-sdk'
-
+import Web3 from 'web3'
 import {
   LoopringAPI,
   store,
@@ -53,13 +57,14 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
-import { useTokenPrices, useTradeStake, useWalletLayer2, WalletLayer1Map } from '../../stores'
+import { useTokenPrices, useTradeStake, useVaultLayer2, useVaultMap, useWalletLayer2, WalletLayer1Map } from '../../stores'
 import Decimal from 'decimal.js'
-import { BigNumber, Contract, providers, utils } from 'ethers'
-import moment from 'moment'
+import { BigNumber, Contract, ethers, providers, utils } from 'ethers'
+import moment, { min } from 'moment'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { updateAccountStatus } from '../../stores/account/reducer'
 import { useDispatch } from 'react-redux'
+import { useWalletInfo } from '../../stores/localStore/walletInfo'
+import { red } from 'bn.js'
 
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 const depositContractAddrTAIKO = '0xaD32A362645Ac9139CFb5Ba3A2A46fC4c378812B'
@@ -144,9 +149,9 @@ const submitTaikoFarmingMint = async (info: {
   const positions = await LoopringAPI?.defiAPI?.getTaikoFarmingPositionInfo(
     {
       accountId: info.accountId,
-    },
-    info.apiKey,
+    }
   )
+  
   const claimedTotal =
     positions && positions[0] && positions[0].claimedTotal
       ? BigNumber.from(positions[0].claimedTotal)
@@ -207,13 +212,35 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { defaultNetwork, currency, coinJson } = useSettings()
   const sellToken = tokenMap[coinSellSymbol]
   const taikoFarmingPrecision = 2
-  const { walletLayer2 } = useWalletLayer2()
+  const { walletLayer2, updateWalletLayer2 } = useWalletLayer2()
   const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
+
+  const reddemAmount = walletLayer2 && walletLayer2[sellToken.symbol] 
+    ? walletLayer2[sellToken.symbol]?.total 
+    : undefined
+  
   
   const holdingLRTAIKO = walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken.decimals
     ? utils.formatUnits(walletLayer2['LRTAIKO'].total, sellToken.decimals) 
     : undefined
   console.log('walletLayer2', holdingLRTAIKO) 
+
+  const chargeFee = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+
+    amount: reddemAmount ? Number(reddemAmount) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+  console.log('chargeFee input', {
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+    amount: reddemAmount ? Number(reddemAmount) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+
+
+  console.log('chargeFee output', chargeFee)
 
   const handleOnchange = _.debounce(
     ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
@@ -498,6 +525,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             lastDayPendingRewards: string
             apr: string
           }[]
+        },
+  )
+  const [realizedAndUnrealized, setRealizedAndUnrealized] = React.useState(
+    undefined as
+      | undefined
+      | {
+          realizedUSDT: string
+          unrealizedTaiko: string
         },
   )
 
@@ -804,16 +839,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           currency,
         )
       : undefined
-
-  const [mintModalState, setMintModalState] = React.useState({
+  const [mintRedeemModalState, setMintRedeemModalState] = React.useState({
     open: false,
-    inputValue: '',
-    warningChecked: false,
-    availableToMint: '',
-    status: 'notSignedIn' as 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting',
-    minInputAmount: undefined as Decimal | undefined,
-    maxInputAmount: undefined as Decimal | undefined,
+    mint: {
+      inputValue: '',
+      warningChecked: false,
+      availableToMint: '',
+      minInputAmount: undefined as Decimal | undefined,
+      maxInputAmount: undefined as Decimal | undefined,
+    },
+    status: 'notSignedIn' as 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting' | 'redeeming',
   })
+
+
+  console.log('reddemAmount', reddemAmount)
+
 
   useEffect(() => {
     if (defaultNetwork && ![sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)) {
@@ -824,6 +864,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }, [defaultNetwork])
 
   const refreshData = async () => {
+    
     const account = store.getState().account
     const accountId =
       account.accountId === -1 ? account._accountIdNotActive ?? -1 : account.accountId
@@ -855,13 +896,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingPositionInfo({
-        accountId,
+        accountId: accountId,
       })
       .then((res) => {
         const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
         const minClaimAmount = (res[0] as any).minClaimAmount as string
         const maxClaimAmount = (res[0] as any).maxClaimAmount as string
-        setMintModalState((mintModalState) => ({
+        setMintRedeemModalState((mintModalState) => ({
           ...mintModalState,
           availableToMint: availableToMint,
           minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)) ,
@@ -882,18 +923,37 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           totalStaked: res.totalStaked,
         })
       })
+    account.apiKey && LoopringAPI?.defiAPI
+      ?.getTaikoFarmingGetRedeem({
+        accountId: accountId,
+        tokenId: sellToken.tokenId,
+      }, account.apiKey)
+      .then((res) => {
+        setRealizedAndUnrealized({
+          realizedUSDT: res.profitOfU,
+          unrealizedTaiko: res.profit
+        })
+      })
   }
+  const { vaultAccountInfo } = useVaultLayer2()
+  const { tokenMap: vaultTokenMap } = useVaultMap()
+
   const clearState = () => {
     setStakingTotal(undefined)
     setStakeInfo(undefined)
-    setMintModalState({
+    setMintRedeemModalState({
       open: false,
-      inputValue: '',
-      warningChecked: false,
-      availableToMint: '',
+      mint: {
+        inputValue: '',
+        warningChecked: false,
+        availableToMint: '',
+        minInputAmount: undefined,
+        maxInputAmount: undefined,
+      },
       status: 'notSignedIn',
-      maxInputAmount: undefined,
-      minInputAmount: undefined,
+      // redeem: {
+      //   lrTaikoInUse: undefined,
+      // },
     })
     setLocalPendingTx(undefined)
     setPendingDeposits(undefined)
@@ -935,6 +995,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       handleOnchange.cancel()
     }
   }, [stakingMapStatus])
+  // React.useEffect(() => {
+  //   // if (walletLayer2Status === SagaStatus.UNSET) {
+  //   //   chargeFee.
+  //   // }
+  //   // if (reddemAmount) {
+  //   //   chargeFee.checkFeeIsEnough({
+  //   //     isRequiredAPI: true,
+  //   //     intervalTime: LIVE_FEE_TIMES,
+  //   //     tokenSymbol: sellToken.symbol,
+  //   //     requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+  //   //     needAmountRefresh: true,
+  //   //     amount: Number(reddemAmount),
+  //   //   })
+  //   // }
+  // }, [reddemAmount, sellToken.symbol])
 
   
 
@@ -963,15 +1038,18 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               },
         )
       : t('labelLockTAIKO')
-  const availableToMintFormatted = mintModalState.availableToMint
-    ? utils.formatUnits(mintModalState.availableToMint, sellToken.decimals)
+  const availableToMintFormatted = mintRedeemModalState.mint.availableToMint
+    ? utils.formatUnits(mintRedeemModalState.mint.availableToMint, sellToken.decimals)
     : undefined
   const isInputInvalid =
-    mintModalState.inputValue && mintModalState.maxInputAmount && mintModalState.minInputAmount &&
-    (new Decimal(mintModalState.inputValue).lessThan(mintModalState.minInputAmount) ||
-      new Decimal(mintModalState.inputValue).greaterThan(Decimal.min(availableToMintFormatted ?? '0', mintModalState.maxInputAmount)))
+    mintRedeemModalState.mint.inputValue && mintRedeemModalState.mint.maxInputAmount && mintRedeemModalState.mint.minInputAmount &&
+    (new Decimal(mintRedeemModalState.mint.inputValue).lessThan(mintRedeemModalState.mint.minInputAmount) ||
+      new Decimal(mintRedeemModalState.mint.inputValue).greaterThan(Decimal.min(availableToMintFormatted ?? '0', mintRedeemModalState.mint.maxInputAmount)))
 
   const { goUpdateAccount } = useUpdateAccount()
+  const [feeModalState, setFeeModalState] = useState({
+    open: false,
+  })
   
   const daysInputInfo = (stakeInfo && hasNoLockingPos) ? {
     value: daysInput,
@@ -997,14 +1075,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     : ''
     
   }
-
+  const { walletProvider } = useWeb3ModalProvider()
+  const { checkHWAddr} = useWalletInfo()
+console.log('vaultTokenMap', vaultTokenMap)
   const output = {
     stakeWrapProps: {
       disabled: false,
-      buttonDisabled:
-        btnStatus !== TradeBtnStatus.AVAILABLE ||
-        !stakeInfo,
-        // || (stakeInfo && hasNoLockingPos && (!daysInputValid || !daysInput)),
+      buttonDisabled: btnStatus !== TradeBtnStatus.AVAILABLE || !stakeInfo,
+      // || (stakeInfo && hasNoLockingPos && (!daysInputValid || !daysInput)),
       isJoin: true,
       isLoading,
       switchStobEvent: (_isStoB: boolean | ((prevState: boolean) => boolean)) => {},
@@ -1036,42 +1114,53 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         ? `≥ ${tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount}`
         : '',
       daysInput: daysInputInfo,
-      myPosition:
-        stakeInfo && stakingAmountRaw && new Decimal(stakingAmountRaw).gt('0')
-          ? {
-              totalAmount: stakingAmount,
-              totalAmountInCurrency: stakingAmountInCurrency,
-              positions: stakeInfo.stakingReceivedLocked.map((stake) => {
-                const tokenInfo = tokenMap[coinSellSymbol]
-                const lockingDays = Math.ceil(
-                  (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
-                )
+      myPosition: stakeInfo
+        ? {
+            totalAmount: stakingAmount,
+            totalAmountInCurrency: stakingAmountInCurrency,
+            positions: stakeInfo.stakingReceivedLocked.map((stake) => {
+              const tokenInfo = tokenMap[coinSellSymbol]
+              const lockingDays = Math.ceil(
+                (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
+              )
 
-                return {
-                  amount: numberFormatThousandthPlace(
-                    utils.formatUnits(stake.initialAmount, tokenInfo.decimals),
-                    {
-                      fixed: tokenInfo.precision,
-                      removeTrailingZero: true,
-                    },
-                  ),
-                  unlocked: stake.status !== 'locked',
-                  lockingDays,
-                  unlockTime: stake.claimableTime
-                    ? moment(stake.claimableTime).format('YYYY-MM-DD')
-                    : '',
-                  multiplier: lockingDays + 'x',
-                }
-              }),
-              expirationTime: last(stakeInfo.stakingReceivedLocked)?.claimableTime ?? 0,
-              totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
-            }
-          : undefined,
+              return {
+                amount: numberFormatThousandthPlace(
+                  utils.formatUnits(stake.initialAmount, tokenInfo.decimals),
+                  {
+                    fixed: tokenInfo.precision,
+                    removeTrailingZero: true,
+                  },
+                ),
+                unlocked: stake.status !== 'locked',
+                lockingDays,
+                unlockTime: stake.claimableTime
+                  ? moment(stake.claimableTime).format('YYYY-MM-DD')
+                  : '',
+                multiplier: lockingDays + 'x',
+              }
+            }),
+            expirationTime: last(stakeInfo.stakingReceivedLocked)?.claimableTime ?? 0,
+            totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
+            realizedUSDT: realizedAndUnrealized
+              ? numberFormatThousandthPlace(
+                  utils.formatUnits(realizedAndUnrealized.realizedUSDT, 6),
+                  { fixed: 2, removeTrailingZero: true },
+                ) + ' USDT'
+              : '--',
+            unrealizedTAIKO: realizedAndUnrealized
+              ? numberFormatThousandthPlace(
+                  utils.formatUnits(realizedAndUnrealized.unrealizedTaiko, sellToken.decimals),
+                  { fixed: sellToken.precision, removeTrailingZero: true },
+                ) + ' TAIKO'
+              : '--',
+          }
+        : undefined,
       mintButton: {
         onClick: () => {
           if (account.readyState === AccountStatus.ACTIVATED) {
-            setMintModalState({
-              ...mintModalState,
+            setMintRedeemModalState({
+              ...mintRedeemModalState,
               open: true,
               status: 'minting',
             })
@@ -1082,20 +1171,198 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               step: AccountStep.UpdateAccount_Approve_WaitForAuth,
             })
           } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
-            setMintModalState({
-              ...mintModalState,
+            setMintRedeemModalState({
+              ...mintRedeemModalState,
               open: true,
               status: 'notSignedIn',
             })
           }
         },
-        disabled: false,
+        disabled: walletLayer2,
+      },
+      redeemButton: {
+        onClick: () => {
+          if (account.readyState === AccountStatus.ACTIVATED) {
+            setMintRedeemModalState({
+              ...mintRedeemModalState,
+              open: true,
+              status: 'redeeming',
+            })
+          } else if (account.readyState === AccountStatus.LOCKED) {
+            unlockAccount()
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UpdateAccount_Approve_WaitForAuth,
+            })
+          } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
+            setMintRedeemModalState({
+              ...mintRedeemModalState,
+              open: false,
+              // status: 'notSignedIn',
+            })
+          }
+        },
+        disabled: reddemAmount ? false : true,
       },
       taikoCoinJSON: coinJson['TAIKO'],
-      mintModal: {
+      mintRedeemModal: {
+        redeem: {
+          redeemAmount: reddemAmount
+            ? numberFormatThousandthPlace(utils.formatUnits(reddemAmount, sellToken.decimals), {
+                fixed: sellToken.precision,
+                removeTrailingZero: true,
+              }) +
+              ' ' +
+              sellToken.symbol
+            : '--',
+          lrTaikoInUse:
+            vaultTokenMap &&
+            vaultTokenMap['LVLRTAIKO'] &&
+            vaultAccountInfo?.collateralInfo?.collateralTokenId ===
+              vaultTokenMap['LVLRTAIKO'].tokenId,
+          lockedTaikoAmount: mintedLRTAIKO
+            ? numberFormatThousandthPlace(mintedLRTAIKO, {
+                fixed: sellToken.precision,
+                removeTrailingZero: true,
+              }) + '  TAIKO'
+            : '--',
+          pnlAmount:
+            holdingLRTAIKO && mintedLRTAIKO
+              ? `${
+                  new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
+                }${numberFormatThousandthPlace(
+                  new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).abs().toString(),
+                  { fixed: sellToken.precision, removeTrailingZero: true },
+                )}`
+              : '--',
+          onClickConfirm: async () => {
+            Promise.resolve('')
+              .then(async () => {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Taiko_Farming_Redeem_In_Progress,
+                  info: {
+                    amount: numberFormatThousandthPlace(
+                      utils.formatUnits(reddemAmount!, sellToken.decimals),
+                      {
+                        fixed: sellToken.precision,
+                        removeTrailingZero: true,
+                      },
+                    ),
+                  },
+                })
+                if (!exchangeInfo) {
+                  throw new Error('No exchangeInfo')
+                }
+                const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+                  {
+                    accountId: account.accountId,
+                    sellTokenId: sellToken.tokenId,
+                  },
+                  account.apiKey,
+                )
+                if (!storageId) {
+                  throw new Error('No storageId')
+                }
+                let isHWAddr = checkHWAddr(account.accAddress)
+                const tokenVolume =
+                  chargeFee.feeInfo.__raw__.tokenId === sellToken.tokenId
+                    ? ethers.BigNumber.from(reddemAmount!)
+                        .sub(chargeFee.feeInfo.__raw__.feeRaw)
+                        .toString()
+                    : reddemAmount!
+                const request: sdk.OffChainWithdrawalRequestV3 = {
+                  exchange: exchangeInfo.exchangeAddress,
+                  owner: account.accAddress,
+                  to: account.accAddress,
+                  accountId: account.accountId,
+                  storageId: storageId?.offchainId,
+                  token: {
+                    tokenId: sellToken.tokenId,
+                    volume: tokenVolume
+                  },
+                  maxFee: {
+                    tokenId: chargeFee.feeInfo.__raw__.tokenId,
+                    volume: chargeFee.feeInfo.__raw__.feeRaw,
+                  },
+                  fastWithdrawalMode: false,
+                  extraData: '',
+                  minGas: 0,
+                  validUntil: getTimestampDaysLater(DAYS),
+                }
+                return LoopringAPI.userAPI?.submitOffchainWithdraw(
+                  {
+                    request: {
+                      ...request,
+                    },
+                    web3: new Web3(walletProvider as any),
+                    chainId: defaultNetwork,
+                    walletType: sdk.ConnectorNames.Unknown,
+                    eddsaKey: account.eddsaKey.sk,
+                    apiKey: account.apiKey,
+                    isHWAddr,
+                  },
+                  {
+                    accountId: account.accountId,
+                    counterFactualInfo: account.eddsaKey.counterFactualInfo,
+                  },
+                )
+              })
+              .then((res) => {
+                if (res?.code) {
+                  throw new Error(res.message)
+                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Taiko_Farming_Redeem_Success,
+                  info: {
+                    amount: numberFormatThousandthPlace(
+                      utils.formatUnits(reddemAmount!, sellToken.decimals),
+                      {
+                        fixed: sellToken.precision,
+                        removeTrailingZero: true,
+                      },
+                    ),
+                    redeemAt: Date.now(),
+                  },
+                })
+                updateWalletLayer2()
+                setMintRedeemModalState((state) => ({
+                  ...state,
+                  open: false,
+                }))
+              })
+              .catch((e) => {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Taiko_Farming_Redeem_Failed,
+                  error: e,
+                })
+              })
+          },
+          fee: chargeFee.feeInfo.fee + ' ' + chargeFee.feeInfo.belong,
+          onClickFee: () => {
+            setFeeModalState({
+              ...feeModalState,
+              open: true,
+            })
+          },
+          readlizedUSDT: realizedAndUnrealized
+            ? numberFormatThousandthPlace(
+                utils.formatUnits(realizedAndUnrealized.realizedUSDT, 6),
+                { fixed: 2, removeTrailingZero: true },
+              ) + ' USDT'
+            : '--',
+          unrealizedTAIKO: realizedAndUnrealized
+            ? numberFormatThousandthPlace(
+                utils.formatUnits(realizedAndUnrealized.unrealizedTaiko, sellToken.decimals),
+                { fixed: sellToken.precision, removeTrailingZero: true },
+              ) + ' TAIKO'
+            : '--',
+        },
         onClickSignIn: async () => {
-          setMintModalState({
-            ...mintModalState,
+          setMintRedeemModalState({
+            ...mintRedeemModalState,
             status: 'signingIn',
           })
           const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
@@ -1124,43 +1391,52 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             },
           })
             .then(() => {
-              setMintModalState({
-                ...mintModalState,
+              setMintRedeemModalState({
+                ...mintRedeemModalState,
                 status: 'signedIn',
               })
             })
             .catch(() => {
-              setMintModalState({
-                ...mintModalState,
+              setMintRedeemModalState({
+                ...mintRedeemModalState,
                 status: 'notSignedIn',
               })
             })
         },
         onClickMint: () => {
-          setMintModalState({
-            ...mintModalState,
+          setMintRedeemModalState({
+            ...mintRedeemModalState,
             status: 'minting',
           })
         },
-        open: mintModalState.open,
+        open: mintRedeemModalState.open,
         onClose: () => {
-          setMintModalState({
-            ...mintModalState,
+          setMintRedeemModalState({
+            ...mintRedeemModalState,
             open: false,
           })
         },
         onClickMax: () => {
-          setMintModalState({
-            ...mintModalState,
-            inputValue: utils.formatUnits(mintModalState.availableToMint, sellToken.decimals),
+          setMintRedeemModalState({
+            ...mintRedeemModalState,
+            mint: {
+              ...mintRedeemModalState.mint,
+              inputValue: utils.formatUnits(
+                mintRedeemModalState.mint.availableToMint,
+                sellToken.decimals,
+              ),
+            },
           })
         },
-        mintWarningChecked: mintModalState.warningChecked,
+        mintWarningChecked: mintRedeemModalState.mint.warningChecked,
         // mintWarningText: t('labelTaikoFarmingMintWarningText'),
         onWarningCheckBoxChange: () => {
-          setMintModalState({
-            ...mintModalState,
-            warningChecked: !mintModalState.warningChecked,
+          setMintRedeemModalState({
+            ...mintRedeemModalState,
+            mint: {
+              ...mintRedeemModalState.mint,
+              warningChecked: !mintRedeemModalState.mint.warningChecked,
+            },
           })
         },
         onConfirmBtnClicked: async () => {
@@ -1169,7 +1445,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             step: AccountStep.Taiko_Farming_Mint_In_Progress,
             info: {
               symbol: 'lrTAIKO',
-              amount: numberFormatThousandthPlace(mintModalState.inputValue, {
+              amount: numberFormatThousandthPlace(mintRedeemModalState.mint.inputValue, {
                 fixed: 18,
                 removeTrailingZero: true,
               }),
@@ -1178,7 +1454,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
 
           const res = await submitTaikoFarmingMint({
-            amount: utils.parseUnits(mintModalState.inputValue, sellToken.decimals),
+            amount: utils.parseUnits(mintRedeemModalState.mint.inputValue, sellToken.decimals),
             accountId: account.accountId,
             apiKey: account.apiKey,
             exchangeAddress: exchangeInfo!.exchangeAddress,
@@ -1206,10 +1482,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                         step: AccountStep.Taiko_Farming_Mint_In_Progress,
                         info: {
                           symbol: sellToken.symbol,
-                          amount: numberFormatThousandthPlace(mintModalState.inputValue, {
-                            fixed: sellToken.precision,
-                            removeTrailingZero: true,
-                          }),
+                          amount: numberFormatThousandthPlace(
+                            mintRedeemModalState.mint.inputValue,
+                            {
+                              fixed: sellToken.precision,
+                              removeTrailingZero: true,
+                            },
+                          ),
                         },
                       })
                       await sdk.sleep(5 * 1000)
@@ -1226,17 +1505,23 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                         step: AccountStep.Taiko_Farming_Mint_Success,
                         info: {
                           symbol: 'lrTAIKO',
-                          amount: numberFormatThousandthPlace(mintModalState.inputValue, {
-                            fixed: 18,
-                            removeTrailingZero: true,
-                          }),
+                          amount: numberFormatThousandthPlace(
+                            mintRedeemModalState.mint.inputValue,
+                            {
+                              fixed: 18,
+                              removeTrailingZero: true,
+                            },
+                          ),
                           mintAt: Date.now(),
                         },
                       })
-                      setMintModalState({
-                        ...mintModalState,
-                        inputValue: '',
-                        warningChecked: false,
+                      setMintRedeemModalState({
+                        ...mintRedeemModalState,
+                        mint: {
+                          ...mintRedeemModalState.mint,
+                          inputValue: '',
+                          warningChecked: false,
+                        },
                       })
                     }
                   })
@@ -1261,49 +1546,75 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             (isNumberStr(input) && strNumDecimalPlacesLessThan(input, sellToken.precision + 1)) ||
             input === ''
           ) {
-            setMintModalState({
-              ...mintModalState,
-              inputValue: input,
+            setMintRedeemModalState({
+              ...mintRedeemModalState,
+              mint: {
+                ...mintRedeemModalState.mint,
+                inputValue: input,
+              },
             })
           }
         },
-        inputValue: mintModalState.inputValue,
+        inputValue: mintRedeemModalState.mint.inputValue,
         confirmBtnDisabled:
-          !isNumberStr(mintModalState.inputValue) ||
-          !mintModalState.warningChecked ||
-          !mintModalState.availableToMint ||
+          !isNumberStr(mintRedeemModalState.mint.inputValue) ||
+          !mintRedeemModalState.mint.warningChecked ||
+          !mintRedeemModalState.mint.availableToMint ||
           new Decimal(availableToMintFormatted!).eq('0') ||
-          isInputInvalid,
+          isInputInvalid
+            ? true
+            : false,
         confirmBtnWording:
-          isInputInvalid || !mintModalState.inputValue
+          isInputInvalid || !mintRedeemModalState.mint.inputValue
             ? availableToMintFormatted &&
-              mintModalState.minInputAmount &&
-              mintModalState.maxInputAmount &&
-              Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).gte(
-                mintModalState.minInputAmount,
+              mintRedeemModalState.mint.minInputAmount &&
+              mintRedeemModalState.mint.maxInputAmount &&
+              Decimal.min(mintRedeemModalState.mint.maxInputAmount, availableToMintFormatted).gte(
+                mintRedeemModalState.mint.minInputAmount,
               )
-              ? `Please input between ${mintModalState.minInputAmount.toString()} - ${Decimal.min(
-                  mintModalState.maxInputAmount,
+              ? `Please input between ${mintRedeemModalState.mint.minInputAmount.toString()} - ${Decimal.min(
+                  mintRedeemModalState.mint.maxInputAmount,
                   availableToMintFormatted,
                 ).toString()}`
               : 'Invalid amount'
-            : !mintModalState.warningChecked
+            : !mintRedeemModalState.mint.warningChecked
             ? 'Please check checkbox'
             : 'Confirm',
         tokenAvailableAmount: availableToMintFormatted ? availableToMintFormatted : '--',
         inputPlaceholder:
-          mintModalState.minInputAmount && mintModalState.maxInputAmount
+          mintRedeemModalState.mint.minInputAmount && mintRedeemModalState.mint.maxInputAmount
             ? availableToMintFormatted &&
-              Decimal.min(mintModalState.maxInputAmount, availableToMintFormatted).gte(
-                mintModalState.minInputAmount,
+              Decimal.min(mintRedeemModalState.mint.maxInputAmount, availableToMintFormatted).gte(
+                mintRedeemModalState.mint.minInputAmount,
               )
-              ? `${mintModalState.minInputAmount.toString()} - ${Decimal.min(
-                  mintModalState.maxInputAmount,
+              ? `${mintRedeemModalState.mint.minInputAmount.toString()} - ${Decimal.min(
+                  mintRedeemModalState.mint.maxInputAmount,
                   availableToMintFormatted,
                 ).toString()}`
-              : `≥ ${mintModalState.minInputAmount.toString()}`
+              : `≥ ${mintRedeemModalState.mint.minInputAmount.toString()}`
             : '',
-        status: mintModalState.status,
+        status: mintRedeemModalState.status,
+      },
+      feeModal: {
+        ...chargeFee,
+        isFeeNotEnough: chargeFee.isFeeNotEnough.isFeeNotEnough,
+        open: feeModalState.open,
+        onClose: () => {
+          setFeeModalState({
+            ...feeModalState,
+            open: false,
+          })
+        },
+        onClickFee: () => {
+          setFeeModalState({
+            ...feeModalState,
+            open: true,
+          })
+        },
+        handleToggleChange: (fee) => {
+          chargeFee.handleFeeChange(fee)
+        },
+        feeLoading: false,
       },
       txSubmitModal: {
         open: txSubmitModalState.open,
@@ -1365,5 +1676,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         },
     },
   }
+  console.log('output', output)
   return output
 }

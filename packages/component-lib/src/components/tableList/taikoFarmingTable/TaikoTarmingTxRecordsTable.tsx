@@ -136,6 +136,7 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
                 }
                 break
             }
+            
 
             return (
               <Typography
@@ -152,7 +153,9 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
                   display={'inline'}
                   minWidth={86}
                 >
-                  {t(side.type)}
+                  {row.stakingType === sdk.StakeTransactionType.redeem
+                    ? 'Settlement'
+                    : t(side.type)}
                 </Typography>
                 <Typography component={'span'} display={'inline'}>
                   {amountStr}

@@ -1,6 +1,6 @@
-import { Box, Typography, Modal, Input, CircularProgress } from '@mui/material'
-import { Button, ButtonStyle, CoinIcons } from '@loopring-web/component-lib'
-import { CloseIcon, TokenType } from '@loopring-web/common-resources'
+import { Box, Typography, Modal, Input, CircularProgress, Tooltip } from '@mui/material'
+import { Button, ButtonStyle, CoinIcons, FeeSelect, FeeSelectProps, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { BackIcon, CloseIcon, Info2Icon, TokenType } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import { useTranslation } from 'react-i18next'
 // import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
@@ -11,6 +11,7 @@ import { useTheme } from '@emotion/react'
 import styled from '@emotion/styled'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 type MintModalProps = {
   open: boolean
@@ -26,9 +27,22 @@ type MintModalProps = {
   tokenAvailableAmount: string
   confirmBtnWording: string
   logoCoinJSON: any
-  status: 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting'
+  status: 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting' | 'redeeming'
   onClickSignIn: () => void
   onClickMint: () => void
+
+  redeem: {
+    redeemAmount: string
+    lrTaikoInUse: boolean
+    lockedTaikoAmount: string,
+    pnlAmount: string,
+    onClickConfirm: () => void
+    onClickFee: () => void
+    fee: string
+    readlizedUSDT: string
+    unrealizedTAIKO: string
+  }
+  feeSelectProps: FeeSelectProps
 }
 
 const StyledInput = styled(Input)`
@@ -37,7 +51,7 @@ const StyledInput = styled(Input)`
   }
 `
 
-export const MintModal = (props: MintModalProps) => {
+export const MintRedeemModal = (props: MintModalProps) => {
   const {
     open,
     onClose,
@@ -55,6 +69,8 @@ export const MintModal = (props: MintModalProps) => {
     status,
     onClickSignIn,
     onClickMint,
+    redeem,
+    feeSelectProps
   } = props
   const { t } = useTranslation("common")
   const theme = useTheme()
@@ -159,6 +175,99 @@ export const MintModal = (props: MintModalProps) => {
       >
         {confirmBtnWording}
       </ButtonStyle>
+    </Box>
+  )
+
+  const redeemingUI = (
+    <Box pt={5} px={4} pb={4}>
+      {redeem.lrTaikoInUse ? (
+        <>
+          <Typography mb={8} mt={4} color={'var(--color-text-secondary)'} textAlign={'center'}>
+            You still have active DeFi positions using lrTAIKO as collateral. Please close these
+            positions first; otherwise, you won’t be able to redeem your TAIKO from the Loopring
+            protocol.
+          </Typography>
+          <Button onClick={() => onClose()} fullWidth variant={'contained'}>
+            I Know
+          </Button>
+        </>
+      ) : (
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}>
+          <Typography mt={3} mb={6} variant='h2' textAlign={'center'}>
+            {redeem.redeemAmount}
+          </Typography>
+          <SpaceBetweenBox
+            leftNode={
+              <Typography color={'var(--color-text-secondary)'}>Deposited Taiko Amount</Typography>
+            }
+            rightNode={
+              <Typography color={'var(--color-text-primary)'}>
+                {redeem.lockedTaikoAmount}
+              </Typography>
+            }
+            mb={1.5}
+          />
+          <SpaceBetweenBox
+            alignItems={'center'}
+            leftNode={
+              <Box>
+                <Typography color={'var(--color-text-secondary)'} mb={0.25}>
+                  Profit
+                </Typography>
+                <Typography color={'var(--color-text-third)'} variant={'body2'}>
+                  The profit has been credited to your Loopring account in USDT
+                </Typography>
+              </Box>
+            }
+            rightNode={
+              <Typography color={'var(--color-text-primary)'}>{redeem.readlizedUSDT}</Typography>
+            }
+            mb={1.5}
+          />
+          <SpaceBetweenBox
+            alignItems={'center'}
+            leftNode={
+              <Box>
+                <Typography color={'var(--color-text-secondary)'} mb={0.25}>
+                  Loss
+                </Typography>
+                <Typography color={'var(--color-text-third)'} variant={'body2'}>
+                  The loss has been deducted from your locked TAIKO balance
+                </Typography>
+              </Box>
+            }
+            rightNode={
+              <Typography color={'var(--color-text-primary)'}>{redeem.unrealizedTAIKO}</Typography>
+            }
+            mb={4}
+          />
+          {/* <SpaceBetweenBox
+            leftNode={<Typography color={'var(--color-text-secondary)'}>Network Fee:</Typography>}
+            rightNode={
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                color={'var(--color-text-secondary)'}
+                sx={{ cursor: 'pointer' }}
+                onClick={() => redeem.onClickFee()}
+              >
+                {redeem.fee}
+                <BackIcon sx={{transform: 'rotate(180deg)'}} /> 
+              </Typography>
+            }
+            mb={1.5}
+          /> */}
+          <FeeSelect {...feeSelectProps}/>
+          <Button sx={{ mt: 1 }} onClick={() => redeem.onClickConfirm()} fullWidth variant={'contained'}>
+            Confirm
+          </Button>
+          <Typography mt={4} color={'var(--color-text-third)'} variant={'body2'}>
+            If the claimable amount is less than your initially deposited amount, it’s because your
+            lrTAIKO-related DeFi investment incurred a loss. This loss was covered by deducting a
+            portion of your deposited TAIKO.
+          </Typography>
+        </Box>
+      )}
     </Box>
   )
   const signInUI = (
@@ -273,7 +382,7 @@ export const MintModal = (props: MintModalProps) => {
             alignItems={'center'}
           >
             <Typography color={'var(--color-text-primary)'} variant='h5'>
-              {t("labelMint")}
+              {status === 'redeeming' ? 'Redeem TAIKO' : t('labelMint')}
             </Typography>
             <CloseIcon
               className='custom-size'
@@ -286,7 +395,7 @@ export const MintModal = (props: MintModalProps) => {
               onClick={onClose}
             />
           </Box>
-          {status === 'minting' ? mintingUI : signInUI}
+          {status === 'redeeming' ? redeemingUI : status === 'minting' ? mintingUI : signInUI}
         </Box>
       </Box>
     </Modal>

@@ -1,4 +1,4 @@
-import { AmmBase, BtradeBase, DualBase, IconType, PanelProps, TaikoFarmingMintBase, TaikoFarmingStakeBase } from './BasicPanel'
+import { AmmBase, BtradeBase, DualBase, IconType, PanelProps, TaikoFarmingMintBase, TaikoFarmingRedeemBase, TaikoFarmingStakeBase } from './BasicPanel'
 import { Box, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material'
 import { useSettings } from '../../../stores'
 import {
@@ -578,13 +578,6 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
   const { info } = props
   const propsPatch = {
     iconType: IconType.DoneIcon,
-    describe1: (
-      <Typography variant={'h5'} color={'var(--color-primary)'}>
-        {props.t('labelStakingRedeemSuccess', {
-          symbol: info?.symbol,
-        })}
-      </Typography>
-    ),
     describe2: (
       <Box
         justifySelf={'stretch'}
@@ -602,39 +595,10 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
           component={'span'}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelDefiStakingRedeem')}
+            TAIKO Amount 
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info?.amount + ' ' + info?.symbol}
-          </Typography>
-        </Typography>
-        <Typography
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          component={'span'}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelStakingRedeemRemaining')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info?.remainAmount && info?.remainAmount != '0'
-              ? info?.remainAmount + ' ' + info?.symbol
-              : EmptyValueTag}
-          </Typography>
-        </Typography>
-
-        <Typography
-          display={'inline-flex'}
-          justifyContent={'space-between'}
-          marginTop={2}
-          component={'span'}
-        >
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelDeFiSideProduct')}
-          </Typography>
-          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {info?.productId ?? EmptyValueTag}
+            {info?.amount}
           </Typography>
         </Typography>
         <Typography
@@ -644,27 +608,73 @@ export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {props.t('labelStakingRedeemDate')}
+            Time
           </Typography>
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
-            {moment(new Date())
-              .format(YEAR_DAY_MINUTE_FORMAT)}
+            {moment(info?.redeemAt).format(YEAR_DAY_MINUTE_FORMAT)}
           </Typography>
         </Typography>
       </Box>
     ),
   }
-  return <TaikoFarmingStakeBase showTitle={false} {...propsPatch} {...props} />
+  return <TaikoFarmingRedeemBase showTitle={false} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Redeem_In_Progress = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 3}
+        width={'80%'}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            TAIKO Amount
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount}
+          </Typography>
+        </Typography>
+        {/* <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t("labelTime")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography> */}
+
+      </Box>
+    ),
+  }
+  return <TaikoFarmingRedeemBase showTitle={true} {...propsPatch} {...props} />
 }
 
 export const Taiko_Farming_Redeem_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t('labelStakingFailed', {
-      symbol: props.info?.symbol,
-    }),
+    describe1: 'Redeem TAIKO Failed',
   }
-  return <TaikoFarmingStakeBase showTitle={true} {...propsPatch} {...props} />
+  return <TaikoFarmingRedeemBase showTitle={true} {...propsPatch} {...props} />
 }
 
 export const Taiko_Farming_Mint_Success = (props: PanelProps) => {

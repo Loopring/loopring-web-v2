@@ -41,7 +41,7 @@ export class LoopringAPI {
     LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000)
     LoopringAPI.defiAPI = new DefiAPI({ chainId }, 12000)
     LoopringAPI.contactAPI = new ContactAPI({ chainId }, 6000)
-    LoopringAPI.vaultAPI = new VaultAPI({ chainId }, 6000)
+    LoopringAPI.vaultAPI = new VaultAPI({ chainId }, 15000)
     LoopringAPI.__chainId__ = chainId
   }
   public static setBaseURL = (baseURL: string) => {

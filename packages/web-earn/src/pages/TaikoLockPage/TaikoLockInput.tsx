@@ -82,9 +82,15 @@ type TaikoLockInputProps<T, I, ACD> = {
         }[]
         expirationTime: number
         totalAmountWithNoSymbol: string
+        realizedUSDT: string
+        unrealizedTAIKO: string
       }
     | undefined
   mintButton: {
+    onClick: () => void
+    disabled: boolean
+  }
+  redeemButton: {
     onClick: () => void
     disabled: boolean
   }
@@ -134,6 +140,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
   lockTaikoPlaceholder,
   lrTAIKOTradeEarnSummary,
   showMultiplier,
+  redeemButton,
   ...rest
 }: TaikoLockInputProps<T, I, ACD>) => {
   // @ts-ignore
@@ -427,7 +434,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             My Position
           </Typography>
           <Typography mt={0.5} variant='body2' color={'var(--color-text-secondary)'}>
-            Expiration date: {moment(myPosition.expirationTime).format('YYYY-MM-DD')}
+            Expiration date: {myPosition.expirationTime ? moment(myPosition.expirationTime).format('YYYY-MM-DD') : '--'}
           </Typography>
           <Box mt={2}>
             <Box mb={1} display={'flex'} alignItems={'center'}>
@@ -468,38 +475,58 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
                 </Typography>
               </Tooltip>
-              {realized ? (
-                <Tooltip
-                  title={
-                    <Typography variant='body2'>
-                      Your P&L has been finalized. If your current TAIKO holdings are less than the
-                      initially locked amount, it indicates that losses incurred during your DeFi
-                      activities have been deducted from your balance.
-                    </Typography>
-                  }
-                >
-                  <Typography width={'30%'} display={'flex'} alignItems={'center'}>
-                    Realized <Info2Icon sx={{ ml: 0.5 }} />
+
+              <Tooltip
+                title={
+                  <Typography variant='body2'>
+                    Your P&L has been finalized. If your current TAIKO holdings are less than the
+                    initially locked amount, it indicates that losses incurred during your DeFi
+                    activities have been deducted from your balance.
                   </Typography>
-                </Tooltip>
-              ) : (
-                <Tooltip
-                  title={
-                    <Typography variant='body2'>
-                      Your P&L is still pending. Once your lock duration expires, any unrealized
-                      losses will result in a portion of your locked TAIKO being transferred to
-                      Loopring.
-                    </Typography>
-                  }
-                >
-                  <Typography width={'30%'} display={'flex'} alignItems={'center'}>
-                    Unrealized <Info2Icon sx={{ ml: 0.5 }} />
-                  </Typography>
-                </Tooltip>
-              )}
+                }
+              >
+                <Typography width={'30%'} display={'flex'} alignItems={'center'}>
+                  Realized <Info2Icon sx={{ ml: 0.5 }} />
+                </Typography>
+              </Tooltip>
 
               <Typography width={'30%'} textAlign={'right'}>
-                {lrTAIKOTradeEarnSummary?.pnl ?? '--'}
+                {myPosition.realizedUSDT}
+              </Typography>
+            </Box>
+            <Box mb={1} display={'flex'} alignItems={'center'}>
+              <Tooltip
+                title={
+                  <Typography variant='body2'>
+                    {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.`}
+                    <br />
+                    <br />
+                    {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
+                  </Typography>
+                }
+                
+              >
+                <Typography width={'40%'} display={'flex'} alignItems={'center'}>
+                  Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
+                </Typography>
+              </Tooltip>
+
+              <Tooltip
+                title={
+                  <Typography variant='body2'>
+                    Your P&L is still pending. Once your lock duration expires, any unrealized
+                    losses will result in a portion of your locked TAIKO being transferred to
+                    Loopring.
+                  </Typography>
+                }
+              >
+                <Typography width={'30%'} display={'flex'} alignItems={'center'}>
+                  Unrealized <Info2Icon sx={{ ml: 0.5 }} />
+                </Typography>
+              </Tooltip>
+
+              <Typography width={'30%'} textAlign={'right'}>
+                {myPosition.unrealizedTAIKO}
               </Typography>
             </Box>
 
@@ -589,97 +616,38 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 </Box>
               </>
             )}
-
-            <ButtonStyle
-              sx={{ mt: 4, mb: 4, textTransform: 'none' }}
-              fullWidth
-              variant={'contained'}
-              size={'large'}
-              color={'primary'}
-              onClick={() => {
-                mintButton.onClick()
-              }}
-              disabled={mintButton.disabled}
-            >
-              Mint lrTAIKO
-            </ButtonStyle>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <ButtonStyle
+                sx={{ mt: 4, mb: 4, textTransform: 'none', width: '48%' }}
+                fullWidth
+                variant={'contained'}
+                size={'large'}
+                color={'primary'}
+                onClick={() => {
+                  redeemButton.onClick()
+                }}
+                disabled={redeemButton.disabled}
+              >
+                Redeem
+              </ButtonStyle>
+              <ButtonStyle
+                sx={{ mt: 4, mb: 4, textTransform: 'none', width: '48%' }}
+                fullWidth
+                variant={'contained'}
+                size={'large'}
+                color={'primary'}
+                onClick={() => {
+                  mintButton.onClick()
+                }}
+                disabled={mintButton.disabled}
+              >
+                Mint lrTAIKO
+              </ButtonStyle>
+            </Box>
           </Box>
         </Box>
       )}
-      {/* {lrTAIKOTradeEarnSummary && (
-        <Box
-          display={'flex'}
-          style={isMobile ? { flex: 1 } : { width: '450px' }}
-          justifyContent={'center'}
-          bgcolor={'var(--color-box-third)'}
-          border={'1px solid var(--color-border)'}
-          borderRadius={2}
-          width={'100%'}
-          flexDirection={'column'}
-          p={3}
-          my={5}
-        >
-          <Typography
-            display={'flex'}
-            alignItems={'center'}
-            variant={'h5'}
-            color={'var(--color-text-primary)'}
-            mb={2}
-          >
-            Trade & Earn Summary
-          </Typography>
-          <SpaceBetweenBox
-            mb={2}
-            leftNode={
-              <Typography color={'var(--color-text-secondary)'}>Holding lrTAIKO Amount</Typography>
-            }
-            rightNode={
-              <Typography color={'var(--color-text-primary)'}>
-                {lrTAIKOTradeEarnSummary.holdingAmount}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mb={2}
-            leftNode={
-              <Typography color={'var(--color-text-secondary)'}>Minted lrTAIKO Amount</Typography>
-            }
-            rightNode={
-              <Typography color={'var(--color-text-primary)'}>
-                {lrTAIKOTradeEarnSummary.mintedAmount}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mb={2}
-            leftNode={
-              <Tooltip
-                title={
-                  <Typography variant='body2'>
-                    {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.`}
-                    <br />
-                    <br />
-                    {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
-                  </Typography>
-                }
-              >
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  color={'var(--color-text-secondary)'}
-                >
-                  Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography color={'var(--color-text-primary)'}>
-                {lrTAIKOTradeEarnSummary.pnl}
-              </Typography>
-            }
-          />
-        </Box>
-      )} */}
+      
     </Box>
   )
 }

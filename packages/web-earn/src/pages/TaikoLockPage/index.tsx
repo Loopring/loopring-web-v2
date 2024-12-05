@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
   boxLiner,
   Button,
+  FeeSelect,
   LoadingBlock,
   MaxWidthContainer,
   Toast,
@@ -21,7 +22,7 @@ import styled from '@emotion/styled'
 import { ErrorPage } from '../../pages/ErrorPage'
 import BannerPage from './BannerPage'
 import { useTheme } from '@emotion/react'
-import { MintModal } from './MintModal'
+import { MintRedeemModal } from './MintRedeemModal'
 import { TxSubmitModal } from './TxSubmitModal'
 import { PendingTxsModal } from './PendingTxsModal'
 
@@ -187,7 +188,20 @@ export const TaikoLockPage = ({
             </Box>
           </MaxWidthContainer>
         </Box>
-      <MintModal {...stakeWrapProps.mintModal} logoCoinJSON={stakeWrapProps.taikoCoinJSON} />
+      <MintRedeemModal 
+        {...stakeWrapProps.mintRedeemModal} 
+        redeem={{
+          ...stakeWrapProps.mintRedeemModal.redeem,
+          readlizedUSDT: stakeWrapProps.myPosition?.realizedUSDT ?? '',
+          unreadlizedTAIKO: stakeWrapProps.myPosition?.unrealizedTAIKO ?? '',
+        }}
+        logoCoinJSON={stakeWrapProps.taikoCoinJSON} 
+        feeSelectProps={stakeWrapProps.feeModal}
+        />
+        {/* <FeeSelect
+          {...stakeWrapProps.feeModal}
+        /> */}
+        
       <TxSubmitModal {...stakeWrapProps.txSubmitModal} />
       <PendingTxsModal {...stakeWrapProps.pendingTxsModal} />
     </>

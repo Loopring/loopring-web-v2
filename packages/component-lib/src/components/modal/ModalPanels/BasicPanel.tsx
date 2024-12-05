@@ -689,3 +689,7 @@ export const TaikoFarmingMintBase = (props: PanelProps) => {
 export const TaikoFarmingStakeBase = (props: PanelProps) => {
   return <BasicPanel title={'Taiko Farming'} {...props} />
 }
+
+export const TaikoFarmingRedeemBase = (props: PanelProps) => {
+  return <BasicPanel title={'Redeem TAIKO'} {...props} />
+}
