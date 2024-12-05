@@ -1142,13 +1142,13 @@ console.log('vaultTokenMap', vaultTokenMap)
             }),
             expirationTime: last(stakeInfo.stakingReceivedLocked)?.claimableTime ?? 0,
             totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
-            realizedUSDT: realizedAndUnrealized
+            realizedUSDT: realizedAndUnrealized && realizedAndUnrealized.realizedUSDT
               ? numberFormatThousandthPlace(
                   utils.formatUnits(realizedAndUnrealized.realizedUSDT, 6),
                   { fixed: 2, removeTrailingZero: true },
                 ) + ' USDT'
               : '--',
-            unrealizedTAIKO: realizedAndUnrealized
+            unrealizedTAIKO: realizedAndUnrealized && realizedAndUnrealized.unrealizedTaiko
               ? numberFormatThousandthPlace(
                   utils.formatUnits(realizedAndUnrealized.unrealizedTaiko, sellToken.decimals),
                   { fixed: sellToken.precision, removeTrailingZero: true },
@@ -1216,10 +1216,10 @@ console.log('vaultTokenMap', vaultTokenMap)
               sellToken.symbol
             : '--',
           lrTaikoInUse:
-            vaultTokenMap &&
-            vaultTokenMap['LVLRTAIKO'] &&
+            tokenMap &&
+            tokenMap['LRTAIKO'] &&
             vaultAccountInfo?.collateralInfo?.collateralTokenId ===
-              vaultTokenMap['LVLRTAIKO'].tokenId,
+              tokenMap['LRTAIKO'].tokenId,
           lockedTaikoAmount: mintedLRTAIKO
             ? numberFormatThousandthPlace(mintedLRTAIKO, {
                 fixed: sellToken.precision,
@@ -1347,13 +1347,13 @@ console.log('vaultTokenMap', vaultTokenMap)
               open: true,
             })
           },
-          readlizedUSDT: realizedAndUnrealized
+          readlizedUSDT: realizedAndUnrealized && realizedAndUnrealized.realizedUSDT
             ? numberFormatThousandthPlace(
                 utils.formatUnits(realizedAndUnrealized.realizedUSDT, 6),
                 { fixed: 2, removeTrailingZero: true },
               ) + ' USDT'
             : '--',
-          unrealizedTAIKO: realizedAndUnrealized
+          unrealizedTAIKO: realizedAndUnrealized && realizedAndUnrealized.unrealizedTaiko
             ? numberFormatThousandthPlace(
                 utils.formatUnits(realizedAndUnrealized.unrealizedTaiko, sellToken.decimals),
                 { fixed: sellToken.precision, removeTrailingZero: true },
