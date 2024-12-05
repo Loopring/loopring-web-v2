@@ -626,7 +626,9 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 onClick={() => {
                   redeemButton.onClick()
                 }}
-                disabled={redeemButton.disabled}
+                disabled={
+                  redeemButton.disabled
+                }
               >
                 Redeem
               </ButtonStyle>

@@ -215,9 +215,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { walletLayer2, updateWalletLayer2 } = useWalletLayer2()
   const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
 
-  const reddemAmount = walletLayer2 && walletLayer2[sellToken.symbol] 
-    ? walletLayer2[sellToken.symbol]?.total 
-    : undefined
+  
+  // walletLayer2 && walletLayer2[sellToken.symbol] 
+  //   ? walletLayer2[sellToken.symbol]?.total 
+  //   : undefined
   
   
   const holdingLRTAIKO = walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken.decimals
@@ -225,22 +226,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     : undefined
   console.log('walletLayer2', holdingLRTAIKO) 
 
-  const chargeFee = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-
-    amount: reddemAmount ? Number(reddemAmount) : 0,
-    needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
-  })
-  console.log('chargeFee input', {
-    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-    amount: reddemAmount ? Number(reddemAmount) : 0,
-    needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
-  })
-
-
-  console.log('chargeFee output', chargeFee)
+  
 
   const handleOnchange = _.debounce(
     ({ tradeData, _tradeStake = {} }: { tradeData: T; _tradeStake?: Partial<TradeStake<T>> }) => {
@@ -531,10 +517,28 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     undefined as
       | undefined
       | {
+          redeemAmount: string
           realizedUSDT: string
           unrealizedTaiko: string
         },
   )
+  const redeemAmount = realizedAndUnrealized?.redeemAmount
+  const chargeFee = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+
+    amount: redeemAmount ? Number(redeemAmount) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+  console.log('chargeFee input', {
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+    amount: redeemAmount ? Number(redeemAmount) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+
+
+  console.log('chargeFee output', chargeFee)
 
   const [pendingDeposits, setPendingDeposits] = React.useState(
     undefined as
@@ -852,7 +856,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   })
 
 
-  console.log('reddemAmount', reddemAmount)
+  console.log('reddemAmount', redeemAmount)
 
 
   useEffect(() => {
@@ -931,7 +935,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       .then((res) => {
         setRealizedAndUnrealized({
           realizedUSDT: res.profitOfU,
-          unrealizedTaiko: res.profit
+          unrealizedTaiko: res.profit,
+          redeemAmount: res.redeemAmount
         })
       })
   }
@@ -1183,10 +1188,27 @@ console.log('vaultTokenMap', vaultTokenMap)
       redeemButton: {
         onClick: () => {
           if (account.readyState === AccountStatus.ACTIVATED) {
-            setMintRedeemModalState({
-              ...mintRedeemModalState,
-              open: true,
-              status: 'redeeming',
+            LoopringAPI.defiAPI?.getTaikoFarmingGetRedeem({
+              accountId: account.accountId,
+              tokenId: sellToken.tokenId,
+            }, account.apiKey).then((res) => {
+              if (res.resultInfo && res.resultInfo.code !== 0) {
+                alert(res.resultInfo.message) // to handle
+              } else if (BigNumber.from(res.redeemAmount).isZero() ) {
+                alert('redeem amount is zero') // to handle
+
+              } else {
+                setMintRedeemModalState({
+                  ...mintRedeemModalState,
+                  open: true,
+                  status: 'redeeming',
+                })
+                setRealizedAndUnrealized({
+                  realizedUSDT: res.profitOfU,
+                  unrealizedTaiko: res.profit,
+                  redeemAmount: res.redeemAmount
+                })
+              }
             })
           } else if (account.readyState === AccountStatus.LOCKED) {
             unlockAccount()
@@ -1202,13 +1224,13 @@ console.log('vaultTokenMap', vaultTokenMap)
             })
           }
         },
-        disabled: reddemAmount ? false : true,
+        disabled: false
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
         redeem: {
-          redeemAmount: reddemAmount
-            ? numberFormatThousandthPlace(utils.formatUnits(reddemAmount, sellToken.decimals), {
+          redeemAmount: redeemAmount
+            ? numberFormatThousandthPlace(utils.formatUnits(redeemAmount, sellToken.decimals), {
                 fixed: sellToken.precision,
                 removeTrailingZero: true,
               }) +
@@ -1243,7 +1265,7 @@ console.log('vaultTokenMap', vaultTokenMap)
                   step: AccountStep.Taiko_Farming_Redeem_In_Progress,
                   info: {
                     amount: numberFormatThousandthPlace(
-                      utils.formatUnits(reddemAmount!, sellToken.decimals),
+                      utils.formatUnits(redeemAmount!, sellToken.decimals),
                       {
                         fixed: sellToken.precision,
                         removeTrailingZero: true,
@@ -1267,10 +1289,10 @@ console.log('vaultTokenMap', vaultTokenMap)
                 let isHWAddr = checkHWAddr(account.accAddress)
                 const tokenVolume =
                   chargeFee.feeInfo.__raw__.tokenId === sellToken.tokenId
-                    ? ethers.BigNumber.from(reddemAmount!)
+                    ? ethers.BigNumber.from(redeemAmount!)
                         .sub(chargeFee.feeInfo.__raw__.feeRaw)
                         .toString()
-                    : reddemAmount!
+                    : redeemAmount!.toString()
                 const request: sdk.OffChainWithdrawalRequestV3 = {
                   exchange: exchangeInfo.exchangeAddress,
                   owner: account.accAddress,
@@ -1317,7 +1339,7 @@ console.log('vaultTokenMap', vaultTokenMap)
                   step: AccountStep.Taiko_Farming_Redeem_Success,
                   info: {
                     amount: numberFormatThousandthPlace(
-                      utils.formatUnits(reddemAmount!, sellToken.decimals),
+                      utils.formatUnits(redeemAmount!, sellToken.decimals),
                       {
                         fixed: sellToken.precision,
                         removeTrailingZero: true,
