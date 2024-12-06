@@ -7,6 +7,7 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import {
+  Account,
   AccountStatus,
   CustomErrorWithCode,
   DeFiSideCalcData,
@@ -182,6 +183,79 @@ const submitTaikoFarmingMint = async (info: {
     request: taikoFarmingSubmit,
     apiKey: info.apiKey,
     eddsaKey: info.eddsaSk,
+  })
+}
+
+const resetToken = async (account: Account, defaultNetwork: sdk.ChainId, exchangeInfo: sdk.ExchangeInfo, walletProvider: any) => {
+  const response = await LoopringAPI.vaultAPI?.getVaultBalance(
+    {
+      accountId: account.accountId,
+      tokens: '',
+    },
+    account.apiKey,
+    '1',
+  )
+  const tokenListIgnoreZero: any = []
+  const promiseAllStorageId =
+    response?.raw_data?.reduce((prev, item) => {
+      if (sdk.toBig(item?.total).gt(0)) {
+        tokenListIgnoreZero.push(item)
+        prev.push(
+          //@ts-ignore
+          LoopringAPI.userAPI.getNextStorageId(
+            {
+              accountId: account.accountId,
+              sellTokenId: item.tokenId,
+            },
+            account.apiKey,
+          ),
+        )
+      }
+      return prev
+    }, [] as Array<Promise<any>>) ?? []
+  const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
+    type: 4,
+  })
+  await Promise.all([...promiseAllStorageId]).then((result) => {
+    return Promise.all(
+      result.map((item, index) => {
+        return (
+          item &&
+          LoopringAPI.vaultAPI?.sendVaultResetToken(
+            {
+              request: {
+                exchange: exchangeInfo!.exchangeAddress,
+                payerAddr: account.accAddress,
+                payerId: account.accountId,
+                payeeId: 0,
+                payeeAddr: broker,
+                storageId: item.offchainId,
+                token: {
+                  tokenId: tokenListIgnoreZero[index].tokenId,
+                  volume: tokenListIgnoreZero[index].total,
+                },
+                maxFee: {
+                  tokenId: tokenListIgnoreZero[index].tokenId,
+                  volume: '0',
+                },
+                validUntil: getTimestampDaysLater(DAYS),
+                memo: '',
+              } as any,
+              web3: new Web3(walletProvider as any),
+              chainId: defaultNetwork,
+              walletType: sdk.ConnectorNames.Unknown,
+              eddsaKey: account.eddsaKey.sk,
+              apiKey: account.apiKey,
+            },
+            {
+              accountId: account.accountId,
+              counterFactualInfo: account.eddsaKey.counterFactualInfo,
+            },
+            '1',
+          )
+        )
+      }),
+    )
   })
 }
 
@@ -1106,76 +1180,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         walletLayer2['LRTAIKO'] &&
         new Decimal(walletLayer2['LRTAIKO'].total).gt(0)
       ) {
-        const response = await LoopringAPI.vaultAPI?.getVaultBalance(
-          {
-            accountId: account.accountId,
-            tokens: '',
-          },
-          account.apiKey,
-          '1',
-        )
-        const tokenListIgnoreZero: any = []
-        const promiseAllStorageId =
-          response?.raw_data?.reduce((prev, item) => {
-            if (sdk.toBig(item?.total).gt(0)) {
-              tokenListIgnoreZero.push(item)
-              prev.push(
-                //@ts-ignore
-                LoopringAPI.userAPI.getNextStorageId(
-                  {
-                    accountId: account.accountId,
-                    sellTokenId: item.tokenId,
-                  },
-                  account.apiKey,
-                ),
-              )
-            }
-            return prev
-          }, [] as Array<Promise<any>>) ?? []
-        const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
-          type: 4,
-        })
-        await Promise.all([...promiseAllStorageId]).then((result) => {
-          return Promise.all(
-            result.map((item, index) => {
-              return (
-                item &&
-                LoopringAPI.vaultAPI?.sendVaultResetToken(
-                  {
-                    request: {
-                      exchange: exchangeInfo!.exchangeAddress,
-                      payerAddr: account.accAddress,
-                      payerId: account.accountId,
-                      payeeId: 0,
-                      payeeAddr: broker,
-                      storageId: item.offchainId,
-                      token: {
-                        tokenId: tokenListIgnoreZero[index].tokenId,
-                        volume: tokenListIgnoreZero[index].total,
-                      },
-                      maxFee: {
-                        tokenId: tokenListIgnoreZero[index].tokenId,
-                        volume: '0',
-                      },
-                      validUntil: getTimestampDaysLater(DAYS),
-                      memo: '',
-                    } as any,
-                    web3: new Web3(walletProvider as any),
-                    chainId: defaultNetwork,
-                    walletType: sdk.ConnectorNames.Unknown,
-                    eddsaKey: account.eddsaKey.sk,
-                    apiKey: account.apiKey,
-                  },
-                  {
-                    accountId: account.accountId,
-                    counterFactualInfo: account.eddsaKey.counterFactualInfo,
-                  },
-                  '1',
-                )
-              )
-            }),
-          )
-        })
+        const state = store.getState()
+        await resetToken(state.account, state.settings.defaultNetwork, state.system.exchangeInfo!, walletProvider)
+        
       }
     } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
       setMintRedeemModalState({
