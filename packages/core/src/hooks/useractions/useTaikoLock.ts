@@ -901,7 +901,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingPositionInfo({
-        accountId: accountId,
+        accountId: 10075,
       })
       .then((res) => {
         const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
@@ -909,9 +909,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         const maxClaimAmount = (res[0] as any).maxClaimAmount as string
         setMintRedeemModalState((mintModalState) => ({
           ...mintModalState,
-          availableToMint: availableToMint,
-          minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)) ,
-          maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)) ,
+          mint: {
+            ...mintModalState.mint,
+            availableToMint: availableToMint,
+            minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)) ,
+            maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)) ,
+          },
         }))
         
         setMintedLRTAIKO(utils.formatUnits(res[0].claimedTotal, sellToken.decimals))
@@ -1045,6 +1048,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const availableToMintFormatted = mintRedeemModalState.mint.availableToMint
     ? utils.formatUnits(mintRedeemModalState.mint.availableToMint, sellToken.decimals)
     : undefined
+  console.log('mintRedeemModalState', mintRedeemModalState)
   const isInputInvalid =
     mintRedeemModalState.mint.inputValue && mintRedeemModalState.mint.maxInputAmount && mintRedeemModalState.mint.minInputAmount &&
     (new Decimal(mintRedeemModalState.mint.inputValue).lessThan(mintRedeemModalState.mint.minInputAmount) ||
