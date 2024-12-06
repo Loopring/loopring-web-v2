@@ -146,11 +146,12 @@ const submitTaikoFarmingMint = async (info: {
     },
     info.apiKey,
   )
-  const positions = await LoopringAPI?.defiAPI?.getTaikoFarmingPositionInfo(
+  const positionsInfo = await LoopringAPI?.defiAPI?.getTaikoFarmingPositionInfo(
     {
       accountId: info.accountId,
     }
   )
+  const positions = positionsInfo?.data
   
   const claimedTotal =
     positions && positions[0] && positions[0].claimedTotal
@@ -868,6 +869,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [defaultNetwork])
 
+  const [taikoFarmingAccountStatus, setTaikoFarmingAccountStatus] = useState(undefined as number | undefined)
+
   const refreshData = async () => {
     
     const account = store.getState().account
@@ -904,9 +907,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         accountId: accountId,
       })
       .then((res) => {
-        const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
-        const minClaimAmount = (res[0] as any).minClaimAmount as string
-        const maxClaimAmount = (res[0] as any).maxClaimAmount as string
+        const data = res.data
+        setTaikoFarmingAccountStatus(res.account.status)
+        const availableToMint = (data && data[0] && data[0].claimableTotal) ?? '0'
+        const minClaimAmount = (data[0] as any).minClaimAmount as string
+        const maxClaimAmount = (data[0] as any).maxClaimAmount as string
         setMintRedeemModalState((mintModalState) => ({
           ...mintModalState,
           mint: {
@@ -917,7 +922,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           },
         }))
         
-        setMintedLRTAIKO(utils.formatUnits(res[0].claimedTotal, sellToken.decimals))
+        setMintedLRTAIKO(utils.formatUnits(data[0].claimedTotal, sellToken.decimals))
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingUserSummary({
@@ -1085,7 +1090,101 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }
   const { walletProvider } = useWeb3ModalProvider()
   const { checkHWAddr} = useWalletInfo()
-console.log('vaultTokenMap', vaultTokenMap)
+
+  const accountReadyStateCheck = async (activatedCallBack: () => void) => {
+    if (account.readyState === AccountStatus.ACTIVATED) {
+      activatedCallBack()
+    } else if (account.readyState === AccountStatus.LOCKED) {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.UpdateAccount_Approve_WaitForAuth,
+      })
+      await unlockAccount()
+      if (
+        taikoFarmingAccountStatus === 0 &&
+        walletLayer2 &&
+        walletLayer2['LRTAIKO'] &&
+        new Decimal(walletLayer2['LRTAIKO'].total).gt(0)
+      ) {
+        const response = await LoopringAPI.vaultAPI?.getVaultBalance(
+          {
+            accountId: account.accountId,
+            tokens: '',
+          },
+          account.apiKey,
+          '1',
+        )
+        const tokenListIgnoreZero: any = []
+        const promiseAllStorageId =
+          response?.raw_data?.reduce((prev, item) => {
+            if (sdk.toBig(item?.total).gt(0)) {
+              tokenListIgnoreZero.push(item)
+              prev.push(
+                //@ts-ignore
+                LoopringAPI.userAPI.getNextStorageId(
+                  {
+                    accountId: account.accountId,
+                    sellTokenId: item.tokenId,
+                  },
+                  account.apiKey,
+                ),
+              )
+            }
+            return prev
+          }, [] as Array<Promise<any>>) ?? []
+        const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
+          type: 4,
+        })
+        await Promise.all([...promiseAllStorageId]).then((result) => {
+          return Promise.all(
+            result.map((item, index) => {
+              return (
+                item &&
+                LoopringAPI.vaultAPI?.sendVaultResetToken(
+                  {
+                    request: {
+                      exchange: exchangeInfo!.exchangeAddress,
+                      payerAddr: account.accAddress,
+                      payerId: account.accountId,
+                      payeeId: 0,
+                      payeeAddr: broker,
+                      storageId: item.offchainId,
+                      token: {
+                        tokenId: tokenListIgnoreZero[index].tokenId,
+                        volume: tokenListIgnoreZero[index].total,
+                      },
+                      maxFee: {
+                        tokenId: tokenListIgnoreZero[index].tokenId,
+                        volume: '0',
+                      },
+                      validUntil: getTimestampDaysLater(DAYS),
+                      memo: '',
+                    } as any,
+                    web3: new Web3(walletProvider as any),
+                    chainId: defaultNetwork,
+                    walletType: sdk.ConnectorNames.Unknown,
+                    eddsaKey: account.eddsaKey.sk,
+                    apiKey: account.apiKey,
+                  },
+                  {
+                    accountId: account.accountId,
+                    counterFactualInfo: account.eddsaKey.counterFactualInfo,
+                  },
+                  '1',
+                )
+              )
+            }),
+          )
+        })
+      }
+    } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
+      setMintRedeemModalState({
+        ...mintRedeemModalState,
+        open: true,
+        status: 'notSignedIn',
+      })
+    }
+  }
   const output = {
     stakeWrapProps: {
       disabled: false,
@@ -1165,32 +1264,21 @@ console.log('vaultTokenMap', vaultTokenMap)
           }
         : undefined,
       mintButton: {
-        onClick: () => {
-          if (account.readyState === AccountStatus.ACTIVATED) {
+        onClick: async () => {
+
+          accountReadyStateCheck(() => {
             setMintRedeemModalState({
               ...mintRedeemModalState,
               open: true,
               status: 'minting',
             })
-          } else if (account.readyState === AccountStatus.LOCKED) {
-            unlockAccount()
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-            })
-          } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
-            setMintRedeemModalState({
-              ...mintRedeemModalState,
-              open: true,
-              status: 'notSignedIn',
-            })
-          }
+          })
         },
         disabled: false,
       },
       redeemButton: {
         onClick: () => {
-          if (account.readyState === AccountStatus.ACTIVATED) {
+          accountReadyStateCheck(() => {
             LoopringAPI.defiAPI?.getTaikoFarmingGetRedeem({
               accountId: account.accountId,
               tokenId: sellToken.tokenId,
@@ -1222,19 +1310,7 @@ console.log('vaultTokenMap', vaultTokenMap)
                 })
               }
             })
-          } else if (account.readyState === AccountStatus.LOCKED) {
-            unlockAccount()
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-            })
-          } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
-            setMintRedeemModalState({
-              ...mintRedeemModalState,
-              open: false,
-              // status: 'notSignedIn',
-            })
-          }
+          })
         },
         disabled: false
       },
