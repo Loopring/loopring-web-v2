@@ -852,7 +852,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       minInputAmount: undefined as Decimal | undefined,
       maxInputAmount: undefined as Decimal | undefined,
     },
-    status: 'notSignedIn' as 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting' | 'redeeming',
+    redeemErrorMsg: undefined as string | undefined,
+    status: 'notSignedIn' as 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting' | 'redeeming' | 'redeemError',
   })
 
 
@@ -956,9 +957,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         maxInputAmount: undefined,
       },
       status: 'notSignedIn',
-      // redeem: {
-      //   lrTaikoInUse: undefined,
-      // },
+      redeemErrorMsg: undefined,
     })
     setLocalPendingTx(undefined)
     setPendingDeposits(undefined)
@@ -1183,7 +1182,7 @@ console.log('vaultTokenMap', vaultTokenMap)
             })
           }
         },
-        disabled: walletLayer2,
+        disabled: false,
       },
       redeemButton: {
         onClick: () => {
@@ -1193,10 +1192,19 @@ console.log('vaultTokenMap', vaultTokenMap)
               tokenId: sellToken.tokenId,
             }, account.apiKey).then((res) => {
               if (res.resultInfo && res.resultInfo.code !== 0) {
-                alert(res.resultInfo.message) // to handle
+                setMintRedeemModalState({
+                  ...mintRedeemModalState,
+                  open: true,
+                  status: 'redeemError',
+                  redeemErrorMsg: res.resultInfo.message
+                })
               } else if (BigNumber.from(res.redeemAmount).isZero() ) {
-                alert('redeem amount is zero') // to handle
-
+                setMintRedeemModalState({
+                  ...mintRedeemModalState,
+                  open: true,
+                  status: 'redeemError',
+                  redeemErrorMsg: 'No TAIKO to Redeem'
+                })
               } else {
                 setMintRedeemModalState({
                   ...mintRedeemModalState,
@@ -1340,7 +1348,7 @@ console.log('vaultTokenMap', vaultTokenMap)
                   info: {
                     amount: numberFormatThousandthPlace(
                       utils.formatUnits(redeemAmount!, sellToken.decimals),
-                      {
+                        {
                         fixed: sellToken.precision,
                         removeTrailingZero: true,
                       },
@@ -1616,6 +1624,7 @@ console.log('vaultTokenMap', vaultTokenMap)
               : `≥ ${mintRedeemModalState.mint.minInputAmount.toString()}`
             : '',
         status: mintRedeemModalState.status,
+        redeemErrorMsg: mintRedeemModalState.redeemErrorMsg,
       },
       feeModal: {
         ...chargeFee,

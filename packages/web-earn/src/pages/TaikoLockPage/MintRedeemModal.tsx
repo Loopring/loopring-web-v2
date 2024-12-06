@@ -27,7 +27,7 @@ type MintModalProps = {
   tokenAvailableAmount: string
   confirmBtnWording: string
   logoCoinJSON: any
-  status: 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting' | 'redeeming'
+  status: 'notSignedIn' | 'signingIn' | 'signedIn' | 'minting' | 'redeeming' | 'redeemError'
   onClickSignIn: () => void
   onClickMint: () => void
 
@@ -43,6 +43,7 @@ type MintModalProps = {
     unrealizedTAIKO: string
   }
   feeSelectProps: FeeSelectProps
+  redeemErrorMsg: string | undefined
 }
 
 const StyledInput = styled(Input)`
@@ -70,7 +71,8 @@ export const MintRedeemModal = (props: MintModalProps) => {
     onClickSignIn,
     onClickMint,
     redeem,
-    feeSelectProps
+    feeSelectProps,
+    redeemErrorMsg
   } = props
   const { t } = useTranslation("common")
   const theme = useTheme()
@@ -241,22 +243,6 @@ export const MintRedeemModal = (props: MintModalProps) => {
             }
             mb={4}
           />
-          {/* <SpaceBetweenBox
-            leftNode={<Typography color={'var(--color-text-secondary)'}>Network Fee:</Typography>}
-            rightNode={
-              <Typography
-                display={'flex'}
-                alignItems={'center'}
-                color={'var(--color-text-secondary)'}
-                sx={{ cursor: 'pointer' }}
-                onClick={() => redeem.onClickFee()}
-              >
-                {redeem.fee}
-                <BackIcon sx={{transform: 'rotate(180deg)'}} /> 
-              </Typography>
-            }
-            mb={1.5}
-          /> */}
           <FeeSelect {...feeSelectProps}/>
           <Button sx={{ mt: 1 }} onClick={() => redeem.onClickConfirm()} fullWidth variant={'contained'}>
             Confirm
@@ -268,6 +254,18 @@ export const MintRedeemModal = (props: MintModalProps) => {
           </Typography>
         </Box>
       )}
+    </Box>
+  )
+  const redeemErrorUI = (
+    <Box pt={5} px={4} pb={4}>
+      <>
+        <Typography mb={8} mt={4} color={'var(--color-error)'} textAlign={'center'}>
+          {redeemErrorMsg}
+        </Typography>
+        <Button onClick={() => onClose()} fullWidth variant={'contained'}>
+          Close
+        </Button>
+      </>
     </Box>
   )
   const signInUI = (
@@ -382,7 +380,7 @@ export const MintRedeemModal = (props: MintModalProps) => {
             alignItems={'center'}
           >
             <Typography color={'var(--color-text-primary)'} variant='h5'>
-              {status === 'redeeming' ? 'Redeem TAIKO' : t('labelMint')}
+              {status === 'redeeming' || status === 'redeemError' ? 'Redeem TAIKO' : t('labelMint')}
             </Typography>
             <CloseIcon
               className='custom-size'
@@ -395,7 +393,13 @@ export const MintRedeemModal = (props: MintModalProps) => {
               onClick={onClose}
             />
           </Box>
-          {status === 'redeeming' ? redeemingUI : status === 'minting' ? mintingUI : signInUI}
+          {status === 'redeemError'
+            ? redeemErrorUI
+            : status === 'redeeming'
+            ? redeemingUI
+            : status === 'minting'
+            ? mintingUI
+            : signInUI}
         </Box>
       </Box>
     </Modal>
