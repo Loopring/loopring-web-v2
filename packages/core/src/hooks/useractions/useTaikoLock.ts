@@ -1124,7 +1124,7 @@ console.log('vaultTokenMap', vaultTokenMap)
             totalAmountInCurrency: stakingAmountInCurrency,
             positions: stakeInfo.stakingReceivedLocked.map((stake) => {
               const tokenInfo = tokenMap[coinSellSymbol]
-              const lockingDays = Math.ceil(
+              const lockingDays = Math.floor(
                 (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
               )
 
