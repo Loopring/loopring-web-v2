@@ -901,7 +901,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingPositionInfo({
-        accountId: 10075,
+        accountId: accountId,
       })
       .then((res) => {
         const availableToMint = (res && res[0] && res[0].claimableTotal) ?? '0'
