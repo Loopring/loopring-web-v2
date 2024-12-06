@@ -46,7 +46,7 @@ import {
   useVaultBorrow,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
-import _, { has, last } from 'lodash'
+import _, { has, keys, last } from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import {
@@ -58,7 +58,7 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
-import { useTokenPrices, useTradeStake, useVaultLayer2, useVaultMap, useWalletLayer2, WalletLayer1Map } from '../../stores'
+import { useTokenPrices, useTradeStake, useVaultLayer2, useVaultMap, useWalletLayer2, WalletLayer1Map, WalletLayer2Map } from '../../stores'
 import Decimal from 'decimal.js'
 import { BigNumber, Contract, ethers, providers, utils } from 'ethers'
 import moment, { min } from 'moment'
@@ -186,77 +186,70 @@ const submitTaikoFarmingMint = async (info: {
   })
 }
 
-const resetToken = async (account: Account, defaultNetwork: sdk.ChainId, exchangeInfo: sdk.ExchangeInfo, walletProvider: any) => {
-  const response = await LoopringAPI.vaultAPI?.getVaultBalance(
-    {
-      accountId: account.accountId,
-      tokens: '',
-    },
-    account.apiKey,
-    '1',
-  )
-  const tokenListIgnoreZero: any = []
-  const promiseAllStorageId =
-    response?.raw_data?.reduce((prev, item) => {
-      if (sdk.toBig(item?.total).gt(0)) {
-        tokenListIgnoreZero.push(item)
-        prev.push(
-          //@ts-ignore
-          LoopringAPI.userAPI.getNextStorageId(
-            {
-              accountId: account.accountId,
-              sellTokenId: item.tokenId,
-            },
-            account.apiKey,
-          ),
-        )
-      }
-      return prev
-    }, [] as Array<Promise<any>>) ?? []
+const resetlrTAIKO = async (
+  account: Account,
+  defaultNetwork: sdk.ChainId,
+  exchangeInfo: sdk.ExchangeInfo,
+  walletLayer2: WalletLayer2Map<any>,
+  walletProvider: any,
+) => {
+  const lrTAIKOBalanceInfo = walletLayer2['LRTAIKO']
   const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
     type: 4,
   })
-  await Promise.all([...promiseAllStorageId]).then((result) => {
-    return Promise.all(
-      result.map((item, index) => {
-        return (
-          item &&
-          LoopringAPI.vaultAPI?.sendVaultResetToken(
-            {
-              request: {
-                exchange: exchangeInfo!.exchangeAddress,
-                payerAddr: account.accAddress,
-                payerId: account.accountId,
-                payeeId: 0,
-                payeeAddr: broker,
-                storageId: item.offchainId,
-                token: {
-                  tokenId: tokenListIgnoreZero[index].tokenId,
-                  volume: tokenListIgnoreZero[index].total,
-                },
-                maxFee: {
-                  tokenId: tokenListIgnoreZero[index].tokenId,
-                  volume: '0',
-                },
-                validUntil: getTimestampDaysLater(DAYS),
-                memo: '',
-              } as any,
-              web3: new Web3(walletProvider as any),
-              chainId: defaultNetwork,
-              walletType: sdk.ConnectorNames.Unknown,
-              eddsaKey: account.eddsaKey.sk,
-              apiKey: account.apiKey,
-            },
-            {
-              accountId: account.accountId,
-              counterFactualInfo: account.eddsaKey.counterFactualInfo,
-            },
-            '1',
-          )
-        )
-      }),
-    )
+  const storageId = await LoopringAPI.userAPI!.getNextStorageId(
+    {
+      accountId: account.accountId,
+      sellTokenId: lrTAIKOBalanceInfo.tokenId,
+    },
+    account.apiKey,
+  )
+  const fee = await LoopringAPI.userAPI!.getOffchainFeeAmt(
+    {
+      accountId: account.accountId,
+      requestType: sdk.OffchainFeeReqType.TRANSFER,
+    },
+    account.apiKey,
+  )
+  const foundKey = keys(fee.fees).find(key => {
+    return new Decimal(walletLayer2[key].total).gte(fee.fees[key].fee)
   })
+  const foundFee = foundKey 
+    ? fee.fees[foundKey]
+    : undefined
+  if (!foundFee) return
+  return LoopringAPI.userAPI?.submitInternalTransfer(
+    {
+      request: {
+        exchange: exchangeInfo!.exchangeAddress,
+        payerAddr: account.accAddress,
+        payerId: account.accountId,
+        payeeId: 0,
+        payeeAddr: broker,
+        storageId: storageId.offchainId,
+        token: {
+          tokenId: lrTAIKOBalanceInfo.tokenId,
+          volume: lrTAIKOBalanceInfo.total,
+        },
+        maxFee: {
+          // @ts-ignore
+          tokenId: foundFee.tokenId,
+          volume: foundFee.fee,
+        },
+        validUntil: getTimestampDaysLater(DAYS),
+        memo: '',
+      } as any,
+      web3: new Web3(walletProvider as any),
+      chainId: defaultNetwork,
+      walletType: sdk.ConnectorNames.Unknown,
+      eddsaKey: account.eddsaKey.sk,
+      apiKey: account.apiKey,
+    },
+    {
+      accountId: account.accountId,
+      counterFactualInfo: account.eddsaKey.counterFactualInfo,
+    }
+  )
 }
 
 export const useTaikoLock = <T extends IBData<I>, I>({
@@ -1137,6 +1130,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const [feeModalState, setFeeModalState] = useState({
     open: false,
   })
+  const isExpired = taikoFarmingAccountStatus === 0
   
   const daysInputInfo = (stakeInfo && hasNoLockingPos) ? {
     value: daysInput,
@@ -1180,8 +1174,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         walletLayer2['LRTAIKO'] &&
         new Decimal(walletLayer2['LRTAIKO'].total).gt(0)
       ) {
+        await sdk.sleep(100)
         const state = store.getState()
-        await resetToken(state.account, state.settings.defaultNetwork, state.system.exchangeInfo!, walletProvider)
+        await resetlrTAIKO(
+          state.account,
+          state.settings.defaultNetwork,
+          state.system.exchangeInfo!,
+          walletLayer2!,
+          walletProvider,
+        )
         
       }
     } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
@@ -1281,7 +1282,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: false,
+        disabled: isExpired,
       },
       redeemButton: {
         onClick: () => {
@@ -1319,7 +1320,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: false
+        disabled: !isExpired
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
