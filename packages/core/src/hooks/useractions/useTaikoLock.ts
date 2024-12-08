@@ -282,7 +282,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const taikoFarmingPrecision = 2
   const { walletLayer2, updateWalletLayer2 } = useWalletLayer2()
   const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
-
+  const holdingTAIKO = walletLayer2 && walletLayer2['TAIKO'] 
+    ? walletLayer2['TAIKO'].total
+    : undefined
   
   // walletLayer2 && walletLayer2[sellToken.symbol] 
   //   ? walletLayer2[sellToken.symbol]?.total 
@@ -1133,9 +1135,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const expirationTime = stakeInfo && last(stakeInfo.stakingReceivedLocked) 
     ? last(stakeInfo.stakingReceivedLocked)?.claimableTime 
     : undefined
-  const expireStatus = expirationTime !== undefined 
-    ? expirationTime < Date.now() ? 'expired' : 'notExpired'
-    : 'noPosition'
+  const expireStatus: 'expired' | 'notExpired' | 'noPosition' =
+    expirationTime !== undefined
+      ? expirationTime < Date.now()
+        ? 'expired'
+        : 'notExpired'
+      : 'noPosition'
   
   const daysInputInfo = (stakeInfo && hasNoLockingPos) ? {
     value: daysInput,
@@ -1275,6 +1280,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   { fixed: sellToken.precision, removeTrailingZero: true },
                 ) + ' TAIKO'
               : '--',
+            expireStatus
           }
         : undefined,
       mintButton: {
@@ -1344,11 +1350,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             tokenMap['LRTAIKO'] &&
             vaultAccountInfo?.collateralInfo?.collateralTokenId ===
               tokenMap['LRTAIKO'].tokenId,
-          lockedTaikoAmount: mintedLRTAIKO
-            ? numberFormatThousandthPlace(mintedLRTAIKO, {
+          lockedTaikoAmount: holdingTAIKO
+            ? numberFormatThousandthPlace(utils.formatUnits(holdingTAIKO, sellToken.decimals), {
                 fixed: sellToken.precision,
                 removeTrailingZero: true,
-              }) + '  TAIKO'
+              }) + ' TAIKO'
             : '--',
           pnlAmount:
             holdingLRTAIKO && mintedLRTAIKO
