@@ -324,11 +324,21 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
         vaultJoinData.belong &&
         LoopringAPI.vaultAPI &&
         LoopringAPI.userAPI &&
+        LoopringAPI.defiAPI &&
         vaultAccountInfo &&
         sdk.toBig(vaultJoinData.amount).gte(vaultJoinData.minAmount ?? 0) &&
         sdk.toBig(vaultJoinData.amount).lte(vaultJoinData.maxAmount ?? 0)
       ) {
         setIsLoading(true)
+        const taikoFarmingPositionInfo = await LoopringAPI.defiAPI.getTaikoFarmingPositionInfo({accountId: account.accountId});
+        if (
+          [0, 3].includes(taikoFarmingPositionInfo.account.status) &&
+          vaultJoinData.tradeData.belong === 'LRTAIKO'
+        ) {
+          throw {
+            message: 'Cannot use lrTAIKO as collateral under the current conditions.',
+          }
+        }
         setShowAccount({
           isShow: true,
           step: AccountStep.VaultJoin_In_Progress,

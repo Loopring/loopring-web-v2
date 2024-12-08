@@ -1130,7 +1130,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const [feeModalState, setFeeModalState] = useState({
     open: false,
   })
-  const isExpired = taikoFarmingAccountStatus === 0
+  const expirationTime = stakeInfo && last(stakeInfo.stakingReceivedLocked) 
+    ? last(stakeInfo.stakingReceivedLocked)?.claimableTime 
+    : undefined
+  const expireStatus = expirationTime !== undefined 
+    ? expirationTime < Date.now() ? 'expired' : 'notExpired'
+    : 'noPosition'
   
   const daysInputInfo = (stakeInfo && hasNoLockingPos) ? {
     value: daysInput,
@@ -1158,33 +1163,34 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }
   const { walletProvider } = useWeb3ModalProvider()
   const { checkHWAddr} = useWalletInfo()
-
   const accountReadyStateCheck = async (activatedCallBack: () => void) => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       activatedCallBack()
     } else if (account.readyState === AccountStatus.LOCKED) {
+      unlockAccount().then(async () => {
+        await sdk.sleep(100)
+        const state = store.getState()
+        if (
+          taikoFarmingAccountStatus === 0 &&
+          walletLayer2 &&
+          walletLayer2['LRTAIKO'] &&
+          new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
+          state.account.readyState === AccountStatus.ACTIVATED
+        ) {
+          await resetlrTAIKO(
+            state.account,
+            state.settings.defaultNetwork,
+            state.system.exchangeInfo!,
+            walletLayer2!,
+            walletProvider,
+          )
+        }
+      })
       setShowAccount({
         isShow: true,
         step: AccountStep.UpdateAccount_Approve_WaitForAuth,
       })
-      await unlockAccount()
-      if (
-        taikoFarmingAccountStatus === 0 &&
-        walletLayer2 &&
-        walletLayer2['LRTAIKO'] &&
-        new Decimal(walletLayer2['LRTAIKO'].total).gt(0)
-      ) {
-        await sdk.sleep(100)
-        const state = store.getState()
-        await resetlrTAIKO(
-          state.account,
-          state.settings.defaultNetwork,
-          state.system.exchangeInfo!,
-          walletLayer2!,
-          walletProvider,
-        )
-        
-      }
+      
     } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
       setMintRedeemModalState({
         ...mintRedeemModalState,
@@ -1282,7 +1288,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: isExpired,
+        disabled: expireStatus !== 'notExpired',
       },
       redeemButton: {
         onClick: () => {
@@ -1320,7 +1326,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: !isExpired
+        disabled: expireStatus !== 'expired'
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
