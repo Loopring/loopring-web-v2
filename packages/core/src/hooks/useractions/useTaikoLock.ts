@@ -1252,6 +1252,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
           state.account.readyState === AccountStatus.ACTIVATED
         ) {
+          return // to remove
           await resetlrTAIKO(
             state.account,
             state.settings.defaultNetwork,
