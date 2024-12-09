@@ -1029,9 +1029,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         const record = res.transactions[0] as any
         setPreviousLockRecord({
           status: 'found',
-          TAIKOProfit: ethers.BigNumber.from(record.amountOut ? record.amountOut : '0')
-            .sub(record.amount ? record.amount : '0')
-            .toString(),
+          TAIKOProfit: record.amount ? record.amount : '0',
           USDTProfit: record.portalOfU ? record.portalOfU : '0',
         })
       }
