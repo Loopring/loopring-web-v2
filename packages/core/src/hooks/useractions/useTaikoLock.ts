@@ -640,7 +640,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       : pendingDepositsMergeLocal.length > 0
       ? {
           claimableTime:
-            pendingDepositsMergeLocal[0].lockDuration + pendingDepositsMergeLocal[0].stakeAt,
+            last(pendingDepositsMergeLocal)!.lockDuration + last(pendingDepositsMergeLocal)!.stakeAt,
         }
       : undefined
 
