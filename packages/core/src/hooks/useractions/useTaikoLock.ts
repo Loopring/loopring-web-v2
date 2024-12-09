@@ -939,6 +939,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }, [defaultNetwork])
 
   const [taikoFarmingAccountStatus, setTaikoFarmingAccountStatus] = useState(undefined as number | undefined)
+  
+  const [previousLockRecord, setPreviousLockRecord] = useState({ status: 'init' } as
+    | { status: 'init' }
+    | { status: 'notFound' }
+    | {
+        TAIKOProfit: string //
+        USDTProfit: string //
+        status: 'found'
+      })
 
   const refreshData = async () => {
     
@@ -1005,6 +1014,29 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           totalStaked: res.totalStaked,
         })
       })
+
+    account.apiKey && LoopringAPI.defiAPI?.getTaikoFarmingTransactions(
+      {
+        accountId,
+        tokenId: sellToken.tokenId,
+        limit: 1
+      } as any,
+      account.apiKey,
+    ).then(res => {
+      if (res.transactions.length === 0) {
+        setPreviousLockRecord({ status: 'notFound' })
+      } else if (res.transactions.length > 0){
+        const record = res.transactions[0] as any
+        setPreviousLockRecord({
+          status: 'found',
+          TAIKOProfit: ethers.BigNumber.from(record.amountOut ? record.amountOut : '0')
+            .sub(record.amount ? record.amount : '0')
+            .toString(),
+          USDTProfit: record.portalOfU ? record.portalOfU : '0',
+        })
+      }
+    })
+
     account.apiKey && LoopringAPI?.defiAPI
       ?.getTaikoFarmingGetRedeem({
         accountId: accountId,
@@ -1135,12 +1167,50 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const expirationTime = stakeInfo && last(stakeInfo.stakingReceivedLocked) 
     ? last(stakeInfo.stakingReceivedLocked)?.claimableTime 
     : undefined
-  const expireStatus: 'expired' | 'notExpired' | 'noPosition' =
-    expirationTime !== undefined
-      ? expirationTime < Date.now()
-        ? 'expired'
-        : 'notExpired'
-      : 'noPosition'
+
+  
+  // const expireStatus: 'expired' | 'notExpired' | 'noPosition' =
+  //   taikoFarmingAccountStatus === 0 
+  //     ? walletLayer2 && walletLayer2['TAIKO'] && new Decimal(walletLayer2['TAIKO'].total).gt(0) 
+  //       ? 'expired' : 'noPosition'
+  //     : 'notExpired'
+
+  const settlementStatus: 'init' | 'settled' | 'notSettled' | 'noPosition' =
+    taikoFarmingAccountStatus === undefined
+      ? 'init'
+      : taikoFarmingAccountStatus === 0
+      ? walletLayer2 && walletLayer2['TAIKO'] && new Decimal(walletLayer2['TAIKO'].total).gt(0)
+        ? 'settled'
+        : 'noPosition'
+      : 'notSettled'
+
+  console.log('settlementStatus', settlementStatus)
+  console.log('settlementStatus previousLockRecord', previousLockRecord)
+  
+  const unrealizedTAIKOBN =
+    settlementStatus === 'settled'
+      ? previousLockRecord.status === 'found'
+        ? BigNumber.from(previousLockRecord.TAIKOProfit)
+        : undefined
+      : realizedAndUnrealized && realizedAndUnrealized.unrealizedTaiko
+      ? BigNumber.from(realizedAndUnrealized.unrealizedTaiko)
+      : undefined
+
+  const realizedUSDTBN =
+    settlementStatus === 'settled'
+      ? previousLockRecord.status === 'found'
+        ? BigNumber.from(previousLockRecord.USDTProfit)
+        : undefined
+      : realizedAndUnrealized && realizedAndUnrealized.realizedUSDT
+      ? BigNumber.from(realizedAndUnrealized.realizedUSDT)
+      : undefined
+    // expirationTime !== undefined
+    //   ? expirationTime < Date.now()
+    //     ? 'expired'
+    //     : 'notExpired'
+    //   : 'noPosition'
+
+      // taikoFarmingAccountStatus
   
   const daysInputInfo = (stakeInfo && hasNoLockingPos) ? {
     value: daysInput,
@@ -1268,19 +1338,19 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }),
             expirationTime: last(stakeInfo.stakingReceivedLocked)?.claimableTime ?? 0,
             totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
-            realizedUSDT: realizedAndUnrealized && realizedAndUnrealized.realizedUSDT
+            realizedUSDT: realizedUSDTBN
               ? numberFormatThousandthPlace(
-                  utils.formatUnits(realizedAndUnrealized.realizedUSDT, 6),
+                  utils.formatUnits(realizedUSDTBN, 6),
                   { fixed: 2, removeTrailingZero: true },
                 ) + ' USDT'
               : '--',
-            unrealizedTAIKO: realizedAndUnrealized && realizedAndUnrealized.unrealizedTaiko
+            unrealizedTAIKO: unrealizedTAIKOBN
               ? numberFormatThousandthPlace(
-                  utils.formatUnits(realizedAndUnrealized.unrealizedTaiko, sellToken.decimals),
+                  utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals),
                   { fixed: sellToken.precision, removeTrailingZero: true },
                 ) + ' TAIKO'
               : '--',
-            expireStatus
+            settlementStatus
           }
         : undefined,
       mintButton: {
@@ -1294,7 +1364,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: expireStatus !== 'notExpired',
+        disabled: settlementStatus !== 'notSettled',
       },
       redeemButton: {
         onClick: () => {
@@ -1332,7 +1402,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: expireStatus !== 'expired'
+        disabled: settlementStatus !== 'settled'
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
@@ -1477,15 +1547,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               open: true,
             })
           },
-          readlizedUSDT: realizedAndUnrealized && realizedAndUnrealized.realizedUSDT
+          readlizedUSDT: realizedUSDTBN
             ? numberFormatThousandthPlace(
-                utils.formatUnits(realizedAndUnrealized.realizedUSDT, 6),
+                utils.formatUnits(realizedUSDTBN, 6),
                 { fixed: 2, removeTrailingZero: true },
               ) + ' USDT'
             : '--',
-          unrealizedTAIKO: realizedAndUnrealized && realizedAndUnrealized.unrealizedTaiko
+          unrealizedTAIKO: unrealizedTAIKOBN
             ? numberFormatThousandthPlace(
-                utils.formatUnits(realizedAndUnrealized.unrealizedTaiko, sellToken.decimals),
+                utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals),
                 { fixed: sellToken.precision, removeTrailingZero: true },
               ) + ' TAIKO'
             : '--',

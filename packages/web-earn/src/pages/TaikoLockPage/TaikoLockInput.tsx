@@ -84,7 +84,7 @@ type TaikoLockInputProps<T, I, ACD> = {
         totalAmountWithNoSymbol: string
         realizedUSDT: string
         unrealizedTAIKO: string
-        expireStatus: 'expired' | 'notExpired' | 'noPosition'
+        settlementStatus: 'settled' | 'notSettled' | 'noPosition'
       }
     | undefined
   mintButton: {
@@ -464,7 +464,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                 {myPosition?.totalAmount ?? '--'}
               </Typography>
             </Box>
-            {myPosition.expireStatus === 'notExpired' ? (
+            {myPosition.settlementStatus === 'notSettled' ? (
               <>
                 <Box mb={1} display={'flex'} alignItems={'center'}>
                   <Tooltip
