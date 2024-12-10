@@ -543,7 +543,6 @@ const MyLiquidity = withTranslation('common')(
                   isLoading={stakeShowLoading}
                   hideAssets={hideAssets}
                   noMinHeight
-                  {...rest}
                   hideDustCollector
                 />
               </Box>
