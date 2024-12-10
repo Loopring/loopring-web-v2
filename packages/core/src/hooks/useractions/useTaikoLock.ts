@@ -1241,7 +1241,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       activatedCallBack()
     } else if (account.readyState === AccountStatus.LOCKED) {
       unlockAccount().then(async () => {
-        await sdk.sleep(100)
+        await sdk.sleep(1000)
         const state = store.getState()
         if (
           taikoFarmingAccountStatus === 0 &&

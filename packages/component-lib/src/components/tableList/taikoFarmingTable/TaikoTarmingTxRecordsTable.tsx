@@ -7,9 +7,10 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   globalSetup,
+  Info2Icon,
 } from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
-import { Box, BoxProps, Typography } from '@mui/material'
+import { Box, BoxProps, Tooltip, Typography } from '@mui/material'
 import { TablePaddingX } from '../../styled'
 import styled from '@emotion/styled'
 import { FormatterProps } from 'react-data-grid'
@@ -146,17 +147,27 @@ export const TaikoTarmingTxRecordsTable = withTranslation(['tables', 'common'])(
                 height={'100%'}
                 alignItems={'center'}
               >
-                <Typography
-                  component={'span'}
-                  sx={{ textTransform: 'capitalize' }}
-                  color={side.color}
-                  display={'inline'}
-                  minWidth={86}
+                <Tooltip
+                  title={
+                    'If you have used lrTAIKO as collateral to invest in Portal and incurred a loss, the compensation will be deducted from your locked TAIKO balance. This settlement involves transferring a portion of your locked TAIKO to the Loopring operator to cover the loss.'
+                  }
                 >
-                  {row.stakingType === sdk.StakeTransactionType.redeem
-                    ? 'Settlement'
-                    : t(side.type)}
-                </Typography>
+                  <Typography
+                    component={'span'}
+                    sx={{ textTransform: 'capitalize' }}
+                    color={side.color}
+                    display={'flex'}
+                    minWidth={120}
+                    alignItems={'center'}
+                  >
+                    {row.stakingType === sdk.StakeTransactionType.redeem
+                      ? 'Settlement'
+                      : t(side.type)}
+                    {row.stakingType === sdk.StakeTransactionType.redeem && (
+                      <Info2Icon sx={{ ml: 0.5, mt: 0.25, color: 'var(--color-text-secondary)' }} />
+                    )}
+                  </Typography>
+                </Tooltip>
                 <Typography component={'span'} display={'inline'}>
                   {amountStr}
                 </Typography>

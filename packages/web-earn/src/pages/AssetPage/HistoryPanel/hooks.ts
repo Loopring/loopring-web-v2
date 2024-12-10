@@ -415,7 +415,7 @@ export function useTaikoFarmingRecord(setToastOpen: (props: any) => void) {
     amount: string;
     productId: string;
     hash: string;
-    stakingType: "subscribe" | "unsubscribe";
+    stakingType: "subscribe" | "unsubscribe" | "redeem";
     createdAt: number;
     updatedAt: number;
 }[]>(
@@ -466,7 +466,10 @@ export function useTaikoFarmingRecord(setToastOpen: (props: any) => void) {
   )
 
   return {
-    sideStakingList,
+    sideStakingList: sideStakingList.filter(
+      (item) =>
+        !(item.stakingType === 'redeem' && (item.amount === '' || new Decimal(item.amount).eq(0))),
+    ),
     showLoading,
     getSideStakingTxList,
     sideStakingTotal,
