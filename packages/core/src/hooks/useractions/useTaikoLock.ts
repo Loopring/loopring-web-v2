@@ -594,23 +594,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           unrealizedTaiko: string
         },
   )
-  const redeemAmount = realizedAndUnrealized?.redeemAmount
-  const chargeFee = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-
-    amount: redeemAmount ? Number(redeemAmount) : 0,
-    needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
-  })
-  console.log('chargeFee input', {
-    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-    amount: redeemAmount ? Number(redeemAmount) : 0,
-    needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
-  })
+  
+  
 
 
-  console.log('chargeFee output', chargeFee)
+  
 
   const [pendingDeposits, setPendingDeposits] = React.useState(
     undefined as
@@ -929,7 +917,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   })
 
 
-  console.log('reddemAmount', redeemAmount)
+  
 
 
   useEffect(() => {
@@ -946,10 +934,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     | { status: 'init' }
     | { status: 'notFound' }
     | {
-        TAIKOProfit: string //
-        USDTProfit: string //
+        TAIKOProfit: string 
+        USDTProfit: string 
+        redeemAmount: string 
         status: 'found'
       })
+
+  
 
   const refreshData = async () => {
     
@@ -1035,6 +1026,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           status: 'found',
           TAIKOProfit: record.amount ? record.amount : '0',
           USDTProfit: record.portalOfU ? record.portalOfU : '0',
+          redeemAmount: record.amountOut ? record.amountOut : '0',
         })
       }
     })
@@ -1169,6 +1161,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const expirationTime = stakeInfo && last(stakeInfo.stakingReceivedLocked) 
     ? last(stakeInfo.stakingReceivedLocked)?.claimableTime 
     : undefined
+  
 
   
   // const expireStatus: 'expired' | 'notExpired' | 'noPosition' =
@@ -1185,6 +1178,27 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         ? 'settled'
         : 'noPosition'
       : 'notSettled'
+  const redeemAmount =
+    settlementStatus === 'settled' && previousLockRecord && previousLockRecord.status === 'found'
+      ? previousLockRecord.redeemAmount
+      : realizedAndUnrealized?.redeemAmount
+
+  const chargeFee = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+
+    amount: redeemAmount ? Number(redeemAmount) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+  console.log('chargeFee input', {
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+    amount: redeemAmount ? Number(redeemAmount) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+  console.log('chargeFee output', chargeFee)
+
+  console.log('reddemAmount', redeemAmount)
 
   console.log('settlementStatus', settlementStatus)
   console.log('settlementStatus previousLockRecord', previousLockRecord)
@@ -1371,37 +1385,22 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       redeemButton: {
         onClick: () => {
           accountReadyStateCheck(() => {
-            LoopringAPI.defiAPI?.getTaikoFarmingGetRedeem({
-              accountId: account.accountId,
-              tokenId: sellToken.tokenId,
-            }, account.apiKey).then((res) => {
-              if (res.resultInfo && res.resultInfo.code !== 0) {
-                setMintRedeemModalState({
-                  ...mintRedeemModalState,
-                  open: true,
-                  status: 'redeemError',
-                  redeemErrorMsg: res.resultInfo.message
-                })
-              } else if (BigNumber.from(res.redeemAmount).isZero() ) {
-                setMintRedeemModalState({
-                  ...mintRedeemModalState,
-                  open: true,
-                  status: 'redeemError',
-                  redeemErrorMsg: 'No TAIKO to Redeem'
-                })
-              } else {
-                setMintRedeemModalState({
-                  ...mintRedeemModalState,
-                  open: true,
-                  status: 'redeeming',
-                })
-                setRealizedAndUnrealized({
-                  realizedUSDT: res.profitOfU,
-                  unrealizedTaiko: res.profit,
-                  redeemAmount: res.redeemAmount
-                })
-              }
-            })
+
+
+            if (previousLockRecord && previousLockRecord.status === 'found' && previousLockRecord.redeemAmount && ethers.BigNumber.from(previousLockRecord.redeemAmount).gt('0')) {
+              setMintRedeemModalState({
+                ...mintRedeemModalState,
+                open: true,
+                status: 'redeeming',
+              })
+            } else {
+              setMintRedeemModalState({
+                ...mintRedeemModalState,
+                open: true,
+                status: 'redeemError',
+                redeemErrorMsg: 'No TAIKO to Redeem'
+              })
+            }
           })
         },
         disabled: settlementStatus !== 'settled'
