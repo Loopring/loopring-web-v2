@@ -398,6 +398,7 @@ export const useAssetAction = () => {
             sdk.LOCK_TYPE.L2STAKING,
             sdk.LOCK_TYPE.STOP_LIMIT,
             sdk.LOCK_TYPE.VAULT_COLLATERAL,
+            sdk.LOCK_TYPE.TAIKO_FARMING
           ].join(','),
         } as any,
         account.apiKey,
@@ -442,6 +443,9 @@ export const useAssetAction = () => {
                   break
                 case sdk.LOCK_TYPE.VAULT_COLLATERAL:
                   link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
+                  break
+                case sdk.LOCK_TYPE.TAIKO_FARMING:
+                  link = `/#/taiko-farming`
                   break
               }
               const key = record.lockTag === 'L2STAKING' && _item.name === 'TAIKO'

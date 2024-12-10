@@ -495,8 +495,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               accountId: account.accountId,
               hashes: response.hash,
               tokenId: tradeStake.sellToken.tokenId,
-              // @ts-ignore
-              lockTags: 'TAIKO_FARMING'
+              
             },
             account.apiKey,
           )
@@ -1000,8 +999,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         accountId: accountId,
         tokenId: sellToken.tokenId,
         statuses: 'received,locked',
-        // @ts-ignore
-        lockTags: 'TAIKO_FARMING'
       })
       .then((res) => {
         setStakeInfo({
