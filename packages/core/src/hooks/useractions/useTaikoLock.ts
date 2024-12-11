@@ -1043,11 +1043,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       }
     })
 
-    account.apiKey && LoopringAPI?.defiAPI
+    LoopringAPI?.defiAPI
       ?.getTaikoFarmingGetRedeem({
         accountId: accountId,
         tokenId: sellToken.tokenId,
-      }, account.apiKey)
+      }, '')
       .then((res) => {
         setRealizedAndUnrealized({
           realizedUSDT: res.profitOfU,
