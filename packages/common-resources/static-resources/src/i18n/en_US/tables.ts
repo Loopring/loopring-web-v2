@@ -415,4 +415,5 @@ export default {
   labelLockTime: 'Time',
   labelTotalLocked: 'Total/Locked',
   labelLocked2: 'Locked',
+  labelTAIKO_FARMING: 'Taiko Farming',
 }
