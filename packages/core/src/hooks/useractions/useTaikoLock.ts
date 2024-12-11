@@ -1350,7 +1350,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           : '--',
         settlementStatus,
         showMyPosition: !(
-          taikoFarmingAccountStatus === 0 && account.readyState !== AccountStatus.ACTIVATED
+          (taikoFarmingAccountStatus === undefined || taikoFarmingAccountStatus === 0) && account.readyState !== AccountStatus.ACTIVATED
         ),
       },
       mintButton: {
