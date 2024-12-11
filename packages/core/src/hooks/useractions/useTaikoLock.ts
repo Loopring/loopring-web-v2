@@ -1323,52 +1323,54 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         ? `≥ ${tradeStake?.deFiSideCalcData?.stakeViewInfo?.minSellAmount}`
         : '',
       daysInput: daysInputInfo,
-      myPosition: stakeInfo
-        ? {
-            totalAmount: stakingAmount,
-            totalAmountInCurrency: stakingAmountInCurrency,
-            positions: stakeInfo.stakingReceivedLocked.map((stake) => {
-              const tokenInfo = tokenMap[coinSellSymbol]
-              const lockingDays = Math.floor(
-                (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
-              )
+      myPosition: {
+        totalAmount: stakingAmount,
+        totalAmountInCurrency: stakingAmountInCurrency,
+        positions:
+          stakeInfo &&
+          stakeInfo.stakingReceivedLocked.map((stake) => {
+            const tokenInfo = tokenMap[coinSellSymbol]
+            const lockingDays = Math.floor(
+              (stake.claimableTime - stake.stakeAt) / (1000 * 60 * 60 * 24),
+            )
 
-              return {
-                amount: numberFormatThousandthPlace(
-                  utils.formatUnits(stake.initialAmount, tokenInfo.decimals),
-                  {
-                    fixed: tokenInfo.precision,
-                    removeTrailingZero: true,
-                  },
-                ),
-                unlocked: stake.status !== 'locked',
-                lockingDays,
-                unlockTime: stake.claimableTime
-                  ? moment(stake.claimableTime).format('YYYY-MM-DD')
-                  : '',
-                multiplier: lockingDays + 'x',
-              }
-            }),
-            expirationTime: last(stakeInfo.stakingReceivedLocked)?.claimableTime ?? 0,
-            totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
-            realizedUSDT: realizedUSDTBN
-              ? numberFormatThousandthPlace(
-                  utils.formatUnits(realizedUSDTBN, 6),
-                  { fixed: 2, removeTrailingZero: true },
-                ) + ' USDT'
-              : '--',
-            unrealizedTAIKO: unrealizedTAIKOBN
-              ? numberFormatThousandthPlace(
-                  utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals),
-                  { fixed: sellToken.precision, removeTrailingZero: true },
-                ) + ' TAIKO'
-              : '--',
-            settlementStatus
-          }
-        : undefined,
+            return {
+              amount: numberFormatThousandthPlace(
+                utils.formatUnits(stake.initialAmount, tokenInfo.decimals),
+                {
+                  fixed: tokenInfo.precision,
+                  removeTrailingZero: true,
+                },
+              ),
+              unlocked: stake.status !== 'locked',
+              lockingDays,
+              unlockTime: stake.claimableTime
+                ? moment(stake.claimableTime).format('YYYY-MM-DD')
+                : '',
+              multiplier: lockingDays + 'x',
+            }
+          }),
+        expirationTime: stakeInfo ? last(stakeInfo.stakingReceivedLocked)?.claimableTime : 0,
+        totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
+        realizedUSDT: realizedUSDTBN
+          ? numberFormatThousandthPlace(utils.formatUnits(realizedUSDTBN, 6), {
+              fixed: 2,
+              removeTrailingZero: true,
+            }) + ' USDT'
+          : '--',
+        unrealizedTAIKO: unrealizedTAIKOBN
+          ? numberFormatThousandthPlace(utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals), {
+              fixed: sellToken.precision,
+              removeTrailingZero: true,
+            }) + ' TAIKO'
+          : '--',
+        settlementStatus,
+        showMyPosition: !(
+          taikoFarmingAccountStatus === 0 && account.readyState !== AccountStatus.ACTIVATED
+        ),
+      },
       mintButton: {
         onClick: async () => {
-
           accountReadyStateCheck(() => {
             setMintRedeemModalState({
               ...mintRedeemModalState,
@@ -1382,9 +1384,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       redeemButton: {
         onClick: () => {
           accountReadyStateCheck(() => {
-
-
-            if (previousLockRecord && previousLockRecord.status === 'found' && previousLockRecord.redeemAmount && ethers.BigNumber.from(previousLockRecord.redeemAmount).gt('0')) {
+            if (
+              previousLockRecord &&
+              previousLockRecord.status === 'found' &&
+              previousLockRecord.redeemAmount &&
+              ethers.BigNumber.from(previousLockRecord.redeemAmount).gt('0')
+            ) {
               setMintRedeemModalState({
                 ...mintRedeemModalState,
                 open: true,
@@ -1395,12 +1400,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 ...mintRedeemModalState,
                 open: true,
                 status: 'redeemError',
-                redeemErrorMsg: 'No TAIKO to Redeem'
+                redeemErrorMsg: 'No TAIKO to Redeem',
               })
             }
           })
         },
-        disabled: settlementStatus !== 'settled'
+        disabled: settlementStatus !== 'settled',
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
@@ -1416,8 +1421,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           lrTaikoInUse:
             tokenMap &&
             tokenMap['LRTAIKO'] &&
-            vaultAccountInfo?.collateralInfo?.collateralTokenId ===
-              tokenMap['LRTAIKO'].tokenId,
+            vaultAccountInfo?.collateralInfo?.collateralTokenId === tokenMap['LRTAIKO'].tokenId,
           lockedTaikoAmount: holdingTAIKO
             ? numberFormatThousandthPlace(utils.formatUnits(holdingTAIKO, sellToken.decimals), {
                 fixed: sellToken.precision,
@@ -1477,7 +1481,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   storageId: storageId?.offchainId,
                   token: {
                     tokenId: sellToken.tokenId,
-                    volume: tokenVolume
+                    volume: tokenVolume,
                   },
                   maxFee: {
                     tokenId: chargeFee.feeInfo.__raw__.tokenId,
@@ -1516,7 +1520,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   info: {
                     amount: numberFormatThousandthPlace(
                       utils.formatUnits(redeemAmount!, sellToken.decimals),
-                        {
+                      {
                         fixed: sellToken.precision,
                         removeTrailingZero: true,
                       },
@@ -1546,10 +1550,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           },
           readlizedUSDT: realizedUSDTBN
-            ? numberFormatThousandthPlace(
-                utils.formatUnits(realizedUSDTBN, 6),
-                { fixed: 2, removeTrailingZero: true },
-              ) + ' USDT'
+            ? numberFormatThousandthPlace(utils.formatUnits(realizedUSDTBN, 6), {
+                fixed: 2,
+                removeTrailingZero: true,
+              }) + ' USDT'
             : '--',
           unrealizedTAIKO: unrealizedTAIKOBN
             ? numberFormatThousandthPlace(

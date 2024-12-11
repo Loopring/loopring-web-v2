@@ -69,24 +69,23 @@ type TaikoLockInputProps<T, I, ACD> = {
     disabled: boolean
     unlockTime: string
   }
-  myPosition:
-    | {
-        totalAmount: string
-        totalAmountInCurrency: string
-        positions: {
-          amount: string
-          unlocked: boolean
-          lockingDays: number
-          unlockTime: string
-          multiplier: string
-        }[]
-        expirationTime: number
-        totalAmountWithNoSymbol: string
-        realizedUSDT: string
-        unrealizedTAIKO: string
-        settlementStatus: 'settled' | 'notSettled' | 'noPosition'
-      }
-    | undefined
+  myPosition: {
+    totalAmount: string
+    totalAmountInCurrency: string
+    positions: {
+      amount: string
+      unlocked: boolean
+      lockingDays: number
+      unlockTime: string
+      multiplier: string
+    }[]
+    expirationTime: number
+    totalAmountWithNoSymbol: string
+    realizedUSDT: string
+    unrealizedTAIKO: string
+    settlementStatus: 'settled' | 'notSettled' | 'noPosition',
+    showMyPosition: boolean
+  }
   mintButton: {
     onClick: () => void
     disabled: boolean
@@ -413,7 +412,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
         </GridStyle>
       </Box>
 
-      {myPosition && (
+      {myPosition.showMyPosition && (
         <Box
           display={'flex'}
           style={isMobile ? { flex: 1 } : { width: '450px' }}
@@ -459,7 +458,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             </Box>
             <Box mb={1} display={'flex'} alignItems={'center'}>
               <Typography width={'40%'}>Taiko</Typography>
-              <Typography width={'30%'}>Locked</Typography>
+              <Typography width={'30%'}>{myPosition.settlementStatus === 'settled' ? 'Unlocked' : 'Locked'}</Typography>
               <Typography width={'30%'} textAlign={'right'}>
                 {myPosition?.totalAmount ?? '--'}
               </Typography>
