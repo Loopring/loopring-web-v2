@@ -83,7 +83,7 @@ type TaikoLockInputProps<T, I, ACD> = {
     totalAmountWithNoSymbol: string
     realizedUSDT: string
     unrealizedTAIKO: string
-    settlementStatus: 'settled' | 'notSettled' | 'noPosition',
+    settlementStatus: 'settled' | 'notSettled' | 'noPosition' | 'init' | 'minting',
     showMyPosition: boolean
   }
   mintButton: {
@@ -458,47 +458,14 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             </Box>
             <Box mb={1} display={'flex'} alignItems={'center'}>
               <Typography width={'40%'}>Taiko</Typography>
-              <Typography width={'30%'}>{myPosition.settlementStatus === 'settled' ? 'Unlocked' : 'Locked'}</Typography>
+              <Typography width={'30%'}>
+                {myPosition.settlementStatus === 'settled' ? 'Unlocked' : 'Locked'}
+              </Typography>
               <Typography width={'30%'} textAlign={'right'}>
                 {myPosition?.totalAmount ?? '--'}
               </Typography>
             </Box>
-            {myPosition.settlementStatus === 'notSettled' ? (
-              <>
-                <Box mb={1} display={'flex'} alignItems={'center'}>
-                  <Tooltip
-                    title={
-                      <Typography variant='body2'>
-                        {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.`}
-                        <br />
-                        <br />
-                        {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
-                      </Typography>
-                    }
-                  >
-                    <Typography width={'40%'} display={'flex'} alignItems={'center'}>
-                      Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
-                    </Typography>
-                  </Tooltip>
-
-                  <Tooltip
-                    title={
-                      <Typography variant='body2'>
-                        Your P&L is still pending. Once your lock duration expires, any unrealized losses will result in a portion of your locked TAIKO being transferred to Loopring.
-                      </Typography>
-                    }
-                  >
-                    <Typography width={'30%'} display={'flex'} alignItems={'center'}>
-                      Unrealized <Info2Icon sx={{ ml: 0.5 }} />
-                    </Typography>
-                  </Tooltip>
-
-                  <Typography width={'30%'} textAlign={'right'}>
-                    {myPosition.unrealizedTAIKO}
-                  </Typography>
-                </Box>
-              </>
-            ) : (
+            {myPosition.settlementStatus === 'settled' ? (
               <>
                 <Box mb={1} display={'flex'} alignItems={'center'}>
                   <Tooltip
@@ -519,7 +486,6 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                         Your P&L has been finalized. If your current TAIKO holdings are less than
                         the initially locked amount, it indicates that losses incurred during your
                         DeFi activities have been deducted from your balance.
-                        
                       </Typography>
                     }
                   >
@@ -556,6 +522,43 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   >
                     <Typography width={'30%'} display={'flex'} alignItems={'center'}>
                       Realized <Info2Icon sx={{ ml: 0.5 }} />
+                    </Typography>
+                  </Tooltip>
+
+                  <Typography width={'30%'} textAlign={'right'}>
+                    {myPosition.unrealizedTAIKO}
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Box mb={1} display={'flex'} alignItems={'center'}>
+                  <Tooltip
+                    title={
+                      <Typography variant='body2'>
+                        {`The amount shown reflects the total profit (positive) or loss (negative) accrued from using lrTAIKO as collateral in Loopring DeFi.`}
+                        <br />
+                        <br />
+                        {`If the investment hasn’t been settled, the P&L will not be displayed here. To view an investment’s unrealized P&L, please visit the dashboard of the DeFi product where the asset was invested.`}
+                      </Typography>
+                    }
+                  >
+                    <Typography width={'40%'} display={'flex'} alignItems={'center'}>
+                      Profit & Loss <Info2Icon sx={{ ml: 0.5 }} />
+                    </Typography>
+                  </Tooltip>
+
+                  <Tooltip
+                    title={
+                      <Typography variant='body2'>
+                        Your P&L is still pending. Once your lock duration expires, any unrealized
+                        losses will result in a portion of your locked TAIKO being transferred to
+                        Loopring.
+                      </Typography>
+                    }
+                  >
+                    <Typography width={'30%'} display={'flex'} alignItems={'center'}>
+                      Unrealized <Info2Icon sx={{ ml: 0.5 }} />
                     </Typography>
                   </Tooltip>
 
