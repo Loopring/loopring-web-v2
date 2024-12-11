@@ -23,9 +23,10 @@ const resetlrTAIKOIfNeeded = async (
       return res.account.status
     })
 
+
   if (
     !(
-      taikoFarmingAccountStatus === 0 &&
+      // taikoFarmingAccountStatus === 0 &&
       walletLayer2 &&
       walletLayer2['LRTAIKO'] &&
       new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
@@ -45,20 +46,20 @@ const resetlrTAIKOIfNeeded = async (
     },
     account.apiKey,
   )
-  const fee = await LoopringAPI.userAPI!.getOffchainFeeAmt(
-    {
-      accountId: account.accountId,
-      requestType: sdk.OffchainFeeReqType.TRANSFER,
-    },
-    account.apiKey,
-  )
-  const foundKey = keys(fee.fees).find(key => {
-    return new Decimal(walletLayer2[key].total).gte(fee.fees[key].fee)
-  })
-  const foundFee = foundKey 
-    ? fee.fees[foundKey]
-    : undefined
-  if (!foundFee) return
+  // const fee = await LoopringAPI.userAPI!.getOffchainFeeAmt(
+  //   {
+  //     accountId: account.accountId,
+  //     requestType: sdk.OffchainFeeReqType.TRANSFER,
+  //   },
+  //   account.apiKey,
+  // )
+  // const foundKey = keys(fee.fees).find(key => {
+  //   return new Decimal(walletLayer2[key].total).gte(fee.fees[key].fee)
+  // })
+  // const foundFee = foundKey 
+  //   ? fee.fees[foundKey]
+  //   : undefined
+  // if (!foundFee) return
   
   return LoopringAPI.vaultAPI?.sendVaultResetToken(
     {
@@ -75,8 +76,8 @@ const resetlrTAIKOIfNeeded = async (
         },
         maxFee: {
           // @ts-ignore
-          tokenId: foundFee.tokenId,
-          volume: foundFee.fee,
+          tokenId: lrTAIKOBalanceInfo.tokenId,
+          volume: '0',
         },
         validUntil: getTimestampDaysLater(DAYS),
         memo: '',
