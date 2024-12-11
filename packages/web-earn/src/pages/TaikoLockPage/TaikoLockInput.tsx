@@ -596,7 +596,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
                   <Typography color={'var(--color-text-secondary)'}>Lock Duration</Typography>
                 </Box>
                 <Box>
-                  {myPosition.positions.map((item, index) => {
+                  {myPosition.positions?.map((item, index) => {
                     return (
                       <Box
                         py={2}
