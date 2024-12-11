@@ -46,7 +46,7 @@ import {
   useVaultBorrow,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
-import _, { has, keys, last } from 'lodash'
+import _, { has, keys, last, set } from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import {
@@ -790,6 +790,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     const tradeStake = store.getState()._router_tradeStake.tradeStake
     myLog('tradeStake', tradeStake)
 
+    
     if (tradeStake?.sellVol === undefined || sdk.toBig(tradeStake?.sellVol).lte(0)) {
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
@@ -861,6 +862,16 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       return {
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: 'Less than 1 day to unlcok, locking Disabled',
+      }
+    } else if (settlementStatus === 'notSettled') {
+      return {
+        tradeBtnStatus: TradeBtnStatus.DISABLED,
+        label: 'Settlement is in progress',
+      }
+    } else if (settlementStatus === 'settled') {
+      return {
+        tradeBtnStatus: TradeBtnStatus.DISABLED,
+        label: 'Plese reddem first',
       }
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
@@ -938,6 +949,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         TAIKOProfit: string 
         USDTProfit: string 
         redeemAmount: string 
+        expirationTime: number
         status: 'found'
       })
 
@@ -989,8 +1001,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           mint: {
             ...mintModalState.mint,
             availableToMint: availableToMint,
-            minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)) ,
-            maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)) ,
+            minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)),
+            maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)),
           },
         }))
         
@@ -1026,6 +1038,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           TAIKOProfit: record.amount ? record.amount : '0',
           USDTProfit: record.portalOfU ? record.portalOfU : '0',
           redeemAmount: record.amountOut ? record.amountOut : '0',
+          expirationTime: record.createdAt + record.lockDuration,
         })
       }
     })
@@ -1063,6 +1076,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     })
     setLocalPendingTx(undefined)
     setPendingDeposits(undefined)
+    setRealizedAndUnrealized(undefined)
+    setPreviousLockRecord({ status: 'init' })
   }
   React.useEffect(() => {
     getStakingMap()
@@ -1169,14 +1184,20 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   //       ? 'expired' : 'noPosition'
   //     : 'notExpired'
 
-  const settlementStatus: 'init' | 'settled' | 'notSettled' | 'noPosition' =
+  const settlementStatus: 'init' | 'minting' | 'notSettled' | 'settled' | 'noPosition' =
     taikoFarmingAccountStatus === undefined
       ? 'init'
-      : taikoFarmingAccountStatus === 0
-      ? walletLayer2 && walletLayer2['TAIKO'] && new Decimal(walletLayer2['TAIKO'].total).gt(0)
-        ? 'settled'
-        : 'noPosition'
-      : 'notSettled'
+      : (taikoFarmingAccountStatus === 1 || taikoFarmingAccountStatus === 2)
+      ? 'minting'
+      : taikoFarmingAccountStatus === 3
+      ? 'notSettled'
+      : taikoFarmingAccountStatus === 0 &&
+        walletLayer2 &&
+        walletLayer2['TAIKO'] &&
+        new Decimal(walletLayer2['TAIKO'].total).gt(0)
+      ? 'settled'
+      : 'noPosition'
+      
   const redeemAmount =
     settlementStatus === 'settled' && previousLockRecord && previousLockRecord.status === 'found'
       ? previousLockRecord.redeemAmount
@@ -1334,7 +1355,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               multiplier: lockingDays + 'x',
             }
           }),
-        expirationTime: stakeInfo ? last(stakeInfo.stakingReceivedLocked)?.claimableTime : 0,
+        expirationTime:
+          settlementStatus === 'settled'
+            ? previousLockRecord && previousLockRecord.status === 'found'
+              ? previousLockRecord.expirationTime
+              : 0
+            : stakeInfo
+            ? last(stakeInfo.stakingReceivedLocked)?.claimableTime
+            : 0,
         totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
         realizedUSDT: realizedUSDTBN
           ? numberFormatThousandthPlace(utils.formatUnits(realizedUSDTBN, 6), {
@@ -1350,7 +1378,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           : '--',
         settlementStatus,
         showMyPosition: !(
-          (taikoFarmingAccountStatus === undefined || taikoFarmingAccountStatus === 0) && account.readyState !== AccountStatus.ACTIVATED
+          (taikoFarmingAccountStatus === undefined || taikoFarmingAccountStatus === 0) &&
+          account.readyState !== AccountStatus.ACTIVATED
         ),
       },
       mintButton: {
@@ -1363,7 +1392,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: settlementStatus !== 'notSettled',
+        disabled: settlementStatus !== 'minting',
       },
       redeemButton: {
         onClick: () => {
@@ -1389,7 +1418,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }
           })
         },
-        disabled: settlementStatus !== 'settled',
+        disabled: !['settled', 'notSettled'].includes(settlementStatus),
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {

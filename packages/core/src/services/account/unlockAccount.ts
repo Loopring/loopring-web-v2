@@ -23,7 +23,6 @@ const resetlrTAIKOIfNeeded = async (
       return res.account.status
     })
 
-  debugger
   if (
     !(
       taikoFarmingAccountStatus === 0 &&
