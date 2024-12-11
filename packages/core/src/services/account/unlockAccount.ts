@@ -1,10 +1,100 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { callSwitchChain, LoopringAPI, store } from '../../index'
+import { callSwitchChain, DAYS, getTimestampDaysLater, LoopringAPI, store, WalletLayer2Map, web3Modal } from '../../index'
 import { accountServices } from './accountServices'
-import { MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { Account, AccountStatus, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountSyncStatus } from '../../stores/account/reducer'
+import Decimal from 'decimal.js'
+import { keys } from 'lodash'
+
+const resetlrTAIKOIfNeeded = async (
+  account: Account,
+  defaultNetwork: sdk.ChainId,
+  exchangeInfo: sdk.ExchangeInfo,
+  walletLayer2: WalletLayer2Map<any>
+) => {
+
+  const taikoFarmingAccountStatus = await LoopringAPI?.defiAPI
+    ?.getTaikoFarmingPositionInfo({
+      accountId: account.accountId,
+    })
+    .then((res) => {
+      return res.account.status
+    })
+
+  debugger
+  if (
+    !(
+      taikoFarmingAccountStatus === 0 &&
+      walletLayer2 &&
+      walletLayer2['LRTAIKO'] &&
+      new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
+      account.apiKey
+    )
+  ) {
+    return
+  }
+  const lrTAIKOBalanceInfo = walletLayer2['LRTAIKO']
+  const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
+    type: 4,
+  })
+  const storageId = await LoopringAPI.userAPI!.getNextStorageId(
+    {
+      accountId: account.accountId,
+      sellTokenId: lrTAIKOBalanceInfo.tokenId,
+    },
+    account.apiKey,
+  )
+  const fee = await LoopringAPI.userAPI!.getOffchainFeeAmt(
+    {
+      accountId: account.accountId,
+      requestType: sdk.OffchainFeeReqType.TRANSFER,
+    },
+    account.apiKey,
+  )
+  const foundKey = keys(fee.fees).find(key => {
+    return new Decimal(walletLayer2[key].total).gte(fee.fees[key].fee)
+  })
+  const foundFee = foundKey 
+    ? fee.fees[foundKey]
+    : undefined
+  if (!foundFee) return
+  
+  return LoopringAPI.vaultAPI?.sendVaultResetToken(
+    {
+      request: {
+        exchange: exchangeInfo!.exchangeAddress,
+        payerAddr: account.accAddress,
+        payerId: account.accountId,
+        payeeId: 0,
+        payeeAddr: broker,
+        storageId: storageId.offchainId,
+        token: {
+          tokenId: lrTAIKOBalanceInfo.tokenId,
+          volume: lrTAIKOBalanceInfo.total,
+        },
+        maxFee: {
+          // @ts-ignore
+          tokenId: foundFee.tokenId,
+          volume: foundFee.fee,
+        },
+        validUntil: getTimestampDaysLater(DAYS),
+        memo: '',
+      } as any,
+      web3: undefined as any,
+      chainId: defaultNetwork,
+      walletType: sdk.ConnectorNames.Unknown,
+      eddsaKey: account.eddsaKey.sk,
+      apiKey: account.apiKey,
+    },
+    {
+      accountId: account.accountId,
+      counterFactualInfo: account.eddsaKey.counterFactualInfo,
+    },
+    '1'
+  )
+}
 
 export async function unlockAccount() {
   myLog('unlockAccount starts')
@@ -85,6 +175,11 @@ export async function unlockAccount() {
           isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
           isContract: walletType?.isContract,
         })
+        
+        // send lrTAIKO back to operator
+        const state = store.getState()
+        resetlrTAIKOIfNeeded({...accounStore, ...account, ...response}, defaultNetwork, exchangeInfo, state.walletLayer2.walletLayer2!)
+
         if (account?.accountId) {
           LoopringAPI.nftAPI
             ?.getHadUnknownCollection({

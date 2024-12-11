@@ -218,7 +218,8 @@ const resetlrTAIKO = async (
     ? fee.fees[foundKey]
     : undefined
   if (!foundFee) return
-  return LoopringAPI.userAPI?.submitInternalTransfer(
+  
+  return LoopringAPI.vaultAPI?.sendVaultResetToken(
     {
       request: {
         exchange: exchangeInfo!.exchangeAddress,
@@ -248,7 +249,8 @@ const resetlrTAIKO = async (
     {
       accountId: account.accountId,
       counterFactualInfo: account.eddsaKey.counterFactualInfo,
-    }
+    },
+    '1'
   )
 }
 
@@ -1255,25 +1257,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     if (account.readyState === AccountStatus.ACTIVATED) {
       activatedCallBack()
     } else if (account.readyState === AccountStatus.LOCKED) {
-      unlockAccount().then(async () => {
-        await sdk.sleep(1000)
-        const state = store.getState()
-        if (
-          taikoFarmingAccountStatus === 0 &&
-          walletLayer2 &&
-          walletLayer2['LRTAIKO'] &&
-          new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
-          state.account.readyState === AccountStatus.ACTIVATED
-        ) {
-          await resetlrTAIKO(
-            state.account,
-            state.settings.defaultNetwork,
-            state.system.exchangeInfo!,
-            walletLayer2!,
-            walletProvider,
-          )
-        }
-      })
+      unlockAccount()
       setShowAccount({
         isShow: true,
         step: AccountStep.UpdateAccount_Approve_WaitForAuth,
@@ -1365,9 +1349,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }) + ' TAIKO'
           : '--',
         settlementStatus,
-        showMyPosition: !(
-          taikoFarmingAccountStatus === 0 && account.readyState !== AccountStatus.ACTIVATED
-        ),
+        showMyPosition: true,
+        // showMyPosition: !(
+        //   taikoFarmingAccountStatus === 0 && account.readyState !== AccountStatus.ACTIVATED
+        // ),
       },
       mintButton: {
         onClick: async () => {
