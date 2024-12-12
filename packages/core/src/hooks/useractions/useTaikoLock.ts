@@ -1452,12 +1452,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             tokenMap &&
             tokenMap['LRTAIKO'] &&
             vaultAccountInfo?.collateralInfo?.collateralTokenId === tokenMap['LRTAIKO'].tokenId,
-          lockedTaikoAmount: holdingTAIKO
-            ? numberFormatThousandthPlace(utils.formatUnits(holdingTAIKO, sellToken.decimals), {
-                fixed: sellToken.precision,
-                removeTrailingZero: true,
-              }) + ' TAIKO'
-            : '--',
+          lockedTaikoAmount:
+            previousLockRecord && previousLockRecord.status === 'found'
+              ? numberFormatThousandthPlace(
+                  utils.formatUnits(
+                    ethers.BigNumber.from(previousLockRecord.redeemAmount).sub(
+                      previousLockRecord.TAIKOProfit,
+                    ),
+                    sellToken.decimals,
+                  ),
+                  {
+                    fixed: sellToken.precision,
+                    removeTrailingZero: true,
+                  },
+                ) + ' TAIKO'
+              : '--',
           pnlAmount:
             holdingLRTAIKO && mintedLRTAIKO
               ? `${
