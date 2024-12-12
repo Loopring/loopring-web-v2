@@ -1040,7 +1040,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       {
         accountId,
         tokenId: sellToken.tokenId,
-        limit: 1
+        limit: 1,
+        types: 'redeem',
       } as any,
       account.apiKey,
     ).then(res => {
