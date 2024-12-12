@@ -1185,9 +1185,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const [feeModalState, setFeeModalState] = useState({
     open: false,
   })
-  const expirationTime = stakeInfo && last(stakeInfo.stakingReceivedLocked) 
-    ? last(stakeInfo.stakingReceivedLocked)?.claimableTime 
-    : undefined
+  // const expirationTime = stakeInfo && last(stakeInfo.stakingReceivedLocked) 
+  //   ? last(stakeInfo.stakingReceivedLocked)?.claimableTime 
+  //   : undefined
   
 
   
@@ -1293,6 +1293,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
     }
   }
+  const expirationTime =
+    settlementStatus === 'settled'
+      ? previousLockRecord && previousLockRecord.status === 'found'
+        ? previousLockRecord.expirationTime
+        : 0
+      : stakeInfo
+      ? last(stakeInfo.stakingReceivedLocked)?.claimableTime
+      : 0
   const output = {
     stakeWrapProps: {
       disabled: false,
@@ -1370,14 +1378,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               multiplier: lockingDays + 'x',
             }
           }),
-        expirationTime:
-          settlementStatus === 'settled'
-            ? previousLockRecord && previousLockRecord.status === 'found'
-              ? previousLockRecord.expirationTime
-              : 0
-            : stakeInfo
-            ? last(stakeInfo.stakingReceivedLocked)?.claimableTime
-            : 0,
+        expirationTime,
         totalAmountWithNoSymbol: stakingAmountWithNoSymbol,
         realizedUSDT: realizedUSDTBN
           ? numberFormatThousandthPlace(utils.formatUnits(realizedUSDTBN, 6), {
@@ -1409,7 +1410,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
         },
-        disabled: settlementStatus !== 'minting',
+        disabled: !(
+          settlementStatus === 'minting' &&
+          expirationTime &&
+          expirationTime > Date.now()
+        ),
       },
       redeemButton: {
         onClick: () => {
@@ -1435,7 +1440,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             }
           })
         },
-        disabled: !['settled', 'notSettled'].includes(settlementStatus),
+        disabled: !(
+          ['settled', 'notSettled', 'minting'].includes(settlementStatus) &&
+          expirationTime &&
+          expirationTime < Date.now()
+        ),
       },
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
