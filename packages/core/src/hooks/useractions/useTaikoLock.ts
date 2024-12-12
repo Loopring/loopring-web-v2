@@ -1209,13 +1209,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const chargeFee = useChargeFees({
     requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
 
-    amount: redeemAmount ? Number(redeemAmount) : 0,
-    needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
-  })
-  console.log('chargeFee input', {
-    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-    amount: redeemAmount ? Number(redeemAmount) : 0,
+    amount: holdingTAIKO ? Number(holdingTAIKO) : 0,
     needAmountRefresh: true,
     tokenSymbol: sellToken.symbol,
   })
@@ -1451,8 +1445,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
         redeem: {
-          redeemAmount: redeemAmount
-            ? numberFormatThousandthPlace(utils.formatUnits(redeemAmount, sellToken.decimals), {
+          redeemAmount: holdingTAIKO
+            ? numberFormatThousandthPlace(utils.formatUnits(holdingTAIKO, sellToken.decimals), {
                 fixed: sellToken.precision,
                 removeTrailingZero: true,
               }) +
@@ -1495,7 +1489,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   step: AccountStep.Taiko_Farming_Redeem_In_Progress,
                   info: {
                     amount: numberFormatThousandthPlace(
-                      utils.formatUnits(redeemAmount!, sellToken.decimals),
+                      utils.formatUnits(holdingTAIKO!, sellToken.decimals),
                       {
                         fixed: sellToken.precision,
                         removeTrailingZero: true,
@@ -1519,10 +1513,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 let isHWAddr = checkHWAddr(account.accAddress)
                 const tokenVolume =
                   chargeFee.feeInfo.__raw__.tokenId === sellToken.tokenId
-                    ? ethers.BigNumber.from(redeemAmount!)
+                    ? ethers.BigNumber.from(holdingTAIKO!)
                         .sub(chargeFee.feeInfo.__raw__.feeRaw)
                         .toString()
-                    : redeemAmount!.toString()
+                    : holdingTAIKO!.toString()
                 const request: sdk.OffChainWithdrawalRequestV3 = {
                   exchange: exchangeInfo.exchangeAddress,
                   owner: account.accAddress,
@@ -1569,7 +1563,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   step: AccountStep.Taiko_Farming_Redeem_Success,
                   info: {
                     amount: numberFormatThousandthPlace(
-                      utils.formatUnits(redeemAmount!, sellToken.decimals),
+                      utils.formatUnits(holdingTAIKO!, sellToken.decimals),
                       {
                         fixed: sellToken.precision,
                         removeTrailingZero: true,
