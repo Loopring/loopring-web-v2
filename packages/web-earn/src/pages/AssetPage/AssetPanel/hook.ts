@@ -407,8 +407,24 @@ export const useAssetAction = () => {
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
       } else {
         setTokenLockDetail(() => {
-          // @ts-ignore
-          const sum: { key: string; value: string; link: string }[] = response.lockRecord.reduce(
+
+          // merge l2Staking and taikoFarming to single record
+          const isL2StakingTaiko = (record) => record.lockTag === sdk.LOCK_TYPE.L2STAKING && tokenMap[_item.name].symbol === 'TAIKO'
+          const isTaikoFarming = (record) => record.lockTag === sdk.LOCK_TYPE.TAIKO_FARMING
+          const l2Staking = response.lockRecord.find(isL2StakingTaiko)
+          const taikoFarming = response.lockRecord.find(isTaikoFarming)
+          const taikoFarmingMerge = taikoFarming ? {
+            ...taikoFarming,
+            amount: sdk.toBig(taikoFarming.amount).plus(l2Staking ? l2Staking.amount : '0').toString()
+          } : l2Staking ? {
+            ...l2Staking,
+            lockTag: sdk.LOCK_TYPE.TAIKO_FARMING
+          } : undefined
+          const lockRecord = response.lockRecord
+            .filter((record) => !isL2StakingTaiko(record) && !isTaikoFarming(record))
+            .concat(taikoFarmingMerge ? [taikoFarmingMerge] : [])
+
+          const sum: { key: string; value: string; link: string }[] = lockRecord.reduce(
             // @ts-ignore
             (prev, record) => {
               const amount = sdk
