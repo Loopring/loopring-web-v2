@@ -1330,7 +1330,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         : '',
       daysInput: daysInputInfo,
       myPosition: {
-        totalAmount: stakingAmount,
+        totalAmount: redeemAmount
+          ? numberFormatThousandthPlace(utils.formatUnits(redeemAmount, sellToken.decimals), {
+              fixed: sellToken.precision,
+              removeTrailingZero: true,
+            })
+          : '--',
         totalAmountInCurrency: stakingAmountInCurrency,
         positions:
           stakeInfo &&

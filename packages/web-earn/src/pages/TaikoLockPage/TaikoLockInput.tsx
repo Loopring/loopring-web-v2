@@ -459,7 +459,7 @@ export const TaikoLockInput = <T extends IBData<I>, I, ACD extends TaikoLockInpu
             <Box mb={1} display={'flex'} alignItems={'center'}>
               <Typography width={'40%'}>Taiko</Typography>
               <Typography width={'30%'}>
-                {myPosition.settlementStatus === 'settled' ? 'Unlocked' : 'Locked'}
+                {myPosition.settlementStatus === 'settled' ? 'Available' : 'Locked'}
               </Typography>
               <Typography width={'30%'} textAlign={'right'}>
                 {myPosition?.totalAmount ?? '--'}
