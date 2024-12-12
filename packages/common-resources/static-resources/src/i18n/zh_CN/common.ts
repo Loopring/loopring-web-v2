@@ -885,7 +885,7 @@ export default {
   labelLRCStakingRedeemInvest: 'LRC staking Redeem',
 
   labelDefiClose:
-    'ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.',
+    'The ciETH subscription has been deprecated. We recommend redeeming your ciETH for ETH as soon as possible. You can also explore other ETH staking portfolios for alternative options.',
   labelCreateCollection: 'Create Collection',
   labelCollectionCreateName: 'Contract address for your collection',
   labelCollectionCreateERC1155: 'Collection ERC-1155',
