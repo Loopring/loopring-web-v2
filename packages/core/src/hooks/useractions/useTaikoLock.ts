@@ -1053,7 +1053,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           TAIKOProfit: record.amount ? record.amount : '0',
           USDTProfit: record.portalOfU ? record.portalOfU : '0',
           redeemAmount: record.amountOut ? record.amountOut : '0',
-          expirationTime: record.createdAt + record.lockDuration,
+          expirationTime: record.lockDuration,
         })
       }
     })
