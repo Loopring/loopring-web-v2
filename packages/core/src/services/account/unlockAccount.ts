@@ -26,7 +26,7 @@ const resetlrTAIKOIfNeeded = async (
 
   if (
     !(
-      // taikoFarmingAccountStatus === 0 &&
+      taikoFarmingAccountStatus === 0 &&
       walletLayer2 &&
       walletLayer2['LRTAIKO'] &&
       new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
