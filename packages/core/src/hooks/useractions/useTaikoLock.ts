@@ -1020,6 +1020,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         }))
         
         setMintedLRTAIKO(utils.formatUnits(data[0].claimedTotal, sellToken.decimals))
+        setStakingTotal(data[0].stakedTotal)
+        
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingUserSummary({
