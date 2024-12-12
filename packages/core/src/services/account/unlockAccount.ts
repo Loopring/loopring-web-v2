@@ -12,7 +12,7 @@ const resetlrTAIKOIfNeeded = async (
   account: Account,
   defaultNetwork: sdk.ChainId,
   exchangeInfo: sdk.ExchangeInfo,
-  walletLayer2: WalletLayer2Map<any>
+  retryTimes: number
 ) => {
 
   const taikoFarmingAccountStatus = await LoopringAPI?.defiAPI
@@ -23,6 +23,7 @@ const resetlrTAIKOIfNeeded = async (
       return res.account.status
     })
 
+  const walletLayer2 = store.getState().walletLayer2.walletLayer2
 
   if (
     !(
@@ -31,7 +32,7 @@ const resetlrTAIKOIfNeeded = async (
       walletLayer2['LRTAIKO'] &&
       new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
       account.apiKey
-    )
+    ) || retryTimes === 0
   ) {
     return
   }
@@ -46,54 +47,43 @@ const resetlrTAIKOIfNeeded = async (
     },
     account.apiKey,
   )
-  // const fee = await LoopringAPI.userAPI!.getOffchainFeeAmt(
-  //   {
-  //     accountId: account.accountId,
-  //     requestType: sdk.OffchainFeeReqType.TRANSFER,
-  //   },
-  //   account.apiKey,
-  // )
-  // const foundKey = keys(fee.fees).find(key => {
-  //   return new Decimal(walletLayer2[key].total).gte(fee.fees[key].fee)
-  // })
-  // const foundFee = foundKey 
-  //   ? fee.fees[foundKey]
-  //   : undefined
-  // if (!foundFee) return
   
-  return LoopringAPI.vaultAPI?.sendVaultResetToken(
-    {
-      request: {
-        exchange: exchangeInfo!.exchangeAddress,
-        payerAddr: account.accAddress,
-        payerId: account.accountId,
-        payeeId: 0,
-        payeeAddr: broker,
-        storageId: storageId.offchainId,
-        token: {
-          tokenId: lrTAIKOBalanceInfo.tokenId,
-          volume: lrTAIKOBalanceInfo.total,
-        },
-        maxFee: {
-          // @ts-ignore
-          tokenId: lrTAIKOBalanceInfo.tokenId,
-          volume: '0',
-        },
-        validUntil: getTimestampDaysLater(DAYS),
-        memo: '',
-      } as any,
-      web3: undefined as any,
-      chainId: defaultNetwork,
-      walletType: sdk.ConnectorNames.Unknown,
-      eddsaKey: account.eddsaKey.sk,
-      apiKey: account.apiKey,
-    },
-    {
-      accountId: account.accountId,
-      counterFactualInfo: account.eddsaKey.counterFactualInfo,
-    },
-    '1'
-  )
+  return LoopringAPI.vaultAPI
+    ?.sendVaultResetToken(
+      {
+        request: {
+          exchange: exchangeInfo!.exchangeAddress,
+          payerAddr: account.accAddress,
+          payerId: account.accountId,
+          payeeId: 0,
+          payeeAddr: broker,
+          storageId: storageId.offchainId,
+          token: {
+            tokenId: lrTAIKOBalanceInfo.tokenId,
+            volume: lrTAIKOBalanceInfo.total,
+          },
+          maxFee: {
+            // @ts-ignore
+            tokenId: lrTAIKOBalanceInfo.tokenId,
+            volume: '0',
+          },
+          validUntil: getTimestampDaysLater(DAYS),
+          memo: '',
+        } as any,
+        web3: undefined as any,
+        chainId: defaultNetwork,
+        walletType: sdk.ConnectorNames.Unknown,
+        eddsaKey: account.eddsaKey.sk,
+        apiKey: account.apiKey,
+      },
+      {
+        accountId: account.accountId,
+        counterFactualInfo: account.eddsaKey.counterFactualInfo,
+      },
+      '1',
+    )
+    .then(() => sdk.sleep(1000))
+    .then(() => resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, retryTimes - 1))
 }
 
 export async function unlockAccount() {
@@ -178,7 +168,7 @@ export async function unlockAccount() {
         
         // send lrTAIKO back to operator
         const state = store.getState()
-        resetlrTAIKOIfNeeded({...accounStore, ...account, ...response}, defaultNetwork, exchangeInfo, state.walletLayer2.walletLayer2!)
+        resetlrTAIKOIfNeeded({...accounStore, ...account, ...response}, defaultNetwork, exchangeInfo, 5)
 
         if (account?.accountId) {
           LoopringAPI.nftAPI
