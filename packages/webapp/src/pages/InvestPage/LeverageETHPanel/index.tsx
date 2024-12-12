@@ -210,6 +210,7 @@ const LeverageETHPanel: any = withTranslation('common')(({ t }: WithTranslation 
           />
 
           <ConfirmInvestDefiServiceUpdate
+            isCianETH
             open={serverUpdate}
             handleClose={() => setServerUpdate(false)}
           />
