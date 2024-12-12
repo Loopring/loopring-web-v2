@@ -37,7 +37,8 @@ export const numberFormatThousandthPlace = (number: string | number, format?: {
   currency?: CurrencyToTag,
   locale?: Intl.LocalesArgument
   tokenSymbol?: string
-  removeTrailingZero?: boolean
+  removeTrailingZero?: boolean,
+  fixedRound?: Decimal.Rounding
 }) => {
   return numberFormat(number, {thousandthPlace: true, ...format})
 }
@@ -48,7 +49,8 @@ export const numberFormatShowInPercent = (number: string | number, format?: {
   currency?: CurrencyToTag,
   locale?: Intl.LocalesArgument
   tokenSymbol?: string
-  removeTrailingZero?: boolean
+  removeTrailingZero?: boolean,
+  fixedRound?: Decimal.Rounding
 }) => {
   return numberFormat(number, {showInPercent: true, fixed: 2, ...format})
 }

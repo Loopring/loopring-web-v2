@@ -1330,12 +1330,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         : '',
       daysInput: daysInputInfo,
       myPosition: {
-        totalAmount: redeemAmount
-          ? numberFormatThousandthPlace(utils.formatUnits(redeemAmount, sellToken.decimals), {
-              fixed: sellToken.precision,
-              removeTrailingZero: true,
-            })
-          : '--',
+        totalAmount: (() => {
+          const amountBN =
+            settlementStatus === 'settled'
+              ? previousLockRecord &&
+                previousLockRecord.status === 'found' &&
+                previousLockRecord.redeemAmount
+              : stakingTotal
+          return amountBN
+            ? numberFormatThousandthPlace(utils.formatUnits(amountBN, sellToken.decimals), {
+                fixed: sellToken.precision,
+                removeTrailingZero: true,
+                fixedRound: Decimal.ROUND_DOWN,
+              })
+            : '--'
+        })(),
         totalAmountInCurrency: stakingAmountInCurrency,
         positions:
           stakeInfo &&
@@ -1374,12 +1383,14 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           ? numberFormatThousandthPlace(utils.formatUnits(realizedUSDTBN, 6), {
               fixed: 2,
               removeTrailingZero: true,
+              fixedRound: Decimal.ROUND_DOWN,
             }) + ' USDT'
           : '--',
         unrealizedTAIKO: unrealizedTAIKOBN
           ? numberFormatThousandthPlace(utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals), {
               fixed: sellToken.precision,
               removeTrailingZero: true,
+              fixedRound: Decimal.ROUND_UP,
             }) + ' TAIKO'
           : '--',
         settlementStatus,
