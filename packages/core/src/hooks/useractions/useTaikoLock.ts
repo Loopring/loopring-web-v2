@@ -781,6 +781,20 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     tradeStake.deFiSideCalcData,
     t,
   ])
+  const [taikoFarmingAccountStatus, setTaikoFarmingAccountStatus] = useState(undefined as number | undefined)
+  const settlementStatus: 'init' | 'minting' | 'notSettled' | 'settled' | 'noPosition' =
+    taikoFarmingAccountStatus === undefined
+      ? 'init'
+      : (taikoFarmingAccountStatus === 1 || taikoFarmingAccountStatus === 2)
+      ? 'minting'
+      : taikoFarmingAccountStatus === 3
+      ? 'notSettled'
+      : taikoFarmingAccountStatus === 0 &&
+        walletLayer2 &&
+        walletLayer2['TAIKO'] &&
+        new Decimal(walletLayer2['TAIKO'].total).gt(0)
+      ? 'settled'
+      : 'noPosition'
 
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus
@@ -876,7 +890,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
     }
-  }, [tokenMap, coinSellSymbol, daysInput, stakeInfo, hasNoLockingPos, daysInputValid])
+  }, [tokenMap, coinSellSymbol, daysInput, stakeInfo, hasNoLockingPos, daysInputValid, settlementStatus, firstLockingPos])
   const checked = availableTradeCheck()
   const btnStatus = isLoading ? TradeBtnStatus.LOADING : checked.tradeBtnStatus
 
@@ -940,7 +954,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     }
   }, [defaultNetwork])
 
-  const [taikoFarmingAccountStatus, setTaikoFarmingAccountStatus] = useState(undefined as number | undefined)
   
   const [previousLockRecord, setPreviousLockRecord] = useState({ status: 'init' } as
     | { status: 'init' }
@@ -1184,19 +1197,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   //       ? 'expired' : 'noPosition'
   //     : 'notExpired'
 
-  const settlementStatus: 'init' | 'minting' | 'notSettled' | 'settled' | 'noPosition' =
-    taikoFarmingAccountStatus === undefined
-      ? 'init'
-      : (taikoFarmingAccountStatus === 1 || taikoFarmingAccountStatus === 2)
-      ? 'minting'
-      : taikoFarmingAccountStatus === 3
-      ? 'notSettled'
-      : taikoFarmingAccountStatus === 0 &&
-        walletLayer2 &&
-        walletLayer2['TAIKO'] &&
-        new Decimal(walletLayer2['TAIKO'].total).gt(0)
-      ? 'settled'
-      : 'noPosition'
+  
       
   const redeemAmount =
     settlementStatus === 'settled' && previousLockRecord && previousLockRecord.status === 'found'
