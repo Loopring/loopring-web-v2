@@ -8,7 +8,12 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { store } from '@loopring-web/core'
+import { LoopringAPI, store } from '@loopring-web/core'
+
+
+
+
+
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -39,6 +44,18 @@ const App = () => {
         `https:${window.location.href.substring(window.location.protocol.length)}`,
       )
     }
+
+    setTimeout(async () => {
+      LoopringAPI.rabbitWithdrawAPI?.setBaseUrl('https://dev.loopring.io')
+      const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
+      const configiJSON = JSON.parse(config.config)
+      const agents = await LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
+        tokenId: 0,
+        amount: '1',
+        network: 'SEPOLIA',
+      })
+      debugger
+    }, 5000);
   }, [])
 
   const { state } = useInit()
