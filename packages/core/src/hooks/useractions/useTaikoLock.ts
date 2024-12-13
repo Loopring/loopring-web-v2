@@ -588,7 +588,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           res(null)
         })
           .then(() => {
-            return resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, 5)
+            if (account.accountId && account.accountId !== -1) {
+              return resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, 5)
+            }
           })
           .then(() => {
             const oneDay = BigNumber.from('60').mul('60').mul('24')
