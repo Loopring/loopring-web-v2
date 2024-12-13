@@ -11,6 +11,7 @@ import {
   AccountStatus,
   CustomErrorWithCode,
   DeFiSideCalcData,
+  FeeInfo,
   getValuePrecisionThousand,
   globalSetup,
   IBData,
@@ -218,7 +219,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { walletLayer2, updateWalletLayer2 } = useWalletLayer2()
   const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
   const holdingTAIKO = walletLayer2 && walletLayer2['TAIKO'] 
-    ? BigNumber.from(walletLayer2['TAIKO'].total).sub(walletLayer2['TAIKO'].locked)
+    ? BigNumber.from(walletLayer2['TAIKO'].total).sub(walletLayer2['TAIKO'].locked).toString()
     : undefined
 
   
@@ -737,6 +738,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     needAmountRefresh: true,
     tokenSymbol: sellToken.symbol,
   })
+  
   const taikoFee = chargeFee?.chargeFeeTokenList?.find(fee => fee.belong === 'TAIKO')
   const taikoBalanceGreaterThanFee = holdingTAIKO && taikoFee
     ? BigNumber.from(holdingTAIKO).gt(taikoFee.__raw__.feeRaw)
@@ -1052,6 +1054,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     setPendingDeposits(undefined)
     setRealizedAndUnrealized(undefined)
     setPreviousLockRecord({ status: 'init' })
+    chargeFee.handleFeeChange({
+      belong: 'ETH',
+      fee: 0,
+      feeRaw: undefined,
+    } as FeeInfo)
   }
   React.useEffect(() => {
     getStakingMap()
