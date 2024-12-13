@@ -8,8 +8,9 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { LoopringAPI, store } from '@loopring-web/core'
+import { LoopringAPI, store, useAccount, useChargeFees } from '@loopring-web/core'
 import { utils } from 'ethers'
+import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -40,6 +41,11 @@ const App = () => {
         `https:${window.location.href.substring(window.location.protocol.length)}`,
       )
     }
+    // const {address}=useWeb3ModalAccount()
+    const {account}=useAccount()
+    useChargeFees({
+      
+    })
 
     setTimeout(async () => {
       const network = 'SEPOLIA'
@@ -51,6 +57,40 @@ const App = () => {
         amount: utils.parseEther('0.01').toString(),
         network,
       })
+      
+      const agentId =configiJSON.networkL2AgentAccountIds[network]
+      const agentAddr =configiJSON.networkL2AgentAddresses[network]
+      const exchange =configiJSON.networkExchanges[network]
+      LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw({
+        fromNetwork: network,
+        toNetwork: network,
+        toAddress: account.accAddress,
+        transfer: {
+          exchange: exchange,
+          payerId: account.accountId,
+          payerAddr: agentAddr,
+          payeeId: agentId,
+          payeeAddr: account.accAddress,
+          token: {
+            tokenId: number;
+            volume: string;
+          };
+          maxFee: {
+            tokenId: number;
+            volume: string;
+          };
+          storageId: number;
+          validUntil: number;
+          counterFactualInfo?: CounterFactualInfo;
+          eddsaSignature?: string;
+          ecdsaSignature?: string;
+          hashApproved?: string;
+          memo?: string;
+          clientId?: string;
+          payPayeeUpdateAccount?: boolean;
+        }; 
+      })
+      
 
       debugger
     }, 5000);
