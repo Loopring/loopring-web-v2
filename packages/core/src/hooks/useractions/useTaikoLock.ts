@@ -1301,7 +1301,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const lrTaikoInUse =
     tokenMap &&
     tokenMap['LRTAIKO'] &&
-    vaultAccountInfo?.collateralInfo?.collateralTokenId === tokenMap['LRTAIKO'].tokenId,
+    vaultAccountInfo?.collateralInfo?.collateralTokenId === tokenMap['LRTAIKO'].tokenId
   const output = {
     stakeWrapProps: {
       disabled: false,
