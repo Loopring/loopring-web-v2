@@ -42,13 +42,14 @@ const App = () => {
     }
 
     setTimeout(async () => {
-      LoopringAPI.rabbitWithdrawAPI?.setBaseUrl('https://dev.loopring.io')
+      const network = 'SEPOLIA'
+      LoopringAPI.rabbitWithdrawAPI?.setBaseUrl('https://uat2.loopring.io')
       const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
       const configiJSON = JSON.parse(config.config)
       const agents = await LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
         tokenId: 1,
         amount: utils.parseEther('0.01').toString(),
-        network: 'SEPOLIA',
+        network,
       })
 
       debugger
