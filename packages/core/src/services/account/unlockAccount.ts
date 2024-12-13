@@ -8,7 +8,7 @@ import { nextAccountSyncStatus } from '../../stores/account/reducer'
 import Decimal from 'decimal.js'
 import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
 
-const resetlrTAIKOIfNeeded = async (
+export const resetlrTAIKOIfNeeded = async (
   account: Account,
   defaultNetwork: sdk.ChainId,
   exchangeInfo: sdk.ExchangeInfo,
@@ -31,9 +31,12 @@ const resetlrTAIKOIfNeeded = async (
       walletLayer2['LRTAIKO'] &&
       new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
       account.apiKey
-    ) || retryTimes === 0
+    )
   ) {
     return
+  }
+  if (retryTimes === 0) {
+    throw new Error('retry_times_out')
   }
   const lrTAIKOBalanceInfo = walletLayer2['LRTAIKO']
   const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
@@ -169,8 +172,10 @@ export async function unlockAccount() {
         })
         
         // send lrTAIKO back to operator
-        const state = store.getState()
         resetlrTAIKOIfNeeded({...accounStore, ...account, ...response}, defaultNetwork, exchangeInfo, 5)
+        .catch((error) => {
+          console.error(error)
+        })
 
         if (account?.accountId) {
           LoopringAPI.nftAPI

@@ -36,6 +36,7 @@ import {
   isNumberStr,
   numberFormat,
   numberFormatThousandthPlace,
+  resetlrTAIKOIfNeeded,
   strNumDecimalPlacesLessThan,
   taikoDepositABI,
   unlockAccount,
@@ -645,6 +646,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       } else if (toggle && !toggle['taikoFarming'].enable) {
         setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
       } else {
+        
         new Promise((res) => {
           setIsLoading(true)
           setTxSubmitModalState({
@@ -654,12 +656,20 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           res(null)
         })
           .then(() => {
+            return resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, 5)
+          })
+          .then(() => {
             const oneDay = BigNumber.from('60').mul('60').mul('24')
-            const duration = stakeInfo && !firstLockingPos
-              ? BigNumber.from(daysInput).mul(oneDay)
-              : firstLockingPos
-              ? BigNumber.from(firstLockingPos.claimableTime).sub(Date.now()).div('1000').div(oneDay).mul(oneDay)
-              : undefined
+            const duration =
+              stakeInfo && !firstLockingPos
+                ? BigNumber.from(daysInput).mul(oneDay)
+                : firstLockingPos
+                ? BigNumber.from(firstLockingPos.claimableTime)
+                    .sub(Date.now())
+                    .div('1000')
+                    .div(oneDay)
+                    .mul(oneDay)
+                : undefined
             if (tradeStake && tradeStake.deFiSideCalcData && duration) {
               return depositTaikoWithDurationApprove({
                 provider: new providers.Web3Provider(provider.walletProvider!),
@@ -698,7 +708,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               txHash: tx.hash,
               amount: tradeStake!.sellVol,
               stakeAt: Date.now(),
-              lockDuration: firstLockingPos 
+              lockDuration: firstLockingPos
                 ? firstLockingPos.claimableTime - Date.now()
                 : Number(daysInput) * 24 * 60 * 60 * 1000,
             })
@@ -711,8 +721,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             ) => {
               const account = store.getState().account
               const defaultNetwork = store.getState().settings.defaultNetwork
-              
-              if (env.addr.toLowerCase() !== account.accAddress.toLowerCase() || defaultNetwork !== env.chainId) {
+
+              if (
+                env.addr.toLowerCase() !== account.accAddress.toLowerCase() ||
+                defaultNetwork !== env.chainId
+              ) {
                 // stop if address, chain changed
                 return
               }
