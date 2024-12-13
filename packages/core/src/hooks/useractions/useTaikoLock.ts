@@ -187,74 +187,6 @@ const submitTaikoFarmingMint = async (info: {
   })
 }
 
-const resetlrTAIKO = async (
-  account: Account,
-  defaultNetwork: sdk.ChainId,
-  exchangeInfo: sdk.ExchangeInfo,
-  walletLayer2: WalletLayer2Map<any>,
-  walletProvider: any,
-) => {
-  const lrTAIKOBalanceInfo = walletLayer2['LRTAIKO']
-  const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
-    type: 4,
-  })
-  const storageId = await LoopringAPI.userAPI!.getNextStorageId(
-    {
-      accountId: account.accountId,
-      sellTokenId: lrTAIKOBalanceInfo.tokenId,
-    },
-    account.apiKey,
-  )
-  const fee = await LoopringAPI.userAPI!.getOffchainFeeAmt(
-    {
-      accountId: account.accountId,
-      requestType: sdk.OffchainFeeReqType.TRANSFER,
-    },
-    account.apiKey,
-  )
-  const foundKey = keys(fee.fees).find(key => {
-    return new Decimal(walletLayer2[key].total).gte(fee.fees[key].fee)
-  })
-  const foundFee = foundKey 
-    ? fee.fees[foundKey]
-    : undefined
-  if (!foundFee) return
-  
-  return LoopringAPI.vaultAPI?.sendVaultResetToken(
-    {
-      request: {
-        exchange: exchangeInfo!.exchangeAddress,
-        payerAddr: account.accAddress,
-        payerId: account.accountId,
-        payeeId: 0,
-        payeeAddr: broker,
-        storageId: storageId.offchainId,
-        token: {
-          tokenId: lrTAIKOBalanceInfo.tokenId,
-          volume: lrTAIKOBalanceInfo.total,
-        },
-        maxFee: {
-          // @ts-ignore
-          tokenId: foundFee.tokenId,
-          volume: foundFee.fee,
-        },
-        validUntil: getTimestampDaysLater(DAYS),
-        memo: '',
-      } as any,
-      web3: new Web3(walletProvider as any),
-      chainId: defaultNetwork,
-      walletType: sdk.ConnectorNames.Unknown,
-      eddsaKey: account.eddsaKey.sk,
-      apiKey: account.apiKey,
-    },
-    {
-      accountId: account.accountId,
-      counterFactualInfo: account.eddsaKey.counterFactualInfo,
-    },
-    '1'
-  )
-}
-
 export const useTaikoLock = <T extends IBData<I>, I>({
   setToastOpen,
   symbol: coinSellSymbol,
@@ -286,17 +218,17 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { walletLayer2, updateWalletLayer2 } = useWalletLayer2()
   const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
   const holdingTAIKO = walletLayer2 && walletLayer2['TAIKO'] 
-    ? walletLayer2['TAIKO'].total
+    ? BigNumber.from(walletLayer2['TAIKO'].total).sub(walletLayer2['TAIKO'].locked)
     : undefined
+
   
-  // walletLayer2 && walletLayer2[sellToken.symbol] 
-  //   ? walletLayer2[sellToken.symbol]?.total 
-  //   : undefined
-  
-  
-  const holdingLRTAIKO = walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken.decimals
-    ? utils.formatUnits(walletLayer2['LRTAIKO'].total, sellToken.decimals) 
-    : undefined
+  const holdingLRTAIKO =
+    walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken.decimals
+      ? utils.formatUnits(
+          BigNumber.from(walletLayer2['LRTAIKO'].total).sub(walletLayer2['LRTAIKO'].locked),
+          sellToken.decimals,
+        )
+      : undefined
   console.log('walletLayer2', holdingLRTAIKO) 
 
   
