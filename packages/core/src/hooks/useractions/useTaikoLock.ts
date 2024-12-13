@@ -795,6 +795,20 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     t,
   ])
   const [taikoFarmingAccountStatus, setTaikoFarmingAccountStatus] = useState(undefined as number | undefined)
+  
+  const chargeFee = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+
+    amount: holdingTAIKO ? Number(holdingTAIKO) : 0,
+    needAmountRefresh: true,
+    tokenSymbol: sellToken.symbol,
+  })
+  const taikoFee = chargeFee?.chargeFeeTokenList?.find(fee => fee.belong === 'TAIKO')
+  const taikoBalanceGreaterThanFee = holdingTAIKO && taikoFee
+    ? BigNumber.from(holdingTAIKO).gt(taikoFee.__raw__.feeRaw)
+    : undefined
+  console.log('taikoBalanceGreaterThanFee', taikoBalanceGreaterThanFee)
+
   const settlementStatus: 'init' | 'minting' | 'notSettled' | 'settled' | 'noPosition' =
     taikoFarmingAccountStatus === undefined
       ? 'init'
@@ -802,10 +816,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       ? 'minting'
       : taikoFarmingAccountStatus === 3
       ? 'notSettled'
-      : taikoFarmingAccountStatus === 0 &&
-        walletLayer2 &&
-        walletLayer2['TAIKO'] &&
-        new Decimal(walletLayer2['TAIKO'].total).gt(0)
+      : taikoFarmingAccountStatus === 0 && taikoBalanceGreaterThanFee
       ? 'settled'
       : 'noPosition'
 
@@ -1220,13 +1231,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       ? previousLockRecord.redeemAmount
       : realizedAndUnrealized?.redeemAmount
 
-  const chargeFee = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
 
-    amount: holdingTAIKO ? Number(holdingTAIKO) : 0,
-    needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
-  })
   console.log('chargeFee output', chargeFee)
 
   console.log('reddemAmount', redeemAmount)
