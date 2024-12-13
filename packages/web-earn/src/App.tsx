@@ -9,11 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
 import { LoopringAPI, store } from '@loopring-web/core'
-
-
-
-
-
+import { utils } from 'ethers'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -50,10 +46,11 @@ const App = () => {
       const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
       const configiJSON = JSON.parse(config.config)
       const agents = await LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
-        tokenId: 0,
-        amount: '1',
+        tokenId: 1,
+        amount: utils.parseEther('0.01').toString(),
         network: 'SEPOLIA',
       })
+
       debugger
     }, 5000);
   }, [])
