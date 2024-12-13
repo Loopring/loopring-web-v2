@@ -2,15 +2,18 @@ import RouterView from './routers'
 import { GlobalStyles } from '@mui/material'
 import { css, Theme, useTheme } from '@emotion/react'
 import { globalCss } from '@loopring-web/common-resources'
-import { setLanguage } from '@loopring-web/component-lib'
+import { setLanguage, useSettings } from '@loopring-web/component-lib'
 import { useInit } from './hook'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { LoopringAPI, store, useAccount, useChargeFees } from '@loopring-web/core'
+import { DAYS, getTimestampDaysLater, LoopringAPI, store, useAccount } from '@loopring-web/core'
 import { utils } from 'ethers'
-import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { ConnectorNames, getEcDSASig, GetEcDSASigType, getTransferTypedData, OffchainFeeReqType } from '@loopring-web/loopring-sdk'
+import { symbol } from 'prop-types'
+import Web3 from 'web3'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -33,6 +36,9 @@ const App = () => {
       store.dispatch(setLanguage(language))
     }
   }, [storeLan, language])
+  const {account}=useAccount()
+  const {defaultNetwork}=useSettings()
+  const {walletProvider}=useWeb3ModalProvider()
 
   React.useEffect(() => {
     if (window.location.protocol !== 'https:') {
@@ -42,14 +48,31 @@ const App = () => {
       )
     }
     // const {address}=useWeb3ModalAccount()
-    const {account}=useAccount()
-    useChargeFees({
-      
-    })
+    
 
     setTimeout(async () => {
+      const token={
+        amount: utils.parseEther('0.01').toString(),
+        tokenId: 0,
+        symbol: 'ETH',
+      }
+      const feeToken={
+        tokenId: 0,
+        symbol: 'ETH',
+      }
       const network = 'SEPOLIA'
       LoopringAPI.rabbitWithdrawAPI?.setBaseUrl('https://uat2.loopring.io')
+      LoopringAPI.userAPI?.setBaseUrl('https://uat2.loopring.io')
+      const feeInfo = await LoopringAPI.userAPI?.getOffchainFeeAmt({
+        accountId: account.accountId,
+        requestType: OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
+        tokenSymbol: token.symbol,
+        amount: token.amount,
+      }, account.apiKey)
+      const fee = feeInfo!.fees[feeToken.symbol]
+      debugger
+      
+      
       const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
       const configiJSON = JSON.parse(config.config)
       const agents = await LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
@@ -61,7 +84,8 @@ const App = () => {
       const agentId =configiJSON.networkL2AgentAccountIds[network]
       const agentAddr =configiJSON.networkL2AgentAddresses[network]
       const exchange =configiJSON.networkExchanges[network]
-      LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw({
+
+      const request = {
         fromNetwork: network,
         toNetwork: network,
         toAddress: account.accAddress,
@@ -72,23 +96,51 @@ const App = () => {
           payeeId: agentId,
           payeeAddr: account.accAddress,
           token: {
-            tokenId: number;
-            volume: string;
-          };
+            tokenId: token.tokenId,
+            volume: token.amount
+          },
           maxFee: {
-            tokenId: number;
-            volume: string;
-          };
-          storageId: number;
-          validUntil: number;
-          counterFactualInfo?: CounterFactualInfo;
-          eddsaSignature?: string;
-          ecdsaSignature?: string;
-          hashApproved?: string;
-          memo?: string;
-          clientId?: string;
-          payPayeeUpdateAccount?: boolean;
-        }; 
+            // @ts-ignore
+            tokenId: fee.tokenId,
+            volume: fee.fee,
+          },
+          storageId: storageId!.offchainId,
+          validUntil: getTimestampDaysLater(DAYS),
+          // counterFactualInfo?: CounterFactualInfo;
+          // eddsaSignature?: string;
+          // ecdsaSignature?: string;
+          // hashApproved?: string;
+          // memo?: string;
+          // clientId?: string;
+          // payPayeeUpdateAccount?: boolean;
+        }
+      }
+      const transfer = request.transfer
+      const typedData = getTransferTypedData(transfer, defaultNetwork)
+    const result = await getEcDSASig(
+      new Web3(walletProvider as any),
+      typedData,
+      transfer.payerAddr,
+      GetEcDSASigType.HasDataStruct,
+      defaultNetwork,
+      account.accountId,
+      '',
+      ConnectorNames.Unknown,
+      undefined,
+    )
+    const ecdsaSig = result.ecdsaSig
+  
+      LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw({
+        ...request,
+        transfer: {
+          ...transfer,
+          ecdsaSignature: ecdsaSig,
+        }
+      }).then(x => {
+        debugger
+      })
+      .catch(x => {
+        debugger
       })
       
 
