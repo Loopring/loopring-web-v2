@@ -6,7 +6,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountSyncStatus } from '../../stores/account/reducer'
 import Decimal from 'decimal.js'
-import { keys } from 'lodash'
+import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
 
 const resetlrTAIKOIfNeeded = async (
   account: Account,
@@ -14,7 +14,6 @@ const resetlrTAIKOIfNeeded = async (
   exchangeInfo: sdk.ExchangeInfo,
   retryTimes: number
 ) => {
-
   const taikoFarmingAccountStatus = await LoopringAPI?.defiAPI
     ?.getTaikoFarmingPositionInfo({
       accountId: account.accountId,
@@ -82,7 +81,10 @@ const resetlrTAIKOIfNeeded = async (
       },
       '1',
     )
-    .then(() => sdk.sleep(1000))
+    .then(() => {
+      store.dispatch(updateWalletLayer2({}))
+    })
+    .then(() => sdk.sleep(1000 * 2))
     .then(() => resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, retryTimes - 1))
 }
 

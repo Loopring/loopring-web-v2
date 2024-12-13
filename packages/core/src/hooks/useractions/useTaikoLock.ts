@@ -1298,6 +1298,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       : stakeInfo
       ? last(stakeInfo.stakingReceivedLocked)?.claimableTime
       : 0
+  const lrTaikoInUse =
+    tokenMap &&
+    tokenMap['LRTAIKO'] &&
+    vaultAccountInfo?.collateralInfo?.collateralTokenId === tokenMap['LRTAIKO'].tokenId,
   const output = {
     stakeWrapProps: {
       disabled: false,
@@ -1427,6 +1431,12 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 open: true,
                 status: 'redeeming',
               })
+            } else if (lrTaikoInUse) {
+              setMintRedeemModalState({
+                ...mintRedeemModalState,
+                open: true,
+                status: 'redeeming',
+              })
             } else {
               setMintRedeemModalState({
                 ...mintRedeemModalState,
@@ -1454,10 +1464,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               ' ' +
               sellToken.symbol
             : '--',
-          lrTaikoInUse:
-            tokenMap &&
-            tokenMap['LRTAIKO'] &&
-            vaultAccountInfo?.collateralInfo?.collateralTokenId === tokenMap['LRTAIKO'].tokenId,
+          lrTaikoInUse,
           lockedTaikoAmount:
             previousLockRecord && previousLockRecord.status === 'found'
               ? numberFormatThousandthPlace(
