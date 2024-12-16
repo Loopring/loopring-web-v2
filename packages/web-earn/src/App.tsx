@@ -8,12 +8,14 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { DAYS, getTimestampDaysLater, LoopringAPI, store, useAccount } from '@loopring-web/core'
-import { utils } from 'ethers'
+import { DAYS, getTimestampDaysLater, LoopringAPI, store, useAccount, web3Modal } from '@loopring-web/core'
+import { ethers, utils } from 'ethers'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { ConnectorNames, getEcDSASig, GetEcDSASigType, getTransferTypedData, OffchainFeeReqType } from '@loopring-web/loopring-sdk'
 import { symbol } from 'prop-types'
 import Web3 from 'web3'
+import { _TypedDataEncoder } from '@ethersproject/hash'
+import { arrayify } from '@ethersproject/bytes'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -51,6 +53,7 @@ const App = () => {
     
 
     setTimeout(async () => {
+      if (!walletProvider || !defaultNetwork || !account.accAddress || !account.accountId)return
       const token={
         amount: utils.parseEther('0.01').toString(),
         tokenId: 0,
@@ -80,7 +83,13 @@ const App = () => {
         amount: utils.parseEther('0.01').toString(),
         network,
       })
-      
+      const storageId =await LoopringAPI.userAPI?.getNextStorageId(
+        {
+          accountId: account.accountId,
+          sellTokenId: token.tokenId,
+        },
+        account.apiKey,
+      );
       const agentId =configiJSON.networkL2AgentAccountIds[network]
       const agentAddr =configiJSON.networkL2AgentAddresses[network]
       const exchange =configiJSON.networkExchanges[network]
@@ -117,18 +126,42 @@ const App = () => {
       }
       const transfer = request.transfer
       const typedData = getTransferTypedData(transfer, defaultNetwork)
-    const result = await getEcDSASig(
-      new Web3(walletProvider as any),
-      typedData,
-      transfer.payerAddr,
-      GetEcDSASigType.HasDataStruct,
-      defaultNetwork,
-      account.accountId,
-      '',
-      ConnectorNames.Unknown,
-      undefined,
-    )
-    const ecdsaSig = result.ecdsaSig
+      delete typedData.types.EIP712Domain
+      const hash = _TypedDataEncoder.hash(
+        typedData.domain,
+        typedData.types as any,
+        typedData.message,
+      )
+       
+      console.log('hahs', hash)
+      console.log('walletProvider', walletProvider,new Web3(walletProvider as any))
+      // walletProvider.sendAsync
+      const provider = new ethers.providers.Web3Provider(walletProvider as any)
+      
+      // await new ethers.providers.Web3Provider(walletProvider as any).send('eth_requestAccounts', [])
+      // await walletProvider.sendAsync!({
+      //   method: 'eth_requestAccounts',
+      // });]
+
+      const sig = await provider.getSigner().signMessage(arrayify('0xcc3b557d84dfd0b0b567049a26194418ecb40738c856d5ef88219d5972c73e79') )
+      
+    // const result = await getEcDSASig(
+    //   new Web3(walletProvider as any),
+    //   typedData,
+    //   transfer.payerAddr,
+    //   GetEcDSASigType.HasDataStruct,
+    //   defaultNetwork,
+    //   account.accountId,
+    //   '',
+    //   ConnectorNames.Unknown,
+    //   undefined,
+    // ).then(x => {
+    //   debugger
+    // })
+    // .catch(x => {
+    //   debugger
+    // })
+    const ecdsaSig = sig
   
       LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw({
         ...request,
@@ -146,7 +179,7 @@ const App = () => {
 
       debugger
     }, 5000);
-  }, [])
+  }, [walletProvider, defaultNetwork, account.accAddress, account.accountId])
 
   const { state } = useInit()
 
