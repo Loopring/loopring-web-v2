@@ -1747,11 +1747,11 @@ export const ConfirmInvestDefiServiceUpdate = withTranslation('common')(
     t,
     open,
     handleClose,
-    isCianETH
+    isCianETHJoin
   }: WithTranslation & {
     open: boolean
     handleClose: (event: any) => void
-    isCianETH: boolean
+    isCianETHJoin: boolean
   }) => {
     const history = useHistory()
     return (
@@ -1771,7 +1771,7 @@ export const ConfirmInvestDefiServiceUpdate = withTranslation('common')(
               display={'block'}
               color={'textSecondary'}
             >
-              {isCianETH ? t('labelDefiCloseCian') : t('labelDefiClose')}
+              {isCianETHJoin ? t('labelDefiCloseCian') : t('labelDefiClose')}
             </Typography>
           </DialogContentText>
         </DialogContent>
