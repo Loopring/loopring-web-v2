@@ -898,7 +898,7 @@ export default {
   labelLRCStakingRedeemInvest: 'LRC staking Redeem',
 
   labelDefiClose:
-    'ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.',
+    'This service is temporarily unavailable as we set up the pool. This process may take several hours to complete. Thank you for your patience!',
   labelCreateCollection: 'Create Collection',
   labelCollectionCreateName: 'Contract address for your collection',
   labelCollectionCreateERC1155: 'Collection ERC-1155',
@@ -2496,5 +2496,7 @@ export default {
   labelLoopringDeFiIs21: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first',
   labelLoopringDeFiIs22: 'deployment will be on Taiko. Join us for an exciting journey ahead!',
   labelLoopringDeFiAssets: 'Loopring DeFi Assets',
+  labelDefiCloseCian:
+    'The ciETH subscription has been deprecated. We recommend redeeming your ciETH for ETH as soon as possible. You can also explore other ETH staking portfolios for alternative options.',
 }
 
