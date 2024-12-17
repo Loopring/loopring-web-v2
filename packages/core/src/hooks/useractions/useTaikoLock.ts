@@ -1031,6 +1031,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           redeemAmount: res.redeemAmount
         })
       })
+    updateWalletLayer2()
   }
   const { vaultAccountInfo } = useVaultLayer2()
   const { tokenMap: vaultTokenMap } = useVaultMap()
