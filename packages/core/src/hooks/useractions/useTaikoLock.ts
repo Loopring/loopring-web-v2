@@ -7,7 +7,6 @@ import {
   useToggle,
 } from '@loopring-web/component-lib'
 import {
-  Account,
   AccountStatus,
   CustomErrorWithCode,
   DeFiSideCalcData,
@@ -16,7 +15,6 @@ import {
   globalSetup,
   IBData,
   L1L2_NAME_DEFINED,
-  LIVE_FEE_TIMES,
   MapChainId,
   myLog,
   SagaStatus,
@@ -34,6 +32,7 @@ import {
   fiatNumberDisplay,
   getStateFnState,
   getTimestampDaysLater,
+  hasLrTAIKODust,
   isNumberStr,
   numberFormat,
   numberFormatThousandthPlace,
@@ -41,14 +40,12 @@ import {
   strNumDecimalPlacesLessThan,
   taikoDepositABI,
   unlockAccount,
-  useAccountModal,
   useChargeFees,
   useStakingMap,
   useUpdateAccount,
-  useVaultBorrow,
   useWalletLayer2Socket,
 } from '@loopring-web/core'
-import _, { has, keys, last, set } from 'lodash'
+import _, { last } from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import {
@@ -60,14 +57,13 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useTranslation } from 'react-i18next'
-import { useTokenPrices, useTradeStake, useVaultLayer2, useVaultMap, useWalletLayer2, WalletLayer1Map, WalletLayer2Map } from '../../stores'
+import { useTokenPrices, useTradeStake, useVaultLayer2, useWalletLayer2, WalletLayer1Map } from '../../stores'
 import Decimal from 'decimal.js'
 import { BigNumber, Contract, ethers, providers, utils } from 'ethers'
-import moment, { min } from 'moment'
+import moment from 'moment'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { useDispatch } from 'react-redux'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
-import { red } from 'bn.js'
 
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 const depositContractAddrTAIKO = '0xaD32A362645Ac9139CFb5Ba3A2A46fC4c378812B'
@@ -578,8 +574,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         setShowSupport({ isShow: true })
       } else if (toggle && !toggle['taikoFarming'].enable) {
         setShowTradeIsFrozen({ isShow: true, type: 'StakingInvest' })
+      } else if (hasLrTAIKODust() && account.readyState === 'LOCKED') {
+        setShowLogInToCleanLrTaiko(true)
       } else {
-        
         new Promise((res) => {
           setIsLoading(true)
           setTxSubmitModalState({
@@ -1034,9 +1031,10 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     updateWalletLayer2()
   }
   const { vaultAccountInfo } = useVaultLayer2()
-  const { tokenMap: vaultTokenMap } = useVaultMap()
+  const [showLogInToCleanLrTaiko, setShowLogInToCleanLrTaiko] = useState(false)
 
   const clearState = () => {
+    setShowLogInToCleanLrTaiko(false)
     setStakingTotal(undefined)
     setStakeInfo(undefined)
     setMintRedeemModalState({
@@ -1066,6 +1064,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     walletLayer2Service.sendUserUpdate()
   }, [account.readyState])
   React.useEffect(() => {
+    console.log('clear', account.accAddress, defaultNetwork, account.accountId, account._accountIdNotActive)
     clearState()
     const timer = setInterval(() => {
       refreshData()
@@ -1241,7 +1240,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         isShow: true,
         step: AccountStep.UpdateAccount_Approve_WaitForAuth,
       })
-      
     } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
       setMintRedeemModalState({
         ...mintRedeemModalState,
@@ -1889,6 +1887,21 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           )} TAIKO`,
           // pnl: `--`,
         },
+      logInToCleanLrTaikoModal: {
+        open: showLogInToCleanLrTaiko,
+        onClose: () => {
+          setShowLogInToCleanLrTaiko(false)
+        },
+        onClickSignIn: () => {
+          unlockAccount()
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.UpdateAccount_Approve_WaitForAuth,
+          })
+          setShowLogInToCleanLrTaiko(false)
+        },
+      }
+      
     },
   }
   console.log('output', output)

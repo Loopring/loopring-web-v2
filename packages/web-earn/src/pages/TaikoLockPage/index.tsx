@@ -25,6 +25,7 @@ import { useTheme } from '@emotion/react'
 import { MintRedeemModal } from './MintRedeemModal'
 import { TxSubmitModal } from './TxSubmitModal'
 import { PendingTxsModal } from './PendingTxsModal'
+import { LogInToCleanLrTaikoModalModal } from './LogInToCleanLrTaiko'
 
 const containerColors = ['var(--color-global-bg)', 'var(--color-pop-bg)']
 const StyleWrapper = styled(Box)`
@@ -204,6 +205,7 @@ export const TaikoLockPage = ({
         
       <TxSubmitModal {...stakeWrapProps.txSubmitModal} />
       <PendingTxsModal {...stakeWrapProps.pendingTxsModal} />
+      <LogInToCleanLrTaikoModalModal {...stakeWrapProps.logInToCleanLrTaikoModal} />
     </>
   )
 }

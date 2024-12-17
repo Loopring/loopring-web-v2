@@ -8,6 +8,10 @@ import { nextAccountSyncStatus } from '../../stores/account/reducer'
 import Decimal from 'decimal.js'
 import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
 
+export const hasLrTAIKODust = () => {
+  const walletLayer2 = store.getState().walletLayer2.walletLayer2
+  return walletLayer2 && walletLayer2['LRTAIKO'] && new Decimal(walletLayer2['LRTAIKO'].total).gt(0)
+}
 export const resetlrTAIKOIfNeeded = async (
   account: Account,
   defaultNetwork: sdk.ChainId,
@@ -27,9 +31,7 @@ export const resetlrTAIKOIfNeeded = async (
   if (
     !(
       taikoFarmingAccountStatus === 0 &&
-      walletLayer2 &&
-      walletLayer2['LRTAIKO'] &&
-      new Decimal(walletLayer2['LRTAIKO'].total).gt(0) &&
+      hasLrTAIKODust() &&
       account.apiKey
     )
   ) {
@@ -38,7 +40,7 @@ export const resetlrTAIKOIfNeeded = async (
   if (retryTimes === 0) {
     throw new Error('retry_times_out')
   }
-  const lrTAIKOBalanceInfo = walletLayer2['LRTAIKO']
+  const lrTAIKOBalanceInfo = walletLayer2!['LRTAIKO']
   const { broker } = await LoopringAPI.userAPI!.getAvailableBroker({
     type: 4,
   })
@@ -49,7 +51,6 @@ export const resetlrTAIKOIfNeeded = async (
     },
     account.apiKey,
   )
-  
   return LoopringAPI.vaultAPI
     ?.sendVaultResetToken(
       {
