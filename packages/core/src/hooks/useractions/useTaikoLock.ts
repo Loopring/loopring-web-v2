@@ -226,7 +226,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           sellToken.decimals,
         )
       : undefined
-  console.log('walletLayer2', holdingLRTAIKO) 
 
   
 
@@ -740,7 +739,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const taikoBalanceGreaterThanFee = holdingTAIKO && taikoFee
     ? BigNumber.from(holdingTAIKO).gt(taikoFee.__raw__.feeRaw)
     : undefined
-  console.log('taikoBalanceGreaterThanFee', taikoBalanceGreaterThanFee)
 
   const settlementStatus: 'init' | 'minting' | 'notSettled' | 'settled' | 'noPosition' =
     taikoFarmingAccountStatus === undefined
@@ -1064,7 +1062,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     walletLayer2Service.sendUserUpdate()
   }, [account.readyState])
   React.useEffect(() => {
-    console.log('clear', account.accAddress, defaultNetwork, account.accountId, account._accountIdNotActive)
     clearState()
     const timer = setInterval(() => {
       refreshData()
@@ -1143,7 +1140,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const availableToMintFormatted = mintRedeemModalState.mint.availableToMint
     ? utils.formatUnits(mintRedeemModalState.mint.availableToMint, sellToken.decimals)
     : undefined
-  console.log('mintRedeemModalState', mintRedeemModalState)
   const isInputInvalid =
     mintRedeemModalState.mint.inputValue && mintRedeemModalState.mint.maxInputAmount && mintRedeemModalState.mint.minInputAmount &&
     (new Decimal(mintRedeemModalState.mint.inputValue).lessThan(mintRedeemModalState.mint.minInputAmount) ||
@@ -1172,13 +1168,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       ? previousLockRecord.redeemAmount
       : realizedAndUnrealized?.redeemAmount
 
-
-  console.log('chargeFee output', chargeFee)
-
-  console.log('reddemAmount', redeemAmount)
-
-  console.log('settlementStatus', settlementStatus)
-  console.log('settlementStatus previousLockRecord', previousLockRecord)
   
   const unrealizedTAIKOBN =
     settlementStatus === 'settled'
@@ -1755,7 +1744,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         },
         onInput: (input: string) => {
           if (
-            (isNumberStr(input) && strNumDecimalPlacesLessThan(input, sellToken.precision + 1)) ||
+            stakingMap && 
+            stakingMap[coinSellSymbol] &&
+            (isNumberStr(input) && strNumDecimalPlacesLessThan(input, stakingMap[coinSellSymbol].precision + 1)) ||
             input === ''
           ) {
             setMintRedeemModalState({
@@ -1904,6 +1895,5 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       
     },
   }
-  console.log('output', output)
   return output
 }
