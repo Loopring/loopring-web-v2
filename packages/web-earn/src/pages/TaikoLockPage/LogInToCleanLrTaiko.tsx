@@ -45,7 +45,7 @@ export const LogInToCleanLrTaikoModalModal = (props: LogInToCleanLrTaikoModalMod
             Clean Up lrTAIKO Dust
           </Typography>
           <Typography color={'var(--color-text-secondary)'} my={5}>
-            You have remaining lrTAIKO dust in your account from previous TAIKO farming activities.
+            You have remaining lrTAIKO dust in your account from previous Taiko Farming activities.
             To deposit TAIKO into the Loopring Protocol again, you must first transfer these dust
             tokens to the Loopring operator.
           </Typography>
