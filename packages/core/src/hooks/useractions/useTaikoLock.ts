@@ -210,7 +210,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   const { exchangeInfo, allowTrade, getValueInCurrency } = useSystem()
   const { toggle } = useToggle()
   const { defaultNetwork, currency, coinJson } = useSettings()
-  const sellToken = tokenMap[coinSellSymbol]
+  const sellToken = tokenMap[coinSellSymbol] ? tokenMap[coinSellSymbol] : undefined
   const taikoFarmingPrecision = 2
   const { walletLayer2, updateWalletLayer2 } = useWalletLayer2()
   const [mintedLRTAIKO, setMintedLRTAIKO] = useState(undefined as string | undefined)
@@ -220,7 +220,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
 
   
   const holdingLRTAIKO =
-    walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken.decimals
+    walletLayer2 && walletLayer2['LRTAIKO']?.total && sellToken
       ? utils.formatUnits(
           BigNumber.from(walletLayer2['LRTAIKO'].total).sub(walletLayer2['LRTAIKO'].locked),
           sellToken.decimals,
@@ -601,7 +601,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                     .div(oneDay)
                     .mul(oneDay)
                 : undefined
-            if (tradeStake && tradeStake.deFiSideCalcData && duration) {
+            if (tradeStake && tradeStake.deFiSideCalcData && duration && sellToken) {
               return depositTaikoWithDurationApprove({
                 provider: new providers.Web3Provider(provider.walletProvider!),
                 amount: BigNumber.from(tradeStake!.sellVol),
@@ -669,7 +669,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               } else {
                 const res = await LoopringAPI?.defiAPI?.getTaikoFarmingDepositDurationList({
                   accountId,
-                  tokenId: sellToken.tokenId,
+                  tokenId: sellToken!.tokenId,
                   statuses: 'locked',
                   // @ts-ignore
                   txHashes: hash,
@@ -732,7 +732,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
 
     amount: holdingTAIKO ? Number(holdingTAIKO) : 0,
     needAmountRefresh: true,
-    tokenSymbol: sellToken.symbol,
+    tokenSymbol: sellToken?.symbol,
   })
   
   const taikoFee = chargeFee?.chargeFeeTokenList?.find(fee => fee.belong === 'TAIKO')
@@ -940,7 +940,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingDepositDurationList({
         accountId,
-        tokenId: sellToken.tokenId,
+        tokenId: sellToken?.tokenId,
         statuses: 'received',
       })
       .then((res) => {
@@ -969,19 +969,19 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           mint: {
             ...mintModalState.mint,
             availableToMint: availableToMint,
-            minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken.decimals)),
-            maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken.decimals)),
+            minInputAmount: new Decimal(utils.formatUnits(minClaimAmount, sellToken?.decimals)),
+            maxInputAmount: new Decimal(utils.formatUnits(maxClaimAmount, sellToken?.decimals)),
           },
         }))
         
-        setMintedLRTAIKO(utils.formatUnits(data[0].claimedTotal, sellToken.decimals))
+        setMintedLRTAIKO(utils.formatUnits(data[0].claimedTotal, sellToken?.decimals))
         setStakingTotal(data[0].stakedTotal)
         
       })
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingUserSummary({
         accountId: accountId,
-        tokenId: sellToken.tokenId,
+        tokenId: sellToken?.tokenId,
         statuses: 'received,locked',
       })
       .then((res) => {
@@ -994,7 +994,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     account.apiKey && LoopringAPI.defiAPI?.getTaikoFarmingTransactions(
       {
         accountId,
-        tokenId: sellToken.tokenId,
+        tokenId: sellToken?.tokenId,
         limit: 1,
         types: 'redeem',
       } as any,
@@ -1017,7 +1017,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingGetRedeem({
         accountId: accountId,
-        tokenId: sellToken.tokenId,
+        tokenId: sellToken?.tokenId,
       }, '')
       .then((res) => {
         setRealizedAndUnrealized({
@@ -1137,7 +1137,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               },
         )
       : t('labelLockTAIKO')
-  const availableToMintFormatted = mintRedeemModalState.mint.availableToMint
+  const availableToMintFormatted = mintRedeemModalState.mint.availableToMint && sellToken
     ? utils.formatUnits(mintRedeemModalState.mint.availableToMint, sellToken.decimals)
     : undefined
   const isInputInvalid =
@@ -1293,7 +1293,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 previousLockRecord.status === 'found' &&
                 previousLockRecord.redeemAmount
               : stakingTotal
-          return amountBN
+          return amountBN && sellToken
             ? numberFormatThousandthPlace(utils.formatUnits(amountBN, sellToken.decimals), {
                 fixed: sellToken.precision,
                 removeTrailingZero: true,
@@ -1335,7 +1335,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               fixedRound: Decimal.ROUND_DOWN,
             }) + ' USDT'
           : '--',
-        unrealizedTAIKO: unrealizedTAIKOBN
+        unrealizedTAIKO: unrealizedTAIKOBN && sellToken
           ? numberFormatThousandthPlace(utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals), {
               fixed: sellToken.precision,
               removeTrailingZero: true,
@@ -1403,7 +1403,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       taikoCoinJSON: coinJson['TAIKO'],
       mintRedeemModal: {
         redeem: {
-          redeemAmount: holdingTAIKO
+          redeemAmount: holdingTAIKO && sellToken
             ? numberFormatThousandthPlace(utils.formatUnits(holdingTAIKO, sellToken.decimals), {
                 fixed: sellToken.precision,
                 removeTrailingZero: true,
@@ -1413,7 +1413,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             : '--',
           lrTaikoInUse,
           lockedTaikoAmount:
-            previousLockRecord && previousLockRecord.status === 'found'
+            previousLockRecord && previousLockRecord.status === 'found' && sellToken
               ? numberFormatThousandthPlace(
                   utils.formatUnits(
                     ethers.BigNumber.from(previousLockRecord.redeemAmount).sub(
@@ -1428,7 +1428,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 ) + ' TAIKO'
               : '--',
           pnlAmount:
-            holdingLRTAIKO && mintedLRTAIKO
+            holdingLRTAIKO && mintedLRTAIKO && sellToken
               ? `${
                   new Decimal(holdingLRTAIKO).sub(mintedLRTAIKO).isPos() ? '+' : '-'
                 }${numberFormatThousandthPlace(
@@ -1444,9 +1444,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   step: AccountStep.Taiko_Farming_Redeem_In_Progress,
                   info: {
                     amount: numberFormatThousandthPlace(
-                      utils.formatUnits(holdingTAIKO!, sellToken.decimals),
+                      utils.formatUnits(holdingTAIKO!, sellToken!.decimals),
                       {
-                        fixed: sellToken.precision,
+                        fixed: sellToken!.precision,
                         removeTrailingZero: true,
                       },
                     ),
@@ -1458,7 +1458,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId(
                   {
                     accountId: account.accountId,
-                    sellTokenId: sellToken.tokenId,
+                    sellTokenId: sellToken!.tokenId,
                   },
                   account.apiKey,
                 )
@@ -1467,7 +1467,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 }
                 let isHWAddr = checkHWAddr(account.accAddress)
                 const tokenVolume =
-                  chargeFee.feeInfo.__raw__.tokenId === sellToken.tokenId
+                  chargeFee.feeInfo.__raw__.tokenId === sellToken!.tokenId
                     ? ethers.BigNumber.from(holdingTAIKO!)
                         .sub(chargeFee.feeInfo.__raw__.feeRaw)
                         .toString()
@@ -1479,7 +1479,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   accountId: account.accountId,
                   storageId: storageId?.offchainId,
                   token: {
-                    tokenId: sellToken.tokenId,
+                    tokenId: sellToken!.tokenId,
                     volume: tokenVolume,
                   },
                   maxFee: {
@@ -1518,9 +1518,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   step: AccountStep.Taiko_Farming_Redeem_Success,
                   info: {
                     amount: numberFormatThousandthPlace(
-                      utils.formatUnits(holdingTAIKO!, sellToken.decimals),
+                      utils.formatUnits(holdingTAIKO!, sellToken!.decimals),
                       {
-                        fixed: sellToken.precision,
+                        fixed: sellToken!.precision,
                         removeTrailingZero: true,
                       },
                     ),
@@ -1556,8 +1556,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             : '--',
           unrealizedTAIKO: unrealizedTAIKOBN
             ? numberFormatThousandthPlace(
-                utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals),
-                { fixed: sellToken.precision, removeTrailingZero: true },
+                utils.formatUnits(unrealizedTAIKOBN, sellToken!.decimals),
+                { fixed: sellToken!.precision, removeTrailingZero: true },
               ) + ' TAIKO'
             : '--',
         },
@@ -1624,7 +1624,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
               ...mintRedeemModalState.mint,
               inputValue: utils.formatUnits(
                 mintRedeemModalState.mint.availableToMint,
-                sellToken.decimals,
+                sellToken!.decimals,
               ),
             },
           })
@@ -1655,11 +1655,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           })
 
           const res = await submitTaikoFarmingMint({
-            amount: utils.parseUnits(mintRedeemModalState.mint.inputValue, sellToken.decimals),
+            amount: utils.parseUnits(mintRedeemModalState.mint.inputValue, sellToken!.decimals),
             accountId: account.accountId,
             apiKey: account.apiKey,
             exchangeAddress: exchangeInfo!.exchangeAddress,
-            tokenId: sellToken.tokenId,
+            tokenId: sellToken!.tokenId,
             eddsaSk: account.eddsaKey.sk,
           })
             .then((res) => {
@@ -1682,11 +1682,11 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                         isShow: true,
                         step: AccountStep.Taiko_Farming_Mint_In_Progress,
                         info: {
-                          symbol: sellToken.symbol,
+                          symbol: sellToken!.symbol,
                           amount: numberFormatThousandthPlace(
                             mintRedeemModalState.mint.inputValue,
                             {
-                              fixed: sellToken.precision,
+                              fixed: sellToken!.precision,
                               removeTrailingZero: true,
                             },
                           ),
@@ -1843,13 +1843,13 @@ export const useTaikoLock = <T extends IBData<I>, I>({
           return {
             hash: tx.txHash,
             amount: numberFormatThousandthPlace(
-              utils.formatUnits((tx as any).amount as string, sellToken.decimals),
+              utils.formatUnits((tx as any).amount as string, sellToken!.decimals),
               {
-                fixed: sellToken.precision,
+                fixed: sellToken!.precision,
                 removeTrailingZero: true,
               },
             ),
-            symbol: sellToken.symbol,
+            symbol: sellToken!.symbol,
             isLocal: tx.isLocal,
           }
         }),
@@ -1861,7 +1861,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         },
       },
       lrTAIKOTradeEarnSummary: mintedLRTAIKO &&
-        holdingLRTAIKO && {
+        holdingLRTAIKO && sellToken && {
           holdingAmount: numberFormatThousandthPlace(holdingLRTAIKO, {
             fixed: sellToken.precision,
             removeTrailingZero: true,
