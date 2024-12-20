@@ -41,7 +41,7 @@ export const IPFS_HEAD_URL_REG = /^ipfs:\/\/(ipfs\/)?/i
 export const IPFS_LOOPRING_SITE = 'https://ipfs.loopring.io/ipfs/' // sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 export const BANXA_URLS = {
   1: 'https://loopring.banxa.com',
-  5: 'https://loopring.banxa-sandbox.com',
+  11155111: 'https://loopring.banxa-sandbox.com',
 }
 export const LOOPRING_DOCUMENT = 'https://loopring.io/#/document/'
 
