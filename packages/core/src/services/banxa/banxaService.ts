@@ -164,7 +164,7 @@ export const banxaService = {
             source: 'USDT',
             target: 'AUD',
             refund_address: account.accAddress,
-            return_url_on_success: 'https://beta.loopring.io/#/trade/fiat/Sell',
+            return_url_on_success: 'https://loopring.io/#/trade/fiat/Sell',
             account_reference: account.accAddress,
           },
         })
