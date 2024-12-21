@@ -566,6 +566,8 @@ export const useTaikoLock = <T extends IBData<I>, I>({
 
 
   const hasNoLockingPos = !firstLockingPos
+  const [hasLockingTxNotOnChain, setHasLockingTxNotOnChain] = React.useState(false)
+
 
   const onSubmitBtnClick = React.useCallback(async () => {
     if (tokenMap && exchangeInfo) {
@@ -616,6 +618,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                   open: true,
                   status: 'depositing',
                 })
+                setHasLockingTxNotOnChain(true)
                 return depositTaikoWithDurationTx({
                   provider: new providers.Web3Provider(provider.walletProvider!),
                   amount: BigNumber.from(tradeStake!.sellVol),
@@ -646,6 +649,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             return tx.wait()
           })
           .then((txReceipt) => {
+            setHasLockingTxNotOnChain(false)
             const recursiveCheck = async (
               hash: string,
               env: { addr: string; chainId: sdk.ChainId },
@@ -707,6 +711,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
             })
           })
           .finally(() => {
+            setHasLockingTxNotOnChain(false)
             resetDefault(true)
           })
       }
@@ -842,10 +847,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         tradeBtnStatus: TradeBtnStatus.DISABLED,
         label: 'Plese reddem first',
       }
+    } else if (hasLockingTxNotOnChain) {
+      return {
+        tradeBtnStatus: TradeBtnStatus.DISABLED,
+        label: 'There is a pending transaction, please wait',
+      }
     } else {
       return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: '' } // label: ''}
     }
-  }, [tokenMap, coinSellSymbol, daysInput, stakeInfo, hasNoLockingPos, daysInputValid, settlementStatus, firstLockingPos])
+  }, [tokenMap, coinSellSymbol, daysInput, stakeInfo, hasNoLockingPos, daysInputValid, settlementStatus, firstLockingPos, hasLockingTxNotOnChain])
   const checked = availableTradeCheck()
   const btnStatus = isLoading ? TradeBtnStatus.LOADING : checked.tradeBtnStatus
 
