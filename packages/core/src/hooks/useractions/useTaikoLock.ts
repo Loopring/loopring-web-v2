@@ -64,6 +64,7 @@ import moment from 'moment'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { useDispatch } from 'react-redux'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
+import { mapObject } from 'react-financial-charts'
 
 const depositContractAddrTAIKOHEKLA = '0x40aCCf1a13f4960AC00800Dd6A4afE82509C2fD2'
 const depositContractAddrTAIKO = '0xaD32A362645Ac9139CFb5Ba3A2A46fC4c378812B'
@@ -739,6 +740,18 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     needAmountRefresh: true,
     tokenSymbol: sellToken?.symbol,
   })
+  const { idIndex }=useTokenMap()
+  useEffect(() => {
+    const feeTokenBalance = walletLayer2 && chargeFee.feeInfo.__raw__ ? walletLayer2[idIndex[chargeFee.feeInfo.__raw__.tokenId]] : undefined
+    const isFeeNotEnough = feeTokenBalance ? BigNumber.from(feeTokenBalance.total).sub(feeTokenBalance.locked).lt(chargeFee.feeInfo.__raw__.feeRaw) : false
+    if (isFeeNotEnough) {
+      const foundFee = chargeFee.chargeFeeTokenList.find((feeInfo) => {
+        const balance = walletLayer2 && walletLayer2[idIndex[feeInfo.__raw__.tokenId] ]
+        return balance && BigNumber.from(balance.total).sub(balance.locked).gte(feeInfo.__raw__.feeRaw)
+      })
+      foundFee && chargeFee.handleFeeChange(foundFee)
+    } 
+  }, [chargeFee, walletLayer2])
   
   const taikoFee = chargeFee?.chargeFeeTokenList?.find(fee => fee.belong === 'TAIKO')
   const taikoBalanceGreaterThanFee = holdingTAIKO && taikoFee
