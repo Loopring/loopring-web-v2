@@ -1093,7 +1093,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     return () => {
       clearInterval(timer)
     }
-  }, [account.accAddress, defaultNetwork, account.accountId, account._accountIdNotActive])
+  }, [account.accAddress, defaultNetwork, sellToken])
 
   React.useEffect(() => {
     const {
