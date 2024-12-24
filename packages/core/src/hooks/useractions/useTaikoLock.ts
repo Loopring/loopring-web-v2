@@ -492,7 +492,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   
 
   const daysInputValid =
-    Number.isInteger(Number(daysInput)) && Number(daysInput) >= 1 && Number(daysInput) <= 60
+    Number.isInteger(Number(daysInput)) && Number(daysInput) >= 15 && Number(daysInput) <= 60
   const [stakeInfo, setStakeInfo] = React.useState(
     undefined as
       | undefined
