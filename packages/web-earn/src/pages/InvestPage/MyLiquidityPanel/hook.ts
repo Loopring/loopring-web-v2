@@ -181,7 +181,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
   const getStakingList = React.useCallback(
     async ({ limit = STAKING_INVEST_LIMIT, offset = 0 }: { limit?: number; offset?: number }) => {
       setStakeShowLoading(true)
-      const LRCStakingSymbol = 'LRC'
+      const stakingSymbol = 'TAIKO'
       if (LoopringAPI.defiAPI && account.readyState === AccountStatus.ACTIVATED) {
         const [response] = await Promise.all([
           LoopringAPI.defiAPI.getStakeSummary(
@@ -190,7 +190,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
               limit,
               offset,
               statuses: 'locked,partial_unlocked',
-              tokenId: tokenMap[LRCStakingSymbol].tokenId,
+              tokenId: tokenMap[stakingSymbol].tokenId,
             },
             account.apiKey,
           ),
@@ -198,7 +198,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         if (
           (response &&
             ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message)) ||
-          !stakingMap[LRCStakingSymbol]
+          !stakingMap[stakingSymbol]
         ) {
           throw new CustomError(ErrorMap.ERROR_UNKNOWN)
         } else {
@@ -213,9 +213,9 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
 
           list = list.map((item: sdk.StakeInfoOrigin) => {
             return {
-              ...stakingMap[LRCStakingSymbol],
+              ...stakingMap[stakingSymbol],
               ...item,
-              status_product: stakingMap[LRCStakingSymbol].status,
+              status_product: stakingMap[stakingSymbol].status,
             }
           })
 
@@ -226,23 +226,23 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
             totalStakedRewards,
             totalLastDayPendingRewards,
             totalClaimableRewards,
-            stakedSymbol: LRCStakingSymbol,
+            stakedSymbol: stakingSymbol,
           })
 
           const totalDollar = sdk
             .toBig(totalStaked)
-            .div('1e' + tokenMap[LRCStakingSymbol].decimals)
-            .times(tokenPrices[LRCStakingSymbol])
+            .div('1e' + tokenMap[stakingSymbol].decimals)
+            .times(tokenPrices[stakingSymbol])
 
           setSummaryMyInvest((state) => {
             return {
               ...state,
-              stakeLRCDollar: totalDollar.toString(),
+              taikoFarmingDollar: totalDollar.toString(),
               investDollar: sdk
                 .toBig(state.ammPoolDollar ?? 0)
                 .plus(state.dualStakeDollar ?? 0)
-                .plus(state.stakeETHDollar ?? 0)
                 .plus(state.leverageETHDollar ?? 0)
+                .plus(state.taikoFarmingDollar ?? 0)
                 .plus(totalDollar ?? 0)
                 .toString(),
             }

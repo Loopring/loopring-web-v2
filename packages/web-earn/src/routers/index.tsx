@@ -49,6 +49,7 @@ import { Layer2Page } from '../pages/Layer2Page'
 import Intro from '../pages/IntroPage'
 import { VaultPage } from '../pages/VaultPage'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
+import { TaikoLockBannerPage, TaikoLockPage } from 'pages/TaikoLockPage'
 
 // RouterAllowIndex
 const ContentWrap = ({
@@ -322,6 +323,16 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
           <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
             <InvestPage />
+          </ContentWrap>
+        </Route>
+        <Route exact path={[RouterPath.taikoFarming ]}>
+          <ContentWrap noContainer state={state} value={RouterMainKey.taikoFarming}>
+            <TaikoLockPage symbol='TAIKO' setConfirmedLRCStakeInvestInvest={() => {}} />
+          </ContentWrap>
+        </Route>
+        <Route exact path={`${RouterPath.taikoFarming}/banner`}>
+          <ContentWrap noContainer state={state} value={RouterMainKey.taikoFarming}>
+            <TaikoLockBannerPage />
           </ContentWrap>
         </Route>
 

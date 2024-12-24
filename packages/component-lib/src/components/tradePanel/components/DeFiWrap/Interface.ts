@@ -70,7 +70,6 @@ export type DeFiSideWrapProps<T, I, ACD> = {
   tokenSell: sdk.TokenInfo
   btnStatus?: keyof typeof TradeBtnStatus | undefined
   accStatus?: AccountStatus
-  setShowLRCStakePopup: { isShow: boolean; [key: string]: any }
 }
 
 export type DeFiStakeRedeemWrapProps<T, _I, ACD> = {

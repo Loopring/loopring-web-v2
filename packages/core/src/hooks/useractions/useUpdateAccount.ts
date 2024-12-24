@@ -85,7 +85,7 @@ export function useUpdateAccount() {
           })
           setShowAccount({
             isShow: true,
-            step: isReset ? AccountStep.UpdateAccount_Success : AccountStep.ResetAccount_Success,
+            step: isReset ? AccountStep.ResetAccount_Success : AccountStep.UpdateAccount_Success,
           })
           await sdk.sleep(1000)
           setShowAccount({ isShow: false })
@@ -107,7 +107,7 @@ export function useUpdateAccount() {
                 ? AccountStep.ResetAccount_First_Method_Denied
                 : AccountStep.UpdateAccount_First_Method_Denied,
             })
-            return
+            break
           case sdk.ConnectorError.USER_DENIED:
           case sdk.ConnectorError.USER_DENIED_2:
             myLog('activateAccount: USER_DENIED')
@@ -117,8 +117,7 @@ export function useUpdateAccount() {
                 ? AccountStep.ResetAccount_User_Denied
                 : AccountStep.UpdateAccount_User_Denied,
             })
-            return
-
+            break
           default:
             setShowAccount({
               isShow: true,
@@ -131,6 +130,7 @@ export function useUpdateAccount() {
             })
             break
         }
+        throw error
       }
       setReferralCode('')
     },

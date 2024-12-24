@@ -92,7 +92,7 @@ export const VaultBorrowPanel = <T extends IBData<I>, V extends VaultBorrowData<
                 ...rest,
                 onChangeEvent,
                 //rest.walletMap,
-                selected: rest.tradeData.belong,
+                selected: rest.tradeData?.belong,
                 tradeData: rest.tradeData,
                 walletMap,
                 coinMap,

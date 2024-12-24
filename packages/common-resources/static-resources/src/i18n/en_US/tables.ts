@@ -411,5 +411,9 @@ export default {
   labelVaultErrorOccurred: 'An error has occurred. Please try again later.',
   labelVaultDustCollector: 'Dust Collector',
   labelDetails: 'Details',
+  labelLock: 'Lock',
+  labelLockTime: 'Time',
   labelTotalLocked: 'Total/Locked',
+  labelLocked2: 'Locked',
+  labelTAIKO_FARMING: 'Taiko Farming',
 }

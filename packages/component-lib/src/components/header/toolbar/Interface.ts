@@ -18,6 +18,7 @@ export type WalletConnectBtnProps = {
   NetWorkItems: JSX.Element | (() => JSX.Element)
   handleClick: (_e: React.MouseEvent) => void
   handleClickUnlock: (_e: React.MouseEvent) => void
+  handleClickSignIn: (_e: React.MouseEvent) => void
   accountState: AccountFull
   isLayer1Only?: boolean
   isShowOnUnConnect: boolean
