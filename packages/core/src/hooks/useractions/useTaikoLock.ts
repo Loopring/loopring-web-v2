@@ -1086,12 +1086,15 @@ export const useTaikoLock = <T extends IBData<I>, I>({
   }, [account.readyState])
   React.useEffect(() => {
     clearState()
-    const timer = setInterval(() => {
-      refreshData()
-    }, 10 * 1000)
-    refreshData()
+    const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
+    const timer = isTaiko
+      ? setInterval(() => {
+          refreshData()
+        }, 10 * 1000)
+      : undefined
+    isTaiko && refreshData()
     return () => {
-      clearInterval(timer)
+      timer && clearInterval(timer)
     }
   }, [account.accAddress, defaultNetwork, sellToken])
 
