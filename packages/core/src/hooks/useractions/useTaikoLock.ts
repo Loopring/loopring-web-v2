@@ -1577,9 +1577,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
                 removeTrailingZero: true,
               }) + ' USDT'
             : '--',
-          unrealizedTAIKO: unrealizedTAIKOBN
+          unrealizedTAIKO: unrealizedTAIKOBN && sellToken
             ? numberFormatThousandthPlace(
-                utils.formatUnits(unrealizedTAIKOBN, sellToken!.decimals),
+                utils.formatUnits(unrealizedTAIKOBN, sellToken.decimals),
                 { fixed: sellToken!.precision, removeTrailingZero: true },
               ) + ' TAIKO'
             : '--',
