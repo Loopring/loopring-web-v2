@@ -62,7 +62,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
-    toggle: { StopLimit },
+    toggle: { StopLimit, taikoFarming },
   } = useToggle()
   const match: any = useRouteMatch('/l2assets/:history/:tab/:orderTab?')
   const [pageSize, setPageSize] = React.useState(0)
@@ -229,7 +229,13 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             aria-label='l2-history-tabs'
             variant='scrollable'
           >
-            {RecordEarnMap[network]?.map((item) => {
+            {RecordEarnMap[network].filter((item) => {
+              if (item === RecordTabIndex.TaikoLockRecords) {
+                return taikoFarming.enable
+              } else {
+                return true
+              }
+            })?.map((item) => {
               return <Tab key={item} label={t(`labelLayer2History${item}`)} value={item} />
             })}
           </Tabs>
