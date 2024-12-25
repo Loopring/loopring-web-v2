@@ -83,6 +83,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
       cancelReInvest,
       hideAssets,
       rowConfig,
+      noMinHeight,
       t,
     } = props
 
@@ -559,6 +560,9 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
               ? rowConfig.rowHeaderHeight! + rawData.length * rowConfig.rowHeight!
               : 350
           }
+          style={{
+            minHeight:noMinHeight ? 0 : undefined
+          }}
           rowHeight={rowConfig.rowHeight}
           headerRowHeight={rowConfig.rowHeaderHeight}
           sortMethod={sortMethod}

@@ -53,6 +53,7 @@ import {
   DirectionTag,
   PriceTag,
   CurrencyToTag,
+  mapSpecialTokenName,
 } from '@loopring-web/common-resources'
 import { TFunction, useTranslation } from 'react-i18next'
 import BigNumber from 'bignumber.js'
@@ -405,23 +406,33 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   }
 }
 
-export function useDefiSideRecord(setToastOpen: (props: any) => void) {
+export function useTaikoFarmingRecord(setToastOpen: (props: any) => void) {
   const { t } = useTranslation(['error'])
   const { tokenMap } = useTokenMap()
-  const [sideStakingList, setSideStakingRecordList] = React.useState<sdk.STACKING_TRANSACTIONS[]>(
+  const [sideStakingList, setSideStakingRecordList] = React.useState<{
+    accountId: number;
+    tokenId: number;
+    amount: string;
+    productId: string;
+    hash: string;
+    stakingType: "subscribe" | "unsubscribe" | "redeem";
+    createdAt: number;
+    updatedAt: number;
+}[]>(
     [],
   )
   const [sideStakingTotal, setSideStakingTotal] = React.useState(0)
   const [showLoading, setShowLoading] = React.useState(true)
   const { accountId, apiKey } = store.getState().account
+  const tokenInfo = tokenMap['TAIKO']
   const getSideStakingTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {
       setShowLoading(true)
       if (LoopringAPI.defiAPI && accountId && apiKey) {
-        const response = await LoopringAPI.defiAPI.getStakeTransactions(
+        const response = await LoopringAPI.defiAPI.getTaikoFarmingTransactions(
           {
             accountId,
-            tokenId: tokenMap['LRC'].tokenId,
+            tokenId: tokenInfo.tokenId,
             start,
             end,
             limit,
@@ -440,7 +451,9 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
                 : (response as sdk.RESULT_INFO).message,
           })
         } else {
-          const result = response.list
+
+          const result = response.transactions
+
           setSideStakingRecordList(result)
           setShowLoading(false)
           setSideStakingTotal(response.totalNum)
@@ -453,7 +466,10 @@ export function useDefiSideRecord(setToastOpen: (props: any) => void) {
   )
 
   return {
-    sideStakingList,
+    sideStakingList: sideStakingList.filter(
+      (item) =>
+        !(item.stakingType === 'redeem' && (item.amount === '' || new Decimal(item.amount).eq(0))),
+    ),
     showLoading,
     getSideStakingTxList,
     sideStakingTotal,
@@ -1365,12 +1381,12 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                         : VaultRecordType.margin
                     //@ts-ignore
                     const erc20Token = tokenMap[idIndex[tokenS ?? '']]
-                    precision = vToken?.precision
                     //@ts-ignore
                     vToken = vaultTokenMap[vaultIdIndex[erc20Map[erc20Token.symbol]?.vaultTokenId]]
+                    precision = vToken?.precision
                     vSymbol = vToken.symbol
                     erc20Symbol = vToken.symbol.slice(2)
-                    amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals)
+                    amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals).abs()
                     fillAmountS =
                       status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
@@ -1378,7 +1394,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                     const amountStr = !amount.eq(0)
                       ? getValuePrecisionThousand(amount, precision, precision)
                       : EmptyValueTag
-                    mainContentRender = `${Decimal.abs(amountStr).toString()} ${erc20Symbol}`
+                    mainContentRender = `${amountStr.toString()} ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
@@ -1401,7 +1417,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${erc20Symbol}`
+                    } ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_REPAY:
                     type = VaultRecordType.repay
@@ -1425,7 +1441,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${erc20Symbol}`
+                    } ${mapSpecialTokenName(erc20Symbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_TRADE:
                     type = VaultRecordType.trade
@@ -1460,9 +1476,9 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       precisionB,
                       precisionB,
                     )
-                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}  ${erc20Symbol} ${DirectionTag} ${
+                    mainContentRender = `${fillAmountS.gte(0) ? fillAmountSStr : EmptyValueTag}  ${mapSpecialTokenName(erc20Symbol)} ${DirectionTag} ${
                       fillAmountB.gte(0) ? fillAmountBStr : EmptyValueTag
-                    } ${erc20SymbolB}`
+                    } ${mapSpecialTokenName(erc20SymbolB)}`
                     break
                   case sdk.VaultOperationType.VAULT_CLOSE_OUT:
                     type = VaultRecordType.closeout
@@ -1486,7 +1502,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       amount.gte(0)
                         ? getValuePrecisionThousand(amount, precision, precision)
                         : EmptyValueTag
-                    } ${tokenBSymbol}`
+                    } ${mapSpecialTokenName(tokenBSymbol)}`
                     break
                   case sdk.VaultOperationType.VAULT_CONVERT:
                       type = VaultRecordType.convert

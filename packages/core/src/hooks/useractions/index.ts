@@ -34,4 +34,5 @@ export * from './useNFTBurn'
 export * from './vault'
 export * from './useContactAdd'
 export * from './useContact'
+export { useTaikoLock } from './useTaikoLock'
 

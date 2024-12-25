@@ -8,6 +8,8 @@ import {
   MapChainId,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
+import { ChainId } from '@loopring-web/loopring-sdk'
+import { useSystem } from '@loopring-web/core'
 
 export const Deposit_Sign_WaitForRefer = (props: PanelProps) => {
   const propsPatch = {
@@ -38,15 +40,28 @@ export const Deposit_Approve_Denied = (props: PanelProps) => {
 
 export const Deposit_WaitForAuth = (props: PanelProps) => {
   const { defaultNetwork } = useSettings()
+  const { app } = useSystem()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const isTaikoEarn = app === 'earn' && [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(defaultNetwork)
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t('labelL1toL2WaitForAuth', {
-      loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-      symbol: props.symbol,
-      value: props.value,
-      to: props.to ?? '',
-    }),
+    describe1: (
+      <Typography variant='h5' width={'400px'}>
+        {isTaikoEarn
+          ? props.t('labelL1toL2WaitForAuthTaikoEarn', {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              symbol: props.symbol,
+              value: props.value,
+              to: props.to ?? '',
+            })
+          : props.t('labelL1toL2WaitForAuth', {
+              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+              symbol: props.symbol,
+              value: props.value,
+              to: props.to ?? '',
+            })}
+      </Typography>
+    ),
   }
   return <DepositBase {...propsPatch} {...props} />
 }

@@ -236,6 +236,22 @@ export function useChargeFees({
               fees = response.fees
             }
           } else if (
+            [
+              sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+              sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
+            ].includes(Number(requestType)) &&
+            account.accountId &&
+            account.accountId !== -1
+          ) {
+            const response = await LoopringAPI.userAPI.getOffchainFeeAmt(
+              request as sdk.GetOffchainFeeAmtRequest,
+              account.apiKey,
+            )
+            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+            } else {
+              fees = response.fees
+            }
+          } else if (
             requestType !== undefined &&
             account.accountId &&
             account.accountId !== -1 &&
@@ -503,8 +519,6 @@ export function useChargeFees({
         tokenAddress) ||
       (!isActiveAccount &&
         tokenSymbol &&
-        AccountStatus.ACTIVATED === account.readyState &&
-        walletLayer2Status === 'UNSET' &&
         [
           sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
           sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,

@@ -21,6 +21,7 @@ import {
   RouterPath,
   InvestRouter,
   InvestType,
+  HelpIcon,
 } from '@loopring-web/common-resources'
 import { Trans, useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -168,7 +169,19 @@ export const StackTradePanel = ({
                   borderRadius={2}
                 >
                   <DeFiSideWrap
-                    setShowLRCStakePopup={setShowLRCStakePopup}
+                    title={
+                      <>
+                        {t('labelInvestLRCTitle')}
+                        <HelpIcon
+                          fontSize={'large'}
+                          color={'inherit'}
+                          sx={{ marginLeft: 1, cursor: 'pointer' }}
+                          onClick={() => {
+                            setShowLRCStakePopup({ isShow: true, confirmationNeeded: false })
+                          }}
+                        />
+                      </>
+                    }
                     isJoin={isJoin}
                     symbol={'LRC'}
                     {...(stakeWrapProps as any)}

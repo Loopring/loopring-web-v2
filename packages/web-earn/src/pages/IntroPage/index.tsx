@@ -1,7 +1,7 @@
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { CloseIcon, ToRightTopArrow, hexToRGB } from '@loopring-web/common-resources';
-import { useSettings } from '@loopring-web/component-lib';
+import { useSettings, useToggle } from '@loopring-web/component-lib';
 import { SoursURL } from '@loopring-web/loopring-sdk';
 import { Box, BoxProps, Button, ContainerProps, useMediaQuery } from '@mui/material';
 // import { styled } from '@mui/material';
@@ -216,6 +216,9 @@ const Intro: React.FC<IntroProps> = ({  }) => {
   const history = useHistory()
   const dual = React.useRef(null)
   const {setShowTaikoLaunchBanner, confirmation} = useConfirmation()
+  const {
+    toggle: { taikoFarming },
+  } = useToggle()
   return (
     <Box
       marginTop={'calc(var(--header-height) * -1)'}
@@ -288,8 +291,26 @@ const Intro: React.FC<IntroProps> = ({  }) => {
           fontSize={'20px'}
           textAlign={'center'}
         >
-          {t("labelIntroDes3")}
+          {t('labelIntroDes3')}
         </Typography>
+        {taikoFarming.enable && (
+          <Section
+            title={t('labelInvestTaikoFarmingTitle')}
+            des1={t('labelInvestTaikoFarmingDes1')}
+            des2={t('labelInvestTaikoFarmingDes2')}
+            viewMoreLink='/taiko-farming'
+            imgURL={
+              SoursURL +
+              (theme.mode === 'dark'
+                ? 'earn/intro_screenshot_0.png'
+                : 'earn/intro_screenshot_0_light.png')
+            }
+            marginBottom={6}
+            sx={{
+              bgcolor: theme.mode === 'dark' ? hexToRGB('#303339', 0.8) : '#FFFFFF',
+            }}
+          />
+        )}
         <Section
           title={t('labelInvestDualTitle')}
           des1={t('labelInvestDualDes1')}

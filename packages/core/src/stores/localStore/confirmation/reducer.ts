@@ -23,6 +23,7 @@ const initialState: Confirmation = {
   showAutoDefault: false,
   confirmedOpenVaultPosition: false,
   showTaikoLaunchBanner: true,
+  showTaikoLockDescription: true,
   showTaikoLaunchBanner2: true,
 }
 
@@ -110,6 +111,9 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     setShowTaikoLaunchBanner(state: Confirmation, action: PayloadAction<{show: boolean}>) {
       state.showTaikoLaunchBanner = action.payload.show
     },
+    setShowTaikoLockDescription(state: Confirmation, action: PayloadAction<{show: boolean}>) {
+      state.showTaikoLockDescription = action.payload.show
+    },
     setShowTaikoLaunchBanner2(state: Confirmation, action: PayloadAction<{show: boolean}>) {
       state.showTaikoLaunchBanner2 = action.payload.show
     },
@@ -137,5 +141,6 @@ export const {
   setShowAutoDefault,
   setConfirmedOpenVaultPosition,
   setShowTaikoLaunchBanner,
+  setShowTaikoLockDescription,
   setShowTaikoLaunchBanner2,
 } = confirmationSlice.actions

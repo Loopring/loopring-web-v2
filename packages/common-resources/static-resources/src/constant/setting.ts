@@ -31,9 +31,9 @@ export const RowDualInvestConfig = {
 export const DirectionTag = '\u2192'
 export const FeeChargeOrderDefaultMap = new Map([
   [sdk.ChainId.MAINNET, ['ETH', 'USDT', 'LRC', 'DAI', 'USDC']],
-  [sdk.ChainId.TAIKO, ['ETH', 'USDT', 'LRC', 'USDC']],
+  [sdk.ChainId.TAIKO, ['ETH', 'USDT', 'LRC', 'USDC', 'TAIKO']],
   [sdk.ChainId.SEPOLIA, ['ETH', 'USDT', 'LRC', 'DAI']],
-  [sdk.ChainId.TAIKOHEKLA, ['ETH', 'USDT', 'LRC']],
+  [sdk.ChainId.TAIKOHEKLA, ['ETH', 'USDT', 'LRC', 'TAIKO']],
 ])
 export const HEADER_HEIGHT = 64
 export const LandPageHeightConfig = {

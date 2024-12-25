@@ -6,6 +6,7 @@ import {
   Info2Icon,
   L1L2_NAME_DEFINED,
   MapChainId,
+  mapSpecialTokenName,
   TokenType,
   TRADE_TYPE,
   TradeBtnStatus,
@@ -167,7 +168,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
 
                 {vaultJoinData && vaultJoinData?.maxShowVal ? (
                   <Typography component={'span'} variant='body2' color={'textPrimary'}>
-                    {vaultJoinData?.maxShowVal + ' ' + vaultJoinData?.belong}
+                    {vaultJoinData?.maxShowVal + ' ' + mapSpecialTokenName(vaultJoinData?.belong as string) }
                   </Typography>
                 ) : (
                   EmptyValueTag
@@ -245,6 +246,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
           </Grid>
           <Grid item>
             <ButtonStyle
+              sx={{textTransform: 'none'}}
               variant={'contained'}
               size={'large'}
               color={'primary'}

@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React from 'react'
 import styled from '@emotion/styled'
 import { CoinItemProps, CoinMenuProps } from './Interface'
-import { CoinInfo, CoinKey, TokenType, WalletCoin } from '@loopring-web/common-resources'
+import { CoinInfo, CoinKey, mapSpecialTokenName, TokenType, WalletCoin } from '@loopring-web/common-resources'
 import { Virtuoso } from 'react-virtuoso'
 import { CoinIcon } from '../form'
 import { EmptyDefault } from '../empty'
@@ -218,7 +218,7 @@ export const CoinItem = React.memo(
             />
           </ListItemIcon>
           <ListItemText
-            primary={belongAlice ?? simpleName}
+            primary={mapSpecialTokenName(belongAlice ?? simpleName)}
             secondary={
               <>
                 {contentEle ? (
