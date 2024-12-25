@@ -33,6 +33,7 @@ import {
   PriceTag,
   SagaStatus,
   SoursURL,
+  STAKING_INVEST_LIMIT,
   TOAST_TIME,
   TokenType,
   TradeBtnStatus,
@@ -42,12 +43,16 @@ import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk'
 import { useOverview } from './hook'
 import {
   confirmation,
+  fiatNumberDisplay,
+  numberFormatShowInPercent,
+  numberFormatThousandthPlace,
   TableWrapStyled,
   useAccount,
   useAccountInfo,
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
+  useStakeRedeemClick,
   useSystem,
   useTokenMap,
   useTokenPrices,
@@ -65,7 +70,8 @@ import { RowEarnConfig } from '../../../constant/setting'
 import { useGetVaultAssets } from 'pages/VaultPage/DashBoardPanel/hook'
 import { useVaultMarket } from 'pages/VaultPage/HomePanel/hook'
 import Decimal from 'decimal.js'
-
+import { TaikoFarmingPortfolioTable } from '@loopring-web/component-lib/src/components/tableList/taikoFarmingTable'
+import { utils } from 'ethers'
 const MyLiquidity = withTranslation('common')(
   ({
     t,
@@ -83,21 +89,18 @@ const MyLiquidity = withTranslation('common')(
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
 
-    const ammPoolRef = React.useRef(null)
-    const stakingRef = React.useRef(null)
-    const leverageETHRef = React.useRef(null)
     const dualRef = React.useRef(null)
-    const sideStakeRef = React.useRef(null)
     const { ammActivityMap } = useAmmActivityMap()
-    const { forexMap } = useSystem()
+    const { forexMap, getValueInCurrency } = useSystem()
     const { tokenMap, idIndex } = useTokenMap()
+
     const { tokenPrices } = useTokenPrices()
+    const { redeemItemClick } = useStakeRedeemClick()
     const { marketMap: dualMarketMap, status: dualMarketMapStatus } = useDualMap()
     const { assetsRawData, onSend, onReceive, allowTrade, getTokenRelatedMarketArray } =
       useGetAssets()
     const { account } = useAccount()
-    const history = useHistory()
-    const { currency, hideSmallBalances, defaultNetwork } = useSettings()
+    const { currency, hideSmallBalances, defaultNetwork, coinJson } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { setShowAutoDefault } = confirmation.useConfirmation()
     const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
@@ -133,13 +136,13 @@ const MyLiquidity = withTranslation('common')(
       handleOnchange,
       onEditDualClick,
     } = useDualAsset()
-    
+
     const {
       summaryMyInvest,
-
       getStakingList,
       stakedSymbol,
-      
+      stakeShowLoading,
+      totalStaked,
     } = useOverview({
       ammActivityMap,
       dualOnInvestAsset,
@@ -172,10 +175,6 @@ const MyLiquidity = withTranslation('common')(
           }, '0')
         : undefined
     }, [dualOnInvestAsset, tokenPrices])
-    const _summaryMyInvest = sdk
-      .toBig(dualStakeDollar ?? 0)
-      .plus(summaryMyInvest.investDollar ?? 0)
-      .toString()
 
     const [tab, setTab] = React.useState(match?.params?.type ?? InvestAssetRouter.DUAL)
     React.useEffect(() => {
@@ -245,22 +244,51 @@ const MyLiquidity = withTranslation('common')(
     } = useGetVaultAssets({ vaultAccountInfo: vaultAccountInfo })
     const { tokenMap: vaultTokenMap } = useVaultMap()
     const priceTag = PriceTag[CurrencyToTag[currency]]
-    const {vaultTickerMap} = useVaultTicker()
+    const { vaultTickerMap } = useVaultTicker()
+    const showTaikoFarming = new Decimal(totalStaked).greaterThan('0') ? true : false
+    const taikoFarmingTotalStakedRaw = utils.formatUnits(
+      totalStaked,
+      tokenMap[stakedSymbol].decimals,
+    )
+    const taikoFarmingTotalStaked = numberFormatThousandthPlace(taikoFarmingTotalStakedRaw, {
+      fixed: tokenMap[stakedSymbol].precision,
+    })
+    const taikoFarmingTotalStakedDollarRaw = 
+      getValueInCurrency(
+        new Decimal(taikoFarmingTotalStakedRaw).times(tokenPrices[stakedSymbol] ?? 0).toString(),
+      )
+    const taikoFarmingTotalStakedDollar = fiatNumberDisplay(
+      taikoFarmingTotalStakedDollarRaw,
+      currency,
+    )
+    const taikoFarmingInfo = new Decimal(taikoFarmingTotalStakedRaw).greaterThan('0')
+      ? {
+          amount: taikoFarmingTotalStaked,
+          value: taikoFarmingTotalStakedDollar,
+        }
+      : undefined
     const defiTotalInUSD = sdk
       .toBig(dualStakeDollar ?? 0)
       .plus(totalAssetVault ?? 0)
+      .plus(taikoFarmingTotalStakedDollarRaw ?? 0)
       .toString()
     // @ts-ignore
     const { marketProps } = useVaultMarket({ tableRef: undefined })
     const showDual = dualList.length > 0
-    const showPortal = assetPanelProps.rawData.find(ele => {
+    const showPortal = assetPanelProps.rawData.find((ele) => {
       try {
         return new Decimal(ele.amount).greaterThan('0')
       } catch {
         return false
       }
-    }) ? true : false
-    const showEmptyHint = !assetPanelProps.isLoading && !showDual && !showPortal && !dualLoading
+    })
+      ? true
+      : false
+    
+
+    const showEmptyHint =
+      !assetPanelProps.isLoading && !showDual && !showPortal && !dualLoading && !showTaikoFarming
+
     return (
       <Box display={'flex'} flex={1} position={'relative'} flexDirection={'column'}>
         <MaxWidthContainer
@@ -294,13 +322,6 @@ const MyLiquidity = withTranslation('common')(
               }}
             >
               <Box display={'flex'}>
-                <Box
-                  component={'img'}
-                  marginRight={1}
-                  width={40}
-                  height={40}
-                  src={SoursURL + 'images/icon-dual.svg'}
-                />
                 <Box>
                   <Typography variant='h4'>{t('labelInvestDualTitle')}</Typography>
                   <Typography color={'var(--color-text-third)'}>
@@ -344,6 +365,7 @@ const MyLiquidity = withTranslation('common')(
                     cancelReInvest={_cancelReInvest as any}
                     getProduct={getProduct}
                     rowConfig={RowEarnConfig}
+                    noMinHeight
                   />
                   <Modal
                     open={dualOpen}
@@ -441,13 +463,6 @@ const MyLiquidity = withTranslation('common')(
               }}
             >
               <Box marginBottom={2} display={'flex'}>
-                <Box
-                  component={'img'}
-                  marginRight={1}
-                  width={40}
-                  height={40}
-                  src={SoursURL + 'images/icon-dual.svg'}
-                />
                 <Box>
                   <Typography variant='h4'>Portal</Typography>
                   <Typography color={'var(--color-text-third)'}>
@@ -482,6 +497,52 @@ const MyLiquidity = withTranslation('common')(
                     })
                   }}
                   showFilter
+                  hideActions
+                  noMinHeight
+                />
+              </Box>
+            </Box>
+          )}
+          {showTaikoFarming && (
+            <Box
+              sx={{
+                borderRadius: '8px',
+                border: '1px solid var(--color-border)',
+                padding: 4.5,
+                marginTop: 4,
+              }}
+            >
+              <Box>
+                <Typography variant={'h4'}>{t('labelInvestType_TAIKOFarming')}</Typography>
+                <Typography color={'var(--color-text-third)'}>
+                  {t("labelBalance")}:{' '}
+                  {hideAssets
+                    ? HiddenTag
+                    : taikoFarmingInfo
+                    ? taikoFarmingInfo.value
+                    : EmptyValueTag}
+                </Typography>
+              </Box>
+              <Box ml={-3}>
+                <TaikoFarmingPortfolioTable
+                  rawData={
+                    taikoFarmingInfo
+                      ? [
+                          {
+                            tokenSymbol: stakedSymbol,
+                            amount: taikoFarmingInfo.amount,
+                            value: taikoFarmingInfo.value,
+                            coinJSON: coinJson[stakedSymbol],
+                          },
+                        ]
+                      : []
+                  }
+                  idIndex={idIndex}
+                  tokenMap={tokenMap}
+                  getStakingList={getStakingList}
+                  isLoading={stakeShowLoading}
+                  hideAssets={hideAssets}
+                  noMinHeight
                   hideDustCollector
                 />
               </Box>

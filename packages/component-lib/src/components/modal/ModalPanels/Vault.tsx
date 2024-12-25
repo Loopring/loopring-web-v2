@@ -15,6 +15,7 @@ import {
   ErrorIcon,
   hexToRGB,
   Info2Icon,
+  mapSpecialTokenName,
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
 } from '@loopring-web/common-resources'
@@ -402,7 +403,7 @@ const JoinDes2 = (props: PanelProps) => {
               type={TokenType.single}
               tokenIcon={[coinJson[symbol], undefined]}
             />
-            {sum + ' ' + symbol}
+            {sum + ' ' + mapSpecialTokenName(symbol)}
           </Typography>
         </Typography>
         {/*<Typography*/}

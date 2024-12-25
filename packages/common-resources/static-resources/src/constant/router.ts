@@ -874,6 +874,7 @@ export enum RecordTabIndex {
   StopLimitRecords = 'StopLimitRecords',
   leverageETHRecords = 'leverageETHRecords',
   VaultRecords = 'VaultRecords',
+  TaikoLockRecords = 'TaikoLockRecords',
 }
 
 export enum AssetTabIndex {

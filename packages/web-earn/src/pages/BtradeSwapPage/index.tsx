@@ -17,7 +17,7 @@ import {
   SoursURL,
   ImageIcon,
 } from '@loopring-web/common-resources'
-import { confirmation, useBtradeMap, useBtradeSwap, useNotify } from '@loopring-web/core'
+import { confirmation, useBtradeMap, useBtradeSwap, useNotify, useSystem } from '@loopring-web/core'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from '@emotion/styled'
@@ -159,6 +159,7 @@ export const BtradeSwapPage = withTranslation('common')(({ t, ...rest }: WithTra
   )
 
   const { isMobile } = useSettings()
+  const { app } = useSystem()
   const { marketArray } = useBtradeMap()
   const history = useHistory()
 
@@ -214,8 +215,11 @@ export const BtradeSwapPage = withTranslation('common')(({ t, ...rest }: WithTra
         handleClose={(_e, isAgree) => {
           setConfirmedBtradeSwap(false)
           if (!isAgree) {
-            history.replace('/markets')
-            // history.goBack();
+            if (app === 'earn') {
+              history.goBack()
+            } else {
+              history.replace('/markets')
+            }
           } else {
             confirmedBtradeSwapFunc()
           }
