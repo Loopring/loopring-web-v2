@@ -1,19 +1,21 @@
 import {
+  BackIcon,
   CloseIcon,
   ContactIcon,
   Info2Icon,
   SearchIcon,
   TokenType,
 } from '@loopring-web/common-resources'
-import { Box, Button, Input, Tooltip, Typography } from '@mui/material'
-import { SpaceBetweenBox } from '../../basic-lib'
+
+import { Box, Button, Input, Tooltip, Typography, Modal } from '@mui/material'
+import { ModalCloseButton, SpaceBetweenBox } from '../../basic-lib'
 import { TransferToTaikoAccountProps } from '../../../components/tradePanel'
 import { CoinIcons } from '../../tableList'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { FeeSelectModal } from './FeeSelect'
 import { ContactSelection } from '../../tradePanel/components/ContactSelection'
-
-export const TransferToTaikoAccount = (props: TransferToTaikoAccountProps) => {
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) => {
   const {
     onClickContact,
     balance,
@@ -31,6 +33,9 @@ export const TransferToTaikoAccount = (props: TransferToTaikoAccountProps) => {
     tokenSelection,
     receiptInput,
     amountInput,
+    onClickBack,
+    onClickClose,
+    open,
   } = props
   const mainPanel = (
     <>
@@ -104,7 +109,7 @@ export const TransferToTaikoAccount = (props: TransferToTaikoAccountProps) => {
               bgcolor: 'var(--color-bg-secondary)',
               textAlign: 'right',
               px: 2,
-              fontSize: '16px',
+              fontSize: '14px',
             }}
             placeholder='Recipient'
             disableUnderline
@@ -129,8 +134,10 @@ export const TransferToTaikoAccount = (props: TransferToTaikoAccountProps) => {
               color={'var(--color-text-primary)'}
               sx={{ cursor: 'pointer' }}
               onClick={onClickFee}
+              display={'flex'}
+              alignItems={'center'}
             >
-              {fee} {'>'}
+              {fee} {fee !== '--' && <ArrowForwardIosIcon sx={{fontSize: '14px', mb: '1px'}} className='custom-size'/>} 
             </Typography>
           }
         />
@@ -146,12 +153,19 @@ export const TransferToTaikoAccount = (props: TransferToTaikoAccountProps) => {
         <Input
           value={tokenSelection.filter}
           onChange={(e) => tokenSelection.onChangeFilter(e.target.value)}
-          endAdornment={tokenSelection.filter ? <Box component={'span'} onClick={tokenSelection.onClickClearFilter}>x</Box> : <></>}
+          endAdornment={
+            tokenSelection.filter ? (
+              <Box component={'span'} onClick={tokenSelection.onClickClearFilter}>
+                x
+              </Box>
+            ) : (
+              <></>
+            )
+          }
           placeholder='Search'
-          startAdornment={<SearchIcon sx={{mr: 1}} />}
-          sx={{ width: '94%',px:1 , bgcolor: 'var(--field-opacity)' }}
+          startAdornment={<SearchIcon sx={{ mr: 1 }} />}
+          sx={{ width: '94%', px: 1, bgcolor: 'var(--field-opacity)' }}
           disableUnderline
-
         />
         <Typography
           width={'16%'}
@@ -205,26 +219,70 @@ export const TransferToTaikoAccount = (props: TransferToTaikoAccountProps) => {
   )
 
   return (
-    <Box
-      display={'flex'}
-      flexDirection={'column'}
-      justifyContent={'space-between'}
-      width={'var(--modal-width)'}
-      height={'500px'}
-      px={panel === 'tokenSelection' ? 2.5 : 5}
-      pb={5}
+    <Modal
+      open={open}
+      onClose={onClickClose}
+      aria-labelledby='modal-modal-title'
+      aria-describedby='modal-modal-description'
     >
-      {panel === 'main' ? mainPanel : panel === 'tokenSelection' ? tokenSelectPanel : <ContactSelection {...contacts} />}
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box bgcolor={'var(--color-box)'}>
+          <Box
+            display={'flex'}
+            width={'100%'}
+            justifyContent={'space-between'}
+            mt={3}
+            px={3}
+            mb={1.5}
+          >
+            <BackIcon
+              sx={{
+                cursor: 'pointer',
+                fontSize: '24px',
+                color: 'var(--color-text-secondary)',
+              }}
+              className='custom-size'
+              onClick={onClickBack}
+            />
+            <CloseIcon
+              sx={{
+                cursor: 'pointer',
+                fontSize: '24px',
+                color: 'var(--color-text-secondary)',
+              }}
+              className='custom-size'
+              onClick={onClickClose}
+            />
+          </Box>
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
+            width={'var(--modal-width)'}
+            height={'500px'}
+            px={panel === 'tokenSelection' ? 2.5 : 4}
+            pb={4}
+          >
+            {panel === 'main' ? (
+              mainPanel
+            ) : panel === 'tokenSelection' ? (
+              tokenSelectPanel
+            ) : (
+              <ContactSelection {...contacts} scrollHeight='388px' />
+            )}
 
-      <FeeSelectModal
-        open={feeSelect.open}
-        onClose={feeSelect.onClose}
-        chargeFeeTokenList={feeSelect.chargeFeeTokenList}
-        feeInfo={feeSelect.feeInfo}
-        handleToggleChange={feeSelect.handleToggleChange}
-        disableNoToken={feeSelect.disableNoToken}
-        withdrawInfos={feeSelect.withdrawInfos}
-      />
-    </Box>
+            <FeeSelectModal
+              open={feeSelect.open}
+              onClose={feeSelect.onClose}
+              chargeFeeTokenList={feeSelect.chargeFeeTokenList}
+              feeInfo={feeSelect.feeInfo}
+              handleToggleChange={feeSelect.handleToggleChange}
+              disableNoToken={feeSelect.disableNoToken}
+              withdrawInfos={feeSelect.withdrawInfos}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
   )
 }

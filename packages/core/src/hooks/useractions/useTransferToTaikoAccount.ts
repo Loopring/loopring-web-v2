@@ -1,4 +1,5 @@
 import {
+  AccountStep,
   TransferToTaikoAccountProps,
   useOpenModals,
   useSettings,
@@ -10,7 +11,7 @@ import { LoopringAPI } from '../../api_wrapper'
 import { MapChainId, WalletMap } from '@loopring-web/common-resources'
 import { OffchainFeeInfo, OffchainFeeReqType } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
-import { numberFormat } from '../../utils'
+import { isValidateNumberStr, numberFormat } from '../../utils'
 import { makeWalletLayer2 } from '../../hooks/help'
 import Decimal from 'decimal.js'
 
@@ -139,14 +140,14 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     },
     onClickSend: () => {},
     onInputAmount: (str) => {
-      // todo validate
-      setState({
-        ...state,
-        amount: str,
-      })
+      if (isValidateNumberStr(str, transferToken.precision)) {
+        setState({
+          ...state,
+          amount: str,
+        })
+      }
     },
     onInputAddress: (addr) => {
-      // todo validate
       setState({
         ...state,
         receipt: addr,
@@ -215,7 +216,15 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       disableNoToken: false,
       onClickFee: () => {},
       feeLoading: false,
-      isFeeNotEnough: false, // todo
+      isFeeNotEnough: (() => {
+        const feeInfo = state.feeList.find((item) => item.token === state.feeToken)
+        if (!feeInfo || !tokenMap) return false
+        if (!walletMap || !state.feeToken || walletMap[state.feeToken]?.count) return true
+        const count = walletMap[state.feeToken]!.count
+        return new Decimal(count).gte(
+          utils.formatUnits(feeInfo.fee, tokenMap[state.feeToken].decimals),
+        ) 
+      })(),
       isFastWithdrawAmountLimit: false,
     },
     panel: state.panel,
@@ -274,6 +283,24 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     },
     receiptInput: state.receipt,
     amountInput: state.amount,
+    onClickBack() {
+      if (state.panel === 'main') {
+        setShowTransferToTaikoAccount({isShow: false})
+        setShowAccount({isShow: true,
+          step: AccountStep.SendAssetGateway
+        })
+      } else {
+        setState({
+          ...state,
+          panel: 'main',
+        })
+      } 
+      
+    },
+    onClickClose() {
+      setShowTransferToTaikoAccount({isShow: false})
+    },
+    open: modals.isShowTransferToTaikoAccount.isShow
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
   return output

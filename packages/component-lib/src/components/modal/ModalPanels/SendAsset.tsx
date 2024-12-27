@@ -86,7 +86,6 @@ export const SendAsset = ({
             }}
             sx={{
               overflow: 'hidden',
-              height: '80px',
               '& .corner-tag': {
                 background: '#B8BCC7',
               },

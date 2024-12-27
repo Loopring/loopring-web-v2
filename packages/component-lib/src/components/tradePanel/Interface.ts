@@ -281,6 +281,8 @@ export type TransferToTaikoAccountProps = {
   onInputAmount: (str: string) => void
   onInputAddress: (str: string) => void
   onClickBalance: () => void
+  onClickBack: () => void
+  onClickClose: () => void
   fee: string
   balance: string
   token: {
@@ -307,6 +309,7 @@ export type TransferToTaikoAccountProps = {
   }
   receiptInput: string
   amountInput: string
+  open: boolean
 }
 
 export * from './components/Interface'

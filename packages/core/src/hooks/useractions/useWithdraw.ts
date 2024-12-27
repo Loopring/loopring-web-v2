@@ -282,34 +282,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isNotAvailableAddress,
   ])
 
-  React.useEffect(() => {
-    if (withdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
-      const tokenInfo = tokenMap[withdrawValue.belong]
-      LoopringAPI.exchangeAPI
-        .getWithdrawalAgents({
-          tokenId: tokenInfo.tokenId,
-          amount: sdk.toBig(tokenInfo.orderAmounts.dust).toString(),
-        })
-        .then((respons) => {
-          if (withdrawValue.belong && respons?.supportTokenMap[withdrawValue.belong]) {
-            setWithdrawTypes({
-              [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: 'Fast',
-              [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
-            })
-          } else {
-            updateWithdrawData({
-              ...withdrawValue,
-              withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-            })
-            setWithdrawTypes({
-              [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
-            })
-          }
-        })
-
-      // const agent = await ;
-    }
-  }, [withdrawValue.belong])
 
   const walletLayer2Callback = () => {
     const walletMap =

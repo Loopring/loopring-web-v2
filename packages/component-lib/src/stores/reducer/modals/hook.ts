@@ -112,11 +112,12 @@ export const useOpenModals = () => {
     ),
     setShowTransferToTaikoAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
-        if (toggle.trttansferToTaikoAccount.enable) {
-          dispatch(setShowTransferToTaikoAccount(state))
-        } else {
-          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'TransferToTaikoAccount' }))
-        }
+        dispatch(setShowTransferToTaikoAccount(state))
+        // if (toggle.trttansferToTaikoAccount.enable) {
+        //   dispatch(setShowTransferToTaikoAccount(state))
+        // } else {
+        //   dispatch(setShowTradeIsFrozen({ isShow: true, type: 'TransferToTaikoAccount' }))
+        // }
       },
       [dispatch],
     ),

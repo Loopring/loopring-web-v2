@@ -28,7 +28,7 @@ import {
   WithdrawPanel,
   WithdrawProps,
   EditContact,
-  TransferToTaikoAccount,
+  TransferToTaikoAccountModal,
   TransferToTaikoAccountProps,
 } from '../..'
 import {
@@ -47,6 +47,7 @@ import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
 import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
 import { TransferNFTBurn } from './components'
+
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -357,18 +358,11 @@ export const ModalPanel = <
           />
         }
       />
-      <Modal
-        open 
-        // ={isShowTransferToTaikoAccount.isShow}
-        onClose={() => {
-          setShowTransferToTaikoAccount({ isShow: false })
-        }}
-        content={
-          <TransferToTaikoAccount 
-            {...transferToTaikoProps}
-          />
-        }
+      <TransferToTaikoAccountModal
+        {...transferToTaikoProps}
+        // open={isShowTransferToTaikoAccount.isShow}
       />
+      
       <Modal
         open={isShowWithdraw.isShow}
         contentClassName={'trade-wrap'}
@@ -381,7 +375,7 @@ export const ModalPanel = <
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: isMobile ? 'auto' : 500,
+              _height: isMobile ? 'auto' : 530,
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,

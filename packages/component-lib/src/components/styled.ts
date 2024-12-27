@@ -375,7 +375,7 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     font-size: ${({ theme }) => theme.fontDefault.h5};
     justify-content: space-between;
     flex-direction: row;
-    height: ${({ theme }) => theme.unit * 10}px;
+    height: ${({ theme }) => theme.unit * 9}px;
     border-radius: 4px;
 
     &.isMobile {

@@ -27,6 +27,7 @@ export const CustomCheckBox = (props: CustomCheckBoxProps & BoxProps) => {
           sx={{
             color: theme.colorBase.primary,
             fontSize: '24px',
+            cursor: 'pointer',
           }}
           className='custom-size'
         />
@@ -34,6 +35,7 @@ export const CustomCheckBox = (props: CustomCheckBoxProps & BoxProps) => {
         <UncheckIcon
           sx={{
             fontSize: '24px',
+            cursor: 'pointer',
           }}
           className='custom-size'
         />

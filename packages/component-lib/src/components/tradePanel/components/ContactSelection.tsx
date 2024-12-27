@@ -137,7 +137,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
         )
       })
     : contacts
-  console.log('filterContacts', filterContacts)
   const { t } = useTranslation()
 
   const normalView = (
