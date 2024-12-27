@@ -113,6 +113,8 @@ export const useOpenModals = () => {
     setShowTransferToTaikoAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
         dispatch(setShowTransferToTaikoAccount(state))
+
+        // enable handle
         // if (toggle.trttansferToTaikoAccount.enable) {
         //   dispatch(setShowTransferToTaikoAccount(state))
         // } else {
