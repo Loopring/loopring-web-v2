@@ -9,7 +9,7 @@ import {
   RoundCircleIcon,
   myLog,
 } from '@loopring-web/common-resources'
-import { FeeSelectProps, Modal } from '../../../components/tradePanel'
+import { FeeSelectProps, Modal, FeeSelectModalProps } from '../../../components/tradePanel'
 import { CoinIcon } from '../../../components/basic-lib'
 import { OffchainFeeReqType, toBig } from '@loopring-web/loopring-sdk'
 
@@ -57,6 +57,118 @@ const FeeTypeStyled = styled(Box)<{ checked?: boolean }>`
 const BackIconStyled = styled(BackIcon)`
   transform: rotate(180deg);
 `
+
+
+
+export const FeeSelectModal = (props: FeeSelectModalProps) => {
+  const { t } = useTranslation()
+  const {
+    open,
+    onClose,
+    chargeFeeTokenList,
+    feeInfo: selectedFeeInfo,
+    handleToggleChange,
+    disableNoToken,
+    withdrawInfos,
+  } = props
+  return (
+    <Modal
+      open={open}
+      onClose={() => {
+        onClose()
+      }}
+      content={
+        <Box marginTop={'-40px'} width={'var(--modal-width)'}>
+          <Typography
+            component={'header'}
+            height={'var(--toolbar-row-height)'}
+            display={'flex'}
+            paddingX={3}
+            justifyContent={'flex-start'}
+            flexDirection={'row'}
+            alignItems={'center'}
+          >
+            <Typography
+              variant={'h4'}
+              component={'span'}
+              display={'inline-flex'}
+              color={'textPrimary'}
+            >
+              {t('labelFee')}
+            </Typography>
+          </Typography>
+          <Divider />
+          <Box width={'100%'} marginY={3} paddingX={3}>
+            {withdrawInfos && (
+              <Box marginBottom={3} display={'flex'}>
+                {Object.keys(withdrawInfos.types).map((key) => {
+                  const type = Number(key)
+                  return (
+                    <FeeTypeStyled
+                      onClick={() => {
+                        withdrawInfos.onChangeType(Number(key))
+                      }}
+                      checked={withdrawInfos.type === type}
+                      key={key}
+                    >
+                      <Typography>{t('withdrawTypeLabel' + withdrawInfos.types[key])}</Typography>
+                    </FeeTypeStyled>
+                  )
+                })}
+              </Box>
+            )}
+            {chargeFeeTokenList.map((feeInfo, index) => {
+              const inefficient =
+                !feeInfo.count ||
+                toBig(feeInfo.count).isZero() ||
+                toBig(feeInfo.count).lt(feeInfo.fee ?? '0')
+              const disabled = (disableNoToken && !feeInfo.hasToken) || inefficient
+              myLog('inefficient', feeInfo.belong, inefficient)
+              return (
+                <Option
+                  disabled={disabled}
+                  marginBottom={2}
+                  checked={selectedFeeInfo?.belong == feeInfo.belong}
+                  onClick={() => {
+                    if (!disabled) {
+                      handleToggleChange(feeInfo)
+                    }
+                  }}
+                >
+                  <Box display={'flex'}>
+                    <CoinIcon size={32} symbol={feeInfo.belong} />
+                    <Box marginLeft={1}>
+                      <Typography>
+                        {feeInfo.belong}{' '}
+                        {feeInfo.discount && feeInfo.discount !== 1 && (
+                          <Typography
+                            marginLeft={0.5}
+                            component={'span'}
+                            borderRadius={0.5}
+                            paddingX={0.5}
+                            bgcolor={'var(--color-warning)'}
+                          >
+                            {Math.round((1 - feeInfo.discount) * 100)}% OFF
+                          </Typography>
+                        )}
+                      </Typography>
+                      <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
+                        {t('labelFeeAvailablePay', {
+                          available: feeInfo.count ? feeInfo.count : '0.00',
+                          pay: feeInfo.fee,
+                        })}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Option>
+              )
+            })}
+          </Box>
+        </Box>
+      }
+    />
+  )
+}
 
 export const FeeSelect = (props: FeeSelectProps) => {
   const {
@@ -136,100 +248,14 @@ export const FeeSelect = (props: FeeSelectProps) => {
         </Box>
       </Typography>
       {middleContent}
-      <Modal
+      <FeeSelectModal
         open={open}
-        onClose={() => {
-          onClose()
-        }}
-        content={
-          <Box marginTop={'-40px'} width={'var(--modal-width)'}>
-            <Typography
-              component={'header'}
-              height={'var(--toolbar-row-height)'}
-              display={'flex'}
-              paddingX={3}
-              justifyContent={'flex-start'}
-              flexDirection={'row'}
-              alignItems={'center'}
-            >
-              <Typography
-                variant={'h4'}
-                component={'span'}
-                display={'inline-flex'}
-                color={'textPrimary'}
-              >
-                {t('labelFee')}
-              </Typography>
-            </Typography>
-            <Divider />
-            <Box width={'100%'} marginY={3} paddingX={3}>
-              {withdrawInfos && (
-                <Box marginBottom={3} display={'flex'}>
-                  {Object.keys(withdrawInfos.types).map((key) => {
-                    const type = Number(key)
-                    return (
-                      <FeeTypeStyled
-                        onClick={() => {
-                          withdrawInfos.onChangeType(Number(key))
-                        }}
-                        checked={withdrawInfos.type === type}
-                        key={key}
-                      >
-                        <Typography>{t('withdrawTypeLabel' + withdrawInfos.types[key])}</Typography>
-                      </FeeTypeStyled>
-                    )
-                  })}
-                </Box>
-              )}
-              {chargeFeeTokenList.map((feeInfo, index) => {
-                const inefficient =
-                  !feeInfo.count ||
-                  toBig(feeInfo.count).isZero() ||
-                  toBig(feeInfo.count).lt(feeInfo.fee ?? '0')
-                const disabled = (disableNoToken && !feeInfo.hasToken) || inefficient
-                myLog('inefficient', feeInfo.belong, inefficient)
-                return (
-                  <Option
-                    disabled={disabled}
-                    marginBottom={2}
-                    checked={selectedFeeInfo?.belong == feeInfo.belong}
-                    onClick={() => {
-                      if (!disabled) {
-                        handleToggleChange(feeInfo)
-                      }
-                    }}
-                  >
-                    <Box display={'flex'}>
-                      <CoinIcon size={32} symbol={feeInfo.belong} />
-                      <Box marginLeft={1}>
-                        <Typography>
-                          {feeInfo.belong}{' '}
-                          {feeInfo.discount && feeInfo.discount !== 1 && (
-                            <Typography
-                              marginLeft={0.5}
-                              component={'span'}
-                              borderRadius={0.5}
-                              paddingX={0.5}
-                              bgcolor={'var(--color-warning)'}
-                            >
-                              {Math.round((1 - feeInfo.discount) * 100)}% OFF
-                            </Typography>
-                          )}
-                        </Typography>
-                        <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                          {t('labelFeeAvailablePay', {
-                            available: feeInfo.count ? feeInfo.count : '0.00',
-                            pay: feeInfo.fee,
-                          })}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Option>
-                )
-              })}
-            </Box>
-          </Box>
-        }
+        onClose={onClose}
+        chargeFeeTokenList={chargeFeeTokenList}
+        feeInfo={selectedFeeInfo}
+        handleToggleChange={handleToggleChange}
+        disableNoToken={disableNoToken}
+        withdrawInfos={withdrawInfos}
       />
     </>
   )

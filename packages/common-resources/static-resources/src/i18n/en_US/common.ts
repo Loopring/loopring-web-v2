@@ -2496,5 +2496,6 @@ export default {
   labelLoopringDeFiIs21: 'Loopring DeFi is expanding to various EVM-compatible networks using its trustless, time-tested ZK-Rollup protocol. The first',
   labelLoopringDeFiIs22: 'deployment will be on Taiko. Join us for an exciting journey ahead!',
   labelLoopringDeFiAssets: 'Loopring DeFi Assets',
+  labelSendAssetToTaikoAccount: 'To Taiko Account'
 }
 

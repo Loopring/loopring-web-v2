@@ -1,17 +1,19 @@
 import React from 'react'
 import Web3 from 'web3'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { AccountStep, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals, useSettings, WithdrawProps } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   AddressError,
   CoinMap,
   EXCHANGE_TYPE,
   Explorer,
+  FeeInfo,
   getValuePrecisionThousand,
   globalSetup,
   IBData,
   LIVE_FEE_TIMES,
+  MapChainId,
   myLog,
   SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
@@ -28,12 +30,15 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   BIGO,
   DAYS,
+  fiatNumberDisplay,
   getTimestampDaysLater,
   isAccActivated,
   LAST_STEP,
   LoopringAPI,
   makeWalletLayer2,
+  numberFormat,
   store,
+  TokenMap,
   useAccount,
   useAddressCheck,
   useBtnStatus,
@@ -42,13 +47,35 @@ import {
   useModalData,
   useSystem,
   useTokenMap,
+  useTokenPrices,
   useWalletLayer2Socket,
   walletLayer2Service,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
-import _ from 'lodash'
+import _, { values } from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
+import { useGetSet, useGetSetState } from 'react-use'
+import { ethers } from 'ethers'
+import Decimal from 'decimal.js'
 
+const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap: TokenMap<{
+  [key: string]: any;
+}>, walletMap: WalletMap<string, any>) => {
+  return {
+    belong: offchainFeeInfo.token,
+    fee: ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals),
+    feeRaw: offchainFeeInfo.fee,
+    token: offchainFeeInfo.token,
+    hasToken: !!offchainFeeInfo.token,
+    count: walletMap[offchainFeeInfo.token]?.count,
+    discount: offchainFeeInfo.discount,
+    __raw__: {
+      fastWithDraw: '',
+      tokenId: tokenMap[offchainFeeInfo.token].tokenId,
+      feeRaw: offchainFeeInfo.fee,
+    }
+  }
+}
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
@@ -59,8 +86,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     setShowEditContact,
   } = useOpenModals()
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
+  const { tokenPrices } = useTokenPrices()
+  const { currency } = useSettings()
   const { account, status: accountStatus } = useAccount()
-  const { exchangeInfo, chainId } = useSystem()
+  const { exchangeInfo, chainId, getValueInCurrency,  } = useSystem()
+  
   const {
     contacts,
     errorMessage: contactsErrorMessage,
@@ -77,41 +107,45 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   >(undefined)
 
   const [isFastWithdrawAmountLimit, setIsFastWithdrawAmountLimit] = React.useState<boolean>(false)
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-    resetIntervalTime,
-  } = useChargeFees({
-    requestType: withdrawValue.withdrawType,
-    amount: withdrawValue.tradeValue,
-    needAmountRefresh:
-      withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-    tokenSymbol: store.getState()._router_modalData.withdrawValue?.belong,
-    updateData: ({ fee, amount, tokenSymbol }) => {
-      const _withdrawValue = store.getState()._router_modalData.withdrawValue
-      myLog(
-        withdrawValue.withdrawType,
-        _withdrawValue.withdrawType,
-        withdrawValue.belong,
-        _withdrawValue.belong,
-        amount,
-        _withdrawValue.tradeValue,
-        tokenSymbol,
-      )
-      if (
-        withdrawValue.withdrawType == _withdrawValue.withdrawType &&
-        _withdrawValue.belong === tokenSymbol &&
-        ((withdrawValue.withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL &&
-          amount == _withdrawValue.tradeValue) ||
-          withdrawValue.withdrawType == sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-      ) {
-        updateWithdrawData({ ..._withdrawValue, fee })
-      }
+
+
+  const [getState, setState] = useGetSet({
+    fee: {
+      chargeFeeTokenListNormal: [] as sdk.OffchainFeeInfo[],
+      chargeFeeTokenListFast: [] as sdk.OffchainFeeInfo[],
+      isOnLoading: false,
+      symbol: undefined as string | undefined, 
     },
+    withdrawMode: {
+      fastInfo: undefined as undefined | {
+        fee: string
+        time: string
+      },
+      normalInfo: undefined as undefined | {
+        fee: string
+        time: string
+      },
+      mode: 'fast' as 'fast' | 'normal',
+    }
   })
+  const { fee: { symbol: feeSymbol }, withdrawMode } = getState()
+  const chargeFeeTokenList = withdrawMode.mode === 'fast' ? getState().fee.chargeFeeTokenListFast : getState().fee.chargeFeeTokenListNormal
+  const feeInfo = feeSymbol 
+    ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
+    : chargeFeeTokenList[0]
+  const isFeeNotEnough = {
+    isFeeNotEnough: false,
+    isOnLoading: getState().fee.isOnLoading
+  }
+  const handleFeeChange = (feeInfo: FeeInfo) => {
+    setState({
+      ...getState(),
+      fee: {
+        ...getState().fee,
+        symbol: feeInfo.token,
+      },
+    })
+  }
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<Partial<WithdrawTypes>>(() => {
     return {
@@ -267,11 +301,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               ...withdrawValue,
               withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
             })
-            checkFeeIsEnough({
-              requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-              tokenSymbol: withdrawValue.belong,
-              isRequiredAPI: true,
-            })
             setWithdrawTypes({
               [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
             })
@@ -290,7 +319,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     if (info?.isRetry) {
-      checkFeeIsEnough()
       return
     }
     if (contactsErrorMessage) {
@@ -366,7 +394,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     account.accAddress,
     setAddress,
     info?.isToMyself,
-    checkFeeIsEnough,
     symbol,
     walletMap2,
     updateWithdrawData,
@@ -376,43 +403,73 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     contactAddress,
   ])
 
+  const refreshFee = async () => {
+    const state = getState()    
+    const globalState = store.getState()
+    const account = globalState.account
+    const network = MapChainId[globalState.settings.defaultNetwork]
+    const symbol = globalState._router_modalData.withdrawValue.belong as string
+    console.log('refresh with state', state, account, network, symbol)
+    const feeResNormal = await LoopringAPI.userAPI?.getOffchainFeeAmt(
+      {
+        accountId: account.accountId,
+        requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+        tokenSymbol: symbol,
+      },
+      account.apiKey,
+    )
+    const feeResFast = await LoopringAPI.userAPI?.getUserCrossChainFee(
+      {
+        receiveFeeNetwork: network,
+        requestType: sdk.OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
+        calFeeNetwork: network,
+      },
+      account.apiKey,
+    ).catch(e => {
+      return {
+        fees: []
+      }
+    })
+    setState((state) => ({
+      ...state,
+      fee: {
+        ...state.fee,
+        chargeFeeTokenListNormal: feeResNormal?.fees ? values(feeResNormal.fees) : [],
+        chargeFeeTokenListFast: feeResFast?.fees ?? [],
+      },
+    }))
+  }
+  const onChangeWithdrawMode = (mode: 'fast' | 'normal') => {
+    setState((state) => ({
+      ...state,
+      withdrawMode: {
+        ...state.withdrawMode,
+        mode,
+      },
+    }))
+    refreshFee()
+  }
+
   React.useEffect(() => {
     const account = store.getState().account
+    var refreshTimer: NodeJS.Timeout | undefined = undefined
     if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault()
-    } else {
-      resetIntervalTime()
-    }
+      refreshTimer = setInterval(() => {
+        refreshFee()
+      }, 20 * 1000)
+      refreshFee()
+    } 
     return () => {
-      resetIntervalTime()
-      _checkFeeIsEnough.cancel()
       setAddress('')
+      refreshTimer && clearInterval(refreshTimer)
     }
   }, [isShow, accountStatus])
 
-  const _checkFeeIsEnough = _.debounce(
-    () => {
-      const {
-        tradeValue: amount,
-        withdrawType,
-        belong,
-      } = store.getState()._router_modalData.withdrawValue
-      checkFeeIsEnough({
-        isRequiredAPI: true,
-        intervalTime: LIVE_FEE_TIMES,
-        amount,
-        tokenSymbol: belong,
-        requestType: withdrawType,
-        needAmountRefresh: withdrawType == sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-      })
-    },
-    globalSetup.wait,
-    { leading: true, trailing: true },
-  )
 
   useWalletLayer2Socket({ walletLayer2Callback })
 
@@ -516,9 +573,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             })
             break
           default:
-            if ([102024, 102025, 114001, 114002].includes((e as sdk.RESULT_INFO)?.code || 0)) {
-              checkFeeIsEnough({ isRequiredAPI: true })
-            }
             setShowAccount({
               isShow: true,
               step: AccountStep.Withdraw_Failed,
@@ -548,7 +602,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       setShowAccount,
       resetWithdrawData,
       updateHW,
-      checkFeeIsEnough,
     ],
   )
 
@@ -740,8 +793,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         ..._withdrawValue,
         withdrawType: value as any,
       })
-      // _checkFeeIsEnough.cancel()
-      _checkFeeIsEnough()
     },
     handlePanelEvent: async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
       if (data.to === 'button') {
@@ -754,8 +805,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             balance: walletInfo?.count,
             address: '*',
           })
-          // _checkFeeIsEnough.cancel()
-          _checkFeeIsEnough()
         } else {
           updateWithdrawData({
             fee: undefined,
@@ -769,9 +818,16 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       }
     },
     handleFeeChange,
-    feeInfo,
+    feeInfo:
+      feeInfo && walletMap2 && tokenMap
+        ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2)
+        : undefined,
     addrStatus,
-    chargeFeeTokenList,
+    chargeFeeTokenList: chargeFeeTokenList.map(feeInfo => {
+      return feeInfo && walletMap2 && tokenMap
+      ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2)
+      : undefined
+    }).filter(feeInfo => feeInfo !== undefined),
     isFeeNotEnough,
     handleOnAddressChange: (value: any) => {
       setAddress(value)
@@ -796,7 +852,50 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       }
     },
     ens,
+    withdrawMode: (() => {
+      const state = getState()
+      const feeSymbol = state.fee.symbol ?? 'ETH'
+      const feeFast = state.fee.chargeFeeTokenListFast.find((item) => item.token === feeSymbol)
+      const feeNormal = state.fee.chargeFeeTokenListNormal.find((item) => item.token === feeSymbol)
+      const feeTokenInfo = tokenMap[feeSymbol]
+
+      const feeFastInCurrency =
+        feeTokenInfo && feeFast && tokenPrices
+          ? fiatNumberDisplay(
+              getValueInCurrency(
+                new Decimal(ethers.utils.formatUnits(feeFast.fee, feeTokenInfo.decimals))
+                  .mul(tokenPrices[feeSymbol])
+                  .toFixed(2),
+              ),
+              currency,
+            )
+          : undefined
+      const feeNormalInCurrency =
+        feeTokenInfo && feeNormal && tokenPrices
+          ? fiatNumberDisplay(
+              getValueInCurrency(
+                new Decimal(ethers.utils.formatUnits(feeNormal.fee, feeTokenInfo.decimals))
+                  .mul(tokenPrices[feeSymbol])
+                  .toFixed(2),
+              ),
+              currency,
+            )
+          : undefined
+      return {
+        mode: withdrawMode.mode,
+        fastMode: {
+          fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',
+          time: '--',
+        },
+        normalMode: {
+          fee: feeNormalInCurrency ? '~' + feeNormalInCurrency : '--',
+          time: '--',
+        },
+        onChange: onChangeWithdrawMode,
+      }
+    })(),
   }
+  console.log('withdrawProps', getState(), withdrawProps)
 
   return {
     withdrawProps,

@@ -468,6 +468,16 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
               ...result,
               legal: (result as any)?.raw_data?.legal ?? { enable: false },
             }
+          }).catch(() => {
+            return {
+              defiInvest: { enable: false },
+              register: { enable: false },
+              order: { enable: false },
+              joinAmm: { enable: false },
+              dAppTrade: { enable: false },
+              raw_data: { enable: false },
+              legal: { enable: false },
+            }
           }),
           toggleCheck(
             chainId,

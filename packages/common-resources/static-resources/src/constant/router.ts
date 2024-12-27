@@ -1310,24 +1310,14 @@ export const SendAssetListMap = {
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
     SendAssetList.SendAssetToAnotherNet.key,
-  ],
-  GOERLI: [
-    SendAssetList.SendAssetToMyL1.key,
-    SendAssetList.SendAssetToL2.key,
-    SendAssetList.SendAssetToOtherL1.key,
-    SendAssetList.SendAssetToAnotherNet.key,
+    SendAssetList.SendAssetToTaikoAccount.key,
   ],
   SEPOLIA: [
     SendAssetList.SendAssetToMyL1.key,
     SendAssetList.SendAssetToL2.key,
     SendAssetList.SendAssetToOtherL1.key,
     SendAssetList.SendAssetToAnotherNet.key,
-  ],
-  ARBGOERLI: [
-    SendAssetList.SendAssetToMyL1.key,
-    SendAssetList.SendAssetToL2.key,
-    SendAssetList.SendAssetToOtherL1.key,
-    SendAssetList.SendAssetToAnotherNet.key,
+    SendAssetList.SendAssetToTaikoAccount.key,
   ],
 }
 export const AssetL2TabIndex = {

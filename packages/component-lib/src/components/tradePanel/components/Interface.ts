@@ -261,6 +261,18 @@ export type WithdrawExtendProps<T, I, C> = {
   ens?: string
   title?: string
   geUpdateContact: () => void
+  withdrawMode: {
+    mode: 'fast' | 'normal',
+    onChange: (mode: 'fast' | 'normal') => void
+    fastMode: undefined | {
+      fee: string,
+      time: string
+    }
+    normalMode: undefined | {
+      fee: string,
+      time: string
+    }
+  }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   WithdrawInfoProps<C>

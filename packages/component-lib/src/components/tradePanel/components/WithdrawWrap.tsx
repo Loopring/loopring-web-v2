@@ -2,12 +2,14 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import { bindHover } from 'material-ui-popup-state/es'
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
-import { Box, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
+import { Box, Checkbox, Grid, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
 import {
   AddressError,
   AlertIcon,
   AssetsRawDataItem,
   BackIcon,
+  CheckBoxIcon,
+  CheckedIcon,
   CloseIcon,
   ContactIcon,
   copyToClipBoard,
@@ -28,7 +30,7 @@ import {
   WALLET_TYPE,
   WithdrawType,
 } from '@loopring-web/common-resources'
-import { FeeSelect, GridWrapStyle, InputSize, PopoverPure, Toast, ToastType } from '../..'
+import { CustomCheckBox, FeeSelect, GridWrapStyle, InputSize, PopoverPure, SpaceBetweenBox, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -37,6 +39,8 @@ import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { useSystem } from '@loopring-web/core'
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
@@ -87,6 +91,7 @@ export const WithdrawWrap = <
   isENSWrong,
   ens,
   geUpdateContact,
+  withdrawMode,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -455,6 +460,57 @@ export const WithdrawWrap = <
           />
         </Grid>
       )}
+
+      <Box width={'100%'} pl={2} my={5}>
+        <SpaceBetweenBox
+          borderRadius={'4px 4px 0 0'}
+          px={2}
+          py={0.5}
+          leftNode={
+            <Box display={'flex'} alignItems={'center'}>
+              <Box mr={1.5}>
+                <CustomCheckBox checked={withdrawMode.mode === 'fast'} onCheck={() => {
+                  withdrawMode.onChange('fast')
+                }}/>
+              </Box>
+              <Box>
+                <Tooltip title={'todo'}>
+                  <Typography>Fast Mode</Typography>
+                </Tooltip>
+                <Typography variant='body2'>{withdrawMode.fastMode?.fee?? '--'}</Typography>
+              </Box>
+            </Box>
+          }
+          alignItems={'center'}
+          rightNode={<Typography variant='body2'>{withdrawMode.fastMode?.time?? '--'}</Typography>}
+          border={'1px solid var(--color-border)'}
+        />
+        <SpaceBetweenBox
+          borderRadius={'0 0 4px 4px'}
+          px={2}
+          py={0.5}
+          leftNode={
+            <Box display={'flex'} alignItems={'center'}>
+              <Box mr={1.5}>
+              <CustomCheckBox checked={withdrawMode.mode === 'normal'} onCheck={() => {
+                withdrawMode.onChange('normal')
+              }}/>
+              </Box>
+              
+              <Box>
+                <Tooltip title={'todo'}>
+                  <Typography>Normal Mode</Typography>
+                </Tooltip>
+                <Typography variant='body2'>{withdrawMode.normalMode?.fee?? '--'}</Typography>
+              </Box>
+            </Box>
+          }
+          alignItems={'center'}
+          rightNode={<Typography variant='body2'>{withdrawMode.normalMode?.time ?? '--'}</Typography>}
+          border={'1px solid var(--color-border)'}
+          borderTop={'none'}
+        />
+      </Box>
 
       <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'}>
         {!chargeFeeTokenList?.length ? (

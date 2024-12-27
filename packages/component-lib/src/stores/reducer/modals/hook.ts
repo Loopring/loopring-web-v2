@@ -41,6 +41,7 @@ import {
   setShowNoVaultAccount,
   setShowConfirmedVault,
   setShowETHStakingApr,
+  setShowTransferToTaikoAccount,
 } from './reducer'
 
 import React from 'react'
@@ -105,6 +106,16 @@ export const useOpenModals = () => {
           dispatch(setShowTransfer(state))
         } else {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
+        }
+      },
+      [dispatch],
+    ),
+    setShowTransferToTaikoAccount: React.useCallback(
+      (state: ModalStatePlayLoad) => {
+        if (toggle.trttansferToTaikoAccount.enable) {
+          dispatch(setShowTransferToTaikoAccount(state))
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'TransferToTaikoAccount' }))
         }
       },
       [dispatch],

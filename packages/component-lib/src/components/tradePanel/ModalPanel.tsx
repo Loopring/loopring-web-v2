@@ -28,6 +28,8 @@ import {
   WithdrawPanel,
   WithdrawProps,
   EditContact,
+  TransferToTaikoAccount,
+  TransferToTaikoAccountProps,
 } from '../..'
 import {
   Account,
@@ -246,6 +248,7 @@ export const ModalPanel = <
   assetsData,
   account,
   baseURL,
+  transferToTaikoProps,
   ...rest
 }: {
   _width?: number | string
@@ -270,6 +273,7 @@ export const ModalPanel = <
   exportAccountProps: any
   account: Account
   setExportAccountToastOpen: any
+  transferToTaikoProps: TransferToTaikoAccountProps
 }) => {
   const { isMobile } = useSettings()
   const {
@@ -290,7 +294,7 @@ export const ModalPanel = <
     setShowTargetRedpacketPop,
     setShowRedPacket,
     setShowEditContact,
-    // setShowDual,
+    setShowTransferToTaikoAccount    // setShowDual,
   } = useOpenModals()
 
   const {
@@ -311,6 +315,7 @@ export const ModalPanel = <
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
     isShowEditContact,
+    isShowTransferToTaikoAccount
   } = modals
   const theme = useTheme()
   return (
@@ -349,6 +354,18 @@ export const ModalPanel = <
               ...transferProps,
               assetsData,
             }}
+          />
+        }
+      />
+      <Modal
+        open 
+        // ={isShowTransferToTaikoAccount.isShow}
+        onClose={() => {
+          setShowTransferToTaikoAccount({ isShow: false })
+        }}
+        content={
+          <TransferToTaikoAccount 
+            {...transferToTaikoProps}
           />
         }
       />
