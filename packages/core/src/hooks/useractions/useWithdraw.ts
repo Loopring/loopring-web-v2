@@ -76,6 +76,60 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap
     }
   }
 }
+
+const withdraw = async (isRabbit: boolean, input: {
+  req: sdk.OffChainWithdrawalRequestV3,
+  chainId: sdk.ChainId | 'unknown',
+  connectName: ConnectProviders,
+  eddsaKeySK: string
+  apiKey: string
+  isHWAddr: boolean,
+  accountId: number
+  counterFactualInfo: any
+}) => {
+  if (!LoopringAPI.userAPI) throw 'no api'
+  if (isRabbit) {
+    const response = await LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw(
+      {
+        request: {
+          ...input.req,
+        },
+        web3: connectProvides.usedWeb3 as unknown as Web3,
+        chainId: input.chainId === 'unknown' ? 1 : input.chainId,
+        walletType: (ConnectProviders[input.connectName] ??
+          input.connectName) as unknown as sdk.ConnectorNames,
+        eddsaKey: input.eddsaKeySK,
+        apiKey: input.apiKey,
+        isHWAddr: input.isHWAddr,
+      },
+      {
+        accountId: input.accountId,
+        counterFactualInfo: input.counterFactualInfo,
+      },
+    )
+  } else {
+    const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
+      {
+        request: {
+          ...input.req,
+        },
+        web3: connectProvides.usedWeb3 as unknown as Web3,
+        chainId: input.chainId === 'unknown' ? 1 : input.chainId,
+        walletType: (ConnectProviders[input.connectName] ??
+          input.connectName) as unknown as sdk.ConnectorNames,
+        eddsaKey: input.eddsaKeySK,
+        apiKey: input.apiKey,
+        isHWAddr: input.isHWAddr,
+      },
+      {
+        accountId: input.accountId,
+        counterFactualInfo: input.counterFactualInfo,
+      },
+    )
+  }
+  
+  
+}
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
@@ -381,6 +435,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     const account = globalState.account
     const network = MapChainId[globalState.settings.defaultNetwork]
     const symbol = globalState._router_modalData.withdrawValue.belong as string
+    const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue ? globalState._router_modalData.withdrawValue.tradeValue.toString() : '0'
     console.log('refresh with state', state, account, network, symbol)
     const feeResNormal = await LoopringAPI.userAPI?.getOffchainFeeAmt(
       {
@@ -395,13 +450,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         receiveFeeNetwork: network,
         requestType: sdk.OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
         calFeeNetwork: network,
+        tokenSymbol: symbol,
+        amount: withdrawValue,
       },
       account.apiKey,
-    ).catch(e => {
-      return {
-        fees: []
-      }
-    })
+    )
     setState((state) => ({
       ...state,
       fee: {

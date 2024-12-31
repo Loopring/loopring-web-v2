@@ -52,19 +52,22 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   })
   const state = getState()
   const { contacts, updateContacts }=useContacts()
-  const destinationNetwork = MapChainId['TAIKO']
+  
 
   const refreshData = async () => {
     const globalState = store.getState()
     const account = globalState.account
     const defaultNetwork = globalState.settings.defaultNetwork
+    const destinationNetwork = MapChainId[defaultNetwork]
     const state = getState()
     const feeRes = await LoopringAPI.userAPI
       ?.getUserCrossChainFee(
         {
           receiveFeeNetwork: destinationNetwork,
           requestType: OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
-          calFeeNetwork: MapChainId[defaultNetwork],
+          calFeeNetwork: destinationNetwork,
+          tokenSymbol: state.transferToken,
+          amount: state.amount ? utils.parseUnits(state.amount, tokenMap[state.transferToken].decimals).toString() : '0',
         },
         account.apiKey,
       )

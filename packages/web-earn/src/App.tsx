@@ -244,12 +244,12 @@ const App = () => {
       
       const provider = new ethers.providers.Web3Provider(walletProvider as any)
 
-      const signature = await signFastWithdrawTypedData({
-        signer: provider.getSigner(),
-        chainId: defaultNetwork,
-        exchangeAddress: exchange,
-        data: mapRequestToTypedData(request),
-      })
+      // const signature = await signFastWithdrawTypedData({
+      //   signer: provider.getSigner(),
+      //   chainId: defaultNetwork,
+      //   exchangeAddress: exchange,
+      //   data: mapRequestToTypedData(request),
+      // })
       debugger
       const eddsaSignature = get_EddsaSig_Transfer(request.transfer, account.eddsaKey.sk).result
       debugger
@@ -294,20 +294,32 @@ const App = () => {
     // .catch(x => {
     //   
     // })
-      const ecdsaSig = signature
-  
-      LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw({
-        ...request,
-        transfer: {
-          ...request.transfer,
-          eddsaSignature,
-        }
-      }, ecdsaSig).then(x => {
+      // const ecdsaSig = signature
+
+      LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw(request, {
+        signer: provider.getSigner(),
+        chainId: defaultNetwork,
+        exchangeAddr: exchange,
+        eddsaSignKey: account.eddsaKey.sk
+      }).then(x => {
         
       })
       .catch(x => {
         
       })
+  
+      // LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw({
+      //   ...request,
+      //   transfer: {
+      //     ...request.transfer,
+      //     eddsaSignature,
+      //   }
+      // }, ecdsaSig).then(x => {
+        
+      // })
+      // .catch(x => {
+        
+      // })
       
 
       
