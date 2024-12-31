@@ -68,7 +68,7 @@ export const calcSupportBorrowData = <T extends VaultBorrowTradeData>(
     borrowAmt: undefined,
     totalQuote: undefined,
   }
-  if (tradeData?.belong) {
+  if (tradeData?.belong && vaultTokenMap) {
     const borrowToken = vaultTokenMap[tradeData.belong]
     const orderAmounts = borrowToken.orderAmounts
     const minBorrowVol = BigNumber.max(
