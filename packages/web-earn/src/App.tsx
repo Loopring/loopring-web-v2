@@ -133,9 +133,7 @@ const App = () => {
 
     setTimeout(async () => {
       if (!walletProvider || !defaultNetwork || !account.accAddress || !account.accountId) return
-      return
-      const addr = recoverAddress('0xfe93c82d45831d271d241e430939f182b13bed33a7cc6ea50a318d3eb8d362b0', '0x605f47bf374df77540301dbe96e9e16298e41ae40d81bd023c26238c708eb6003c2f6d893f3734be3202f0d5fd497fff026649e5043fa43e0af3636a7fcf86b21b' )
-      debugger
+      // return
       const token={
         amount: utils.parseEther('0.01').toString(),
         tokenId: 0,
