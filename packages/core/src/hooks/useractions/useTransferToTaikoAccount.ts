@@ -200,7 +200,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           showFeeModal: false,
         })
       },
-      feeInfo: state.feeList.find((item) => item.token === state.feeToken) && state.feeToken && walletMap
+      feeInfo: state.feeList.find((item) => item.token === state.feeToken) && state.feeToken && walletMap && tokenMap
         ? offchainFeeInfoToFeeInfo(
             state.feeList.find((item) => item.token === state.feeToken)!,
             tokenMap,
@@ -222,7 +222,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       isFeeNotEnough: (() => {
         const feeInfo = state.feeList.find((item) => item.token === state.feeToken)
         if (!feeInfo || !tokenMap) return false
-        if (!walletMap || !state.feeToken || walletMap[state.feeToken]?.count) return true
+        if (!walletMap || !state.feeToken || !walletMap[state.feeToken]?.count) return true
         const count = walletMap[state.feeToken]!.count
         return new Decimal(count).gte(
           utils.formatUnits(feeInfo.fee, tokenMap[state.feeToken].decimals),
@@ -255,7 +255,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
             .map((token) => ({
               symbol: token,
               coinJSON: [coinJson[token]],
-              amount: walletMap ? walletMap[token]!.count.toString() : '0',
+              amount: walletMap && walletMap[token] ? walletMap[token].count.toString() : '0',
             }))
         : [],
       onChangeFilter: (inputValue: string) => {
