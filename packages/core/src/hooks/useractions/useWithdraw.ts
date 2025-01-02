@@ -679,7 +679,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     ],
   )
   
-  const handleRabbitWithdraw = async (inputValue: any) => {
+  const handleRabbitWithdraw = async (inputValue: any, toAddress: string) => {
     const { readyState, eddsaKey } = account
     const ok =
       readyState === AccountStatus.ACTIVATED &&
@@ -690,129 +690,75 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       feeInfo2?.belong &&
       feeInfo2?.feeRaw &&
       eddsaKey?.sk &&
-      (info?.isToMyself || sureIsAllowAddress)
+      (info?.isToMyself || sureIsAllowAddress) &&
+      toAddress
     if (!ok) return false
-    Promise.resolve()
-      .then(async () => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Withdraw_WaitForAuth,
-        })
-        const withdrawToken = tokenMap[withdrawValue.belong as string]
-        const feeToken = tokenMap[feeInfo2.belong]
-        const feeRaw = feeInfo2!.feeRaw ?? 0
-        const fee = sdk.toBig(feeRaw)
-        const balance = sdk.toBig(inputValue.balance ?? 0).times('1e' + withdrawToken.decimals)
-        const tradeValue = sdk
-          .toBig(inputValue.tradeValue ?? 0)
-          .times('1e' + withdrawToken.decimals)
-        const isExceedBalance =
-          feeToken.tokenId === withdrawToken.tokenId && tradeValue.plus(fee).gt(balance)
-        const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue
-        const withdrawVol = finalVol.toFixed(0, 0)
-        const network = MapChainId[chainId]
-        const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
-        const configiJSON = JSON.parse(config.config)
-        const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-          {
-            accountId: account.accountId,
-            sellTokenId: withdrawToken.tokenId,
-          },
-          account.apiKey,
-        )
-        const agentId = configiJSON.networkL2AgentAccountIds[network]
-        const agentAddr = configiJSON.networkL2AgentAddresses[network]
-        const exchange = configiJSON.networkExchanges[network]
-        const request: sdk.RabbitWithdrawRequest = {
-          fromNetwork: network,
-          toNetwork: network,
-          toAddress: account.accAddress,
-          transfer: {
-            exchange: exchange,
-            payerId: account.accountId,
-            payerAddr: account.accAddress,
-            payeeId: agentId,
-            payeeAddr: agentAddr,
-            token: {
-              tokenId: withdrawToken.tokenId,
-              volume: withdrawVol,
-            },
-            maxFee: {
-              // @ts-ignore
-              tokenId: feeToken.tokenId,
-              volume: ethers.utils.parseUnits('0.1', feeToken.decimals).toString(), // todo
-            },
-            storageId: storageId!.offchainId,
-            validUntil: getTimestampDaysLater(DAYS),
-          },
-        }
 
-        myLog('submitOffchainWithdraw:', request)
-        const provider = new ethers.providers.Web3Provider(walletProvider as any)
-
-        return LoopringAPI.rabbitWithdrawAPI
-          ?.submitRabitWithdraw(request, {
-            exchangeAddr: exchange,
-            signer: provider.getSigner(),
-            eddsaSignKey: account.eddsaKey.sk,
-            chainId: chainId as number,
-          })
-          .then((response) => {
-            if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-              const e = response as any
-              const code = sdk.checkErrorInfo(e, true)
-              myLog('checkErrorInfo', code, e)
-              switch (code) {
-                case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-                  setLastRequest({ request })
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.Withdraw_First_Method_Denied,
-                  })
-                  break
-                case sdk.ConnectorError.USER_DENIED:
-                case sdk.ConnectorError.USER_DENIED_2:
-                  setLastRequest({ request })
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.Withdraw_User_Denied,
-                  })
-                  break
-                default:
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.Withdraw_Failed,
-                    info: {
-                      symbol: withdrawValue.belong,
-                    },
-                    error: {
-                      code: UIERROR_CODE.UNKNOWN,
-                      msg: e?.message,
-                      ...(e instanceof Error
-                        ? {
-                            message: e?.message,
-                            stack: e?.stack,
-                          }
-                        : e ?? {}),
-                    },
-                  })
-                  break
-              }
-              sdk.dumpError400(e)
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Withdraw_Failed,
-                error: {
-                  code: UIERROR_CODE.UNKNOWN,
-                  msg: e?.message,
-                },
-              })
-            } else {
-              return response
-            }
-          })
+    try {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.Withdraw_WaitForAuth,
       })
-      .then(async (response) => {
+      const withdrawToken = tokenMap[withdrawValue.belong as string]
+      const feeToken = tokenMap[feeInfo2.belong]
+      const feeRaw = feeInfo2!.feeRaw ?? 0
+      const fee = sdk.toBig(feeRaw)
+      const balance = sdk.toBig(inputValue.balance ?? 0).times('1e' + withdrawToken.decimals)
+      const tradeValue = sdk.toBig(inputValue.tradeValue ?? 0).times('1e' + withdrawToken.decimals)
+      const isExceedBalance =
+        feeToken.tokenId === withdrawToken.tokenId && tradeValue.plus(fee).gt(balance)
+      const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue
+      const withdrawVol = finalVol.toFixed(0, 0)
+      const network = MapChainId[chainId]
+      const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
+      const configiJSON = JSON.parse(config.config)
+      const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+        {
+          accountId: account.accountId,
+          sellTokenId: withdrawToken.tokenId,
+        },
+        account.apiKey,
+      )
+      const agentId = configiJSON.networkL2AgentAccountIds[network]
+      const agentAddr = configiJSON.networkL2AgentAddresses[network]
+      const exchange = configiJSON.networkExchanges[network]
+
+      const request: sdk.RabbitWithdrawRequest = {
+        fromNetwork: network,
+        toNetwork: network,
+        toAddress: toAddress,
+        transfer: {
+          exchange: exchange,
+          payerId: account.accountId,
+          payerAddr: account.accAddress,
+          payeeId: agentId,
+          payeeAddr: agentAddr,
+          token: {
+            tokenId: withdrawToken.tokenId,
+            volume: withdrawVol,
+          },
+          maxFee: {
+            // @ts-ignore
+            tokenId: feeToken.tokenId,
+            volume: ethers.utils.parseUnits('0.1', feeToken.decimals).toString(), // todo
+          },
+          storageId: storageId!.offchainId,
+          validUntil: getTimestampDaysLater(DAYS),
+        },
+      }
+
+      myLog('submitOffchainWithdraw:', request)
+      const provider = new ethers.providers.Web3Provider(walletProvider as any)
+
+      const response = await LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw(request, {
+        exchangeAddr: exchange,
+        signer: provider.getSigner(),
+        eddsaSignKey: account.eddsaKey.sk,
+        chainId: chainId as number,
+      })
+      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+        throw response
+      } else {
         info?.onCloseCallBack && info?.onCloseCallBack()
         setShowWithdraw({
           isShow: false,
@@ -844,7 +790,55 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         ) {
           setShowAccount({ isShow: false })
         }
+      }
+    } catch (e: any) {
+      const code = sdk.checkErrorInfo(e, true)
+      myLog('checkErrorInfo', code, e)
+      switch (code) {
+        case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_First_Method_Denied,
+          })
+          break
+        case sdk.ConnectorError.USER_DENIED:
+        case sdk.ConnectorError.USER_DENIED_2:
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_User_Denied,
+          })
+          break
+        default:
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_Failed,
+            info: {
+              symbol: withdrawValue.belong,
+            },
+            error: {
+              code: UIERROR_CODE.UNKNOWN,
+              msg: e?.message,
+              ...(e instanceof Error
+                ? {
+                    message: e?.message,
+                    stack: e?.stack,
+                  }
+                : e ?? {}),
+            },
+          })
+          break
+      }
+      sdk.dumpError400(e)
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.Withdraw_Failed,
+        error: {
+          code: UIERROR_CODE.UNKNOWN,
+          msg: e?.message,
+        },
       })
+    }
+      
   }
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
@@ -852,7 +846,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         isShow: true,
         step: AccountStep.NFTWithdraw_WaitForAuth,
       })
-      processRequest(lastRequest, !isHardwareRetry)
+      if (getState().withdrawMode.mode === 'fast') {
+        return
+      } else {
+        processRequest(lastRequest, !isHardwareRetry)
+      }
     },
     [lastRequest, processRequest, setShowAccount],
   )
@@ -926,7 +924,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (withdrawValue && withdrawValue.belong) {
         return withdrawMode.mode === 'normal'
           ? handleWithdraw(withdrawValue, realAddr ? realAddr : address)
-          : handleRabbitWithdraw(withdrawValue)
+          : handleRabbitWithdraw(withdrawValue, realAddr ? realAddr : address)
       }
     },
     handleWithdrawTypeChange: (value) => {
