@@ -89,7 +89,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     setShowWithdraw,
     setShowEditContact,
   } = useOpenModals()
-  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap()
+  const { tokenMap, totalCoinMap, disableWithdrawList, idIndex } = useTokenMap()
   const { tokenPrices } = useTokenPrices()
   const { currency } = useSettings()
   const { account, status: accountStatus } = useAccount()
@@ -128,11 +128,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         fee: string
         time: string
       },
+      fastModeTokens: ['ETH'] as string[],
       mode: 'fast' as 'fast' | 'normal',
     }
   })
-  const { fee: { symbol: feeSymbol }, withdrawMode } = getState()
-  const chargeFeeTokenList = withdrawMode.mode === 'fast' ? getState().fee.chargeFeeTokenListFast : getState().fee.chargeFeeTokenListNormal
+  
+  const { fee: { symbol: feeSymbol, chargeFeeTokenListFast, chargeFeeTokenListNormal }, withdrawMode } = getState()
+  const fastModeSupportted = withdrawMode.fastModeTokens.includes(withdrawValue.belong as string)
+  const isFastMode = fastModeSupportted ? withdrawMode.mode === 'fast' : false
+  const chargeFeeTokenList = isFastMode ? chargeFeeTokenListFast : chargeFeeTokenListNormal
   const feeInfo = feeSymbol 
     ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
     : chargeFeeTokenList[0]
@@ -165,6 +169,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { checkHWAddr, updateHW } = useWalletInfo()
 
   const [lastRequest, setLastRequest] = React.useState<any>({})
+
+  
 
   // const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>()
 
@@ -372,6 +378,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const account = globalState.account
       const network = MapChainId[globalState.settings.defaultNetwork]
       const symbol = globalState._router_modalData.withdrawValue.belong as string
+      const idIndex = globalState.tokenMap.idIndex as string
       const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue
         ? globalState._router_modalData.withdrawValue.tradeValue.toString()
         : '0'
@@ -396,6 +403,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       )
       const chargeFeeTokenListNormal = feeResNormal?.fees ? values(feeResNormal.fees) : []
       const chargeFeeTokenListFast = feeResFast?.fees ?? []
+      const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
+      const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[network]
+      const fastModeSupportedTokens = networkL2TokenIds.map((id: number) => {
+        return idIndex[id]
+      })
       setState((state) => ({
         ...state,
         fee: {
@@ -403,10 +415,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           chargeFeeTokenListNormal,
           chargeFeeTokenListFast,
         },
+        withdrawMode: {
+          ...state.withdrawMode,
+          fastModeSupportedTokens,
+        }
       }))
-      updateWithdrawData({
-        ...globalState._router_modalData.withdrawValue,
-      })
     } finally {
       setState((state) => ({
         ...state,
@@ -851,13 +864,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         isShow: true,
         step: AccountStep.NFTWithdraw_WaitForAuth,
       })
-      if (getState().withdrawMode.mode === 'fast') {
+      if (isFastMode) {
         return
       } else {
         processRequest(lastRequest, !isHardwareRetry)
       }
     },
-    [lastRequest, processRequest, setShowAccount],
+    [lastRequest, processRequest, setShowAccount, isFastMode],
   )
 
   React.useEffect(() => {
@@ -927,9 +940,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
     onWithdrawClick: () => {
       if (withdrawValue && withdrawValue.belong) {
-        return withdrawMode.mode === 'normal'
-          ? handleWithdraw(withdrawValue, realAddr ? realAddr : address)
-          : handleRabbitWithdraw(withdrawValue, realAddr ? realAddr : address)
+        return isFastMode
+          ? handleRabbitWithdraw(withdrawValue, realAddr ? realAddr : address)
+          : handleWithdraw(withdrawValue, realAddr ? realAddr : address)
       }
     },
     handleWithdrawTypeChange: (value) => {
@@ -1024,8 +1037,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               currency,
             )
           : undefined
+      
       return {
-        mode: withdrawMode.mode,
+        mode: isFastMode ? 'fast' : 'normal',
+        showFastMode: fastModeSupportted,
         fastMode: {
           fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',
           time: '~3 minutes',

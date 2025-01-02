@@ -268,6 +268,7 @@ export type WithdrawExtendProps<T, I, C> = {
       fee: string,
       time: string
     }
+    showFastMode: boolean
     normalMode: undefined | {
       fee: string,
       time: string

@@ -462,7 +462,7 @@ export const WithdrawWrap = <
       )}
 
       <Box width={'100%'} pl={2} my={5}>
-        <SpaceBetweenBox
+        {withdrawMode.showFastMode && <SpaceBetweenBox
           borderRadius={'4px 4px 0 0'}
           px={2}
           py={0.5}
@@ -484,9 +484,10 @@ export const WithdrawWrap = <
           alignItems={'center'}
           rightNode={<Typography variant='body2'>{withdrawMode.fastMode?.time?? '--'}</Typography>}
           border={'1px solid var(--color-border)'}
-        />
+          borderBottom={'none'}
+        />}
         <SpaceBetweenBox
-          borderRadius={'0 0 4px 4px'}
+          borderRadius={withdrawMode.showFastMode ? '0 0 4px 4px' : '4px'}
           px={2}
           py={0.5}
           leftNode={
@@ -508,7 +509,7 @@ export const WithdrawWrap = <
           alignItems={'center'}
           rightNode={<Typography variant='body2'>{withdrawMode.normalMode?.time ?? '--'}</Typography>}
           border={'1px solid var(--color-border)'}
-          borderTop={'none'}
+          
         />
       </Box>
 
