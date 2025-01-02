@@ -6,6 +6,7 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
+  mapSpecialTokenName,
   SoursURL,
 } from '@loopring-web/common-resources'
 import { InputButtonProps, InputSize } from './Interface'
@@ -208,6 +209,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
               )
             }
             disabled={disabled || disableBelong}
+            sx={{textTransform: 'none'}}
           >
             {belong ? (
               <Grid container align-items={'center'} display={'flex'}>
@@ -245,7 +247,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
                   <Typography
                     fontSize={'inherit'}
                     color={'inherit'}
-                    dangerouslySetInnerHTML={{ __html: sanitize(belongAlice ?? belong) }}
+                    dangerouslySetInnerHTML={{ __html: sanitize(mapSpecialTokenName(belongAlice ?? belong))  }}
                   />
                 </Grid>
               </Grid>

@@ -35,4 +35,5 @@ export * from './vault'
 export * from './useContactAdd'
 export * from './useContact'
 export {useTransferToTaikoAccount} from './useTransferToTaikoAccount'
+export { useTaikoLock } from './useTaikoLock'
 

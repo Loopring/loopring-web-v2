@@ -22,6 +22,7 @@ import {
   UIERROR_CODE,
   WALLET_TYPE,
   WalletMap,
+  WITHDRAW_TOKEN_FILTER_LIST,
   WithdrawType,
   WithdrawTypes,
 } from '@loopring-web/common-resources'
@@ -53,7 +54,7 @@ import {
   walletLayer2Service,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
-import _, { values } from 'lodash'
+import _, { values, omit } from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
 import { useGetSet, useGetSetState } from 'react-use'
 import { ethers } from 'ethers'
@@ -270,7 +271,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const walletLayer2Callback = () => {
     const walletMap =
       makeWalletLayer2({ needFilterZero: true, _isToL1: true }).walletMap ?? ({} as WalletMap<R>)
-    setWalletMap2(walletMap)
+    setWalletMap2(
+      WITHDRAW_TOKEN_FILTER_LIST.reduce((pre, cur) => {
+        return omit(pre, cur) as WalletMap<R>
+      }, walletMap),
+    )
   }
 
   const resetDefault = React.useCallback(() => {

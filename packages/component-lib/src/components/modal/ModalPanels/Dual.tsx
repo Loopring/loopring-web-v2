@@ -1,4 +1,4 @@
-import { AmmBase, BtradeBase, DualBase, IconType, PanelProps } from './BasicPanel'
+import { AmmBase, BtradeBase, DualBase, IconType, PanelProps, TaikoFarmingMintBase, TaikoFarmingRedeemBase, TaikoFarmingStakeBase } from './BasicPanel'
 import { Box, ListItemIcon, ListItemText, Tooltip, Typography } from '@mui/material'
 import { useSettings } from '../../../stores'
 import {
@@ -506,4 +506,299 @@ export const AMM_Pending = (props: PanelProps) => {
     // ),
   }
   return <AmmBase {...{ ...props, ...propsPatch }} />
+}
+
+export const Taiko_Farming_Lock_Success = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    title: props.t('labelTaikoFarming'),
+    describe1: (
+      <Typography variant={'h5'} color={'var(--color-primary)'} component={'span'}>
+        {props.t('labelTaikoFarmingLockSuccess')}
+      </Typography>
+    ),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideAmount')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount + ' ' + info?.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t('labelDeFiSideSubscribeTime')}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.stakeAt && moment(new Date(info.stakeAt))
+              // .utc()
+              // .startOf("days")
+              .format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+      </Box>
+    ),
+  }
+  return <TaikoFarmingStakeBase showTitle={false} {...propsPatch} {...props} />
+}
+export const Taiko_Farming_Lock_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t('labelStakingFailed', {
+      symbol: props.info?.symbol,
+    }),
+  }
+  return <TaikoFarmingStakeBase showTitle={true} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Redeem_Success = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 0}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            TAIKO Amount 
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            Time
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {moment(info?.redeemAt).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+      </Box>
+    ),
+  }
+  return <TaikoFarmingRedeemBase showTitle={false} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Redeem_In_Progress = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 3}
+        width={'80%'}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            TAIKO Amount
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount}
+          </Typography>
+        </Typography>
+        {/* <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t("labelTime")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography> */}
+
+      </Box>
+    ),
+  }
+  return <TaikoFarmingRedeemBase showTitle={true} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Redeem_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: 'Redeem TAIKO Failed',
+  }
+  return <TaikoFarmingRedeemBase showTitle={true} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Mint_Success = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.DoneIcon,
+    title: props.t('Mint lrTAIKO'),
+    describe1: (
+      <Typography variant={'h5'} color={'var(--color-text-primary)'} component={'span'}>
+        {props.t('labelTaikoFarmingMintSuccess')}
+      </Typography>
+    ),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 3}
+        width={'80%'}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t("labelAmount")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount + ' ' + info?.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t("labelTime")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+
+        <Typography mt={3}>
+          {props.t('labelTaikoFarmingMintInfoDes')}
+        </Typography>
+        <Typography
+          component={'p'}
+          onClick={() => window.open('/#/portal/portalHome', '_blank')}
+          sx={{ cursor: 'pointer' }}
+          color={'var(--color-primary)'}
+          mt={1}
+        >{props.t('labelTaikoFarmingMintVisitPortal')}</Typography>
+      </Box>
+    ),
+  }
+  return <TaikoFarmingMintBase showTitle={false} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Mint_Failed = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: props.t('Mint Failed'),
+  }
+  return <TaikoFarmingMintBase showTitle={true} {...propsPatch} {...props} />
+}
+
+export const Taiko_Farming_Mint_In_Progress = (props: PanelProps) => {
+  const { isMobile } = useSettings()
+  const { info } = props
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t('labelVaultRepayInProgress', {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+    describe2: (
+      <Box
+        justifySelf={'stretch'}
+        display={'flex'}
+        flexDirection={'column'}
+        minWidth={'var(--modal-min-width)'}
+        justifyContent={'center'}
+        marginTop={2}
+        paddingX={isMobile ? 1 : 3}
+        width={'80%'}
+      >
+        <Typography
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+          component={'span'}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t("labelAmount")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.amount + ' ' + info?.symbol}
+          </Typography>
+        </Typography>
+        <Typography
+          component={'span'}
+          display={'inline-flex'}
+          justifyContent={'space-between'}
+          marginTop={2}
+        >
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
+            {props.t("labelTime")}
+          </Typography>
+          <Typography variant={'body1'} component={'span'} color={'var(--color-text-primary)'}>
+            {info?.mintAt && moment(new Date(info.mintAt)).format(YEAR_DAY_MINUTE_FORMAT)}
+          </Typography>
+        </Typography>
+
+      </Box>
+    ),
+  }
+  return <TaikoFarmingMintBase showTitle={true} {...propsPatch} {...props} />
 }

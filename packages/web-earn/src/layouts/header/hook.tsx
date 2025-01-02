@@ -19,14 +19,17 @@ import {
   btnClickMap,
   useSelectNetwork,
   unlockAccount,
+  useUpdateAccount,
+  LoopringAPI,
 } from '@loopring-web/core'
 
-import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
 import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, EarnProfile, headerMenuDataEarnMap } from '../../constant/router'
 import { useWeb3Modal } from '@web3modal/scaffold-react'
+import { toBig } from '@loopring-web/loopring-sdk'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
@@ -72,6 +75,7 @@ export const useHeader = () => {
   }, [account, setShouldShow, _btnClickMap])
 
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
+  const { goUpdateAccount } = useUpdateAccount() 
   const headerToolBarData = React.useMemo(() => {
     const toolBarData = isMobile ? earnHeaderToolBarDataMobile : earnHeaderToolBarData
     return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
@@ -84,11 +88,37 @@ export const useHeader = () => {
               unlockAccount()
               setShowAccount({
                 isShow: true,
-                step: AccountStep.UnlockAccount_WaitForAuth,
+                step: AccountStep.UpdateAccount_Approve_WaitForAuth,
               })
             },
             NetWorkItems,
-            accountState: { account }
+            accountState: { account },
+            handleClickSignIn: async () => {
+              const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
+                accountId: account._accountIdNotActive,
+              })
+              const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
+                accountId: account._accountIdNotActive!,
+                tokens: '',
+              })
+              const found = Object.keys(feeInfo.fees).find((key) => {
+                const fee = feeInfo.fees[key].fee
+                const foundBalance = userBalances[feeInfo.fees[key].tokenId]
+                return (foundBalance && toBig(foundBalance.total).gte(fee)) || toBig(fee).eq('0')
+              })
+              await goUpdateAccount({
+                isFirstTime: true,
+                isReset: false,
+                // @ts-ignore
+                feeInfo: {
+                  token: feeInfo.fees[found!].fee,
+                  belong: found!,
+                  fee: feeInfo.fees[found!].fee,
+                  feeRaw: feeInfo.fees[found!].fee,
+                },
+              })
+              
+            },
           },
           [ButtonComponentsMap.ProfileMenu]: {
             ...toolBarData[ButtonComponentsMap.ProfileMenu],
@@ -100,10 +130,18 @@ export const useHeader = () => {
   }, [accountStatus, account?.readyState, account, isMobile])
   
   const { notifyMap } = useNotify()
+  const { toggle: {
+    taikoFarming
+  } } = useToggle()
+  // const taikoFarming={enable: true}
 
   return {
     headerToolBarData,
-    headerMenuData: headerMenuDataEarnMap[network],
+    headerMenuData: headerMenuDataEarnMap[network].filter(data => {
+      return data.label.id === 'taikoFarming' 
+        ? taikoFarming.enable
+        : true
+    }),
     headerMenuLandingData,
     account,
     notifyMap,

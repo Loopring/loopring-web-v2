@@ -5,12 +5,12 @@ import {
   AmmTable,
   BtradeSwapTable,
   Button,
-  DefiStakingTxTable,
   DefiTxsTable,
   DualTxsTable,
   ModalCloseButton,
   OrderHistoryTable,
   SwitchPanelStyled,
+  TaikoTarmingTxRecordsTable,
   Toast,
   ToastType,
   TradeTable,
@@ -30,7 +30,7 @@ import {
 } from '@loopring-web/core'
 import {
   useBtradeTransaction,
-  useDefiSideRecord,
+  useTaikoFarmingRecord,
   useDualTransaction,
   useGetAmmRecord,
   useGetDefiRecord,
@@ -62,7 +62,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
   const { isMobile, defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
-    toggle: { StopLimit },
+    toggle: { StopLimit, taikoFarming },
   } = useToggle()
   const match: any = useRouteMatch('/l2assets/:history/:tab/:orderTab?')
   const [pageSize, setPageSize] = React.useState(0)
@@ -132,7 +132,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     showLoading: showDefiSideStakingLoading,
     getSideStakingTxList,
     sideStakingTotal,
-  } = useDefiSideRecord(setToastOpen)
+  } = useTaikoFarmingRecord(setToastOpen)
   const {
     leverageETHList,
     showLoading: showLeverageETHLoading,
@@ -229,7 +229,13 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
             aria-label='l2-history-tabs'
             variant='scrollable'
           >
-            {RecordEarnMap[network]?.map((item) => {
+            {RecordEarnMap[network].filter((item) => {
+              if (item === RecordTabIndex.TaikoLockRecords) {
+                return taikoFarming.enable
+              } else {
+                return true
+              }
+            })?.map((item) => {
               return <Tab key={item} label={t(`labelLayer2History${item}`)} value={item} />
             })}
           </Tabs>
@@ -313,20 +319,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
               idIndex={idIndex}
             />
           ) : currentTab === RecordTabIndex.SideStakingRecords ? (
-            <DefiStakingTxTable
-              {...{
-                rawData: sideStakingList as any[],
-                pagination: {
-                  pageSize: pageSize,
-                  total: sideStakingTotal,
-                },
-                getSideStakingTxList,
-                showloading: showDefiSideStakingLoading,
-                ...rest,
-              }}
-              tokenMap={tokenMap}
-              idIndex={idIndex}
-            />
+            <></>
           ) : currentTab === RecordTabIndex.DualRecords ? (
             <DualTxsTable
               rawData={dualList}
@@ -604,6 +597,21 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                 />
               </Box>
             </>
+          ) : currentTab === RecordTabIndex.TaikoLockRecords ? (
+            <TaikoTarmingTxRecordsTable
+              {...{
+                rawData: sideStakingList as any[],
+                pagination: {
+                  pageSize: pageSize,
+                  total: sideStakingTotal,
+                },
+                getSideStakingTxList,
+                showloading: showDefiSideStakingLoading,
+                ...rest,
+              }}
+              tokenMap={tokenMap}
+              idIndex={idIndex}
+            />
           ) : (
             <></>
           )}

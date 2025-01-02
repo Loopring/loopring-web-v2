@@ -158,7 +158,7 @@ const useVaultTradeSocket = () => {
           vaultMap: { marketMap },
         },
       } = store.getState()
-      const item = marketMap[tradeVault.market]
+      const item = marketMap && marketMap[tradeVault.market]
       if (
         item &&
         btradeOrderbookMap &&
@@ -1970,7 +1970,9 @@ export const useVaultSwap = <
     tradeCalcData.borrowVol &&
     new Decimal(tradeCalcData.borrowVol).greaterThan('0') &&
     tradeData?.sell.belong &&
+    tokenMap &&
     tokenMap[tradeData?.sell.belong as string] &&
+    vaultTokenPrices &&
     vaultTokenPrices[tradeData?.sell.belong as string]
       ? new Decimal(tradeCalcData.borrowVol ?? '0')
           .div(Decimal.pow(10, tokenMap[tradeData?.sell.belong as string].decimals))

@@ -306,10 +306,18 @@ export const useGetAssets = (): AssetPanelProps & {
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
   const { tokenPrices } = useTokenPrices()
+  const {defaultNetwork} = useSettings()
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
-    assetsRawData,
+    assetsRawData: assetsRawData.map((asset) => {
+      return isTaiko && asset.name === 'TAIKO'
+        ? { ...asset, hideDepositButton: true }
+        : isTaiko && asset.name === 'LRTAIKO'
+        ? { ...asset, hideDepositButton: true, hideWithdrawButton: true }
+        : asset
+    }),
     assetBtnStatus,
     hideL2Assets,
     onSend,
@@ -323,40 +331,44 @@ export const useGetAssets = (): AssetPanelProps & {
     themeMode,
     getTokenRelatedMarketArray,
     hideSmallBalances,
-    totalAvailableInCurrency: forexMap[currency] && fiatNumberDisplay(
-      new Decimal(forexMap[currency])
-      .mul(
-        numberStringListSum(
-          assetsRawData.map((asset) => {
-            try {
-              return new Decimal(asset.available.toString()).mul(tokenPrices[asset.name]).toString()
-            } catch {
-              return '0'
-            }
-            
-          }),
-        ),
-      )
-      .toString(),
-      currency
-    ) ,
-    totalFrozenInCurrency: forexMap[currency] && fiatNumberDisplay(
-      new Decimal(forexMap[currency])
-      .mul(
-        numberStringListSum(
-          assetsRawData.map((asset) => {
-
-            try {
-              return new Decimal(asset.locked).mul(tokenPrices[asset.name]).toString()
-            } catch {
-              return '0'
-            }
-          }),
-        ),
-      )
-      .toString(),
-      currency
-    ),
+    totalAvailableInCurrency:
+      forexMap[currency] &&
+      fiatNumberDisplay(
+        new Decimal(forexMap[currency])
+          .mul(
+            numberStringListSum(
+              assetsRawData.map((asset) => {
+                try {
+                  return new Decimal(asset.available.toString())
+                    .mul(tokenPrices[asset.name])
+                    .toString()
+                } catch {
+                  return '0'
+                }
+              }),
+            ),
+          )
+          .toString(),
+        currency,
+      ),
+    totalFrozenInCurrency:
+      forexMap[currency] &&
+      fiatNumberDisplay(
+        new Decimal(forexMap[currency])
+          .mul(
+            numberStringListSum(
+              assetsRawData.map((asset) => {
+                try {
+                  return new Decimal(asset.locked).mul(tokenPrices[asset.name]).toString()
+                } catch {
+                  return '0'
+                }
+              }),
+            ),
+          )
+          .toString(),
+        currency,
+      ),
   }
 }
 export const useAssetAction = () => {
@@ -386,6 +398,7 @@ export const useAssetAction = () => {
             sdk.LOCK_TYPE.L2STAKING,
             sdk.LOCK_TYPE.STOP_LIMIT,
             sdk.LOCK_TYPE.VAULT_COLLATERAL,
+            sdk.LOCK_TYPE.TAIKO_FARMING
           ].join(','),
         } as any,
         account.apiKey,
@@ -394,8 +407,24 @@ export const useAssetAction = () => {
       if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
       } else {
         setTokenLockDetail(() => {
-          // @ts-ignore
-          const sum: { key: string; value: string; link: string }[] = response.lockRecord.reduce(
+
+          // merge l2Staking and taikoFarming to single record
+          const isL2StakingTaiko = (record) => record.lockTag === sdk.LOCK_TYPE.L2STAKING && tokenMap[_item.name].symbol === 'TAIKO'
+          const isTaikoFarming = (record) => record.lockTag === sdk.LOCK_TYPE.TAIKO_FARMING
+          const l2Staking = response.lockRecord.find(isL2StakingTaiko)
+          const taikoFarming = response.lockRecord.find(isTaikoFarming)
+          const taikoFarmingMerge = taikoFarming ? {
+            ...taikoFarming,
+            amount: sdk.toBig(taikoFarming.amount).plus(l2Staking ? l2Staking.amount : '0').toString()
+          } : l2Staking ? {
+            ...l2Staking,
+            lockTag: sdk.LOCK_TYPE.TAIKO_FARMING
+          } : undefined
+          const lockRecord = response.lockRecord
+            .filter((record) => !isL2StakingTaiko(record) && !isTaikoFarming(record))
+            .concat(taikoFarmingMerge ? [taikoFarmingMerge] : [])
+
+          const sum: { key: string; value: string; link: string }[] = lockRecord.reduce(
             // @ts-ignore
             (prev, record) => {
               const amount = sdk
@@ -414,9 +443,14 @@ export const useAssetAction = () => {
                 case sdk.LOCK_TYPE.DUAL_BASE:
                   link = `/#${RouterPath.investBalance}/${InvestAssetRouter.DUAL}`
                   break
-                case sdk.LOCK_TYPE.L2STAKING:
-                  link = `/#${RouterPath.investBalance}/${InvestAssetRouter.STAKELRC}`
+                case sdk.LOCK_TYPE.L2STAKING: {
+                  if (tokenMap[_item.name].symbol === 'TAIKO') {
+                    link = `/#/taiko-farming`
+                  } else {
+                    link = `/#${RouterPath.investBalance}/${InvestAssetRouter.STAKELRC}`
+                  }
                   break
+                }
                 case sdk.LOCK_TYPE.BTRADE:
                   link = `/#${RouterPath.l2records}/${RecordTabIndex.BtradeSwapRecords}`
                   break
@@ -426,9 +460,15 @@ export const useAssetAction = () => {
                 case sdk.LOCK_TYPE.VAULT_COLLATERAL:
                   link = `/#${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`
                   break
+                case sdk.LOCK_TYPE.TAIKO_FARMING:
+                  link = `/#/taiko-farming`
+                  break
               }
+              const key = record.lockTag === 'L2STAKING' && _item.name === 'TAIKO'
+                ? 'labelL2TaikoFarming'
+                : `label${record.lockTag}`
               prev.push({
-                key: `label${record.lockTag}`,
+                key: key,
                 value: getValuePrecisionThousand(
                   amount,
                   tokenMap[_item.name].precision,

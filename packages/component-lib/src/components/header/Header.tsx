@@ -598,6 +598,8 @@ export const Header = withTranslation(['layout', 'landPage', 'common'], { withRe
                           } else if (label.id === 'btrade') {
                             selectedFlag =
                               match?.params['l1'] === 'trade' && match?.params['l2'] === 'btrade'
+                          } else if (label.id === 'taikoFarming') {
+                            selectedFlag = match?.params['l1'] === 'taiko-farming'
                           } else {
                             selectedFlag = false
                           }

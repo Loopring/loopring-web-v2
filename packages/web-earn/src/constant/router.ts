@@ -32,6 +32,7 @@ export enum RouterPath {
   dualIntro = '/dual-intro',
   intro = '/intro',
   portal = '/portal',
+  taikoFarming = '/taiko-farming',
 }
 
 export enum RouterMainKey {
@@ -41,6 +42,8 @@ export enum RouterMainKey {
   layer2 = 'layer2',
   portal = 'portal',
   btrade = 'btrade',
+  taikoFarming = 'taikoFarming',
+
 }
 
 export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
@@ -96,7 +99,16 @@ export const headerMenuEartData: Array<HeaderMenuItemInterface> = [
       light: SoursURL + 'images/earn_nav_btrade_light.png',
     }
   },
+  {
+    label: {
+      id: 'taikoFarming',
+      i18nKey: 'labelTaikoFarming',
+    },
+    router: { path: '/taiko-farming' },
+    status: HeaderMenuTabStatus.default,
+  }
 ]
+
 export const RouterAllowIndex = {
   TAIKOHEKLA: [
     RouterMainKey.l2assets,
@@ -105,6 +117,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
   ETHEREUM: [
     RouterMainKey.l2assets,
@@ -113,6 +126,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
   GOERLI: [],
   SEPOLIA: [
@@ -122,6 +136,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
   ARBGOERLI: [
     RouterMainKey.l2assets,
@@ -135,6 +150,7 @@ export const RouterAllowIndex = {
     RouterMainKey.invest,
     RouterMainKey.portal,
     RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
   ],
 }
 
@@ -148,12 +164,12 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
 }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
-  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  TAIKO: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords, RecordTabIndex.TaikoLockRecords],
   ETHEREUM: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   GOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
-  TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords, RecordTabIndex.TaikoLockRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',

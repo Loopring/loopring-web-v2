@@ -15,6 +15,7 @@ import {
   globalSetup,
   L1L2_NAME_DEFINED,
   MapChainId,
+  mapSpecialTokenName,
   RedPacketIcon,
   RewardIcon,
   TableType,
@@ -313,7 +314,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
               >
                 {hasSymbol}
                 {row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW && hasValue
-                  ? `${renderValue} ${unit}`
+                  ? `${renderValue} ${mapSpecialTokenName(unit)}`
                   : renderValue}
               </Box>
             )

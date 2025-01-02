@@ -47,6 +47,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo'
 import Web3 from 'web3'
+import { omit } from 'lodash'
 
 export const useDeposit = <
   T extends {
@@ -717,6 +718,8 @@ export const useDeposit = <
       : account.readyState === AccountStatus.NO_ACCOUNT
       ? t('labelDepositTitleAndActive', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
       : t('labelDepositTitle', { l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol })
+
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
   const depositProps: DepositProps<T, I> = {
     btnInfo,
     isNewAccount,
@@ -728,7 +731,7 @@ export const useDeposit = <
     chargeFeeTokenList: chargeFeeList ?? [],
     tradeData: depositValue as T,
     coinMap: totalCoinMap as CoinMap<any>,
-    walletMap: walletLayer1 as WalletMap<any>,
+    walletMap: (isTaiko ? omit(walletLayer1, ['TAIKO']) : walletLayer1) as WalletMap<any>,
     depositBtnStatus: btnStatus,
     handlePanelEvent,
     handleAddressChange,

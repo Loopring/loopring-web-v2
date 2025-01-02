@@ -681,3 +681,15 @@ export const BtradeBase = (props: PanelProps) => {
 
   return <BasicPanel className={'btrade-panel'} {...props} {...propsPatch} />
 }
+
+export const TaikoFarmingMintBase = (props: PanelProps) => {
+  return <BasicPanel title={'Mint lrTAIKO'} {...props} />
+}
+
+export const TaikoFarmingStakeBase = (props: PanelProps) => {
+  return <BasicPanel title={'Taiko Farming'} {...props} />
+}
+
+export const TaikoFarmingRedeemBase = (props: PanelProps) => {
+  return <BasicPanel title={'Redeem TAIKO'} {...props} />
+}

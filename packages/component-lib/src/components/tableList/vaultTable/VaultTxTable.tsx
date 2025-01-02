@@ -18,7 +18,8 @@ import {
   TokenType,
   YEAR_DAY_MINUTE_FORMAT,
   hexToRGB,
-  ErrorIcon
+  ErrorIcon,
+  mapSpecialTokenName
 } from '@loopring-web/common-resources'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment'
@@ -595,7 +596,7 @@ export const VaultOperationDetail = (props: {
                   type={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? TokenType.single : TokenType.vault}
                   tokenIcon={[coinJson[amountSymbol], undefined]}
                 />{' '}
-                <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{amount} {amountSymbol}</Typography>
+                <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{amount} {mapSpecialTokenName(amountSymbol)}</Typography>
               </>
             ) : (
               EmptyValueTag

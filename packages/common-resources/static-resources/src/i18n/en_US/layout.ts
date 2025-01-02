@@ -144,9 +144,9 @@ export default {
   labelVaultHomeDes: 'Access the available portfolio',
   labelVaultDashboard: 'Dashboard',
   labelVaultDashboardDes: 'Manage and trade your assets',
-  labelVault2: 'Portfolio',
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
+  labelTaikoFarming: 'Taiko Farming',
   labelNavDoc: 'Developers',
 
   labelNavWalletDes: `Trade on the go — anytime, anywhere`,

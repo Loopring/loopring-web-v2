@@ -99,6 +99,8 @@ export type VaultAssetsTableProps<R> = {
   hideAssets?: boolean
   actionRow: (props: { row }) => JSX.Element
   onClickDustCollector: () => void
+  hideActions?: boolean
+  noMinHeight?: boolean
   hideDustCollector?: boolean
 } & XOR<
   {
@@ -125,6 +127,8 @@ export const VaultAssetsTable = withTranslation('tables')(
       hideAssets,
       searchValue,
       onClickDustCollector,
+      hideActions,
+      noMinHeight,
       hideDustCollector,
       ...rest
     } = props
@@ -389,6 +393,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           {...{ ...rest, t }}
           style={{
             height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
+            minHeight:noMinHeight ? 0 : undefined
           }}
           onRowClick={onRowClick as any}
           rowHeight={rowConfig.rowHeight}
