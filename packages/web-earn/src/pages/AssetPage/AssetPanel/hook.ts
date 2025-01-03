@@ -243,6 +243,9 @@ export const useGetAssets = (): AssetPanelProps & {
       enableBtn()
     }
   }, [walletL2Status, assetsRawData, tokenPriceStatus, assetBtnStatus])
+  React.useEffect(() => {
+    setTotalAsset('0')
+  }, [account.accAddress])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
   }, [])

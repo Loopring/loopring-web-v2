@@ -386,11 +386,10 @@ const getForexMapGasPrice = async (
       )
     })
     const forexMapLight: ForexMap = await Promise.all(promiseArrayLight).then((restForexs) => {
-      const baseUsd = restForexs[indexUSD].tokenPrices[tokenAddress] ?? 1
       return [currency].reduce<ForexMap>((prev, key, index) => {
         if (restForexs[index] && key && restForexs[index].tokenPrices) {
           // @ts-ignore
-          prev[CurrencyToTag[key]] = Number(restForexs[index].tokenPrices[tokenAddress] / baseUsd)
+          prev[CurrencyToTag[key]] = Number(restForexs[index].tokenPrices[tokenAddress])
         }
         return prev
       }, {} as ForexMap)
