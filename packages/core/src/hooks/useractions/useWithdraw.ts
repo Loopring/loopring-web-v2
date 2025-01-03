@@ -981,7 +981,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     chargeFeeTokenList: chargeFeeTokenList.map(feeInfo => {
       return feeInfo && walletMap2 && tokenMap
-      ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, makeWalletLayer2({needFilterZero: false}).walletMap as any)
+      ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2 as any)
       : undefined
     }).filter(feeInfo => feeInfo !== undefined),
     isFeeNotEnough,
