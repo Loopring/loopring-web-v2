@@ -72,7 +72,7 @@ export const useGetAssets = (): AssetPanelProps & {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
   const { account } = useAccount()
-  const { allowTrade, forexMap } = useSystem()
+  const { allowTrade, forexMap, chainId } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn } = useBtnStatus()
   const {
@@ -215,7 +215,8 @@ export const useGetAssets = (): AssetPanelProps & {
             precision: precision,
           })
           totalAssets = totalAssets.plus(
-            sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0),
+            sdk.toBig(item.tokenValueDollar)
+            // .times(forexMap[currency] ?? 0),
           )
           // totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar).times(forexMap[currency] ?? 0))
         }
@@ -245,7 +246,7 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [walletL2Status, assetsRawData, tokenPriceStatus, assetBtnStatus])
   React.useEffect(() => {
     setTotalAsset('0')
-  }, [account.accAddress])
+  }, [account.accAddress, chainId])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
   }, [])
