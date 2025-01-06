@@ -1510,7 +1510,7 @@ export const useVaultSwap = <
       refreshRef.current && (refreshRef.current as any).firstElementChild.click()  
       refreshData()
     }
-  }, [market, refreshData])
+  }, [market])
   
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {
