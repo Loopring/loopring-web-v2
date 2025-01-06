@@ -502,7 +502,7 @@ export const RetrieveAccountBase = (props: PanelProps) => {
 export const UnlockAccountBase = (props: PanelProps) => {
   const propsPatch = {
     ...props,
-    title: 'labelUnlockAccount',
+    title: 'labelUpdateAccount',
   }
 
   return <BasicPanel {...propsPatch} />
