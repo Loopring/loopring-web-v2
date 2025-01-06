@@ -774,7 +774,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         eddsaSignKey: account.eddsaKey.sk,
         chainId: chainId as number,
       })
-      if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+      if ((response as any).resultInfo && (response as any).resultInfo.code > 0) {
         throw response
       } else {
         info?.onCloseCallBack && info?.onCloseCallBack()
