@@ -194,7 +194,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
 
                 {holdingCollateral ? (
                   <Typography component={'span'} variant='body2' color={'textPrimary'}>
-                    {holdingCollateral + ' ' + (vaultJoinData?.belong as string)}
+                    {holdingCollateral + ' ' + mapSpecialTokenName(vaultJoinData?.belong as string)}
                   </Typography>
                 ) : (
                   EmptyValueTag
