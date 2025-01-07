@@ -1,6 +1,6 @@
 import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip } from '@mui/material'
 import { AvatarCoin, Button, CoinIcons, Loading, LoadingStyled, SpaceBetweenBox } from '@loopring-web/component-lib'
-import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, InfoIcon, OrderListIcon, TokenType } from '@loopring-web/common-resources'
+import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, InfoIcon, mapSpecialTokenName, OrderListIcon, TokenType } from '@loopring-web/common-resources'
 import { numberFormat } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -120,7 +120,7 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
                     leftNode={
                       <Box display={'flex'} alignItems={'center'}>
                         <CoinIcons type={TokenType.single} tokenIcon={[coinJSON]} />
-                        <Typography marginLeft={1}>{token.name}</Typography>
+                        <Typography marginLeft={1}>{mapSpecialTokenName(token.name)}</Typography>
                       </Box>
                     }
                     rightNode={

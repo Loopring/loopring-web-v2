@@ -63,14 +63,14 @@ export function useAccountModal() {
   const handleSignDeniedByUser = React.useCallback(() => {
     setShowAccount({
       isShow: shouldShow ?? false,
-      step: AccountStep.UpdateAccount_User_Denied,
+      step: AccountStep.UnlockAccount_User_Denied,
     })
   }, [setShowAccount, shouldShow])
   const handleSignError = React.useCallback(
     ({ error, walletType }: { error?: sdk.RESULT_INFO; walletType?: WalletType }) => {
       setShowAccount({
         isShow: shouldShow ?? false,
-        step: AccountStep.UpdateAccount_Failed,
+        step: AccountStep.UnlockAccount_Failed,
         error,
         info: { walletType },
       })

@@ -156,7 +156,7 @@ export const useVaultBorrow = <
       clearInterval(timerRef.current)
     }
     const fn = async () => {
-      onRefreshData()
+      getVaultMap()
       const vaultBorrowData = store.getState()._router_tradeVault.vaultBorrowData
       let symbol = vaultBorrowData.belong as string | undefined
       if (!symbol) { return }
@@ -235,11 +235,9 @@ export const useVaultBorrow = <
     })
   }
 
-  React.useEffect(() => {
-    updateVaultBorrowDataRepeatly()
-  }, [vaultAccountInfo?.leverage, vaultBorrowData?.tradeData?.belong])
+  
+
   const onRefreshData = React.useCallback(() => {
-    updateVaultLayer2({})
     getVaultMap()
   }, [])
 
@@ -254,6 +252,10 @@ export const useVaultBorrow = <
     }
     // @ts-ignore
   }, [isShowVaultLoan.isShow])
+
+  React.useEffect(() => {
+    isShowVaultLoan.isShow && updateVaultBorrowDataRepeatly()
+  }, [isShowVaultLoan.isShow, vaultAccountInfo?.leverage, vaultBorrowData?.tradeData?.belong])
 
   const handlePanelEvent = React.useCallback(
     (data: SwitchData<T>) => {

@@ -72,7 +72,7 @@ export const useGetAssets = (): AssetPanelProps & {
   }>({ assetsRawData: [], assetsRawMap: {} })
   const [totalAsset, setTotalAsset] = React.useState<string>('0')
   const { account } = useAccount()
-  const { allowTrade, forexMap } = useSystem()
+  const { allowTrade, chainId } = useSystem()
   const { status: tokenPriceStatus } = useTokenPrices()
   const { btnStatus: assetBtnStatus, enableBtn, setLoadingBtn } = useBtnStatus()
   const { setShowAccount } = useOpenModals()
@@ -252,6 +252,9 @@ export const useGetAssets = (): AssetPanelProps & {
       enableBtn()
     }
   }, [walletL2Status, assetsRawData, tokenPriceStatus, assetBtnStatus])
+  React.useEffect(() => {
+    setTotalAsset('0')
+  }, [account.accAddress, chainId])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
   }, [])

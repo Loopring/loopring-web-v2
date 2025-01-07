@@ -1737,7 +1737,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       { floor: true },
                     ) +
                     ' ' +
-                    outTokenInfo.symbol
+                    mapSpecialTokenName(outTokenInfo.symbol)
                   : EmptyValueTag,
                 executionHistory: operation?.executionHistory,
                 profit: profit

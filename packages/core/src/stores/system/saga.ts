@@ -338,13 +338,78 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   }
   store.dispatch(accountStatusUnset(undefined))
 }
+const getForexMapGasPrice = async (
+  chainId: sdk.ChainId
+): Promise<{
+  gasPrice: number
+  forexMapLight: ForexMap
+  forexMapAllPromise: Promise<ForexMap>
+} | undefined> => {
+  const network = MapChainId[chainId] ?? MapChainId[1]
+  if (LoopringAPI.exchangeAPI && TokenPriceBase[network]) {
+    let { currency } = store.getState().settings
+    let indexUSD = 0
+    const tokenAddress = TokenPriceBase[network] //addressIndex[TokenPriceBase[network]];
+    
+    const promiseArrayAll = Object.keys(CurrencyToTag).map((key, index) => {
+      if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
+        indexUSD = index
+      }
+      
+      return async () => {
+        await sdk.sleep(300)
+        return (LoopringAPI?.exchangeAPI?.getLatestTokenPrices({
+          currency: CurrencyToTag[key].toString(),
+          tokens: tokenAddress,
+        }) ?? Promise.resolve({ tokenPrices: null }))
+      }
+    })
+    const forexMapAllPromise = promiseAllSequently(promiseArrayAll).then(async (restForexs) => { 
+      const baseUsd = restForexs[indexUSD].tokenPrices[tokenAddress] ?? 1
+      return Object.keys(CurrencyToTag).reduce<ForexMap>((prev, key, index) => {
+        if (restForexs[index] && key && restForexs[index].tokenPrices) {
+          // @ts-ignore
+          prev[CurrencyToTag[key]] = Number(restForexs[index].tokenPrices[tokenAddress] / baseUsd)
+        }
+        return prev
+      }, {} as ForexMap)
+    })
+    const promiseArrayLight = [currency].map((key, index) => {
+      if (key.toString().toUpperCase() === sdk.Currency.usd.toUpperCase()) {
+        indexUSD = index
+      }
+      return (
+        LoopringAPI?.exchangeAPI?.getLatestTokenPrices({
+          currency: CurrencyToTag[key].toString(),
+          tokens: tokenAddress,
+        }) ?? Promise.resolve({ tokenPrices: null })
+      )
+    })
+    const forexMapLight: ForexMap = await Promise.all(promiseArrayLight).then((restForexs) => {
+      return [currency].reduce<ForexMap>((prev, key, index) => {
+        if (restForexs[index] && key && restForexs[index].tokenPrices) {
+          // @ts-ignore
+          prev[CurrencyToTag[key]] = Number(restForexs[index].tokenPrices[tokenAddress])
+        }
+        return prev
+      }, {} as ForexMap)
+    })
+    const { gasPrice } = await LoopringAPI.exchangeAPI.getGasPrice();
+
+    return {
+      gasPrice,
+      forexMapLight,
+      forexMapAllPromise,
+    }
+  }
+  return undefined
+}
 const should15MinutesUpdateDataGroup = async (
   chainId: sdk.ChainId,
 ): Promise<{
   gasPrice: number | undefined
   forexMap: ForexMap
 }> => {
-  // const { defaultNetwork } = store.getState().settings
   const network = MapChainId[chainId] ?? MapChainId[1]
   if (LoopringAPI.exchangeAPI && TokenPriceBase[network]) {
     let indexUSD = 0
@@ -443,12 +508,13 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           ? `https://sepolia.etherscan.io/`
           : process.env[`REACT_APP_EXPLORER_URL_${chainId}`]
       
-      let allowTrade, exchangeInfo, forexMap, gasPrice
+      
+      let allowTrade, exchangeInfo, forexMapGas,forexMap, gasPrice, forexMapAllPromise
       try {
         const _exchangeInfo = JSON.parse(
           window.localStorage.getItem(LocalStorageConfigKey.exchangeInfo) ?? '{}',
         )
-        ;[{ exchangeInfo }, { forexMap, gasPrice },allowTrade] = await Promise.all([
+        ;[{ exchangeInfo }, forexMapGas, allowTrade] = await Promise.all([
           _exchangeInfo[chainId]
             ? Promise.resolve({ exchangeInfo: _exchangeInfo[chainId] })
             : LoopringAPI.exchangeAPI.getExchangeInfo().then(({ exchangeInfo }) => {
@@ -462,7 +528,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
                 )
                 return { exchangeInfo }
               }),
-          should15MinutesUpdateDataGroup(chainId),
+          getForexMapGasPrice(chainId),
           LoopringAPI.walletAPI.getAccountServices({}).then((result) => {
             return {
               ...result,
@@ -475,6 +541,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
             process.env.REACT_APP_DEX_WHITELIST,
           ),
         ])
+        ;({forexMapLight: forexMap, gasPrice, forexMapAllPromise} = forexMapGas!)
         if (_exchangeInfo[chainId]) {
           LoopringAPI.exchangeAPI.getExchangeInfo().then(async ({ exchangeInfo }: any) => {
             window.localStorage.setItem(
@@ -495,6 +562,15 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
             myLog('exchangeInfo from service')
           })
         }
+        // get complete forex map async
+        forexMapAllPromise.then((forexMapAll) => {
+          store.dispatch(
+            getSystemStatus({
+              forexMap: forexMapAll
+            })
+          )
+          
+        })
       } catch (e: any) {
         allowTrade = {
           defiInvest: { enable: false },
