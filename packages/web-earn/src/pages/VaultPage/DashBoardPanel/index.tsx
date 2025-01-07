@@ -390,7 +390,7 @@ export const VaultDashBoardPanel = ({
       { fixed: 2 , removeTrailingZero: true} // 2 is USDT precision
     ) 
     : undefined
-  const totalDustsInCurrency = totalDustsInUSDT
+  const totalDustsInCurrency = totalDustsInUSDT && getValueInCurrency(totalDustsInUSDT)
     ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
     : EmptyValueTag
 
