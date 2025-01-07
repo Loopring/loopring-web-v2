@@ -945,7 +945,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       })
 
   
-
+  const { vaultAccountInfo, updateVaultLayer2 } = useVaultLayer2()
   const refreshData = async () => {
     
     const account = store.getState().account
@@ -960,6 +960,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       accountServices.sendCheckAccount(account.accAddress)
       return
     }
+    
     LoopringAPI?.defiAPI
       ?.getTaikoFarmingDepositDurationList({
         accountId,
@@ -1050,8 +1051,9 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         })
       })
     updateWalletLayer2()
+
+    account.apiKey && updateVaultLayer2({})
   }
-  const { vaultAccountInfo } = useVaultLayer2()
   const [showLogInToCleanLrTaiko, setShowLogInToCleanLrTaiko] = useState(false)
 
   const clearState = () => {
