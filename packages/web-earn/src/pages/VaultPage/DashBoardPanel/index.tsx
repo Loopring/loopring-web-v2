@@ -895,7 +895,7 @@ export const VaultDashBoardPanel = ({
                             variant={'body2'}
                           >
                             {t('labelVaultMaximumCredit')}:{' '}
-                            {(vaultAccountInfo as any)?.maxCredit
+                            {(vaultAccountInfo as any)?.maxCredit && getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
                               ? fiatNumberDisplay(
                                   getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                                   currency,
