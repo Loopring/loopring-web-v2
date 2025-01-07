@@ -1411,7 +1411,7 @@ export const VaultDashBoardPanel = ({
                 collateralTokens={
                   collateralTokens?.map((collateralToken) => {
                     const tokenSymbol = idIndex[collateralToken.collateralTokenId]
-                    const amount = collateralToken.collateralTokenAmount
+                    const amount = collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
                       ? utils.formatUnits(
                           collateralToken.collateralTokenAmount,
                           tokenMap[tokenSymbol].decimals,
