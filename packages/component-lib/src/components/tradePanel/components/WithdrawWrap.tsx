@@ -58,7 +58,6 @@ export const WithdrawWrap = <
   addressDefault,
   accAddr,
   isNotAvailableAddress,
-  withdrawTypes = { [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard' },
   withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
@@ -544,13 +543,6 @@ export const WithdrawWrap = <
               open={dropdownStatus === 'up'}
               onClose={() => {
                 setDropdownStatus('down')
-              }}
-              withdrawInfos={{
-                types: withdrawTypes,
-                type: withdrawType as any,
-                onChangeType(w) {
-                  _handleWithdrawTypeChange(w)
-                },
               }}
               onClickFee={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
               feeLoading={isFeeNotEnough.isOnLoading}
