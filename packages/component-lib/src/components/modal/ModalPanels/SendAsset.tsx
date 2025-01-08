@@ -33,17 +33,17 @@ const BoxStyled = styled(Box)`` as typeof Box
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case 'IncomingIcon':
-      return <IncomingIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '16px' }} />
+      return <IncomingIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'L2l2Icon':
-      return <L2l2Icon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '16px' }} />
+      return <L2l2Icon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'L1l2Icon':
-      return <L1l2Icon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '16px' }} />
+      return <L1l2Icon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'ExchangeAIcon':
-      return <ExchangeAIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '16px' }} />
+      return <ExchangeAIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'OutputIcon':
-      return <OutputIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '16px' }} />
+      return <OutputIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'AnotherIcon':
-      return <AnotherIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '16px' }} />
+      return <AnotherIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
   }
 }
 export const SendAsset = ({
@@ -69,8 +69,8 @@ export const SendAsset = ({
           (item.key == 'SendAssetToAnotherNet' && send['orbiter']?.includes(symbol)) ||
           !['SendAssetToAnotherNet'].includes(item.key),
       )
-      .map((item) => (
-        <Box key={item.key} marginTop={2}>
+      .map((item, index) => (
+        <Box key={item.key} marginTop={'-1px'}>
           <MenuBtnStyled
             variant={'outlined'}
             size={'large'}
@@ -98,9 +98,16 @@ export const SendAsset = ({
                 },
                 '& .title, .description': {
                   color: 'var(--color-text-primary)',
-                },
+                }
               },
-            }}
+              borderTopLeftRadius: index === 0 ? '4px' : '0px',
+              borderTopRightRadius: index === 0 ? '4px' : '0px',
+              borderBottomLeftRadius: index === list.length - 1 ? '4px' : '0px',
+              borderBottomRightRadius: index === list.length - 1 ? '4px' : '0px',
+              '&&&&:hover' : {
+                borderColor: 'var(--color-border)'
+              }
+           }}
           >
             <Box display={'flex'} alignItems={'center'}>
               <Typography
@@ -147,7 +154,7 @@ export const SendAsset = ({
                 )}
               </Box>
             </Box>
-            {item.cornerTag && (
+            {/* {item.cornerTag && (
               <Box
                 className='corner-tag'
                 sx={{
@@ -170,7 +177,7 @@ export const SendAsset = ({
                   {item.cornerTag === '3rd party' ? '3rd party' : 'Loopring'}
                 </Typography>
               </Box>
-            )}
+            )} */}
           </MenuBtnStyled>
         </Box>
       ))
@@ -215,19 +222,15 @@ export const SendAsset = ({
       >
 
         <Box flex={1} flexDirection={'column'}>
-          <Box mb={5}>
-            <Typography mb={1} color={'var(--color-text-secondary)'}>同层转账</Typography>
-
+          <Box mb={5} mt={4}>
             {filterAndMap(sameLayerAssetList)}
           </Box>
           <Box mb={5}>
-            <Typography mb={1} color={'var(--color-text-secondary)'}>跨层转账（To L1）</Typography>
-
+            <Typography mb={2} color={'var(--color-text-secondary)'} variant='body2'>To Ethereum</Typography>
             {filterAndMap(crossLayerAssetList)}
           </Box>
           <Box >
-            <Typography mb={1} color={'var(--color-text-secondary)'}>跨链转账</Typography>
-
+            <Typography mb={2} color={'var(--color-text-secondary)'} variant='body2'>To other networks</Typography>
             {filterAndMap(crossChainAssetList)}
           </Box>
         </Box>

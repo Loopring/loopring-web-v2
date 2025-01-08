@@ -123,7 +123,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       fastInfo: undefined as undefined | {
         fee: string
         time: string
+        
       },
+      maxFastWithdrawAmountBN: undefined as undefined | string,
       normalInfo: undefined as undefined | {
         fee: string
         time: string
@@ -132,16 +134,26 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       mode: 'fast' as 'fast' | 'normal',
     }
   })
-  
-  const { fee: { symbol: feeSymbol, chargeFeeTokenListFast, chargeFeeTokenListNormal }, withdrawMode } = getState()
+  const state = getState()
+  const { fee: { symbol: feeSymbol, chargeFeeTokenListFast, chargeFeeTokenListNormal }, withdrawMode } = state
+  const withdrawToken = tokenMap[withdrawValue.belong as string]
+  const tradeValueBN = withdrawToken && withdrawValue.tradeValue
+    ? ethers.utils.parseUnits(withdrawValue.tradeValue.toString(), withdrawToken.decimals)
+    : ethers.BigNumber.from('0')
+  const fastWithdrawOverflow = state.withdrawMode.maxFastWithdrawAmountBN && tradeValueBN 
+    ? tradeValueBN.gte(state.withdrawMode.maxFastWithdrawAmountBN)
+    : undefined
   const fastModeSupportted = withdrawMode.fastModeTokens.includes(withdrawValue.belong as string)
-  const isFastMode = fastModeSupportted ? withdrawMode.mode === 'fast' : false
-  const chargeFeeTokenList = isFastMode ? chargeFeeTokenListFast : chargeFeeTokenListNormal
+  const isFastMode =
+    fastWithdrawOverflow === false && fastModeSupportted ? withdrawMode.mode === 'fast' : false
+  const chargeFeeTokenList = isFastMode 
+    ? chargeFeeTokenListFast 
+    : chargeFeeTokenListNormal
   const feeInfo = feeSymbol 
     ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
     : chargeFeeTokenList[0]
     
-  const feeInfo2 = feeInfo && walletMap2 && tokenMap
+  const feeInfo2 = feeInfo && walletMap2 && tokenMap 
     ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2 as any)
     : undefined;
   
@@ -173,6 +185,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   
 
   // const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>()
+  
 
   const {
     address,
@@ -382,6 +395,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue
         ? globalState._router_modalData.withdrawValue.tradeValue.toString()
         : '0'
+      const withdrawToken = symbol
+        ? tokenMap[symbol]
+        : undefined
 
       const feeResNormal = await LoopringAPI.userAPI?.getOffchainFeeAmt(
         {
@@ -401,6 +417,24 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
         account.apiKey,
       )
+      withdrawToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
+        tokenId: withdrawToken.tokenId,
+        network: network,
+        amount: '0'
+      }).then(res => {
+        const amounts = res.map(agent => {
+          return new Decimal(agent.totalAmount).sub(agent.freezeAmount).toString()
+        })
+        const sorted = amounts.concat('0').sort((a, b) => ethers.BigNumber.from(b).gte(a) ? 1 : -1)
+        const amount = sorted[0] ? sorted[0] : '0'
+        setState((state) => ({
+          ...state,
+          withdrawMode: {
+            ...state.withdrawMode,
+            maxFastWithdrawAmountBN: amount,
+          }
+        }))
+      })
       const chargeFeeTokenListNormal = feeResNormal?.fees ? values(feeResNormal.fees) : []
       const chargeFeeTokenListFast = feeResFast?.fees ?? []
       const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
@@ -1037,6 +1071,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               currency,
             )
           : undefined
+      // const withdrawToken = tokenMap[withdrawValue.belong as string]
+      // const tradeValueBN = withdrawToken && withdrawValue.tradeValue
+      //   ? ethers.utils.parseUnits(withdrawValue.tradeValue.toString(), withdrawToken.decimals)
+      //   : undefined
       
       return {
         mode: isFastMode ? 'fast' : 'normal',
@@ -1044,6 +1082,16 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         fastMode: {
           fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',
           time: '~3 minutes',
+        },
+        fastMaxAlert: {
+          show: fastWithdrawOverflow === true,
+          message:
+            state.withdrawMode.maxFastWithdrawAmountBN &&
+            withdrawToken &&
+            `Max ${ethers.utils.formatUnits(
+              state.withdrawMode.maxFastWithdrawAmountBN,
+              withdrawToken.decimals,
+            )} ${withdrawToken?.symbol}`,
         },
         normalMode: {
           fee: feeNormalInCurrency ? '~' + feeNormalInCurrency : '--',
@@ -1053,7 +1101,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       }
     })(),
   }
-  console.log('withdrawProps', getState(), withdrawProps)
+  console.log('withdrawProps', getState(), withdrawValue, withdrawProps)
 
   return {
     withdrawProps,

@@ -186,9 +186,18 @@ export const FeeSelect = (props: FeeSelectProps) => {
     floatLeft,
     middleContent,
     feeNotEnoughContent,
+    networkFeeElement
   } = props
 
   const { t } = useTranslation()
+  const defaultNetworkFeeElement = <Typography
+  marginRight={floatLeft ? 1 : 0}
+  component={'span'}
+  color={'inherit'}
+  minWidth={28}
+>
+  {t('labelL2toL2Fee')}:
+</Typography>
   return (
     <>
       <Typography
@@ -201,14 +210,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
         marginBottom={1}
         justifyContent={floatLeft ? 'left' : 'space-between'}
       >
-        <Typography
-          marginRight={floatLeft ? 1 : 0}
-          component={'span'}
-          color={'inherit'}
-          minWidth={28}
-        >
-          {t('labelL2toL2Fee')}:
-        </Typography>
+        {networkFeeElement ? networkFeeElement : defaultNetworkFeeElement}
         <Box
           component={'span'}
           display={'flex'}
