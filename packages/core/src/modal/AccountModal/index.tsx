@@ -80,6 +80,7 @@ export const ModalAccountInfo = withTranslation('common')(
       onBackReceive,
       onBackSend,
       contactAddProps,
+      transferToTaikoProps,
       // toastOpen,
       // closeToast,
     } = useAccountModalForUI({
@@ -195,6 +196,7 @@ export const ModalAccountInfo = withTranslation('common')(
           setExportAccountToastOpen={setExportAccountToastOpen}
           account={account}
           sideStackRedeemProps={sideStackRedeemProps as any}
+          transferToTaikoProps={transferToTaikoProps}
           {...{ _height: 'var(--modal-height)', _width: 'var(--modal-width)' }}
         />
         <Toast

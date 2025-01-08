@@ -224,6 +224,7 @@ import {
   useStakeTradeExit,
   useSystem,
   useTransfer,
+  useTransferToTaikoAccount,
   useVendor,
   useWalletLayer2,
   useWithdraw,
@@ -268,6 +269,7 @@ export function useAccountModalForUI({
     setShowActiveAccount,
     setShowNFTTransfer,
     setShowNFTWithdraw,
+    setShowTransferToTaikoAccount
   } = useOpenModals()
   rest = { ...rest, ...isShowAccount.info }
   const {
@@ -312,6 +314,7 @@ export function useAccountModalForUI({
   const { vendorListBuy, banxaRef } = useVendor()
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw()
+  const transferToTaikoProps = useTransferToTaikoAccount()
   const { transferProps } = useTransfer()
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
@@ -736,10 +739,24 @@ export function useAccountModalForUI({
                 // window.opener = null
               },
             }
+          case SendAssetList.SendAssetToTaikoAccount.key:
+            return {
+              ...SendAssetList.SendAssetToTaikoAccount,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                setShowTransferToTaikoAccount({
+                  isShow: true,
+                })
+              },
+            }
         }
       }),
     [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw],
   )
+  console.log('sendAssetList', sendAssetList)
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [
       {
@@ -887,10 +904,13 @@ export function useAccountModalForUI({
           <SendAsset
             isToL1={isShowAccount?.info?.isToL1}
             symbol={isShowAccount?.info?.symbol}
-            sendAssetList={sendAssetList}
             allowTrade={allowTrade}
+            sameLayerAssetList={sendAssetList.filter(item => item.type === 'sameLayer')}
+            crossLayerAssetList={sendAssetList.filter(item => item.type === 'crossLayer')}
+            crossChainAssetList={sendAssetList.filter(item => item.type === 'crossChain')}
           />
         ),
+        height: 'auto',
       },
       [AccountStep.SendAssetFromContact]: {
         view: (
@@ -3593,6 +3613,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    contactAddProps
+    contactAddProps,
+    transferToTaikoProps
 	}
 }
