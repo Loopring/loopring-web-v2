@@ -430,8 +430,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const chargeFeeTokenListFast = feeResFast?.fees ?? []
       const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
       const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[network]
+      const networkL1Tokens = JSON.parse(config.config).networkL1Tokens[network]
       const fastModeSupportedTokens = networkL2TokenIds.map((id: number) => {
         return idIndex[id]
+      }).filter((symbol ) => {
+        return networkL1Tokens[symbol]
       })
       setState((state) => ({
         ...state,
