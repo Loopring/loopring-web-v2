@@ -207,7 +207,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
             walletMap as any,
           )
         : undefined,
-      chargeFeeTokenList: walletMap
+      chargeFeeTokenList: walletMap && tokenMap
         ? state.feeList.map((item) => offchainFeeInfoToFeeInfo(item, tokenMap, walletMap as any))
         : [],
       handleToggleChange: (feeInfo) => {

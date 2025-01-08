@@ -64,6 +64,16 @@ export const fiatNumberDisplay = (number: string | number, currency: CurrencyToT
   })
 }
 
+export const fiatNumberDisplaySafe = (number: string | number, currency: CurrencyToTag) => {
+  if (number === undefined || number === null) return undefined
+  const numberStr = typeof number === 'number' ? number.toString() : number
+  const fixed = new Decimal(numberStr).lessThan('1') && new Decimal(numberStr).greaterThan('0') ? 6 : 2
+  return numberFormatThousandthPlace(number, {
+    fixed,
+    currency
+  })
+}
+
 export const bigNumberFormat = (number: BigNumber | string, decimals: number, format?: {
   fixed?: number,
   thousandthPlace?: boolean,

@@ -10,9 +10,7 @@ import {
   Explorer,
   FeeInfo,
   getValuePrecisionThousand,
-  globalSetup,
   IBData,
-  LIVE_FEE_TIMES,
   MapChainId,
   myLog,
   SagaStatus,
@@ -32,31 +30,29 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   BIGO,
   DAYS,
-  fiatNumberDisplay,
   getTimestampDaysLater,
   isAccActivated,
   LAST_STEP,
   LoopringAPI,
   makeWalletLayer2,
-  numberFormat,
   store,
   TokenMap,
   useAccount,
   useAddressCheck,
-  useBtnStatus,
-  useChargeFees,
   useContacts,
+  useDebouncedCallback,
   useModalData,
   useSystem,
   useTokenMap,
   useTokenPrices,
   useWalletLayer2Socket,
   walletLayer2Service,
+  fiatNumberDisplaySafe,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _, { values, omit } from 'lodash'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
-import { useGetSet, useGetSetState } from 'react-use'
+import { useGetSet } from 'react-use'
 import { ethers } from 'ethers'
 import Decimal from 'decimal.js'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
@@ -130,7 +126,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         fee: string
         time: string
       },
-      fastModeTokens: ['ETH'] as string[],
+      fastModeTokens: [] as string[],
       mode: 'fast' as 'fast' | 'normal',
     }
   })
@@ -158,7 +154,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     : undefined;
   
   const isFeeNotEnough = {
-    isFeeNotEnough: feeInfo2 ? new Decimal(feeInfo2.fee).gt(feeInfo2.count) : false, 
+    isFeeNotEnough:
+      feeInfo2 && feeInfo2.fee && feeInfo2.count
+        ? new Decimal(feeInfo2.fee).gt(feeInfo2.count)
+        : false,
     isOnLoading: getState().fee.isOnLoading,
   }
   console.log('isFeeNotEnough', feeInfo2, isFeeNotEnough)
@@ -172,19 +171,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     })
   }
 
-  const [withdrawTypes, setWithdrawTypes] = React.useState<Partial<WithdrawTypes>>(() => {
-    return {
-      // [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
-      [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard',
-    }
-  })
   const { checkHWAddr, updateHW } = useWalletInfo()
 
   const [lastRequest, setLastRequest] = React.useState<any>({})
-
-  
-
-  // const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>()
   
 
   const {
@@ -378,6 +367,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     contactAddress,
   ])
 
+
+
   const refreshFee = async () => {
     setState((state) => ({
       ...state,
@@ -413,7 +404,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           requestType: sdk.OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
           calFeeNetwork: network,
           tokenSymbol: symbol,
-          amount: withdrawValue,
+          amount: ethers.utils.parseUnits(withdrawValue ? withdrawValue : '0', withdrawToken?.decimals).toString(),
         },
         account.apiKey,
       )
@@ -451,7 +442,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
         withdrawMode: {
           ...state.withdrawMode,
-          fastModeSupportedTokens,
+          fastModeTokens: fastModeSupportedTokens
         }
       }))
     } finally {
@@ -464,6 +455,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       }))
     }
   }
+
+  const debouncedRefresshFee = useDebouncedCallback(refreshFee, 100)
+
   const onChangeWithdrawMode = (mode: 'fast' | 'normal') => {
     setState((state) => ({
       ...state,
@@ -792,7 +786,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           maxFee: {
             // @ts-ignore
             tokenId: feeToken.tokenId,
-            volume: ethers.utils.parseUnits('0.1', feeToken.decimals).toString(), // todo
+            volume: feeRaw
           },
           storageId: storageId!.offchainId,
           validUntil: getTimestampDaysLater(DAYS),
@@ -947,7 +941,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     withdrawBtnStatus: btnStatus,
     withdrawType: withdrawValue.withdrawType as any,
     isFastWithdrawAmountLimit,
-    withdrawTypes,
     sureIsAllowAddress,
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
@@ -990,6 +983,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handlePanelEvent: async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
       if (data.to === 'button') {
         if (walletMap2 && data?.tradeData?.belong) {
+          debouncedRefresshFee()
           const walletInfo = walletMap2[data?.tradeData?.belong as string]
           updateWithdrawData({
             ...withdrawValue,
@@ -1050,8 +1044,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const feeTokenInfo = tokenMap[feeSymbol]
 
       const feeFastInCurrency =
-        feeTokenInfo && feeFast && tokenPrices
-          ? fiatNumberDisplay(
+        feeTokenInfo && feeFast && tokenPrices  
+          ? fiatNumberDisplaySafe(
               getValueInCurrency(
                 new Decimal(ethers.utils.formatUnits(feeFast.fee, feeTokenInfo.decimals))
                   .mul(tokenPrices[feeSymbol])
@@ -1062,7 +1056,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           : undefined
       const feeNormalInCurrency =
         feeTokenInfo && feeNormal && tokenPrices
-          ? fiatNumberDisplay(
+          ? fiatNumberDisplaySafe(
               getValueInCurrency(
                 new Decimal(ethers.utils.formatUnits(feeNormal.fee, feeTokenInfo.decimals))
                   .mul(tokenPrices[feeSymbol])

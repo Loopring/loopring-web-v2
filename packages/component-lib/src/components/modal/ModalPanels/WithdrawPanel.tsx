@@ -214,7 +214,7 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
     return type == TRADE_TYPE.TOKEN && !switchData.tradeData?.belong ? (
       <Box
         display={'flex'}
-        height={'900px'}
+        height={'var(--min-height)'}
         width={'var(--modal-width)'}
         justifyContent={'center'}
         flexDirection={'column'}

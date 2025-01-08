@@ -235,7 +235,6 @@ export type WithdrawExtendProps<T, I, C> = {
     | 'isSameAddress'
     | undefined
   withdrawType: WithdrawType
-  withdrawTypes?: Partial<WithdrawTypes>
   realAddr?: string
   isAddressCheckLoading: boolean
   isCFAddress: boolean
@@ -267,6 +266,10 @@ export type WithdrawExtendProps<T, I, C> = {
     fastMode: undefined | {
       fee: string,
       time: string
+    }
+    fastMaxAlert: {
+      show: boolean,
+      message: string
     }
     showFastMode: boolean
     normalMode: undefined | {

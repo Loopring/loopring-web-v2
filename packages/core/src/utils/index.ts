@@ -13,6 +13,7 @@ export {
   numberFormatThousandthPlace,
   bigNumberFormat,
   fiatNumberDisplay,
+  fiatNumberDisplaySafe
 } from './numberFormat'
 export {
   numberStringListSum
