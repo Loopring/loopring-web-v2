@@ -461,31 +461,43 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      <Box width={'100%'} pl={2} my={5}>
-        {withdrawMode.showFastMode && <SpaceBetweenBox
-          borderRadius={'4px 4px 0 0'}
-          px={2}
-          py={0.5}
-          leftNode={
-            <Box display={'flex'} alignItems={'center'}>
-              <Box mr={1.5}>
-                <CustomCheckBox checked={withdrawMode.mode === 'fast'} onCheck={() => {
-                  withdrawMode.onChange('fast')
-                }}/>
+      <Box width={'100%'} pl={2} mb={isToMyself ? 5 : 2} mt={isToMyself ? 5 : 3}>
+        {withdrawMode.showFastMode && (
+          <SpaceBetweenBox
+            borderRadius={'4px 4px 0 0'}
+            px={2}
+            py={0.5}
+            leftNode={
+              <Box display={'flex'} alignItems={'center'}>
+                <Box mr={1.5}>
+                  <CustomCheckBox
+                    checked={withdrawMode.mode === 'fast'}
+                    onCheck={() => {
+                      withdrawMode.onChange('fast')
+                    }}
+                  />
+                </Box>
+                <Box>
+                  <Tooltip title={'todo'}>
+                    <Typography>Trust Mode</Typography>
+                  </Tooltip>
+                  <Typography variant='body2'>{withdrawMode.fastMode?.fee ?? '--'}</Typography>
+                  {withdrawMode.fastMaxAlert.show && (
+                    <Typography color={'var(--color-error)'} variant='body2'>
+                      {withdrawMode.fastMaxAlert.message}
+                    </Typography>
+                  )}
+                </Box>
               </Box>
-              <Box>
-                <Tooltip title={'todo'}>
-                  <Typography>Fast Mode</Typography>
-                </Tooltip>
-                <Typography variant='body2'>{withdrawMode.fastMode?.fee?? '--'}</Typography>
-              </Box>
-            </Box>
-          }
-          alignItems={'center'}
-          rightNode={<Typography variant='body2'>{withdrawMode.fastMode?.time?? '--'}</Typography>}
-          border={'1px solid var(--color-border)'}
-          borderBottom={'none'}
-        />}
+            }
+            alignItems={'center'}
+            rightNode={
+              <Typography variant='body2'>{withdrawMode.fastMode?.time ?? '--'}</Typography>
+            }
+            border={'1px solid var(--color-border)'}
+            borderBottom={'none'}
+          />
+        )}
         <SpaceBetweenBox
           borderRadius={withdrawMode.showFastMode ? '0 0 4px 4px' : '4px'}
           px={2}
@@ -493,23 +505,27 @@ export const WithdrawWrap = <
           leftNode={
             <Box display={'flex'} alignItems={'center'}>
               <Box mr={1.5}>
-              <CustomCheckBox checked={withdrawMode.mode === 'normal'} onCheck={() => {
-                withdrawMode.onChange('normal')
-              }}/>
+                <CustomCheckBox
+                  checked={withdrawMode.mode === 'normal'}
+                  onCheck={() => {
+                    withdrawMode.onChange('normal')
+                  }}
+                />
               </Box>
-              
+
               <Box>
                 <Tooltip title={'todo'}>
                   <Typography>Normal Mode</Typography>
                 </Tooltip>
-                <Typography variant='body2'>{withdrawMode.normalMode?.fee?? '--'}</Typography>
+                <Typography variant='body2'>{withdrawMode.normalMode?.fee ?? '--'}</Typography>
               </Box>
             </Box>
           }
           alignItems={'center'}
-          rightNode={<Typography variant='body2'>{withdrawMode.normalMode?.time ?? '--'}</Typography>}
+          rightNode={
+            <Typography variant='body2'>{withdrawMode.normalMode?.time ?? '--'}</Typography>
+          }
           border={'1px solid var(--color-border)'}
-          
         />
       </Box>
 
@@ -540,6 +556,24 @@ export const WithdrawWrap = <
               feeLoading={isFeeNotEnough.isOnLoading}
               isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
               isFastWithdrawAmountLimit={isFastWithdrawAmountLimit}
+              networkFeeElement={
+                <Tooltip
+                  title={
+                    'The total cost of completing the transaction, including network fees, service fees, and other associated charges.'
+                  }
+                >
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    marginRight={0}
+                    component={'span'}
+                    color={'inherit'}
+                    minWidth={28}
+                  >
+                    Transaction Cost <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
             />
           </>
         )}

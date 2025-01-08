@@ -133,7 +133,7 @@ const App = () => {
 
     setTimeout(async () => {
       if (!walletProvider || !defaultNetwork || !account.accAddress || !account.accountId) return
-      // return
+      return
       const token={
         amount: utils.parseEther('0.01').toString(),
         tokenId: 0,

@@ -375,7 +375,7 @@ export const ModalPanel = <
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: isMobile ? 'auto' : 530,
+              _height: isMobile ? 'auto' : (withdrawProps.isToMyself ? 580 : 680),
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,

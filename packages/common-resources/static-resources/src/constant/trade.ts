@@ -306,7 +306,6 @@ export const SendAssetList: SendAssetListType = {
     enableKey: 'transferToTaikoAccount',
     type: 'crossChain',
     cornerTag: 'Loopring',
-    description: '由路印官方做operator, 转账又快费用又低; 只支持USDT, TAIKO, ETH token快速转账'
   },
 }
 

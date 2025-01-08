@@ -266,6 +266,7 @@ export type FeeSelectProps = {
   floatLeft?: boolean
   middleContent?: JSX.Element
   feeNotEnoughContent?: JSX.Element
+  networkFeeElement?: JSX.Element
 }
 
 export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
