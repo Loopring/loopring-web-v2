@@ -410,7 +410,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const account = globalState.account
       const network = MapChainId[globalState.settings.defaultNetwork]
       const symbol = globalState._router_modalData.withdrawValue.belong as string
-      const idIndex = globalState.tokenMap.idIndex as string
       const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue
         ? globalState._router_modalData.withdrawValue.tradeValue.toString()
         : '0'
@@ -423,6 +422,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           accountId: account.accountId,
           requestType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
           tokenSymbol: symbol,
+          amount: ethers.utils.parseUnits(withdrawValue ? withdrawValue : '0', withdrawToken?.decimals).toString(),
         },
         account.apiKey,
       )
@@ -825,7 +825,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         chainId: chainId as number,
       })
       if ((response as any).resultInfo && (response as any).resultInfo.code > 0) {
-        throw response
+        throw (response as any).resultInfo
       } else {
         info?.onCloseCallBack && info?.onCloseCallBack()
         setShowWithdraw({
