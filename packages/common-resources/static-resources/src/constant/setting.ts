@@ -229,3 +229,8 @@ export enum ToastType {
   warning = 'warning',
   info = 'info',
 }
+
+export const SEND_TO_TAIKO_NETWORK_MAP = new Map([
+  [sdk.ChainId.SEPOLIA, sdk.ChainId.TAIKOHEKLA],
+  [sdk.ChainId.MAINNET, sdk.ChainId.TAIKO],
+])

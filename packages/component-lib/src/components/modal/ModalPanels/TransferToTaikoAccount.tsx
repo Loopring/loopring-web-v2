@@ -41,7 +41,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     <>
       <Box>
         <Typography variant={'h3'} textAlign={'center'}>
-          Send to Taiko Account
+          Send to Taiko
           <Tooltip sx={{ ml: 1 }} title={'todo'}>
             <Info2Icon />
           </Tooltip>
@@ -125,7 +125,13 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             value={receiptInput}
           />
         </Box>
+        <Typography mt={3} color={'var(--color-text-third)'} fontSize={'12px'}>
+          Trust Mode: Operated by Loopring's team to maintain liquidity.
+          <br />
+          Supported Assets: USDC, TAIKO, and ETH.
+        </Typography>
       </Box>
+
       <Box>
         <SpaceBetweenBox
           leftNode={<Typography color={'var(--color-text-primary)'}>Network Fee</Typography>}

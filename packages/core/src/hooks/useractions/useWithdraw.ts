@@ -218,10 +218,33 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const isEnough = tradeValue.lte(
         sdk.toBig(withdrawValue.balance ?? 0).times('1e' + withdrawT.decimals),
       )
+      
       const contact = contacts?.find((x) => x.contactAddress === realAddr)
       const ensHasCheck = (contact?.ens || ens) 
         ? !isENSWrong 
         : true
+
+      if (exceedPoolLimit) {
+        const amt = getValuePrecisionThousand(
+          sdk.toBig(withdrawT.fastWithdrawLimit ?? 0).div('1e' + withdrawT.decimals),
+          withdrawT.precision,
+          withdrawT.precision,
+          withdrawT.precision,
+          false,
+          { floor: true },
+        ).toString()
+        return {
+          label: `labelL2toL1BtnExceed|${amt}`,
+          enable: false,
+          isFastWithdrawAmountLimit: true,
+        }
+      } else if (realAddr && withdrawValue.tradeValue && sureIsAllowAddress === undefined) {
+        return {
+          label: 'Please input address type',
+          enable: false,
+          isFastWithdrawAmountLimit: false,
+        }
+      }
       if (
         tradeValue &&
         !exceedPoolLimit &&
@@ -245,22 +268,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           label: undefined
         }
       }
-      if (exceedPoolLimit) {
-        const amt = getValuePrecisionThousand(
-          sdk.toBig(withdrawT.fastWithdrawLimit ?? 0).div('1e' + withdrawT.decimals),
-          withdrawT.precision,
-          withdrawT.precision,
-          withdrawT.precision,
-          false,
-          { floor: true },
-        ).toString()
-
-        return {
-          label: `labelL2toL1BtnExceed|${amt}`,
-          enable: false,
-          isFastWithdrawAmountLimit: true
-        }
-      }
+      
     } 
     return {
       label: undefined,
@@ -367,7 +375,27 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     contactAddress,
   ])
 
-
+  const getConfig = async () => {
+    const globalState = store.getState()
+    const network = MapChainId[globalState.settings.defaultNetwork]
+    const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
+    const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[network]
+    const networkL1Tokens = JSON.parse(config.config).networkL1Tokens[network]
+    const fastModeSupportedTokens = networkL2TokenIds
+      .map((id: number) => {
+        return idIndex[id]
+      })
+      .filter((symbol) => {
+        return networkL1Tokens[symbol]
+      })
+    setState((state) => ({
+      ...state,
+      withdrawMode: {
+        ...state.withdrawMode,
+        fastModeTokens: fastModeSupportedTokens,
+      },
+    }))
+  }
 
   const refreshFee = async () => {
     setState((state) => ({
@@ -428,24 +456,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       })
       const chargeFeeTokenListNormal = feeResNormal?.fees ? values(feeResNormal.fees) : []
       const chargeFeeTokenListFast = feeResFast?.fees ?? []
-      const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
-      const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[network]
-      const networkL1Tokens = JSON.parse(config.config).networkL1Tokens[network]
-      const fastModeSupportedTokens = networkL2TokenIds.map((id: number) => {
-        return idIndex[id]
-      }).filter((symbol ) => {
-        return networkL1Tokens[symbol]
-      })
       setState((state) => ({
         ...state,
         fee: {
           ...state.fee,
           chargeFeeTokenListNormal,
           chargeFeeTokenListFast,
-        },
-        withdrawMode: {
-          ...state.withdrawMode,
-          fastModeTokens: fastModeSupportedTokens
         }
       }))
     } finally {
@@ -480,6 +496,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
+      getConfig()
       resetDefault()
       refreshTimer = setInterval(() => {
         refreshFee()
