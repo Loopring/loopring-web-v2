@@ -796,7 +796,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
       }
 
-      myLog('submitOffchainWithdraw:', request)
+      // console.log('fastWithdraw_request', request)
+      // localStorage.setItem('fastWithdraw_request', JSON.stringify(request))
+      debugger
       const provider = new ethers.providers.Web3Provider(walletProvider as any)
 
       const response = await LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw(request, {
