@@ -28,11 +28,13 @@ import {
   getValuePrecisionThousand,
   globalSetup,
   InvestAssetRouter,
+  MapChainId,
   myLog,
   PriceTag,
   RecordTabIndex,
   RouterPath,
   SagaStatus,
+  SEND_TO_TAIKO_NETWORK_MAP,
   TabOrderIndex,
   TokenType,
   TradeBtnStatus,
@@ -276,11 +278,30 @@ export const useGetAssets = (): AssetPanelProps & {
     [setShowAccount],
   )
   const onSend = React.useCallback(
-    (token?: any, isToL1?: boolean) => {
+    async (token?: any, isToL1?: boolean) => {
+      const {
+        settings: { defaultNetwork: network },
+        tokenMap: { idIndex },
+      } = store.getState()
+      const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
+      const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[MapChainId[network]]
+      const taikoNetwork = SEND_TO_TAIKO_NETWORK_MAP[network]
+      const networkL1Tokens = JSON.parse(config.config).networkL1Tokens[MapChainId[taikoNetwork]]
+      const sendToTaikoSupportedTokens = networkL2TokenIds
+        ? networkL2TokenIds
+            .map((id: number) => {
+              return idIndex[id]
+            })
+            .filter((symbol) => {
+              return networkL1Tokens && networkL1Tokens[symbol]
+            })
+        : []
+      console.log('sendToTaikoSupportedTokens', sendToTaikoSupportedTokens)
+      const showSendToTaiko = token && sendToTaikoSupportedTokens.includes(token)
       setShowAccount({
         isShow: true,
         step: AccountStep.SendAssetGateway,
-        info: token || isToL1 ? { symbol: token, isToL1 } : undefined,
+        info: token || isToL1 ? { symbol: token, isToL1, showSendToTaiko } : undefined,
       })
     },
     [setShowAccount],

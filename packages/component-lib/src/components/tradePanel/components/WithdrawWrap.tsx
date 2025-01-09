@@ -477,8 +477,17 @@ export const WithdrawWrap = <
                   />
                 </Box>
                 <Box>
-                  <Tooltip title={'todo'}>
-                    <Typography>Trust Mode</Typography>
+                  <Tooltip
+                    title={
+                      <Typography color={'var(--color-text-secondary)'} fontSize={'11px'}>
+                        Trust Mode: Operated by Loopring’s team to maintain liquidity. <br />
+                        Supported Assets: USDC, TAIKO, and ETH.
+                      </Typography>
+                    }
+                  >
+                    <Typography display={'flex'} alignItems={'center'}>
+                      Trust Mode <Info2Icon sx={{ml: 0.5, color: 'var(--color-text-third)'}}/>
+                    </Typography>
                   </Tooltip>
                   <Typography variant='body2'>{withdrawMode.fastMode?.fee ?? '--'}</Typography>
                   {withdrawMode.fastMaxAlert.show && (
@@ -562,7 +571,7 @@ export const WithdrawWrap = <
                     color={'inherit'}
                     minWidth={28}
                   >
-                    Transaction Cost <Info2Icon sx={{ ml: 0.5 }} />
+                    Transaction Cost <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
                   </Typography>
                 </Tooltip>
               }

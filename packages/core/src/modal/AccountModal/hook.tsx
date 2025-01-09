@@ -669,7 +669,11 @@ export function useAccountModalForUI({
   )
   const sendAssetList: SendAssetItem[] = React.useMemo(
     () =>
-      SendAssetListMap[network].map((item: string) => {
+      SendAssetListMap[network].filter(item => {
+        return item === SendAssetList.SendAssetToTaikoAccount.key
+          ? isShowAccount?.info?.showSendToTaiko
+          : true
+      }).map((item: string) => {
         switch (item) {
           case SendAssetList.SendAssetToL2.key:
             return {
@@ -756,7 +760,6 @@ export function useAccountModalForUI({
       }),
     [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw],
   )
-  console.log('sendAssetList', sendAssetList)
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [
       {
