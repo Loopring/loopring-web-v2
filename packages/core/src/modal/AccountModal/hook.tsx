@@ -671,7 +671,7 @@ export function useAccountModalForUI({
     () =>
       SendAssetListMap[network].filter(item => {
         return item === SendAssetList.SendAssetToTaikoAccount.key
-          ? isShowAccount?.info?.showSendToTaiko
+          ? isShowAccount?.info?.hideSendToTaiko ? false : true
           : true
       }).map((item: string) => {
         switch (item) {

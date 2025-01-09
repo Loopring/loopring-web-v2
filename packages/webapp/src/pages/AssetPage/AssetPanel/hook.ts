@@ -298,17 +298,17 @@ export const useGetAssets = (): AssetPanelProps & {
               })
           : []
         console.log('sendToTaikoSupportedTokens', sendToTaikoSupportedTokens)
-        const showSendToTaiko = token && sendToTaikoSupportedTokens.includes(token)
+        const hideSendToTaiko = sendToTaikoSupportedTokens.includes(token)
         setShowAccount({
           isShow: true,
           step: AccountStep.SendAssetGateway,
-          info: token || isToL1 ? { symbol: token, isToL1, showSendToTaiko } : undefined,
+          info: token || isToL1 ? { symbol: token, isToL1, hideSendToTaiko } : undefined,
         })
       } else {
         setShowAccount({
           isShow: true,
           step: AccountStep.SendAssetGateway,
-          info: token || isToL1 ? { symbol: token, isToL1, showSendToTaiko: true } : undefined,
+          info: token || isToL1 ? { symbol: token, isToL1 } : undefined,
         })
       }
       
