@@ -108,7 +108,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   }
   useEffect(() => {
     var timer: NodeJS.Timeout
-    if (modals.isShowTransferToTaikoAccount.isShow || true) {
+    if (modals.isShowTransferToTaikoAccount.isShow) {
       timer = setInterval(() => {
         refreshData()
       }, 10 * 1000)
