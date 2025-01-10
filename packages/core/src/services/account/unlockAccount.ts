@@ -7,6 +7,7 @@ import Web3 from 'web3'
 import { nextAccountSyncStatus } from '../../stores/account/reducer'
 import Decimal from 'decimal.js'
 import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
+import { AccountStep, setShowAccount } from '@loopring-web/component-lib'
 
 export const hasLrTAIKODust = () => {
   const walletLayer2 = store.getState().walletLayer2.walletLayer2
@@ -210,9 +211,15 @@ export async function unlockAccount() {
       const code = sdk.checkErrorInfo(error, true)
       switch (code) {
         case sdk.ConnectorError.USER_DENIED:
-        case sdk.ConnectorError.USER_DENIED_2:
-          accountServices.sendSignDeniedByUser()
+        case sdk.ConnectorError.USER_DENIED_2: {          
+          store.dispatch(
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UnlockAccount_User_Denied,
+            })
+          )
           return
+        }
         default:
           break
       }

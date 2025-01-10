@@ -165,7 +165,7 @@ export const DualWrap = <
             { floor: true },
           )
         : EmptyValueTag,
-    [dualCalcData.lessEarnTokenSymbol, dualCalcData.lessEarnVol, tokenMap, dualCalcData!.dualViewInfo.settleRatio],
+    [dualCalcData.lessEarnTokenSymbol, dualCalcData.lessEarnVol, tokenMap, dualCalcData!.dualViewInfo?.settleRatio],
   )
   const greaterEarnView = React.useMemo(
     () =>
@@ -182,7 +182,7 @@ export const DualWrap = <
             { floor: true },
           )
         : EmptyValueTag,
-    [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap, dualCalcData.dualViewInfo.settleRatio],
+    [dualCalcData.greaterEarnTokenSymbol, dualCalcData.greaterEarnVol, tokenMap, dualCalcData.dualViewInfo?.settleRatio],
   )
 
   const totalQuota = React.useMemo(
