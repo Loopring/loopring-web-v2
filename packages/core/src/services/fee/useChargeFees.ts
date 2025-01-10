@@ -165,7 +165,9 @@ export function useChargeFees({
         isFeeNotEnough = { ...state }
         return { ...state, isOnLoading: true }
       })
-      const { tokenMap } = store.getState().tokenMap
+      const reduxState = store.getState()
+      const { tokenMap } = reduxState.tokenMap
+      const { account } = reduxState
       const walletMap =
         makeWalletLayer2({ needFilterZero: true, isActive: isActiveAccount }).walletMap ??
         ({} as WalletMap<any>)
