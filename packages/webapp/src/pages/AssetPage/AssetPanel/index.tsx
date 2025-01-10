@@ -113,7 +113,7 @@ export const AssetPanel = withTranslation('common')(
           aria-label='l2-history-tabs'
           variant='scrollable'
         >
-          {AssetL2TabIndex[MapChainId[defaultNetwork]].map((item: string) => {
+          {AssetL2TabIndex[MapChainId[defaultNetwork]]?.map((item: string) => {
             if (item == AssetTabIndex.RedPacket) {
               if (isMobile) {
                 return <React.Fragment key={item.toString()} />
