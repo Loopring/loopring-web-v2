@@ -298,7 +298,7 @@ export const useGetAssets = (): AssetPanelProps & {
               })
           : []
         console.log('sendToTaikoSupportedTokens', sendToTaikoSupportedTokens)
-        const hideSendToTaiko = sendToTaikoSupportedTokens.includes(token)
+        const hideSendToTaiko = !sendToTaikoSupportedTokens.includes(token)
         setShowAccount({
           isShow: true,
           step: AccountStep.SendAssetGateway,

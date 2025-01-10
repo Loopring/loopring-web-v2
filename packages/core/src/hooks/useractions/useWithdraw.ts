@@ -238,7 +238,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           enable: false,
           isFastWithdrawAmountLimit: true,
         }
-      } else if (realAddr && withdrawValue.tradeValue && sureIsAllowAddress === undefined) {
+      } else if (!info?.isToMyself && realAddr && withdrawValue.tradeValue && sureIsAllowAddress === undefined) {
         return {
           label: 'Please input address type',
           enable: false,
