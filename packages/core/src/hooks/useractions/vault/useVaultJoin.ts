@@ -883,6 +883,5 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           )
         : undefined,
   }
-  console.log('dasdsads', output)
   return output
 }

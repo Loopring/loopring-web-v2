@@ -54,7 +54,6 @@ export const SendAsset = ({
   symbol,
   isToL1,
 }: SendAssetProps) => {
-  console.log('asjkdhasjkhdjkash', crossChainAssetList)
   const { t } = useTranslation('common')
   const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]

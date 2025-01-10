@@ -300,7 +300,6 @@ export const useGetAssets = (): AssetPanelProps & {
                 return networkL1Tokens && networkL1Tokens[symbol]
               })
           : []
-        console.log('sendToTaikoSupportedTokens', sendToTaikoSupportedTokens)
         const hideSendToTaiko = !sendToTaikoSupportedTokens.includes(token)
         setShowAccount({
           isShow: true,

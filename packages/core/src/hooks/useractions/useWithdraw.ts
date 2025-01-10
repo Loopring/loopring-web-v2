@@ -160,7 +160,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         : false,
     isOnLoading: getState().fee.isOnLoading,
   }
-  console.log('isFeeNotEnough', feeInfo2, isFeeNotEnough)
   const handleFeeChange = (feeInfo: FeeInfo) => {
     setState({
       ...getState(),
@@ -1117,7 +1116,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       }
     })(),
   }
-  console.log('withdrawProps', getState(), withdrawValue, withdrawProps)
+  myLog('withdrawProps', getState(), withdrawValue, withdrawProps)
 
   return {
     withdrawProps,
