@@ -564,12 +564,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         }
         // get complete forex map async
         forexMapAllPromise.then((forexMapAll) => {
+          if (chainId !== store.getState().system.chainId) return
           store.dispatch(
             getSystemStatus({
               forexMap: forexMapAll
             })
           )
-          
         })
       } catch (e: any) {
         allowTrade = {
