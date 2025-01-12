@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import { useGetSet } from 'react-use'
 import { LoopringAPI } from '../../api_wrapper'
 import { MapChainId, WalletMap } from '@loopring-web/common-resources'
-import { OffchainFeeInfo, OffchainFeeReqType } from '@loopring-web/loopring-sdk'
+import { ChainId, OffchainFeeInfo, OffchainFeeReqType } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { isValidateNumberStr, numberFormat } from '../../utils'
 import { makeWalletLayer2 } from '../../hooks/help'
@@ -34,12 +34,37 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
   }
 }
 
+const parseConfig = (config: any, fromNetwork: string, idIndex: any) => {
+
+  const toNetworks: string[] = config.fromToNetworks[fromNetwork] ?? []
+  const toTaikoNetwork = toNetworks.find((net) =>
+    [ChainId.TAIKO, ChainId.TAIKOHEKLA].map((id) => MapChainId[id]).includes(net),
+  )
+  const networkL2TokenIds = config.networkL2TokenIds[fromNetwork]
+  const toTaikoNetworkL1Tokens = toTaikoNetwork 
+    ? (config.networkL1Tokens[toTaikoNetwork] ?? [])
+    : toTaikoNetwork
+  const toTaikoNetworkSupportedTokens = networkL2TokenIds
+    .map((id: number) => {
+      return idIndex[id]
+    })
+    .filter((symbol) => {
+      return toTaikoNetworkL1Tokens[symbol]
+    })  
+        
+  return {
+    toTaikoNetwork,
+    toTaikoNetworkSupportedTokens,
+
+  }
+}
+
 export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const { setShowAccount, setShowTransferToTaikoAccount, modals } = useOpenModals()
   const { coinJson } = useSettings()
   const { tokenMap } = useTokenMap()
 
-  const transferTokenList = ['ETH', 'USDT']
+  
   const [getState, setState] = useGetSet({
     transferToken: 'ETH',
     feeList: [] as OffchainFeeInfo[],
@@ -49,14 +74,18 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     amount: '',
     receipt: '',
     tokenFilterInput: '',
+    supportedTokens: [] as string[],
   })
+  
   const state = getState()
+  const transferTokenList = state.supportedTokens
   const { contacts, updateContacts }=useContacts()
   
 
   const refreshData = async () => {
     const globalState = store.getState()
     const account = globalState.account
+    const idIndex = globalState.tokenMap.idIndex
     const defaultNetwork = globalState.settings.defaultNetwork
     const destinationNetwork = MapChainId[defaultNetwork]
     const state = getState()
@@ -92,7 +121,21 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           return feeRes
         }
       })
+    
     const {walletMap}=makeWalletLayer2({ needFilterZero: true })
+
+    LoopringAPI.rabbitWithdrawAPI
+      ?.getConfig()
+      .then((res) => {
+        
+        const config = JSON.parse(res.config)
+        const { toTaikoNetwork, toTaikoNetworkSupportedTokens } = parseConfig(config, MapChainId[defaultNetwork], idIndex)
+
+        setState((state) => ({
+          ...state,
+          supportedTokens: toTaikoNetworkSupportedTokens
+        }))
+      })
     
     const foundFee = feeRes?.fees.find(fee => {
       const count = (walletMap && walletMap[fee.token]?.count.toString()) ?? '0'
@@ -303,7 +346,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     onClickClose() {
       setShowTransferToTaikoAccount({isShow: false})
     },
-    open: modals.isShowTransferToTaikoAccount.isShow
+    open: modals.isShowTransferToTaikoAccount.isShow,
+    supportedTokens: state.supportedTokens
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
   return output
