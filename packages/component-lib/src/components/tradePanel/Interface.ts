@@ -311,6 +311,7 @@ export type TransferToTaikoAccountProps = {
   receiptInput: string
   amountInput: string
   open: boolean
+  supportedTokens: string[]
 }
 
 export * from './components/Interface'

@@ -15,6 +15,17 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { FeeSelectModal } from './FeeSelect'
 import { ContactSelection } from '../../tradePanel/components/ContactSelection'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
+const formatTokenList = (tokens: string[]):string => {
+  if (!tokens || tokens.length === 0) return '';
+  if (tokens.length === 1) return tokens[0];
+  if (tokens.length === 2) return `${tokens[0]} and ${tokens[1]}`;
+  
+  const lastToken = tokens[tokens.length - 1];
+  const otherTokens = tokens.slice(0, -1);
+  return `${otherTokens.join(', ')}, and ${lastToken}`;
+}
+
 export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) => {
   const {
     onClickContact,
@@ -36,15 +47,15 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     onClickBack,
     onClickClose,
     open,
+    supportedTokens
   } = props
+
+  
   const mainPanel = (
     <>
       <Box>
         <Typography variant={'h3'} textAlign={'center'}>
           Send to Taiko
-          <Tooltip sx={{ ml: 1 }} title={'todo'}>
-            <Info2Icon />
-          </Tooltip>
         </Typography>
         <Box mt={6}>
           <SpaceBetweenBox
@@ -128,13 +139,13 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
         <Typography mt={3} color={'var(--color-text-third)'} fontSize={'12px'}>
           Trust Mode: Operated by Loopring's team to maintain liquidity.
           <br />
-          Supported Assets: USDC, TAIKO, and ETH.
+          Supported Assets: {formatTokenList(supportedTokens)}.
         </Typography>
       </Box>
 
       <Box>
         <SpaceBetweenBox
-          leftNode={<Typography color={'var(--color-text-primary)'}>Network Fee</Typography>}
+          leftNode={<Typography color={'var(--color-text-primary)'}>Transaction Cost</Typography>}
           rightNode={
             <Typography
               color={'var(--color-text-primary)'}
