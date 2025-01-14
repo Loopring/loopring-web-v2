@@ -32,7 +32,6 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     balance,
     fee,
     onClickFee,
-    onClickSend,
     onInputAmount,
     onInputAddress,
     token,
@@ -47,7 +46,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     onClickBack,
     onClickClose,
     open,
-    supportedTokens
+    supportedTokens,
+    sendBtn 
   } = props
 
   
@@ -158,8 +158,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             </Typography>
           }
         />
-        <Button onClick={onClickSend} variant='contained' fullWidth sx={{ mt: 3 }}>
-          Send
+        <Button disabled={sendBtn.disabled} onClick={sendBtn.onClick} variant='contained' fullWidth sx={{ mt: 3 }}>
+          {sendBtn.text ?? 'Send'}
         </Button>
       </Box>
     </>

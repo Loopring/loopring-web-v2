@@ -278,7 +278,7 @@ export type TransferToTaikoAccountProps = {
   onClickContact: () => void
   onClickToken: () => void
   onClickFee: () => void
-  onClickSend: () => void
+
   onInputAmount: (str: string) => void
   onInputAddress: (str: string) => void
   onClickBalance: () => void
@@ -312,6 +312,11 @@ export type TransferToTaikoAccountProps = {
   amountInput: string
   open: boolean
   supportedTokens: string[]
+  sendBtn: {
+    disabled: boolean,
+    onClick: () => void
+    text?: string   
+  }
 }
 
 export * from './components/Interface'

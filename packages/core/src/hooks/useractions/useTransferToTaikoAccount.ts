@@ -75,19 +75,19 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     receipt: '',
     tokenFilterInput: '',
     supportedTokens: [] as string[],
+    toTaikoNetwork: ''
   })
   
   const state = getState()
   const transferTokenList = state.supportedTokens
-  const { contacts, updateContacts }=useContacts()
+  const { contacts, updateContacts } = useContacts()
   
 
-  const refreshData = async () => {
+  const refreshData = async (destinationNetwork: string) => {
     const globalState = store.getState()
     const account = globalState.account
     const idIndex = globalState.tokenMap.idIndex
     const defaultNetwork = globalState.settings.defaultNetwork
-    const destinationNetwork = MapChainId[defaultNetwork]
     const state = getState()
     const feeRes = await LoopringAPI.userAPI
       ?.getUserCrossChainFee(
@@ -133,7 +133,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
         setState((state) => ({
           ...state,
-          supportedTokens: toTaikoNetworkSupportedTokens
+          supportedTokens: toTaikoNetworkSupportedTokens,
+          toTaikoNetwork: toTaikoNetwork ? toTaikoNetwork : '',
         }))
       })
     
@@ -152,10 +153,17 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   useEffect(() => {
     var timer: NodeJS.Timeout
     if (modals.isShowTransferToTaikoAccount.isShow) {
-      timer = setInterval(() => {
-        refreshData()
-      }, 10 * 1000)
-      refreshData()
+      LoopringAPI.rabbitWithdrawAPI?.getConfig().then((res) => {
+        const defaultNetwork = store.getState().settings.defaultNetwork
+        const idIndex = store.getState().tokenMap.idIndex
+        const config = JSON.parse(res.config)
+        const { toTaikoNetwork } = parseConfig(config, MapChainId[defaultNetwork], idIndex)
+        timer = setInterval(() => {
+          refreshData(toTaikoNetwork ?? '')
+        }, 10 * 1000)
+        refreshData(toTaikoNetwork ?? '')
+      })
+
       updateContacts()
     }
     return () => {
@@ -167,9 +175,21 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const transferToken = tokenMap[state.transferToken]
   const feeRaw = state.feeList.find((item) => item.token === state.feeToken)?.fee
   const { walletMap } = makeWalletLayer2({ needFilterZero: true })
-  const { walletLayer2  } = useWalletLayer2()
 
   const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
+
+  
+  const sendBtnDisabled = state.receipt 
+    ? true 
+    : false
+
+  const sendBtn = {
+    onClick: () => {
+      
+    },
+    disabled: sendBtnDisabled,
+    text: 'Send'
+  }
 
   const output = {
     onClickContact: () => {
@@ -184,9 +204,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         showFeeModal: true,
       })
     },
-    onClickSend: () => {},
     onInputAmount: (str) => {
-      if (isValidateNumberStr(str, transferToken.precision)) {
+      if (isValidateNumberStr(str, transferToken.precision) || str === '') {
         setState({
           ...state,
           amount: str,
@@ -347,7 +366,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       setShowTransferToTaikoAccount({isShow: false})
     },
     open: modals.isShowTransferToTaikoAccount.isShow,
-    supportedTokens: state.supportedTokens
+    supportedTokens: state.supportedTokens,
+    sendBtn: sendBtn
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
   return output
