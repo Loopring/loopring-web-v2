@@ -61,7 +61,12 @@ export const UnlockAccount_Failed = ({
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <TransErrorHelp error={error} options={errorOptions} />
+              <TransErrorHelp
+                error={
+                  error.message === 'unKnown' ? { ...error, message: 'Unknown Failure' } : error
+                }
+                options={errorOptions}
+              />
               {showDropdown && <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />}
             </Typography>
             {isContractOrInCounterFactual && (
@@ -90,9 +95,9 @@ export const UnlockAccount_Failed = ({
               value={`${JSON.stringify(error)}}`}
             />
           ) : (
-            <Typography marginTop={1} variant={'body2'}>
-
-              {t('labelUnlockErrorSupport1')} <br/>
+            <Typography textAlign={'left'} marginTop={1} variant={'body2'}>
+              {t('labelUnlockErrorSupport1')} <br />
+              <br />
               {t('labelUnlockErrorSupport2')}
             </Typography>
           ))}
