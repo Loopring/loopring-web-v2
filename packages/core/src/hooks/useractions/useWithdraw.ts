@@ -48,6 +48,7 @@ import {
   useWalletLayer2Socket,
   walletLayer2Service,
   fiatNumberDisplaySafe,
+  parseRabbitConfig,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _, { values, omit } from 'lodash'
@@ -106,9 +107,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     WALLET_TYPE | EXCHANGE_TYPE | undefined
   >(undefined)
 
-
-
-  const [getState, setState] = useGetSet({
+  const initState = {
     fee: {
       chargeFeeTokenListNormal: [] as sdk.OffchainFeeInfo[],
       chargeFeeTokenListFast: [] as sdk.OffchainFeeInfo[],
@@ -129,7 +128,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       fastModeTokens: [] as string[],
       mode: 'fast' as 'fast' | 'normal',
     }
-  })
+  }
+  const [getState, setState] = useGetSet(initState)
   const state = getState()
   const { fee: { symbol: feeSymbol, chargeFeeTokenListFast, chargeFeeTokenListNormal }, withdrawMode } = state
   const withdrawToken = tokenMap[withdrawValue.belong as string]
@@ -378,20 +378,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     const globalState = store.getState()
     const network = MapChainId[globalState.settings.defaultNetwork]
     const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
-    const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[network]
-    const networkL1Tokens = JSON.parse(config.config).networkL1Tokens[network]
-    const fastModeSupportedTokens = networkL2TokenIds
-      .map((id: number) => {
-        return idIndex[id]
-      })
-      .filter((symbol) => {
-        return networkL1Tokens[symbol]
-      })
+
+    const toL1SupportedTokens = parseRabbitConfig(JSON.parse(config.config) , network, idIndex).toL1SupportedTokens
     setState((state) => ({
       ...state,
       withdrawMode: {
         ...state.withdrawMode,
-        fastModeTokens: fastModeSupportedTokens,
+        fastModeTokens: toL1SupportedTokens,
       },
     }))
   }
@@ -502,6 +495,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       }, 20 * 1000)
       refreshFee()
     } 
+    if (isShow) {
+      setState(initState)
+    }
     return () => {
       setAddress('')
       refreshTimer && clearInterval(refreshTimer)

@@ -12,7 +12,7 @@ import { MapChainId, WalletMap } from '@loopring-web/common-resources'
 import { ChainId, OffchainFeeInfo, OffchainFeeReqType } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { isValidateNumberStr, numberFormat } from '../../utils'
-import { makeWalletLayer2 } from '../../hooks/help'
+import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
 import Decimal from 'decimal.js'
 
 const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: TokenMap<{
@@ -34,30 +34,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
   }
 }
 
-const parseConfig = (config: any, fromNetwork: string, idIndex: any) => {
 
-  const toNetworks: string[] = config.fromToNetworks[fromNetwork] ?? []
-  const toTaikoNetwork = toNetworks.find((net) =>
-    [ChainId.TAIKO, ChainId.TAIKOHEKLA].map((id) => MapChainId[id]).includes(net),
-  )
-  const networkL2TokenIds = config.networkL2TokenIds[fromNetwork]
-  const toTaikoNetworkL1Tokens = toTaikoNetwork 
-    ? (config.networkL1Tokens[toTaikoNetwork] ?? [])
-    : toTaikoNetwork
-  const toTaikoNetworkSupportedTokens = networkL2TokenIds
-    .map((id: number) => {
-      return idIndex[id]
-    })
-    .filter((symbol) => {
-      return toTaikoNetworkL1Tokens[symbol]
-    })  
-        
-  return {
-    toTaikoNetwork,
-    toTaikoNetworkSupportedTokens,
-
-  }
-}
 
 export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const { setShowAccount, setShowTransferToTaikoAccount, modals } = useOpenModals()
@@ -129,7 +106,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       .then((res) => {
         
         const config = JSON.parse(res.config)
-        const { toTaikoNetwork, toTaikoNetworkSupportedTokens } = parseConfig(config, MapChainId[defaultNetwork], idIndex)
+        const { toTaikoNetwork, toTaikoNetworkSupportedTokens } = parseRabbitConfig(config, MapChainId[defaultNetwork], idIndex)
 
         setState((state) => ({
           ...state,
