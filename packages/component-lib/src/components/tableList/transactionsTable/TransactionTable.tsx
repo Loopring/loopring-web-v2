@@ -151,6 +151,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
       t,
     } = props
     const { isMobile, defaultNetwork } = useSettings()
+    const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
@@ -765,7 +766,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])(
             showloading,
           }}
         />
-        {!!(accountId && showFilter) && (
+        {accountId && showFilter && !isTaiko && (
           <Typography
             display={'flex'}
             justifyContent={'flex-end'}

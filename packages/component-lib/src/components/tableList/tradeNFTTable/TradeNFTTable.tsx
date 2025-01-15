@@ -451,7 +451,8 @@ export const TradeNFTTable = withTranslation('tables')(
     // const searchParams = new URLSearchParams(search);
     const [filterType, setFilterType] = React.useState(FilterTradeNFTTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
-    const { currency, isMobile } = useSettings()
+    const { currency, isMobile, defaultNetwork } = useSettings()
+    const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
     const defaultArgs: any = {
       columnMode: isMobile
         ? getColumnModeMobileAssets(t, currency, tokenMap, accountId, filterType)
@@ -587,7 +588,7 @@ export const TradeNFTTable = withTranslation('tables')(
             rawData: rawData ?? [],
           }}
         />
-        {!!accountId && showFilter && (
+        {accountId && showFilter && !isTaiko && (
           <Typography
             display={'flex'}
             justifyContent={'flex-end'}
