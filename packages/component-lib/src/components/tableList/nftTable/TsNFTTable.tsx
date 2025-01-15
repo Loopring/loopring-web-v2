@@ -28,7 +28,7 @@ import { TableFilterStyled, TablePaddingX } from '../../styled'
 
 import { NFTTableFilter, NFTTableProps, TsTradeStatus, TxnDetailProps } from './Interface'
 import { Filter } from './components/Filter'
-import { NFT_IMAGE_SIZES, TxNFTType } from '@loopring-web/loopring-sdk'
+import { ChainId, NFT_IMAGE_SIZES, TxNFTType } from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
 import { sanitize } from 'dompurify'
 
@@ -113,6 +113,7 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
   }: NFTTableProps<Row> & WithTranslation) => {
     const [isDropDown, setIsDropDown] = React.useState(true)
     const { isMobile, defaultNetwork } = useSettings()
+    const isTaiko = [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(defaultNetwork)
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
     const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
       getTxnList({
@@ -590,7 +591,7 @@ export const TsNFTTable = withTranslation(['tables', 'common'])(
             </TableFilterStyled>
           ))}
         <Table className={'scrollable'} {...{ ...defaultArgs, ...props, rawData, showloading }} />
-        {!!(accountId && showFilter) && (
+        {accountId && showFilter && !isTaiko && (
           <Typography
             display={'flex'}
             justifyContent={'flex-end'}

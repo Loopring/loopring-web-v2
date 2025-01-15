@@ -564,12 +564,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
         }
         // get complete forex map async
         forexMapAllPromise.then((forexMapAll) => {
+          if (chainId !== store.getState().system.chainId) return
           store.dispatch(
             getSystemStatus({
               forexMap: forexMapAll
             })
           )
-          
         })
       } catch (e: any) {
         allowTrade = {
@@ -598,7 +598,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
           clearInterval(__timer__ as NodeJS.Timeout)
         }
         return setInterval(async () => {
-          if (!LoopringAPI.exchangeAPI) return
+          if (!LoopringAPI.exchangeAPI || chainId !== store.getState().system.chainId) return
           should15MinutesUpdateDataGroup(chainId).then(({ forexMap, gasPrice }) => {
             store.dispatch(updateRealTimeObj({ forexMap, gasPrice }))
           })

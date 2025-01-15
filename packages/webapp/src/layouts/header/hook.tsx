@@ -91,7 +91,10 @@ export const useHeader = () => {
               })
             },
             NetWorkItems,
-            accountState: { account }
+            accountState: { account },
+            handleClickSignIn: async () => {
+              setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
+            },
           },
           [ButtonComponentsMap.ProfileMenu]: {
             ...toolBarData[ButtonComponentsMap.ProfileMenu],
