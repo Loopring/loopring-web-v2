@@ -2548,5 +2548,7 @@ export default {
 
   labelDefiCloseCian:
     'The ciETH subscription has been deprecated. We recommend redeeming your ciETH for ETH as soon as possible. You can also explore other ETH staking portfolios for alternative options.',
+  labelUnlockErrorSupport1: 'The inability to unlock your wallet is most likely due to network conditions or browser-related issues. This can often be resolved by refreshing the page.',
+  labelUnlockErrorSupport2: 'If the problem persists after multiple attempts, please contact us directly at support@loopring.io and provide your wallet information. Our engineers will assist you in resolving the issue as soon as possible. Thank you for your understanding.'
 }
 
