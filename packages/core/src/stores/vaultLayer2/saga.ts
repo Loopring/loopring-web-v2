@@ -3,10 +3,12 @@ import { getVaultLayer2Status, socketUpdateBalance, updateVaultLayer2 } from './
 import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources'
 import { store, LoopringAPI } from '../../index'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { throttle } from 'lodash'
 
 type VaultLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>
 }
+
 const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInfo?: {
   hash: string
   isInActive: boolean
@@ -16,9 +18,9 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
     account: { accountId, apiKey },
     invest: {
       vaultMap: { idIndex: vaultIdIndex },
-    },
-    vaultLayer2: { __timer__ },
+    }
   } = store.getState()
+  let __timer__ : -1 | NodeJS.Timeout | undefined
   // const { idIndex: vaultIdIndex } = store.getState().vaultMap
   let _activeInfo: any = undefined,
     vaultLayer2,
@@ -82,6 +84,8 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
         wait = Infinity
       }
 
+      __timer__ = store.getState().vaultLayer2.__timer__
+
       if (__timer__) {
         clearTimeout(__timer__)
       }
@@ -108,6 +112,9 @@ const getVaultLayer2Balance = async <R extends { [key: string]: any }>(activeInf
   }
   return { vaultLayer2, vaultAccountInfo, activeInfo: _activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ }
 }
+
+const getVaultLayer2BalanceThrottle = throttle(getVaultLayer2Balance, 200)
+
 export function* getPostsSaga({
   payload,
 }: {
@@ -115,7 +122,7 @@ export function* getPostsSaga({
 }) {
   try {
     let { vaultLayer2, vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens, __timer__ } = yield call(
-      getVaultLayer2Balance,
+      getVaultLayer2BalanceThrottle,
       payload.activeInfo,
     )
 
