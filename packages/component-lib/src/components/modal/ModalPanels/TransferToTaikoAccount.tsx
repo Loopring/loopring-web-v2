@@ -47,7 +47,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     onClickClose,
     open,
     supportedTokens,
-    sendBtn 
+    sendBtn
   } = props
 
   
@@ -159,7 +159,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
           }
         />
         <Button disabled={sendBtn.disabled} onClick={sendBtn.onClick} variant='contained' fullWidth sx={{ mt: 3 }}>
-          {sendBtn.text ?? 'Send'}
+          {sendBtn.text || 'Send'}
         </Button>
       </Box>
     </>

@@ -12,6 +12,7 @@ import {
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
   useSystem,
+  useConfig,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -277,6 +278,7 @@ export const useGetAssets = (): AssetPanelProps & {
     },
     [setShowAccount],
   )
+  const{fastWithdrawConfig}=useConfig()
   const onSend = React.useCallback(
     async (token?: any, isToL1?: boolean) => {
       if (token) {
@@ -284,10 +286,9 @@ export const useGetAssets = (): AssetPanelProps & {
           settings: { defaultNetwork: network },
           tokenMap: { idIndex },
         } = store.getState()
-        const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
-        const networkL2TokenIds = JSON.parse(config.config).networkL2TokenIds[MapChainId[network]]
+        const networkL2TokenIds = fastWithdrawConfig!.networkL2TokenIds[MapChainId[network]]
         const taikoNetwork = SEND_TO_TAIKO_NETWORK_MAP[network]
-        const networkL1Tokens = JSON.parse(config.config).networkL1Tokens[MapChainId[taikoNetwork]]
+        const networkL1Tokens = fastWithdrawConfig!.networkL1Tokens[MapChainId[taikoNetwork]]
         const sendToTaikoSupportedTokens = networkL2TokenIds
           ? networkL2TokenIds
               .map((id: number) => {
@@ -312,7 +313,7 @@ export const useGetAssets = (): AssetPanelProps & {
       }
       
     },
-    [setShowAccount],
+    [setShowAccount, fastWithdrawConfig],
   )
 
   const assetTitleProps: AssetTitleProps = {

@@ -30,6 +30,6 @@ export const parseRabbitConfig = (config: any, fromNetwork: string, idIndex: any
   return {
     toTaikoNetwork,
     toTaikoNetworkSupportedTokens,
-    toL1SupportedTokens
+    toL1SupportedTokens: toL1SupportedTokens as string[]
   }
 }

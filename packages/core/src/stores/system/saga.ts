@@ -1,7 +1,7 @@
 import { all, call, fork, put, take, takeLatest, delay } from 'redux-saga/effects'
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV } from './interface'
-import { store, LoopringSocket, LoopringAPI, toggleCheck, makeVault } from '../../index'
+import { store, LoopringSocket, LoopringAPI, toggleCheck, makeVault, configReducer } from '../../index'
 import {
   ChainIdExtends,
   CustomError,
@@ -188,7 +188,6 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     yield take('ammMap/getAmmMapStatus')
     store.dispatch(getAmmActivityMap({ ammpools }))
     myLog('getTokenPricesStatus update')
-
     Promise.all([
       LoopringAPI.exchangeAPI?.getTokens(),
       LoopringAPI.ammpoolAPI?.getAmmPoolConf(),
@@ -197,6 +196,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         disableWithdrawTokenList: [],
         raw_data: undefined,
       },
+      
     ]).then(
       ([
         { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex, raw_data: tokenListRaw },
@@ -243,6 +243,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
         // );
         store.dispatch(getAmmMap({ ammpools, ammpoolsRaw, chainId }))
         store.dispatch(getAmmActivityMap({ ammpools }))
+        
       },
     )
   } else {
@@ -299,6 +300,9 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       throw new CustomError({ ...ErrorMap.NO_SDK, message: 'tokenMap Error' })
     }
   }
+  LoopringAPI.rabbitWithdrawAPI?.getConfig().then((res) => {
+    store.dispatch(configReducer.updateFastWithdrawConfig(JSON.parse(res.config)))
+  })  
 
   //APP_NAME
   switch (APP_NAME.toLowerCase()) {

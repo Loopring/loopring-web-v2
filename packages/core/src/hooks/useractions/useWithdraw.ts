@@ -49,6 +49,7 @@ import {
   walletLayer2Service,
   fiatNumberDisplaySafe,
   parseRabbitConfig,
+  useConfig,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _, { values, omit } from 'lodash'
@@ -88,7 +89,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useOpenModals()
   const { tokenMap, totalCoinMap, disableWithdrawList, idIndex } = useTokenMap()
   const { tokenPrices } = useTokenPrices()
-  const { currency } = useSettings()
+  const { currency, defaultNetwork } = useSettings()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId, getValueInCurrency,  } = useSystem()
   
@@ -125,10 +126,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         fee: string
         time: string
       },
-      fastModeTokens: [] as string[],
       mode: 'fast' as 'fast' | 'normal',
     }
   }
+  const {fastWithdrawConfig} = useConfig()
+  const parsed =
+    fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
+      ? parseRabbitConfig(fastWithdrawConfig, MapChainId[defaultNetwork], idIndex)
+      : undefined
+  const fastModeTokens = parsed?.toL1SupportedTokens
   const [getState, setState] = useGetSet(initState)
   const state = getState()
   const { fee: { symbol: feeSymbol, chargeFeeTokenListFast, chargeFeeTokenListNormal }, withdrawMode } = state
@@ -139,15 +145,26 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const fastWithdrawOverflow = state.withdrawMode.maxFastWithdrawAmountBN && tradeValueBN 
     ? tradeValueBN.gte(state.withdrawMode.maxFastWithdrawAmountBN)
     : undefined
-  const fastModeSupportted = withdrawMode.fastModeTokens.includes(withdrawValue.belong as string)
+  const fastModeSupportted = fastModeTokens?.includes(withdrawValue.belong as string)
   const isFastMode =
     fastWithdrawOverflow === false && fastModeSupportted ? withdrawMode.mode === 'fast' : false
   const chargeFeeTokenList = isFastMode 
     ? chargeFeeTokenListFast 
     : chargeFeeTokenListNormal
-  const feeInfo = feeSymbol 
-    ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
-    : chargeFeeTokenList[0]
+  const enoughFeeList = walletMap2 && tokenMap ? chargeFeeTokenList.filter(fee => {
+    // debugger
+    return ethers.utils.parseUnits(walletMap2[fee.token]?.count ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
+    
+    // return ethers.BigNumber.from(walletMap2[fee.token]?.count ?? '0').gte(fee.fee) 
+  }) : []
+  
+  const feeInfo = enoughFeeList.find((f) => f.token === feeSymbol) 
+    ? enoughFeeList.find((f) => f.token === feeSymbol) 
+    : enoughFeeList[0]
+  console.log('enoughFeeList', enoughFeeList, feeSymbol)
+  // feeSymbol 
+  //   ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
+  //   : chargeFeeTokenList[0]
     
   const feeInfo2 = feeInfo && walletMap2 && tokenMap 
     ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2 as any)
@@ -373,21 +390,22 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     info?.isRetry,
     contactAddress,
   ])
+  
 
-  const getConfig = async () => {
-    const globalState = store.getState()
-    const network = MapChainId[globalState.settings.defaultNetwork]
-    const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
+  // const getConfig = async () => {
+  //   const globalState = store.getState()
+  //   const network = MapChainId[globalState.settings.defaultNetwork]
+  //   const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
 
-    const toL1SupportedTokens = parseRabbitConfig(JSON.parse(config.config) , network, idIndex).toL1SupportedTokens
-    setState((state) => ({
-      ...state,
-      withdrawMode: {
-        ...state.withdrawMode,
-        fastModeTokens: toL1SupportedTokens,
-      },
-    }))
-  }
+  //   const toL1SupportedTokens = parseRabbitConfig(JSON.parse(config.config), network, idIndex).toL1SupportedTokens
+  //   setState((state) => ({
+  //     ...state,
+  //     withdrawMode: {
+  //       ...state.withdrawMode,
+  //       fastModeTokens: toL1SupportedTokens,
+  //     },
+  //   }))
+  // }
 
   const refreshFee = async () => {
     setState((state) => ({
@@ -405,6 +423,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue
         ? globalState._router_modalData.withdrawValue.tradeValue.toString()
         : '0'
+      console.log('symbol', symbol)
       const withdrawToken = symbol
         ? tokenMap[symbol]
         : undefined
@@ -434,7 +453,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         amount: '0'
       }).then(res => {
         const amounts = res.map(agent => {
-          return new Decimal(agent.totalAmount).sub(agent.freezeAmount).toString()
+
+          return ethers.BigNumber.from(agent.totalAmount).sub(agent.freezeAmount).toString()
         })
         const sorted = amounts.concat('0').sort((a, b) => ethers.BigNumber.from(b).gte(a) ? 1 : -1)
         const amount = sorted[0] ? sorted[0] : '0'
@@ -488,7 +508,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      getConfig()
+      // getConfig()
       resetDefault()
       refreshTimer = setInterval(() => {
         refreshFee()
@@ -771,8 +791,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue
       const withdrawVol = finalVol.toFixed(0, 0)
       const network = MapChainId[chainId]
-      const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
-      const configiJSON = JSON.parse(config.config)
+      const configiJSON = fastWithdrawConfig!
       const storageId = await LoopringAPI.userAPI?.getNextStorageId(
         {
           accountId: account.accountId,
