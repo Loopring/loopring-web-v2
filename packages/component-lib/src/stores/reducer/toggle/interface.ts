@@ -46,7 +46,7 @@ export type ToggleState = {
   whiteList: any
   // @ts-ignore
   isSupperUser: any
-  trttansferToTaikoAccount: { enable: boolean; reason?: string }
+  rabbitWithdraw: { enable: boolean; reason?: string }
 }
 
 export type TogglePlayLoad = Partial<ToggleState> & {

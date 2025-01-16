@@ -40,6 +40,7 @@ const initialState: ToggleState = {
   VaultInvest: { enable: true },
   VaultDustCollector: { enable: true },
   taikoFarming: { enable: true },
+  rabbitWithdraw: { enable: true },
   whiteList: {},
   isSupperUser: false as any,
 }

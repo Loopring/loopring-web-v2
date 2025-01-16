@@ -1,7 +1,7 @@
 import React from 'react'
 import Web3 from 'web3'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { AccountStep, SwitchData, useOpenModals, useSettings, WithdrawProps } from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals, useSettings, useToggle, WithdrawProps } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   AddressError,
@@ -91,7 +91,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const { tokenPrices } = useTokenPrices()
   const { currency, defaultNetwork } = useSettings()
   const { account, status: accountStatus } = useAccount()
-  const { exchangeInfo, chainId, getValueInCurrency,  } = useSystem()
+  const { exchangeInfo, chainId, getValueInCurrency, app } = useSystem()
   
   const {
     contacts,
@@ -139,13 +139,17 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const state = getState()
   const { fee: { symbol: feeSymbol, chargeFeeTokenListFast, chargeFeeTokenListNormal }, withdrawMode } = state
   const withdrawToken = tokenMap[withdrawValue.belong as string]
+  const {toggle} = useToggle()
   const tradeValueBN = withdrawToken && withdrawValue.tradeValue
     ? ethers.utils.parseUnits(withdrawValue.tradeValue.toString(), withdrawToken.decimals)
     : ethers.BigNumber.from('0')
   const fastWithdrawOverflow = state.withdrawMode.maxFastWithdrawAmountBN && tradeValueBN 
     ? tradeValueBN.gte(state.withdrawMode.maxFastWithdrawAmountBN)
     : undefined
-  const fastModeSupportted = fastModeTokens?.includes(withdrawValue.belong as string)
+  const fastModeSupportted = 
+    toggle.rabbitWithdraw.enable &&
+    app === 'main' &&
+    fastModeTokens?.includes(withdrawValue.belong as string)
   const isFastMode =
     fastWithdrawOverflow === false && fastModeSupportted ? withdrawMode.mode === 'fast' : false
   const chargeFeeTokenList = isFastMode 

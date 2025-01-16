@@ -461,7 +461,7 @@ export const WithdrawWrap = <
       )}
 
       <Box width={'100%'} pl={2} mb={isToMyself ? 5 : 2} mt={isToMyself ? 5 : 3}>
-        {withdrawMode.showFastMode && (
+        {withdrawMode?.showFastMode && (
           <SpaceBetweenBox
             borderRadius={'4px 4px 0 0'}
             px={2}
@@ -507,16 +507,16 @@ export const WithdrawWrap = <
           />
         )}
         <SpaceBetweenBox
-          borderRadius={withdrawMode.showFastMode ? '0 0 4px 4px' : '4px'}
+          borderRadius={withdrawMode?.showFastMode ? '0 0 4px 4px' : '4px'}
           px={2}
           py={0.5}
           leftNode={
             <Box display={'flex'} alignItems={'center'}>
               <Box mr={1.5}>
                 <CustomCheckBox
-                  checked={withdrawMode.mode === 'normal'}
+                  checked={withdrawMode?.mode === 'normal'}
                   onCheck={() => {
-                    withdrawMode.onChange('normal')
+                    withdrawMode?.onChange('normal')
                   }}
                 />
               </Box>
@@ -525,13 +525,13 @@ export const WithdrawWrap = <
                 <Tooltip title={'Assets are transferred between Loopring and Ethereum using Loopring’s official bridge contract.'}>
                   <Typography>Trustless Mode</Typography>
                 </Tooltip>
-                <Typography variant='body2'>{withdrawMode.normalMode?.fee ?? '--'}</Typography>
+                <Typography variant='body2'>{withdrawMode?.normalMode?.fee ?? '--'}</Typography>
               </Box>
             </Box>
           }
           alignItems={'center'}
           rightNode={
-            <Typography variant='body2'>{withdrawMode.normalMode?.time ?? '--'}</Typography>
+            <Typography variant='body2'>{withdrawMode?.normalMode?.time ?? '--'}</Typography>
           }
           border={'1px solid var(--color-border)'}
         />

@@ -165,6 +165,7 @@ import {
   Taiko_Farming_Mint_Failed,
   Taiko_Farming_Mint_In_Progress,
   Taiko_Farming_Redeem_In_Progress,
+  useToggle,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -667,12 +668,17 @@ export function useAccountModalForUI({
       setShowLayerSwapNotice,
     ],
   )
+
+  const {toggle}=useToggle()
+
   const sendAssetList: SendAssetItem[] = React.useMemo(
     () =>
       SendAssetListMap[network].filter(item => {
-        return item === SendAssetList.SendAssetToTaikoAccount.key
-          ? isShowAccount?.info?.hideSendToTaiko ? false : true
-          : true
+        if (item === SendAssetList.SendAssetToTaikoAccount.key) {
+          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable
+        } else {
+          return true
+        }
       }).map((item: string) => {
         switch (item) {
           case SendAssetList.SendAssetToL2.key:
@@ -758,7 +764,7 @@ export function useAccountModalForUI({
             }
         }
       }),
-    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw],
+    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw, toggle.rabbitWithdraw.enable],
   )
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [
