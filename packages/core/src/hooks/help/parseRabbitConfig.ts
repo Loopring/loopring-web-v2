@@ -7,7 +7,7 @@ export const parseRabbitConfig = (config: any, fromNetwork: string, idIndex: any
   const toTaikoNetwork = toNetworks.find((net) =>
     [ChainId.TAIKO, ChainId.TAIKOHEKLA].map((id) => MapChainId[id]).includes(net),
   )
-  const networkL2TokenIds = config.networkL2TokenIds[fromNetwork]
+  const networkL2TokenIds = config.networkL2TokenIds[fromNetwork] ?? []
   const toTaikoNetworkL1Tokens = toTaikoNetwork 
     ? (config.networkL1Tokens[toTaikoNetwork] ?? [])
     : toTaikoNetwork
