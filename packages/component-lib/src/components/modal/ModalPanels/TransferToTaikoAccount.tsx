@@ -47,7 +47,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     onClickClose,
     open,
     supportedTokens,
-    sendBtn
+    sendBtn,
+    maxAlert
   } = props
 
   
@@ -109,6 +110,17 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             onInput={(e: any) => onInputAmount(e.target.value)}
             value={amountInput}
           />
+          <Typography
+            sx={{
+              opacity: maxAlert.show ? 1 : 0,
+              textAlign: 'right',
+              color: 'var(--color-error)',
+              fontSize: '12px',
+              mt: -1
+            }}
+          >
+            {maxAlert.message || '--'}
+          </Typography>
         </Box>
         <Box mt={3}>
           <Typography mb={0.5} color={'var(--color-text-third)'}>

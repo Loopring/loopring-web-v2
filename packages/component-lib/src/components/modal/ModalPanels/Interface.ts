@@ -277,6 +277,7 @@ export interface SendAssetProps {
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean }
   }
+  toL1Title: string
 }
 
 export interface SendNFTAssetProps {

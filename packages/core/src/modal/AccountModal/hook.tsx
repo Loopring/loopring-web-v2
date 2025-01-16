@@ -826,6 +826,7 @@ export function useAccountModalForUI({
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
   })
   const isEarn = app === 'earn'
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
 
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
@@ -917,6 +918,7 @@ export function useAccountModalForUI({
             sameLayerAssetList={sendAssetList.filter(item => item.type === 'sameLayer')}
             crossLayerAssetList={sendAssetList.filter(item => item.type === 'crossLayer')}
             crossChainAssetList={sendAssetList.filter(item => item.type === 'crossChain')}
+            toL1Title={isTaiko ? 'To Taiko' : 'To Ethereum'}
           />
         ),
         height: 'auto',

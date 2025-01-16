@@ -451,6 +451,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
         account.apiKey,
       )
+      .catch(e => {
+        return {fees: []}
+      })
       withdrawToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
         tokenId: withdrawToken.tokenId,
         network: network,

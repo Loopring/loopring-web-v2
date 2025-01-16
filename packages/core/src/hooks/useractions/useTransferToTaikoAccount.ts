@@ -57,8 +57,13 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     tokenFilterInput: '',
     maxTransferAmount: undefined as ethers.BigNumber | undefined,
   })
-  
+
   const state = getState()
+  const isOverMax =
+    state.amount &&
+    ethers.utils
+      .parseUnits(state.amount, tokenMap[state.transferToken].decimals)
+      .gt(state.maxTransferAmount ?? '0')
   
   const { contacts, updateContacts } = useContacts()
   const parsed = fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
@@ -142,9 +147,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
   const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
 
-  const sendBtnDisabled = state.receipt 
-    ? false 
-    : true
+  const sendBtnDisabled = !state.receipt || !isOverMax
   const {walletProvider} = useWeb3ModalProvider()
 
   const sendBtn = {
@@ -375,7 +378,11 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     },
     open: modals.isShowTransferToTaikoAccount.isShow,
     supportedTokens: transferTokenList,
-    sendBtn: sendBtn
+    sendBtn: sendBtn,
+    maxAlert: {
+      show: isOverMax,
+      message: isOverMax ? `Quota: ${utils.formatUnits(state.maxTransferAmount!, transferToken.decimals)} ${transferToken.symbol}` : '',
+    }
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
   return output

@@ -317,6 +317,10 @@ export type TransferToTaikoAccountProps = {
     onClick: () => void
     text?: string   
   }
+  maxAlert: {
+    show: boolean,
+    message: string,
+  }
 }
 
 export * from './components/Interface'

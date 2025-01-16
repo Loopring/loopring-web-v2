@@ -53,6 +53,7 @@ export const SendAsset = ({
   allowTrade,
   symbol,
   isToL1,
+  toL1Title
 }: SendAssetProps) => {
   const { t } = useTranslation('common')
   const { defaultNetwork, isMobile } = useSettings()
@@ -226,7 +227,7 @@ export const SendAsset = ({
             {filterAndMap(sameLayerAssetList)}
           </Box>
           <Box mb={5}>
-            <Typography mb={2} color={'var(--color-text-secondary)'} variant='body2'>To Ethereum</Typography>
+            <Typography mb={2} color={'var(--color-text-secondary)'} variant='body2'>{toL1Title}</Typography>
             {filterAndMap(crossLayerAssetList)}
           </Box>
           <Box >
