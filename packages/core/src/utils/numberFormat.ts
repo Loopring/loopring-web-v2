@@ -13,7 +13,7 @@ export const numberFormat = (number: string | number, format?: {
   tokenSymbol?: string
   removeTrailingZero?: boolean
 }) => {
-  const numberStr1 = typeof number === 'number' ? number.toString() : number
+  const numberStr1 = typeof number === 'number' ? number.toFixed() : number
   const numberStr2 =
     format?.fixed !== undefined
       ? format.fixedRound
@@ -21,7 +21,7 @@ export const numberFormat = (number: string | number, format?: {
         : new Decimal(numberStr1).toFixed(format?.fixed)
       : numberStr1
   const numberStr4 = format?.removeTrailingZero
-    ? new Decimal(numberStr2).toString()
+    ? new Decimal(numberStr2).toFixed()
     : numberStr2
   const numberStr5 = format?.thousandthPlace
     ? numberStr4.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')

@@ -147,7 +147,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
   const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
 
-  const sendBtnDisabled = !state.receipt || !isOverMax
+  const sendBtnDisabled = !state.receipt || isOverMax
   const {walletProvider} = useWeb3ModalProvider()
 
   const sendBtn = {
@@ -183,7 +183,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           maxFee: {
             // @ts-ignore
             tokenId: feeToken.tokenId,
-            volume: feeRaw!
+            volume: ethers.BigNumber.from(feeRaw!).toString() 
           },
           storageId: storageId!.offchainId,
           validUntil: getTimestampDaysLater(DAYS),
