@@ -48,7 +48,9 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     open,
     supportedTokens,
     sendBtn,
-    maxAlert
+    maxAlert,
+    receiptError,
+    receiptClear
   } = props
 
   
@@ -138,15 +140,35 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             disableUnderline
             fullWidth
             endAdornment={
-              <ContactIcon
-                onClick={onClickContact}
-                className='custom-size'
-                sx={{ fontSize: '24px', width: '24px', height: '24px', cursor: 'pointer' }}
-              />
+              <Box display={'flex'} alignItems={'center'}>
+
+                {receiptClear.show && <CloseIcon
+                  onClick={receiptClear.onClick}
+                  className='custom-size'
+                  sx={{ fontSize: '16px', width: '16px', height: '16px', cursor: 'pointer', color: 'var(--color-text-third)', mr: 1 }}
+                />}
+                <ContactIcon
+                  onClick={onClickContact}
+                  className='custom-size'
+                  sx={{ fontSize: '24px', width: '24px', height: '24px', cursor: 'pointer' }}
+                />
+              </Box>
+              
             }
             onInput={(e: any) => onInputAddress(e.target.value)}
             value={receiptInput}
           />
+          {receiptError.show &&<Typography
+            sx={{
+              opacity: true ? 1 : 0,
+              textAlign: 'left',
+              color: 'var(--color-error)',
+              fontSize: '12px',
+              mt: 0.5
+            }}
+          >
+            {receiptError.message}
+          </Typography>}
         </Box>
         <Typography mt={3} color={'var(--color-text-third)'} fontSize={'12px'}>
           Trust Mode: Operated by Loopring's team to maintain liquidity.

@@ -13,6 +13,7 @@ import {
   volumeToCountAsBigNumber,
   useSystem,
   useConfig,
+  parseRabbitConfig,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -286,18 +287,8 @@ export const useGetAssets = (): AssetPanelProps & {
           settings: { defaultNetwork: network },
           tokenMap: { idIndex },
         } = store.getState()
-        const networkL2TokenIds = fastWithdrawConfig!.networkL2TokenIds[MapChainId[network]]
-        const taikoNetwork = SEND_TO_TAIKO_NETWORK_MAP[network]
-        const networkL1Tokens = fastWithdrawConfig!.networkL1Tokens[MapChainId[taikoNetwork]]
-        const sendToTaikoSupportedTokens = networkL2TokenIds
-          ? networkL2TokenIds
-              .map((id: number) => {
-                return idIndex[id]
-              })
-              .filter((symbol) => {
-                return networkL1Tokens && networkL1Tokens[symbol]
-              })
-          : []
+        const parsed = parseRabbitConfig(fastWithdrawConfig, MapChainId[network], idIndex)
+        const sendToTaikoSupportedTokens = parsed.toL1SupportedTokens
         const hideSendToTaiko = !sendToTaikoSupportedTokens.includes(token)
         setShowAccount({
           isShow: true,

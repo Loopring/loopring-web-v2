@@ -46,7 +46,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const { fastWithdrawConfig } = useConfig()
   const { account } = useAccount()
 
-  const [getState, setState] = useGetSet({
+  const initialState = {
     transferToken: 'ETH',
     feeList: [] as OffchainFeeInfo[],
     feeToken: undefined as string | undefined,
@@ -56,7 +56,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     receipt: '',
     tokenFilterInput: '',
     maxTransferAmount: undefined as ethers.BigNumber | undefined,
-  })
+  }
+
+  const [getState, setState] = useGetSet(initialState)
 
   const state = getState()
   const isOverMax =
@@ -124,21 +126,23 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
   useEffect(() => {
     var timer: NodeJS.Timeout
-    if (modals.isShowTransferToTaikoAccount.isShow) {
+    if (modals.isShowTransferToTaikoAccount.isShow && fastWithdrawConfig) {
       const defaultNetwork = store.getState().settings.defaultNetwork
-        const idIndex = store.getState().tokenMap.idIndex
-      const { toTaikoNetwork } = parseRabbitConfig(fastWithdrawConfig, MapChainId[defaultNetwork], idIndex)
-        timer = setInterval(() => {
-          refreshData(toTaikoNetwork ?? '')
-        }, 10 * 1000)
+      const idIndex = store.getState().tokenMap.idIndex
+      const { toTaikoNetwork } = parseRabbitConfig(
+        fastWithdrawConfig,
+        MapChainId[defaultNetwork],
+        idIndex,
+      )
+      timer = setInterval(() => {
         refreshData(toTaikoNetwork ?? '')
-
-      updateContacts()
+      }, 10 * 1000)
+      refreshData(toTaikoNetwork ?? '')
     }
     return () => {
       timer && clearInterval(timer)
     }
-  }, [modals.isShowTransferToTaikoAccount.isShow])
+  }, [modals.isShowTransferToTaikoAccount.isShow, fastWithdrawConfig])
 
   const feeToken = state.feeToken ? tokenMap[state.feeToken] : undefined
   const transferToken = tokenMap[state.transferToken]
@@ -147,7 +151,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
   const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
 
-  const sendBtnDisabled = !state.receipt || isOverMax
+  const isInvalidAddress = state.receipt && !ethers.utils.isAddress(state.receipt)
+  const sendBtnDisabled = !state.receipt || isOverMax || isInvalidAddress
   const {walletProvider} = useWeb3ModalProvider()
 
   const sendBtn = {
@@ -362,6 +367,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     onClickBack() {
       if (state.panel === 'main') {
         setShowTransferToTaikoAccount({isShow: false})
+        setState(initialState)
         setShowAccount({isShow: true,
           step: AccountStep.SendAssetGateway
         })
@@ -370,18 +376,32 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           ...state,
           panel: 'main',
         })
-      } 
+      }
       
     },
     onClickClose() {
       setShowTransferToTaikoAccount({isShow: false})
+      setState(initialState)
     },
     open: modals.isShowTransferToTaikoAccount.isShow,
     supportedTokens: transferTokenList,
     sendBtn: sendBtn,
     maxAlert: {
       show: isOverMax,
-      message: isOverMax ? `Quota: ${utils.formatUnits(state.maxTransferAmount!, transferToken.decimals)} ${transferToken.symbol}` : '',
+      message: isOverMax && state.maxTransferAmount ? `Quota: ${utils.formatUnits(state.maxTransferAmount!, transferToken.decimals)} ${transferToken.symbol}` : '',
+    },
+    receiptError: {
+      show: isInvalidAddress,
+      message: 'invalid address',
+    },
+    receiptClear: {
+      show: !!state.receipt,
+      onClick: () => {
+        setState({
+          ...state,
+          receipt: '',
+        })
+      },
     }
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
