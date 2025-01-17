@@ -329,6 +329,7 @@ export type TransferToTaikoAccountProps = {
     show: boolean,
     onClick: () => void,
   }
+  showReceiptWarning: boolean
 }
 
 export * from './components/Interface'

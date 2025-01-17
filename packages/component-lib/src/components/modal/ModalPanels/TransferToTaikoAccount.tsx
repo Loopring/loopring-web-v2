@@ -1,7 +1,9 @@
 import {
+  AlertIcon,
   BackIcon,
   CloseIcon,
   ContactIcon,
+  hexToRGB,
   Info2Icon,
   SearchIcon,
   TokenType,
@@ -15,6 +17,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { FeeSelectModal } from './FeeSelect'
 import { ContactSelection } from '../../tradePanel/components/ContactSelection'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { useTheme } from '@emotion/react'
 
 const formatTokenList = (tokens: string[]):string => {
   if (!tokens || tokens.length === 0) return '';
@@ -50,10 +53,11 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     sendBtn,
     maxAlert,
     receiptError,
-    receiptClear
+    receiptClear,
+    showReceiptWarning
   } = props
 
-  
+  const theme = useTheme();
   const mainPanel = (
     <>
       <Box>
@@ -169,6 +173,23 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
           >
             {receiptError.message}
           </Typography>}
+          {showReceiptWarning && (
+            <Typography
+            marginTop={2}
+            variant={'body1'}
+            component={'span'}
+            p={1}
+            px={2}
+            display={'inline-flex'}
+            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+            borderRadius={'4px'}
+            color={'var(--color-warning)'}
+            fontSize={'12px'}
+          >
+            <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+            Please ensure that the recipient's address is capable of properly receiving the assets.
+            </Typography>
+          )}
         </Box>
         <Typography mt={3} color={'var(--color-text-third)'} fontSize={'12px'}>
           Trust Mode: Operated by Loopring's team to maintain liquidity.

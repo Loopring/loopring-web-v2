@@ -22,8 +22,8 @@ export const parseRabbitConfig = (
   )
   const networkL2TokenIds = config.networkL2TokenIds[fromNetwork] ?? []
   const toTaikoNetworkL1Tokens = toTaikoNetwork
-    ? config.networkL1Tokens[toTaikoNetwork] ?? []
-    : toTaikoNetwork
+    ? config.networkL1Tokens[toTaikoNetwork] ?? {}
+    : {}
   const toSelfL1Tokens = config.networkL1Tokens[fromNetwork]
   const toTaikoNetworkSupportedTokens = networkL2TokenIds
     .map((id: number) => {

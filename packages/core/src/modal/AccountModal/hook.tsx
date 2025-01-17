@@ -208,6 +208,7 @@ import {
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useConfig,
   useContacts,
   useCreateRedPacket,
   useExportAccount,
@@ -670,12 +671,13 @@ export function useAccountModalForUI({
   )
 
   const {toggle}=useToggle()
+  const {fastWithdrawConfig}=useConfig()
 
   const sendAssetList: SendAssetItem[] = React.useMemo(
     () =>
       SendAssetListMap[network].filter(item => {
         if (item === SendAssetList.SendAssetToTaikoAccount.key) {
-          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable
+          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable && fastWithdrawConfig?.fromToNetworks[network].includes('TAIKO')
         } else {
           return true
         }
@@ -764,7 +766,7 @@ export function useAccountModalForUI({
             }
         }
       }),
-    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw, toggle.rabbitWithdraw.enable],
+    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw, toggle.rabbitWithdraw.enable, fastWithdrawConfig],
   )
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [

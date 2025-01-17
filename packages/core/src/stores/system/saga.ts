@@ -302,7 +302,12 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   }
   LoopringAPI.rabbitWithdrawAPI?.getConfig().then((res) => {
     store.dispatch(configReducer.updateFastWithdrawConfig(JSON.parse(res.config)))
-  })  
+  })
+  // // todo rm mock
+  // .catch(e => {
+  //   const configStr = '{"fromToNetworks":{"TAIKO":["SEPOLIA"],"SEPOLIA":["SEPOLIA","TAIKO"]},"networkExchanges":{"ETHEREUM":"0xD55d5CBC973373E7A5333Fd4F8901fcFE79a41F1","ARBITRUM":"","TAIKO":"0x202f7Db46d3933b8CB3F23222011c9F055be9D30","SEPOLIA":"0xD55d5CBC973373E7A5333Fd4F8901fcFE79a41F1"},"networkProtocols":{"SEPOLIA":"0xe860b7D1C677b4AEeFa0c4c2E9b651f6EF8c2c18"},"networkL1Tokens":{"SEPOLIA":{"ETH":"0x0000000000000000000000000000000000000000","LRC":"0x03388900bF7B87E539E5aFb274C3f59BBeBab567","WSTETH":"0xb82381a3fbd3fafa77b3a7be693342618240067b"}},"networkL2TokenIds":{"SEPOLIA":[0,1,8]},"networkL2AgentAddresses":{"SEPOLIA":"0xe920D55f542da622a2Bcc0c416a1bc1523917977"},"networkL2AgentAccountIds":{"SEPOLIA":10005}}'
+  //   store.dispatch(configReducer.updateFastWithdrawConfig(JSON.parse(configStr)))
+  // })  
 
   //APP_NAME
   switch (APP_NAME.toLowerCase()) {

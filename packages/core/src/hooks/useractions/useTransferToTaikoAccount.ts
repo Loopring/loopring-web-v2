@@ -402,7 +402,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           receipt: '',
         })
       },
-    }
+    },
+    showReceiptWarning: state.receipt && !isInvalidAddress
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
   return output
