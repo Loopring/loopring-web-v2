@@ -40,7 +40,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
 
 export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const { setShowAccount, setShowTransferToTaikoAccount, modals } = useOpenModals()
-  const { coinJson, defaultNetwork } = useSettings()
+  const { coinJson, defaultNetwork, feeChargeOrder } = useSettings()
   const { tokenMap, idIndex } = useTokenMap()
 
   const { fastWithdrawConfig } = useConfig()
@@ -93,13 +93,13 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         account.apiKey,
       )
     
-    const {walletMap}=makeWalletLayer2({ needFilterZero: true })
+    // const {walletMap}=makeWalletLayer2({ needFilterZero: true })
     
-    const foundFee = feeRes?.fees.find(fee => {
-      const count = (walletMap && walletMap[fee.token]?.count.toString()) ?? '0'
-      const feeAmount = utils.formatUnits(fee.fee, globalState.tokenMap.tokenMap[fee.token].decimals)
-      return new Decimal(count).gte(new Decimal(feeAmount))
-    })
+    // const foundFee = feeRes?.fees.find(fee => {
+    //   const count = (walletMap && walletMap[fee.token]?.count.toString()) ?? '0'
+    //   const feeAmount = utils.formatUnits(fee.fee, globalState.tokenMap.tokenMap[fee.token].decimals)
+    //   return new Decimal(count).gte(new Decimal(feeAmount))
+    // })
 
     transferToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
       tokenId: transferToken.tokenId,
@@ -120,7 +120,6 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     setState({
       ...state,
       feeList: feeRes?.fees || [],
-      feeToken: state.feeToken ? state.feeToken : foundFee ? foundFee.token : undefined,
     })
   }
 
@@ -143,11 +142,24 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       timer && clearInterval(timer)
     }
   }, [modals.isShowTransferToTaikoAccount.isShow, fastWithdrawConfig])
-
-  const feeToken = state.feeToken ? tokenMap[state.feeToken] : undefined
-  const transferToken = tokenMap[state.transferToken]
-  const feeRaw = state.feeList.find((item) => item.token === state.feeToken)?.fee
+  // : feeChargeOrder.filter(symbol => enoughFeeList.find(fee => fee.token === symbol))[0]
   const { walletMap } = makeWalletLayer2({ needFilterZero: true })
+  const enoughFeeList = walletMap && tokenMap ? state.feeList.filter(fee => {
+    
+    return ethers.utils.parseUnits(walletMap[fee.token]?.count.toString() ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
+    
+    // return ethers.BigNumber.from(walletMap2[fee.token]?.count ?? '0').gte(fee.fee) 
+  }) : []
+  // const feeTokenSymbol = state.feeToken
+  const feeInfo = enoughFeeList.find((f) => f.token === state.feeToken)
+    ? enoughFeeList.find((f) => f.token === state.feeToken)
+    : feeChargeOrder.map(order => enoughFeeList.find(fee => fee.token === order)).filter(fee => fee)[0]
+  const feeTokenSymbol = feeInfo?.token
+  console.log('feeTokenSymbol', feeTokenSymbol)
+  const feeToken = tokenMap && feeTokenSymbol ? tokenMap[feeTokenSymbol] : undefined
+  const transferToken = tokenMap[state.transferToken]
+  const feeRaw = feeInfo?.fee
+  
 
   const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
 

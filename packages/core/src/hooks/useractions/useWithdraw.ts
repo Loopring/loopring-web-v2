@@ -62,6 +62,12 @@ import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap: TokenMap<{
   [key: string]: any;
 }>, walletMap: WalletMap<string, any>) => {
+
+  // try{
+  //   ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals) 
+  // }catch{
+  //   debugger
+  // }
   return {
     belong: offchainFeeInfo.token,
     fee: ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals),
@@ -89,7 +95,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useOpenModals()
   const { tokenMap, totalCoinMap, disableWithdrawList, idIndex } = useTokenMap()
   const { tokenPrices } = useTokenPrices()
-  const { currency, defaultNetwork } = useSettings()
+  const { currency, defaultNetwork, feeChargeOrder } = useSettings()
   const { account, status: accountStatus } = useAccount()
   const { exchangeInfo, chainId, getValueInCurrency, app } = useSystem()
   
@@ -150,6 +156,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     toggle.rabbitWithdraw.enable &&
     app === 'main' &&
     fastModeTokens?.includes(withdrawValue.belong as string)
+
+  console.log('withdrawValue.belong', withdrawValue.belong, fastModeTokens)
   const isFastMode =
     fastWithdrawOverflow === false && fastModeSupportted ? withdrawMode.mode === 'fast' : false
   const chargeFeeTokenList = isFastMode 
@@ -164,7 +172,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   
   const feeInfo = enoughFeeList.find((f) => f.token === feeSymbol) 
     ? enoughFeeList.find((f) => f.token === feeSymbol) 
-    : enoughFeeList[0]
+    : feeChargeOrder.map(symbol => enoughFeeList.find(fee => fee.token === symbol)).filter(fee => fee)[0]
   console.log('enoughFeeList', enoughFeeList, feeSymbol)
   // feeSymbol 
   //   ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
@@ -1026,6 +1034,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     handlePanelEvent: async (data: SwitchData<R>, _switchType: 'Tomenu' | 'Tobutton') => {
       if (data.to === 'button') {
         if (walletMap2 && data?.tradeData?.belong) {
+          setState({
+            ...state,
+            withdrawMode: {
+              ...state.withdrawMode,
+              maxFastWithdrawAmountBN: undefined,
+            }
+          })
           debouncedRefresshFee()
           const walletInfo = walletMap2[data?.tradeData?.belong as string]
           updateWithdrawData({
