@@ -244,7 +244,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
           className='tableWrapper table-divide-short'
           display={'flex'}
           flex={1}
-          overflow={'scroll'}
+          overflow={'auto'}
         >
           {currentTab === RecordTabIndex.Transactions ? (
             <TransactionTable
