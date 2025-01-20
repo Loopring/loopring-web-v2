@@ -17,7 +17,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     scroolDisabled?: boolean
   }
 >`
-  overflow: ${({ scroolDisabled }) => (scroolDisabled ? 'hidden' : 'scroll')};
+  overflow: ${({ scroolDisabled }) => (scroolDisabled ? 'hidden' : 'auto')};
   position: relative;
   flex: 1;
   ${({ _height, _width, ismobile }) => ` 
