@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
 import { store } from '@loopring-web/core'
+import { ChainId, NFTFactory_Collection } from '@loopring-web/loopring-sdk'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -81,3 +82,4 @@ const App = () => {
 }
 const h = new Headers()
 export default App
+console.log('SEPOLIA NFT Factory', NFTFactory_Collection[ChainId.SEPOLIA])
