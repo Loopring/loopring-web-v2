@@ -677,7 +677,7 @@ export function useAccountModalForUI({
     () =>
       SendAssetListMap[network].filter(item => {
         if (item === SendAssetList.SendAssetToTaikoAccount.key) {
-          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable && fastWithdrawConfig?.fromToNetworks[network].includes('TAIKO')
+          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable && fastWithdrawConfig?.fromToNetworks[network]?.includes('TAIKO')
         } else {
           return true
         }

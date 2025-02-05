@@ -54,7 +54,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     maxAlert,
     receiptError,
     receiptClear,
-    showReceiptWarning
+    showReceiptWarning,
+    onClickConfirm
   } = props
 
   const theme = useTheme();
@@ -122,7 +123,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
               textAlign: 'right',
               color: 'var(--color-error)',
               fontSize: '12px',
-              mt: -1
+              mt: -1,
             }}
           >
             {maxAlert.message || '--'}
@@ -145,49 +146,59 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             fullWidth
             endAdornment={
               <Box display={'flex'} alignItems={'center'}>
-
-                {receiptClear.show && <CloseIcon
-                  onClick={receiptClear.onClick}
-                  className='custom-size'
-                  sx={{ fontSize: '16px', width: '16px', height: '16px', cursor: 'pointer', color: 'var(--color-text-third)', mr: 1 }}
-                />}
+                {receiptClear.show && (
+                  <CloseIcon
+                    onClick={receiptClear.onClick}
+                    className='custom-size'
+                    sx={{
+                      fontSize: '16px',
+                      width: '16px',
+                      height: '16px',
+                      cursor: 'pointer',
+                      color: 'var(--color-text-third)',
+                      mr: 1,
+                    }}
+                  />
+                )}
                 <ContactIcon
                   onClick={onClickContact}
                   className='custom-size'
                   sx={{ fontSize: '24px', width: '24px', height: '24px', cursor: 'pointer' }}
                 />
               </Box>
-              
             }
             onInput={(e: any) => onInputAddress(e.target.value)}
             value={receiptInput}
           />
-          {receiptError.show &&<Typography
-            sx={{
-              opacity: true ? 1 : 0,
-              textAlign: 'left',
-              color: 'var(--color-error)',
-              fontSize: '12px',
-              mt: 0.5
-            }}
-          >
-            {receiptError.message}
-          </Typography>}
+          {receiptError.show && (
+            <Typography
+              sx={{
+                opacity: true ? 1 : 0,
+                textAlign: 'left',
+                color: 'var(--color-error)',
+                fontSize: '12px',
+                mt: 0.5,
+              }}
+            >
+              {receiptError.message}
+            </Typography>
+          )}
           {showReceiptWarning && (
             <Typography
-            marginTop={2}
-            variant={'body1'}
-            component={'span'}
-            p={1}
-            px={2}
-            display={'inline-flex'}
-            bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
-            borderRadius={'4px'}
-            color={'var(--color-warning)'}
-            fontSize={'12px'}
-          >
-            <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
-            Please ensure that the recipient's address is capable of properly receiving the assets.
+              marginTop={2}
+              variant={'body1'}
+              component={'span'}
+              p={1}
+              px={2}
+              display={'inline-flex'}
+              bgcolor={hexToRGB(theme.colorBase.warning, 0.2)}
+              borderRadius={'4px'}
+              color={'var(--color-warning)'}
+              fontSize={'12px'}
+            >
+              <AlertIcon color={'warning'} sx={{ marginRight: 1 / 2 }} />
+              Please ensure that the recipient's address is capable of properly receiving the
+              assets.
             </Typography>
           )}
         </Box>
@@ -209,15 +220,60 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
               display={'flex'}
               alignItems={'center'}
             >
-              {fee} {fee !== '--' && <ArrowForwardIosIcon sx={{fontSize: '14px', mb: '1px'}} className='custom-size'/>} 
+              {feeSelect.feeLoading ? (
+                <Typography color={'var(--color-warning)'}>calculating</Typography>
+              ) : feeSelect.isFeeNotEnough ? (
+                <Typography color={'var(--color-error)'}>insufficient</Typography>
+              ) : (
+                fee
+              )}
+              {fee !== '--' && (
+                <ArrowForwardIosIcon sx={{ fontSize: '14px', mb: '1px' }} className='custom-size' />
+              )}
             </Typography>
           }
         />
-        <Button disabled={sendBtn.disabled} onClick={sendBtn.onClick} variant='contained' fullWidth sx={{ mt: 3 }}>
+        <Button
+          disabled={sendBtn.disabled}
+          onClick={sendBtn.onClick}
+          variant='contained'
+          fullWidth
+          sx={{ mt: 3 }}
+        >
           {sendBtn.text || 'Send'}
         </Button>
       </Box>
     </>
+  )
+  const confirmPanel = (
+    <Box display={'flex'} justifyContent={'space-between'} flexDirection={'column'}>
+      <Typography variant={'h3'} textAlign={'center'}>
+        Send to Taiko
+      </Typography>
+      <Box mt={6} mb={4}>
+        <Box mb={4}>
+          <Typography color={'var(--color-text-third)'}>Token Amount</Typography>
+          <Typography mt={1} color={'var(--color-text-primary)'}>{amountInput} {token.symbol}</Typography>
+        </Box>
+        <Box mb={4}>
+          <Typography color={'var(--color-text-third)'}>Recipient</Typography>
+          <Typography mt={1} color={'var(--color-text-primary)'}>{receiptInput}</Typography>
+        </Box>
+        <Box mb={4}>
+          <Typography color={'var(--color-text-third)'}>Fee</Typography>
+          <Typography mt={1} color={'var(--color-text-primary)'}>{feeSelect.feeInfo?.count} {feeSelect.feeInfo?.belong}</Typography>
+        </Box>
+      </Box>
+
+      <Button
+        onClick={onClickConfirm}
+        variant='contained'
+        fullWidth
+        sx={{ mt: 3 }}
+      >
+        Confirm
+      </Button>
+    </Box>
   )
   const tokenSelectPanel = (
     <Box mt={2}>
@@ -339,6 +395,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
               mainPanel
             ) : panel === 'tokenSelection' ? (
               tokenSelectPanel
+            ) : panel === 'confirm' ? (
+              confirmPanel
             ) : (
               <ContactSelection {...contacts} scrollHeight='388px' />
             )}

@@ -291,7 +291,7 @@ export type TransferToTaikoAccountProps = {
     symbol: string
   }
   feeSelect: FeeSelectProps
-  panel: 'main' | 'contacts' | 'tokenSelection'
+  panel: 'main' | 'contacts' | 'tokenSelection' | 'confirm'
   contacts: {
     onSelect: (address: string) => void
     scrollHeight: string
@@ -330,6 +330,7 @@ export type TransferToTaikoAccountProps = {
     onClick: () => void,
   }
   showReceiptWarning: boolean
+  onClickConfirm: () => void
 }
 
 export * from './components/Interface'

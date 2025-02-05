@@ -50,12 +50,13 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     transferToken: 'ETH',
     feeList: [] as OffchainFeeInfo[],
     feeToken: undefined as string | undefined,
-    panel: 'main' as 'main' | 'contacts' | 'tokenSelection',
+    panel: 'main' as 'main' | 'contacts' | 'tokenSelection' | 'confirm',
     showFeeModal: false,
     amount: '',
     receipt: '',
     tokenFilterInput: '',
     maxTransferAmount: undefined as ethers.BigNumber | undefined,
+    feeLoading: false
   }
 
   const [getState, setState] = useGetSet(initialState)
@@ -81,6 +82,11 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     const idIndex = globalState.tokenMap.idIndex
     const defaultNetwork = globalState.settings.defaultNetwork
     const state = getState()
+
+    setState({
+      ...state,
+      feeLoading: true
+    })
     const feeRes = await LoopringAPI.userAPI
       ?.getUserCrossChainFee(
         {
@@ -91,15 +97,12 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           amount: state.amount ? utils.parseUnits(state.amount, tokenMap[state.transferToken].decimals).toString() : '0',
         },
         account.apiKey,
-      )
-    
-    // const {walletMap}=makeWalletLayer2({ needFilterZero: true })
-    
-    // const foundFee = feeRes?.fees.find(fee => {
-    //   const count = (walletMap && walletMap[fee.token]?.count.toString()) ?? '0'
-    //   const feeAmount = utils.formatUnits(fee.fee, globalState.tokenMap.tokenMap[fee.token].decimals)
-    //   return new Decimal(count).gte(new Decimal(feeAmount))
-    // })
+      ).finally(() => {
+        setState({
+          ...state,
+          feeLoading: false
+        })
+      })
 
     transferToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
       tokenId: transferToken.tokenId,
@@ -164,11 +167,41 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
 
   const isInvalidAddress = state.receipt && !ethers.utils.isAddress(state.receipt)
-  const sendBtnDisabled = !state.receipt || isOverMax || isInvalidAddress
+  const sendBtnDisabled =
+    state.feeLoading ||
+    !state.amount ||
+    new Decimal(state.amount).lessThanOrEqualTo('0') ||
+    !state.receipt ||
+    isOverMax ||
+    isInvalidAddress
   const {walletProvider} = useWeb3ModalProvider()
 
   const sendBtn = {
+    
     onClick: async () => {
+      setState({
+        ...state,
+        panel: 'confirm',
+      })
+    },
+    disabled: sendBtnDisabled,
+    text: 'Send'
+  }
+
+  const output = {
+    onClickContact: () => {
+      setState({
+        ...state,
+        panel: 'contacts',
+      })
+    },
+    onClickFee: () => {
+      setState({
+        ...state,
+        showFeeModal: true,
+      })
+    },
+    onClickConfirm: async () => {
       const network = MapChainId[defaultNetwork]
       const configiJSON = fastWithdrawConfig!
       const storageId = await LoopringAPI.userAPI?.getNextStorageId(
@@ -214,23 +247,11 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         eddsaSignKey: account.eddsaKey.sk,
         chainId: defaultNetwork as number,
       })
-    },
-    disabled: sendBtnDisabled,
-    text: 'Send'
-  }
-
-  const output = {
-    onClickContact: () => {
-      setState({
-        ...state,
-        panel: 'contacts',
+      setShowTransferToTaikoAccount({
+        isShow: false
       })
-    },
-    onClickFee: () => {
-      setState({
-        ...state,
-        showFeeModal: true,
-      })
+      setState(initialState)
+      
     },
     onInputAmount: (str) => {
       if (isValidateNumberStr(str, transferToken.precision) || str === '') {
@@ -290,16 +311,14 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           showFeeModal: false,
         })
       },
-      feeInfo: state.feeList.find((item) => item.token === state.feeToken) && state.feeToken && walletMap && tokenMap
-        ? offchainFeeInfoToFeeInfo(
-            state.feeList.find((item) => item.token === state.feeToken)!,
-            tokenMap,
-            walletMap as any,
-          )
-        : undefined,
-      chargeFeeTokenList: walletMap && tokenMap
-        ? state.feeList.map((item) => offchainFeeInfoToFeeInfo(item, tokenMap, walletMap as any))
-        : [],
+      feeInfo:
+        feeInfo && walletMap && tokenMap
+          ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap as any)
+          : undefined,
+      chargeFeeTokenList:
+        walletMap && tokenMap
+          ? state.feeList.map((item) => offchainFeeInfoToFeeInfo(item, tokenMap, walletMap as any))
+          : [],
       handleToggleChange: (feeInfo) => {
         setState({
           ...state,
@@ -308,7 +327,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       },
       disableNoToken: false,
       onClickFee: () => {},
-      feeLoading: false,
+      feeLoading: state.feeLoading,
       isFeeNotEnough: (() => {
         const feeInfo = state.feeList.find((item) => item.token === state.feeToken)
         if (!feeInfo || !tokenMap) return false
@@ -316,7 +335,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         const count = walletMap[state.feeToken]!.count
         return new Decimal(count).gte(
           utils.formatUnits(feeInfo.fee, tokenMap[state.feeToken].decimals),
-        ) 
+        )
       })(),
       isFastWithdrawAmountLimit: false,
     },
@@ -369,7 +388,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       onClickToken: (symbol) => {
         setState({
           ...state,
-          feeToken: symbol,
+          transferToken: symbol,
           panel: 'main',
         })
       },
@@ -378,21 +397,18 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     amountInput: state.amount,
     onClickBack() {
       if (state.panel === 'main') {
-        setShowTransferToTaikoAccount({isShow: false})
+        setShowTransferToTaikoAccount({ isShow: false })
         setState(initialState)
-        setShowAccount({isShow: true,
-          step: AccountStep.SendAssetGateway
-        })
+        setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway })
       } else {
         setState({
           ...state,
           panel: 'main',
         })
       }
-      
     },
     onClickClose() {
-      setShowTransferToTaikoAccount({isShow: false})
+      setShowTransferToTaikoAccount({ isShow: false })
       setState(initialState)
     },
     open: modals.isShowTransferToTaikoAccount.isShow,
@@ -400,7 +416,12 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     sendBtn: sendBtn,
     maxAlert: {
       show: isOverMax,
-      message: isOverMax && state.maxTransferAmount ? `Quota: ${utils.formatUnits(state.maxTransferAmount!, transferToken.decimals)} ${transferToken.symbol}` : '',
+      message:
+        isOverMax && state.maxTransferAmount
+          ? `Quota: ${numberFormat(utils.formatUnits(state.maxTransferAmount!, transferToken.decimals), {fixed: transferToken.precision}) } ${
+              transferToken.symbol
+            }`
+          : '',
     },
     receiptError: {
       show: isInvalidAddress,
@@ -415,7 +436,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         })
       },
     },
-    showReceiptWarning: state.receipt && !isInvalidAddress
+    showReceiptWarning: state.receipt && !isInvalidAddress,
   } as TransferToTaikoAccountProps
   console.log('output', state, output)
   return output
