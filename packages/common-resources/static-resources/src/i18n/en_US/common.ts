@@ -2295,9 +2295,9 @@ export default {
   labelVAULT_COLLATERAL: 'Portal Collateral',
   labelTokenVaultDes:
     '{{symbol}} in Portal is a token backed 1:1 with {{symbol}}, bringing greater liquidity to Loopring DEX.',
-  labelTokenWebsite: 'website',
-  labelTokenContractAddress: 'Token Contract Address',
-  labelTokenSupply: 'Token Supply',
+  labelTokenWebsite: 'Website',
+  labelTokenContractAddress: 'Contract Address',
+  labelTokenSupply: 'Total Supply',
   labelMarketCap: 'Market Cap',
   labelTokenInfo: 'Token Info',
   labelTokenIntroduce: 'Introduction',

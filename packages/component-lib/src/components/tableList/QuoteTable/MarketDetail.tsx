@@ -236,7 +236,7 @@ export const MarketDetail = ({
         width={'100%'}
         marginTop={2}
         paddingX={2}
-        paddingTop={1}
+        paddingY={1}
         borderRadius={1 / 2}
         sx={{
           background: 'var(--field-opacity)',
@@ -372,7 +372,7 @@ export const MarketDetail = ({
             sx={{ wordBreak: 'break-all' }}
             paddingLeft={1}
             rel='noopener noreferrer'
-            href={`${etherscanBaseUrl}address/${tokenInfo.tokenAddress}`}
+            href={tokenInfo.tokenAddress ? `${etherscanBaseUrl}address/${tokenInfo.tokenAddress}` : undefined}
             target={'_top'}
             justifyContent={'flex-end'}
           >
