@@ -659,6 +659,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
         time: '~25 minutes',
       },
       onChange: () => {},
+      useTrustWording: false
     },
   } as unknown as WithdrawProps<any, any>
   console.log('nftWithdrawProps', nftWithdrawProps)

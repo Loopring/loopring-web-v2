@@ -523,7 +523,7 @@ export const WithdrawWrap = <
 
               <Box>
                 <Tooltip title={'Assets are transferred between Loopring and Ethereum using Loopring’s official bridge contract.'}>
-                  <Typography>Trustless Mode</Typography>
+                  <Typography>{withdrawMode?.useTrustWording ? 'Trustless Mode' : 'Normal Mode'}</Typography>
                 </Tooltip>
                 <Typography variant='body2'>{withdrawMode?.normalMode?.fee ?? '--'}</Typography>
               </Box>

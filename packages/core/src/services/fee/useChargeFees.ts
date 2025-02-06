@@ -88,8 +88,7 @@ export function useChargeFees({
     feeRaw: undefined,
   } as FeeInfo)
   const { chainId } = useSystem()
-  // let { feeChargeOrder } = useSettings()
-  const feeChargeOrder = FeeChargeOrderDefaultMap.get(chainId as sdk.ChainId)
+  let { feeChargeOrder } = useSettings()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [chargeFeeTokenList, setChargeFeeTokenList] = React.useState<FeeInfo[]>([])
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<{

@@ -260,7 +260,7 @@ export type WithdrawExtendProps<T, I, C> = {
   ens?: string
   title?: string
   geUpdateContact: () => void
-  withdrawMode: {
+  withdrawMode?: {
     mode: 'fast' | 'normal',
     onChange: (mode: 'fast' | 'normal') => void
     fastMode: undefined | {
@@ -276,6 +276,7 @@ export type WithdrawExtendProps<T, I, C> = {
       fee: string,
       time: string
     }
+    useTrustWording: boolean
   }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &

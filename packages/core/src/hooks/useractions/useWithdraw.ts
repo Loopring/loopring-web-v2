@@ -51,6 +51,7 @@ import {
   parseRabbitConfig,
   useConfig,
   numberFormat,
+  tryFn,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _, { values, omit } from 'lodash'
@@ -958,11 +959,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     const contact = contacts?.find(
       (x) => x.contactAddress?.toLowerCase() === realAddr?.toLowerCase(),
     )
-    if (isShow === false) {
-      setSureIsAllowAddress(undefined)
-    } else if (contact?.addressType !== undefined) {
+    if (contact?.addressType !== undefined) {
       const found = contact.addressType ? addressToExWalletMapFn(contact.addressType) : undefined
       setSureIsAllowAddress(found)
+    } else {
+      setSureIsAllowAddress(undefined)
     }
     if (
       isShow &&
@@ -973,6 +974,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       reCheck()
     }
   }, [realAddr, isShow, contactStatus])
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
 
   const withdrawProps: WithdrawProps<any, any> = {
     type: TRADE_TYPE.TOKEN,
@@ -996,6 +998,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     sureIsAllowAddress,
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
+      console.log('fashdfkjhdsjfkhdj', value)
       const found = exWalletToAddressMapFn(value)
       // const found = map.find(x => x[0] === value)![1]
       const contact = contacts?.find((x) => x.contactAddress === realAddr)
@@ -1113,24 +1116,22 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               currency,
             )
           : undefined
-      const feeNormalInCurrency =
-        feeTokenInfo && feeNormal && tokenPrices
-          ? fiatNumberDisplaySafe(
-              getValueInCurrency(
-                new Decimal(ethers.utils.formatUnits(feeNormal.fee, feeTokenInfo.decimals))
-                  .mul(tokenPrices[feeSymbol])
-                  .toFixed(2),
-              ),
-              currency,
-            )
-          : undefined
-      // const withdrawToken = tokenMap[withdrawValue.belong as string]
-      // const tradeValueBN = withdrawToken && withdrawValue.tradeValue
-      //   ? ethers.utils.parseUnits(withdrawValue.tradeValue.toString(), withdrawToken.decimals)
-      //   : undefined
+      const feeNormalInCurrency = tryFn(
+        () =>
+          fiatNumberDisplaySafe(
+            getValueInCurrency(
+              new Decimal(ethers.utils.formatUnits(feeNormal!.fee, feeTokenInfo.decimals))
+                .mul(tokenPrices[feeSymbol])
+                .toFixed(2),
+            ),
+            currency,
+          ),
+        () => undefined,
+      )
       
       return {
         mode: isFastMode ? 'fast' : 'normal',
+        useTrustWording: !isTaiko,
         showFastMode: fastModeSupportted,
         fastMode: {
           fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',
@@ -1139,15 +1140,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         fastMaxAlert: {
           show: fastWithdrawOverflow === true,
           message:
-            state.withdrawMode.maxFastWithdrawAmountBN &&
-            withdrawToken &&
-            `Max ${numberFormat(
-              ethers.utils.formatUnits(
-                state.withdrawMode.maxFastWithdrawAmountBN,
-                withdrawToken.decimals,
-              ),
-              { fixed: withdrawToken.precision, removeTrailingZero: true },
-            )} ${withdrawToken?.symbol}`,
+            state.withdrawMode.maxFastWithdrawAmountBN && withdrawToken
+              ? `Max ${numberFormat(
+                  ethers.utils.formatUnits(
+                    state.withdrawMode.maxFastWithdrawAmountBN,
+                    withdrawToken.decimals,
+                  ),
+                  { fixed: withdrawToken.precision, removeTrailingZero: true },
+                )} ${withdrawToken?.symbol}`
+              : '--',
         },
         normalMode: {
           fee: feeNormalInCurrency ? '~' + feeNormalInCurrency : '--',
