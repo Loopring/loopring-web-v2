@@ -16,6 +16,7 @@ import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
 import Decimal from 'decimal.js'
 import { DAYS } from '../../defs'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useDebouncedCallback } from '../../hooks/common'
 
 const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: TokenMap<{
   [key: string]: any;
@@ -47,7 +48,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const { account } = useAccount()
 
   const initialState = {
-    transferToken: 'ETH',
+    transferToken: undefined as string | undefined,
     feeList: [] as OffchainFeeInfo[],
     feeToken: undefined as string | undefined,
     panel: 'main' as 'main' | 'contacts' | 'tokenSelection' | 'confirm',
@@ -61,11 +62,18 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
   const [getState, setState] = useGetSet(initialState)
 
+
   const state = getState()
+  const transferTokenSymbol = state.transferToken 
+    ? state.transferToken 
+    : modals.isShowTransferToTaikoAccount.info?.initSymbol 
+      ? modals.isShowTransferToTaikoAccount.info?.initSymbol 
+      : 'ETH'
+  const transferToken = tokenMap[transferTokenSymbol]
   const isOverMax =
     state.amount &&
     ethers.utils
-      .parseUnits(state.amount, tokenMap[state.transferToken].decimals)
+      .parseUnits(state.amount, transferToken.decimals)
       .gt(state.maxTransferAmount ?? '0')
   
   const { contacts, updateContacts } = useContacts()
@@ -74,14 +82,26 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     : undefined
   const transferTokenList = parsed?.toTaikoNetworkSupportedTokens || []
   const toTaikoNetwork = parsed?.toTaikoNetwork
-  
 
-  const refreshData = async (destinationNetwork: string) => {
+  const refreshData = async () => {
     const globalState = store.getState()
     const account = globalState.account
     const idIndex = globalState.tokenMap.idIndex
     const defaultNetwork = globalState.settings.defaultNetwork
+    const fastWithdrawConfig = globalState.config.fastWithdrawConfig
+    const parsed = fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
+      ? parseRabbitConfig(fastWithdrawConfig, MapChainId[defaultNetwork], idIndex)
+      : undefined
+    const destinationNetwork = parsed?.toTaikoNetwork
+
     const state = getState()
+    const modals = globalState.modals
+    const transferTokenSymbol = state.transferToken
+      ? state.transferToken
+      : modals.isShowTransferToTaikoAccount.info?.initSymbol
+      ? modals.isShowTransferToTaikoAccount.info?.initSymbol
+      : 'ETH'
+    const transferToken = tokenMap[transferTokenSymbol]
 
     setState({
       ...state,
@@ -93,8 +113,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           receiveFeeNetwork: destinationNetwork,
           requestType: OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
           calFeeNetwork: MapChainId[defaultNetwork],
-          tokenSymbol: state.transferToken,
-          amount: state.amount ? utils.parseUnits(state.amount, tokenMap[state.transferToken].decimals).toString() : '0',
+          tokenSymbol: transferTokenSymbol,
+          amount: state.amount ? utils.parseUnits(state.amount, transferToken.decimals).toString() : '0',
         },
         account.apiKey,
       ).finally(() => {
@@ -137,9 +157,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         idIndex,
       )
       timer = setInterval(() => {
-        refreshData(toTaikoNetwork ?? '')
+        refreshData()
       }, 10 * 1000)
-      refreshData(toTaikoNetwork ?? '')
+      refreshData()
     }
     return () => {
       timer && clearInterval(timer)
@@ -160,11 +180,11 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const feeTokenSymbol = feeInfo?.token
   console.log('feeTokenSymbol', feeTokenSymbol)
   const feeToken = tokenMap && feeTokenSymbol ? tokenMap[feeTokenSymbol] : undefined
-  const transferToken = tokenMap[state.transferToken]
+  
   const feeRaw = feeInfo?.fee
   
 
-  const transferTokenWallet = walletMap ? walletMap[state.transferToken] : undefined
+  const transferTokenWallet = walletMap ? walletMap[transferTokenSymbol] : undefined
 
   const isInvalidAddress = state.receipt && !ethers.utils.isAddress(state.receipt)
   const sendBtnDisabled =
@@ -187,6 +207,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     disabled: sendBtnDisabled,
     text: 'Send'
   }
+  const debouncedRefreshData = useDebouncedCallback(refreshData, 500)
 
   const output = {
     onClickContact: () => {
@@ -259,6 +280,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           ...state,
           amount: str,
         })
+        debouncedRefreshData()
       }
     },
     onInputAddress: (addr) => {
@@ -297,11 +319,11 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
             removeTrailingZero: true,
           }) +
           ' ' +
-          state.transferToken
+          transferTokenSymbol
         : '--',
     token: {
-      coinJSON: coinJson[state.transferToken],
-      symbol: state.transferToken,
+      coinJSON: coinJson[transferTokenSymbol],
+      symbol: transferTokenSymbol,
     },
     feeSelect: {
       open: state.showFeeModal,
@@ -391,15 +413,20 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           transferToken: symbol,
           panel: 'main',
         })
+        refreshData()
       },
     },
     receiptInput: state.receipt,
     amountInput: state.amount,
     onClickBack() {
       if (state.panel === 'main') {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.SendAssetGateway,
+          info: { symbol: modals.isShowTransferToTaikoAccount.info?.initSymbol },
+        })
         setShowTransferToTaikoAccount({ isShow: false })
         setState(initialState)
-        setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway })
       } else {
         setState({
           ...state,
@@ -418,7 +445,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       show: isOverMax,
       message:
         isOverMax && state.maxTransferAmount
-          ? `Quota: ${numberFormat(utils.formatUnits(state.maxTransferAmount!, transferToken.decimals), {fixed: transferToken.precision}) } ${
+          ? `Quota: ${numberFormat(utils.formatUnits(state.maxTransferAmount!, transferToken.decimals), {fixed: transferToken.precision, removeTrailingZero: true}) } ${
               transferToken.symbol
             }`
           : '',

@@ -761,6 +761,7 @@ export function useAccountModalForUI({
                 })
                 setShowTransferToTaikoAccount({
                   isShow: true,
+                  info: { initSymbol: isShowAccount?.info?.symbol },
                 })
               },
             }

@@ -242,15 +242,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         addressType,
       }
     },
-    setShowTransferToTaikoAccount(state, action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>) {
-      const { isShow, } = action.payload
+    setShowTransferToTaikoAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
+      const { isShow, info } = action.payload
       state.isShowTransferToTaikoAccount = {
         isShow,
-        // symbol,
-        // info,
-        // name,
-        // address,
-        // addressType,
+        info
       }
     },
     setShowWithdraw(state, action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>) {

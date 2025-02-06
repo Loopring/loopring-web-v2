@@ -50,6 +50,7 @@ import {
   fiatNumberDisplaySafe,
   parseRabbitConfig,
   useConfig,
+  numberFormat,
 } from '../../index'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import _, { values, omit } from 'lodash'
@@ -1140,9 +1141,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           message:
             state.withdrawMode.maxFastWithdrawAmountBN &&
             withdrawToken &&
-            `Max ${ethers.utils.formatUnits(
-              state.withdrawMode.maxFastWithdrawAmountBN,
-              withdrawToken.decimals,
+            `Max ${numberFormat(
+              ethers.utils.formatUnits(
+                state.withdrawMode.maxFastWithdrawAmountBN,
+                withdrawToken.decimals,
+              ),
+              { fixed: withdrawToken.precision, removeTrailingZero: true },
             )} ${withdrawToken?.symbol}`,
         },
         normalMode: {

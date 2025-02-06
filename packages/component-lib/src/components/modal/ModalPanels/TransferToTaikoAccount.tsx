@@ -261,7 +261,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
         </Box>
         <Box mb={4}>
           <Typography color={'var(--color-text-third)'}>Fee</Typography>
-          <Typography mt={1} color={'var(--color-text-primary)'}>{feeSelect.feeInfo?.count} {feeSelect.feeInfo?.belong}</Typography>
+          <Typography mt={1} color={'var(--color-text-primary)'}>{fee}</Typography>
         </Box>
       </Box>
 
