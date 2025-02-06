@@ -340,7 +340,7 @@ export default {
   labelReferralsTableTime: 'Time',
   labelRefundTableAmount: 'Refunds',
   labelRefundTableTime: 'Time',
-  labelTxNetworkFee: 'Transaction Cost',
+  labelTxNetworkFee: 'Network Fee',
   labelTxTradingFee: 'Trading Fee',
   labelTypeUNIFIED_CLAIM: 'Claim Rewards',
   labelRedPacketClaiming: 'Claiming',

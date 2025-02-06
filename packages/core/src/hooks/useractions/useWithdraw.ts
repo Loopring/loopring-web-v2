@@ -188,7 +188,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isFeeNotEnough:
       feeInfo2 && feeInfo2.fee && feeInfo2.count
         ? new Decimal(feeInfo2.fee).gt(feeInfo2.count)
-        : false,
+        : true,
     isOnLoading: getState().fee.isOnLoading,
   }
   const handleFeeChange = (feeInfo: FeeInfo) => {

@@ -570,7 +570,7 @@ export default {
   labelL2toL2Memo: 'Memo (Optional)',
   labelL2toL2MemoPlaceholder: 'Please input the memo',
   labelL2toL2FeeChoose: 'Select payment token',
-  labelL2toL2Fee: 'Transaction Cost',
+  labelL2toL2Fee: 'Network Fee',
   labelL2toL2FeeNotEnough: 'Insufficient balance',
   labelL2toL2FeeFastNotAllowEnough: 'Please choose Standard!',
   labelL2toL2LinkRecent: 'Recent send history',
@@ -803,7 +803,7 @@ export default {
   labelForceWithdrawFailed: 'Force withdraw has failed!',
   labelForceWithdrawSubmit: 'Force withdraw has been submitted',
   labelForceWithdrawToken: 'Token Amount',
-  labelForceWithdrawFee: 'Transaction Cost',
+  labelForceWithdrawFee: 'Network Fee',
   labelForceWithdrawEnterToken: 'Select Token',
   labelPleaseForceWithdrawAddress: 'Please enter the address you wish to withdraw from',
   labelForceWithdrawAddress: 'The address you wish to withdraw from',
@@ -1778,7 +1778,7 @@ export default {
   labelSwapMinConverted: 'Minimum Converted',
   labelSwapMinConvertedTooltip:
     'The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price. The protocol can guarantee that you will receive at least this amount.',
-  labelNetworkFee: 'Transaction Cost',
+  labelNetworkFee: 'Network Fee',
   labelTradingFee: 'Trading Fee',
   labelTradingFeeEst: 'Trading Fee (est.)',
   labelStopStopPriceDes:
