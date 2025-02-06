@@ -30,7 +30,6 @@ export const checkAccount = (
         isInCounterFactualStatus: account.isInCounterFactualStatus,
         isContract: account.isContract,
       })
-      toggleCheck()
     } else {
       myLog('After connect >>,checkAccount: step1 account locked')
       accountServices.sendAccountLock()
