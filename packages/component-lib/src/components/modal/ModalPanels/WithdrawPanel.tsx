@@ -187,7 +187,7 @@ export const WithdrawPanel = withTranslation(['common', 'error'], {
               setPanelIndex(1)
               rest.handleOnAddressChange(address, true)
             }}
-            scrollHeight={'400px'}
+            scrollHeight={rest.isToMyself ? '280px' : '480px'}
           />
         ),
         [contacts],

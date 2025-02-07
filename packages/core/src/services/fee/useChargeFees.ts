@@ -557,6 +557,7 @@ export function useChargeFees({
     _amount,
     account.readyState,
     walletLayer2Status,
+    feeChargeOrder
   ])
 
   return {

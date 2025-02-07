@@ -351,12 +351,16 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       onClickFee: () => {},
       feeLoading: state.feeLoading,
       isFeeNotEnough: (() => {
-        const feeInfo = state.feeList.find((item) => item.token === state.feeToken)
-        if (!feeInfo || !tokenMap) return false
-        if (!walletMap || !state.feeToken || !walletMap[state.feeToken]?.count) return true
-        const count = walletMap[state.feeToken]!.count
-        return new Decimal(count).gte(
-          utils.formatUnits(feeInfo.fee, tokenMap[state.feeToken].decimals),
+        
+        // const feeInfo = state.feeList.find((item) => item.token === state.feeToken)
+        // feeToken
+        
+        if (!feeInfo || !tokenMap || !feeToken) return false
+        if (!walletMap || !feeTokenSymbol || !walletMap[feeTokenSymbol]?.count) return true
+        const count = walletMap[feeTokenSymbol]!.count
+        // console.log('dajshdjashdjsah', state, walletMap, tokenMap, count, utils.formatUnits(feeInfo.fee, tokenMap[state.feeToken].decimals))
+        return new Decimal(count).lt(
+          utils.formatUnits(feeInfo.fee, feeToken.decimals),
         )
       })(),
       isFastWithdrawAmountLimit: false,
@@ -412,6 +416,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           ...state,
           transferToken: symbol,
           panel: 'main',
+          amount: ''
         })
         refreshData()
       },
