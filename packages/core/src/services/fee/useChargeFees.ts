@@ -81,6 +81,7 @@ export function useChargeFees({
   handleFeeChange: (value: FeeInfo) => void
   feeInfo: FeeInfo
   resetIntervalTime: () => void
+  resetFee: () => void
 } {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: 'ETH',
@@ -560,6 +561,15 @@ export function useChargeFees({
     feeChargeOrder
   ])
 
+  const resetFee = () => {
+    setFeeInfo({
+      belong: 'ETH',
+      fee: 0,
+      feeRaw: undefined,
+    } as FeeInfo)
+    getFeeList()
+  }
+
   return {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -569,5 +579,6 @@ export function useChargeFees({
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    resetFee
   }
 }
