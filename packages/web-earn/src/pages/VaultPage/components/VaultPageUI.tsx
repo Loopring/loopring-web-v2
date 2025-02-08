@@ -1,4 +1,4 @@
-import { Box, Button, Container, Divider, Tab, Tabs } from '@mui/material'
+import { Box, Button, Container, Divider, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
 import {
   HelpIcon,
@@ -15,7 +15,40 @@ import { VaultDashBoardPanel } from '../DashBoardPanel'
 import { VaultHomePanel } from '../HomePanel'
 import { ModalVaultWrap } from '../components/ModalWrap'
 import { useTranslation } from 'react-i18next'
-import { HomeTitle, DashBoardTitle } from '../index'
+
+const HomeTitle = () => {
+  const { t } = useTranslation()
+  return (
+    <Typography display={'inline-flex'} alignItems={'center'}>
+      <Typography
+        component={'span'}
+        variant={'h5'}
+        whiteSpace={'pre'}
+        marginRight={1}
+        className={'invest-Balance-Title'}
+      >
+        {t('labelVaultHomeTitle')}
+      </Typography>
+    </Typography>
+  )
+}
+
+const DashBoardTitle = () => {
+  const { t } = useTranslation()
+  return (
+    <Typography display={'inline-flex'} alignItems={'center'}>
+      <Typography
+        component={'span'}
+        variant={'h5'}
+        whiteSpace={'pre'}
+        marginRight={1}
+        className={'invest-Overview-Title'}
+      >
+        {t('labelVaultDashboardTitle')}
+      </Typography>
+    </Typography>
+  )
+}
 
 export interface VaultPageUIProps {
   isMobile: boolean

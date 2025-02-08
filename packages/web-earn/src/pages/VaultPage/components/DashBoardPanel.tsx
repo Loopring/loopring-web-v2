@@ -92,14 +92,10 @@ import { keys } from 'lodash'
 import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
 import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 
-export const VaultDashBoardPanel = ({
+const useVaultDashboard = ({
   vaultAccountInfo: _vaultAccountInfo,
-  closeShowLeverage,
-  showLeverage,
 }: {
-  vaultAccountInfo: VaultAccountInfoStatus,
-  closeShowLeverage: () => void
-  showLeverage: {show: boolean, closeAfterChange:boolean}
+  vaultAccountInfo: VaultAccountInfoStatus
 }) => {
   const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
     _vaultAccountInfo
@@ -134,121 +130,17 @@ export const VaultDashBoardPanel = ({
     ...assetPanelProps
   } = useGetVaultAssets({ vaultAccountInfo: _vaultAccountInfo })
   const colors = ['var(--color-success)', 'var(--color-error)', 'var(--color-warning)']
-  const profitUI = React.useMemo(() => {
-    const profit =
-      (vaultAccountInfo as any)?.accountType === 0
-        ? sdk
-          .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
-          .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
-        : sdk.toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
-          .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
-    const colorsId = upColor === UpColor.green ? [0, 1] : [1, 0]
-    const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
-    return (
-      <>
-        {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING ? (
-          <>
-            <Typography
-              component={'span'}
-              display={'inline-flex'}
-              variant={'body1'}
-              color={'textPrimary'}
-            >
-              {hideAssets
-                ? HiddenTag
-                : PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    profit.times(forexMap[currency] ?? 0).toString(),
-                    2,
-                    2,
-                    2,
-                    false,
-                    {
-                      isFait: false,
-                      floor: true,
-                    },
-                  )}
-            </Typography>
-            <Typography
-              component={'span'}
-              display={'inline-flex'}
-              variant={'body1'}
-              marginLeft={1 / 2}
-              color={colors[colorIs]}
-            >
-              {getValuePrecisionThousand(
-                profit
-                  ?.div(
-                    Number(vaultAccountInfo?.totalCollateralOfUsdt)
-                      ? vaultAccountInfo?.totalCollateralOfUsdt
-                      : 1,
-                  )
-                  .times(100) ?? 0,
-                2,
-                2,
-                2,
-                false,
-                {
-                  isFait: false,
-                  floor: true,
-                },
-              )}
-              %
-            </Typography>
-          </>
-        ) : (
-          EmptyValueTag
-        )}
-      </>
-    )
-  }, [
-    vaultAccountInfo?.totalEquityOfUsdt,
-    vaultAccountInfo?.totalCollateralOfUsdt,
-    vaultAccountInfo?.accountStatus,
-    upColor,
-    (vaultAccountInfo as any)?.accountType,
-    hideAssets,
-    currency,
-    forexMap,
-    colors,
-  ])
-  const marginUI = React.useMemo(() => {
-    const item = vaultAccountInfo?.marginLevel ?? '0'
-    return (
-      <>
-        {vaultAccountInfo?.marginLevel ? (
-          <Typography
-            component={'span'}
-            display={'inline-flex'}
-            alignItems={'center'}
-            marginTop={1}
-            variant={'body1'}
-            color={marginLevelTypeToColor(marginLevelType(item))}
-          >
-            <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
-            {item}
-          </Typography>
-        ) : (
-          <Typography
-            component={'span'}
-            display={'inline-flex'}
-            alignItems={'center'}
-            marginTop={1}
-            variant={'body1'}
-            color={'textSecondary'}
-          >
-            <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
-            {EmptyValueTag}
-          </Typography>
-        )}
-      </>
-    )
-  }, [colors, vaultAccountInfo?.marginLevel])
   const theme = useTheme()
   const tableRef = React.useRef<HTMLDivElement>()
   const { detail, setShowDetail, marketProps } = useVaultMarket({ tableRef })
   const walletMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
-  const { tokenMap: vaultTokenMap, tokenPrices, idIndex: vaultIdIndex, marketMap, marketArray } = useVaultMap()
+  const {
+    tokenMap: vaultTokenMap,
+    tokenPrices,
+    idIndex: vaultIdIndex,
+    marketMap,
+    marketArray,
+  } = useVaultMap()
   const { tokenMap, idIndex } = useTokenMap()
 
   const history = useHistory()
@@ -265,39 +157,46 @@ export const VaultDashBoardPanel = ({
       | 'dustCollector'
       | 'dustCollectorUnavailable',
     unselectedDustSymbol: [] as string[],
-    leverageLoading: false
+    leverageLoading: false,
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
-  const { toggle: { VaultDustCollector } } = useToggle()
+  const {
+    toggle: { VaultDustCollector },
+  } = useToggle()
 
   const changeLeverage = async (leverage: number) => {
     setLocalState({
       ...localState,
-      leverageLoading: true
+      leverageLoading: true,
     })
-    const response = await LoopringAPI.vaultAPI?.submitLeverage({
-      request: {
-        accountId: account.accountId.toString(),
-        leverage: leverage.toString(),
-      },
-      apiKey: account.apiKey,
-    }, '1').finally(() => {
-      setTimeout(() => {
-        setLocalState({
-          ...localState,
-          leverageLoading: false
-        })
-      }, 500);
-    })
-    
+    const response = await LoopringAPI.vaultAPI
+      ?.submitLeverage(
+        {
+          request: {
+            accountId: account.accountId.toString(),
+            leverage: leverage.toString(),
+          },
+          apiKey: account.apiKey,
+        },
+        '1',
+      )
+      .finally(() => {
+        setTimeout(() => {
+          setLocalState({
+            ...localState,
+            leverageLoading: false,
+          })
+        }, 500)
+      })
+
     if ((response as any)?.resultInfo?.code) {
       if (response.resultInfo.message.includes('ERR_VAULT_LEVERAGE_TOO_LARGE')) {
         setShowAccount({
           isShow: true,
           step: AccountStep.General_Failed,
           info: {
-            errorMessage: t('labelVaultChangeLeverageFailedTooSmall') ,
+            errorMessage: t('labelVaultChangeLeverageFailedTooSmall'),
             title: t('labelVaultChangeLeverageFailed'),
           },
         })
@@ -306,7 +205,7 @@ export const VaultDashBoardPanel = ({
           isShow: true,
           step: AccountStep.General_Failed,
           info: {
-            errorMessage: t('labelUnknown') ,
+            errorMessage: t('labelUnknown'),
             title: t('labelVaultChangeLeverageFailed'),
           },
         })
@@ -343,21 +242,23 @@ export const VaultDashBoardPanel = ({
         removeTrailingZero: true,
       }),
       checked,
-      valueInCurrency: price && getValueInCurrency(
-        new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
-      )
-        ? fiatNumberDisplay(
-            getValueInCurrency(
-              new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
-            ),
-            currency,
-          )
-        : EmptyValueTag,
+      valueInCurrency:
+        price &&
+        getValueInCurrency(
+          new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
+        )
+          ? fiatNumberDisplay(
+              getValueInCurrency(
+                new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
+              ),
+              currency,
+            )
+          : EmptyValueTag,
       onCheck() {
         if (checked) {
           setLocalState({
             ...localState,
-            
+
             unselectedDustSymbol: localState.unselectedDustSymbol.concat(originSymbol),
           })
         } else {
@@ -380,21 +281,22 @@ export const VaultDashBoardPanel = ({
 
   const totalDustsInUSDT = checkedDusts
     ? numberFormat(
-      numberStringListSum(
-        checkedDusts.map((asset) => {
-          // @ts-ignore
-          const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
-          const vaultSymbol = token.symbol
-          const price = tokenPrices[vaultSymbol]
-          return new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString()
-        }),
-      ),
-      { fixed: 2 , removeTrailingZero: true} // 2 is USDT precision
-    ) 
+        numberStringListSum(
+          checkedDusts.map((asset) => {
+            // @ts-ignore
+            const token = vaultTokenMap[vaultIdIndex[asset.tokenId]]
+            const vaultSymbol = token.symbol
+            const price = tokenPrices[vaultSymbol]
+            return new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString()
+          }),
+        ),
+        { fixed: 2, removeTrailingZero: true }, // 2 is USDT precision
+      )
     : undefined
-  const totalDustsInCurrency = totalDustsInUSDT && getValueInCurrency(totalDustsInUSDT)
-    ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
-    : EmptyValueTag
+  const totalDustsInCurrency =
+    totalDustsInUSDT && getValueInCurrency(totalDustsInUSDT)
+      ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
+      : EmptyValueTag
 
   const [converting, setConverting] = React.useState(false)
   const convert = async () => {
@@ -446,20 +348,20 @@ export const VaultDashBoardPanel = ({
             removeTrailingZero: true,
           }),
           amountRaw: utils.formatUnits(dust.total, vaultToken.decimals),
-          valueInCurrency: price && getValueInCurrency(
-                  new Decimal(price)
-                    .mul(utils.formatUnits(dust.total, vaultToken.decimals))
-                    .toString(),
+          valueInCurrency:
+            price &&
+            getValueInCurrency(
+              new Decimal(price).mul(utils.formatUnits(dust.total, vaultToken.decimals)).toString(),
+            )
+              ? fiatNumberDisplay(
+                  getValueInCurrency(
+                    new Decimal(price)
+                      .mul(utils.formatUnits(dust.total, vaultToken.decimals))
+                      .toString(),
+                  ),
+                  currency,
                 )
-            ? fiatNumberDisplay(
-                getValueInCurrency(
-                  new Decimal(price)
-                    .mul(utils.formatUnits(dust.total, vaultToken.decimals))
-                    .toString(),
-                ),
-                currency,
-              )
-            : undefined,
+              : undefined,
           valueInCurrencyRaw: price
             ? getValueInCurrency(
                 new Decimal(price)
@@ -574,12 +476,161 @@ export const VaultDashBoardPanel = ({
   const showMarginLevelAlert =
     vaultAccountInfo?.marginLevel && new Decimal(vaultAccountInfo.marginLevel).lessThan('1.15')
 
-  const collateralToken = (vaultAccountInfo && vaultAccountInfo.collateralInfo && tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]])
-    ? tokenFactors.find(token => token.symbol === tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]].symbol)
-    : undefined
+  const collateralToken =
+    vaultAccountInfo &&
+    vaultAccountInfo.collateralInfo &&
+    tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]]
+      ? tokenFactors.find(
+          (token) =>
+            token.symbol ===
+            tokenMap[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]].symbol,
+        )
+      : undefined
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
-  
+
+  return {
+    vaultAccountInfo,
+    activeInfo,
+    tokenFactors,
+    maxLeverage,
+    collateralTokens,
+    t,
+    forexMap,
+    etherscanBaseUrl,
+    getValueInCurrency,
+    exchangeInfo,
+    isMobile,
+    currency,
+    hideAssets,
+    upColor,
+    defaultNetwork,
+    coinJson,
+    network,
+    isShowVaultJoin,
+    setShowAccount,
+    setShowVaultLoan,
+    priceTag,
+    onActionBtnClick,
+    dialogBtn,
+    showNoVaultAccount,
+    setShowNoVaultAccount,
+    whichBtn,
+    btnProps,
+    onBtnClose,
+    positionOpend,
+    onClcikOpenPosition,
+    colors,
+    theme,
+    tableRef,
+    detail,
+    setShowDetail,
+    marketProps,
+    walletMap,
+    vaultTokenMap,
+    tokenPrices,
+    vaultIdIndex,
+    marketMap,
+    marketArray,
+    tokenMap,
+    idIndex,
+    history,
+    vaultTickerMap,
+    localState,
+    setLocalState,
+    account,
+    updateVaultLayer2,
+    VaultDustCollector,
+    changeLeverage,
+    dustsAssets,
+    dusts,
+    checkedDusts,
+    totalDustsInUSDT,
+    totalDustsInCurrency,
+    converting,
+    setConverting,
+    convert,
+    showMarginLevelAlert,
+    collateralToken,
+    hideLeverage,
+  }
+}
+
+export const VaultDashBoardPanel = ({
+  vaultAccountInfo: _vaultAccountInfo,
+  closeShowLeverage,
+  showLeverage,
+}: {
+  vaultAccountInfo: VaultAccountInfoStatus
+  closeShowLeverage: () => void
+  showLeverage: { show: boolean; closeAfterChange: boolean }
+}) => {
+  const {
+    vaultAccountInfo,
+    activeInfo,
+    tokenFactors,
+    maxLeverage,
+    collateralTokens,
+    t,
+    forexMap,
+    etherscanBaseUrl,
+    getValueInCurrency,
+    exchangeInfo,
+    isMobile,
+    currency,
+    hideAssets,
+    upColor,
+    defaultNetwork,
+    coinJson,
+    network,
+    isShowVaultJoin,
+    setShowAccount,
+    setShowVaultLoan,
+    priceTag,
+    onActionBtnClick,
+    dialogBtn,
+    showNoVaultAccount,
+    setShowNoVaultAccount,
+    whichBtn,
+    btnProps,
+    onBtnClose,
+    positionOpend,
+    onClcikOpenPosition,
+    colors,
+    theme,
+    tableRef,
+    detail,
+    setShowDetail,
+    marketProps,
+    walletMap,
+    vaultTokenMap,
+    tokenPrices,
+    vaultIdIndex,
+    marketMap,
+    marketArray,
+    tokenMap,
+    idIndex,
+    history,
+    vaultTickerMap,
+    localState,
+    setLocalState,
+    account,
+    updateVaultLayer2,
+    VaultDustCollector,
+    changeLeverage,
+    dustsAssets,
+    dusts,
+    checkedDusts,
+    totalDustsInUSDT,
+    totalDustsInCurrency,
+    converting,
+    setConverting,
+    convert,
+    showMarginLevelAlert,
+    collateralToken,
+    hideLeverage,
+  } = useVaultDashboard({ vaultAccountInfo: _vaultAccountInfo })
+
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -763,7 +814,38 @@ export const VaultDashBoardPanel = ({
                               <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
                             </Typography>
                           </Tooltip>
-                          <>{marginUI}</>
+                          {(() => {
+                            const item = vaultAccountInfo?.marginLevel ?? '0'
+                            return (
+                              <>
+                                {vaultAccountInfo?.marginLevel ? (
+                                  <Typography
+                                    component={'span'}
+                                    display={'inline-flex'}
+                                    alignItems={'center'}
+                                    marginTop={1}
+                                    variant={'body1'}
+                                    color={marginLevelTypeToColor(marginLevelType(item))}
+                                  >
+                                    <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+                                    {item}
+                                  </Typography>
+                                ) : (
+                                  <Typography
+                                    component={'span'}
+                                    display={'inline-flex'}
+                                    alignItems={'center'}
+                                    marginTop={1}
+                                    variant={'body1'}
+                                    color={'textSecondary'}
+                                  >
+                                    <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+                                    {EmptyValueTag}
+                                  </Typography>
+                                )}
+                              </>
+                            )
+                          })()}
                         </Box>
                         <Box>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
@@ -863,64 +945,136 @@ export const VaultDashBoardPanel = ({
                             </Typography>
                           </Typography>
                         </Box>
-                        {!hideLeverage && <Box position={'relative'} width={'120px'}>
-                          <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                            {t('labelVaultLeverage')}
-                          </Typography>
-                          <Typography
-                            component={'span'}
-                            marginTop={1}
-                            display={'inline-flex'}
-                            variant={'body1'}
-                            color={'textPrimary'}
-                            alignItems={'center'}
-                          >
-                            {vaultAccountInfo?.leverage
-                              ? `${vaultAccountInfo?.leverage}x`
-                              : EmptyValueTag}
-                            <Typography
-                              variant={'body2'}
-                              sx={{ cursor: 'pointer' }}
-                              color={'var(--color-primary)'}
-                              marginLeft={1}
-                              component={'span'}
-                              onClick={() => {
-                                setLocalState({
-                                  ...localState,
-                                  modalStatus: 'leverage',
-                                })
-                              }}
-                            >
-                              {t('labelVaultDetail')}
+                        {!hideLeverage && (
+                          <Box position={'relative'} width={'120px'}>
+                            <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
+                              {t('labelVaultLeverage')}
                             </Typography>
-                          </Typography>
-                          <Typography
-                            marginTop={0.5}
-                            width={'200px'}
-                            color={'var(--color-text-secondary)'}
-                            variant={'body2'}
-                          >
-                            {t('labelVaultMaximumCredit')}:{' '}
-                            {(vaultAccountInfo as any)?.maxCredit && getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
-                              ? fiatNumberDisplay(
-                                  getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
-                                  currency,
-                                )
-                              : EmptyValueTag}
-                          </Typography>
-                        </Box>}
+                            <Typography
+                              component={'span'}
+                              marginTop={1}
+                              display={'inline-flex'}
+                              variant={'body1'}
+                              color={'textPrimary'}
+                              alignItems={'center'}
+                            >
+                              {vaultAccountInfo?.leverage
+                                ? `${vaultAccountInfo?.leverage}x`
+                                : EmptyValueTag}
+                              <Typography
+                                variant={'body2'}
+                                sx={{ cursor: 'pointer' }}
+                                color={'var(--color-primary)'}
+                                marginLeft={1}
+                                component={'span'}
+                                onClick={() => {
+                                  setLocalState({
+                                    ...localState,
+                                    modalStatus: 'leverage',
+                                  })
+                                }}
+                              >
+                                {t('labelVaultDetail')}
+                              </Typography>
+                            </Typography>
+                            <Typography
+                              marginTop={0.5}
+                              width={'200px'}
+                              color={'var(--color-text-secondary)'}
+                              variant={'body2'}
+                            >
+                              {t('labelVaultMaximumCredit')}:{' '}
+                              {(vaultAccountInfo as any)?.maxCredit &&
+                              getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
+                                ? fiatNumberDisplay(
+                                    getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
+                                    currency,
+                                  )
+                                : EmptyValueTag}
+                            </Typography>
+                          </Box>
+                        )}
                         <Box>
                           <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                             {t('labelVaultProfit')}
                           </Typography>
                           <Typography
                             component={'span'}
-                            display={'inline-flex'}
+                            display={'flex'}
                             marginTop={1}
                             variant={'body1'}
                             color={'textPrimary'}
                           >
-                            {profitUI}
+                            {(() => {
+                              const profit =
+                                (vaultAccountInfo as any)?.accountType === 0
+                                  ? sdk
+                                      .toBig(vaultAccountInfo?.totalEquityOfUsdt ?? 0)
+                                      .minus(vaultAccountInfo?.totalCollateralOfUsdt ?? 0)
+                                  : sdk
+                                      .toBig(vaultAccountInfo?.totalBalanceOfUsdt ?? 0)
+                                      .minus(vaultAccountInfo?.totalDebtOfUsdt ?? 0)
+                              const colorsId = upColor === UpColor.green ? [0, 1] : [1, 0]
+                              const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
+                              return (
+                                <>
+                                  {vaultAccountInfo?.accountStatus ===
+                                  sdk.VaultAccountStatus.IN_STAKING ? (
+                                    <>
+                                      <Typography
+                                        component={'span'}
+                                        display={'flex'}
+                                        variant={'body1'}
+                                        color={'textPrimary'}
+                                      >
+                                        {hideAssets
+                                          ? HiddenTag
+                                          : PriceTag[CurrencyToTag[currency]] +
+                                            getValuePrecisionThousand(
+                                              profit.times(forexMap[currency] ?? 0).toString(),
+                                              2,
+                                              2,
+                                              2,
+                                              false,
+                                              {
+                                                isFait: false,
+                                                floor: true,
+                                              },
+                                            )}
+                                      </Typography>
+                                      <Typography
+                                        component={'span'}
+                                        display={'flex'}
+                                        variant={'body1'}
+                                        marginLeft={1 / 2}
+                                        color={colors[colorIs]}
+                                      >
+                                        {getValuePrecisionThousand(
+                                          profit
+                                            ?.div(
+                                              Number(vaultAccountInfo?.totalCollateralOfUsdt)
+                                                ? vaultAccountInfo?.totalCollateralOfUsdt
+                                                : 1,
+                                            )
+                                            .times(100) ?? 0,
+                                          2,
+                                          2,
+                                          2,
+                                          false,
+                                          {
+                                            isFait: false,
+                                            floor: true,
+                                          },
+                                        )}
+                                        %
+                                      </Typography>
+                                    </>
+                                  ) : (
+                                    EmptyValueTag
+                                  )}
+                                </>
+                              )
+                            })()}
                           </Typography>
                         </Box>
                       </Box>
@@ -1412,12 +1566,13 @@ export const VaultDashBoardPanel = ({
                 collateralTokens={
                   collateralTokens?.map((collateralToken) => {
                     const tokenSymbol = idIndex[collateralToken.collateralTokenId]
-                    const amount = collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
-                      ? utils.formatUnits(
-                          collateralToken.collateralTokenAmount,
-                          tokenMap[tokenSymbol].decimals,
-                        )
-                      : undefined
+                    const amount =
+                      collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
+                        ? utils.formatUnits(
+                            collateralToken.collateralTokenAmount,
+                            tokenMap[tokenSymbol].decimals,
+                          )
+                        : undefined
                     return {
                       name: tokenSymbol,
                       amount: amount
@@ -1428,9 +1583,14 @@ export const VaultDashBoardPanel = ({
                         : EmptyValueTag,
                       logo: '',
                       valueInCurrency:
-                        amount && tokenPrices['LV' + tokenSymbol] && forexMap && forexMap[currency] && getValueInCurrency(
+                        amount &&
+                        tokenPrices['LV' + tokenSymbol] &&
+                        forexMap &&
+                        forexMap[currency] &&
+                        getValueInCurrency(
                           new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
-                        ) ? fiatNumberDisplay(
+                        )
+                          ? fiatNumberDisplay(
                               getValueInCurrency(
                                 new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
                               ),
@@ -1503,7 +1663,7 @@ export const VaultDashBoardPanel = ({
                 }
                 maxLeverage={maxLeverage ?? EmptyValueTag}
               />
-              
+
               <LeverageModal
                 isLoading={localState.leverageLoading}
                 open={
@@ -1548,7 +1708,8 @@ export const VaultDashBoardPanel = ({
                   vaultAccountInfo?.leverage ? Number(vaultAccountInfo?.leverage) : 0
                 }
                 maximumCredit={
-                  (vaultAccountInfo as any)?.maxCredit && getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
+                  (vaultAccountInfo as any)?.maxCredit &&
+                  getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
                     ? fiatNumberDisplay(
                         getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                         currency,
@@ -1556,7 +1717,8 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 borrowed={
-                  vaultAccountInfo?.totalBorrowedOfUsdt && getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
+                  vaultAccountInfo?.totalBorrowedOfUsdt &&
+                  getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt),
                         currency,
@@ -1564,22 +1726,24 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 borrowAvailable={
-                  vaultAccountInfo && collateralToken && getValueInCurrency(
+                  vaultAccountInfo &&
+                  collateralToken &&
+                  getValueInCurrency(
                     new Decimal(vaultAccountInfo.totalEquityOfUsdt)
-                    .add(vaultAccountInfo.totalCollateralOfUsdt)
-                    .mul(vaultAccountInfo.leverage)
-                    .mul(collateralToken.factor)
-                    .minus(vaultAccountInfo.totalBorrowedOfUsdt)
-                    .toString()
+                      .add(vaultAccountInfo.totalCollateralOfUsdt)
+                      .mul(vaultAccountInfo.leverage)
+                      .mul(collateralToken.factor)
+                      .minus(vaultAccountInfo.totalBorrowedOfUsdt)
+                      .toString(),
                   )
                     ? fiatNumberDisplay(
                         getValueInCurrency(
                           new Decimal(vaultAccountInfo.totalEquityOfUsdt)
-                          .add(vaultAccountInfo.totalCollateralOfUsdt)
-                          .mul(vaultAccountInfo.leverage)
-                          .mul(collateralToken.factor)
-                          .minus(vaultAccountInfo.totalBorrowedOfUsdt)
-                          .toString()
+                            .add(vaultAccountInfo.totalCollateralOfUsdt)
+                            .mul(vaultAccountInfo.leverage)
+                            .mul(collateralToken.factor)
+                            .minus(vaultAccountInfo.totalBorrowedOfUsdt)
+                            .toString(),
                         ),
                         currency,
                       )
@@ -1616,7 +1780,9 @@ export const VaultDashBoardPanel = ({
                           })
                         : EmptyValueTag,
                       valueInCurrency:
-                        price && borrowedAmount && getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString())
+                        price &&
+                        borrowedAmount &&
+                        getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString())
                           ? fiatNumberDisplay(
                               getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString()),
                               currency,
@@ -1632,7 +1798,8 @@ export const VaultDashBoardPanel = ({
                     }
                   })}
                 totalDebt={
-                  vaultAccountInfo?.totalDebtOfUsdt && getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt)
+                  vaultAccountInfo?.totalDebtOfUsdt &&
+                  getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt),
                         currency,
@@ -1640,7 +1807,8 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 totalFundingFee={
-                  vaultAccountInfo?.totalInterestOfUsdt && getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt)
+                  vaultAccountInfo?.totalInterestOfUsdt &&
+                  getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt),
                         currency,
@@ -1648,7 +1816,8 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 totalBorrowed={
-                  vaultAccountInfo?.totalBorrowedOfUsdt && getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
+                  vaultAccountInfo?.totalBorrowedOfUsdt &&
+                  getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt),
                         currency,
@@ -1670,7 +1839,9 @@ export const VaultDashBoardPanel = ({
                 onClickConvert={() => {
                   convert()
                 }}
-                convertBtnDisabled={(dusts?.find((dust) => dust.checked) ? false : true) || converting}
+                convertBtnDisabled={
+                  (dusts?.find((dust) => dust.checked) ? false : true) || converting
+                }
                 totalValueInCurrency={totalDustsInCurrency}
                 totalValueInUSDT={totalDustsInUSDT ?? EmptyValueTag}
                 onClickRecords={() => {
