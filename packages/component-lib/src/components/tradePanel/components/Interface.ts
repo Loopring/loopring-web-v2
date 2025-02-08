@@ -276,7 +276,7 @@ export type WithdrawExtendProps<T, I, C> = {
       fee: string,
       time: string
     }
-    useTrustWording: boolean
+    showTrustUI: boolean
   }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &

@@ -165,12 +165,18 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const chargeFeeTokenList = isFastMode 
     ? chargeFeeTokenListFast 
     : chargeFeeTokenListNormal
-  const enoughFeeList = walletMap2 && tokenMap ? chargeFeeTokenList.filter(fee => {
-    // debugger
-    return ethers.utils.parseUnits(walletMap2[fee.token]?.count ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
+  const enoughFeeList = tryFn(() => {
+    return chargeFeeTokenList.filter(fee => {
+      return ethers.utils.parseUnits(walletMap2[fee.token]?.count ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
+    })
+  }, () => [])
+  
+  // walletMap2 && tokenMap ? chargeFeeTokenList.filter(fee => {
+  //   // debugger
+  //   return ethers.utils.parseUnits(walletMap2[fee.token]?.count ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
     
-    // return ethers.BigNumber.from(walletMap2[fee.token]?.count ?? '0').gte(fee.fee) 
-  }) : []
+  //   // return ethers.BigNumber.from(walletMap2[fee.token]?.count ?? '0').gte(fee.fee) 
+  // }) : []
   
   const feeInfo = enoughFeeList.find((f) => f.token === feeSymbol) 
     ? enoughFeeList.find((f) => f.token === feeSymbol) 
@@ -1106,8 +1112,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const feeTokenInfo = tokenMap[feeSymbol]
 
       const feeFastInCurrency =
-        feeTokenInfo && feeFast && tokenPrices  
-          ? fiatNumberDisplaySafe(
+        tryFn(
+          () => {
+            return feeFast && fiatNumberDisplaySafe(
               getValueInCurrency(
                 new Decimal(ethers.utils.formatUnits(feeFast.fee, feeTokenInfo.decimals))
                   .mul(tokenPrices[feeSymbol])
@@ -1115,7 +1122,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               ),
               currency,
             )
-          : undefined
+          },
+          () => undefined
+        )
       const feeNormalInCurrency = tryFn(
         () =>
           fiatNumberDisplaySafe(
@@ -1131,7 +1140,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       
       return {
         mode: isFastMode ? 'fast' : 'normal',
-        useTrustWording: !isTaiko,
+        showTrustUI: !isTaiko,
         showFastMode: fastModeSupportted,
         fastMode: {
           fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',

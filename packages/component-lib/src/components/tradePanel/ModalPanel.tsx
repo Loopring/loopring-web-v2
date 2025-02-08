@@ -362,7 +362,7 @@ export const ModalPanel = <
         {...transferToTaikoProps}
         // open={isShowTransferToTaikoAccount.isShow}
       />
-      
+
       <Modal
         open={isShowWithdraw.isShow}
         contentClassName={'trade-wrap'}
@@ -375,7 +375,9 @@ export const ModalPanel = <
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: isMobile ? 'auto' : (withdrawProps.isToMyself ? 580 : 680),
+              _height: isMobile
+                ? 'auto'
+                : 480 + (withdrawProps.withdrawMode?.showTrustUI ? 100 : 0) + (withdrawProps.isToMyself ? 0 : 100),
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,
