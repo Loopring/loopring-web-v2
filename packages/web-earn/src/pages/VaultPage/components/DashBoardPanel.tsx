@@ -85,7 +85,7 @@ import {
   DustCollectorUnAvailableModal,
   LeverageModal,
   MaximumCreditModal,
-} from './modals'
+} from '../DashBoardPanel/modals'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
 import { keys } from 'lodash'
@@ -553,6 +553,8 @@ const useVaultDashboard = ({
     showMarginLevelAlert,
     collateralToken,
     hideLeverage,
+    assetPanelProps
+
   }
 }
 
@@ -629,6 +631,7 @@ export const VaultDashBoardPanel = ({
     showMarginLevelAlert,
     collateralToken,
     hideLeverage,
+    assetPanelProps
   } = useVaultDashboard({ vaultAccountInfo: _vaultAccountInfo })
 
   return (

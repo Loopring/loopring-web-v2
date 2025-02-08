@@ -11,7 +11,7 @@ import {
   ConfirmVaultRisk,
   EmptyDefault,
 } from '@loopring-web/component-lib'
-import { VaultDashBoardPanel } from '../DashBoardPanel'
+import { VaultDashBoardPanel } from '../components/DashBoardPanel'
 import { VaultHomePanel } from '../HomePanel'
 import { ModalVaultWrap } from '../components/ModalWrap'
 import { useTranslation } from 'react-i18next'
