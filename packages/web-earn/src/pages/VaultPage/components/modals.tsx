@@ -8,21 +8,14 @@ import _ from 'lodash';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useTranslation } from 'react-i18next';
 import Decimal from 'decimal.js';
-
-type CollateralDetailsModalProps = {
-  open: boolean
-  onClose: () => void
-  onClickMaxCredit: () => void
-  collateralTokens: {
-    name: string
-    logo: string
-    amount: string
-    valueInCurrency: string
-  }[]
-  totalCollateral: string
-  maxCredit: string
-  coinJSON: any
-}
+import {
+  CollateralDetailsModalProps,
+  MaximumCreditModalProps,
+  LeverageModalProps,
+  DebtModalProps,
+  DustCollectorProps,
+  DustCollectorUnAvailableModalProps
+} from '../interface';
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
   const { open, onClose, collateralTokens, totalCollateral, maxCredit, onClickMaxCredit, coinJSON } = props
@@ -145,16 +138,6 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
     </Modal>
   )
 }
-type MaximumCreditModalProps = {
-  open: boolean
-  onClose: () => void
-  onClickBack: () => void
-  collateralFactors: {
-    name: string
-    collateralFactor: string
-  }[]
-  maxLeverage: string
-}
 export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
   const { open, onClose, onClickBack, collateralFactors, maxLeverage } = props
   const { t } = useTranslation()
@@ -248,21 +231,6 @@ export const MaximumCreditModal = (props: MaximumCreditModalProps) => {
       </Box>
     </Modal>
   )
-}
-
-type LeverageModalProps = {
-  open: boolean
-  maxLeverage: number
-  onClose: () => void
-  onClickMaxCredit: () => void
-  onClickReduce: () => void
-  onClickAdd: () => void
-  onClickLeverage: (leverage: number) => void
-  currentLeverage: number | undefined
-  borrowAvailable: string
-  borrowed: string
-  maximumCredit: string
-  isLoading: boolean
 }
 
 export const LeverageModal = (props: LeverageModalProps) => {
@@ -436,21 +404,6 @@ export const LeverageModal = (props: LeverageModalProps) => {
   )
 }
 
-type DebtModalProps = {
-  open: boolean
-  onClose: () => void
-  borrowedVaultTokens?: {
-    symbol: string,
-    amount: string,
-    valueInCurrency: string
-    coinJSON: any
-    onClick: () => void
-  }[]
-  totalFundingFee: string
-  totalBorrowed: string
-  totalDebt: string
-}
-
 export const DebtModal = (props: DebtModalProps) => {
   const {
     open,
@@ -546,7 +499,7 @@ export const DebtModal = (props: DebtModalProps) => {
             <Typography fontSize={'16px'} marginBottom={2}>{t('labelVaultBorrowed')}</Typography>
           </Box>
           <Divider style={{ width: '100%' }} />
-          <Box paddingX={3} marginTop={3} sx={{ overflowY: 'scroll', }}>
+          <Box paddingX={3} marginTop={3}>
             {borrowedVaultTokens && borrowedVaultTokens.length > 0 ? borrowedVaultTokens.map(token => {
               return (
                 <SpaceBetweenBox
@@ -592,31 +545,11 @@ export const DebtModal = (props: DebtModalProps) => {
   )
 }
 
-type DustCollectorProps = {
-  open: boolean
-  converting: boolean
-  onClose: () => void
-  dusts?: {
-    symbol: string
-    amount: string
-    valueInCurrency
-    checked: boolean
-    coinJSON: any
-    onCheck: () => void
-  }[]
-  totalValueInUSDT: string
-  totalValueInCurrency: string
-  onClickConvert: () => void
-  onClickRecords: () => void
-  convertBtnDisabled: boolean
-}
-
 export const DustCollectorModal = (props: DustCollectorProps) => {
   const {
-    converting,
     open,
+    converting,
     onClose,
-    dusts,
     totalValueInUSDT,
     totalValueInCurrency,
     onClickConvert,
@@ -680,7 +613,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
           </Box>
           <Divider style={{ marginTop: '-1px', width: '100%' }} />
           <Box paddingX={3} paddingTop={5} paddingBottom={4}>
-            {(dusts && dusts.length > 0) ? dusts.map((dust) => {
+            {(props.dusts && props.dusts.length > 0) ? props.dusts.map((dust) => {
               return (
                 <SpaceBetweenBox
                   marginBottom={1}
@@ -758,7 +691,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
   )
 }
 
-export const DustCollectorUnAvailableModal = (props: { open: boolean, onClose: () => void }) => {
+export const DustCollectorUnAvailableModal = (props: DustCollectorUnAvailableModalProps) => {
   const {
     open,
     onClose,

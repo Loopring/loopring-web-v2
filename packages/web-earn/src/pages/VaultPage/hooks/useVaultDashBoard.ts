@@ -97,8 +97,12 @@ import { VaultDashBoardPanelUIProps } from '../interface'
 
 export const useVaultDashboard = ({
   vaultAccountInfo: _vaultAccountInfo,
+  showLeverage,
+  closeShowLeverage
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
+  showLeverage: { show: boolean; closeAfterChange: boolean }
+  closeShowLeverage: () => void
 }): VaultDashBoardPanelUIProps => {
   const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
     _vaultAccountInfo
@@ -557,7 +561,273 @@ export const useVaultDashboard = ({
     collateralToken,
     hideLeverage,
     assetPanelProps,
-    marginLevel: vaultAccountInfo?.marginLevel ?? '', 
-    _vaultAccountInfo: _vaultAccountInfo
+    marginLevel: vaultAccountInfo?.marginLevel ?? '',
+    _vaultAccountInfo: _vaultAccountInfo,
+    dustCollectorUnAvailableModalProps: {
+      open: localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show,
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal',
+        })
+      },
+    },
+    dustCollectorModalProps: {
+      open: localState.modalStatus === 'dustCollector' && !showLeverage.show,
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal',
+          unselectedDustSymbol: [],
+        })
+      },
+      converting,
+      dusts,
+      onClickConvert: convert,
+      convertBtnDisabled: (dusts?.find((dust) => dust.checked) ? false : true) || converting,
+      totalValueInCurrency: totalDustsInCurrency,
+      totalValueInUSDT: totalDustsInUSDT ?? EmptyValueTag,
+      onClickRecords: () => {
+        history.push('/l2assets/history/VaultRecords')
+      },
+    },
+    debtModalProps: {
+      open: localState.modalStatus === 'debt' && !showLeverage.show,
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal',
+        })
+      },
+      borrowedVaultTokens: vaultAccountInfo?.userAssets
+        ?.filter((asset) => new Decimal(asset.borrowed).greaterThan('0'))
+        .map((asset) => {
+          const vaultSymbol = vaultIdIndex[asset.tokenId as unknown as number] as unknown as string
+          const vaultToken = vaultTokenMap[vaultSymbol]
+          const originSymbol = vaultSymbol.replace('LV', '')
+          const price = tokenPrices[vaultSymbol]
+          const borrowedAmount = vaultToken
+            ? utils.formatUnits(asset.borrowed, vaultToken.decimals)
+            : undefined
+          return {
+            symbol: vaultSymbol.slice(2),
+            coinJSON: coinJson[originSymbol],
+            amount: borrowedAmount
+              ? numberFormat(borrowedAmount, {
+                  fixed: vaultToken?.precision,
+                  removeTrailingZero: true,
+                })
+              : EmptyValueTag,
+            valueInCurrency:
+              price &&
+              borrowedAmount &&
+              getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString())
+                ? fiatNumberDisplay(
+                    getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString()),
+                    currency,
+                  )
+                : EmptyValueTag,
+            onClick: () => {
+              setShowVaultLoan({
+                isShow: true,
+                info: { symbol: vaultSymbol },
+                type: VaultLoanType.Repay,
+              })
+            },
+          }
+        }),
+      totalDebt:
+        vaultAccountInfo?.totalDebtOfUsdt && getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt)
+          ? fiatNumberDisplay(getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt), currency)
+          : EmptyValueTag,
+      totalFundingFee:
+        vaultAccountInfo?.totalInterestOfUsdt &&
+        getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt)
+          ? fiatNumberDisplay(getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt), currency)
+          : EmptyValueTag,
+      totalBorrowed:
+        vaultAccountInfo?.totalBorrowedOfUsdt &&
+        getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
+          ? fiatNumberDisplay(getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt), currency)
+          : EmptyValueTag,
+    },
+    leverageModalProps: {
+      isLoading: localState.leverageLoading,
+      open:
+        localState.modalStatus === 'leverage' ||
+        (showLeverage.show && localState.modalStatus !== 'leverageMaxCredit'),
+      onClose: () => {
+        closeShowLeverage()
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal',
+        })
+      },
+      onClickMaxCredit: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'leverageMaxCredit',
+        })
+      },
+      maxLeverage: maxLeverage ? Number(maxLeverage) : 0,
+      onClickReduce: async () => {
+        if (!vaultAccountInfo?.leverage) return
+        await changeLeverage(Number(vaultAccountInfo?.leverage) - 1)
+        if (showLeverage.show && showLeverage.closeAfterChange) {
+          closeShowLeverage()
+        }
+      },
+      onClickAdd: async () => {
+        if (!vaultAccountInfo?.leverage) return
+        await changeLeverage(Number(vaultAccountInfo?.leverage) + 1)
+        if (showLeverage.show && showLeverage.closeAfterChange) {
+          closeShowLeverage()
+        }
+      },
+      onClickLeverage: async (leverage) => {
+        await changeLeverage(leverage)
+        if (showLeverage.show && showLeverage.closeAfterChange) {
+          closeShowLeverage()
+        }
+      },
+      currentLeverage: vaultAccountInfo?.leverage ? Number(vaultAccountInfo?.leverage) : 0,
+      maximumCredit:
+        (vaultAccountInfo as any)?.maxCredit &&
+        getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
+          ? fiatNumberDisplay(getValueInCurrency((vaultAccountInfo as any)?.maxCredit), currency)
+          : EmptyValueTag,
+      borrowed:
+        vaultAccountInfo?.totalBorrowedOfUsdt &&
+        getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
+          ? fiatNumberDisplay(getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt), currency)
+          : EmptyValueTag,
+      borrowAvailable:
+        vaultAccountInfo &&
+        collateralToken &&
+        getValueInCurrency(
+          new Decimal(vaultAccountInfo.totalEquityOfUsdt)
+            .add(vaultAccountInfo.totalCollateralOfUsdt)
+            .mul(vaultAccountInfo.leverage)
+            .mul(collateralToken.factor)
+            .minus(vaultAccountInfo.totalBorrowedOfUsdt)
+            .toString(),
+        )
+          ? fiatNumberDisplay(
+              getValueInCurrency(
+                new Decimal(vaultAccountInfo.totalEquityOfUsdt)
+                  .add(vaultAccountInfo.totalCollateralOfUsdt)
+                  .mul(vaultAccountInfo.leverage)
+                  .mul(collateralToken.factor)
+                  .minus(vaultAccountInfo.totalBorrowedOfUsdt)
+                  .toString(),
+              ),
+              currency,
+            )
+          : EmptyValueTag,
+    },
+    maximumCreditModalProps: {
+      open:
+        localState.modalStatus === 'leverageMaxCredit' ||
+        (localState.modalStatus === 'collateralDetailsMaxCredit' && !showLeverage.show),
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal',
+        })
+      },
+      onClickBack: () => {
+        if (localState.modalStatus === 'collateralDetailsMaxCredit') {
+          setLocalState({
+            ...localState,
+            modalStatus: 'collateralDetails',
+          })
+        } else if (localState.modalStatus === 'leverageMaxCredit') {
+          setLocalState({
+            ...localState,
+            modalStatus: 'leverage',
+          })
+        }
+      },
+      collateralFactors:
+        tokenFactors?.map((tokenFactor) => ({
+          name: tokenFactor.symbol,
+          collateralFactor: numberFormat(tokenFactor.factor, { fixed: 1 }),
+        })) ?? [],
+      maxLeverage: maxLeverage ?? EmptyValueTag,
+    },
+    collateralDetailsModalProps: {
+      open: localState.modalStatus === 'collateralDetails' && !showLeverage.show,
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal',
+        })
+      },
+      onClickMaxCredit: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'collateralDetailsMaxCredit',
+        })
+      },
+
+      collateralTokens: 
+        (collateralTokens ?? []).map((collateralToken) => {
+          const tokenSymbol = idIndex[collateralToken.collateralTokenId]
+          const amount =
+            collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
+              ? utils.formatUnits(
+                  collateralToken.collateralTokenAmount,
+                  tokenMap[tokenSymbol].decimals,
+                )
+              : undefined
+          return {
+              name: tokenSymbol,
+              amount: amount
+                ? numberFormat(amount, {
+                    fixed: tokenMap[tokenSymbol].precision,
+                    removeTrailingZero: true,
+                  })
+                : EmptyValueTag,
+              logo: '',
+              valueInCurrency:
+                amount &&
+                tokenPrices['LV' + tokenSymbol] &&
+                forexMap &&
+                forexMap[currency] &&
+                getValueInCurrency(
+                  new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
+                )
+                  ? fiatNumberDisplay(
+                      getValueInCurrency(
+                        new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
+                      ),
+                      currency,
+                    )
+                  : EmptyValueTag,
+            }
+        }),
+      maxCredit:
+        (vaultAccountInfo as any)?.maxCredit &&
+        getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
+          ? numberFormatThousandthPlace(getValueInCurrency((vaultAccountInfo as any)?.maxCredit), {
+              fixed: 2,
+              currency,
+            })
+          : EmptyValueTag,
+      totalCollateral:
+        vaultAccountInfo?.totalCollateralOfUsdt &&
+        getValueInCurrency(vaultAccountInfo?.totalCollateralOfUsdt)
+          ? numberFormatThousandthPlace(
+              getValueInCurrency(vaultAccountInfo?.totalCollateralOfUsdt),
+              {
+                fixed: 2,
+                currency,
+              },
+            )
+          : EmptyValueTag,
+      coinJSON:
+        vaultAccountInfo?.collateralInfo &&
+        coinJson[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]],
+    },
   }
 }
