@@ -249,6 +249,9 @@ interface InferfaceAssetItem {
   svgIcon: string
   enableKey?: string | null
   handleSelect: (event?: React.MouseEvent) => void
+  type: 'sameLayer' | 'crossLayer' | 'crossChain'
+  cornerTag?: 'Loopring' | '3rd party'
+  description?: string
 }
 
 export interface AddAssetItem extends InferfaceAssetItem {}
@@ -268,10 +271,13 @@ export interface AddAssetProps {
 export interface SendAssetProps {
   isToL1?: boolean
   symbol?: string
-  sendAssetList: AddAssetItem[]
+  sameLayerAssetList: AddAssetItem[]
+  crossLayerAssetList: AddAssetItem[]
+  crossChainAssetList: AddAssetItem[]
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean }
   }
+  toL1Title: string
 }
 
 export interface SendNFTAssetProps {

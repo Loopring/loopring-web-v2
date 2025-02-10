@@ -1715,7 +1715,7 @@ export default {
   labelRedpacketTotalReward: 'Total {{amount}}',
   labelRedpacketCantOpen: 'Now is not the time to open',
   labelLocketInfo: '{{symbol}} Locked Detail',
-  labelSendAssetToAnotherNet: 'To another network',
+  labelSendAssetToAnotherNet: 'To Others Via Third Party Bridge',
   labelFromAnotherNet: 'From another network',
   labelAddAssetTitleAnotherNetDes:
     'If you have transferred tokens from another network, please wait. ',

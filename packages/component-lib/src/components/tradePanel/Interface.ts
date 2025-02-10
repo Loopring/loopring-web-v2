@@ -49,6 +49,7 @@ import {
 import React from 'react'
 import { TOASTOPEN } from '../toast'
 import { VaultExitBaseProps, VaultJoinBaseProps } from './components/VaultWrap'
+import { GetContactsResponse } from '@loopring-web/loopring-sdk'
 
 export type SwapTradeData<T> = {
   sell: T
@@ -232,6 +233,20 @@ export type ModalPanelProps = {
   _width?: number | string
 }
 
+export type FeeSelectModalProps = {
+  open: boolean
+  onClose: () => void
+  chargeFeeTokenList: FeeInfo[]
+  feeInfo: FeeInfo | undefined
+  handleToggleChange: (value: FeeInfo) => void
+  disableNoToken?: boolean 
+  withdrawInfos?: {
+    types: Partial<WithdrawTypes>
+    type: WithdrawType
+    onChangeType: (w: WithdrawType) => void
+  }
+}
+
 export type FeeSelectProps = {
   chargeFeeTokenList: FeeInfo[]
   handleToggleChange: (value: FeeInfo) => void
@@ -251,6 +266,7 @@ export type FeeSelectProps = {
   floatLeft?: boolean
   middleContent?: JSX.Element
   feeNotEnoughContent?: JSX.Element
+  networkFeeElement?: JSX.Element
 }
 
 export type VaultJoinProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultJoinBaseProps<T, I, V>
@@ -258,5 +274,63 @@ export type VaultBorrowProps<T, I, V> = BasicACoinTradeHookProps<T, I> &
   VaultBorrowBaseProps<T, I, V>
 export type VaultRepayProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultRepayWrapProps<T, I, V>
 export type VaultExitProps = VaultExitBaseProps
+export type TransferToTaikoAccountProps = {
+  onClickContact: () => void
+  onClickToken: () => void
+  onClickFee: () => void
+
+  onInputAmount: (str: string) => void
+  onInputAddress: (str: string) => void
+  onClickBalance: () => void
+  onClickBack: () => void
+  onClickClose: () => void
+  fee: string
+  balance: string
+  token: {
+    coinJSON: any
+    symbol: string
+  }
+  feeSelect: FeeSelectProps
+  panel: 'main' | 'contacts' | 'tokenSelection' | 'confirm'
+  contacts: {
+    onSelect: (address: string) => void
+    scrollHeight: string
+  } & Pick<GetContactsResponse, 'contacts'> 
+  tokenSelection: {
+    filter: string
+    tokens: {
+      symbol: string
+      coinJSON: any[]
+      amount: string
+    }[]
+    onChangeFilter: (str: string) => void
+    onClickClearFilter: () => void
+    onClickCancel: () => void
+    onClickToken: (symbol: string) => void
+  }
+  receiptInput: string
+  amountInput: string
+  open: boolean
+  supportedTokens: string[]
+  sendBtn: {
+    disabled: boolean,
+    onClick: () => void
+    text?: string   
+  }
+  maxAlert: {
+    show: boolean,
+    message: string,
+  }
+  receiptError: {
+    show: boolean,
+    message: string,
+  }
+  receiptClear: {
+    show: boolean,
+    onClick: () => void,
+  }
+  showReceiptWarning: boolean
+  onClickConfirm: () => void
+}
 
 export * from './components/Interface'

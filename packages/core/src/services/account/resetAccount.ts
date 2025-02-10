@@ -12,6 +12,7 @@ import { resetTicker } from '../../stores/ticker/reducer'
 import { updateToggleStatus } from '@loopring-web/component-lib'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { myLog } from '@loopring-web/common-resources'
+import { LoopringAPI } from '../../'
 
 export async function resetLayer12Data() {
   store.dispatch(resetAmount(undefined))
@@ -87,7 +88,14 @@ export async function toggleCheck(
   }
 
   const account = store.getState().account
-  if (account?.frozen === LoopFrozenFlag) {
+
+  const accountInfo = account.accAddress
+    ? await LoopringAPI?.exchangeAPI?.getAccount({
+        owner: account.accAddress,
+      })
+    : undefined
+  if (!accountInfo) return
+  if (accountInfo.accInfo?.frozen === LoopFrozenFlag) {
     myLog('account.frozen ___timer___', account.accountId)
     store.dispatch(
       updateToggleStatus({

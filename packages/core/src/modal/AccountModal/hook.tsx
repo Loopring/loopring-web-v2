@@ -165,6 +165,7 @@ import {
   Taiko_Farming_Mint_Failed,
   Taiko_Farming_Mint_In_Progress,
   Taiko_Farming_Redeem_In_Progress,
+  useToggle,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -207,6 +208,7 @@ import {
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useConfig,
   useContacts,
   useCreateRedPacket,
   useExportAccount,
@@ -224,6 +226,7 @@ import {
   useStakeTradeExit,
   useSystem,
   useTransfer,
+  useTransferToTaikoAccount,
   useVendor,
   useWalletLayer2,
   useWithdraw,
@@ -268,6 +271,7 @@ export function useAccountModalForUI({
     setShowActiveAccount,
     setShowNFTTransfer,
     setShowNFTWithdraw,
+    setShowTransferToTaikoAccount
   } = useOpenModals()
   rest = { ...rest, ...isShowAccount.info }
   const {
@@ -312,6 +316,7 @@ export function useAccountModalForUI({
   const { vendorListBuy, banxaRef } = useVendor()
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw()
+  const transferToTaikoProps = useTransferToTaikoAccount()
   const { transferProps } = useTransfer()
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
@@ -664,9 +669,19 @@ export function useAccountModalForUI({
       setShowLayerSwapNotice,
     ],
   )
+
+  const {toggle}=useToggle()
+  const {fastWithdrawConfig}=useConfig()
+
   const sendAssetList: SendAssetItem[] = React.useMemo(
     () =>
-      SendAssetListMap[network].map((item: string) => {
+      SendAssetListMap[network].filter(item => {
+        if (item === SendAssetList.SendAssetToTaikoAccount.key) {
+          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable && fastWithdrawConfig?.fromToNetworks[network]?.includes('TAIKO')
+        } else {
+          return true
+        }
+      }).map((item: string) => {
         switch (item) {
           case SendAssetList.SendAssetToL2.key:
             return {
@@ -736,9 +751,23 @@ export function useAccountModalForUI({
                 // window.opener = null
               },
             }
+          case SendAssetList.SendAssetToTaikoAccount.key:
+            return {
+              ...SendAssetList.SendAssetToTaikoAccount,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                setShowTransferToTaikoAccount({
+                  isShow: true,
+                  info: { initSymbol: isShowAccount?.info?.symbol },
+                })
+              },
+            }
         }
       }),
-    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw],
+    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw, toggle.rabbitWithdraw.enable, fastWithdrawConfig],
   )
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [
@@ -800,6 +829,7 @@ export function useAccountModalForUI({
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
   })
   const isEarn = app === 'earn'
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
 
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
@@ -887,10 +917,14 @@ export function useAccountModalForUI({
           <SendAsset
             isToL1={isShowAccount?.info?.isToL1}
             symbol={isShowAccount?.info?.symbol}
-            sendAssetList={sendAssetList}
             allowTrade={allowTrade}
+            sameLayerAssetList={sendAssetList.filter(item => item.type === 'sameLayer')}
+            crossLayerAssetList={sendAssetList.filter(item => item.type === 'crossLayer')}
+            crossChainAssetList={sendAssetList.filter(item => item.type === 'crossChain')}
+            toL1Title={isTaiko ? 'To Taiko' : 'To Ethereum'}
           />
         ),
+        height: 'auto',
       },
       [AccountStep.SendAssetFromContact]: {
         view: (
@@ -3593,6 +3627,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    contactAddProps
+    contactAddProps,
+    transferToTaikoProps
 	}
 }

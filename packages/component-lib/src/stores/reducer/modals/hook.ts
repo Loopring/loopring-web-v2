@@ -41,6 +41,7 @@ import {
   setShowNoVaultAccount,
   setShowConfirmedVault,
   setShowETHStakingApr,
+  setShowTransferToTaikoAccount,
 } from './reducer'
 
 import React from 'react'
@@ -107,7 +108,17 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.transfer.enable],
+    ),
+    setShowTransferToTaikoAccount: React.useCallback(
+      (state: ModalStatePlayLoad) => {
+        if (toggle.transferToTaikoAccount.enable) {
+          dispatch(setShowTransferToTaikoAccount(state))
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'TransferToTaikoAccount' }))
+        }
+      },
+      [dispatch, toggle.transferToTaikoAccount.enable],
     ),
     setShowNFTDeploy: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) => {
@@ -123,7 +134,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.deposit.enable],
     ),
     setShowWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
@@ -133,7 +144,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.withdraw.enable],
     ),
     setShowNFTDetail: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
@@ -149,7 +160,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.transferNFT.enable],
     ),
     setShowNFTDeposit: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
@@ -159,7 +170,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.depositNFT.enable],
     ),
     setShowCollectionAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
@@ -169,7 +180,7 @@ export const useOpenModals = () => {
           dispatch(setShowCollectionAdvance({ isShow: true, type: 'Collection' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.collectionNFT.enable],
     ),
     setShowNFTMintAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
@@ -179,7 +190,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Mint' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.mintNFT.enable],
     ),
     setShowNFTWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
@@ -189,7 +200,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.withdrawNFT.enable],
     ),
 
     setShowResetAccount: React.useCallback(
@@ -200,7 +211,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'reset-account' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.updateAccount.enable],
     ),
     setShowActiveAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
@@ -210,7 +221,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'active-account' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.updateAccount.enable],
     ),
     setShowAmm: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & { type?: AmmPanelType }) =>
@@ -249,7 +260,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Claim' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.claim.enable],
     ),
     setShowConnect: React.useCallback(
       (

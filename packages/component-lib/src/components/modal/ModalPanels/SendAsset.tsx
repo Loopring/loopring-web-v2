@@ -1,7 +1,7 @@
 import { Box, CardContent, Divider, Tab, Tabs, Tooltip, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { MenuBtnStyled } from '../../styled'
-import { AccountStep, SendAssetProps } from './Interface'
+import { AccountStep, AddAssetItem, SendAssetProps } from './Interface'
 import { useTranslation } from 'react-i18next'
 import {
   AlertIcon,
@@ -33,26 +33,155 @@ const BoxStyled = styled(Box)`` as typeof Box
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case 'IncomingIcon':
-      return <IncomingIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
+      return <IncomingIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'L2l2Icon':
-      return <L2l2Icon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
+      return <L2l2Icon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'L1l2Icon':
-      return <L1l2Icon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
+      return <L1l2Icon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'ExchangeAIcon':
-      return <ExchangeAIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
+      return <ExchangeAIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'OutputIcon':
-      return <OutputIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
+      return <OutputIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
     case 'AnotherIcon':
-      return <AnotherIcon color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1 }} />
+      return <AnotherIcon className='custom-size'  color={'inherit'} fontSize={'inherit'} sx={{ marginRight: 1.5, fontSize: '20px' }} />
   }
 }
-export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAssetProps) => {
+export const SendAsset = ({
+  sameLayerAssetList,
+  crossChainAssetList,
+  crossLayerAssetList,
+  allowTrade,
+  symbol,
+  isToL1,
+  toL1Title
+}: SendAssetProps) => {
   const { t } = useTranslation('common')
   const { defaultNetwork, isMobile } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const {
     toggle: { send },
   } = useToggle()
+
+  const filterAndMap = (list: AddAssetItem[]) =>
+    list
+      .filter(
+        (item) =>
+          !symbol ||
+          (item.key == 'SendAssetToAnotherNet' && send['orbiter']?.includes(symbol)) ||
+          !['SendAssetToAnotherNet'].includes(item.key),
+      )
+      .map((item, index) => (
+        <Box key={item.key} marginTop={'-1px'}>
+          <MenuBtnStyled
+            variant={'outlined'}
+            size={'large'}
+            className={`sendAsset  ${isMobile ? 'isMobile' : ''}`}
+            fullWidth
+            disabled={
+              !!(item.enableKey && allowTrade[item.enableKey]?.enable === false) ||
+              (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
+            }
+            endIcon={<BackIcon sx={{ transform: 'rotate(180deg)' }} />}
+            onClick={(e) => {
+              item.handleSelect(e)
+            }}
+            sx={{
+              overflow: 'hidden',
+              '& .corner-tag': {
+                background: '#B8BCC7',
+              },
+              '& .title, .description': {
+                color: 'var(--color-text-secondary)',
+              },
+              ':hover': {
+                '& .corner-tag': {
+                  background: 'var(--color-primary)',
+                },
+                '& .title, .description': {
+                  color: 'var(--color-text-primary)',
+                }
+              },
+              borderTopLeftRadius: index === 0 ? '4px' : '0px',
+              borderTopRightRadius: index === 0 ? '4px' : '0px',
+              borderBottomLeftRadius: index === list.length - 1 ? '4px' : '0px',
+              borderBottomRightRadius: index === list.length - 1 ? '4px' : '0px',
+              '&&&&:hover' : {
+                borderColor: 'var(--color-border)'
+              }
+           }}
+          >
+            <Box display={'flex'} alignItems={'center'}>
+              <Typography
+                component={'span'}
+                variant={'inherit'}
+                color={'inherit'}
+                display={'flex'}
+                alignItems={'center'}
+                lineHeight={'1.2em'}
+                sx={{
+                  textIndent: 0,
+                  textAlign: 'left',
+                }}
+              >
+                {IconItem({ svgIcon: item.svgIcon })}
+              </Typography>
+              <Box>
+                <Typography
+                  sx={{ textIndent: 0 }}
+                  textAlign={'left'}
+                  color={'var(--color-text-secondary)'}
+                  className='title'
+                  fontSize={item.description ? '14px' : '16px'}
+                >
+                  {t('label' + item.key, {
+                    loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+                    l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+                    l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+                    ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+                  })}
+                </Typography>
+                {item.description && (
+                  <Typography
+                    textAlign={'left'}
+                    sx={{ textWrap: 'auto', textIndent: 0 }}
+                    variant='body2'
+                    color={'var(--color-text-primary)'}
+                    mt={0.5}
+                    className='description'
+                    fontSize={'12px'}
+                  >
+                    {item.description}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+            {/* {item.cornerTag && (
+              <Box
+                className='corner-tag'
+                sx={{
+                  transform: 'rotate(35deg)',
+                  position: 'absolute',
+                  top: '-13px',
+                  right: '-32px',
+                  height: '40px',
+                  width: '100px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'end',
+                }}
+              >
+                <Typography
+                  color={'var(--color-text-primary)'}
+                  sx={{ textTransform: 'none' }}
+                  variant='body2'
+                >
+                  {item.cornerTag === '3rd party' ? '3rd party' : 'Loopring'}
+                </Typography>
+              </Box>
+            )} */}
+          </MenuBtnStyled>
+        </Box>
+      ))
 
   return (
     <BoxStyled
@@ -92,55 +221,19 @@ export const SendAsset = ({ sendAssetList, allowTrade, symbol, isToL1 }: SendAss
         paddingX={isMobile ? 4 : 5}
         paddingBottom={4}
       >
+
         <Box flex={1} flexDirection={'column'}>
-          {sendAssetList.reduce((prev, item) => {
-            if (
-              !symbol ||
-              (item.key == 'SendAssetToAnotherNet' && send['orbiter']?.includes(symbol)) ||
-              !['SendAssetToAnotherNet'].includes(item.key)
-            ) {
-              prev.push(
-                <Box key={item.key} marginTop={2}>
-                  <MenuBtnStyled
-                    variant={'outlined'}
-                    size={'large'}
-                    className={`sendAsset  ${isMobile ? 'isMobile' : ''}`}
-                    fullWidth
-                    disabled={
-                      !!(item.enableKey && allowTrade[item.enableKey]?.enable === false) ||
-                      (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
-                    }
-                    endIcon={<BackIcon sx={{ transform: 'rotate(180deg)' }} />}
-                    onClick={(e) => {
-                      item.handleSelect(e)
-                    }}
-                  >
-                    <Typography
-                      component={'span'}
-                      variant={'inherit'}
-                      color={'inherit'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                      lineHeight={'1.2em'}
-                      sx={{
-                        textIndent: 0,
-                        textAlign: 'left',
-                      }}
-                    >
-                      <>{IconItem({ svgIcon: item.svgIcon })}</>
-                      {t('label' + item.key, {
-                        loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                        l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                        l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                        ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                      })}
-                    </Typography>
-                  </MenuBtnStyled>
-                </Box>,
-              )
-            }
-            return prev
-          }, [] as JSX.Element[])}
+          <Box mb={5} mt={4}>
+            {filterAndMap(sameLayerAssetList)}
+          </Box>
+          <Box mb={5}>
+            <Typography mb={2} color={'var(--color-text-secondary)'} variant='body2'>{toL1Title}</Typography>
+            {filterAndMap(crossLayerAssetList)}
+          </Box>
+          <Box >
+            {filterAndMap(crossChainAssetList).length > 0 && <Typography mb={2} color={'var(--color-text-secondary)'} variant='body2'>To other networks</Typography>} 
+            {filterAndMap(crossChainAssetList)}
+          </Box>
         </Box>
       </Box>
     </BoxStyled>

@@ -73,7 +73,9 @@ import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer'
 import { tradeBtradeSlice } from './router/tradeBtrade'
 import { contactsSlice } from './contacts/reducer'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
+import { configSlice } from './config/reducer'
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2'
+
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -166,6 +168,7 @@ export const initReduce = {
   firebase: firebaseReducer,
   contacts: contactsSlice.reducer,
   targetRedpacket: targetRedpacketSlice.reducer,
+  config: configSlice.reducer,
   _router_tradeDefi: tradeDefiSlice.reducer,
   _router_tradeDual: tradeDualSlice.reducer,
   _router_tradeStake: tradeStakeSlice.reducer,
@@ -280,3 +283,5 @@ export * from './vaultLayer2'
 export * from './invest'
 export * from './contacts'
 export * from './targetRedpackt'
+export type { Config, FastWithdrawConfig } from './config'
+export { configReducer, useConfig } from './config'

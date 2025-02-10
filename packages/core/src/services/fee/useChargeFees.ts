@@ -81,6 +81,7 @@ export function useChargeFees({
   handleFeeChange: (value: FeeInfo) => void
   feeInfo: FeeInfo
   resetIntervalTime: () => void
+  resetFee: () => void
 } {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: 'ETH',
@@ -88,8 +89,7 @@ export function useChargeFees({
     feeRaw: undefined,
   } as FeeInfo)
   const { chainId } = useSystem()
-  // let { feeChargeOrder } = useSettings()
-  const feeChargeOrder = FeeChargeOrderDefaultMap.get(chainId as sdk.ChainId)
+  let { feeChargeOrder } = useSettings()
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1)
   const [chargeFeeTokenList, setChargeFeeTokenList] = React.useState<FeeInfo[]>([])
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<{
@@ -560,7 +560,17 @@ export function useChargeFees({
     _amount,
     account.readyState,
     walletLayer2Status,
+    feeChargeOrder
   ])
+
+  const resetFee = () => {
+    setFeeInfo({
+      belong: 'ETH',
+      fee: 0,
+      feeRaw: undefined,
+    } as FeeInfo)
+    getFeeList()
+  }
 
   return {
     chargeFeeTokenList,
@@ -571,5 +581,6 @@ export function useChargeFees({
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    resetFee
   }
 }

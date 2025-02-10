@@ -1,6 +1,6 @@
 import React from 'react'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { AccountStep, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals, useSettings, WithdrawProps } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   AddressError,
@@ -22,12 +22,14 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   BIGO,
   DAYS,
+  fiatNumberDisplaySafe,
   getIPFSString,
   getTimestampDaysLater,
   isAccActivated,
   LAST_STEP,
   LoopringAPI,
   store,
+  tryFn,
   useAccount,
   useAddressCheck,
   useBtnStatus,
@@ -42,8 +44,10 @@ import {
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useHistory, useLocation } from 'react-router-dom'
 import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/core'
-import { useContacts } from '../../stores'
+import { useContacts, useTokenPrices } from '../../stores'
 import Web3 from 'web3'
+import Decimal from 'decimal.js'
+import { ethers } from 'ethers'
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
@@ -529,6 +533,21 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       reCheck()
     }
   }, [realAddr, isShow, contacts])
+  const { tokenPrices } = useTokenPrices()
+  const { getValueInCurrency } = useSystem()
+  const { currency } = useSettings()
+  const feeTokenInfo = tokenMap ? tokenMap[feeInfo.belong] : undefined
+  const feeNormalInCurrency = tryFn(() => {
+    return feeTokenInfo && feeInfo.feeRaw && tokenPrices && fiatNumberDisplaySafe(
+      getValueInCurrency(
+        new Decimal(ethers.utils.formatUnits(feeInfo.feeRaw, feeTokenInfo.decimals))
+          .mul(tokenPrices[feeTokenInfo.symbol])
+          .toFixed(2),
+      ),
+      currency,
+    )
+  }, () => undefined)
+
   const nftWithdrawProps: WithdrawProps<any, any> = {
     handleOnAddressChange: (value: any) => {
       setAddress(value)
@@ -627,8 +646,23 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       }
     },
     ens,
+    withdrawMode: {
+      mode: 'normal',
+      showFastMode: false,
+      fastMode: undefined,
+      fastMaxAlert: {
+        show: false,
+        message: '',
+      },
+      normalMode: {
+        fee: feeNormalInCurrency ? '~' + feeNormalInCurrency : '--',
+        time: '~25 minutes',
+      },
+      onChange: () => {},
+      showTrustUI: false
+    },
   } as unknown as WithdrawProps<any, any>
-
+  console.log('nftWithdrawProps', nftWithdrawProps)
   return {
     nftWithdrawProps,
     retryBtn,

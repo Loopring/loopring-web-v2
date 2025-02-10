@@ -13,11 +13,19 @@ export {
   numberFormatThousandthPlace,
   bigNumberFormat,
   fiatNumberDisplay,
+  fiatNumberDisplaySafe
 } from './numberFormat'
 export {
   numberStringListSum
 } from './calculation'
 export {getOptionalDecimal} from './decimal'
+export {
+  isValid6DigitPasscode,
+  validatePassword,
+  containsRegularCharOnly,
+  isValidateNumberStr,
+} from './validation'
 export {isNumberStr,strNumDecimalPlacesLessThan} from './validation'
 
 export {getStateFnState} from './getStateFnState'
+export {tryFn} from './tryFn'

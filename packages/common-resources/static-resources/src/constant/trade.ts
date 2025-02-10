@@ -262,44 +262,71 @@ export const AddAssetList = {
   },
 }
 
-export const SendAssetList = {
+type SendAssetListType = Record<
+  string,
+  {
+    key: string
+    svgIcon: string
+    enableKey?: string | null
+    type: 'sameLayer' | 'crossLayer' | 'crossChain'
+    cornerTag?: 'Loopring' | '3rd party'
+    description?: string
+  }
+>
+
+export const SendAssetList: SendAssetListType = {
   SendAssetToMyL1: {
     key: 'SendToMyL1',
     svgIcon: 'IncomingIcon',
     enableKey: 'withdraw',
+    type: 'crossLayer',
   },
   SendAssetToL2: {
     key: 'SendTOL2',
     svgIcon: 'L2l2Icon',
     enableKey: 'transfer',
+    type: 'sameLayer',
   },
   SendAssetToOtherL1: {
     key: 'SendToOtherL1',
     svgIcon: 'L1l2Icon',
     enableKey: 'withdraw',
+    type: 'crossLayer',
   },
   SendAssetToAnotherNet: {
     key: 'SendAssetToAnotherNet',
     svgIcon: 'AnotherIcon',
     enableKey: 'withdraw',
+    type: 'crossChain',
+    cornerTag: '3rd party'
+  },
+  SendAssetToTaikoAccount: {
+    key: 'SendAssetToTaikoAccount',
+    svgIcon: 'AnotherIcon',
+    enableKey: 'transferToTaikoAccount',
+    type: 'crossChain',
+    cornerTag: 'Loopring',
   },
 }
 
-export const SendNFTAssetList = {
+export const SendNFTAssetList: SendAssetListType = {
   SendAssetToMyL1: {
     key: 'SendToMyL1',
     svgIcon: 'IncomingIcon',
     enableKey: 'withdrawNFT',
+    type: 'crossLayer',
   },
   SendAssetToL2: {
     key: 'SendTOL2',
     svgIcon: 'L2l2Icon',
     enableKey: 'transferNFT',
+    type: 'sameLayer',
   },
   SendAssetToOtherL1: {
     key: 'SendToOtherL1',
     svgIcon: 'L1l2Icon',
     enableKey: 'withdrawNFT',
+    type: 'crossLayer',
   },
 }
 
