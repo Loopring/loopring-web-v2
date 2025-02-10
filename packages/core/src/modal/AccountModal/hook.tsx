@@ -166,6 +166,12 @@ import {
   Taiko_Farming_Mint_In_Progress,
   Taiko_Farming_Redeem_In_Progress,
   useToggle,
+  Transfer_To_TaikoUser_Denied,
+  Transfer_To_TaikoIn_Progress,
+  Transfer_To_Taiko_User_Denied,
+  Transfer_To_Taiko_In_Progress,
+  Transfer_To_Taiko_Success,
+  Transfer_To_Taiko_Failed,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -3538,6 +3544,88 @@ export function useAccountModalForUI({
           <Taiko_Farming_Mint_In_Progress
             btnInfo={undefined}
             {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+
+
+      [AccountStep.Transfer_To_Taiko_User_Denied]: {
+        view: (
+          <Transfer_To_Taiko_User_Denied
+            btnInfo={{
+              btnTxt: 'labelRetry',
+              callback: () => {
+                transferToTaikoProps.retrySend()
+                // transferToTaikoProps.onTransferClick(transferValue as any)
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_To_Taiko_In_Progress]: {
+        view: (
+          <Transfer_To_Taiko_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_To_Taiko_Success]: {
+        view: (
+          <Transfer_To_Taiko_Success
+            btnInfo={{
+              btnTxt: 'Send to Taiko Again',
+              callback: () => {
+                setShowAccount({ isShow: false })
+                setShowTransferToTaikoAccount({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                })
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: 'Txn Hash',
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_To_Taiko_Failed]: {
+        view: (
+          <Transfer_To_Taiko_Failed
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.transfer,
+                  },
+                })
+              },
+            })}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
           />
         ),
       },
