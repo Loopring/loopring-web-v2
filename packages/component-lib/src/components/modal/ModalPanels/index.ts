@@ -40,4 +40,13 @@ export * from './FeeSelect'
 export * from './EditContact'
 export { IconType, BasicPanel } from './BasicPanel'
 export * from './Vault'
-export {TransferToTaikoAccountModal} from './TransferToTaikoAccount'
+export {TransferToTaikoAccountModal} from './TransferToTaikoAccountPanel'
+export {
+  Transfer_To_Taiko_WaitForAuth,
+  Transfer_To_Taiko_First_Method_Denied,
+  Transfer_To_Taiko_User_Denied,
+  Transfer_To_Taiko_In_Progress,
+  Transfer_To_Taiko_Success,
+  Transfer_To_Taiko_banxa_confirm,
+  Transfer_To_Taiko_Failed
+} from './TransferToTaikoAccount'

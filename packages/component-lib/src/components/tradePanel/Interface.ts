@@ -331,6 +331,7 @@ export type TransferToTaikoAccountProps = {
   }
   showReceiptWarning: boolean
   onClickConfirm: () => void
+  retrySend: () => void
 }
 
 export * from './components/Interface'

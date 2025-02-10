@@ -228,6 +228,11 @@ export enum AccountStep {
   Taiko_Farming_Mint_In_Progress,
   Taiko_Farming_Mint_Failed,
 
+  Transfer_To_Taiko_User_Denied,
+  Transfer_To_Taiko_In_Progress,
+  Transfer_To_Taiko_Success,
+  Transfer_To_Taiko_Failed,
+
 }
 
 /**
