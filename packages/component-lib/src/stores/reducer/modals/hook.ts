@@ -102,11 +102,11 @@ export const useOpenModals = () => {
 
     setShowTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
-        if (toggle.transfer.enable) {
-          dispatch(setShowTransfer(state))
-        } else {
+        if (!toggle.transfer.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
+          return
         }
+        dispatch(setShowTransfer(state))
       },
       [dispatch, toggle.transfer.enable],
     ),
@@ -128,21 +128,21 @@ export const useOpenModals = () => {
     ),
     setShowDeposit: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & { partner?: boolean }) => {
-        if (toggle.deposit.enable) {
-          dispatch(setShowDeposit(state))
-        } else {
+        if (!toggle.deposit.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
+          return 
         }
+        dispatch(setShowDeposit(state))
       },
       [dispatch, toggle.deposit.enable],
     ),
     setShowWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
-        if (toggle.withdraw.enable) {
-          dispatch(setShowWithdraw(state))
-        } else {
+        if (!toggle.withdraw.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
-        }
+          return
+        } 
+        dispatch(setShowWithdraw(state))
       },
       [dispatch, toggle.withdraw.enable],
     ),
@@ -205,11 +205,11 @@ export const useOpenModals = () => {
 
     setShowResetAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
-        if (toggle.updateAccount.enable) {
-          dispatch(setShowResetAccount(state))
-        } else {
+        if (!toggle.updateAccount.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'reset-account' }))
-        }
+          return
+        } 
+        dispatch(setShowResetAccount(state))
       },
       [dispatch, toggle.updateAccount.enable],
     ),
