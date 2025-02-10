@@ -41,8 +41,10 @@ const initialState: ToggleState = {
   VaultDustCollector: { enable: true },
   taikoFarming: { enable: true },
   rabbitWithdraw: { enable: true },
+  transferToTaikoAccount: {enable: true},
   whiteList: {},
   isSupperUser: false as any,
+  
 }
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
