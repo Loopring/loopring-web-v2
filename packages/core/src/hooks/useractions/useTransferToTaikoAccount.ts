@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import { useGetSet } from 'react-use'
 import { LoopringAPI } from '../../api_wrapper'
 import { MapChainId, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
-import { checkErrorInfo, ConnectorError, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest } from '@loopring-web/loopring-sdk'
+import { checkErrorInfo, ConnectorError, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { getTimestampDaysLater, isValidateNumberStr, numberFormat } from '../../utils'
 import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
@@ -269,6 +269,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       eddsaSignKey: account.eddsaKey.sk,
       chainId: defaultNetwork as number,
     }).then((response) => {
+
+      if ((response as any)?.resultInfo?.code || (response as any)?.resultInfo?.message) {
+        throw (response as any).resultInfo
+      }
       setShowTransferToTaikoAccount({
         isShow: false
       })
