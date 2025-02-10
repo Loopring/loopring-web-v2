@@ -258,6 +258,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           },
           storageId: storageId!.offchainId,
           validUntil: getTimestampDaysLater(DAYS),
+          counterFactualInfo: account.eddsaKey.counterFactualInfo
         },
       }
       const provider = new ethers.providers.Web3Provider(walletProvider as any)
