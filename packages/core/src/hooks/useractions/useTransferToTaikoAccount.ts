@@ -110,9 +110,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     const feeRes = await LoopringAPI.userAPI
       ?.getUserCrossChainFee(
         {
-          receiveFeeNetwork: destinationNetwork,
+          receiveFeeNetwork: MapChainId[defaultNetwork],
           requestType: OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
-          calFeeNetwork: MapChainId[defaultNetwork],
+          calFeeNetwork: destinationNetwork!,
           tokenSymbol: transferTokenSymbol,
           amount: state.amount ? utils.parseUnits(state.amount, transferToken.decimals).toString() : '0',
         },
