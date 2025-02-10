@@ -89,11 +89,13 @@ export async function toggleCheck(
 
   const account = store.getState().account
 
-  const accountInfo = await LoopringAPI?.exchangeAPI?.getAccount({
-    owner: account.accAddress,
-  })
-
-  if (accountInfo?.accInfo.frozen === LoopFrozenFlag) {
+  const accountInfo = account.accAddress
+    ? await LoopringAPI?.exchangeAPI?.getAccount({
+        owner: account.accAddress,
+      })
+    : undefined
+  if (!accountInfo) return
+  if (accountInfo.accInfo?.frozen === LoopFrozenFlag) {
     myLog('account.frozen ___timer___', account.accountId)
     store.dispatch(
       updateToggleStatus({

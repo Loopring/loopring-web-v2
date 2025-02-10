@@ -483,11 +483,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
               legal: { enable: false },
             }
           }),
-          toggleCheck(
-            chainId,
-            process.env.REACT_APP_DEX_TOGGLE,
-            process.env.REACT_APP_DEX_WHITELIST,
-          )
         ])
         if (_exchangeInfo[chainId]) {
           LoopringAPI.exchangeAPI.getExchangeInfo().then(async ({ exchangeInfo }: any) => {

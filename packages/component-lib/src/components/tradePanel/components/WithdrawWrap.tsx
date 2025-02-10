@@ -460,84 +460,98 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      {withdrawMode?.showTrustUI && <Box width={'100%'} pl={2} mb={isToMyself ? 5 : 2} mt={isToMyself ? 5 : 3}>
-        {withdrawMode?.showFastMode && (
+      {withdrawMode?.showTrustUI && (
+        <Box width={'100%'} pl={2} mb={isToMyself ? 5 : 2} mt={isToMyself ? 5 : 3}>
+          {withdrawMode?.showFastMode && (
+            <SpaceBetweenBox
+              borderRadius={'4px 4px 0 0'}
+              px={2}
+              py={0.5}
+              leftNode={
+                <Box display={'flex'} alignItems={'center'}>
+                  <Box mr={1.5}>
+                    <CustomCheckBox
+                      checked={withdrawMode.mode === 'fast'}
+                      onCheck={() => {
+                        withdrawMode.onChange('fast')
+                      }}
+                    />
+                  </Box>
+                  <Box>
+                    <Tooltip
+                      title={
+                        <Typography color={'var(--color-text-secondary)'} fontSize={'11px'}>
+                          Trust Mode: Operated by Loopring’s team to maintain liquidity. <br />
+                          Supported Assets: USDC, TAIKO, and ETH.
+                        </Typography>
+                      }
+                    >
+                      <Typography display={'flex'} alignItems={'center'}>
+                        Trust Mode <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
+                      </Typography>
+                    </Tooltip>
+                    <Typography variant='body2'>{withdrawMode.fastMode?.fee ?? '--'}</Typography>
+                    {withdrawMode.fastMaxAlert.show && (
+                      <Typography color={'var(--color-error)'} variant='body2'>
+                        {withdrawMode.fastMaxAlert.message}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              }
+              alignItems={'center'}
+              rightNode={
+                <Typography variant='body2'>{withdrawMode.fastMode?.time ?? '--'}</Typography>
+              }
+              border={'1px solid var(--color-border)'}
+              borderBottom={'none'}
+            />
+          )}
           <SpaceBetweenBox
-            borderRadius={'4px 4px 0 0'}
+            borderRadius={withdrawMode?.showFastMode ? '0 0 4px 4px' : '4px'}
             px={2}
             py={0.5}
             leftNode={
               <Box display={'flex'} alignItems={'center'}>
                 <Box mr={1.5}>
                   <CustomCheckBox
-                    checked={withdrawMode.mode === 'fast'}
+                    checked={withdrawMode?.mode === 'normal'}
                     onCheck={() => {
-                      withdrawMode.onChange('fast')
+                      withdrawMode?.onChange('normal')
                     }}
                   />
                 </Box>
+
                 <Box>
                   <Tooltip
                     title={
-                      <Typography color={'var(--color-text-secondary)'} fontSize={'11px'}>
-                        Trust Mode: Operated by Loopring’s team to maintain liquidity. <br />
-                        Supported Assets: USDC, TAIKO, and ETH.
-                      </Typography>
+                      'Assets are transferred between Loopring and Ethereum using Loopring’s official bridge contract.'
                     }
                   >
-                    <Typography display={'flex'} alignItems={'center'}>
-                      Trust Mode <Info2Icon sx={{ml: 0.5, color: 'var(--color-text-third)'}}/>
+                    <Typography>
+                      {withdrawMode?.showTrustUI ? 'Trustless Mode' : 'Normal Mode'}
                     </Typography>
                   </Tooltip>
-                  <Typography variant='body2'>{withdrawMode.fastMode?.fee ?? '--'}</Typography>
-                  {withdrawMode.fastMaxAlert.show && (
-                    <Typography color={'var(--color-error)'} variant='body2'>
-                      {withdrawMode.fastMaxAlert.message}
-                    </Typography>
-                  )}
+                  <Typography variant='body2'>{withdrawMode?.normalMode?.fee ?? '--'}</Typography>
                 </Box>
               </Box>
             }
             alignItems={'center'}
             rightNode={
-              <Typography variant='body2'>{withdrawMode.fastMode?.time ?? '--'}</Typography>
+              <Typography variant='body2'>{withdrawMode?.normalMode?.time ?? '--'}</Typography>
             }
             border={'1px solid var(--color-border)'}
-            borderBottom={'none'}
           />
-        )}
-        <SpaceBetweenBox
-          borderRadius={withdrawMode?.showFastMode ? '0 0 4px 4px' : '4px'}
-          px={2}
-          py={0.5}
-          leftNode={
-            <Box display={'flex'} alignItems={'center'}>
-              <Box mr={1.5}>
-                <CustomCheckBox
-                  checked={withdrawMode?.mode === 'normal'}
-                  onCheck={() => {
-                    withdrawMode?.onChange('normal')
-                  }}
-                />
-              </Box>
+        </Box>
+      )}
 
-              <Box>
-                <Tooltip title={'Assets are transferred between Loopring and Ethereum using Loopring’s official bridge contract.'}>
-                  <Typography>{withdrawMode?.showTrustUI ? 'Trustless Mode' : 'Normal Mode'}</Typography>
-                </Tooltip>
-                <Typography variant='body2'>{withdrawMode?.normalMode?.fee ?? '--'}</Typography>
-              </Box>
-            </Box>
-          }
-          alignItems={'center'}
-          rightNode={
-            <Typography variant='body2'>{withdrawMode?.normalMode?.time ?? '--'}</Typography>
-          }
-          border={'1px solid var(--color-border)'}
-        />
-      </Box>}
-
-      <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'} mt={withdrawMode?.showTrustUI ? 0 :1}>
+      <Grid
+        item
+        alignSelf={'stretch'}
+        position={'relative'}
+        className={'fee-wrap'}
+        mt={withdrawMode?.showTrustUI ? 0 : 1}
+      >
         {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
@@ -558,11 +572,25 @@ export const WithdrawWrap = <
               isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
               isFastWithdrawAmountLimit={isFastWithdrawAmountLimit}
               networkFeeElement={
-                <Tooltip
-                  title={
-                    'The total cost of completing the transaction, including network fees, service fees, and other associated charges.'
-                  }
-                >
+                withdrawMode?.showTrustUI ? (
+                  <Tooltip
+                    title={
+                      'The total cost of completing the transaction, including network fees, service fees, and other associated charges.'
+                    }
+                  >
+                    <Typography
+                      display={'flex'}
+                      alignItems={'center'}
+                      marginRight={0}
+                      component={'span'}
+                      color={'inherit'}
+                      minWidth={28}
+                    >
+                      Transaction Cost{' '}
+                      <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
+                    </Typography>
+                  </Tooltip>
+                ) : (
                   <Typography
                     display={'flex'}
                     alignItems={'center'}
@@ -571,9 +599,9 @@ export const WithdrawWrap = <
                     color={'inherit'}
                     minWidth={28}
                   >
-                    {withdrawMode?.showTrustUI ? 'Transaction Cost' : 'Network Fee'} <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
+                    Network Fee
                   </Typography>
-                </Tooltip>
+                )
               }
             />
           </>

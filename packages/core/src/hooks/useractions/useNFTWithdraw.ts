@@ -29,6 +29,7 @@ import {
   LAST_STEP,
   LoopringAPI,
   store,
+  tryFn,
   useAccount,
   useAddressCheck,
   useBtnStatus,
@@ -536,17 +537,16 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const { getValueInCurrency } = useSystem()
   const { currency } = useSettings()
   const feeTokenInfo = tokenMap ? tokenMap[feeInfo.belong] : undefined
-  const feeNormalInCurrency =
-    feeTokenInfo && feeInfo.feeRaw && tokenPrices
-      ? fiatNumberDisplaySafe(
-          getValueInCurrency(
-            new Decimal(ethers.utils.formatUnits(feeInfo.feeRaw, feeTokenInfo.decimals))
-              .mul(tokenPrices[feeTokenInfo.symbol])
-              .toFixed(2),
-          ),
-          currency,
-        )
-      : undefined
+  const feeNormalInCurrency = tryFn(() => {
+    return feeTokenInfo && feeInfo.feeRaw && tokenPrices && fiatNumberDisplaySafe(
+      getValueInCurrency(
+        new Decimal(ethers.utils.formatUnits(feeInfo.feeRaw, feeTokenInfo.decimals))
+          .mul(tokenPrices[feeTokenInfo.symbol])
+          .toFixed(2),
+      ),
+      currency,
+    )
+  }, () => undefined)
 
   const nftWithdrawProps: WithdrawProps<any, any> = {
     handleOnAddressChange: (value: any) => {

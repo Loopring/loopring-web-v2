@@ -73,6 +73,7 @@ export function* accountUpdateSaga({ payload }: PayloadAction<Partial<Account>>)
         __timer__: data.__timer__,
       }),
     )
+    toggleCheck()
   } catch (err) {
     yield put(nextAccountStatus({ error: err }))
   }
