@@ -118,6 +118,7 @@ export async function toggleCheck(
         LRCStackInvest: { enable: false, reason: 'account frozen' },
         BTradeInvest: { enable: false, reason: 'account frozen' },
         StopLimit: { enable: false, reason: 'account frozen' },
+        transferToTaikoAccount: { enable: false, reason: 'account frozen' },
       }),
     )
   } else if (dexToggleUrl) {
@@ -150,6 +151,7 @@ export async function toggleCheck(
             LRCStackInvest: { enable: true, reason: undefined },
             redPacketNFTV1: { enable: true, reason: undefined },
             claim: { enable: true, reason: undefined },
+            transferToTaikoAccount: { enable: true, reason: undefined },
             ...toggle,
             whiteList: _whiteListRes,
           }),
