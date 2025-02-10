@@ -343,7 +343,9 @@ export const VaultDashBoardPanel = ({
         removeTrailingZero: true,
       }),
       checked,
-      valueInCurrency: price
+      valueInCurrency: price && getValueInCurrency(
+        new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
+      )
         ? fiatNumberDisplay(
             getValueInCurrency(
               new Decimal(price).mul(utils.formatUnits(asset.total, token.decimals)).toString(),
@@ -390,7 +392,7 @@ export const VaultDashBoardPanel = ({
       { fixed: 2 , removeTrailingZero: true} // 2 is USDT precision
     ) 
     : undefined
-  const totalDustsInCurrency = totalDustsInUSDT
+  const totalDustsInCurrency = totalDustsInUSDT && getValueInCurrency(totalDustsInUSDT)
     ? fiatNumberDisplay(getValueInCurrency(totalDustsInUSDT), currency)
     : EmptyValueTag
 
@@ -444,7 +446,11 @@ export const VaultDashBoardPanel = ({
             removeTrailingZero: true,
           }),
           amountRaw: utils.formatUnits(dust.total, vaultToken.decimals),
-          valueInCurrency: price
+          valueInCurrency: price && getValueInCurrency(
+            new Decimal(price)
+              .mul(utils.formatUnits(dust.total, vaultToken.decimals))
+              .toString(),
+          )
             ? fiatNumberDisplay(
                 getValueInCurrency(
                   new Decimal(price)
@@ -894,7 +900,7 @@ export const VaultDashBoardPanel = ({
                             variant={'body2'}
                           >
                             {t('labelVaultMaximumCredit')}:{' '}
-                            {(vaultAccountInfo as any)?.maxCredit
+                            {(vaultAccountInfo as any)?.maxCredit && getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
                               ? fiatNumberDisplay(
                                   getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                                   currency,
@@ -1405,7 +1411,7 @@ export const VaultDashBoardPanel = ({
                 collateralTokens={
                   collateralTokens?.map((collateralToken) => {
                     const tokenSymbol = idIndex[collateralToken.collateralTokenId]
-                    const amount = collateralToken.collateralTokenAmount
+                    const amount = collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
                       ? utils.formatUnits(
                           collateralToken.collateralTokenAmount,
                           tokenMap[tokenSymbol].decimals,
@@ -1421,7 +1427,9 @@ export const VaultDashBoardPanel = ({
                         : EmptyValueTag,
                       logo: '',
                       valueInCurrency:
-                        amount && tokenPrices['LV' + tokenSymbol] && forexMap && forexMap[currency]
+                        amount && tokenPrices['LV' + tokenSymbol] && forexMap && forexMap[currency] && getValueInCurrency(
+                          new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
+                        )
                           ? fiatNumberDisplay(
                               getValueInCurrency(
                                 new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
@@ -1540,7 +1548,7 @@ export const VaultDashBoardPanel = ({
                   vaultAccountInfo?.leverage ? Number(vaultAccountInfo?.leverage) : 0
                 }
                 maximumCredit={
-                  (vaultAccountInfo as any)?.maxCredit
+                  (vaultAccountInfo as any)?.maxCredit && getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
                     ? fiatNumberDisplay(
                         getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                         currency,
@@ -1548,7 +1556,7 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 borrowed={
-                  vaultAccountInfo?.totalBorrowedOfUsdt
+                  vaultAccountInfo?.totalBorrowedOfUsdt && getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt),
                         currency,
@@ -1556,7 +1564,14 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 borrowAvailable={
-                  vaultAccountInfo && collateralToken
+                  vaultAccountInfo && collateralToken && getValueInCurrency(
+                    new Decimal(vaultAccountInfo.totalEquityOfUsdt)
+                    .add(vaultAccountInfo.totalCollateralOfUsdt)
+                    .mul(vaultAccountInfo.leverage)
+                    .mul(collateralToken.factor)
+                    .minus(vaultAccountInfo.totalBorrowedOfUsdt)
+                    .toString()
+                  )
                     ? fiatNumberDisplay(
                         getValueInCurrency(
                           new Decimal(vaultAccountInfo.totalEquityOfUsdt)
@@ -1601,7 +1616,7 @@ export const VaultDashBoardPanel = ({
                           })
                         : EmptyValueTag,
                       valueInCurrency:
-                        price && borrowedAmount
+                        price && borrowedAmount && getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString())
                           ? fiatNumberDisplay(
                               getValueInCurrency(new Decimal(price).mul(borrowedAmount).toString()),
                               currency,
@@ -1617,7 +1632,7 @@ export const VaultDashBoardPanel = ({
                     }
                   })}
                 totalDebt={
-                  vaultAccountInfo?.totalDebtOfUsdt
+                  vaultAccountInfo?.totalDebtOfUsdt && getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalDebtOfUsdt),
                         currency,
@@ -1625,7 +1640,7 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 totalFundingFee={
-                  vaultAccountInfo?.totalInterestOfUsdt
+                  vaultAccountInfo?.totalInterestOfUsdt && getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalInterestOfUsdt),
                         currency,
@@ -1633,7 +1648,7 @@ export const VaultDashBoardPanel = ({
                     : EmptyValueTag
                 }
                 totalBorrowed={
-                  vaultAccountInfo?.totalBorrowedOfUsdt
+                  vaultAccountInfo?.totalBorrowedOfUsdt && getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt)
                     ? fiatNumberDisplay(
                         getValueInCurrency(vaultAccountInfo?.totalBorrowedOfUsdt),
                         currency,

@@ -67,6 +67,7 @@ export const web3Modal = createWeb3Modal({
 export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN') => {
   const { walletProvider } = useWeb3ModalProvider()
   const { status } = useSystem()
+  const { currency } = useSettings()
   const { address, chainId } = useWeb3ModalAccount()
   const { resetAccount, account: {accAddress} } = useAccount()
   const event = useWeb3ModalEvents()
@@ -89,11 +90,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
         walletServices.sendDisconnect('', 'customer click disconnect')
         resetAccount()
       }
-    } else if (event.data.event === 'CONNECT_SUCCESS' && type === 'EARN' && walletProvider) {
-      new providers.Web3Provider(walletProvider).send('wallet_switchEthereumChain', [
-        { chainId: toHex(ChainId.TAIKO) },
-      ])
-    }
+    } 
     myLog('event', event)
   }, [event, walletProvider])
   React.useEffect(() => {

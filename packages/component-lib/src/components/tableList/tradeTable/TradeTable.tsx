@@ -429,7 +429,8 @@ export const TradeTable = withTranslation('tables')(
     const [filterPair, setFilterPair] = React.useState('all')
     // const [page, setPage] = React.useState(1);
     // const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
-    const { currency, isMobile } = useSettings()
+    const { currency, isMobile, defaultNetwork } = useSettings()
+    const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
     const defaultArgs: any = {
       columnMode: isMobile
         ? getColumnModeMobileAssets(t, currency, tokenMap, isL2Trade)
@@ -555,7 +556,7 @@ export const TradeTable = withTranslation('tables')(
             rawData: rawData,
           }}
         />
-        {!!accountId && showFilter && (
+        {accountId && showFilter && !isTaiko && (
           <Typography
             display={'flex'}
             justifyContent={'flex-end'}

@@ -1503,13 +1503,14 @@ export const useVaultSwap = <
     if (market) {
       if (timerRef.current) {
         clearInterval(timerRef.current)
-      }
-      refreshRef.current && (refreshRef.current as any).firstElementChild.click()
+      }    
       timerRef.current = setInterval(() => {
         refreshRef.current && (refreshRef.current as any).firstElementChild.click()
       }, 10 * 1000)
+      refreshRef.current && (refreshRef.current as any).firstElementChild.click()  
+      refreshData()
     }
-  }, [market, vaultAccountInfo?.leverage])
+  }, [market])
   
 
   const callPairDetailInfoAPIs = React.useCallback(async () => {

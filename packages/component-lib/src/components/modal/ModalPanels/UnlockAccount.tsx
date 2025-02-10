@@ -61,10 +61,15 @@ export const UnlockAccount_Failed = ({
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <TransErrorHelp error={error} options={errorOptions} />
+              <TransErrorHelp
+                error={
+                  error.message === 'unKnown' ? { ...error, message: 'Unknown Failure' } : error
+                }
+                options={errorOptions}
+              />
               {showDropdown && <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />}
             </Typography>
-            {isContractOrInCounterFactual ? (
+            {isContractOrInCounterFactual && (
               <Typography color={'textSecondary'} paddingLeft={2}>
                 <Trans i18nKey={'labelConnectUsSimple'} ns={'error'}>
                   Please
@@ -74,12 +79,6 @@ export const UnlockAccount_Failed = ({
                   .
                 </Trans>
               </Typography>
-            ) : (
-              error?.code === 500000 && (
-                <Box>
-                  <Typography variant={'body2'}>{t('labelUnlockErrorLine1')}</Typography>
-                </Box>
-              )
             )}
           </Box>
         ) : (
@@ -96,10 +95,10 @@ export const UnlockAccount_Failed = ({
               value={`${JSON.stringify(error)}}`}
             />
           ) : (
-            <Typography onClick={props.resetAccount} marginTop={1} variant={'body2'}>
-              {t('labelUnlockErrorLine2Part1')}
-              <Link>{t('labelUnlockErrorLine2Part2')}</Link>
-              {t('labelUnlockErrorLine2Part3')}
+            <Typography textAlign={'left'} marginTop={1} variant={'body2'}>
+              {t('labelUnlockErrorSupport1')} <br />
+              <br />
+              {t('labelUnlockErrorSupport2')}
             </Typography>
           ))}
       </>
