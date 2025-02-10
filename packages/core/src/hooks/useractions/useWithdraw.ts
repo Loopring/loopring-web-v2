@@ -847,6 +847,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           },
           storageId: storageId!.offchainId,
           validUntil: getTimestampDaysLater(DAYS),
+          counterFactualInfo: eddsaKey.counterFactualInfo
         },
       }
 
