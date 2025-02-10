@@ -103,10 +103,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       : 'ETH'
     const transferToken = tokenMap[transferTokenSymbol]
 
-    setState({
+    setState((state) => ({
       ...state,
       feeLoading: true
-    })
+    }))
     const feeRes = await LoopringAPI.userAPI
       ?.getUserCrossChainFee(
         {
@@ -118,10 +118,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         },
         account.apiKey,
       ).finally(() => {
-        setState({
+        setState(state => ({
           ...state,
           feeLoading: false
-        })
+        }))
       })
 
     transferToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
@@ -140,10 +140,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       }))
     })
 
-    setState({
+    setState((state) => ({
       ...state,
       feeList: feeRes?.fees || [],
-    })
+    }))
   }
 
   useEffect(() => {
