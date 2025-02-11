@@ -16,6 +16,7 @@ import {
   useOpenModals,
   VaultExitPanel,
   VaultJoinPanel,
+  VaultJoinPanelModal,
   VaultLoanPanel,
   VaultSwapCancel,
 } from '@loopring-web/component-lib'
@@ -97,23 +98,6 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
         severity={toastOpen.type}
-      />
-      <Modal
-        contentClassName={'vault-wrap'}
-        open={isShowVaultJoin.isShow}
-        onClose={() => {
-          setShowVaultJoin({ isShow: false })
-        }}
-        content={
-          <VaultJoinPanel
-            {...{
-              ...(joinVaultProps as any),
-              type: TRADE_TYPE.TOKEN,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: `auto`,
-            }}
-          />
-        }
       />
       <Modal
         contentClassName={'vault-wrap'}

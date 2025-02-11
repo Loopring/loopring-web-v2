@@ -67,12 +67,10 @@ export interface VaultDashBoardPanelUIProps {
   totalDustsInUSDT: string | undefined;
   etherscanBaseUrl: string;
   network: string;
-  dustCollectorUnAvailableModalProps: DustCollectorUnAvailableModalProps
-  dustCollectorModalProps: DustCollectorProps
-  debtModalProps: DebtModalProps
-  leverageModalProps: LeverageModalProps
-  maximumCreditModalProps: MaximumCreditModalProps
-  collateralDetailsModalProps: CollateralDetailsModalProps
+  onClickCollateralManagement: () => void;
+  onClickPortalTrade: () => void;
+  liquidationThreshold: string;
+  liquidationPenalty: string;
 }
 
 export interface CollateralDetailsModalProps {

@@ -3,6 +3,7 @@ import {
   accountReducer,
   accountStaticCallBack,
   makeVaultLayer2,
+  numberStringListSum,
   store,
   useAccount,
   useSystem,
@@ -386,11 +387,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       !!Object.keys(tokenMap).length &&
       !!Object.keys(walletMap ?? {}).length
     ) {
-      let totalAssets = sdk.toBig(0)
-      let data: Array<any> = Object.keys(tokenMap ?? {})
-      .reduce((pre, key, _index) => {
+      const data: Array<any> = Object.keys(tokenMap ?? {})
+      .map((key, _index) => {
         let item: any
-        // tokenInfo
         let tokenInfo = {
           ...tokenMap[key],
           token: key,
@@ -439,25 +438,29 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         }
         if (item) {
           let precision = tokenMap[item.token.value].precision
-
-          pre.push({
+          return {
             ...item,
             precision: precision,
-          })
-          totalAssets = totalAssets.plus(sdk.toBig(item.tokenValueDollar))
+            holding: '100-todo',
+            equity: '100-todo',
+          }
+        } else {
+          return undefined
         }
-        pre?.sort((a, b) => {
-          const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
-          const deltaAmount = sdk.toBig(b.amount).minus(a.amount).toNumber()
-          const deltaName = b.token.value < a.token.value ? 1 : -1
-          return deltaDollar !== 0 ? deltaDollar : deltaAmount !== 0 ? deltaAmount : deltaName
-        })
-        return pre
-      }, [] as Array<any>)
+      })
       .filter(token => {
         const status = tokenMap['LV' + token.erc20Symbol].vaultTokenAmounts.status as number
-        return parseVaultTokenStatus(status).loan && parseVaultTokenStatus(status).repay
+        return token && parseVaultTokenStatus(status).loan && parseVaultTokenStatus(status).repay
+      }).sort((a, b) => {
+        const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
+        const deltaAmount = sdk.toBig(b.amount).minus(a.amount).toNumber()
+        const deltaName = b.token.value < a.token.value ? 1 : -1
+        return deltaDollar !== 0 ? deltaDollar : deltaAmount !== 0 ? deltaAmount : deltaName
       })
+      const totalAssets = data.reduce(
+        (pre, item) => pre.plus(sdk.toBig(item.tokenValueDollar)),
+        sdk.toBig(0),
+      )
       setAssetsRawData(data)
       setTotalAsset(totalAssets.toString())
     } else {
@@ -553,6 +556,35 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         des: 'labelJoinDesMessage',
         title: 'labelVaultJoinTitle',
       })
-    }
+    },
+    onRowClickTrade: ({ row }: { row: R }) => {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+        history.push('/portal/portalDashboard')
+        onSwapPop({ symbol: row?.token?.value })
+      } else {
+        history.push('/portal')
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelVaultJoinTitle',
+        })
+      }
+    },
+    onRowClickRepay: ({ row }: { row: R }) => {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+        history.push('/portal/portalDashboard')
+        // todo repay
+      } else {
+        history.push('/portal')
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelVaultJoinTitle',
+        })
+      }
+    },
+    noMinHeight: true
   }
 }

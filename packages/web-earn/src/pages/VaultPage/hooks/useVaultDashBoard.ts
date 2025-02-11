@@ -93,17 +93,25 @@ import Decimal from 'decimal.js'
 import { keys } from 'lodash'
 import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
 import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
-import { VaultDashBoardPanelUIProps } from '../interface'
+import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 
 export const useVaultDashboard = ({
   vaultAccountInfo: _vaultAccountInfo,
   showLeverage,
-  closeShowLeverage
+  closeShowLeverage,
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
   showLeverage: { show: boolean; closeAfterChange: boolean }
   closeShowLeverage: () => void
-}): VaultDashBoardPanelUIProps => {
+}):  & {
+  vaultDashBoardPanelUIProps: Omit<VaultDashBoardPanelUIProps, 'showLeverage' | 'closeShowLeverage'> 
+  dustCollectorUnAvailableModalProps: DustCollectorUnAvailableModalProps
+  dustCollectorModalProps: DustCollectorProps
+  debtModalProps: DebtModalProps
+  leverageModalProps: LeverageModalProps
+  maximumCreditModalProps: MaximumCreditModalProps
+  collateralDetailsModalProps: CollateralDetailsModalProps
+} => {
   const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
     _vaultAccountInfo
   const { t } = useTranslation()
@@ -496,7 +504,7 @@ export const useVaultDashboard = ({
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
 
-  return {
+  const vaultDashBoardPanelUIProps = {
     vaultAccountInfo,
     activeInfo,
     tokenFactors,
@@ -563,6 +571,18 @@ export const useVaultDashboard = ({
     assetPanelProps,
     marginLevel: vaultAccountInfo?.marginLevel ?? '',
     _vaultAccountInfo: _vaultAccountInfo,
+    onClickCollateralManagement: () => {
+      
+    },
+    liquidationThreshold: '1x',
+    liquidationPenalty: '1%',
+    onClickPortalTrade: () => {
+      
+    }
+  }
+
+  return {
+    vaultDashBoardPanelUIProps,
     dustCollectorUnAvailableModalProps: {
       open: localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show,
       onClose: () => {
@@ -770,42 +790,39 @@ export const useVaultDashboard = ({
         })
       },
 
-      collateralTokens: 
-        (collateralTokens ?? []).map((collateralToken) => {
-          const tokenSymbol = idIndex[collateralToken.collateralTokenId]
-          const amount =
-            collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
-              ? utils.formatUnits(
-                  collateralToken.collateralTokenAmount,
-                  tokenMap[tokenSymbol].decimals,
+      collateralTokens: (collateralTokens ?? []).map((collateralToken) => {
+        const tokenSymbol = idIndex[collateralToken.collateralTokenId]
+        const amount =
+          collateralToken.collateralTokenAmount && tokenMap[tokenSymbol]
+            ? utils.formatUnits(
+                collateralToken.collateralTokenAmount,
+                tokenMap[tokenSymbol].decimals,
+              )
+            : undefined
+        return {
+          name: tokenSymbol,
+          amount: amount
+            ? numberFormat(amount, {
+                fixed: tokenMap[tokenSymbol].precision,
+                removeTrailingZero: true,
+              })
+            : EmptyValueTag,
+          logo: '',
+          valueInCurrency:
+            amount &&
+            tokenPrices['LV' + tokenSymbol] &&
+            forexMap &&
+            forexMap[currency] &&
+            getValueInCurrency(new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString())
+              ? fiatNumberDisplay(
+                  getValueInCurrency(
+                    new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
+                  ),
+                  currency,
                 )
-              : undefined
-          return {
-              name: tokenSymbol,
-              amount: amount
-                ? numberFormat(amount, {
-                    fixed: tokenMap[tokenSymbol].precision,
-                    removeTrailingZero: true,
-                  })
-                : EmptyValueTag,
-              logo: '',
-              valueInCurrency:
-                amount &&
-                tokenPrices['LV' + tokenSymbol] &&
-                forexMap &&
-                forexMap[currency] &&
-                getValueInCurrency(
-                  new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
-                )
-                  ? fiatNumberDisplay(
-                      getValueInCurrency(
-                        new Decimal(tokenPrices['LV' + tokenSymbol]).mul(amount).toString(),
-                      ),
-                      currency,
-                    )
-                  : EmptyValueTag,
-            }
-        }),
+              : EmptyValueTag,
+        }
+      }),
       maxCredit:
         (vaultAccountInfo as any)?.maxCredit &&
         getValueInCurrency((vaultAccountInfo as any)?.maxCredit)

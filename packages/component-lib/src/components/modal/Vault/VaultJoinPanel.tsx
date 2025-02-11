@@ -1,16 +1,18 @@
 import { IBData, SoursURL, TRADE_TYPE, VaultJoinData, VaultLoanType } from '@loopring-web/common-resources'
 import {
   CountDownIcon,
+  Modal,
   SwitchPanel,
   SwitchPanelProps,
   VaultJoinProps,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import { Box, Typography, Divider, Tabs, Tab } from '@mui/material'
-import { TradeMenuList, useBasicTrade, VaultJoinWrap } from '../../tradePanel/components'
+import { TradeMenuList, VaultJoinWrap } from '../../tradePanel/components'
 import { useTranslation } from 'react-i18next'
+import { useTheme } from '@emotion/react'
 
-export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, I>({
+export const VaultJoinPanelModal = <T extends IBData<I>, V extends VaultJoinData<I>, I>({
   onSubmitClick,
   btnStatus,
   isActiveAccount,
@@ -20,22 +22,15 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
   _width,
   onToggleAddRedeem,
   isAddOrRedeem,
+  panelIndex,
+  handleConfirm,
+  basicTrade: {onChangeEvent, switchData},
+  modalOpen,
+  onCloseModal,
   ...rest
 }: VaultJoinProps<T, I, V>) => {
   const { t, i18n } = useTranslation()
-  const { onChangeEvent, index, switchData } = useBasicTrade({
-    ...rest,
-    type: TRADE_TYPE.TOKEN,
-    walletMap,
-    coinMap,
-  } as any)
-  const [panelIndex, setPanelIndex] = React.useState(index)
-  const handleConfirm = (index: number) => {
-    setPanelIndex(index)
-  }
-  React.useEffect(() => {
-    setPanelIndex(index)
-  }, [index])
+  const theme = useTheme()
 
   const props: SwitchPanelProps<'tradeMenuList' | 'trade' | 'confirm'> = {
     index: panelIndex, // show default show
@@ -140,23 +135,36 @@ export const VaultJoinPanel = <T extends IBData<I>, V extends VaultJoinData<I>, 
       },
     ],
   }
-  return !switchData.tradeData?.belong ? (
-    <Box
-      height={'580px'}
-      width={'var(--modal-width)'}
-      display={'flex'}
-      justifyContent={'center'}
-      flexDirection={'column'}
-      alignItems={'center'}
-    >
-      <img
-        className='loading-gif'
-        alt={'loading'}
-        width='60'
-        src={`${SoursURL}images/loading-line.gif`}
-      />
-    </Box>
-  ) : (
-    <SwitchPanel _width={'var(--modal-width)'} {...{ ...rest, i18n, t, tReady: true, ...props }} />
+  return (
+    <Modal
+      contentClassName={'vault-wrap'}
+      open={modalOpen}
+      onClose={onCloseModal}
+      content={
+        !switchData.tradeData?.belong ? (
+          <Box
+            height={'580px'}
+            width={'var(--modal-width)'}
+            display={'flex'}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <img
+              className='loading-gif'
+              alt={'loading'}
+              width='60'
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+          </Box>
+        ) : (
+          <SwitchPanel
+            _width={`calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
+            _height={'auto'}
+            {...{ ...rest, i18n, t, tReady: true, ...props }}
+          />
+        )
+      }
+    />
   )
 }
