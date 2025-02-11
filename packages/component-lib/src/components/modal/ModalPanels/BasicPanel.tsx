@@ -87,7 +87,7 @@ const BoxStyle = styled(Box)`
   & {
     height: inherit;
     .content-main {
-      overflow: scroll;
+      overflow: auto;
       align-self: stretch;
       & > div {
         align-self: stretch;
