@@ -165,20 +165,16 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       timer && clearInterval(timer)
     }
   }, [modals.isShowTransferToTaikoAccount.isShow, fastWithdrawConfig])
-  // : feeChargeOrder.filter(symbol => enoughFeeList.find(fee => fee.token === symbol))[0]
   const { walletMap } = makeWalletLayer2({ needFilterZero: true })
   const enoughFeeList = walletMap && tokenMap ? state.feeList.filter(fee => {
     
     return ethers.utils.parseUnits(walletMap[fee.token]?.count.toString() ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
     
-    // return ethers.BigNumber.from(walletMap2[fee.token]?.count ?? '0').gte(fee.fee) 
   }) : []
-  // const feeTokenSymbol = state.feeToken
   const feeInfo = enoughFeeList.find((f) => f.token === state.feeToken)
     ? enoughFeeList.find((f) => f.token === state.feeToken)
     : feeChargeOrder.map(order => enoughFeeList.find(fee => fee.token === order)).filter(fee => fee)[0]
   const feeTokenSymbol = feeInfo?.token
-  console.log('feeTokenSymbol', feeTokenSymbol)
   const feeToken = tokenMap && feeTokenSymbol ? tokenMap[feeTokenSymbol] : undefined
   
   const feeRaw = feeInfo?.fee
@@ -209,14 +205,6 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   }
   const debouncedRefreshData = useDebouncedCallback(refreshData, 500)
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setShowAccount({
-  //       step: AccountStep.Transfer_To_Taiko_User_Denied,
-  //       isShow: true
-  //     })
-  //   }, 1000);
-  // }, [])
 
   const confirmSend = async () => {
     setShowAccount({
@@ -403,13 +391,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       feeLoading: state.feeLoading,
       isFeeNotEnough: (() => {
         
-        // const feeInfo = state.feeList.find((item) => item.token === state.feeToken)
-        // feeToken
-        
         if (!feeInfo || !tokenMap || !feeToken) return false
         if (!walletMap || !feeTokenSymbol || !walletMap[feeTokenSymbol]?.count) return true
         const count = walletMap[feeTokenSymbol]!.count
-        // console.log('dajshdjashdjsah', state, walletMap, tokenMap, count, utils.formatUnits(feeInfo.fee, tokenMap[state.feeToken].decimals))
         return new Decimal(count).lt(
           utils.formatUnits(feeInfo.fee, feeToken.decimals),
         )
@@ -524,6 +508,5 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       confirmSend()
     }
   } as TransferToTaikoAccountProps
-  console.log('output', state, output)
   return output
 }

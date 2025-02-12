@@ -774,7 +774,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     ens,
     // contacts,
   }
-  console.log('transferProps', transferProps)
 
   return {
     retryBtn,

@@ -65,11 +65,6 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap
   [key: string]: any;
 }>, walletMap: WalletMap<string, any>) => {
 
-  // try{
-  //   ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals) 
-  // }catch{
-  //   debugger
-  // }
   return {
     belong: offchainFeeInfo.token,
     fee: ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals),
@@ -159,7 +154,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     app === 'main' &&
     fastModeTokens?.includes(withdrawValue.belong as string)
 
-  console.log('withdrawValue.belong', withdrawValue.belong, fastModeTokens)
   const isFastMode =
     fastWithdrawOverflow === false && fastModeSupportted ? withdrawMode.mode === 'fast' : false
   const chargeFeeTokenList = isFastMode 
@@ -171,20 +165,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     })
   }, () => [])
   
-  // walletMap2 && tokenMap ? chargeFeeTokenList.filter(fee => {
-  //   // debugger
-  //   return ethers.utils.parseUnits(walletMap2[fee.token]?.count ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
-    
-  //   // return ethers.BigNumber.from(walletMap2[fee.token]?.count ?? '0').gte(fee.fee) 
-  // }) : []
   
   const feeInfo = enoughFeeList.find((f) => f.token === feeSymbol) 
     ? enoughFeeList.find((f) => f.token === feeSymbol) 
     : feeChargeOrder.map(symbol => enoughFeeList.find(fee => fee.token === symbol)).filter(fee => fee)[0]
-  console.log('enoughFeeList', enoughFeeList, feeSymbol)
-  // feeSymbol 
-  //   ? chargeFeeTokenList.find((f) => f.token === feeSymbol)
-  //   : chargeFeeTokenList[0]
     
   const feeInfo2 = feeInfo && walletMap2 && tokenMap 
     ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2 as any)
@@ -412,20 +396,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   ])
   
 
-  // const getConfig = async () => {
-  //   const globalState = store.getState()
-  //   const network = MapChainId[globalState.settings.defaultNetwork]
-  //   const config = await LoopringAPI.rabbitWithdrawAPI!.getConfig()
-
-  //   const toL1SupportedTokens = parseRabbitConfig(JSON.parse(config.config), network, idIndex).toL1SupportedTokens
-  //   setState((state) => ({
-  //     ...state,
-  //     withdrawMode: {
-  //       ...state.withdrawMode,
-  //       fastModeTokens: toL1SupportedTokens,
-  //     },
-  //   }))
-  // }
 
   const refreshFee = async () => {
     setState((state) => ({
@@ -443,7 +413,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue
         ? globalState._router_modalData.withdrawValue.tradeValue.toString()
         : '0'
-      console.log('symbol', symbol)
       const withdrawToken = symbol
         ? tokenMap[symbol]
         : undefined
@@ -531,7 +500,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      // getConfig()
       resetDefault()
       refreshTimer = setInterval(() => {
         refreshFee()
@@ -851,9 +819,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
       }
 
-      // console.log('fastWithdraw_request', request)
-      // localStorage.setItem('fastWithdraw_request', JSON.stringify(request))
-      debugger
       const provider = new ethers.providers.Web3Provider(walletProvider as any)
 
       const response = await LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw(request, {
@@ -1005,7 +970,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     sureIsAllowAddress,
     lastFailed: store.getState().modals.isShowAccount.info?.lastFailed === LAST_STEP.withdraw,
     handleSureIsAllowAddress: (value: WALLET_TYPE | EXCHANGE_TYPE) => {
-      console.log('fashdfkjhdsjfkhdj', value)
       const found = exWalletToAddressMapFn(value)
       // const found = map.find(x => x[0] === value)![1]
       const contact = contacts?.find((x) => x.contactAddress === realAddr)

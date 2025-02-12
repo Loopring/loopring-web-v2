@@ -3556,7 +3556,6 @@ export function useAccountModalForUI({
               btnTxt: 'labelRetry',
               callback: () => {
                 transferToTaikoProps.retrySend()
-                // transferToTaikoProps.onTransferClick(transferValue as any)
               },
             }}
             {...{
