@@ -360,7 +360,6 @@ export const ModalPanel = <
       />
       <TransferToTaikoAccountModal
         {...transferToTaikoProps}
-        // open={isShowTransferToTaikoAccount.isShow}
       />
 
       <Modal

@@ -119,15 +119,6 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   const [inputValue, setInputValue] = React.useState('')
   const handleOnFiler = (value: string) => {
     setInputValue(value)
-    // let _contacts = contacts
-    // if (value && contacts) {
-    //   _contacts = contacts.filter((contact) => {
-    //     return (
-    //       contact.contactAddress.toLowerCase().includes(value.toLowerCase()) ||
-    //       contact.contactName.toLowerCase().includes(value.toLowerCase())
-    //     )
-    //   })
-    // }
   }
   const filterContacts = inputValue
     ? contacts.filter((contact) => {

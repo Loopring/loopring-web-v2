@@ -155,30 +155,6 @@ export const SendAsset = ({
                 )}
               </Box>
             </Box>
-            {/* {item.cornerTag && (
-              <Box
-                className='corner-tag'
-                sx={{
-                  transform: 'rotate(35deg)',
-                  position: 'absolute',
-                  top: '-13px',
-                  right: '-32px',
-                  height: '40px',
-                  width: '100px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'end',
-                }}
-              >
-                <Typography
-                  color={'var(--color-text-primary)'}
-                  sx={{ textTransform: 'none' }}
-                  variant='body2'
-                >
-                  {item.cornerTag === '3rd party' ? '3rd party' : 'Loopring'}
-                </Typography>
-              </Box>
-            )} */}
           </MenuBtnStyled>
         </Box>
       ))

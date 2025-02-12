@@ -662,7 +662,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       showTrustUI: false
     },
   } as unknown as WithdrawProps<any, any>
-  console.log('nftWithdrawProps', nftWithdrawProps)
   return {
     nftWithdrawProps,
     retryBtn,
