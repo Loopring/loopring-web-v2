@@ -138,6 +138,7 @@ export const UnlockAccount_Reset_Key_Confirm = ({
           own.
           <br />• If you are unsure about the sequence of this operation, please contact us at
           support@loopring.io and provide your wallet details for assistance.
+          <br />• If you have any pending limit orders, they will be canceled because they are associated with the old L2 keypair.
         </Typography>
 
         <Typography
