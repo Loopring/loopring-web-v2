@@ -2872,12 +2872,12 @@ export function useAccountModalForUI({
               setShowAccount({ isShow: false })
               setShowActiveAccount({
                 isShow: true,
-                info: { isReset: true, confirmationType: 'lockedReset' },
+                info: { isReset: true, confirmationType: undefined },
               })
             }}
           />
         ),
-        height: 470
+        height: 510
       },
 
       [AccountStep.ResetAccount_Approve_WaitForAuth]: {
