@@ -528,7 +528,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                             maxHeight: 'initial',
                             overflowY: 'initial',
                           }
-                        : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                        : { maxHeight: 'var(--modal-height)', overflowY: 'auto' }
                     }
                   >
                     {vaultOperationDetail &&
