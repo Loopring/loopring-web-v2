@@ -342,7 +342,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(
                         <TextareaAutosizeStyled
                           aria-label='Error Description'
                           minRows={5}
-                          style={{ maxHeight: '90px', overflow: 'scroll' }}
+                          style={{ maxHeight: '90px', overflow: 'auto' }}
                           disabled={true}
                           value={`${JSON.stringify(error)}}`}
                         />

@@ -338,7 +338,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
       >
         <SwitchPanelStyled
           display={'flex'}
-          overflow={'scroll'}
+          overflow={'auto'}
           alignItems={'stretch'}
           height={'80%'}
           width={'90%'}

@@ -164,7 +164,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             handleOnFiler(e.target.value)
           }}
         />
-        <Box sx={{overflowY: 'scroll'}} height={scrollHeight}>
+        <Box sx={{overflowY: 'auto'}} height={scrollHeight}>
           {filterContacts &&
             filterContacts.map((contact) => {
               return (
