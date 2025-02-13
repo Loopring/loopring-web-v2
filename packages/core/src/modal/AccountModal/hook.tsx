@@ -3085,7 +3085,8 @@ export function useAccountModalForUI({
                 if (isTaikoEarn) {
                   setShowAccount({ isShow: false })
                 } else {
-                  setShowActiveAccount({ isShow: true })
+                  setShowAccount({ isShow: false })
+                  setShowActiveAccount({ isShow: false })
                 }
               },
             }}
