@@ -161,7 +161,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             handleOnFiler(e.target.value)
           }}
         />
-        <Box overflow={'scroll'} height={scrollHeight}>
+        <Box sx={{overflowY: 'auto'}} height={scrollHeight}>
           {filterContacts &&
             filterContacts.map((contact) => {
               return (
@@ -199,13 +199,12 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   return (
     <Box
       // container
-      paddingLeft={isMobile ? 2 : 5}
-      paddingRight={isMobile ? 2 : 5}
+      paddingLeft={isMobile ? 2 : 3}
+      paddingRight={isMobile ? 2 : 3}
       // fle direction={"column"}
       alignItems={'stretch'}
       flex={1}
       height={'100%'}
-      minWidth={240}
       flexWrap={'nowrap'}
       // spacing={2}
     >

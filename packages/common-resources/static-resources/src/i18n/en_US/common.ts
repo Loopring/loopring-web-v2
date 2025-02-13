@@ -2078,12 +2078,9 @@ export default {
   labelDualAssetReInvestEnable: 'Enabled',
   labelDualDeliver: 'Settlement Price',
   labelDualAssetReInvestDisable: 'Disabled',
-  labelUnlockErrorLine1:
-    'The failure to unlock your wallet most likely is due to network condition or browser issue, which may be recovered via refreshing the page or reopening it',
-  labelUnlockErrorLine2Part1: 'As a last resort, you can ',
-  labelUnlockErrorLine2Part2: 'Reset Loopring L2 keypair',
-  labelUnlockErrorLine2Part3:
-    '. This can be especially helpful if all other retry attempts fail, particularly when using hardware wallets.',
+  
+  labelUnlockErrorLine2Part1: 'If you are using an MPC wallet (such as the OKX keyless wallet), the signature may produce random results, which can lead to sign-in failures. In such cases, you may need to ',
+  labelUnlockErrorLine2Part2: 'reset your EDDSA key',
   labelResetLoopringL2: 'Reset Loopring L2 keypair',
   labelResetlockedReset1:
     "Please note that if you have pending Dual Investment subscriptions, the L2 keypair reset won't take immediate effect. Your wallet's L2 account will remain locked until all subscriptions have settled. While locked, you won't be able to perform any L2 operations.",
@@ -2549,7 +2546,12 @@ export default {
 
   labelDefiCloseCian:
     'The ciETH subscription has been deprecated. We recommend redeeming your ciETH for ETH as soon as possible. You can also explore other ETH staking portfolios for alternative options.',
-  labelUnlockErrorSupport1: 'The inability to unlock your wallet is most likely due to network conditions or browser-related issues. This can often be resolved by refreshing the page.',
-  labelUnlockErrorSupport2: 'If the problem persists after multiple attempts, please contact us directly at support@loopring.io and provide your wallet information. Our engineers will assist you in resolving the issue as soon as possible. Thank you for your understanding.'
+
+  labelUnlockErrorLine1Part1:
+    'The inability to unlock your wallet is most likely due to network conditions or browser-related issues. In many cases, simply refreshing the page can resolve the issue. If the problem persists after multiple attempts, try manually ',
+  labelUnlockErrorLine1Part2:
+    'resetting your Loopring EDDSA keypair ',
+  labelUnlockErrorLine1Part3:
+    'to resolve the issue',
 }
 
