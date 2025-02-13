@@ -2961,7 +2961,13 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Failed
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo()}
+            btnInfo={{
+              btnTxt: 'labelClose',
+              callback: (e: any) => {
+                setShouldShow(false)
+                setShowActiveAccount({ isShow: false })
+              }
+            }}
             {...{
               ...rest,
               account,
