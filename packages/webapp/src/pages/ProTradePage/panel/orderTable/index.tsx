@@ -23,7 +23,7 @@ const BoxStyle = styled(Box)`
     min-height: initial;
   }
 
-  overflow: scroll;
+  overflow: auto;
 
   &.min-height .rdg {
     min-height: 240px;

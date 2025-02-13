@@ -254,9 +254,7 @@ const MyLiquidity = withTranslation('common')(
       fixed: tokenMap[stakedSymbol].precision,
     })
     const taikoFarmingTotalStakedDollarRaw = 
-      getValueInCurrency(
-        new Decimal(taikoFarmingTotalStakedRaw).times(tokenPrices[stakedSymbol] ?? 0).toString(),
-      )
+      new Decimal(taikoFarmingTotalStakedRaw).times(tokenPrices[stakedSymbol] ?? 0).toString()
     const taikoFarmingTotalStakedDollar = fiatNumberDisplay(
       taikoFarmingTotalStakedDollarRaw,
       currency,

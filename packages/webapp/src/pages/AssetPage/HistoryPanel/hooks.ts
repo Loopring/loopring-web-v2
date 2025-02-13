@@ -4,6 +4,7 @@ import {
   LoopringAPI,
   makeDualOrderedItem,
   numberFormat,
+  numberFormatThousandthPlace,
   numberStringListSum,
   store,
   tradeItemToTableDataItem,
@@ -1388,10 +1389,10 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       status == sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? amountS : 0
                     fillAmount = sdk.toBig(fillAmountS).div('1e' + vToken.decimals)
                     percentage = sdk.VaultOperationStatus.VAULT_STATUS_SUCCEED ? 100 : 0
-                    const amountStr = !amount.eq(0)
-                      ? getValuePrecisionThousand(amount, precision, precision)
-                      : EmptyValueTag
-                    mainContentRender = `${Decimal.abs(amountStr).toString()} ${erc20Symbol}`
+                    // const amountStr = !amount.eq(0)
+                    //   ? getValuePrecisionThousand(amount, precision, precision)
+                    //   : EmptyValueTag
+                    mainContentRender = !amount.eq(0) ? `${ numberFormatThousandthPlace(new Decimal(amount.toString()).abs().toString()) } ${erc20Symbol}` : EmptyValueTag
                     break
                   case sdk.VaultOperationType.VAULT_BORROW:
                     type = VaultRecordType.borrow
