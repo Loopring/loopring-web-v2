@@ -222,7 +222,7 @@ export const AssetPage = () => {
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         height: '100%',
-        overflow: 'scroll',
+        overflow: 'auto',
       }}
     >
       {confirmation.showTaikoLaunchBanner2 && (
