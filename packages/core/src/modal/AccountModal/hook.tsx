@@ -2965,6 +2965,7 @@ export function useAccountModalForUI({
               btnTxt: 'labelClose',
               callback: (e: any) => {
                 setShouldShow(false)
+                setShowAccount({ isShow: false })
                 setShowActiveAccount({ isShow: false })
               }
             }}
