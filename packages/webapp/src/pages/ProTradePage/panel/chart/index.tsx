@@ -149,7 +149,7 @@ export const ChartView = withTranslation('common')(
             justifyContent={'space-between'}
             alignItems={'center'}
           >
-            <Box display={'flex'} alignItems={'center'} style={{ overflowX: 'scroll' }}>
+            <Box display={'flex'} alignItems={'center'} style={{ overflowX: 'auto' }}>
               {isKline && (
                 <Grid container spacing={1} marginRight={1} minWidth={296}>
                   {timeIntervalData.map((item) => {
@@ -226,7 +226,7 @@ export const ChartView = withTranslation('common')(
               )}
             </Box>
             {isShowDepth ? (
-              <Box style={{ overflowX: 'scroll' }}>
+              <Box style={{ overflowX: 'auto' }}>
                 <Grid container spacing={2} minWidth={160}>
                   <Grid item onClick={() => handleChartTypeChange(ChartType.Kline)}>
                     <ChartItemStyled

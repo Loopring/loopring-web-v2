@@ -172,6 +172,7 @@ export enum AccountStep {
   UnlockAccount_User_Denied,
   UnlockAccount_Success,
   UnlockAccount_Failed,
+  UnlockAccount_Reset_Key_Confirm,
 
   ResetAccount_Approve_WaitForAuth,
   ResetAccount_First_Method_Denied,

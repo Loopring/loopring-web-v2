@@ -247,7 +247,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
           className='tableWrapper table-divide-short'
           display={'flex'}
           flex={1}
-          overflow={'scroll'}
+          overflow={'auto'}
         >
           {currentTab === RecordTabIndex.Transactions ? (
             <TransactionTable
@@ -393,7 +393,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                               maxHeight: 'initial',
                               overflowY: 'initial',
                             }
-                          : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                          : { maxHeight: 'var(--modal-height)', overflowY: 'auto' }
                       }
                     >
                       <DualDes
@@ -634,7 +634,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                             maxHeight: 'initial',
                             overflowY: 'initial',
                           }
-                        : { maxHeight: 'var(--modal-height)', overflowY: 'scroll' }
+                        : { maxHeight: 'var(--modal-height)', overflowY: 'auto' }
                     }
                   >
                     {vaultOperationDetail &&

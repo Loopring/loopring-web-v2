@@ -323,7 +323,7 @@ export const SpotView = withTranslation('common')(
           flexDirection={'column'}
           alignItems={'stretch'}
           height={'inherit'}
-          sx={{ overflowY: 'scroll' }}
+          sx={{ overflowY: 'auto' }}
           marginBottom={2}
         >
           <Box component={'header'} width={'100%'}>

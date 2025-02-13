@@ -238,7 +238,7 @@ export const globalCss = ({ theme }: any) => css`
   }
 
   html {
-    overflow-y: scroll;
+    overflow-y: auto;
     --auto-refresh-duration: ${refreshTime - 1}s;
     --durationInternal: calc(var(--auto-refresh-duration) * 2);
     --delay: calc(var(--auto-refresh-duration) / 2);

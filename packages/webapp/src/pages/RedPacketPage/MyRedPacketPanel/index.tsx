@@ -300,7 +300,7 @@ export const MyRedPacketPanel = ({ setToastOpen }: { setToastOpen: (props: any) 
         </Button>
       </Box>
 
-      <StylePaper overflow={'scroll'} ref={container} flex={1}>
+      <StylePaper overflow={'auto'} ref={container} flex={1}>
         {tabsView}
         {[
           RedPacketRecordsTabIndex.Received,

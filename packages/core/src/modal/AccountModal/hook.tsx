@@ -172,6 +172,7 @@ import {
   Transfer_To_Taiko_In_Progress,
   Transfer_To_Taiko_Success,
   Transfer_To_Taiko_Failed,
+  UnlockAccount_Reset_Key_Confirm,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -933,11 +934,7 @@ export function useAccountModalForUI({
         height: 'auto',
       },
       [AccountStep.SendAssetFromContact]: {
-        view: (
-          <SendFromContact
-            {...(isShowAccount?.info as any)}
-               />
-        ),
+        view: <SendFromContact {...(isShowAccount?.info as any)} />,
       },
       [AccountStep.SendNFTGateway]: {
         view: (
@@ -1972,12 +1969,7 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.General_Failed]: {
-        view: (
-          <General_Failed
-            t={t}
-            {...rest}
-          />
-        ),
+        view: <General_Failed t={t} {...rest} />,
       },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
@@ -2425,7 +2417,6 @@ export function useAccountModalForUI({
         ),
       },
 
-
       // withdraw
       [AccountStep.Withdraw_WaitForAuth]: {
         view: (
@@ -2654,7 +2645,7 @@ export function useAccountModalForUI({
           />
         ),
       },
-			//Burn
+      //Burn
 
       // withdraw
       [AccountStep.NFTWithdraw_WaitForAuth]: {
@@ -2893,6 +2884,23 @@ export function useAccountModalForUI({
         view: (
           <UnlockAccount_Failed
             btnInfo={closeBtnInfo()}
+            onClickReset={() => {
+              setShowAccount({ isShow: true, step: AccountStep.UnlockAccount_Reset_Key_Confirm })
+            }}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              walletType: isShowAccount?.info?.walletType,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UnlockAccount_Reset_Key_Confirm]: {
+        view: (
+          <UnlockAccount_Reset_Key_Confirm
+            t={t}
             resetAccount={() => {
               if (walletServices)
                 if (isShowAccount.info && isShowAccount.info.walletType) {
@@ -2904,18 +2912,12 @@ export function useAccountModalForUI({
               setShowAccount({ isShow: false })
               setShowActiveAccount({
                 isShow: true,
-                info: { isReset: true, confirmationType: 'lockedReset' },
+                info: { isReset: true, confirmationType: undefined },
               })
-            }}
-            {...{
-              ...rest,
-              account,
-              error: isShowAccount.error,
-              walletType: isShowAccount?.info?.walletType,
-              t,
             }}
           />
         ),
+        height: 510
       },
 
       [AccountStep.ResetAccount_Approve_WaitForAuth]: {
@@ -2999,7 +3001,14 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Failed
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo()}
+            btnInfo={{
+              btnTxt: 'labelClose',
+              callback: (e: any) => {
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
+                setShowActiveAccount({ isShow: false })
+              }
+            }}
             {...{
               ...rest,
               account,
@@ -3116,7 +3125,8 @@ export function useAccountModalForUI({
                 if (isTaikoEarn) {
                   setShowAccount({ isShow: false })
                 } else {
-                  setShowActiveAccount({ isShow: true })
+                  setShowAccount({ isShow: false })
+                  setShowActiveAccount({ isShow: false })
                 }
               },
             }}
@@ -3467,12 +3477,18 @@ export function useAccountModalForUI({
       },
       [AccountStep.VaultDustCollector_Success]: {
         view: (
-          <VaultDustCollector_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+          <VaultDustCollector_Success
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
         ),
       },
       [AccountStep.VaultDustCollector_Failed]: {
         view: (
-          <VaultDustCollector_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+          <VaultDustCollector_Failed
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
         ),
       },
       [AccountStep.VaultDustCollector_In_Progress]: {
