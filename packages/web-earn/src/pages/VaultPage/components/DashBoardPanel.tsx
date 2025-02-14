@@ -55,7 +55,8 @@ import {
   DustCollectorUnAvailableModal,
   LeverageModal,
   MaximumCreditModal,
-  NoAccountHintModal
+  NoAccountHintModal,
+  VaultSwapModal
 } from './modals'
 import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
 import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
@@ -1565,65 +1566,6 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                   Portal Trade
                 </Button>
               </Box>
-              {/* <Modal
-                open={showNoVaultAccount && !isShowVaultJoin?.isShow}
-                onClose={onBtnClose}
-                sx={{ zIndex: 1000 }}
-              >
-                <Box
-                  height={'100%'}
-                  display={'flex'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                >
-                  <Box
-                    padding={5}
-                    bgcolor={'var(--color-box)'}
-                    width={'var(--modal-width)'}
-                    borderRadius={1}
-                    display={'flex'}
-                    alignItems={'center'}
-                    flexDirection={'column'}
-                    position={'relative'}
-                  >
-                    <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onBtnClose} />
-                    <ViewAccountTemplate
-                      className={'inModal'}
-                      activeViewTemplate={
-                        <>
-                          <Typography marginBottom={3} variant={'h4'}>
-                            {t(btnProps.title)}
-                          </Typography>
-                          <Typography
-                            whiteSpace={'pre-line'}
-                            component={'span'}
-                            variant={'body1'}
-                            color={'textSecondary'}
-                            marginBottom={3}
-                            textAlign={'left'}
-                            width={'100%'}
-                          >
-                            <Trans
-                              i18nKey={btnProps.des}
-                              tOptions={{
-                                layer2: L1L2_NAME_DEFINED[network].layer2,
-                                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-                                loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-                                l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-                                l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-                                ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-                              }}
-                            />
-                          </Typography>
-                          skrrr
-                          <>{dialogBtn}</>
-                          skrrr
-                        </>
-                      }
-                    />
-                  </Box>
-                </Box>
-              </Modal> */}
               
 
               <Modal
@@ -1883,15 +1825,14 @@ export const VaultDashBoardPanel = ({
     dustCollectorUnAvailableModalProps,
     vaultDashBoardPanelUIProps,
     noAccountHintModalProps,
-  } = useVaultDashboard({ vaultAccountInfo: _vaultAccountInfo, showLeverage, closeShowLeverage })
+    vaultSwapModalProps
+  } = useVaultDashboard({ showLeverage, closeShowLeverage })
   const joinVaultProps = useVaultJoin()
   return (
     <>
       <VaultDashBoardPanelUI2
         {...vaultDashBoardPanelUIProps}
         vaultAccountInfo={_vaultAccountInfo.vaultAccountInfo}
-        closeShowLeverage={closeShowLeverage}
-        showLeverage={showLeverage}
       />
       <VaultJoinPanelModal {...joinVaultProps} />
       <CollateralDetailsModal {...collateralDetailsModalProps} />
@@ -1901,6 +1842,7 @@ export const VaultDashBoardPanel = ({
       <DustCollectorModal {...dustCollectorModalProps} />
       <DustCollectorUnAvailableModal {...dustCollectorUnAvailableModalProps} />
       <NoAccountHintModal {...noAccountHintModalProps} />
+      <VaultSwapModal {...vaultSwapModalProps} />
     </>
   ) 
 }

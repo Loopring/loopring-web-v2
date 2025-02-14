@@ -60,6 +60,7 @@ import {
   useWalletLayer2,
   VaultAccountInfoStatus,
   WalletConnectL2Btn,
+  useVaultSwap,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
@@ -69,7 +70,7 @@ import Decimal from 'decimal.js'
 import { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
-import { NoAccountHintModalProps } from '../components/modals'
+import { NoAccountHintModalProps, VaultSwapModalProps } from '../components/modals'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
 
@@ -451,6 +452,8 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTablePro
   }
 }
 
+
+
 export const useVaultDashboard = ({
   showLeverage,
   closeShowLeverage,
@@ -466,6 +469,7 @@ export const useVaultDashboard = ({
   maximumCreditModalProps: MaximumCreditModalProps
   collateralDetailsModalProps: CollateralDetailsModalProps
   noAccountHintModalProps: NoAccountHintModalProps
+  vaultSwapModalProps: VaultSwapModalProps
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
   const {
@@ -1122,8 +1126,9 @@ export const useVaultDashboard = ({
   })()
     
   
-
+  const vaultSwapModalProps = useVaultSwap({ path: 'portal' })
   return {
+    vaultSwapModalProps: vaultSwapModalProps,
     vaultDashBoardPanelUIProps,
     dustCollectorUnAvailableModalProps: {
       open: localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show,

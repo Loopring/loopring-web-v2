@@ -225,7 +225,7 @@ export const useVaultSwap = <
 
   const refreshRef = React.useRef()
   const { toastOpen, setToastOpen, closeToast } = useToast()
-  const { isMobile } = useSettings()
+  const { isMobile, coinJson } = useSettings()
 
   const {
     toggle: { VaultInvest },
@@ -1991,6 +1991,7 @@ export const useVaultSwap = <
           '0',
         )
       : undefined
+  
 
   return {
     isMarketInit,
@@ -2055,5 +2056,75 @@ export const useVaultSwap = <
     showSmallTradePrompt,
     setShowSmallTradePrompt,
     hideLeverage: (vaultAccountInfo as any)?.accountType === 0,
+    open: true,
+    onClose: () => {},
+    setting: {
+      hideLeverage: false,
+      onClickSettingLeverage: () => {},
+      leverage: 1,
+      onSwitchChange: () => {},
+      secondConfirmationChecked: false,
+      settingPopoverOpen: false,
+      onCloseSettingPopover: () => {},
+      onClickSettingBtn: () => {},
+      slippageList: [],
+      currentSlippage: '0.5',
+      onSlippageChange: (slippage, customSlippage) => {},
+    },
+    countdown: {
+      countDownSeconds: 10,
+      onRefreshData: () => {},
+      ref: refreshRef,
+    },
+    isLongOrShort: 'long',
+    onClickBalance: () => {},
+    onClickToken: () => {},
+    balance: '0',
+    token: {
+      symbol: '',
+      coinJSON: coinJson['ETH'],
+    },
+    onInputAmount: (amount: string) => {},
+    amountInput: '',
+    inputAlert: {
+      show: false,
+      message: '',
+    },
+    swapRatio: '1 lrc = 2 ETH',
+    onClickReverse: () => {},
+    maxTradeValue: '100',
+    borrowed: '200',
+    totalQuota: '300',
+    marginLevel: {
+      from: '1',
+      to: '2',
+    },
+    hourlyInterestRate: '0.1%',
+    tradingFee: '1 lrc',
+    slippageTolerance: '0.1',
+    myPositions: [
+      {
+        tokenSymbol: 'ETH',
+        longOrShort: 'short',
+        marginLevel: '10',
+        leverage: '5x',
+        amount: '10',
+        marketPrice: '3000',
+        onClickLeverage: () => {},
+        onClickTrade: () => {},
+        onClickClose: () => {},
+      },
+      {
+        tokenSymbol: 'LRC',
+        longOrShort: 'long',
+        marginLevel: '10',
+        leverage: '1x',
+        amount: '10',
+        marketPrice: '3000',
+        onClickLeverage: () => {},
+        onClickTrade: () => {},
+        onClickClose: () => {},
+      },
+    ],
   }
 }

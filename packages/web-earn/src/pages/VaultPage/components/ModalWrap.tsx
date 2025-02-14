@@ -51,7 +51,6 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     openCancel: false,
     shouldClose: false,
   })
-  const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
   const {
     isMarketInit,
@@ -99,7 +98,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
         onClose={closeToast}
         severity={toastOpen.type}
       />
-      <Modal
+      {/* <Modal
         contentClassName={'vault-wrap'}
         open={isShowVaultSwap.isShow}
         onClose={() => {
@@ -194,7 +193,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
             <></>
           )
         }
-      />
+      /> */}
       <SmallOrderAlert
         open={showSmallTradePrompt.show}
         handleClose={() => {
