@@ -3,7 +3,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Box, Container, Divider, Tab, Tabs, Typography } from '@mui/material'
 
 import React from 'react'
-import { confirmation, store, useAccountInfo, useVaultMap } from '@loopring-web/core'
+import { confirmation, store, useVaultAccountInfo, useVaultMap } from '@loopring-web/core'
 
 import {
   RouterPath,
@@ -67,7 +67,7 @@ export const VaultPage = () => {
   const { isMobile } = useSettings()
   const { t } = useTranslation()
   const history = useHistory()
-  const vaultAccountInfo = useAccountInfo()
+  const vaultAccountInfo = useVaultAccountInfo()
   const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
   const [tabIndex, setTabIndex] = React.useState<VaultKey>(() => {
     return (

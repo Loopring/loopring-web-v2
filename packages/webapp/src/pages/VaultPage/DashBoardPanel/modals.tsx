@@ -1,13 +1,12 @@
 import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip } from '@mui/material'
-import { AvatarCoin, Button, CoinIcons, Loading, LoadingStyled, SpaceBetweenBox } from '@loopring-web/component-lib'
-import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, InfoIcon, OrderListIcon, TokenType } from '@loopring-web/common-resources'
-import { numberFormat } from '@loopring-web/core'
+import { Button, CoinIcons, Loading, ModalCloseButtonPosition, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, InfoIcon, L1L2_NAME_DEFINED, OrderListIcon, TokenType } from '@loopring-web/common-resources'
+import { numberFormat, ViewAccountTemplate } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import _ from 'lodash';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useTranslation } from 'react-i18next';
-import Decimal from 'decimal.js';
+import { Trans, useTranslation } from 'react-i18next';
 
 type CollateralDetailsModalProps = {
   open: boolean

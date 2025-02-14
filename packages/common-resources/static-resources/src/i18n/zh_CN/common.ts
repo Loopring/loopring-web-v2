@@ -2445,4 +2445,5 @@ export default {
   labelTAIKO_FARMING: 'Taiko Farming',
   labelDefiCloseCian:
     'The ciETH subscription has been deprecated. We recommend redeeming your ciETH for ETH as soon as possible. You can also explore other ETH staking portfolios for alternative options.',
+  labelVaultMarketTitle: 'Market',
 }

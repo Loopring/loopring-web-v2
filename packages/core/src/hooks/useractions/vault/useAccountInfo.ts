@@ -39,7 +39,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   vaultAccountInfoStatus: SagaStatus
   // isShowFeathure:  vaultAccountInfo?.accountStatus
 }
-export const useAccountInfo = () => {
+export const useVaultAccountInfo = () => {
   const {
     vaultAccountInfo,
     status: vaultAccountInfoStatus,
@@ -306,7 +306,5 @@ export const useAccountInfo = () => {
     tokenFactors,
     maxLeverage,
     collateralTokens
-
-    // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus
 }

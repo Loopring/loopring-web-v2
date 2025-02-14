@@ -1,33 +1,17 @@
 import {
   Box,
-  Container,
   Typography,
-  Grid,
-  Modal,
-  Tooltip,
   Button,
-  Divider,
-  IconButton,
 } from '@mui/material'
-import React, { ReactNode } from 'react'
+
+import React, { useEffect } from 'react'
 import {
-  ConvertToIcon,
-  CloseOutIcon,
-  LoadIcon,
-  MarginIcon,
-  MarginLevelIcon,
-  VaultTradeIcon,
   PriceTag,
   CurrencyToTag,
-  HiddenTag,
-  getValuePrecisionThousand,
   EmptyValueTag,
-  YEAR_DAY_MINUTE_FORMAT,
   VaultAction,
   L1L2_NAME_DEFINED,
   MapChainId,
-  UpColor,
-  Info2Icon,
   SoursURL,
   RouterPath,
   VaultKey,
@@ -35,27 +19,28 @@ import {
   VaultLoanType,
   SUBMIT_PANEL_CHECK,
   SUBMIT_PANEL_AUTO_CLOSE,
-  WarningIcon2,
-  hexToRGB,
-  ForexMap,
+  fnType,
+  SagaStatus,
+  AccountStatus,
+  myLog,
+  TokenType,
+  globalSetup,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
-  MarketDetail,
-  MenuBtnStyled,
-  ModalCloseButton,
-  ModalCloseButtonPosition,
-  SwitchPanelStyled,
   useOpenModals,
   useSettings,
-  VaultAssetsTable,
-  Button as MyButton,
   AccountStep,
   useToggle,
-  ModalStatePlayLoad,
+  VaultDataAssetsItem,
+  VaultAssetsTableProps,
+  setShowWrongNetworkGuide,
+  Button as MyButton
 } from '@loopring-web/component-lib'
-import { useTranslation, Trans, TFunction } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import {
+  accountReducer,
+  accountStaticCallBack,
   DAYS,
   fiatNumberDisplay,
   getTimestampDaysLater,
@@ -66,44 +51,413 @@ import {
   numberStringListSum,
   store,
   useAccount,
+  useVaultAccountInfo,
   useSystem,
   useTokenMap,
-  useTokenPrices,
   useVaultLayer2,
   useVaultMap,
   useVaultTicker,
+  useWalletLayer2,
   VaultAccountInfoStatus,
-  ViewAccountTemplate,
+  WalletConnectL2Btn,
 } from '@loopring-web/core'
-import { useGetVaultAssets } from '../hooks/useGetVaultAssets'
-import moment from 'moment'
-import { Theme, useTheme } from '@emotion/react'
+import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
-import { useHistory } from 'react-router'
-import {
-  CollateralDetailsModal,
-  DebtModal,
-  DustCollectorModal,
-  DustCollectorUnAvailableModal,
-  LeverageModal,
-  MaximumCreditModal,
-} from '../components/modals'
+import { useHistory, useLocation, useRouteMatch } from 'react-router'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
 import { keys } from 'lodash'
-import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
-import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
+import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
+import { NoAccountHintModalProps } from '../components/modals'
+
+const VaultPath = `${RouterPath.vault}/:item/:method?`
+
+const parseVaultTokenStatus = (status: number) => ({
+  show: status & 1,
+  join: status & 2,
+  exit: status & 4,
+  loan: status & 8,
+  repay: status & 16,
+})
+
+const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTableProps<R> & {
+  totalAsset: string
+  [key: string]: any
+} => {
+  const _vaultAccountInfo = useVaultAccountInfo()
+  let match: any = useRouteMatch(VaultPath)
+  const history = useHistory()
+  const { search, pathname } = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const { t } = useTranslation(['common'])
+
+  const {
+    vaultAccountInfoStatus,
+    vaultAccountInfo,
+    activeInfo,
+    onJoinPop,
+    onSwapPop,
+    onBorrowPop,
+    onRedeemPop,
+  } = _vaultAccountInfo
+  const [assetsRawData, setAssetsRawData] = React.useState<R[]>([])
+  const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
+  const { account } = useAccount()
+  const { allowTrade, forexMap } = useSystem()
+
+  const {
+    setShowNoVaultAccount,
+    modals: {
+      isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
+    },
+  } = useOpenModals()
+
+  const { isMobile, defaultNetwork, hideL2Assets, hideSmallBalances, setHideSmallBalances } =
+    useSettings()
+  const network = MapChainId[defaultNetwork] ?? MapChainId[1]
+  const btnClickCallbackArray = {
+    [fnType.ERROR_NETWORK]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))
+        store.dispatch(setShowWrongNetworkGuide({ isShow: true }))
+      },
+    ],
+    [fnType.UN_CONNECT]: [
+      function (key: VaultAction) {
+        setShowNoVaultAccount({ isShow: true, whichBtn: key })
+      },
+    ],
+    [fnType.NO_ACCOUNT]: [
+      function (key: VaultAction) {
+        setShowNoVaultAccount({ isShow: true, whichBtn: key })
+      },
+    ],
+    [fnType.DEPOSITING]: [
+      function (key: VaultAction) {
+        setShowNoVaultAccount({ isShow: true, whichBtn: key })
+      },
+    ],
+    [fnType.NOT_ACTIVE]: [
+      function (key: VaultAction) {
+        setShowNoVaultAccount({ isShow: true, whichBtn: key })
+      },
+    ],
+    [fnType.LOCKED]: [
+      function (key: VaultAction) {
+        setShowNoVaultAccount({ isShow: true, whichBtn: key })
+      },
+    ],
+    [fnType.ACTIVATED]: [
+      (
+        accountStatus: sdk.VaultAccountStatus,
+        activeInfo: {
+          hash: string
+          isInActive: true
+        },
+        key: any,
+      ) => {
+        if (
+          [sdk.VaultAccountStatus.IN_STAKING].includes(accountStatus as any) ||
+          activeInfo?.hash
+        ) {
+          switch (key) {
+            case VaultAction.VaultJoin:
+              onJoinPop({})
+              // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
+              break
+            case VaultAction.VaultExit:
+              onRedeemPop({ isShow: true })
+              break
+            case VaultAction.VaultLoan:
+              onBorrowPop({ isShow: true })
+              break
+            case VaultAction.VaultSwap:
+              onSwapPop({})
+              break
+          }
+        } else if (
+          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+        ) {
+          setShowNoVaultAccount({
+            isShow: true,
+            des: 'labelRedeemDesMessage',
+            title: 'labelRedeemTitle',
+          })
+        } else {
+          setShowNoVaultAccount({
+            isShow: true,
+            whichBtn: VaultAction.VaultJoin,
+            des: 'labelJoinDesMessage',
+            title: 'labelVaultJoinTitle',
+          })
+        }
+      },
+      [vaultAccountInfo?.accountStatus, activeInfo?.hash],
+    ],
+  }
+  const onActionBtnClick = (props: string) => {
+    accountStaticCallBack(btnClickCallbackArray, [props])
+  }
+  React.useEffect(() => {
+    if (
+      match?.params?.item == VaultKey.VAULT_DASHBOARD &&
+      vaultAccountInfoStatus === SagaStatus.UNSET
+    ) {
+      const { vaultAccountInfo } = store.getState().vaultLayer2
+      if (vaultAccountInfo?.accountStatus) {
+        if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus as any)) {
+          if (match?.params?.method) {
+            switch (match?.params?.method) {
+              case VaultAction.VaultJoin:
+                onJoinPop({})
+                // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
+                break
+              case VaultAction.VaultExit:
+                onRedeemPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+              case VaultAction.VaultLoan:
+                onBorrowPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+              case VaultAction.VaultSwap:
+                onSwapPop({ isShow: true, symbol: searchParams.get('symbol') })
+                break
+            }
+            history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+          }
+        } else if (
+          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
+        ) {
+          setShowNoVaultAccount({
+            isShow: true,
+            des: 'labelRedeemDesMessage',
+            title: 'labelRedeemTitle',
+          })
+        } else {
+        }
+      } else {
+        
+      }
+    }
+  }, [vaultAccountInfoStatus, match?.params?.item, match?.params?.method])
+  
+  const { status: walletL2Status } = useWalletLayer2()
+  const getAssetsRawData = () => {
+    const {
+      // vaultLayer2: { vaultAccountInfo },
+      tokenMap: {
+        // tokenMap: erc20TokenMap,
+        idIndex: erc20IdIndex,
+      },
+
+      invest: {
+        vaultMap: { tokenMap,  tokenPrices },
+      },
+    } = store.getState()
+    const walletMap = makeVaultLayer2({ needFilterZero: false }).vaultLayer2Map ?? {}
+    myLog('asdfhsjdhfjsd', tokenMap, walletMap)
+    if (
+      tokenMap &&
+      !!Object.keys(tokenMap).length &&
+      !!Object.keys(walletMap ?? {}).length
+    ) {
+      const data: Array<any> = Object.keys(tokenMap ?? {})
+      .map((key, _index) => {
+        let item: any
+        let tokenInfo = {
+          ...tokenMap[key],
+          token: key,
+          erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+        }
+        const erc20Symbol = key.slice(2)
+        if (walletMap && walletMap[key]) {
+          tokenInfo = {
+            ...tokenInfo,
+            detail: walletMap[key],
+            erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
+          }
+          const totalAmount = sdk.toBig(tokenInfo.detail?.asset ?? 0)
+          const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
+          const isSmallBalance = tokenValueDollar.lt(1)
+          item = {
+            token: {
+              type: TokenType.vault,
+              value: key,
+              belongAlice: erc20Symbol,
+            },
+            amount: totalAmount?.toString(),
+            available: tokenInfo?.detail?.count??0,
+            smallBalance: isSmallBalance,
+            tokenValueDollar: tokenValueDollar.toString(),
+            name: tokenInfo.token,
+            erc20Symbol,
+          }
+        } else {
+          item = {
+            ...tokenInfo,
+            token: {
+              type: TokenType.vault,
+              value: key,
+              belongAlice: erc20Symbol,
+            },
+            amount: 0,
+            available: 0,
+            locked: 0,
+            smallBalance: true,
+            tokenValueDollar: 0,
+            name: key,
+            tokenValueYuan: 0,
+            erc20Symbol,
+          }
+        }
+        if (item) {
+          let precision = tokenMap[item.token.value].precision
+          return {
+            ...item,
+            precision: precision,
+            holding: '100-todo',
+            equity: '100-todo',
+          }
+        } else {
+          return undefined
+        }
+      })
+      .filter(token => {
+        const status = tokenMap['LV' + token.erc20Symbol].vaultTokenAmounts.status as number
+        return token && parseVaultTokenStatus(status).loan && parseVaultTokenStatus(status).repay
+      }).sort((a, b) => {
+        const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
+        const deltaAmount = sdk.toBig(b.amount).minus(a.amount).toNumber()
+        const deltaName = b.token.value < a.token.value ? 1 : -1
+        return deltaDollar !== 0 ? deltaDollar : deltaAmount !== 0 ? deltaAmount : deltaName
+      })
+      const totalAssets = data.reduce(
+        (pre, item) => pre.plus(sdk.toBig(item.tokenValueDollar)),
+        sdk.toBig(0),
+      )
+      setAssetsRawData(data)
+      setTotalAsset(totalAssets.toString())
+    } else {
+      setAssetsRawData([])
+      setTotalAsset(EmptyValueTag)
+    }
+  }
+  const startWorker = _.debounce(getAssetsRawData, globalSetup.wait)
+  React.useEffect(() => {
+    if (
+      showNoVaultAccount &&
+      vaultAccountInfoStatus === SagaStatus.UNSET &&
+      vaultAccountInfo?.accountStatus && walletL2Status === SagaStatus.UNSET &&
+      whichBtn &&
+      vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
+    ) {
+      onActionBtnClick(whichBtn)
+    }
+    // enableBtn()
+  }, [
+    whichBtn,
+    walletL2Status,
+    vaultAccountInfo?.accountStatus,
+    activeInfo,
+    assetsRawData,
+    // tokenPriceStatus,
+  ])
+  const walletLayer2Callback = React.useCallback(() => {
+    startWorker()
+  }, [])
+  React.useEffect(() => {
+    if (vaultAccountInfoStatus === SagaStatus.UNSET) {
+      walletLayer2Callback()
+    }
+  }, [vaultAccountInfoStatus])
+  const onRowClick = React.useCallback(
+    ({ row }: { row: R }) => {
+      
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+        history.push('/portal/portalDashboard')
+        onSwapPop({ symbol: row?.token?.value })
+      } else {
+        history.push('/portal')
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelVaultJoinTitle',
+        })
+      }
+    },
+    [vaultAccountInfo?.accountStatus],
+  )
+  return {
+    btnProps,
+    onBtnClose: () => {
+      setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
+    },
+    forexMap,
+    rawData: assetsRawData as R[],
+    hideAssets: hideL2Assets,
+    allowTrade,
+    setHideSmallBalances,
+    hideSmallBalances,
+    showFilter: true,
+    totalAsset,
+    showNoVaultAccount,
+    actionRow: ({ row }) => {
+      return (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation()
+            onRowClick({ row })
+          }}
+        >
+          {t('labelTrade')}
+        </Button>
+      )
+    },
+    onRowClick: (_, row) => {
+      onRowClick({ row })
+    },
+    positionOpend: [sdk.VaultAccountStatus.IN_REDEEM, sdk.VaultAccountStatus.IN_STAKING]
+      .includes(vaultAccountInfo?.accountStatus as any),
+    onRowClickTrade: ({ row }: { row: R }) => {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+        history.push('/portal/portalDashboard')
+        onSwapPop({ symbol: row?.token?.value })
+      } else {
+        history.push('/portal')
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelVaultJoinTitle',
+        })
+      }
+    },
+    onRowClickRepay: ({ row }: { row: R }) => {
+      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+        history.push('/portal/portalDashboard')
+        // todo repay
+      } else {
+        history.push('/portal')
+        setShowNoVaultAccount({
+          isShow: true,
+          whichBtn: VaultAction.VaultJoin,
+          des: 'labelJoinDesMessage',
+          title: 'labelVaultJoinTitle',
+        })
+      }
+    },
+    noMinHeight: true
+  }
+}
 
 export const useVaultDashboard = ({
-  vaultAccountInfo: _vaultAccountInfo,
   showLeverage,
   closeShowLeverage,
 }: {
-  vaultAccountInfo: VaultAccountInfoStatus
   showLeverage: { show: boolean; closeAfterChange: boolean }
   closeShowLeverage: () => void
-}):  & {
+}): {
   vaultDashBoardPanelUIProps: Omit<VaultDashBoardPanelUIProps, 'showLeverage' | 'closeShowLeverage'> 
   dustCollectorUnAvailableModalProps: DustCollectorUnAvailableModalProps
   dustCollectorModalProps: DustCollectorProps
@@ -111,10 +465,31 @@ export const useVaultDashboard = ({
   leverageModalProps: LeverageModalProps
   maximumCreditModalProps: MaximumCreditModalProps
   collateralDetailsModalProps: CollateralDetailsModalProps
+  noAccountHintModalProps: NoAccountHintModalProps
 } => {
-  const { vaultAccountInfo, activeInfo, tokenFactors, maxLeverage, collateralTokens } =
-    _vaultAccountInfo
+  const _vaultAccountInfo = useVaultAccountInfo()
+  const {
+    vaultAccountInfo,
+    activeInfo,
+    tokenFactors,
+    maxLeverage,
+    collateralTokens,
+    onSwapPop,
+    onJoinPop,
+    joinBtnStatus,
+    joinBtnLabel,
+  } = _vaultAccountInfo
   const { t } = useTranslation()
+
+  const {
+    setShowNoVaultAccount,
+    modals: {
+      isShowNoVaultAccount: { isShow: showNoVaultAccount, ...btnProps },
+      isShowVaultJoin
+    },
+    setShowAccount,
+    setShowVaultLoan,
+  } = useOpenModals()
 
   const { forexMap, etherscanBaseUrl, getValueInCurrency, exchangeInfo } = useSystem()
   const {
@@ -126,24 +501,9 @@ export const useVaultDashboard = ({
     coinJson,
   } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const {
-    modals: { isShowVaultJoin },
-    setShowAccount,
-    setShowVaultLoan,
-  } = useOpenModals()
   const priceTag = PriceTag[CurrencyToTag[currency]]
-  const {
-    onActionBtnClick,
-    dialogBtn,
-    showNoVaultAccount,
-    setShowNoVaultAccount,
-    whichBtn,
-    btnProps,
-    onBtnClose,
-    positionOpend,
-    onClcikOpenPosition,
-    ...assetPanelProps
-  } = useGetVaultAssets({ vaultAccountInfo: _vaultAccountInfo })
+  const assetPanelProps = useGetVaultAssets()
+
   const colors = ['var(--color-success)', 'var(--color-error)', 'var(--color-warning)']
   const theme = useTheme()
   const tableRef = React.useRef<HTMLDivElement>()
@@ -503,6 +863,46 @@ export const useVaultDashboard = ({
       : undefined
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
+  const [assetsTab, setAssetsTab] = React.useState('positionsView' as 'assetsView' | 'positionsView')
+  
+  const vaultPositionsTableProps: VaultPositionsTableProps = {
+    rawData: [
+      {
+        tokenPair: {
+          coinJson: [coinJson['ETH']],
+          pair: 'ETH/USDT',
+          leverage: '3x',
+          marginLevel: '2.5',
+        },
+        direction: 'long',
+        holding: '1.5',
+        costPrice: '3200.50',
+      },
+      {
+        tokenPair: {
+          coinJson: [coinJson['ETH']],
+          pair: 'LRC/USDT',
+          leverage: '3x',
+          marginLevel: '2.5',
+        },
+        direction: 'long',
+        holding: '1.5',
+        costPrice: '3200.50',
+      },
+    ],
+    onRowClick: (index: number, row: PositionItem) => {},
+    isLoading: false,
+    hideAssets: false,
+    onRowClickLeverage: ({ row }: { row: PositionItem }) => {},
+    onRowClickTrade: ({ row }: { row: PositionItem }) => {},
+    onRowClickClose: ({ row }: { row: PositionItem }) => {},
+  }
+  useEffect(() => {
+    setTimeout(() => {
+      onSwapPop({})
+      // onActionBtnClick(VaultAction.VaultSwap)
+    }, 100);
+  }, [])
 
   const vaultDashBoardPanelUIProps = {
     vaultAccountInfo,
@@ -526,15 +926,10 @@ export const useVaultDashboard = ({
     setShowAccount,
     setShowVaultLoan,
     priceTag,
-    onActionBtnClick,
-    dialogBtn,
+    // onActionBtnClick,
     showNoVaultAccount,
     setShowNoVaultAccount,
-    whichBtn,
     btnProps,
-    onBtnClose,
-    positionOpend,
-    onClcikOpenPosition,
     colors,
     theme,
     tableRef,
@@ -577,9 +972,156 @@ export const useVaultDashboard = ({
     liquidationThreshold: '1x',
     liquidationPenalty: '1%',
     onClickPortalTrade: () => {
+      onSwapPop({})
+    },
+    assetsTab: assetsTab,
+    onChangeAssetsTab: (tab: 'assetsView' | 'positionsView') => {
+      setAssetsTab(tab)
+    },
+    onClickRecord: () => {
       
-    }
+    },
+    vaultPositionsTableProps
   }
+  const noVaultAccountDialogBtn = (() => {
+    switch (account.readyState) {
+      case AccountStatus.UN_CONNECT:
+      case AccountStatus.LOCKED:
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.NOT_ACTIVE:
+        return <WalletConnectL2Btn />
+      case AccountStatus.DEPOSITING:
+        return (
+          <Box
+            flex={1}
+            display={'flex'}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <img
+              className='loading-gif'
+              alt={'loading'}
+              width='60'
+              src={`${SoursURL}images/loading-line.gif`}
+            />
+            <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+              {t('describeTitleOpenAccounting', {
+                l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+              })}
+            </Typography>
+          </Box>
+        )
+      case AccountStatus.ERROR_NETWORK:
+        return (
+          <Box
+            flex={1}
+            display={'flex'}
+            justifyContent={'center'}
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
+              {t('describeTitleOnErrorNetwork', {
+                connectName: account.connectName,
+              })}
+            </Typography>
+          </Box>
+        )
+      case AccountStatus.ACTIVATED:
+        if (sdk.VaultAccountStatus.IN_REDEEM === vaultAccountInfo?.accountStatus) {
+          return (
+            <Box
+              flex={1}
+              display={'flex'}
+              justifyContent={'center'}
+              flexDirection={'column'}
+              alignItems={'center'}
+            >
+              <img
+                className='loading-gif'
+                alt={'loading'}
+                width='60'
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          )
+        } else if (
+          [sdk.VaultAccountStatus.UNDEFINED, sdk.VaultAccountStatus.FREE].includes(
+            (vaultAccountInfo?.accountStatus ?? '') as any,
+          ) ||
+          vaultAccountInfo == undefined ||
+          vaultAccountInfo?.accountStatus == undefined
+        ) {
+          return (
+            <MyButton
+              size={'medium'}
+              className={'vaultInProcessing'}
+              onClick={() => {
+                setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
+                onJoinPop(true)
+              }}
+              variant={'contained'}
+              fullWidth={true}
+              sx={{ minWidth: 'var(--walletconnect-width)' }}
+              loading={(joinBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false') as any}
+              disabled={
+                joinBtnStatus === TradeBtnStatus.DISABLED ||
+                joinBtnStatus === TradeBtnStatus.LOADING
+              }
+            >
+              {joinBtnLabel}
+            </MyButton>
+          )
+        } else if (
+          activeInfo?.hash ||
+          (vaultAccountInfo?.accountStatus &&
+            sdk.VaultAccountStatus.IN_STAKING !== vaultAccountInfo?.accountStatus)
+        ) {
+          return (
+            <Box
+              flex={1}
+              display={'flex'}
+              justifyContent={'center'}
+              flexDirection={'column'}
+              alignItems={'center'}
+            >
+              <img
+                className='loading-gif'
+                alt={'loading'}
+                width='60'
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+              <Typography marginY={3} variant={'body1'} textAlign={'center'}>
+                {t('labelVaultAccountWait', {
+                  l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+                })}
+              </Typography>
+            </Box>
+          )
+        } else {
+          return (
+            <MyButton
+              size={'medium'}
+              className={'vaultInProcessing'}
+              onClick={() => {
+                setShowNoVaultAccount({ isShow: false, whichBtn: undefined })
+              }}
+              loading={'false'}
+              variant={'contained'}
+              fullWidth={true}
+              sx={{ minWidth: 'var(--walletconnect-width)' }}
+            >
+              {t('labelVaultCloseBtn')}
+            </MyButton>
+          )
+        }
+      default:
+        return <></>
+    }
+  })()
+    
+  
 
   return {
     vaultDashBoardPanelUIProps,
@@ -845,6 +1387,25 @@ export const useVaultDashboard = ({
       coinJSON:
         vaultAccountInfo?.collateralInfo &&
         coinJson[idIndex[vaultAccountInfo.collateralInfo.collateralTokenId]],
+    },
+    noAccountHintModalProps: {
+      open: showNoVaultAccount && !isShowVaultJoin?.isShow,
+      onClose: () => setShowNoVaultAccount({ isShow: false, whichBtn: undefined }),
+      title: t(btnProps.title),
+      des: (
+        <Trans
+          i18nKey={btnProps.des}
+          tOptions={{
+            layer2: L1L2_NAME_DEFINED[network].layer2,
+            l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
+            loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
+            l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
+            l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
+            ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
+          }}
+        />
+      ),
+      dialogBtn: noVaultAccountDialogBtn,
     },
   }
 }

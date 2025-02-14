@@ -1,11 +1,6 @@
 import { Box, Button, Container, Divider, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
-import {
-  HelpIcon,
-  OrderListIcon,
-  SoursURL,
-  VaultKey,
-} from '@loopring-web/common-resources'
+import { HelpIcon, OrderListIcon, SoursURL, VaultKey } from '@loopring-web/common-resources'
 import {
   Button as LoopringButton,
   ConfirmVaultRisk,
@@ -16,39 +11,6 @@ import { VaultHomePanel } from '../HomePanel'
 import { ModalVaultWrap } from '../components/ModalWrap'
 import { useTranslation } from 'react-i18next'
 
-const HomeTitle = () => {
-  const { t } = useTranslation()
-  return (
-    <Typography display={'inline-flex'} alignItems={'center'}>
-      <Typography
-        component={'span'}
-        variant={'h5'}
-        whiteSpace={'pre'}
-        marginRight={1}
-        className={'invest-Balance-Title'}
-      >
-        {t('labelVaultHomeTitle')}
-      </Typography>
-    </Typography>
-  )
-}
-
-const DashBoardTitle = () => {
-  const { t } = useTranslation()
-  return (
-    <Typography display={'inline-flex'} alignItems={'center'}>
-      <Typography
-        component={'span'}
-        variant={'h5'}
-        whiteSpace={'pre'}
-        marginRight={1}
-        className={'invest-Overview-Title'}
-      >
-        {t('labelVaultDashboardTitle')}
-      </Typography>
-    </Typography>
-  )
-}
 
 export interface VaultPageUIProps {
   isMobile: boolean
@@ -108,47 +70,55 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
             }}
             onChange={handleTabChange}
           >
-            <Tab value={VaultKey.VAULT_HOME} label={<HomeTitle />} />
-            <Tab value={VaultKey.VAULT_DASHBOARD} label={<DashBoardTitle />} />
+            <Tab
+              value={VaultKey.VAULT_HOME}
+              label={
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Typography
+                    component={'span'}
+                    variant={'h5'}
+                    whiteSpace={'pre'}
+                    marginRight={1}
+                    className={'invest-Balance-Title'} 
+                    color={tabIndex === VaultKey.VAULT_HOME ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}
+                  >
+                    {t('labelVaultMarketTitle')}
+                  </Typography>
+                </Typography>
+              }
+            />
+            <Tab
+              value={VaultKey.VAULT_DASHBOARD}
+              label={
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Typography
+                    component={'span'}
+                    variant={'h5'}
+                    whiteSpace={'pre'}
+                    marginRight={1}
+                    className={'invest-Overview-Title'}
+                    color={tabIndex === VaultKey.VAULT_DASHBOARD ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}
+                  >
+                    {t('labelVaultHomeTitle')}
+                  </Typography>
+                </Typography>
+              }
+            />
           </Tabs>
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            marginTop={isMobile ? 2 : 'inherit'}
-            width={isMobile ? '100%' : 'initial'}
-            justifyContent={'space-between'}
-          >
-            <Button
-              variant={'text'}
-              startIcon={<OrderListIcon fontSize={'inherit'} color={'inherit'} />}
-              sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
-              onClick={handleRecordClick}
-            >
-              {t('labelVaultRecord')}
-            </Button>
-            <Button
-              startIcon={<HelpIcon fontSize={'inherit'} color={'inherit'} />}
-              variant={'text'}
-              onClick={handleTutorialClick}
-              sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
-            >
-              {t('labelVaultTutorial')}
-            </Button>
-          </Box>
         </Box>
       </Container>
       <Divider />
       {!error && marketArray?.length ? (
         <>
           <ModalVaultWrap onClickLeverage={toggleLeverage} />
-          {tabIndex == VaultKey.VAULT_DASHBOARD && (
+          {tabIndex === VaultKey.VAULT_DASHBOARD && (
             <VaultDashBoardPanel
               vaultAccountInfo={vaultAccountInfo}
               closeShowLeverage={closeLeverage}
               showLeverage={showLeverage}
             />
           )}
-          {tabIndex == VaultKey.VAULT_HOME && (
+          {tabIndex === VaultKey.VAULT_HOME && (
             <VaultHomePanel vaultAccountInfo={vaultAccountInfo} />
           )}
         </>

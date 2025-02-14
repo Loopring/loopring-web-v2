@@ -1,7 +1,7 @@
 import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip } from '@mui/material'
-import { AvatarCoin, Button, CoinIcons, Loading, LoadingStyled, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { AvatarCoin, Button, CoinIcons, Loading, LoadingStyled, ModalCloseButtonPosition, SpaceBetweenBox } from '@loopring-web/component-lib'
 import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, Info2Icon, InfoIcon, mapSpecialTokenName, OrderListIcon, TokenType } from '@loopring-web/common-resources'
-import { numberFormat } from '@loopring-web/core'
+import { numberFormat, ViewAccountTemplate } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import _ from 'lodash';
@@ -731,6 +731,58 @@ export const DustCollectorUnAvailableModal = (props: DustCollectorUnAvailableMod
           <Typography color={'var(--color-text-secondary)'} mt={6}>
             {t('labelVaultDustCollectorUnavailableDes')}
           </Typography>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+export interface NoAccountHintModalProps {
+
+    open: boolean
+    onClose: () => void
+    dialogBtn: React.ReactNode
+    title: string
+    des: React.ReactNode
+}
+export const NoAccountHintModal = (props: NoAccountHintModalProps) => {
+  const { open, onClose, title, dialogBtn, des } = props
+  const { t } = useTranslation()
+  return (
+    <Modal open={open} onClose={onClose} sx={{ zIndex: 1000 }}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          padding={5}
+          bgcolor={'var(--color-box)'}
+          width={'var(--modal-width)'}
+          borderRadius={1}
+          display={'flex'}
+          alignItems={'center'}
+          flexDirection={'column'}
+          position={'relative'}
+        >
+          <ModalCloseButtonPosition right={2} top={2} t={t} onClose={onClose} />
+          <ViewAccountTemplate
+            className={'inModal'}
+            activeViewTemplate={
+              <>
+                <Typography marginBottom={3} variant={'h4'}>
+                  {t(title)}
+                </Typography>
+                <Typography
+                  whiteSpace={'pre-line'}
+                  component={'span'}
+                  variant={'body1'}
+                  color={'textSecondary'}
+                  marginBottom={3}
+                  textAlign={'left'}
+                  width={'100%'}
+                >
+                  {des}
+                </Typography>
+                <>{dialogBtn}</>
+              </>
+            }
+          />
         </Box>
       </Box>
     </Modal>

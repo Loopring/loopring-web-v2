@@ -3,7 +3,7 @@ import React from 'react'
 import {
   confirmation,
   store,
-  useAccountInfo,
+  useVaultAccountInfo,
   useVaultMap,
 } from '@loopring-web/core'
 import {
@@ -19,7 +19,7 @@ export const useVaultPage = () => {
   const VaultPath = `${RouterPath.vault}/:item`
   let match: any = useRouteMatch(VaultPath)
   const history = useHistory()
-  const vaultAccountInfo = useAccountInfo()
+  const vaultAccountInfo = useVaultAccountInfo()
   const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
   const [tabIndex, setTabIndex] = React.useState<VaultKey>(() => {
     return (

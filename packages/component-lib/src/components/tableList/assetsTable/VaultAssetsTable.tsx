@@ -3,7 +3,7 @@ import {Box, BoxProps, Typography} from '@mui/material'
 import styled from '@emotion/styled'
 import {TFunction, withTranslation, WithTranslation} from 'react-i18next'
 import {Column, Table} from '../../basic-lib'
-import {Filter} from './components/Filter'
+import {Filter, VaultAssetFilter} from './components/Filter'
 import {TablePaddingX} from '../../styled'
 import {
   BrushIcon,
@@ -359,14 +359,12 @@ export const VaultAssetsTable = withTranslation('tables')(
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
           <Box marginX={2} display={'flex'} alignItems={'center'}>
-            <Box width={hideDustCollector ? '100%' : 'calc(100% - 130px)'}>
-              <Filter
-                {...{
-                  handleFilterChange,
-                  filter,
-                  hideSmallBalances,
-                  setHideSmallBalances,
-                }}
+            <Box>
+              <VaultAssetFilter
+                handleFilterChange={handleFilterChange}
+                filter={filter}
+                hideSmallBalances={hideSmallBalances}
+                setHideSmallBalances={setHideSmallBalances}
                 noHideInvestToken
               />
             </Box>

@@ -48,7 +48,7 @@ import {
   numberFormatThousandthPlace,
   TableWrapStyled,
   useAccount,
-  useAccountInfo,
+  useVaultAccountInfo,
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
@@ -228,7 +228,7 @@ const MyLiquidity = withTranslation('common')(
     const nanToEmptyTag = (value: any, prefix: string) => {
       return value === 'NaN' ? EmptyValueTag : prefix + value
     }
-    const vaultAccountInfo = useAccountInfo()
+    const vaultAccountInfo = useVaultAccountInfo()
     const {
       onActionBtnClick,
       dialogBtn,

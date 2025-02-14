@@ -59,7 +59,7 @@ export const VaultHomePanel = ({
   const { hideL2Assets, currency } = useSettings()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
-      <BoxBannerStyle className={isMobile ? 'mobile' : ''} direction={'right'}>
+      {/* <BoxBannerStyle className={isMobile ? 'mobile' : ''} direction={'right'}>
         <Container
           maxWidth='lg'
           style={{
@@ -130,26 +130,31 @@ export const VaultHomePanel = ({
             )}
           </Box>
         </Container>
-      </BoxBannerStyle>
-      <Box
+      </BoxBannerStyle> */}
+      {/* <Box
         flex={1}
         display={'flex'}
         flexDirection={'column'}
         sx={{
           background: 'var(--color-pop-bg)',
         }}
-      >
+        mt={6}
+      > */}
         <Container
           maxWidth='lg'
-          style={{
+          sx={{
             display: 'flex',
             flexDirection: 'column',
+            background: 'var(--color-pop-bg)',
             flex: 1,
+            mt: 6,
+            mb: 4,
+            borderRadius: '8px'
           }}
         >
           <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
         </Container>
-      </Box>
+
       <Modal
         open={detail?.isShow && !isShowConfirmedVault?.isShow && !isShowVaultJoin?.isShow}
         onClose={() => setShowDetail({ isShow: false })}
