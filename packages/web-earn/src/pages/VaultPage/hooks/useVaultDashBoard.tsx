@@ -70,7 +70,7 @@ import Decimal from 'decimal.js'
 import { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
-import { NoAccountHintModalProps, VaultSwapModalProps } from '../components/modals'
+import { NoAccountHintModalProps, SmallOrderAlertProps, VaultSwapModalProps } from '../components/modals'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
 
@@ -470,6 +470,7 @@ export const useVaultDashboard = ({
   collateralDetailsModalProps: CollateralDetailsModalProps
   noAccountHintModalProps: NoAccountHintModalProps
   vaultSwapModalProps: VaultSwapModalProps
+  smallOrderAlertProps: SmallOrderAlertProps
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
   const {
@@ -985,7 +986,8 @@ export const useVaultDashboard = ({
     onClickRecord: () => {
       
     },
-    vaultPositionsTableProps
+    vaultPositionsTableProps,
+    
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
@@ -1126,7 +1128,7 @@ export const useVaultDashboard = ({
   })()
     
   
-  const vaultSwapModalProps = useVaultSwap({ path: 'portal' })
+  const {vaultSwapModalProps, smallOrderAlertProps} = useVaultSwap({ path: 'portal' })
   return {
     vaultSwapModalProps: vaultSwapModalProps,
     vaultDashBoardPanelUIProps,
@@ -1412,5 +1414,6 @@ export const useVaultDashboard = ({
       ),
       dialogBtn: noVaultAccountDialogBtn,
     },
+    smallOrderAlertProps: smallOrderAlertProps
   }
 }

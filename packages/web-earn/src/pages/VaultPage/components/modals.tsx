@@ -1,5 +1,5 @@
-import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip, Popover, Switch, Grid, Button as MuiButton, Input } from '@mui/material'
-import { AvatarCoin, Button, CoinIcons, CountDownIcon, IconButtonStyled, Loading, LoadingStyled, ModalCloseButtonPosition, SpaceBetweenBox, SwapTradeData } from '@loopring-web/component-lib'
+import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip, Popover, Switch, Grid, Button as MuiButton, Input, Select, MenuItem, ButtonProps, styled } from '@mui/material'
+import { AvatarCoin, Button, CoinIcon, CoinIcons, CountDownIcon, IconButtonStyled, InputSearch, Loading, LoadingStyled, ModalCloseButtonPosition, SpaceBetweenBox, SwapTradeData } from '@loopring-web/component-lib'
 import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, hexToRGB, Info2Icon, InfoIcon, mapSpecialTokenName, OrderListIcon, ReverseIcon, SwapSettingIcon, TokenType } from '@loopring-web/common-resources'
 import { numberFormat, VaultTradeTradeData, ViewAccountTemplate } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
@@ -16,10 +16,14 @@ import {
   DustCollectorProps,
   DustCollectorUnAvailableModalProps
 } from '../interface';
-import styled from '@emotion/styled';
-import { SlippagePanel } from '@loopring-web/component-lib/src/components/tradePanel/components';
+// import styled from '@emotion/styled';
+import { RiskComponent, RiskInformation, SlippagePanel } from '@loopring-web/component-lib/src/components/tradePanel/components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useTheme } from '@emotion/react';
+import { current } from '@reduxjs/toolkit';
+import React from 'react';
+import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils';
+import EastIcon from '@mui/icons-material/East';
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
   const { open, onClose, collateralTokens, totalCollateral, maxCredit, onClickMaxCredit, coinJSON } = props
@@ -792,6 +796,45 @@ export const NoAccountHintModal = (props: NoAccountHintModalProps) => {
     </Modal>
   )
 }
+export interface SmallOrderAlertProps {
+  open: boolean
+  handleClose: () => void
+  handleConfirm: () => void
+  estimatedFee: string
+  feePercentage: string
+  minimumReceived: string
+}
+export const SmallOrderAlert = (props: SmallOrderAlertProps) => {
+  const { open, handleClose, handleConfirm, estimatedFee, feePercentage, minimumReceived } = props
+  const { t } = useTranslation('common')
+  const label: RiskInformation[] = [
+    {
+      label: t('labelSmallOrderAlertLine3'),
+      value: `${estimatedFee}`,
+      color: 'var(--color-text-primary)',
+    },
+    {
+      label: t('labelSmallOrderAlertLine5'),
+      value: `${minimumReceived}`,
+      color: 'var(--color-text-primary)',
+    },
+    {
+      label: t('labelSmallOrderAlertLine4'),
+      value: `${feePercentage}%`,
+      color: 'var(--color-error)',
+    },
+  ]
+
+  return (
+    <RiskComponent
+      title={t('labelSmallOrderAlertLine')}
+      open={open}
+      infos={label}
+      handleClose={handleClose}
+      handleConfirm={handleConfirm}
+    />
+  )
+}
 
 
 
@@ -806,6 +849,20 @@ const PopoverStyled = styled(Popover)`
   .MuiBackdrop-root {
     background: transparent;
   }
+`
+
+
+const BgButton = styled(MuiButton)<{ customBg: string }>`
+  background-color: ${({ customBg }) => customBg};
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: ${({ customBg }) => customBg};
+    opacity: 0.8;
+  }
+  &:disabled {
+    background-color: var(--color-button-disabled);
+  }
+  
 `
 
 export interface VaultSwapModalProps {
@@ -848,24 +905,76 @@ export interface VaultSwapModalProps {
   maxTradeValue: string
   borrowed: string
   totalQuota: string
-  marginLevel: {
-    from: string
-    to: string
+  marginLevelChange: {
+    from: {
+      type: 'danger' | 'safe' | 'warning'
+      marginLevel: string
+    }
+    to: {
+      type: 'danger' | 'safe' | 'warning'
+      marginLevel: string
+    } 
   }
   hourlyInterestRate: string
   tradingFee: string
-  slippageTolerance: string 
-  myPositions: {
-    tokenSymbol: string
-    longOrShort: 'long' | 'short'
-    marginLevel: string
-    leverage: string
-    amount: string
-    marketPrice: string
-    onClickLeverage: () => void
-    onClickTrade: () => void
-    onClickClose: () => void
-  }[] | undefined
+  slippageTolerance: string
+  myPositions:
+    | {
+        tokenSymbol: string
+        longOrShort: 'long' | 'short'
+        marginLevel: string
+        leverage: string
+        amount: string
+        marketPrice: string
+        onClickLeverage: () => void
+        onClickTrade: () => void
+        onClickClose: () => void
+      }[]
+    | undefined
+  positionTypeSelection: {
+    onChange: (value: string) => void
+    items: [
+      {
+        label: string
+        value: string
+      },
+    ]
+    value: string
+  }
+  leverageSelection: {
+    onChange: (value: string) => void
+    items: [
+      {
+        label: string
+        value: string
+      },
+    ]
+    value: string
+  }
+  ratioSlider: {
+    currentRatio?: number
+    onClickRatio: (no: number) => void
+  }
+  hideOther: boolean
+  onClickHideOther: () => void
+  onClickLongShort: (v: 'long' | 'short') => void
+  tokenSelection: {
+    show: boolean,
+    search: string,
+    onInputSearch: (search: string) => void
+    tokens: {
+      coinJSON: any,
+      symbol: string,
+      amount: string,
+      onClick: () => void
+    }[]
+    onClickCancel: () => void
+  }
+  tradeBtn: {
+    disabled: boolean,
+    label?: string
+    onClick: () => void
+  }
 }
 
 export const VaultSwapModal = (props: VaultSwapModalProps) => {
@@ -899,16 +1008,633 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
     maxTradeValue,
     borrowed,
     totalQuota,
-    marginLevel,
+    marginLevelChange,
     hourlyInterestRate,
     tradingFee,
     slippageTolerance ,
-    myPositions
+    myPositions,
+    leverageSelection,
+    positionTypeSelection,
+    ratioSlider,
+    hideOther,
+    onClickHideOther,
+    onClickLongShort,
+    tokenSelection,
+    tradeBtn
   } = props
   const { t } = useTranslation()
   const theme = useTheme()
   const settingPopoverId = 'setting'
-  return (
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
+
+  const mainView = (
+    <Box
+      bgcolor={'var(--color-box)'}
+      width={'var(--modal-width)'}
+      height={'700px'}
+      overflow={'auto'}
+      borderRadius={1}
+      display={'flex'}
+      alignItems={'center'}
+      flexDirection={'column'}
+      position={'relative'}
+    >
+      <Box
+        px={3}
+        py={2.5}
+        borderBottom={'1px solid var(--color-divide)'}
+        display={'flex'}
+        justifyContent={'space-between'}
+        width={'100%'}
+        alignItems={'center'}
+      >
+        <Typography variant='h4'>Portal Trade</Typography>
+        <Box display={'flex'} alignItems={'center'}>
+          <Box>
+            <IconButtonStyled
+              onClick={(e) => {
+                onClickSettingBtn()
+              }}
+              sx={{ backgroundColor: 'var(--field-opacity)' }}
+              className={'switch outlined'}
+              aria-label='to Transaction'
+              aria-describedby={settingPopoverId}
+              size={'large'}
+              ref={anchorRef}
+            >
+              <SwapSettingIcon htmlColor={'var(--color-logo)'} />
+            </IconButtonStyled>
+            <PopoverStyled
+              id={settingPopoverId}
+              open={settingPopoverOpen}
+              onClose={onCloseSettingPopover}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              sx={{ background: 'transparent' }}
+              anchorEl={anchorRef.current}
+            >
+              <Box
+                paddingX={2}
+                paddingTop={2}
+                paddingBottom={4}
+                display={'flex'}
+                flexDirection={'column'}
+              >
+                <Box paddingBottom={1}>
+                  <Typography marginBottom={1} component={'span'}>
+                    {t('labelSwapSettingTitle')}
+                  </Typography>
+                  <Typography
+                    marginBottom={1}
+                    paddingLeft={1}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                    component={'span'}
+                  >
+                    {t('swapTolerance')}
+                  </Typography>
+                </Box>
+                <SlippagePanel
+                  t={t}
+                  max={100}
+                  slippageList={slippageList}
+                  slippage={currentSlippage}
+                  handleChange={(slippage, customSlippage) => {
+                    onSlippageChange(slippage, customSlippage)
+                  }}
+                />
+
+                {!hideLeverage && (
+                  <Grid
+                    container
+                    justifyContent={'space-between'}
+                    direction={'row'}
+                    alignItems={'center'}
+                    height={24}
+                    marginTop={2.5}
+                  >
+                    <Typography
+                      component={'span'}
+                      variant='body2'
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      {' ' + t('labelVaultLeverage')}
+                    </Typography>
+                    <Typography
+                      component={'span'}
+                      variant='body2'
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                      mr={1.5}
+                      onClick={onClickSettingLeverage}
+                    >
+                      {leverage}x
+                    </Typography>
+                  </Grid>
+                )}
+                <Grid
+                  container
+                  justifyContent={'space-between'}
+                  direction={'row'}
+                  alignItems={'center'}
+                  height={24}
+                  marginTop={1}
+                >
+                  <Tooltip
+                    title={t('labelSwapSettingSecondConfirmTootip').toString()}
+                    placement={'bottom'}
+                  >
+                    <Typography
+                      component={'span'}
+                      variant='body2'
+                      color={'textSecondary'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                    >
+                      <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
+                      {' ' + t('labelSwapSettingSecondConfirm')}
+                    </Typography>
+                  </Tooltip>
+                  <Switch
+                    onChange={() => {
+                      onSwitchChange()
+                    }}
+                    checked={secondConfirmationChecked}
+                  />
+                </Grid>
+              </Box>
+            </PopoverStyled>
+          </Box>
+
+          <Box display={'inline-block'} ml={2} component={'span'}>
+            <CountDownIcon {...countdown} />
+          </Box>
+          <IconButton
+            sx={{
+              ml: 1,
+            }}
+            size={'large'}
+            aria-label={t('labelClose')}
+            color={'inherit'}
+            onClick={(event) => {
+              onClose()
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </Box>
+
+      <Box mt={4} width={'100%'} px={3}>
+        <BgButton
+          variant='contained'
+          sx={{
+            clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0 100%, 0 0)',
+            width: '52%',
+            borderRadius: '4px',
+            borderTopRightRadius: '0',
+            borderBottomRightRadius: '0',
+          }}
+          customBg={
+            isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-box-secondary)'
+          }
+          onClick={() => onClickLongShort('long')}
+        >
+          Buy / Long
+        </BgButton>
+        <BgButton
+          variant='contained'
+          sx={{
+            clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%, 10% 0)',
+            width: '52%',
+            borderRadius: '4px',
+            borderTopLeftRadius: '0',
+            borderBottomLeftRadius: '0',
+            ml: '-4%',
+          }}
+          customBg={isLongOrShort === 'short' ? 'var(--color-error)' : 'var(--color-box-secondary)'}
+          onClick={() => onClickLongShort('short')}
+        >
+          Sell / Short
+        </BgButton>
+      </Box>
+
+      <Box mt={3} width={'100%'} px={3}>
+        <Select
+          value={positionTypeSelection.value}
+          onChange={(e, v) => positionTypeSelection.onChange(e.target.value)}
+          displayEmpty
+          size='small'
+        >
+          {positionTypeSelection.items.map((item) => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.label}
+            </MenuItem>
+          ))}
+        </Select>
+        <Select
+          value={leverageSelection.value}
+          sx={{ ml: 2 }}
+          size='small'
+          onChange={(e, v) => leverageSelection.onChange(e.target.value)}
+          displayEmpty
+        >
+          {leverageSelection.items.map((item) => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+      <Box mt={3} width={'100%'} px={3}>
+        <SpaceBetweenBox
+          mb={0.5}
+          leftNode={
+            <Typography fontSize={'14px'} color={'var(--color-text-third)'}>
+              Amount
+            </Typography>
+          }
+          rightNode={
+            <Typography
+              component={'p'}
+              onClick={onClickBalance}
+              sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+              fontSize={'14px'}
+              color={'var(--color-text-secondary)'}
+            >
+              Available: {balance}
+            </Typography>
+          }
+        />
+        <Input
+          sx={{
+            height: '48px',
+            bgcolor: 'var(--color-bg-secondary)',
+            textAlign: 'right',
+            px: 2,
+            fontSize: '20px',
+          }}
+          placeholder='0.00'
+          disableUnderline
+          fullWidth
+          startAdornment={
+            <Box
+              display={'flex'}
+              alignItems={'center'}
+              component={'div'}
+              sx={{ cursor: 'pointer' }}
+              onClick={onClickToken}
+            >
+              <CoinIcons type={TokenType.single} tokenIcon={[token.coinJSON]} />
+              <Typography ml={0.5} fontSize={'16px'} color={'var(--color-text-primary)'}>
+                {token.symbol}
+              </Typography>
+              <KeyboardArrowDownIcon
+                sx={{ ml: 0.5, color: 'var(--color-text-secondary)' }}
+              ></KeyboardArrowDownIcon>
+            </Box>
+          }
+          inputProps={{ sx: { textAlign: 'right' } }}
+          onInput={(e: any) => onInputAmount(e.target.value)}
+          value={amountInput}
+        />
+        <Typography
+          sx={{
+            opacity: inputAlert.show ? 1 : 0,
+            textAlign: 'right',
+            color: 'var(--color-error)',
+            fontSize: '12px',
+            mt: -1,
+          }}
+        >
+          {inputAlert.message || '--'}
+        </Typography>
+      </Box>
+      <Box mt={4} width={'100%'} display={'flex'} justifyContent={'center'}>
+        <Typography display={'flex'} alignItems={'center'}>
+          {swapRatio} <ReverseIcon sx={{ ml: 0.5, cursor: 'pointer' }} onClick={onClickReverse} />
+        </Typography>
+      </Box>
+      <Box pb={4} mt={4} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
+        <SpaceBetweenBox
+          leftNode={
+            <Tooltip title={'todo'}>
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+              >
+                Max <Info2Icon sx={{ ml: 0.5 }} />
+              </Typography>
+            </Tooltip>
+          }
+          rightNode={
+            <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+              {maxTradeValue}
+            </Typography>
+          }
+        />
+        <Box sx={{ width: '100%' }}>
+          <Slider
+            value={ratioSlider.currentRatio ? ratioSlider.currentRatio * 100 : 0}
+            onChange={(e, value) => {
+              ratioSlider.onClickRatio(
+                new Decimal(value as number).div(100).toDecimalPlaces(2).toNumber(),
+              )
+            }}
+            min={0}
+            max={100}
+            valueLabelDisplay='auto'
+            valueLabelFormat={(value) => `${value}%`}
+            marks={[
+              { value: 0, label: '0%' },
+              { value: 25, label: '25%' },
+              { value: 50, label: '50%' },
+              { value: 75, label: '75%' },
+              { value: 100, label: '100%' },
+            ]}
+            size='small'
+          />
+        </Box>
+        <SpaceBetweenBox
+          mt={2}
+          leftNode={
+            <Tooltip title={'todo'}>
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+              >
+                Borrowed <Info2Icon sx={{ ml: 0.5 }} />
+              </Typography>
+            </Tooltip>
+          }
+          rightNode={
+            <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+              {borrowed}
+            </Typography>
+          }
+        />
+        <SpaceBetweenBox
+          mt={1}
+          leftNode={
+            <Tooltip title={'todo'}>
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+              >
+                Total Quota <Info2Icon sx={{ ml: 0.5 }} />
+              </Typography>
+            </Tooltip>
+          }
+          rightNode={
+            <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+              {totalQuota}
+            </Typography>
+          }
+        />
+      </Box>
+      <Box mt={2} width={'100%'} px={3}>
+        <SpaceBetweenBox
+          leftNode={
+            <Typography
+              display={'flex'}
+              alignItems={'center'}
+              variant={'body2'}
+              color={'var(--color-text-third)'}
+            >
+              Margin Level
+            </Typography>
+          }
+          rightNode={
+            <Box display={'flex'} alignItems={'center'}>
+              {marginLevelChange ? (
+                <>
+                  <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                    {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                  </Typography>
+                  <EastIcon sx={{ marginX: 0.5 }} />
+                  <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                    {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                  </Typography>
+                </>
+              ) : (
+                EmptyValueTag
+              )}
+            </Box>
+          }
+        />
+        <SpaceBetweenBox
+          mt={1}
+          leftNode={
+            <Tooltip title={'todo'}>
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+              >
+                Hourly Interest Rate <Info2Icon sx={{ ml: 0.5 }} />
+              </Typography>
+            </Tooltip>
+          }
+          rightNode={
+            <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+              {hourlyInterestRate}
+            </Typography>
+          }
+        />
+        <SpaceBetweenBox
+          mt={1}
+          leftNode={
+            <Tooltip title={'todo'}>
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+              >
+                Trading Fee (est.) <Info2Icon sx={{ ml: 0.5 }} />
+              </Typography>
+            </Tooltip>
+          }
+          rightNode={
+            <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+              {tradingFee}
+            </Typography>
+          }
+        />
+        <SpaceBetweenBox
+          mt={1}
+          leftNode={
+            <Tooltip title={'todo'}>
+              <Typography
+                display={'flex'}
+                alignItems={'center'}
+                variant={'body2'}
+                color={'var(--color-text-third)'}
+              >
+                Slippage Tolerance <Info2Icon sx={{ ml: 0.5 }} />
+              </Typography>
+            </Tooltip>
+          }
+          rightNode={
+            <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+              {slippageTolerance}
+            </Typography>
+          }
+        />
+      </Box>
+      <Box width={'100%'} mt={2} px={3}>
+        <BgButton
+          variant='contained'
+          customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
+          size='large'
+          fullWidth
+          onClick={
+            tradeBtn.onClick
+          }
+          disabled={tradeBtn.disabled}
+        >
+
+          {tradeBtn.label ? tradeBtn.label : isLongOrShort === 'long' ? 'Buy/Long' : 'Sell/Short'}
+        </BgButton>
+      </Box>
+      <Box width={'100%'} mt={2} px={3}>
+        <Box bgcolor={'var(--color-box-secondary)'} px={3} py={2}>
+          <Typography variant='h4' mb={2}>
+            My Positions
+          </Typography>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <Typography display={'flex'} alignItems={'center'}>
+              <Checkbox
+                checked={hideOther}
+                onChange={() => {
+                  onClickHideOther()
+                }}
+                sx={{
+                  width: '16px',
+                  height: '16px',
+                  mr: 1,
+                  ml: -0.25,
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color='default'
+              />
+              Hide other tokens
+            </Typography>
+            <BgButton
+              variant='contained'
+              size='small'
+              customBg='var(--color-button-outlined)'
+            >
+              Close All
+            </BgButton>
+          </Box>
+
+          <Box>
+            {myPositions?.map((item) => {
+              return (
+                <Box
+                  key={item.tokenSymbol}
+                  py={3}
+                  borderBottom={'1px solid var(--color-border)'}
+                  borderRadius={'8px'}
+                >
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
+                    <Typography
+                      ml={0.5}
+                      fontSize={'12px'}
+                      borderRadius={'4px'}
+                      px={1}
+                      color={
+                        item.longOrShort === 'long'
+                          ? theme.colorBase.success
+                          : theme.colorBase.error
+                      }
+                      bgcolor={hexToRGB(
+                        item.longOrShort === 'long'
+                          ? theme.colorBase.success
+                          : theme.colorBase.error,
+                        0.5,
+                      )}
+                    >
+                      {item.tokenSymbol}
+                    </Typography>
+                    <Typography ml={0.5}>marginview-todo</Typography>
+                  </Box>
+                  <Typography variant='body2'>{item.leverage}</Typography>
+                  <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                    <Box>
+                      <Typography variant='body2'>Amount</Typography>
+                      <Typography>{item.amount}</Typography>
+                    </Box>
+                    <Box ml={'30%'}>
+                      <Typography variant='body2'>Market Price (USDT)</Typography>
+                      <Typography>{item.marketPrice}</Typography>
+                    </Box>
+                  </Box>
+                  <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                    {/* <BgButton
+                      variant='contained'
+                      size='small'
+                      sx={{
+                        bgcolor: 'var(--color-button-outlined)',
+                        width: '32%',
+                        borderRadius: '4px',
+                      }}
+                      onClick={item.onClickLeverage}
+                    >
+                      Leverage
+                    </BgButton> */}
+                    <BgButton
+                      variant='contained'
+                      size='small'
+                      customBg='var(--color-button-outlined)'
+                      sx={{
+                        width: '32%',
+                        borderRadius: '4px',
+                      }}
+                      onClick={item.onClickTrade}
+                    >
+                      Trade
+                    </BgButton>
+                    <BgButton
+                      variant='contained'
+                      size='small'
+                      customBg='var(--color-button-outlined)'
+                      sx={{
+                        width: '32%',
+                        ml: '2%',
+                        borderRadius: '4px',
+                      }}
+                      onClick={item.onClickClose}
+                    >
+                      Close
+                    </BgButton>
+                  </Box>
+                </Box>
+              )
+            })}
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  )
+
+  const tokenSelectionModal = (
     <Modal
       sx={{
         height: '100%',
@@ -920,483 +1646,78 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       onClose={onClose}
     >
       <Box
-        
         bgcolor={'var(--color-box)'}
-        width={'var(--modal-width)'}
+        width={'350px'}
+        height={'400px'}
+        overflow={'auto'}
         borderRadius={1}
         display={'flex'}
-        alignItems={'center'}
         flexDirection={'column'}
-        position={'relative'}
+        py={4}
       >
-        <Box px={3} py={2.5} borderBottom={'1px solid var(--color-divide)'} display={'flex'} justifyContent={'space-between'} width={'100%'} alignItems={'center'}>
-          <Typography variant='h4'>Portal Trade</Typography>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
-              <IconButtonStyled
-                onClick={(e) => {
-                  onClickSettingBtn()
-                }}
-                sx={{ backgroundColor: 'var(--field-opacity)' }}
-                className={'switch outlined'}
-                aria-label='to Transaction'
-                aria-describedby={settingPopoverId}
-                size={'large'}
-              >
-                <SwapSettingIcon htmlColor={'var(--color-logo)'} />
-              </IconButtonStyled>
-              <PopoverStyled
-                id={settingPopoverId}
-                open={settingPopoverOpen}
-                onClose={onCloseSettingPopover}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                sx={{ background: 'transparent' }}
-              >
-                <Box paddingX={2} paddingTop={2} paddingBottom={4}>
-                  <Box paddingBottom={1}>
-                    <Typography marginBottom={1} component={'span'}>
-                      {t('labelSwapSettingTitle')}
-                    </Typography>
-                    <Typography
-                      marginBottom={1}
-                      paddingLeft={1}
-                      variant={'body2'}
-                      color={'var(--color-text-third)'}
-                      component={'span'}
-                    >
-                      {t('swapTolerance')}
-                    </Typography>
-                  </Box>
-                  <SlippagePanel
-                    t={t}
-                    max={100}
-                    slippageList={slippageList}
-                    slippage={currentSlippage}
-                    handleChange={(slippage, customSlippage) => {
-                      onSlippageChange(slippage, customSlippage)
-                    }}
-                  />
-
-                  {!hideLeverage && (
-                    <Grid
-                      container
-                      justifyContent={'space-between'}
-                      direction={'row'}
-                      alignItems={'center'}
-                      height={24}
-                      marginTop={2.5}
-                    >
-                      <Typography
-                        component={'span'}
-                        variant='body2'
-                        color={'textSecondary'}
-                        display={'inline-flex'}
-                        alignItems={'center'}
-                      >
-                        {' ' + t('labelVaultLeverage')}
-                      </Typography>
-                      <Typography
-                        component={'span'}
-                        variant='body2'
-                        color={'textSecondary'}
-                        display={'inline-flex'}
-                        alignItems={'center'}
-                        sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                        mr={1.5}
-                        onClick={onClickSettingLeverage}
-                      >
-                        {leverage}x
-                      </Typography>
-                    </Grid>
-                  )}
-                  <Grid
-                    container
-                    justifyContent={'space-between'}
-                    direction={'row'}
-                    alignItems={'center'}
-                    height={24}
-                    marginTop={1}
-                  >
-                    <Tooltip
-                      title={t('labelSwapSettingSecondConfirmTootip').toString()}
-                      placement={'bottom'}
-                    >
-                      <Typography
-                        component={'span'}
-                        variant='body2'
-                        color={'textSecondary'}
-                        display={'inline-flex'}
-                        alignItems={'center'}
-                      >
-                        <Info2Icon fontSize={'small'} color={'inherit'} sx={{ marginX: 1 / 2 }} />
-                        {' ' + t('labelSwapSettingSecondConfirm')}
-                      </Typography>
-                    </Tooltip>
-                    <Switch
-                      onChange={() => {
-                        onSwitchChange()
-                      }}
-                      checked={secondConfirmationChecked}
-                    />
-                  </Grid>
+        <Box px={2.5} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <InputSearch
+            value={tokenSelection.search}
+            style={{ width: '80%' }}
+            onChange={(value: string) => {
+              tokenSelection.onInputSearch(value)
+            }}
+          />
+          <Typography sx={{ cursor: 'pointer' }} onClick={tokenSelection.onClickCancel}>
+            Cancel
+          </Typography>
+        </Box>
+        <Box
+          display={'flex'}
+          flexDirection={'column'}
+          mt={2}
+          height={'85%'}
+          sx={{ overflowY: 'auto' }}
+        >
+          {tokenSelection.tokens.map((item) => (
+            <SpaceBetweenBox
+              px={2.5}
+              onClick={item.onClick}
+              py={1}
+              alignItems={'center'}
+              leftNode={
+                <Box display={'flex'} alignItems={'center'}>
+                  <CoinIcons type={TokenType.single} tokenIcon={[item.coinJSON, undefined]} />
+                  <Typography ml={1.5}>{item.symbol}</Typography>
                 </Box>
-              </PopoverStyled>
-            </Box>
-
-            <Box display={'inline-block'} ml={2} component={'span'}>
-              <CountDownIcon {...countdown} />
-            </Box>
-            <IconButton
-              sx={{
-                ml: 1,
-              }}
-              size={'large'}
-              aria-label={t('labelClose')}
-              color={'inherit'}
-              onClick={(event) => {
-                onClose()
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Box mt={4} width={'100%'} px={3}>
-          <MuiButton
-            variant='contained'
-            sx={{
-              bgcolor: isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-box-secondary)',
-              clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0 100%, 0 0)',
-              width: '52%',
-              borderRadius: '4px',
-              borderTopRightRadius: '0',
-              borderBottomRightRadius: '0',
-            }}
-          >
-            Buy / Long
-          </MuiButton>
-          <Button
-            variant='contained'
-            sx={{
-              bgcolor: isLongOrShort === 'short' ? 'var(--color-error)' : 'var(--color-box-secondary)',
-              clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%, 10% 0)',
-              width: '52%',
-              borderRadius: '4px',
-              borderTopLeftRadius: '0',
-              borderBottomLeftRadius: '0',
-              ml: '-4%',
-            }}
-          >
-            Sell / Short
-          </Button>
-        </Box>
-
-        <Box mt={3}>
-          croses position selection
-          leverage selection
-        </Box>
-        <Box mt={3} width={'100%'} px={3}>
-
-          <SpaceBetweenBox
-            mb={0.5}
-            leftNode={
-              <Typography fontSize={'14px'} color={'var(--color-text-third)'}>
-                Amount
-              </Typography>
-            }
-            rightNode={
-              <Typography
-                component={'p'}
-                onClick={onClickBalance}
-                sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                fontSize={'14px'}
-                color={'var(--color-text-secondary)'}
-              >
-                Balance {balance}
-              </Typography>
-            }
-          />
-          <Input
-            sx={{
-              height: '48px',
-              bgcolor: 'var(--color-bg-secondary)',
-              textAlign: 'right',
-              px: 2,
-              fontSize: '20px',
-            }}
-            placeholder='0.00'
-            disableUnderline
-            fullWidth
-            startAdornment={
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                component={'div'}
-                sx={{ cursor: 'pointer' }}
-                onClick={onClickToken}
-              >
-                <CoinIcons type={TokenType.single} tokenIcon={[token.coinJSON]} />
-                <Typography ml={0.5} fontSize={'16px'} color={'var(--color-text-primary)'}>
-                  {token.symbol}
-                </Typography>
-                <KeyboardArrowDownIcon
-                  sx={{ ml: 0.5, color: 'var(--color-text-secondary)' }}
-                ></KeyboardArrowDownIcon>
-              </Box>
-            }
-            inputProps={{ sx: { textAlign: 'right' } }}
-            onInput={(e: any) => onInputAmount(e.target.value)}
-            value={amountInput}
-          />
-          <Typography
-            sx={{
-              opacity: inputAlert.show ? 1 : 0,
-              textAlign: 'right',
-              color: 'var(--color-error)',
-              fontSize: '12px',
-              mt: -1,
-            }}
-          >
-            {inputAlert.message || '--'}
-          </Typography>
-        </Box>
-        <Box mt={4} width={'100%'}  display={'flex'} justifyContent={'center'}>
-          <Typography>
-            {swapRatio} <ReverseIcon sx={{ml: 0.5}} onClick={onClickReverse}/>
-          </Typography>
-        </Box>
-        <Box pb={4} mt={4} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
-          <SpaceBetweenBox
-            leftNode={
-              <Tooltip title={'todo'}>
-                <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                  Max <Info2Icon sx={{ml: 0.5}}/>
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {maxTradeValue}
-              </Typography>
-            }
-          />
-          <Box>scroll-todo</Box>
-          <SpaceBetweenBox
-            mt={2}
-            leftNode={
-              <Tooltip title={'todo'}>
-                <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                  Borrowed <Info2Icon sx={{ml: 0.5}}/>
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {borrowed}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip title={'todo'}>
-                <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                  Total Quota <Info2Icon sx={{ml: 0.5}}/>
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {totalQuota}
-              </Typography>
-            }
-          />
-        </Box>
-        <Box mt={2} width={'100%'} px={3}>
-          <SpaceBetweenBox
-            leftNode={
-              <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                Margin Level 
-              </Typography>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {marginLevel.from} - {marginLevel.to}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip title={'todo'}>
-                <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                  Hourly Interest Rate <Info2Icon sx={{ml: 0.5}}/>
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {hourlyInterestRate}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip title={'todo'}>
-                <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                  Trading Fee (est.) <Info2Icon sx={{ml: 0.5}}/>
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {tradingFee}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip title={'todo'}>
-                <Typography display={'flex'} alignItems={'center'} variant={'body2'} color={'var(--color-text-third)'}>
-                  Slippage Tolerance <Info2Icon sx={{ml: 0.5}}/>
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {slippageTolerance}
-              </Typography>
-            }
-          />
-        </Box>
-        <Box width={'100%'} mt={2} px={3}>
-          <MuiButton
-            variant='contained'
-            sx={{
-              bgcolor: isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)',
-            }}
-            size='large'
-            fullWidth
-          >
-            {isLongOrShort === 'long' ? 'Buy/Long' : 'Sell/Short'}
-          </MuiButton>
-        </Box>
-        <Box width={'100%'} mt={2} px={3} >
-          <Box bgcolor={'var(--color-box-secondary)'} px={3} py={2}>
-            <Typography variant='h4'>My Positions</Typography>
-            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-              <Typography>check-todo Hide other tokens</Typography>
-              <MuiButton
-                variant='contained'
-                size='small'
-                sx={{
-                  bgcolor: 'var(--color-button-outlined)',
-                }}
-              >
-                Close All
-              </MuiButton>
-            </Box>
-            
-            <Box>
-              {
-                myPositions?.map(item  => {
-                  return (
-                    <Box
-                      key={item.tokenSymbol}
-                      py={3}
-                      borderBottom={'1px solid var(--color-border)'}
-                      borderRadius={'8px'}
-                    >
-                      <Box display={'flex'} alignItems={'center'}>
-                        <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
-                        <Typography
-                        ml={0.5}
-                          fontSize={'12px'}
-                          borderRadius={'4px'}
-                          px={1}
-                          color={
-                            item.longOrShort === 'long'
-                              ? theme.colorBase.success
-                              : theme.colorBase.error
-                          }
-                          bgcolor={hexToRGB(
-                            item.longOrShort === 'long'
-                              ? theme.colorBase.success
-                              : theme.colorBase.error,
-                            0.5,
-                          )}
-                        >
-                          {item.tokenSymbol}
-                        </Typography>
-                        <Typography ml={0.5}>marginview-todo</Typography>
-                      </Box>
-                      <Typography variant='body2'>{item.leverage}</Typography>
-                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                        <Box>
-                          <Typography variant='body2'>Amount</Typography>
-                          <Typography>{item.amount}</Typography>
-                        </Box>
-                        <Box ml={'30%'}>
-                          <Typography variant='body2'>Market Price (USDT)</Typography>
-                          <Typography>{item.marketPrice}</Typography>
-                        </Box>
-                      </Box>
-                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                        <MuiButton
-                          variant='contained'
-                          size='small'
-                          sx={{
-                            bgcolor: 'var(--color-button-outlined)',
-                            width: '32%',
-                            borderRadius: '4px'
-                          }}
-                          onClick={item.onClickLeverage}
-                        >
-                          Leverage
-                        </MuiButton>
-                        <MuiButton
-                          variant='contained'
-                          size='small'
-                          sx={{
-                            bgcolor: 'var(--color-button-outlined)',
-                            width: '32%',
-                            ml: '2%',
-                            borderRadius: '4px'
-                          }}
-                          onClick={item.onClickTrade}
-                        >
-                          Trade
-                        </MuiButton>
-                        <MuiButton
-                          variant='contained'
-                          size='small'
-                          sx={{
-                            bgcolor: 'var(--color-button-outlined)',
-                            width: '32%',
-                            ml: '2%',
-                            borderRadius: '4px'
-                          }}
-                          onClick={item.onClickClose}
-                        >
-                          Close
-                        </MuiButton>
-                      </Box>
-                    </Box>
-                  )
-                })
               }
-
-            </Box>
-          </Box>
+              rightNode={
+                <Typography color={'var(--color-text-secondary)'}>{item.amount}</Typography>
+              }
+              key={item.symbol}
+              sx={{
+                cursor: 'pointer',
+                '&:hover': {
+                  bgcolor: 'var(--color-box-hover)',
+                },
+              }}
+            />
+          ))}
         </Box>
-
       </Box>
+    </Modal>
+  )
+
+  return (
+    <Modal
+      sx={{
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      open={open}
+      onClose={onClose}
+    >
+      <>
+        {mainView}
+        {tokenSelection.show && tokenSelectionModal}
+      </>
     </Modal>
   )
 }

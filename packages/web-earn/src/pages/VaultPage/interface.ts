@@ -49,6 +49,7 @@ export interface VaultDashBoardPanelUIProps {
   onChangeAssetsTab: (tab: 'assetsView' | 'positionsView') => void;
   onClickRecord: () => void;
   vaultPositionsTableProps: VaultPositionsTableProps;
+  onClickHideShowAssets: () => void;
 }
 
 export interface CollateralDetailsModalProps {

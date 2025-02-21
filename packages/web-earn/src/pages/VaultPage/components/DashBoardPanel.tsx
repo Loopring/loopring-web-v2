@@ -29,6 +29,8 @@ import {
   WarningIcon2,
   hexToRGB,
   OrderListIcon,
+  ViewIcon,
+  HideIcon,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -56,6 +58,7 @@ import {
   LeverageModal,
   MaximumCreditModal,
   NoAccountHintModal,
+  SmallOrderAlert,
   VaultSwapModal
 } from './modals'
 import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
@@ -1069,7 +1072,9 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
   assetsTab,
   onChangeAssetsTab,
   onClickRecord,
-  vaultPositionsTableProps
+  vaultPositionsTableProps,
+  onClickHideShowAssets,
+  
 }) => {
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -1124,7 +1129,20 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                   <Typography mr={2} color={'var(--color-text-secondary)'} variant='h3'>
                     Total Equity
                   </Typography>
-                  <Typography>hide logo</Typography>
+
+                  {hideAssets ? (
+                    <HideIcon
+                      className='custom-size'
+                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)' }}
+                      onClick={onClickHideShowAssets}
+                    />
+                  ) : (
+                    <ViewIcon
+                      className='custom-size'
+                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)' }}
+                      onClick={onClickHideShowAssets}
+                    />
+                  )}
                 </Box>
 
                 <Box mt={6} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
@@ -1553,9 +1571,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                     showFilter
                   />
                 ) : (
-                  <VaultPositionsTable
-                    {...vaultPositionsTableProps}
-                  />
+                  <VaultPositionsTable {...vaultPositionsTableProps} />
                 )}
                 <Button
                   onClick={onClickPortalTrade}
@@ -1566,7 +1582,6 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                   Portal Trade
                 </Button>
               </Box>
-              
 
               <Modal
                 open={detail?.isShow && !isShowVaultJoin?.isShow}
@@ -1825,7 +1840,8 @@ export const VaultDashBoardPanel = ({
     dustCollectorUnAvailableModalProps,
     vaultDashBoardPanelUIProps,
     noAccountHintModalProps,
-    vaultSwapModalProps
+    vaultSwapModalProps,
+    smallOrderAlertProps
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
   const joinVaultProps = useVaultJoin()
   return (
@@ -1843,6 +1859,7 @@ export const VaultDashBoardPanel = ({
       <DustCollectorUnAvailableModal {...dustCollectorUnAvailableModalProps} />
       <NoAccountHintModal {...noAccountHintModalProps} />
       <VaultSwapModal {...vaultSwapModalProps} />
+      <SmallOrderAlert {...smallOrderAlertProps}/>
     </>
   ) 
 }

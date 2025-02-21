@@ -21,3 +21,4 @@ export {getOptionalDecimal} from './decimal'
 export {isNumberStr,strNumDecimalPlacesLessThan} from './validation'
 
 export {getStateFnState} from './getStateFnState'
+export { tryFn } from './tryFn'
