@@ -42,11 +42,13 @@ import {
   Button as MyButton,
   VaultJoinPanelModal,
   VaultPositionsTable,
+  Toast,
 } from '@loopring-web/component-lib'
 import { Trans } from 'react-i18next'
 import {
   fiatNumberDisplay,
   useVaultJoin,
+  useVaultSwap,
   VaultAccountInfoStatus,
   ViewAccountTemplate,
 } from '@loopring-web/core'
@@ -1840,9 +1842,11 @@ export const VaultDashBoardPanel = ({
     dustCollectorUnAvailableModalProps,
     vaultDashBoardPanelUIProps,
     noAccountHintModalProps,
-    vaultSwapModalProps,
-    smallOrderAlertProps
+    // vaultSwapModalProps,
+    // smallOrderAlertProps,
+    
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
+  const {vaultSwapModalProps, smallOrderAlertProps, toastProps} = useVaultSwap()
   const joinVaultProps = useVaultJoin()
   return (
     <>
@@ -1860,6 +1864,7 @@ export const VaultDashBoardPanel = ({
       <NoAccountHintModal {...noAccountHintModalProps} />
       <VaultSwapModal {...vaultSwapModalProps} />
       <SmallOrderAlert {...smallOrderAlertProps}/>
+      <Toast {...toastProps}/>
     </>
   ) 
 }

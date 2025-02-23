@@ -1,6 +1,6 @@
-import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip, Popover, Switch, Grid, Button as MuiButton, Input, Select, MenuItem, ButtonProps, styled } from '@mui/material'
+import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip, Popover, Switch, Grid, Button as MuiButton, Input, Select, MenuItem, ButtonProps, styled, CircularProgress } from '@mui/material'
 import { AvatarCoin, Button, CoinIcon, CoinIcons, CountDownIcon, IconButtonStyled, InputSearch, Loading, LoadingStyled, ModalCloseButtonPosition, SpaceBetweenBox, SwapTradeData } from '@loopring-web/component-lib'
-import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, EmptyValueTag, hexToRGB, Info2Icon, InfoIcon, mapSpecialTokenName, OrderListIcon, ReverseIcon, SwapSettingIcon, TokenType } from '@loopring-web/common-resources'
+import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, CompleteIcon, EmptyValueTag, hexToRGB, Info2Icon, InfoIcon, LoadingIcon, mapSpecialTokenName, OrderListIcon, ReverseIcon, SwapSettingIcon, TokenType, WaitingIcon } from '@loopring-web/common-resources'
 import { numberFormat, VaultTradeTradeData, ViewAccountTemplate } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -896,9 +896,12 @@ export interface VaultSwapModalProps {
   }
   onInputAmount: (amount: string) => void
   amountInput: string
+  inputPlaceholder: string
   inputAlert: {
     show: boolean
     message: string
+    type: 'error' | 'warning' | 'success'
+    icon?: 'completed' | 'wait'
   }
   swapRatio: string
   onClickReverse: () => void
@@ -910,7 +913,7 @@ export interface VaultSwapModalProps {
       type: 'danger' | 'safe' | 'warning'
       marginLevel: string
     }
-    to: {
+    to?: {
       type: 'danger' | 'safe' | 'warning'
       marginLevel: string
     } 
@@ -974,6 +977,7 @@ export interface VaultSwapModalProps {
     disabled: boolean,
     label?: string
     onClick: () => void
+    loading?: boolean
   }
 }
 
@@ -1002,6 +1006,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
     token,
     onInputAmount,
     amountInput,
+    inputPlaceholder,
     inputAlert,
     swapRatio,
     onClickReverse,
@@ -1280,7 +1285,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
             px: 2,
             fontSize: '20px',
           }}
-          placeholder='0.00'
+          placeholder={inputPlaceholder}
           disableUnderline
           fullWidth
           startAdornment={
@@ -1304,17 +1309,42 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           onInput={(e: any) => onInputAmount(e.target.value)}
           value={amountInput}
         />
-        <Typography
+        <Box
+          display={'flex'}
+          justifyContent={'end'}
+          alignItems={'center'}
           sx={{
             opacity: inputAlert.show ? 1 : 0,
-            textAlign: 'right',
-            color: 'var(--color-error)',
-            fontSize: '12px',
             mt: -1,
+            color:
+              inputAlert.type === 'error'
+                ? 'var(--color-error)'
+                : inputAlert.type === 'warning'
+                ? 'var(--color-warning)'
+                : 'var(--color-success)',
           }}
         >
-          {inputAlert.message || '--'}
-        </Typography>
+          {inputAlert.icon === 'wait' ? (
+            <WaitingIcon />
+          ) : (
+            inputAlert.icon === 'completed' && <CompleteIcon />
+          )}
+          <Typography
+            sx={{
+              textAlign: 'right',
+              color:
+                inputAlert.type === 'error'
+                  ? 'var(--color-error)'
+                  : inputAlert.type === 'warning'
+                  ? 'var(--color-warning)'
+                  : 'var(--color-success)',
+              fontSize: '12px',
+              ml: 0.5,
+            }}
+          >
+            {inputAlert.message || '--'}
+          </Typography>
+        </Box>
       </Box>
       <Box mt={4} width={'100%'} display={'flex'} justifyContent={'center'}>
         <Typography display={'flex'} alignItems={'center'}>
@@ -1423,10 +1453,14 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                   <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
                     {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
                   </Typography>
-                  <EastIcon sx={{ marginX: 0.5 }} />
-                  <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
-                    {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
-                  </Typography>
+                  {marginLevelChange.to && (
+                    <>
+                      <EastIcon sx={{ marginX: 0.5 }} />
+                      <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                        {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                      </Typography>
+                    </>
+                  )}
                 </>
               ) : (
                 EmptyValueTag
@@ -1501,13 +1535,18 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
           size='large'
           fullWidth
-          onClick={
-            tradeBtn.onClick
-          }
+          onClick={tradeBtn.onClick}
           disabled={tradeBtn.disabled}
         >
-
-          {tradeBtn.label ? tradeBtn.label : isLongOrShort === 'long' ? 'Buy/Long' : 'Sell/Short'}
+          {tradeBtn.loading ? (
+            <LoadingIcon className='custom-size' sx={{fontSize: 24}}/>
+          ) : tradeBtn.label ? (
+            tradeBtn.label
+          ) : isLongOrShort === 'long' ? (
+            'Buy/Long'
+          ) : (
+            'Sell/Short'
+          )}
         </BgButton>
       </Box>
       <Box width={'100%'} mt={2} px={3}>
@@ -1534,11 +1573,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               />
               Hide other tokens
             </Typography>
-            <BgButton
-              variant='contained'
-              size='small'
-              customBg='var(--color-button-outlined)'
-            >
+            <BgButton variant='contained' size='small' customBg='var(--color-button-outlined)'>
               Close All
             </BgButton>
           </Box>

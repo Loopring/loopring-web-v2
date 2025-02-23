@@ -13,6 +13,7 @@ export {
   numberFormatThousandthPlace,
   bigNumberFormat,
   fiatNumberDisplay,
+  toPercent
 } from './numberFormat'
 export {
   numberStringListSum
