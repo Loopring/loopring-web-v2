@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import { useGetSet } from 'react-use'
 import { LoopringAPI } from '../../api_wrapper'
 import { MapChainId, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
-import { checkErrorInfo, ConnectorError, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { checkErrorInfo, ConnectorError, ExchangeAPI, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { getTimestampDaysLater, isValidateNumberStr, numberFormat } from '../../utils'
 import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
@@ -17,6 +17,7 @@ import Decimal from 'decimal.js'
 import { DAYS } from '../../defs'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { useDebouncedCallback } from '../../hooks/common'
+import _ from 'lodash'
 
 const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: TokenMap<{
   [key: string]: any;
@@ -124,8 +125,11 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         }))
       })
 
+    const destinationNetworkId = _.toPairs(MapChainId).find(([_, v]) => v === destinationNetwork)?.[0]
+    const desExchangeAPI = new ExchangeAPI({baseUrl: `https://${process.env[`REACT_APP_API_URL_${destinationNetworkId}`]}`})
+    const desTokens = await desExchangeAPI.getTokens()
     transferToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
-      tokenId: transferToken.tokenId,
+      tokenId: desTokens.tokensMap[transferToken.symbol].tokenId,
       network: toTaikoNetwork!,
       amount: '0'
     }).then(res => {
@@ -260,6 +264,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
       if ((response as any)?.resultInfo?.code || (response as any)?.resultInfo?.message) {
         throw (response as any).resultInfo
+      } else if (response.status === 'failed') {
+        throw new Error('withdraw filed')
       }
       setShowTransferToTaikoAccount({
         isShow: false

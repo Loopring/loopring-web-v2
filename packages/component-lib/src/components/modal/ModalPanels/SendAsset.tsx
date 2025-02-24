@@ -67,7 +67,7 @@ export const SendAsset = ({
       .filter(
         (item) =>
           !symbol ||
-          (item.key == 'SendAssetToAnotherNet' && send['orbiter']?.includes(symbol)) ||
+          (item.key === 'SendAssetToAnotherNet' && send['orbiter']?.includes(symbol)) ||
           !['SendAssetToAnotherNet'].includes(item.key),
       )
       .map((item, index) => (

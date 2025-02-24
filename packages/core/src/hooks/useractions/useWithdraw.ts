@@ -829,6 +829,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       })
       if ((response as any).resultInfo && (response as any).resultInfo.code > 0) {
         throw (response as any).resultInfo
+      } else if (!response || response.status === 'failed') {
+        throw new Error('withdraw failed')
       } else {
         info?.onCloseCallBack && info?.onCloseCallBack()
         setShowWithdraw({
