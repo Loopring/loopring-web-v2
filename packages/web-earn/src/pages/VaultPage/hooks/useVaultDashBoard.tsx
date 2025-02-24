@@ -67,7 +67,7 @@ import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory, useLocation, useRouteMatch } from 'react-router'
 import { utils } from 'ethers'
 import Decimal from 'decimal.js'
-import { keys } from 'lodash'
+import _, { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
 import { NoAccountHintModalProps, SmallOrderAlertProps, VaultSwapModalProps } from '../components/modals'
@@ -109,6 +109,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTablePro
 
   const {
     setShowNoVaultAccount,
+    setShowVaultSwap,
     modals: {
       isShowNoVaultAccount: { isShow: showNoVaultAccount, whichBtn, ...btnProps },
     },
@@ -473,6 +474,7 @@ export const useVaultDashboard = ({
   smallOrderAlertProps: SmallOrderAlertProps
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
+  
   const {
     vaultAccountInfo,
     activeInfo,
@@ -493,7 +495,7 @@ export const useVaultDashboard = ({
       isShowVaultJoin
     },
     setShowAccount,
-    setShowVaultLoan,
+    setShowVaultSwap,
   } = useOpenModals()
 
   const { forexMap, etherscanBaseUrl, getValueInCurrency, exchangeInfo } = useSystem()
@@ -869,38 +871,55 @@ export const useVaultDashboard = ({
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
   const [assetsTab, setAssetsTab] = React.useState('positionsView' as 'assetsView' | 'positionsView')
-  
+  const {vaultLayer2}=useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
-    rawData: [
-      {
+    rawData: _.keys(vaultLayer2)
+    .map((symbol) => {
+      const originSymbol = symbol.slice(2)
+      const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
+      const tokenInfo = vaultTokenMap[symbol]
+      console.log('askjdhakjwhe', originSymbol,asset, tokenInfo)
+      if (!asset || !tokenInfo) return undefined
+      const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
+      if (symbol === 'LVUSDT' || position.isZero())
+        return undefined
+      
+      return {
         tokenPair: {
-          coinJson: [coinJson['ETH']],
-          pair: 'ETH/USDT',
-          leverage: '3x',
-          marginLevel: '2.5',
+          coinJson: [coinJson[originSymbol]],
+          pair: `${originSymbol}/USDT`,
+          leverage: vaultAccountInfo?.leverage + 'x',
+          marginLevel: vaultAccountInfo?.marginLevel ?? '',
         },
-        direction: 'long',
-        holding: '1.5',
-        costPrice: '3200.50',
-      },
-      {
-        tokenPair: {
-          coinJson: [coinJson['ETH']],
-          pair: 'LRC/USDT',
-          leverage: '3x',
-          marginLevel: '2.5',
+        direction: position.isPos() ? 'long' : 'short' as 'long' | 'short',
+        holding: numberFormatThousandthPlace(position.abs().toString(), {
+          fixed: tokenInfo.precision,
+          removeTrailingZero: true
+        }),
+        onClickTrade: () => {
+          setShowVaultSwap({
+            isShow: true,
+            symbol: originSymbol
+          })
         },
-        direction: 'long',
-        holding: '1.5',
-        costPrice: '3200.50',
-      },
-    ],
+        onClickClose: () => {
+          // todo close position
+        }
+      }
+    })
+    .filter((item) => {
+      return item !== undefined
+    }),
     onRowClick: (index: number, row: PositionItem) => {},
     isLoading: false,
     hideAssets: false,
-    onRowClickLeverage: ({ row }: { row: PositionItem }) => {},
-    onRowClickTrade: ({ row }: { row: PositionItem }) => {},
-    onRowClickClose: ({ row }: { row: PositionItem }) => {},
+    // onRowClickLeverage: ({ row }: { row: PositionItem }) => {},
+    // onRowClickTrade: ({ row }: { row: PositionItem }) => {
+      
+    // },
+    // onRowClickClose: ({ row }: { row: PositionItem }) => {
+    //   // todo close position
+    // },
   }
   useEffect(() => {
     setTimeout(() => {
@@ -908,7 +927,7 @@ export const useVaultDashboard = ({
       // onActionBtnClick(VaultAction.VaultSwap)
     }, 100);
   }, [])
-
+  
   const vaultDashBoardPanelUIProps = {
     vaultAccountInfo,
     activeInfo,
@@ -929,7 +948,7 @@ export const useVaultDashboard = ({
     network,
     isShowVaultJoin,
     setShowAccount,
-    setShowVaultLoan,
+    // setShowVaultLoan,
     priceTag,
     // onActionBtnClick,
     showNoVaultAccount,
@@ -1129,6 +1148,7 @@ export const useVaultDashboard = ({
     
   
   const {vaultSwapModalProps, smallOrderAlertProps} = useVaultSwap({ path: 'portal' })
+  console.log('useVaultDashboard', {vaultPositionsTableProps,vaultDashBoardPanelUIProps}, {vaultLayer2, vaultTokenMap})
   return {
     vaultSwapModalProps: vaultSwapModalProps,
     vaultDashBoardPanelUIProps,

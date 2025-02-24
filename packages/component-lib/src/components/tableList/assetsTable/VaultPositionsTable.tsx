@@ -4,12 +4,13 @@ import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
-import { hexToRGB, RowConfig, TokenType } from '@loopring-web/common-resources'
+import { hexToRGB, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'
 import _ from 'lodash'
 import { Button } from '@mui/material'
 import { useTheme } from '@emotion/react'
+import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -20,8 +21,8 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     flex: 1;
     ${({ isMobile }) =>
       isMobile
-        ? `--template-columns: 250px auto auto auto 230px !important;`
-        : `--template-columns: 250px auto auto auto 230px !important;`}
+        ? `--template-columns: 250px auto auto 290px !important;`
+        : `--template-columns: 250px auto auto 290px !important;`}
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -53,7 +54,8 @@ export type PositionItem = {
   }
   direction: 'long' | 'short'
   holding: string
-  costPrice: string
+  onClickTrade: () => void
+  onClickClose: () => void
 }
 
 export type VaultPositionsTableProps = {
@@ -63,9 +65,9 @@ export type VaultPositionsTableProps = {
   rowConfig?: typeof RowConfig
   hideAssets?: boolean
 
-  onRowClickLeverage: ({ row }: { row: PositionItem }) => void
-  onRowClickTrade: ({ row }: { row: PositionItem }) => void
-  onRowClickClose: ({ row }: { row: PositionItem }) => void
+  // onRowClickLeverage: ({ row }: { row: PositionItem }) => void
+  // onRowClickTrade: ({ row }: { row: PositionItem }) => void
+  // onRowClickClose: ({ row }: { row: PositionItem }) => void
 }
 
 export const VaultPositionsTable = withTranslation('tables')(
@@ -77,9 +79,9 @@ export const VaultPositionsTable = withTranslation('tables')(
       rowConfig = RowConfig,
       hideAssets,
 
-      onRowClickLeverage,
-      onRowClickTrade,
-      onRowClickClose,
+      // onRowClickLeverage,
+      // onRowClickTrade,
+      // onRowClickClose,
       isLoading,
       ...rest
     } = props
@@ -102,6 +104,7 @@ export const VaultPositionsTable = withTranslation('tables')(
                 marginLeft={1}
                 component={'span'}
                 paddingRight={1}
+                width={'80px'}
               >
                 {row.tokenPair.pair}
               </Typography>
@@ -119,13 +122,29 @@ export const VaultPositionsTable = withTranslation('tables')(
                 {row.tokenPair.leverage}
               </Typography>
               <Typography
-                color={'var(--color-text-primary)'}
-                flexDirection={'column'}
-                marginLeft={2}
-                component={'span'}
-                paddingRight={1}
+                color={
+                  marginLevelType(row.tokenPair.marginLevel) === 'warning'
+                    ? theme.colorBase.warning
+                    : marginLevelType(row.tokenPair.marginLevel) === 'danger'
+                    ? theme.colorBase.error
+                    : theme.colorBase.success
+                }
+                bgcolor={hexToRGB(
+                  marginLevelType(row.tokenPair.marginLevel) === 'warning'
+                    ? theme.colorBase.warning
+                    : marginLevelType(row.tokenPair.marginLevel) === 'danger'
+                    ? theme.colorBase.error
+                    : theme.colorBase.success,
+                  0.5,
+                )}
+                ml={1}
+                display={'flex'}
+                alignItems={'center'}
+                borderRadius={'4px'}
+                px={0.5}
               >
-                {row.tokenPair.marginLevel} todo
+                <MarginLevelIcon sx={{ mr: 0.5, mb: 0.2 }} />
+                {row.tokenPair.marginLevel}
               </Typography>
             </>
           )
@@ -154,14 +173,14 @@ export const VaultPositionsTable = withTranslation('tables')(
           return <Box className={'textAlignRight'}>{row.holding}</Box>
         },
       },
-      {
-        key: 'costPrice',
-        name: 'Cost Price (USDT)',
-        headerCellClass: 'textAlignRight',
-        formatter: ({ row }) => {
-          return <Box className={'textAlignRight'}>{row.costPrice}</Box>
-        },
-      },
+      // {
+      //   key: 'costPrice',
+      //   name: 'Cost Price (USDT)',
+      //   headerCellClass: 'textAlignRight',
+      //   formatter: ({ row }) => {
+      //     return <Box className={'textAlignRight'}>{row.costPrice}</Box>
+      //   },
+      // },
 
       {
         key: 'actions',
@@ -171,18 +190,18 @@ export const VaultPositionsTable = withTranslation('tables')(
         formatter: ({ row }) => {
           return (
             <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
-              <Button
+              {/* <Button
                 onClick={(e) => {
                   e.stopPropagation()
                   onRowClickLeverage({ row })
                 }}
               >
                 Leverage
-              </Button>
+              </Button> */}
               <Button
                 onClick={(e) => {
                   e.stopPropagation()
-                  onRowClickTrade({ row })
+                  row.onClickTrade()
                 }}
               >
                 Trade
@@ -190,7 +209,7 @@ export const VaultPositionsTable = withTranslation('tables')(
               <Button
                 onClick={(e) => {
                   e.stopPropagation()
-                  onRowClickClose({ row })
+                  row.onClickClose()
                 }}
               >
                 Close

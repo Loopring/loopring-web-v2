@@ -81,6 +81,7 @@ import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from './utils'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
+import { fixPath } from 'react-redux-firebase'
 
 
 const reCalcStoB = ({
@@ -221,7 +222,7 @@ export const useVaultSwap = () => {
     useSettings()
   
   const { chainInfos, updateVaultBorrowHash } = onchainHashInfo.useOnChainInfo()
-  const {vaultAccountInfo} = useVaultAccountInfo()
+  const { vaultAccountInfo, maxLeverage,  } = useVaultAccountInfo()
   
   // const initTradeVault = {
   //   market: undefined,
@@ -928,7 +929,7 @@ export const useVaultSwap = () => {
   }
 
   React.useEffect(() => {
-    if (isShowVaultSwap.isShow || true) {
+    if (isShowVaultSwap.isShow) {
       restartTimer()
     } else {
       timerRef.current && clearInterval(timerRef.current)
@@ -2672,13 +2673,45 @@ export const useVaultSwap = () => {
 
 
 
-  
-  
+  const mainViewRef = React.useRef<HTMLDivElement>(null)
+  const myPositions = (() => {
+    return _.keys(vaultLayer2)
+      .map((symbol) => {
+        const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
+        const tokenInfo = tokenMap[symbol]
+        if (!asset || !tokenInfo) return undefined
+        const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
+        if (symbol === 'LVUSDT' || position.isZero() || (localState.hideOther && symbol !== selectedVTokenSymbol))
+          return undefined
+
+        return {
+          tokenSymbol: symbol.slice(2),
+          longOrShort: position.isPos() ? 'long' : 'short',
+          marginLevel: vaultAccountInfo?.marginLevel 
+            ? numberFormat(vaultAccountInfo.marginLevel, { fixed: 2 })
+            : EmptyValueTag,
+          leverage: vaultAccountInfo?.leverage + 'x',
+          amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision }),
+          // onClickLeverage: () => {},
+          onClickTrade: () => {
+            setShowVaultSwap({ isShow: true, symbol: symbol.slice(2) })
+            mainViewRef.current?.scrollTo(0, 0)
+          },
+          onClickClose: () => {
+            // todo close position
+          },
+        }
+      })
+      .filter((item) => {
+        return item !== undefined
+      })
+  })()
+  console.log('adsadswe23',myPositions, vaultLayer2)
 
 
   const vaultSwapModalProps = {
-    open: true, // todo
-    // open: isShowVaultSwap.isShow,
+    mainViewRef,
+    open: isShowVaultSwap.isShow,
     hideOther: localState.hideOther,
     onClickHideOther: () => {
       setLocalState({
@@ -2764,12 +2797,15 @@ export const useVaultSwap = () => {
       coinJSON: coinJson[selectedTokenSymbol],
     },
     onInputAmount: (amount: string) => {
-      console.log('asdasdasawewe',selectedVTokenInfo.vaultTokenAmounts.qtyStepScale,strNumDecimalPlacesLessThan(amount, selectedVTokenInfo.vaultTokenAmounts.qtyStepScale),)
+      // console.log('asdasdasawewe',selectedVTokenInfo.vaultTokenAmounts.qtyStepScale,strNumDecimalPlacesLessThan(amount, selectedVTokenInfo.vaultTokenAmounts.qtyStepScale),)
       if (
         amount &&
         (!isNumberStr(amount) ||
           !selectedVTokenInfo ||
-          !strNumDecimalPlacesLessThan(amount, selectedVTokenInfo.vaultTokenAmounts.qtyStepScale + 1))
+          !strNumDecimalPlacesLessThan(
+            amount,
+            selectedVTokenInfo.vaultTokenAmounts.qtyStepScale + 1,
+          ))
       )
         return
       setLocalState({
@@ -2914,7 +2950,7 @@ export const useVaultSwap = () => {
         onClickTradeBtn()
       },
       label: tradeBtnStatus.label ? t(tradeBtnStatus.label) : undefined,
-      loading: localState.isSwapLoading
+      loading: localState.isSwapLoading,
     },
     hourlyInterestRate:
       sellTokenAsset?.borrowed && new Decimal(sellTokenAsset.borrowed).gt(0) && sellToken
@@ -2945,59 +2981,26 @@ export const useVaultSwap = () => {
       })
       restartTimer()
     },
-    myPositions: [
-      {
-        tokenSymbol: 'ETH',
-        longOrShort: 'short',
-        marginLevel: '10',
-        leverage: '5x',
-        amount: '10',
-        marketPrice: '3000',
-        onClickLeverage: () => {},
-        onClickTrade: () => {},
-        onClickClose: () => {},
-      },
-      {
-        tokenSymbol: 'LRC',
-        longOrShort: 'long',
-        marginLevel: '10',
-        leverage: '1x',
-        amount: '10',
-        marketPrice: '3000',
-        onClickLeverage: () => {},
-        onClickTrade: () => {},
-        onClickClose: () => {},
-      },
-    ],
+    myPositions: [],
     leverageSelection: {
-      value: '1x',
-      onChange: (value: string) => {},
-      items: [
-        {
-          label: '1x',
-          value: '1x',
-        },
-        {
-          label: '2x',
-          value: '2x',
-        },
-        {
-          label: '3x',
-          value: '3x',
-        },
-        {
-          label: '5x',
-          value: '5x',
-        },
-        {
-          label: '10x',
-          value: '10x',
-        },
-        {
-          label: '20x',
-          value: '20x',
-        },
-      ],
+      value: vaultAccountInfo?.leverage,
+      onChange: async (value: string) => {
+        await LoopringAPI.vaultAPI?.submitLeverage({
+          request: {
+            accountId: account.accountId.toString(),
+            leverage: value,
+          },
+          apiKey: account.apiKey,
+        }, '1').finally(() => {
+          refreshData()
+        })
+      },
+      items:
+        maxLeverage ?
+        _.range(1, Number(maxLeverage) + 1).map((leverage: number) => ({
+          label: `${leverage}x`,
+          value: leverage.toString(),
+        })) : [],
     },
     positionTypeSelection: {
       value: 'cross',
@@ -3076,7 +3079,7 @@ export const useVaultSwap = () => {
         setLocalState({
           ...localState,
           tokenSelectionInput: v,
-          amount: ''
+          amount: '',
         })
       },
     },

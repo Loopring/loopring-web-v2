@@ -1,6 +1,6 @@
 import { Box, Typography, Modal, Divider, IconButton, Slider, Checkbox, Tooltip, Popover, Switch, Grid, Button as MuiButton, Input, Select, MenuItem, ButtonProps, styled, CircularProgress } from '@mui/material'
 import { AvatarCoin, Button, CoinIcon, CoinIcons, CountDownIcon, IconButtonStyled, InputSearch, Loading, LoadingStyled, ModalCloseButtonPosition, SpaceBetweenBox, SwapTradeData } from '@loopring-web/component-lib'
-import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, CompleteIcon, EmptyValueTag, hexToRGB, Info2Icon, InfoIcon, LoadingIcon, mapSpecialTokenName, OrderListIcon, ReverseIcon, SwapSettingIcon, TokenType, WaitingIcon } from '@loopring-web/common-resources'
+import { BackIcon, CheckBoxIcon, CheckedIcon, CloseIcon, CompleteIcon, EmptyValueTag, hexToRGB, Info2Icon, InfoIcon, LoadingIcon, mapSpecialTokenName, MarginLevelIcon, OrderListIcon, ReverseIcon, SwapSettingIcon, TokenType, WaitingIcon } from '@loopring-web/common-resources'
 import { numberFormat, VaultTradeTradeData, ViewAccountTemplate } from '@loopring-web/core'
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -24,6 +24,7 @@ import { current } from '@reduxjs/toolkit';
 import React from 'react';
 import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils';
 import EastIcon from '@mui/icons-material/East';
+import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils';
 
 export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
   const { open, onClose, collateralTokens, totalCollateral, maxCredit, onClickMaxCredit, coinJSON } = props
@@ -928,7 +929,7 @@ export interface VaultSwapModalProps {
         marginLevel: string
         leverage: string
         amount: string
-        marketPrice: string
+        // marketPrice: string
         onClickLeverage: () => void
         onClickTrade: () => void
         onClickClose: () => void
@@ -979,6 +980,7 @@ export interface VaultSwapModalProps {
     onClick: () => void
     loading?: boolean
   }
+  mainViewRef: React.RefObject<HTMLDivElement>
 }
 
 export const VaultSwapModal = (props: VaultSwapModalProps) => {
@@ -1025,7 +1027,8 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
     onClickHideOther,
     onClickLongShort,
     tokenSelection,
-    tradeBtn
+    tradeBtn,
+    mainViewRef
   } = props
   const { t } = useTranslation()
   const theme = useTheme()
@@ -1038,6 +1041,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       width={'var(--modal-width)'}
       height={'700px'}
       overflow={'auto'}
+      ref={mainViewRef}
       borderRadius={1}
       display={'flex'}
       alignItems={'center'}
@@ -1539,7 +1543,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           disabled={tradeBtn.disabled}
         >
           {tradeBtn.loading ? (
-            <LoadingIcon className='custom-size' sx={{fontSize: 24}}/>
+            <LoadingIcon className='custom-size' sx={{ fontSize: 24 }} />
           ) : tradeBtn.label ? (
             tradeBtn.label
           ) : isLongOrShort === 'long' ? (
@@ -1549,7 +1553,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           )}
         </BgButton>
       </Box>
-      <Box width={'100%'} mt={2} px={3}>
+      <Box width={'100%'} mt={2} mb={3} px={3} borderRadius={'8px'}>
         <Box bgcolor={'var(--color-box-secondary)'} px={3} py={2}>
           <Typography variant='h4' mb={2}>
             My Positions
@@ -1573,24 +1577,32 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               />
               Hide other tokens
             </Typography>
-            <BgButton variant='contained' size='small' customBg='var(--color-button-outlined)'>
-              Close All
-            </BgButton>
+            {myPositions && myPositions.length > 0 && (
+              <BgButton variant='contained' size='small' customBg='var(--color-button-outlined)'>
+                Close All
+              </BgButton>
+            )}
           </Box>
 
           <Box>
+            {myPositions?.length === 0 && (
+              <Box
+                width={'100%'}
+                height={'150px'}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+              >
+                <Typography variant='body2'>No positions</Typography>
+              </Box>
+            )}
             {myPositions?.map((item) => {
               return (
-                <Box
-                  key={item.tokenSymbol}
-                  py={3}
-                  borderBottom={'1px solid var(--color-border)'}
-                  borderRadius={'8px'}
-                >
+                <Box key={item.tokenSymbol} py={3} borderBottom={'1px solid var(--color-border)'}>
                   <Box display={'flex'} alignItems={'center'}>
                     <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
                     <Typography
-                      ml={0.5}
+                      ml={1}
                       fontSize={'12px'}
                       borderRadius={'4px'}
                       px={1}
@@ -1606,9 +1618,35 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                         0.5,
                       )}
                     >
-                      {item.tokenSymbol}
+                      {item.longOrShort}
                     </Typography>
-                    <Typography ml={0.5}>marginview-todo</Typography>
+                    <Box
+                      color={
+                        marginLevelType(item.marginLevel) === 'warning'
+                          ? theme.colorBase.warning
+                          : marginLevelType(item.marginLevel) === 'danger'
+                          ? theme.colorBase.error
+                          : theme.colorBase.success
+                      }
+                      bgcolor={hexToRGB(
+                        marginLevelType(item.marginLevel) === 'warning'
+                          ? theme.colorBase.warning
+                          : marginLevelType(item.marginLevel) === 'danger'
+                          ? theme.colorBase.error
+                          : theme.colorBase.success,
+                        0.5,
+                      )}
+                      ml={1}
+                      display={'flex'}
+                      alignItems={'center'}
+                      fontSize={'13px'}
+                      borderRadius={'4px'}
+                      py={0.15}
+                      px={0.5}
+                    >
+                      <MarginLevelIcon sx={{ mr: 0.5 }} />
+                      {item.marginLevel}
+                    </Box>
                   </Box>
                   <Typography variant='body2'>{item.leverage}</Typography>
                   <Box display={'flex'} alignItems={'center'} mt={2.5}>
@@ -1616,10 +1654,10 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                       <Typography variant='body2'>Amount</Typography>
                       <Typography>{item.amount}</Typography>
                     </Box>
-                    <Box ml={'30%'}>
+                    {/* <Box ml={'30%'}>
                       <Typography variant='body2'>Market Price (USDT)</Typography>
                       <Typography>{item.marketPrice}</Typography>
-                    </Box>
+                    </Box> */}
                   </Box>
                   <Box display={'flex'} alignItems={'center'} mt={2.5}>
                     {/* <BgButton
@@ -1689,6 +1727,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         display={'flex'}
         flexDirection={'column'}
         py={4}
+        
       >
         <Box px={2.5} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <InputSearch
@@ -1707,6 +1746,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           flexDirection={'column'}
           mt={2}
           height={'85%'}
+          
           sx={{ overflowY: 'auto' }}
         >
           {tokenSelection.tokens.map((item) => (
