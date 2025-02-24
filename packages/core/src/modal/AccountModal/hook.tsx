@@ -209,6 +209,7 @@ import {
   offFaitService,
   onchainHashInfo,
   OrderENDReason,
+  parseRabbitConfig,
   store,
   unlockAccount,
   useAccount,
@@ -232,6 +233,7 @@ import {
   useReset,
   useStakeTradeExit,
   useSystem,
+  useTokenMap,
   useTransfer,
   useTransferToTaikoAccount,
   useVendor,
@@ -677,14 +679,24 @@ export function useAccountModalForUI({
     ],
   )
 
-  const {toggle}=useToggle()
-  const {fastWithdrawConfig}=useConfig()
+  const { toggle } = useToggle()
+  const { fastWithdrawConfig } = useConfig()
+  const { idIndex } = useTokenMap()
 
   const sendAssetList: SendAssetItem[] = React.useMemo(
     () =>
       SendAssetListMap[network].filter(item => {
         if (item === SendAssetList.SendAssetToTaikoAccount.key) {
-          return !isShowAccount?.info?.hideSendToTaiko && toggle.rabbitWithdraw.enable && fastWithdrawConfig?.fromToNetworks[network]?.includes('TAIKO')
+          // console.log('isShowAccount?.info', isShowAccount?)
+          const parsed = parseRabbitConfig(fastWithdrawConfig, network, idIndex)
+          return (
+            !isShowAccount?.info?.hideSendToTaiko &&
+            toggle.rabbitWithdraw.enable &&
+            parsed.toTaikoNetwork === 'TAIKO' &&
+            (isShowAccount?.info?.symbol
+              ? parsed.toTaikoNetworkSupportedTokens?.includes(isShowAccount.info.symbol)
+              : true)
+          )
         } else {
           return true
         }
