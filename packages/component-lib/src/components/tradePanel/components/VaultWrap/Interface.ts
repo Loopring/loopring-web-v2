@@ -20,7 +20,7 @@ export type VaultJoinBaseProps<T, I, V> = {
   handleConfirm: (index: number) => void
   basicTrade: { onChangeEvent: any; switchData: any }
   modalOpen: boolean
-  onCloseModal: () => void
+  onCloseModal: () => void,
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type VaultJoinExtendProps<T, I, C = IBData<I>> = {

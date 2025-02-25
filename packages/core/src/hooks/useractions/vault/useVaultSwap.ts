@@ -1664,7 +1664,7 @@ export const useVaultSwap = () => {
     onClose: closeToast,
     severity: toastOpen?.type,
   }
-  console.log('useVaultSwap output', localState, vaultSwapModalProps, {
+  console.log('useVaultSwap output', isShowVaultSwap, localState, vaultSwapModalProps, {
     tokenMap,
     vaultLayer2,
     marketMap,

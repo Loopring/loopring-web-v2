@@ -70,7 +70,7 @@ import Decimal from 'decimal.js'
 import _, { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
-import { NoAccountHintModalProps, SmallOrderAlertProps, VaultSwapModalProps } from '../components/modals'
+import { NoAccountHintModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
 
@@ -472,6 +472,7 @@ export const useVaultDashboard = ({
   noAccountHintModalProps: NoAccountHintModalProps
   vaultSwapModalProps: VaultSwapModalProps
   smallOrderAlertProps: SmallOrderAlertProps
+  supplyCollateralHintModalProps: SupplyCollateralHintModalProps
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
   
@@ -537,9 +538,11 @@ export const useVaultDashboard = ({
       | 'leverageMaxCredit'
       | 'debt'
       | 'dustCollector'
-      | 'dustCollectorUnavailable',
+      | 'dustCollectorUnavailable'
+      | 'supplyCollateralHint',
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
+
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
@@ -923,10 +926,18 @@ export const useVaultDashboard = ({
   }
   useEffect(() => {
     setTimeout(() => {
-      onSwapPop({})
+      // onJoinPop({}) // to delete
+
       // onActionBtnClick(VaultAction.VaultSwap)
     }, 100);
   }, [])
+
+  const isActiveAccount =
+    [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
+      vaultAccountInfo?.accountStatus ?? ('' as any),
+    ) ||
+    vaultAccountInfo === undefined ||
+    vaultAccountInfo?.accountStatus === undefined
   
   const vaultDashBoardPanelUIProps = {
     vaultAccountInfo,
@@ -991,6 +1002,14 @@ export const useVaultDashboard = ({
     marginLevel: vaultAccountInfo?.marginLevel ?? '',
     _vaultAccountInfo: _vaultAccountInfo,
     onClickCollateralManagement: () => {
+      if (isActiveAccount) {
+        setLocalState({
+          ...localState,
+          modalStatus: 'supplyCollateralHint'
+        })
+      } else {
+        onJoinPop({})
+      }
       
     },
     liquidationThreshold: '1x',
@@ -1434,6 +1453,16 @@ export const useVaultDashboard = ({
       ),
       dialogBtn: noVaultAccountDialogBtn,
     },
-    smallOrderAlertProps: smallOrderAlertProps
+    smallOrderAlertProps: smallOrderAlertProps,
+    supplyCollateralHintModalProps: {
+      open: localState.modalStatus === 'supplyCollateralHint',
+      onClose: () => {
+        setLocalState({ ...localState, modalStatus: 'noModal' })
+      },
+      onClickSupply: () => {
+        setLocalState({ ...localState, modalStatus: 'noModal' })
+        onJoinPop({})
+      },
+    }
   }
 }

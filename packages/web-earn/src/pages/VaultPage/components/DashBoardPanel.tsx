@@ -61,6 +61,7 @@ import {
   MaximumCreditModal,
   NoAccountHintModal,
   SmallOrderAlert,
+  SupplyCollateralHintModal,
   VaultSwapModal
 } from './modals'
 import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/components/tradePanel/components/VaultWrap/utils'
@@ -1844,7 +1845,7 @@ export const VaultDashBoardPanel = ({
     noAccountHintModalProps,
     // vaultSwapModalProps,
     // smallOrderAlertProps,
-    
+    supplyCollateralHintModalProps
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
   const {vaultSwapModalProps, smallOrderAlertProps, toastProps} = useVaultSwap()
   const joinVaultProps = useVaultJoin()
@@ -1863,8 +1864,9 @@ export const VaultDashBoardPanel = ({
       <DustCollectorUnAvailableModal {...dustCollectorUnAvailableModalProps} />
       <NoAccountHintModal {...noAccountHintModalProps} />
       <VaultSwapModal {...vaultSwapModalProps} />
-      <SmallOrderAlert {...smallOrderAlertProps}/>
-      <Toast {...toastProps}/>
+      <SmallOrderAlert {...smallOrderAlertProps} />
+      <SupplyCollateralHintModal {...supplyCollateralHintModalProps} />
+      <Toast {...toastProps} />
     </>
   ) 
 }

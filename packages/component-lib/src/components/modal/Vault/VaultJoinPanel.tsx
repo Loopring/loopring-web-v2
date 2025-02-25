@@ -76,7 +76,7 @@ export const VaultJoinPanelModal = <T extends IBData<I>, V extends VaultJoinData
               <Box sx={{ height: '55px' }} className={'toolbarTitle'}>
                 {isActiveAccount ? (
                   <Typography marginBottom={1.5} variant={'h5'} component={'span'} paddingX={3}>
-                    {t('labelVaultJoinTitle')}
+                    Suppy Collateral
                   </Typography>
                 ) : (
                   <Tabs
@@ -86,8 +86,8 @@ export const VaultJoinPanelModal = <T extends IBData<I>, V extends VaultJoinData
                     }}
                     sx={{marginLeft: 1.5}}
                   >
-                    <Tab label={'Add'} value={'Add'} />
-                    <Tab label={'Redeem'} value={'Redeem'} />
+                    <Tab label={'Supply'} value={'Add'} />
+                    <Tab label={'Reduce'} value={'Redeem'} />
                   </Tabs>
                 )}
 
