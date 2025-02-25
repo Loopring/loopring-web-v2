@@ -42,6 +42,17 @@ import { useSystem } from '@loopring-web/core'
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
+
+const formatTokenList = (tokens: string[]):string => {
+  if (!tokens || tokens.length === 0) return '';
+  if (tokens.length === 1) return tokens[0];
+  if (tokens.length === 2) return `${tokens[0]} and ${tokens[1]}`;
+  
+  const lastToken = tokens[tokens.length - 1];
+  const otherTokens = tokens.slice(0, -1);
+  return `${otherTokens.join(', ')}, and ${lastToken}`;
+}
+
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
   I,
@@ -482,7 +493,7 @@ export const WithdrawWrap = <
                       title={
                         <Typography color={'var(--color-text-secondary)'} fontSize={'11px'}>
                           Trust Mode: Operated by Loopring’s team to maintain liquidity. <br />
-                          Supported Assets: USDC, TAIKO, and ETH.
+                          Supported Assets: {formatTokenList(withdrawMode.fastModeSupportedTokens)}.
                         </Typography>
                       }
                     >
