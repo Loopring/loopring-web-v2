@@ -1131,6 +1131,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           time: '~25 minutes',
         },
         onChange: onChangeWithdrawMode,
+        fastModeSupportedTokens: parsed?.toL1SupportedTokens ? parsed.toL1SupportedTokens : []
       }
     })(),
   }

@@ -262,6 +262,7 @@ export type WithdrawExtendProps<T, I, C> = {
   geUpdateContact: () => void
   withdrawMode?: {
     mode: 'fast' | 'normal',
+    fastModeSupportedTokens: string[],
     onChange: (mode: 'fast' | 'normal') => void
     fastMode: undefined | {
       fee: string,
