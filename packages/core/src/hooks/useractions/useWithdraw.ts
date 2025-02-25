@@ -75,7 +75,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap
     discount: offchainFeeInfo.discount,
     __raw__: {
       fastWithDraw: '',
-      tokenId: tokenMap[offchainFeeInfo.token].tokenId,
+      tokenId: tokenMap[offchainFeeInfo.token]?.tokenId,
       feeRaw: offchainFeeInfo.fee,
     }
   }
