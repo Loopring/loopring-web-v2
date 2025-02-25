@@ -24,7 +24,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
 }>, walletMap: WalletMap<string, any>) => {
   return {
     belong: offchainFeeInfo.token,
-    fee: ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals),
+    fee: tokenMap[offchainFeeInfo.token] ? ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals) : '',
     feeRaw: offchainFeeInfo.fee,
     token: offchainFeeInfo.token,
     hasToken: !!offchainFeeInfo.token,
@@ -32,7 +32,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
     discount: offchainFeeInfo.discount ? offchainFeeInfo.discount : undefined,
     __raw__: {
       fastWithDraw: '',
-      tokenId: tokenMap[offchainFeeInfo.token].tokenId,
+      tokenId: tokenMap[offchainFeeInfo.token]?.tokenId,
       feeRaw: offchainFeeInfo.fee,
     }
   }
@@ -81,7 +81,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const parsed = fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
     ? parseRabbitConfig(fastWithdrawConfig, MapChainId[defaultNetwork], idIndex)
     : undefined
+  
   const transferTokenList = parsed?.toTaikoNetworkSupportedTokens || []
+  console.log('asdhsakjdhsa',fastWithdrawConfig, parsed, transferTokenList) 
   const toTaikoNetwork = parsed?.toTaikoNetwork
 
   const refreshData = async () => {
