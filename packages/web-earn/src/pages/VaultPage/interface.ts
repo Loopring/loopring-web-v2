@@ -50,6 +50,8 @@ export interface VaultDashBoardPanelUIProps {
   onClickRecord: () => void;
   vaultPositionsTableProps: VaultPositionsTableProps;
   onClickHideShowAssets: () => void;
+  accountActive: boolean
+  totalEquity: string
 }
 
 export interface CollateralDetailsModalProps {

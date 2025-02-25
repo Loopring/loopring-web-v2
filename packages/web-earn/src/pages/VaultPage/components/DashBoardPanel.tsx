@@ -1040,7 +1040,7 @@ import { VaultDashBoardPanelUIProps } from '../interface'
 //   )
 // }
 
-const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
+const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   t,
   forexMap,
   theme,
@@ -1077,7 +1077,9 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
   onClickRecord,
   vaultPositionsTableProps,
   onClickHideShowAssets,
-  
+  accountActive,
+  totalEquity
+
 }) => {
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -1116,7 +1118,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                 flexDirection={'column'}
                 mt={3}
                 px={4}
-                pt={4}
+                pt={3}
                 pb={5}
                 border={'1px solid var(--color-border)'}
                 borderRadius={1.5}
@@ -1129,24 +1131,40 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                   Collateral Management
                 </Button>
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
-                  <Typography mr={2} color={'var(--color-text-secondary)'} variant='h3'>
+                  <Box mr={2}>
+                  <Typography  color={'var(--color-text-secondary)'} variant='h3'>
                     Total Equity
                   </Typography>
+                  
+
+                  </Box>
+                  
 
                   {hideAssets ? (
                     <HideIcon
                       className='custom-size'
-                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
+                      sx={{
+                        fontSize: '24px',
+                        color: 'var(--color-text-secondary)',
+                        cursor: 'pointer',
+                      }}
                       onClick={onClickHideShowAssets}
                     />
                   ) : (
                     <ViewIcon
                       className='custom-size'
-                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
+                      sx={{
+                        fontSize: '24px',
+                        color: 'var(--color-text-secondary)',
+                        cursor: 'pointer',
+                      }}
                       onClick={onClickHideShowAssets}
                     />
                   )}
                 </Box>
+                <Typography mt={1} variant='h2'>
+                  {hideAssets ? HiddenTag : accountActive ? totalEquity : EmptyValueTag}
+                </Typography>
 
                 <Box mt={6} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
                   <Box width={'25%'}>
@@ -1161,7 +1179,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                       color={'textPrimary'}
                       alignItems={'center'}
                     >
-                      {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
+                      {accountActive
                         ? hideAssets
                           ? HiddenTag
                           : PriceTag[CurrencyToTag[currency]] +
@@ -1175,21 +1193,23 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                               { isFait: true, floor: true },
                             )
                         : EmptyValueTag}
-                      <Typography
-                        variant={'body2'}
-                        sx={{ cursor: 'pointer' }}
-                        color={'var(--color-primary)'}
-                        marginLeft={1}
-                        component={'span'}
-                        onClick={() => {
-                          setLocalState({
-                            ...localState,
-                            modalStatus: 'collateralDetails',
-                          })
-                        }}
-                      >
-                        {t('labelVaultDetail')}
-                      </Typography>
+                      {accountActive && (
+                        <Typography
+                          variant={'body2'}
+                          sx={{ cursor: 'pointer' }}
+                          color={'var(--color-primary)'}
+                          marginLeft={1}
+                          component={'span'}
+                          onClick={() => {
+                            setLocalState({
+                              ...localState,
+                              modalStatus: 'collateralDetails',
+                            })
+                          }}
+                        >
+                          {t('labelVaultDetail')}
+                        </Typography>
+                      )}
                     </Typography>
                   </Box>
                   <Box width={'25%'}>
@@ -1261,6 +1281,9 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                       </Typography>
                     </Tooltip>
                     {(() => {
+                      if (!accountActive) {
+                        return <Typography>{EmptyValueTag}</Typography>
+                      }
                       const item = vaultAccountInfo?.marginLevel ?? '0'
                       return (
                         <>
@@ -1314,7 +1337,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                       color={'textPrimary'}
                       alignItems={'center'}
                     >
-                      {vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING
+                      {accountActive
                         ? hideAssets
                           ? HiddenTag
                           : PriceTag[CurrencyToTag[currency]] +
@@ -1328,7 +1351,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                               { isFait: true, floor: true },
                             )
                         : EmptyValueTag}
-                      <Typography
+                      {accountActive&&<Typography
                         variant={'body2'}
                         sx={{ cursor: 'pointer' }}
                         color={'var(--color-primary)'}
@@ -1342,7 +1365,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                         }}
                       >
                         {t('labelVaultDetail')}
-                      </Typography>
+                      </Typography>}
                     </Typography>
                   </Box>
                   <Box width={'25%'}>
@@ -1369,8 +1392,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                         const colorIs = profit.gte(0) ? colorsId[0] : colorsId[1]
                         return (
                           <>
-                            {vaultAccountInfo?.accountStatus ===
-                            sdk.VaultAccountStatus.IN_STAKING ? (
+                            {accountActive ? (
                               <>
                                 <Typography
                                   component={'span'}
@@ -1443,10 +1465,10 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                         color={'textPrimary'}
                         alignItems={'center'}
                       >
-                        {vaultAccountInfo?.leverage
+                        {vaultAccountInfo?.leverage && accountActive
                           ? `${vaultAccountInfo?.leverage}x`
                           : EmptyValueTag}
-                        <Typography
+                        {accountActive && <Typography
                           variant={'body2'}
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
@@ -1460,7 +1482,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                           }}
                         >
                           {t('labelVaultDetail')}
-                        </Typography>
+                        </Typography>}
                       </Typography>
                       <Typography
                         marginTop={0.5}
@@ -1470,7 +1492,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                       >
                         {t('labelVaultMaximumCredit')}:{' '}
                         {(vaultAccountInfo as any)?.maxCredit &&
-                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit)
+                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit) && accountActive
                           ? fiatNumberDisplay(
                               getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                               currency,
@@ -1491,7 +1513,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                       color={'textPrimary'}
                       alignItems={'center'}
                     >
-                      {liquidationThreshold}
+                      {accountActive ? liquidationThreshold : EmptyValueTag}
                     </Typography>
                   </Box>
                   <Box position={'relative'} width={'25%'}>
@@ -1506,7 +1528,7 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                       color={'textPrimary'}
                       alignItems={'center'}
                     >
-                      {liquidationPenalty}
+                      {accountActive ? liquidationPenalty : EmptyValueTag}
                     </Typography>
                   </Box>
                 </Box>
@@ -1773,6 +1795,12 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                           isShow={detail.isShow}
                           forexMap={forexMap}
                           isLoading={detail.isLoading}
+                          showBtns={
+                            vaultAccountInfo &&
+                            [sdk.VaultAccountStatus.IN_STAKING].includes(
+                              vaultAccountInfo?.accountStatus,
+                            )
+                          }
                           {...{ ...detail?.detail }}
                         />
                       </Box>
@@ -1851,7 +1879,7 @@ export const VaultDashBoardPanel = ({
   const joinVaultProps = useVaultJoin()
   return (
     <>
-      <VaultDashBoardPanelUI2
+      <VaultDashBoardPanelUI
         {...vaultDashBoardPanelUIProps}
         vaultAccountInfo={_vaultAccountInfo.vaultAccountInfo}
       />

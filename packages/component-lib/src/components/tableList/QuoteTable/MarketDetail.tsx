@@ -1,6 +1,6 @@
 import { ChartType, ScaleAreaChart } from '../../charts'
 import React from 'react'
-import { Box, Grid, Link, Typography } from '@mui/material'
+import { Box, Button, Grid, Link, Typography } from '@mui/material'
 import {
   AmmHistoryItem,
   CurrencyToTag,
@@ -19,6 +19,20 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useSettings } from '../../../stores'
 import { QuoteTableChangedCell } from './QuoteTable'
 import { ToggleButtonGroup } from '../../basic-lib'
+import styled from '@emotion/styled'
+
+const BgButton = styled(Button)<{ customBg: string }>`
+  background-color: ${({ customBg }) => customBg};
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: ${({ customBg }) => customBg};
+    opacity: 0.8;
+  }
+  &:disabled {
+    background-color: var(--color-button-disabled);
+  }
+  
+`
 
 enum TradingInterval {
   hr1 = 'hr1',
@@ -58,6 +72,7 @@ export const MarketDetail = ({
   etherscanBaseUrl,
   isLoading,
   timeIntervalData = TimeMarketIntervalData,
+  showBtns
 }: {
   tokenInfo
   isLoading?: boolean
@@ -66,6 +81,7 @@ export const MarketDetail = ({
   forexMap: ForexMap
   etherscanBaseUrl: string
   timeIntervalData: typeof TimeMarketIntervalData
+  showBtns?: boolean
 }) => {
   const { t } = useTranslation()
   const { coinJson, currency, upColor } = useSettings()
@@ -441,7 +457,16 @@ export const MarketDetail = ({
         ) : (
           <></>
         )}
+        
       </Box>
+      {showBtns && <Box mt={3}>
+        <BgButton sx={{ borderRadius: '4px'}} fullWidth customBg={'var(--color-success)'} variant='contained'>
+          Buy/Long
+        </BgButton>
+        <BgButton sx={{mt: 2, borderRadius: '4px'}} fullWidth customBg={'var(--color-error)'} variant='contained'>
+          Sell/Short
+        </BgButton>
+      </Box>}
     </>
   ) : (
     <></>

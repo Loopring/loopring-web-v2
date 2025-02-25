@@ -238,7 +238,7 @@ export const VaultHomePanel = ({
                             : PriceTag[CurrencyToTag[currency]] + '0.00'
                           : HiddenTag}
                       </Typography>
-                      <Box marginTop={2} display={'flex'} flexDirection={'row'}>
+                      {/* <Box marginTop={2} display={'flex'} flexDirection={'row'}>
                         <Box
                           display={'flex'}
                           flexDirection={'column'}
@@ -314,7 +314,7 @@ export const VaultHomePanel = ({
                             {t('labelVaultTradeSimpleBtn')}
                           </Typography>
                         </Box>
-                      </Box>
+                      </Box> */}
                     </Box>
                     <Divider style={{ marginTop: '-1px', width: '100%' }} />
                   </>
@@ -325,6 +325,7 @@ export const VaultHomePanel = ({
                   isShow={detail.isShow}
                   forexMap={forexMap}
                   isLoading={detail.isLoading}
+                  showBtns={vaultAccountInfo && [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus)}
                   {...{ ...detail?.detail }}
                 />
               </Box>

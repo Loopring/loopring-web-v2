@@ -1004,12 +1004,11 @@ export const useVaultDashboard = ({
       if (isActiveAccount) {
         setLocalState({
           ...localState,
-          modalStatus: 'supplyCollateralHint'
+          modalStatus: 'supplyCollateralHint',
         })
       } else {
         onJoinPop({})
       }
-      
     },
     liquidationThreshold: '1.1',
     liquidationPenalty: '0%',
@@ -1026,8 +1025,11 @@ export const useVaultDashboard = ({
     vaultPositionsTableProps,
     onClickHideShowAssets: () => {
       setHideL2Assets(!hideAssets)
-    }
-    
+    },
+    accountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
+    totalEquity: vaultAccountInfo?.totalEquityOfUsdt
+      ? fiatNumberDisplay(getValueInCurrency(vaultAccountInfo?.totalEquityOfUsdt), currency)
+      : EmptyValueTag,
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
