@@ -941,6 +941,7 @@ export interface VaultSwapModalProps {
       {
         label: string
         value: string
+        tooltipTitle: string
       },
     ]
     value: string
@@ -1247,18 +1248,26 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         </Box>
 
         <Box mt={3} width={'100%'} px={3}>
-          <Select
-            value={positionTypeSelection.value}
-            onChange={(e, v) => positionTypeSelection.onChange(e.target.value)}
-            displayEmpty
-            size='small'
-          >
-            {positionTypeSelection.items.map((item) => (
-              <MenuItem key={item.value} value={item.value}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </Select>
+          {/* <Tooltip
+            title={
+              positionTypeSelection.items.find((item) => item.value === positionTypeSelection.value)
+                ?.tooltipTitle ?? ''
+            }
+          > */}
+            <Select
+              value={positionTypeSelection.value}
+              onChange={(e, v) => positionTypeSelection.onChange(e.target.value)}
+              displayEmpty
+              size='small'
+            >
+              {positionTypeSelection.items.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Select>
+          {/* </Tooltip> */}
+
           <Select
             value={leverageSelection.value}
             sx={{ ml: 2 }}
@@ -1370,7 +1379,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         <Box pb={4} mt={4} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
           <SpaceBetweenBox
             leftNode={
-              <Tooltip title={'todo'}>
+              <Tooltip
+                title={`Max represents the total of your available holdings and borrowable tokens based on your collateral for this trade. If the swap amount exceeds your available balance, the system will automatically borrow the required tokens.`}
+              >
                 <Typography
                   display={'flex'}
                   alignItems={'center'}
@@ -1412,7 +1423,16 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <SpaceBetweenBox
             mt={2}
             leftNode={
-              <Tooltip title={'todo'}>
+              <Tooltip
+                title={
+                  <>
+                    · The corresponding amount is automatically borrowed when placing an order.{' '}
+                    <br />· Interest starts accruing once the order is successfully placed,
+                    regardless of whether it is executed or not, and manual repayment is required.{' '}
+                    <br />· Borrowing is not allowed when the fund pool balance is zero.
+                  </>
+                }
+              >
                 <Typography
                   display={'flex'}
                   alignItems={'center'}
@@ -1432,7 +1452,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <SpaceBetweenBox
             mt={1}
             leftNode={
-              <Tooltip title={'todo'}>
+              <Tooltip title={'Total Quota is the maximum allowable trading amount.'}>
                 <Typography
                   display={'flex'}
                   alignItems={'center'}
@@ -1487,7 +1507,11 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <SpaceBetweenBox
             mt={1}
             leftNode={
-              <Tooltip title={'todo'}>
+              <Tooltip
+                title={
+                  'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.'
+                }
+              >
                 <Typography
                   display={'flex'}
                   alignItems={'center'}
@@ -1507,7 +1531,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <SpaceBetweenBox
             mt={1}
             leftNode={
-              <Tooltip title={'todo'}>
+              <Tooltip title={'The trading fee is fixed at 0.3%.'}>
                 <Typography
                   display={'flex'}
                   alignItems={'center'}
@@ -1527,7 +1551,11 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <SpaceBetweenBox
             mt={1}
             leftNode={
-              <Tooltip title={'todo'}>
+              <Tooltip
+                title={
+                  'Your trade will revert if the price changes unfavorably by more than this percentage.'
+                }
+              >
                 <Typography
                   display={'flex'}
                   alignItems={'center'}

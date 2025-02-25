@@ -1132,13 +1132,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 </Button>
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
                   <Box mr={2}>
-                  <Typography  color={'var(--color-text-secondary)'} variant='h3'>
-                    Total Equity
-                  </Typography>
-                  
-
+                    <Typography color={'var(--color-text-secondary)'} variant='h3'>
+                      Total Equity
+                    </Typography>
                   </Box>
-                  
 
                   {hideAssets ? (
                     <HideIcon
@@ -1163,7 +1160,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   )}
                 </Box>
                 <Typography mt={1} variant='h2'>
-                  {hideAssets ? HiddenTag : accountActive ? totalEquity : EmptyValueTag}
+                  {accountActive ? hideAssets ? HiddenTag : totalEquity : EmptyValueTag }
                 </Typography>
 
                 <Box mt={6} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
@@ -1351,21 +1348,23 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               { isFait: true, floor: true },
                             )
                         : EmptyValueTag}
-                      {accountActive&&<Typography
-                        variant={'body2'}
-                        sx={{ cursor: 'pointer' }}
-                        color={'var(--color-primary)'}
-                        marginLeft={1}
-                        component={'span'}
-                        onClick={() => {
-                          setLocalState({
-                            ...localState,
-                            modalStatus: 'debt',
-                          })
-                        }}
-                      >
-                        {t('labelVaultDetail')}
-                      </Typography>}
+                      {accountActive && (
+                        <Typography
+                          variant={'body2'}
+                          sx={{ cursor: 'pointer' }}
+                          color={'var(--color-primary)'}
+                          marginLeft={1}
+                          component={'span'}
+                          onClick={() => {
+                            setLocalState({
+                              ...localState,
+                              modalStatus: 'debt',
+                            })
+                          }}
+                        >
+                          {t('labelVaultDetail')}
+                        </Typography>
+                      )}
                     </Typography>
                   </Box>
                   <Box width={'25%'}>
@@ -1468,21 +1467,23 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         {vaultAccountInfo?.leverage && accountActive
                           ? `${vaultAccountInfo?.leverage}x`
                           : EmptyValueTag}
-                        {accountActive && <Typography
-                          variant={'body2'}
-                          sx={{ cursor: 'pointer' }}
-                          color={'var(--color-primary)'}
-                          marginLeft={1}
-                          component={'span'}
-                          onClick={() => {
-                            setLocalState({
-                              ...localState,
-                              modalStatus: 'leverage',
-                            })
-                          }}
-                        >
-                          {t('labelVaultDetail')}
-                        </Typography>}
+                        {accountActive && (
+                          <Typography
+                            variant={'body2'}
+                            sx={{ cursor: 'pointer' }}
+                            color={'var(--color-primary)'}
+                            marginLeft={1}
+                            component={'span'}
+                            onClick={() => {
+                              setLocalState({
+                                ...localState,
+                                modalStatus: 'leverage',
+                              })
+                            }}
+                          >
+                            {t('labelVaultDetail')}
+                          </Typography>
+                        )}
                       </Typography>
                       <Typography
                         marginTop={0.5}
@@ -1492,7 +1493,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       >
                         {t('labelVaultMaximumCredit')}:{' '}
                         {(vaultAccountInfo as any)?.maxCredit &&
-                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit) && accountActive
+                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit) &&
+                        accountActive
                           ? fiatNumberDisplay(
                               getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                               currency,

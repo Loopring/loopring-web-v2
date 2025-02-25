@@ -82,9 +82,16 @@ const parseVaultTokenStatus = (status: number) => ({
   repay: status & 16,
 })
 
-const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTableProps<R> & {
+const useGetVaultAssets = <R extends VaultDataAssetsItem>({
+  onClickTrade,
+  // onClickRepay
+}: {
+  onClickTrade: (symbol: string) => void
+  // onClickRepay: (symbol: string) => void
+}): VaultAssetsTableProps<R> & {
   totalAsset: string
   [key: string]: any
+  
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
   let match: any = useRouteMatch(VaultPath)
@@ -427,33 +434,38 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTablePro
     positionOpend: [sdk.VaultAccountStatus.IN_REDEEM, sdk.VaultAccountStatus.IN_STAKING]
       .includes(vaultAccountInfo?.accountStatus as any),
     onRowClickTrade: ({ row }: { row: R }) => {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
-        history.push('/portal/portalDashboard')
-        onSwapPop({ symbol: row?.token?.value })
-      } else {
-        history.push('/portal')
-        setShowNoVaultAccount({
-          isShow: true,
-          whichBtn: VaultAction.VaultJoin,
-          des: 'labelJoinDesMessage',
-          title: 'labelVaultJoinTitle',
-        })
-      }
+      // debugger
+      onClickTrade(row?.token?.value)
+      // if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+      //   history.push('/portal/portalDashboard')
+      //   onSwapPop({ symbol: row?.token?.value })
+      // } else {
+      //   history.push('/portal/portalDashboard')
+
+      //   // setstate
+      //   // setShowNoVaultAccount({
+      //   //   isShow: true,
+      //   //   whichBtn: VaultAction.VaultJoin,
+      //   //   des: 'labelJoinDesMessage',
+      //   //   title: 'labelVaultJoinTitle',
+      //   // })
+      // }
     },
-    onRowClickRepay: ({ row }: { row: R }) => {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
-        history.push('/portal/portalDashboard')
-        // todo repay
-      } else {
-        history.push('/portal')
-        setShowNoVaultAccount({
-          isShow: true,
-          whichBtn: VaultAction.VaultJoin,
-          des: 'labelJoinDesMessage',
-          title: 'labelVaultJoinTitle',
-        })
-      }
-    },
+    // onRowClickRepay: ({ row }: { row: R }) => {
+    //   onClickRepay(row?.token?.value)
+    //   // if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+    //   //   history.push('/portal/portalDashboard')
+    //   //   // todo repay
+    //   // } else {
+    //   //   history.push('/portal')
+    //   //   setShowNoVaultAccount({
+    //   //     isShow: true,
+    //   //     whichBtn: VaultAction.VaultJoin,
+    //   //     des: 'labelJoinDesMessage',
+    //   //     title: 'labelVaultJoinTitle',
+    //   //   })
+    //   // }
+    // },
     noMinHeight: true
   }
 }
@@ -516,7 +528,7 @@ export const useVaultDashboard = ({
   } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const priceTag = PriceTag[CurrencyToTag[currency]]
-  const assetPanelProps = useGetVaultAssets()
+ 
 
   const colors = ['var(--color-success)', 'var(--color-error)', 'var(--color-warning)']
   const theme = useTheme()
@@ -549,6 +561,29 @@ export const useVaultDashboard = ({
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
 
+  })
+  const assetPanelProps = useGetVaultAssets({
+    onClickTrade(symbol) {
+      if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
+        onSwapPop({ symbol: symbol.slice(2) })
+      } else {
+        setLocalState({
+          ...localState,
+          modalStatus: 'supplyCollateralHint',
+        })
+      }
+      
+    },
+    // onClickTrade(symbol) {
+    //   if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
+    //     onRe({ symbol: symbol })
+    //   } else {
+    //     setLocalState({
+    //       ...localState,
+    //       modalStatus: 'supplyCollateralHint',
+    //     })
+    //   }
+    // },
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
@@ -930,13 +965,6 @@ export const useVaultDashboard = ({
     //   // todo close position
     // },
   }
-
-  const isActiveAccount =
-    [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
-      vaultAccountInfo?.accountStatus ?? ('' as any),
-    ) ||
-    vaultAccountInfo === undefined ||
-    vaultAccountInfo?.accountStatus === undefined
   
   const vaultDashBoardPanelUIProps = {
     vaultAccountInfo,
@@ -1001,19 +1029,19 @@ export const useVaultDashboard = ({
     marginLevel: vaultAccountInfo?.marginLevel ?? '',
     _vaultAccountInfo: _vaultAccountInfo,
     onClickCollateralManagement: () => {
-      if (isActiveAccount) {
-        setLocalState({
-          ...localState,
-          modalStatus: 'supplyCollateralHint',
-        })
-      } else {
-        onJoinPop({})
-      }
+      onJoinPop({})
     },
     liquidationThreshold: '1.1',
     liquidationPenalty: '0%',
     onClickPortalTrade: () => {
-      onSwapPop({})
+      if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
+        onSwapPop({})
+      } else {
+        setLocalState({
+          ...localState,
+          modalStatus: 'supplyCollateralHint',
+        })
+      }
     },
     assetsTab: assetsTab,
     onChangeAssetsTab: (tab: 'assetsView' | 'positionsView') => {

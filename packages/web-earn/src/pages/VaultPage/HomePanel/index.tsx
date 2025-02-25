@@ -37,9 +37,10 @@ import {
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from './hook'
+import { symbol } from 'prop-types'
 
 export const VaultHomePanel = ({
-  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop },
+  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop, onSwapPop },
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
@@ -140,20 +141,20 @@ export const VaultHomePanel = ({
         }}
         mt={6}
       > */}
-        <Container
-          maxWidth='lg'
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            background: 'var(--color-pop-bg)',
-            flex: 1,
-            mt: 6,
-            mb: 4,
-            borderRadius: '8px'
-          }}
-        >
-          <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
-        </Container>
+      <Container
+        maxWidth='lg'
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          background: 'var(--color-pop-bg)',
+          flex: 1,
+          mt: 6,
+          mb: 4,
+          borderRadius: '8px',
+        }}
+      >
+        <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
+      </Container>
 
       <Modal
         open={detail?.isShow && !isShowConfirmedVault?.isShow && !isShowVaultJoin?.isShow}
@@ -325,7 +326,30 @@ export const VaultHomePanel = ({
                   isShow={detail.isShow}
                   forexMap={forexMap}
                   isLoading={detail.isLoading}
-                  showBtns={vaultAccountInfo && [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus)}
+                  showBtns={
+                    vaultAccountInfo &&
+                    [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus)
+                  }
+                  onClickBuy={() => {
+                    const symbol = detail.detail?.tokenInfo.symbol?.slice(2)
+                    history.push('/portal/portalDashboard')
+                    if (symbol === 'USDT') {
+                      onSwapPop({ isSell: true })  
+                    } else {
+                      onSwapPop({ symbol })  
+                    }
+                    
+                  }}
+                  onClickSell={() => {
+                    const symbol = detail.detail?.tokenInfo.symbol?.slice(2)
+                    history.push('/portal/portalDashboard')
+                    
+                    if (symbol === 'USDT') {
+                      onSwapPop({ isSell: false })  
+                    } else {
+                      onSwapPop({ symbol, isSell: true })
+                    }
+                  }}
                   {...{ ...detail?.detail }}
                 />
               </Box>
@@ -349,6 +373,7 @@ export const VaultHomePanel = ({
                   <Button
                     size={'medium'}
                     onClick={() => {
+                      history.push('/portal/portalDashboard')
                       setShowDetail({ isShow: false })
                       onJoinPop({})
                     }}

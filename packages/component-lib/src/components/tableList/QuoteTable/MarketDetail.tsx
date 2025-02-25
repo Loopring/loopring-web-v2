@@ -72,7 +72,9 @@ export const MarketDetail = ({
   etherscanBaseUrl,
   isLoading,
   timeIntervalData = TimeMarketIntervalData,
-  showBtns
+  showBtns,
+  onClickBuy,
+  onClickSell
 }: {
   tokenInfo
   isLoading?: boolean
@@ -82,6 +84,8 @@ export const MarketDetail = ({
   etherscanBaseUrl: string
   timeIntervalData: typeof TimeMarketIntervalData
   showBtns?: boolean
+  onClickBuy?: () => void
+  onClickSell?: () => void
 }) => {
   const { t } = useTranslation()
   const { coinJson, currency, upColor } = useSettings()
@@ -460,10 +464,10 @@ export const MarketDetail = ({
         
       </Box>
       {showBtns && <Box mt={3}>
-        <BgButton sx={{ borderRadius: '4px'}} fullWidth customBg={'var(--color-success)'} variant='contained'>
+        <BgButton onClick={onClickBuy}  sx={{ borderRadius: '4px'}} fullWidth customBg={'var(--color-success)'} variant='contained'>
           Buy/Long
         </BgButton>
-        <BgButton sx={{mt: 2, borderRadius: '4px'}} fullWidth customBg={'var(--color-error)'} variant='contained'>
+        <BgButton onClick={onClickSell} sx={{mt: 2, borderRadius: '4px'}} fullWidth customBg={'var(--color-error)'} variant='contained'>
           Sell/Short
         </BgButton>
       </Box>}

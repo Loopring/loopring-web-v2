@@ -22,6 +22,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {XOR} from '../../../types/lib'
 import _ from 'lodash'
 import { Button } from '@mui/material'
+import Decimal from 'decimal.js'
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -106,7 +107,7 @@ export type VaultAssetsTableProps<R> = {
   noMinHeight?: boolean
   hideDustCollector?: boolean
   onRowClickTrade: ({ row }) => void
-  onRowClickRepay: ({ row }) => void
+  // onRowClickRepay: ({ row }) => void
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -136,7 +137,6 @@ export const VaultAssetsTable = withTranslation('tables')(
       noMinHeight,
       hideDustCollector,
       onRowClickTrade,
-      onRowClickRepay,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -269,7 +269,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: 'Debt',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : row.debt}</Box>
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.debt).isZero() ? EmptyValueTag : row.debt}</Box>
         },
       },
       {
@@ -277,7 +277,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: 'Equity',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : row.equity}</Box>
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.equity).isZero() ? EmptyValueTag : row.equity}</Box>
         },
       },
       {
@@ -296,14 +296,14 @@ export const VaultAssetsTable = withTranslation('tables')(
               >
                 {t('labelTrade')}
               </Button>
-              <Button
+              {/* <Button
                 onClick={(e) => {
                   e.stopPropagation()
                   onRowClickRepay({ row })
                 }}
               >
                 Repay
-              </Button>
+              </Button> */}
             </Box>
           )
         },

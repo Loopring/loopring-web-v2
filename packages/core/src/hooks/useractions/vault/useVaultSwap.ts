@@ -145,7 +145,7 @@ export const useVaultSwap = () => {
 
   const initLocalState = {
     hideOther: false,
-    isLongOrShort: 'long' as 'long' | 'short',
+    isLongOrShort: undefined as 'long' | 'short' | undefined,
     showTokenSelection: false,
     amount: '',
     selectedToken: undefined as string | undefined,
@@ -308,28 +308,33 @@ export const useVaultSwap = () => {
       ? isShowVaultSwap.symbol
       : 'ETH'
   }
+  const isLongOrShort = localState.isLongOrShort 
+    ? localState.isLongOrShort
+    : isShowVaultSwap.isSell
+      ? 'short'
+      : 'long'
   const selectedTokenSymbol = getSelectedTokenSymbol()
   const selectedVTokenSymbol = 'LV' + selectedTokenSymbol
   const selectedVTokenInfo = tokenMap ? tokenMap[selectedVTokenSymbol] : undefined
 
   const LVUSDTInfo = tokenMap ? tokenMap['LVUSDT'] : undefined
   const USDTInfo = originTokenMap ? originTokenMap['USDT'] : undefined
-  const sellToken = localState.isLongOrShort === 'long' ? LVUSDTInfo : selectedVTokenInfo
+  const sellToken = isLongOrShort === 'long' ? LVUSDTInfo : selectedVTokenInfo
   const sellTokenOriginSymbol =
-    localState.isLongOrShort === 'long' ? 'USDT' : selectedVTokenSymbol.slice(2)
-  const buyToken = localState.isLongOrShort === 'long' ? selectedVTokenInfo : LVUSDTInfo
+    isLongOrShort === 'long' ? 'USDT' : selectedVTokenSymbol.slice(2)
+  const buyToken = isLongOrShort === 'long' ? selectedVTokenInfo : LVUSDTInfo
   const buyTokenOriginSymbol =
-    localState.isLongOrShort === 'long' ? selectedVTokenSymbol.slice(2) : 'USDT'
+    isLongOrShort === 'long' ? selectedVTokenSymbol.slice(2) : 'USDT'
 
   const market: MarketType = `${selectedVTokenSymbol}-LVUSDT`
-  const marketInfo = marketMap[market]
+  const marketInfo = marketMap ? marketMap[market] : undefined
 
   const smallTradePromptAmtBN = sellToken
-    ? localState.isLongOrShort === 'long'
-      ? marketInfo.minTradePromptAmount.base
-      : marketInfo.minTradePromptAmount.quote
+    ? isLongOrShort === 'long'
+      ? marketInfo?.minTradePromptAmount?.base
+      : marketInfo?.minTradePromptAmount?.quote
     : undefined
-  const smallAmtFeeBips = marketInfo.upSlippageFeeBips as unknown as number
+  const smallAmtFeeBips = marketInfo?.upSlippageFeeBips as unknown as number
 
   const sellTokenAsset = sellToken && vaultLayer2 ? vaultLayer2[sellToken.symbol] : undefined
 
@@ -355,13 +360,13 @@ export const useVaultSwap = () => {
 
   const slippageReal = slippage === 'N' ? 0.1 : slippage
   const maxAmountCalcDexOutput =
-    sellToken && buyToken && localState.depth
+    sellToken && buyToken && localState.depth && marketInfo
       ? calcDexWrap<sdk.VaultMarket>({
           info: marketInfo as sdk.VaultMarket,
           input: userMaxSellValue ?? '0',
           sell: sellToken.symbol,
           buy: buyToken.symbol,
-          isAtoB: localState.isLongOrShort === 'long',
+          isAtoB: isLongOrShort === 'long',
           marketArr: marketArray,
           tokenMap,
           marketMap: marketMap as any,
@@ -373,16 +378,16 @@ export const useVaultSwap = () => {
 
   const userMaxBuyValue = maxAmountCalcDexOutput?.amountB
   const userMaxTradeValue =
-    localState.isLongOrShort === 'short' ? userMaxSellValue : userMaxBuyValue
+    isLongOrShort === 'short' ? userMaxSellValue : userMaxBuyValue
 
   const preCalcDexOutput =
-    sellToken && buyToken && localState.depth
+    sellToken && buyToken && localState.depth && marketInfo
       ? calcDexWrap<sdk.VaultMarket>({
           info: marketInfo as sdk.VaultMarket,
           input: localState.amount ?? '0',
           sell: sellToken.symbol,
           buy: buyToken.symbol,
-          isAtoB: localState.isLongOrShort === 'short',
+          isAtoB: isLongOrShort === 'short',
           marketArr: marketArray,
           tokenMap,
           marketMap: marketMap as any,
@@ -404,16 +409,16 @@ export const useVaultSwap = () => {
   const maxFeeBips =
     sellAmountEstimateBN && smallTradePromptAmtBN && sellAmountEstimateBN.lt(smallTradePromptAmtBN)
       ? smallAmtFeeBips
-      : marketInfo.feeBips ?? MAPFEEBIPS
+      : marketInfo?.feeBips ?? MAPFEEBIPS
 
   const calcDexOutput =
-    sellToken && buyToken && localState.depth
+    sellToken && buyToken && localState.depth && marketInfo
       ? calcDexWrap<sdk.VaultMarket>({
           info: marketInfo as sdk.VaultMarket,
           input: localState.amount ?? '0',
           sell: sellToken.symbol,
           buy: buyToken.symbol,
-          isAtoB: localState.isLongOrShort === 'short',
+          isAtoB: isLongOrShort === 'short',
           marketArr: marketArray,
           tokenMap,
           marketMap: marketMap as any,
@@ -489,7 +494,7 @@ export const useVaultSwap = () => {
   const totalQuota = tryFn(
     () => {
       const value =
-        localState.isLongOrShort === 'long'
+        isLongOrShort === 'long'
           ? new Decimal(
               utils.formatUnits(localState.depth!.asks_volTotal, LVUSDTInfo!.decimals),
             ).div(localState.depth!.mid_price)
@@ -1301,7 +1306,7 @@ export const useVaultSwap = () => {
       },
       ref: refreshRef,
     },
-    isLongOrShort: localState.isLongOrShort,
+    isLongOrShort: isLongOrShort,
     onClickBalance: () => {
       userMaxTradeValue &&
         setLocalState({
@@ -1553,6 +1558,7 @@ export const useVaultSwap = () => {
         {
           label: 'Cross Position',
           value: 'cross',
+          tooltipTitle: 'All positions within this account share a single health factor, determined by the real-time prices of your collateral, holdings, and debts. If the health factor falls below the liquidation threshold, all positions under this account are subject to liquidation.'
         },
       ],
     },
