@@ -86,3 +86,7 @@ export const bigNumberFormat = (number: BigNumber | string, decimals: number, fo
   const bn = typeof number === 'string' ? BigNumber.from(number) : number
   return numberFormat(utils.formatUnits(bn, decimals), format)
 }
+
+export const toPercent = (number: string | number, fixed: number) => {
+  return numberFormat(number, {showInPercent: true, fixed: fixed})
+}

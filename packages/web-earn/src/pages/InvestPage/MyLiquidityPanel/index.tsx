@@ -48,7 +48,7 @@ import {
   numberFormatThousandthPlace,
   TableWrapStyled,
   useAccount,
-  useAccountInfo,
+  useVaultAccountInfo,
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
@@ -67,7 +67,7 @@ import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
 import { RowEarnConfig } from '../../../constant/setting'
-import { useGetVaultAssets } from 'pages/VaultPage/DashBoardPanel/hook'
+import { useGetVaultAssets } from 'pages/VaultPage/hooks/useGetVaultAssets'
 import { useVaultMarket } from 'pages/VaultPage/HomePanel/hook'
 import Decimal from 'decimal.js'
 import { TaikoFarmingPortfolioTable } from '@loopring-web/component-lib/src/components/tableList/taikoFarmingTable'
@@ -228,7 +228,7 @@ const MyLiquidity = withTranslation('common')(
     const nanToEmptyTag = (value: any, prefix: string) => {
       return value === 'NaN' ? EmptyValueTag : prefix + value
     }
-    const vaultAccountInfo = useAccountInfo()
+    const vaultAccountInfo = useVaultAccountInfo()
     const {
       onActionBtnClick,
       dialogBtn,

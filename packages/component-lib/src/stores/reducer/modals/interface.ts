@@ -103,7 +103,7 @@ export interface ModalState {
   isShowETHStakingApr: ModalStatePlayLoad & { symbol?: string }
   isShowVaultExit: ModalStatePlayLoad & Transaction
   isShowVaultJoin: ModalStatePlayLoad & Transaction
-  isShowVaultSwap: ModalStatePlayLoad & Transaction
+  isShowVaultSwap: ModalStatePlayLoad & Transaction & {isSell?: boolean}
   isShowVaultLoan: ModalStatePlayLoad &
     Transaction & {
       type: string

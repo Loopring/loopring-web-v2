@@ -3,7 +3,7 @@ import {Box, BoxProps, Typography} from '@mui/material'
 import styled from '@emotion/styled'
 import {TFunction, withTranslation, WithTranslation} from 'react-i18next'
 import {Column, Table} from '../../basic-lib'
-import {Filter} from './components/Filter'
+import {Filter, VaultAssetFilter} from './components/Filter'
 import {TablePaddingX} from '../../styled'
 import {
   BrushIcon,
@@ -21,6 +21,8 @@ import {CoinIcons} from './components/CoinIcons'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {XOR} from '../../../types/lib'
 import _ from 'lodash'
+import { Button } from '@mui/material'
+import Decimal from 'decimal.js'
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -80,6 +82,8 @@ export type VaultDataAssetsItem = {
   tokenValueDollar: number
   erc20Symbol: string
   precision: number
+  equity: string
+  debt: string
 }
 
 export type VaultAssetsTableProps<R> = {
@@ -102,6 +106,8 @@ export type VaultAssetsTableProps<R> = {
   hideActions?: boolean
   noMinHeight?: boolean
   hideDustCollector?: boolean
+  onRowClickTrade: ({ row }) => void
+  // onRowClickRepay: ({ row }) => void
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -130,6 +136,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       hideActions,
       noMinHeight,
       hideDustCollector,
+      onRowClickTrade,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -238,8 +245,8 @@ export const VaultAssetsTable = withTranslation('tables')(
         },
       },
       {
-        key: 'amount',
-        name: t('labelAmount'),
+        key: 'holding',
+        name: 'Holding',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           const { amount, precision } = row
@@ -256,48 +263,21 @@ export const VaultAssetsTable = withTranslation('tables')(
           )
         },
       },
-      // {
-      //   key: 'avaiable',
-      //   name: t('labelAvaiable'),
-      //   headerCellClass: 'textAlignRight',
-      //   formatter: ({ row }) => {
-      //     const value = row.available
-      //     const precision = row.precision
-      //     return (
-      //       <Box className={'textAlignRight'}>
-      //         {hideAssets
-      //           ? HiddenTag
-      //           : getValuePrecisionThousand(value, precision, precision, undefined, false, {
-      //             floor: true,
-      //           })}
-      //       </Box>
-      //     )
-      //   },
-      // },
 
       {
-        key: 'value',
-        name: t('labelVaultAssetsTableValue'),
+        key: 'debt',
+        name: 'Debt',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          const { amount, tokenValueDollar } = row
-          return (
-            <Box className={'textAlignRight'}>
-              {hideAssets
-                ? HiddenTag
-                : amount && Number(amount) > 0
-                ? PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    (tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    undefined,
-                    false,
-                    { isFait: true, floor: true },
-                  )
-                : EmptyValueTag}
-            </Box>
-          )
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.debt).isZero() ? EmptyValueTag : row.debt}</Box>
+        },
+      },
+      {
+        key: 'equity',
+        name: 'Equity',
+        headerCellClass: 'textAlignRight',
+        formatter: ({ row }) => {
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.equity).isZero() ? EmptyValueTag : row.equity}</Box>
         },
       },
       {
@@ -305,8 +285,28 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: t('labelActions'),
         headerCellClass: 'textAlignRight',
         cellClass: 'textAlignRight',
-        // minWidth: 280,
-        formatter: actionRow,
+        formatter: ({ row }) => {
+          return (
+            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickTrade({ row })
+                }}
+              >
+                {t('labelTrade')}
+              </Button>
+              {/* <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickRepay({ row })
+                }}
+              >
+                Repay
+              </Button> */}
+            </Box>
+          )
+        },
       },
     ]
 		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
@@ -359,14 +359,12 @@ export const VaultAssetsTable = withTranslation('tables')(
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
           <Box marginX={2} display={'flex'} alignItems={'center'}>
-            <Box width={hideDustCollector ? '100%' : 'calc(100% - 130px)'}>
-              <Filter
-                {...{
-                  handleFilterChange,
-                  filter,
-                  hideSmallBalances,
-                  setHideSmallBalances,
-                }}
+            <Box>
+              <VaultAssetFilter
+                handleFilterChange={handleFilterChange}
+                filter={filter}
+                hideSmallBalances={hideSmallBalances}
+                setHideSmallBalances={setHideSmallBalances}
                 noHideInvestToken
               />
             </Box>
@@ -393,7 +391,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           {...{ ...rest, t }}
           style={{
             height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
-            minHeight:noMinHeight ? 0 : undefined
+            minHeight: noMinHeight ? 0 : undefined
           }}
           onRowClick={onRowClick as any}
           rowHeight={rowConfig.rowHeight}

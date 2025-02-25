@@ -1,4 +1,4 @@
-import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals, VaultJoinProps } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CoinInfo,
@@ -49,6 +49,7 @@ import { keys } from 'lodash'
 import { calcMarinLevel, marginLevelType } from './utils'
 import Decimal from 'decimal.js'
 import { utils } from 'ethers'
+import { useBasicTrade } from '@loopring-web/component-lib/src/components/tradePanel/components'
 
 const DATE_IN_TEN_YEARS = 2027988026
 
@@ -814,8 +815,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       : undefined
 
   const ercToken = vaultJoinData.tradeData && tokenMap[vaultJoinData.tradeData.belong as string]
-
-  const output = {
+  const props = {
     handleError: undefined,
     type: TRADE_TYPE.TOKEN,
     baseURL,
@@ -883,5 +883,25 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           )
         : undefined,
   }
+  const basicTrade = useBasicTrade(props as any)
+  const [panelIndex, setPanelIndex] = React.useState(basicTrade.index)
+  React.useEffect(() => {
+    setPanelIndex(basicTrade.index)
+  }, [basicTrade.index])
+  
+  const output= {
+    ...props,
+    basicTrade,
+    panelIndex,
+    handleConfirm: (index: number) => {
+      setPanelIndex(index)
+    },
+    modalOpen: isShow,
+    onCloseModal: () => {
+      setShowVaultJoin({ isShow: false })
+    }
+  } 
+  console.log('vault joun hook output', output)
   return output
+
 }

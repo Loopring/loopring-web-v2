@@ -13,6 +13,7 @@ export {
   numberFormatThousandthPlace,
   bigNumberFormat,
   fiatNumberDisplay,
+  toPercent,
   fiatNumberDisplaySafe
 } from './numberFormat'
 export {
@@ -28,4 +29,4 @@ export {
 export {isNumberStr,strNumDecimalPlacesLessThan} from './validation'
 
 export {getStateFnState} from './getStateFnState'
-export {tryFn} from './tryFn'
+export { tryFn } from './tryFn'

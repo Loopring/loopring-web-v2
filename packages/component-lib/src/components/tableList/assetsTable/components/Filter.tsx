@@ -1,4 +1,4 @@
-import { Checkbox, Grid } from '@mui/material'
+import { Box, Checkbox, Grid } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import { FormControlLabel, InputSearch } from '../../../'
 import { CheckBoxIcon, CheckedIcon, TokenType } from '@loopring-web/common-resources'
@@ -83,6 +83,40 @@ export const Filter = withTranslation('tables', { withRef: true })(
           />
         </Grid>
       </Grid>
+    )
+  },
+)
+
+
+
+
+
+export const VaultAssetFilter = withTranslation('tables', { withRef: true })(
+  ({
+    t,
+    hideSmallBalances,
+    setHideSmallBalances,
+  }: FilterProps & WithTranslation) => {
+    return (
+      <Box display={'flex'} justifyContent={'flex-start'}>
+        <FormControlLabel
+          style={{ marginRight: 0, paddingRight: 0 }}
+          control={
+            <Checkbox
+              checked={hideSmallBalances}
+              checkedIcon={<CheckedIcon />}
+              icon={<CheckBoxIcon />}
+              color='default'
+              onChange={(event) => {
+                if (setHideSmallBalances) {
+                  setHideSmallBalances(event.target.checked)
+                }
+              }}
+            />
+          }
+          label={t('labelHideSmallBalances')}
+        />
+      </Box>
     )
   },
 )

@@ -1,7 +1,9 @@
-import { BIGO, store } from '../../index'
+import { BIGO, numberFormat, store } from '../../index'
 import { AccountStatus, CoinKey, WalletCoin, WalletMap } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
+import Decimal from 'decimal.js'
+import { utils } from 'ethers'
 
 export const VaultBorrowFault = 1
 
@@ -144,11 +146,25 @@ export const makeVaultLayer2 = <
           belongAlice: erc20Symbol,
           erc20Symbol,
           belong: symbol,
-          asset:  sdk.toBig(item?.total??0).div('1e' + vaultToken.decimals).toFixed( vaultToken.precision, BigNumber.ROUND_DOWN),
+          asset: numberFormat(utils.formatUnits(item?.total ?? 0, vaultToken.decimals), {
+            fixed: vaultToken.precision,
+            fixedRound: Decimal.ROUND_DOWN,
+            removeTrailingZero: true
+          }),
           count: countBig
             .div('1e' + vaultToken.decimals)
             .toFixed(vaultToken.qtyStepScale ?? vaultToken.precision, BigNumber.ROUND_DOWN),
           detail: item,
+          borrowed: numberFormat(utils.formatUnits(item?.borrowed ?? 0, vaultToken.decimals), {
+            fixed: vaultToken.precision,
+            fixedRound: Decimal.ROUND_UP,
+            removeTrailingZero: true
+          }),
+          equity: numberFormat(utils.formatUnits(item?.netAsset ?? 0, vaultToken.decimals), {
+            fixed: vaultToken.precision,
+            fixedRound: Decimal.ROUND_DOWN,
+            removeTrailingZero: true
+          }),
         },
       }
     }, {} as WalletMap<C>)

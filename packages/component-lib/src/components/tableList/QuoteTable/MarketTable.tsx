@@ -194,8 +194,8 @@ export const MarketTable = withTranslation('tables')(
                   ) : (
                     <></>
                   )}
-                  <CoinIcons type={row?.type} tokenIcon={tokenIcon} />
-                  <Typography marginLeft={1 / 2} component={'span'}>
+                  <CoinIcons type={TokenType.single} tokenIcon={tokenIcon} />
+                  <Typography marginLeft={1} component={'span'}>
                     {symbol}
                   </Typography>
                   &nbsp;

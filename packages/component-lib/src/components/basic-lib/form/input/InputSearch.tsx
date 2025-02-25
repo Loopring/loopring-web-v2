@@ -13,7 +13,7 @@ const CloseIconStyled = styled(CloseIcon)`
 
 export type InputSearchProps = {
   value?: string
-  // onChange?: (value: string) => void;
+  onChange?: (value: string) => void;
 } & OutlinedInputProps
 
 export const InputSearch = React.forwardRef(

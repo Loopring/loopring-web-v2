@@ -342,7 +342,7 @@ export const useOpenModals = () => {
       [dispatch],
     ),
     setShowVaultSwap: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) => dispatch(setShowVaultSwap(state)),
+      (state: ModalStatePlayLoad & Transaction & {isSell?: boolean}) => dispatch(setShowVaultSwap(state)),
       [dispatch],
     ),
     setShowVaultLoan: React.useCallback(
