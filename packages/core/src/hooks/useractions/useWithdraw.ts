@@ -151,7 +151,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     : undefined
   const fastModeSupportted = 
     toggle.rabbitWithdraw.enable &&
-    app === 'main' &&
     fastModeTokens?.includes(withdrawValue.belong as string)
 
   const isFastMode =
