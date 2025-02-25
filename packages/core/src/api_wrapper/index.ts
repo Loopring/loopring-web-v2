@@ -11,8 +11,8 @@ import {
   WalletAPI,
   WsAPI,
   ContactAPI,
-  CoworkerAPI,
   VaultAPI,
+  RabbitWithdrawAPI
 } from '@loopring-web/loopring-sdk'
 
 export class LoopringAPI {
@@ -28,6 +28,7 @@ export class LoopringAPI {
   public static luckTokenAPI: LuckTokenAPI | undefined = undefined
   public static contactAPI: ContactAPI | undefined = undefined
   public static vaultAPI: VaultAPI | undefined = undefined
+  public static rabbitWithdrawAPI: RabbitWithdrawAPI | undefined = undefined
   public static __chainId__: ChainId | undefined = undefined
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId }, 15000)
@@ -42,6 +43,7 @@ export class LoopringAPI {
     LoopringAPI.defiAPI = new DefiAPI({ chainId }, 12000)
     LoopringAPI.contactAPI = new ContactAPI({ chainId }, 15000)
     LoopringAPI.vaultAPI = new VaultAPI({ chainId }, 15000)
+    LoopringAPI.rabbitWithdrawAPI = new RabbitWithdrawAPI({ chainId }, 15000)
     LoopringAPI.__chainId__ = chainId
   }
   public static setBaseURL = (baseURL: string) => {
@@ -57,6 +59,7 @@ export class LoopringAPI {
     LoopringAPI.defiAPI?.setBaseUrl(baseURL)
     LoopringAPI.contactAPI?.setBaseUrl(baseURL)
     LoopringAPI.vaultAPI?.setBaseUrl(baseURL)
+    LoopringAPI.rabbitWithdrawAPI?.setBaseUrl(baseURL)
   }
 }
 

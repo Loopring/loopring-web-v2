@@ -28,6 +28,8 @@ import {
   WithdrawPanel,
   WithdrawProps,
   EditContact,
+  TransferToTaikoAccountModal,
+  TransferToTaikoAccountProps,
 } from '../..'
 import {
   Account,
@@ -45,6 +47,7 @@ import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
 import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
 import { TransferNFTBurn } from './components'
+
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -246,6 +249,7 @@ export const ModalPanel = <
   assetsData,
   account,
   baseURL,
+  transferToTaikoProps,
   ...rest
 }: {
   _width?: number | string
@@ -270,6 +274,7 @@ export const ModalPanel = <
   exportAccountProps: any
   account: Account
   setExportAccountToastOpen: any
+  transferToTaikoProps: TransferToTaikoAccountProps
 }) => {
   const { isMobile } = useSettings()
   const {
@@ -290,7 +295,7 @@ export const ModalPanel = <
     setShowTargetRedpacketPop,
     setShowRedPacket,
     setShowEditContact,
-    // setShowDual,
+    setShowTransferToTaikoAccount    // setShowDual,
   } = useOpenModals()
 
   const {
@@ -311,6 +316,7 @@ export const ModalPanel = <
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
     isShowEditContact,
+    isShowTransferToTaikoAccount
   } = modals
   const theme = useTheme()
   return (
@@ -352,6 +358,10 @@ export const ModalPanel = <
           />
         }
       />
+      <TransferToTaikoAccountModal
+        {...transferToTaikoProps}
+      />
+
       <Modal
         open={isShowWithdraw.isShow}
         contentClassName={'trade-wrap'}
@@ -364,7 +374,9 @@ export const ModalPanel = <
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: isMobile ? 'auto' : 500,
+              _height: isMobile
+                ? 'auto'
+                : 480 + (withdrawProps.withdrawMode?.showTrustUI ? 100 : 0) + (withdrawProps.isToMyself ? 0 : 100),
               ...withdrawProps,
               assetsData,
               isFromContact: isShowWithdraw.address ? true : false,

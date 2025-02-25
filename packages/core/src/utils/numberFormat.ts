@@ -13,7 +13,7 @@ export const numberFormat = (number: string | number, format?: {
   tokenSymbol?: string
   removeTrailingZero?: boolean
 }) => {
-  const numberStr1 = typeof number === 'number' ? number.toString() : number
+  const numberStr1 = typeof number === 'number' ? number.toFixed() : number
   const numberStr2 =
     format?.fixed !== undefined
       ? format.fixedRound
@@ -21,7 +21,7 @@ export const numberFormat = (number: string | number, format?: {
         : new Decimal(numberStr1).toFixed(format?.fixed)
       : numberStr1
   const numberStr4 = format?.removeTrailingZero
-    ? new Decimal(numberStr2).toString()
+    ? new Decimal(numberStr2).toFixed()
     : numberStr2
   const numberStr5 = format?.thousandthPlace
     ? numberStr4.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
@@ -56,6 +56,16 @@ export const numberFormatShowInPercent = (number: string | number, format?: {
 }
 
 export const fiatNumberDisplay = (number: string | number, currency: CurrencyToTag) => {
+  const numberStr = typeof number === 'number' ? number.toString() : number
+  const fixed = new Decimal(numberStr).lessThan('1') && new Decimal(numberStr).greaterThan('0') ? 6 : 2
+  return numberFormatThousandthPlace(number, {
+    fixed,
+    currency
+  })
+}
+
+export const fiatNumberDisplaySafe = (number: string | number, currency: CurrencyToTag) => {
+  if (number === undefined || number === null) return undefined
   const numberStr = typeof number === 'number' ? number.toString() : number
   const fixed = new Decimal(numberStr).lessThan('1') && new Decimal(numberStr).greaterThan('0') ? 6 : 2
   return numberFormatThousandthPlace(number, {

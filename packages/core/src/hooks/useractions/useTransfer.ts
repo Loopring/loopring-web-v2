@@ -106,6 +106,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     feeInfo,
     checkFeeIsEnough,
     resetIntervalTime,
+    resetFee,
   } = useChargeFees({
     requestType: feeWithActive
       ? sdk.OffchainFeeReqType.TRANSFER_AND_UPDATE_ACCOUNT
@@ -316,6 +317,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault()
+      resetFee()
     } else {
       resetIntervalTime()
       checkActiveFeeIsEnough({
