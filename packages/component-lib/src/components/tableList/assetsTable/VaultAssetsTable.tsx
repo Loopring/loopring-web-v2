@@ -269,8 +269,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: 'Debt',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          // const { amount, tokenValueDollar } = row
-          return <Box className={'textAlignRight'}>{row.holding}</Box>
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : row.debt}</Box>
         },
       },
       {
@@ -278,8 +277,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: 'Equity',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          // const { amount, tokenValueDollar } = row
-          return <Box className={'textAlignRight'}>{row.equity}</Box>
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : row.equity}</Box>
         },
       },
       {
@@ -288,24 +286,26 @@ export const VaultAssetsTable = withTranslation('tables')(
         headerCellClass: 'textAlignRight',
         cellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          return <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation()
-                onRowClickTrade({ row })
-              }}
-            >
-              {t('labelTrade')}
-            </Button>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation()
-                onRowClickRepay({ row })
-              }}
-            >
-              Repay
-            </Button>
-          </Box>
+          return (
+            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickTrade({ row })
+                }}
+              >
+                {t('labelTrade')}
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickRepay({ row })
+                }}
+              >
+                Repay
+              </Button>
+            </Box>
+          )
         },
       },
     ]

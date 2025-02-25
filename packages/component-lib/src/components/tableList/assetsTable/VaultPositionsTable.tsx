@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
-import { hexToRGB, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
+import { hexToRGB, HiddenTag, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons'
 import _ from 'lodash'
@@ -170,7 +170,7 @@ export const VaultPositionsTable = withTranslation('tables')(
         name: 'Holding',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          return <Box className={'textAlignRight'}>{row.holding}</Box>
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : row.holding}</Box>
         },
       },
       // {

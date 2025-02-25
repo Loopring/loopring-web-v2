@@ -35,7 +35,7 @@ import {
   VaultDataAssetsItem,
   VaultAssetsTableProps,
   setShowWrongNetworkGuide,
-  Button as MyButton
+  Button as MyButton,
 } from '@loopring-web/component-lib'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -293,6 +293,8 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTablePro
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
             erc20Symbol,
+            debt: tokenInfo.detail?.borrowed ?? '0',
+            equity: tokenInfo.detail?.equity ?? '0',
           }
         } else {
           item = {
@@ -310,6 +312,8 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTablePro
             name: key,
             tokenValueYuan: 0,
             erc20Symbol,
+            debt: '0',
+            equity: '0',
           }
         }
         if (item) {
@@ -317,8 +321,9 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>(): VaultAssetsTablePro
           return {
             ...item,
             precision: precision,
-            holding: '100-todo',
-            equity: '100-todo',
+
+            // holding: '100-todo',
+            // equity: '100-todo',
           }
         } else {
           return undefined
@@ -507,6 +512,7 @@ export const useVaultDashboard = ({
     upColor,
     defaultNetwork,
     coinJson,
+    setHideL2Assets
   } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const priceTag = PriceTag[CurrencyToTag[currency]]
@@ -873,7 +879,7 @@ export const useVaultDashboard = ({
       : undefined
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
-  const [assetsTab, setAssetsTab] = React.useState('positionsView' as 'assetsView' | 'positionsView')
+  const [assetsTab, setAssetsTab] = React.useState('assetsView' as 'assetsView' | 'positionsView')
   const {vaultLayer2}=useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
     rawData: _.keys(vaultLayer2)
@@ -915,7 +921,7 @@ export const useVaultDashboard = ({
     }),
     onRowClick: (index: number, row: PositionItem) => {},
     isLoading: false,
-    hideAssets: false,
+    hideAssets: hideAssets,
     // onRowClickLeverage: ({ row }: { row: PositionItem }) => {},
     // onRowClickTrade: ({ row }: { row: PositionItem }) => {
       
@@ -924,13 +930,6 @@ export const useVaultDashboard = ({
     //   // todo close position
     // },
   }
-  useEffect(() => {
-    setTimeout(() => {
-      // onJoinPop({}) // to delete
-
-      // onActionBtnClick(VaultAction.VaultSwap)
-    }, 100);
-  }, [])
 
   const isActiveAccount =
     [sdk.VaultAccountStatus.FREE, sdk.VaultAccountStatus.UNDEFINED].includes(
@@ -1012,8 +1011,8 @@ export const useVaultDashboard = ({
       }
       
     },
-    liquidationThreshold: '1x',
-    liquidationPenalty: '1%',
+    liquidationThreshold: '1.1',
+    liquidationPenalty: '0%',
     onClickPortalTrade: () => {
       onSwapPop({})
     },
@@ -1022,9 +1021,12 @@ export const useVaultDashboard = ({
       setAssetsTab(tab)
     },
     onClickRecord: () => {
-      
+      history.push('/l2assets/history/VaultRecords')
     },
     vaultPositionsTableProps,
+    onClickHideShowAssets: () => {
+      setHideL2Assets(!hideAssets)
+    }
     
   }
   const noVaultAccountDialogBtn = (() => {

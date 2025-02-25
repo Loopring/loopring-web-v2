@@ -438,11 +438,12 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         }
         if (item) {
           let precision = tokenMap[item.token.value].precision
+
           return {
             ...item,
             precision: precision,
-            holding: '100-todo',
-            equity: '100-todo',
+            // holding: '100-todo',
+            // equity: '100-todo',
           }
         } else {
           return undefined

@@ -1136,13 +1136,13 @@ const VaultDashBoardPanelUI2: React.FC<VaultDashBoardPanelUIProps> = ({
                   {hideAssets ? (
                     <HideIcon
                       className='custom-size'
-                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)' }}
+                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
                       onClick={onClickHideShowAssets}
                     />
                   ) : (
                     <ViewIcon
                       className='custom-size'
-                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)' }}
+                      sx={{ fontSize: '24px', color: 'var(--color-text-secondary)', cursor: 'pointer' }}
                       onClick={onClickHideShowAssets}
                     />
                   )}
