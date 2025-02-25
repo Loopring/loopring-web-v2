@@ -2,12 +2,14 @@ import { Trans, WithTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import { bindHover } from 'material-ui-popup-state/es'
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks'
-import { Box, Grid, IconButton, InputAdornment, Typography } from '@mui/material'
+import { Box, Checkbox, Grid, IconButton, InputAdornment, Tooltip, Typography } from '@mui/material'
 import {
   AddressError,
   AlertIcon,
   AssetsRawDataItem,
   BackIcon,
+  CheckBoxIcon,
+  CheckedIcon,
   CloseIcon,
   ContactIcon,
   copyToClipBoard,
@@ -28,7 +30,7 @@ import {
   WALLET_TYPE,
   WithdrawType,
 } from '@loopring-web/common-resources'
-import { FeeSelect, GridWrapStyle, InputSize, PopoverPure, Toast, ToastType } from '../..'
+import { CustomCheckBox, FeeSelect, GridWrapStyle, InputSize, PopoverPure, SpaceBetweenBox, Toast, ToastType } from '../..'
 import { Button, TextField, useSettings } from '../../../index'
 import { WithdrawViewProps } from './Interface'
 import { BasicACoinTrade } from './BasicACoinTrade'
@@ -37,6 +39,19 @@ import { FullAddressType } from './AddressType'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useTheme } from '@emotion/react'
 import { useSystem } from '@loopring-web/core'
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+
+
+const formatTokenList = (tokens: string[]):string => {
+  if (!tokens || tokens.length === 0) return '';
+  if (tokens.length === 1) return tokens[0];
+  if (tokens.length === 2) return `${tokens[0]} and ${tokens[1]}`;
+  
+  const lastToken = tokens[tokens.length - 1];
+  const otherTokens = tokens.slice(0, -1);
+  return `${otherTokens.join(', ')}, and ${lastToken}`;
+}
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
@@ -54,7 +69,6 @@ export const WithdrawWrap = <
   addressDefault,
   accAddr,
   isNotAvailableAddress,
-  withdrawTypes = { [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: 'Standard' },
   withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
@@ -87,6 +101,7 @@ export const WithdrawWrap = <
   isENSWrong,
   ens,
   geUpdateContact,
+  withdrawMode,
   ...rest
 }: WithdrawViewProps<T, I, C> &
   WithTranslation & {
@@ -456,7 +471,98 @@ export const WithdrawWrap = <
         </Grid>
       )}
 
-      <Grid item alignSelf={'stretch'} position={'relative'} className={'fee-wrap'}>
+      {withdrawMode?.showTrustUI && (
+        <Box width={'100%'} pl={2} mb={isToMyself ? 5 : 2} mt={isToMyself ? 5 : 3}>
+          {withdrawMode?.showFastMode && (
+            <SpaceBetweenBox
+              borderRadius={'4px 4px 0 0'}
+              px={2}
+              py={0.5}
+              leftNode={
+                <Box display={'flex'} alignItems={'center'}>
+                  <Box mr={1.5}>
+                    <CustomCheckBox
+                      checked={withdrawMode.mode === 'fast'}
+                      onCheck={() => {
+                        withdrawMode.onChange('fast')
+                      }}
+                    />
+                  </Box>
+                  <Box>
+                    <Tooltip
+                      title={
+                        <Typography color={'var(--color-text-secondary)'} fontSize={'11px'}>
+                          Trust Mode: Operated by Loopring’s team to maintain liquidity. <br />
+                          Supported Assets: {formatTokenList(withdrawMode.fastModeSupportedTokens)}.
+                        </Typography>
+                      }
+                    >
+                      <Typography display={'flex'} alignItems={'center'}>
+                        Trust Mode <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
+                      </Typography>
+                    </Tooltip>
+                    <Typography variant='body2'>{withdrawMode.fastMode?.fee ?? '--'}</Typography>
+                    {withdrawMode.fastMaxAlert.show && (
+                      <Typography color={'var(--color-error)'} variant='body2'>
+                        {withdrawMode.fastMaxAlert.message}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              }
+              alignItems={'center'}
+              rightNode={
+                <Typography variant='body2'>{withdrawMode.fastMode?.time ?? '--'}</Typography>
+              }
+              border={'1px solid var(--color-border)'}
+              borderBottom={'none'}
+            />
+          )}
+          <SpaceBetweenBox
+            borderRadius={withdrawMode?.showFastMode ? '0 0 4px 4px' : '4px'}
+            px={2}
+            py={0.5}
+            leftNode={
+              <Box display={'flex'} alignItems={'center'}>
+                <Box mr={1.5}>
+                  <CustomCheckBox
+                    checked={withdrawMode?.mode === 'normal'}
+                    onCheck={() => {
+                      withdrawMode?.onChange('normal')
+                    }}
+                  />
+                </Box>
+
+                <Box>
+                  <Tooltip
+                    title={
+                      'Assets are transferred between Loopring and Ethereum using Loopring’s official bridge contract.'
+                    }
+                  >
+                    <Typography>
+                      {withdrawMode?.showTrustUI ? 'Trustless Mode' : 'Normal Mode'}
+                    </Typography>
+                  </Tooltip>
+                  <Typography variant='body2'>{withdrawMode?.normalMode?.fee ?? '--'}</Typography>
+                </Box>
+              </Box>
+            }
+            alignItems={'center'}
+            rightNode={
+              <Typography variant='body2'>{withdrawMode?.normalMode?.time ?? '--'}</Typography>
+            }
+            border={'1px solid var(--color-border)'}
+          />
+        </Box>
+      )}
+
+      <Grid
+        item
+        alignSelf={'stretch'}
+        position={'relative'}
+        className={'fee-wrap'}
+        mt={withdrawMode?.showTrustUI ? 0 : 1}
+      >
         {!chargeFeeTokenList?.length ? (
           <Typography>{t('labelFeeCalculating')}</Typography>
         ) : (
@@ -472,23 +578,48 @@ export const WithdrawWrap = <
               onClose={() => {
                 setDropdownStatus('down')
               }}
-              withdrawInfos={{
-                types: withdrawTypes,
-                type: withdrawType as any,
-                onChangeType(w) {
-                  _handleWithdrawTypeChange(w)
-                },
-              }}
               onClickFee={() => setDropdownStatus((prev) => (prev === 'up' ? 'down' : 'up'))}
               feeLoading={isFeeNotEnough.isOnLoading}
               isFeeNotEnough={isFeeNotEnough.isFeeNotEnough}
               isFastWithdrawAmountLimit={isFastWithdrawAmountLimit}
+              networkFeeElement={
+                withdrawMode?.showTrustUI ? (
+                  <Tooltip
+                    title={
+                      'The total cost of completing the transaction, including network fees, service fees, and other associated charges.'
+                    }
+                  >
+                    <Typography
+                      display={'flex'}
+                      alignItems={'center'}
+                      marginRight={0}
+                      component={'span'}
+                      color={'inherit'}
+                      minWidth={28}
+                    >
+                      Transaction Cost{' '}
+                      <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
+                    </Typography>
+                  </Tooltip>
+                ) : (
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    marginRight={0}
+                    component={'span'}
+                    color={'inherit'}
+                    minWidth={28}
+                  >
+                    Network Fee
+                  </Typography>
+                )
+              }
             />
           </>
         )}
       </Grid>
 
-      <Grid item alignSelf={'stretch'} paddingBottom={0}>
+      <Grid item alignSelf={'stretch'} paddingBottom={0} mt={withdrawMode?.showTrustUI ? 5 : 10}>
         {lastFailed && (
           <Typography paddingBottom={1} textAlign={'center'} color={'var(--color-warning)'}>
             {t('labelConfirmAgainByFailedWithBalance', {

@@ -33,7 +33,7 @@ const TableWrapperStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100%;
+  height: 99%;
   ${({ theme }) => TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 `
 const TableStyled = styled(Table)`

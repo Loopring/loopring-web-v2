@@ -12,6 +12,8 @@ import {
   useWalletLayer2Socket,
   volumeToCountAsBigNumber,
   useSystem,
+  useConfig,
+  parseRabbitConfig,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -28,11 +30,13 @@ import {
   getValuePrecisionThousand,
   globalSetup,
   InvestAssetRouter,
+  MapChainId,
   myLog,
   PriceTag,
   RecordTabIndex,
   RouterPath,
   SagaStatus,
+  SEND_TO_TAIKO_NETWORK_MAP,
   TabOrderIndex,
   TokenType,
   TradeBtnStatus,
@@ -278,15 +282,32 @@ export const useGetAssets = (): AssetPanelProps & {
     },
     [setShowAccount],
   )
+  const{fastWithdrawConfig}=useConfig()
   const onSend = React.useCallback(
-    (token?: any, isToL1?: boolean) => {
-      setShowAccount({
-        isShow: true,
-        step: AccountStep.SendAssetGateway,
-        info: token || isToL1 ? { symbol: token, isToL1 } : undefined,
-      })
+    async (token?: any, isToL1?: boolean) => {
+      if (token) {
+        const {
+          settings: { defaultNetwork: network },
+          tokenMap: { idIndex },
+        } = store.getState()
+        const parsed = parseRabbitConfig(fastWithdrawConfig, MapChainId[network], idIndex)
+        const sendToTaikoSupportedTokens = parsed.toL1SupportedTokens
+        const hideSendToTaiko = !sendToTaikoSupportedTokens.includes(token)
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.SendAssetGateway,
+          info: token || isToL1 ? { symbol: token, isToL1, hideSendToTaiko } : undefined,
+        })
+      } else {
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.SendAssetGateway,
+          info: token || isToL1 ? { symbol: token, isToL1 } : undefined,
+        })
+      }
+      
     },
-    [setShowAccount],
+    [setShowAccount, fastWithdrawConfig],
   )
 
   const assetTitleProps: AssetTitleProps = {

@@ -116,21 +116,18 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   const { onSelect, contacts, scrollHeight } = props
   const { isMobile } = useSettings()
   const theme = useTheme()
-  const [filterContacts, setFilterContacts] = React.useState(contacts ?? [])
   const [inputValue, setInputValue] = React.useState('')
   const handleOnFiler = (value: string) => {
     setInputValue(value)
-    let _contacts = contacts
-    if (value && contacts) {
-      _contacts = contacts.filter((contact) => {
+  }
+  const filterContacts = inputValue
+    ? contacts.filter((contact) => {
         return (
-          contact.contactAddress.toLowerCase().includes(value.toLowerCase()) ||
-          contact.contactName.toLowerCase().includes(value.toLowerCase())
+          contact.contactAddress.toLowerCase().includes(inputValue.toLowerCase()) ||
+          contact.contactName.toLowerCase().includes(inputValue.toLowerCase())
         )
       })
-    }
-    setFilterContacts(_contacts)
-  }
+    : contacts
   const { t } = useTranslation()
 
   const normalView = (
@@ -164,7 +161,7 @@ export const ContactSelection = (props: ContactSelectionProps) => {
             handleOnFiler(e.target.value)
           }}
         />
-        <Box overflow={'scroll'} height={scrollHeight}>
+        <Box sx={{overflowY: 'auto'}} height={scrollHeight}>
           {filterContacts &&
             filterContacts.map((contact) => {
               return (
@@ -202,13 +199,12 @@ export const ContactSelection = (props: ContactSelectionProps) => {
   return (
     <Box
       // container
-      paddingLeft={isMobile ? 2 : 5}
-      paddingRight={isMobile ? 2 : 5}
+      paddingLeft={isMobile ? 2 : 3}
+      paddingRight={isMobile ? 2 : 3}
       // fle direction={"column"}
       alignItems={'stretch'}
       flex={1}
       height={'100%'}
-      minWidth={240}
       flexWrap={'nowrap'}
       // spacing={2}
     >

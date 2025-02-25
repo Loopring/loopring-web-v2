@@ -207,6 +207,17 @@ export async function unlockAccount() {
       }
     } catch (e: any) {
       myLog('unlock', e)
+      if (e instanceof Error && e.message === 'sig is empty') {
+        accountServices.sendErrorUnlock(
+          {
+            msg: 'Signature is empty, please try again',
+            code: 1,
+            message: 'Signature is empty, please try again'
+          },
+          walletType,
+        )
+        return 
+      }
       const error = LoopringAPI.exchangeAPI.genErr(e)
       const code = sdk.checkErrorInfo(error, true)
       switch (code) {

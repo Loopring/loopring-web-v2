@@ -41,6 +41,7 @@ import {
   setShowNoVaultAccount,
   setShowConfirmedVault,
   setShowETHStakingApr,
+  setShowTransferToTaikoAccount,
 } from './reducer'
 
 import React from 'react'
@@ -101,13 +102,23 @@ export const useOpenModals = () => {
 
     setShowTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
-        if (toggle.transfer.enable) {
-          dispatch(setShowTransfer(state))
-        } else {
+        if (!toggle.transfer.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
+          return
+        }
+        dispatch(setShowTransfer(state))
+      },
+      [dispatch, toggle.transfer.enable],
+    ),
+    setShowTransferToTaikoAccount: React.useCallback(
+      (state: ModalStatePlayLoad) => {
+        if (toggle.transferToTaikoAccount.enable) {
+          dispatch(setShowTransferToTaikoAccount(state))
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: 'TransferToTaikoAccount' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.transferToTaikoAccount.enable],
     ),
     setShowNFTDeploy: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) => {
@@ -117,23 +128,23 @@ export const useOpenModals = () => {
     ),
     setShowDeposit: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & { partner?: boolean }) => {
-        if (toggle.deposit.enable) {
-          dispatch(setShowDeposit(state))
-        } else {
+        if (!toggle.deposit.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
+          return 
         }
+        dispatch(setShowDeposit(state))
       },
-      [dispatch],
+      [dispatch, toggle.deposit.enable],
     ),
     setShowWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & Contact) => {
-        if (toggle.withdraw.enable) {
-          dispatch(setShowWithdraw(state))
-        } else {
+        if (!toggle.withdraw.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
-        }
+          return
+        } 
+        dispatch(setShowWithdraw(state))
       },
-      [dispatch],
+      [dispatch, toggle.withdraw.enable],
     ),
     setShowNFTDetail: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
@@ -149,7 +160,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Transfer' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.transferNFT.enable],
     ),
     setShowNFTDeposit: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
@@ -159,7 +170,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Deposit' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.depositNFT.enable],
     ),
     setShowCollectionAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
@@ -169,7 +180,7 @@ export const useOpenModals = () => {
           dispatch(setShowCollectionAdvance({ isShow: true, type: 'Collection' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.collectionNFT.enable],
     ),
     setShowNFTMintAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
@@ -179,7 +190,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Mint' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.mintNFT.enable],
     ),
     setShowNFTWithdraw: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
@@ -189,18 +200,18 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Withdraw' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.withdrawNFT.enable],
     ),
 
     setShowResetAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
-        if (toggle.updateAccount.enable) {
-          dispatch(setShowResetAccount(state))
-        } else {
+        if (!toggle.updateAccount.enable && state.isShow) {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'reset-account' }))
-        }
+          return
+        } 
+        dispatch(setShowResetAccount(state))
       },
-      [dispatch],
+      [dispatch, toggle.updateAccount.enable],
     ),
     setShowActiveAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
@@ -210,7 +221,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'active-account' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.updateAccount.enable],
     ),
     setShowAmm: React.useCallback(
       (state: ModalStatePlayLoad & Transaction & { type?: AmmPanelType }) =>
@@ -249,7 +260,7 @@ export const useOpenModals = () => {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: 'Claim' }))
         }
       },
-      [dispatch],
+      [dispatch, toggle.claim.enable],
     ),
     setShowConnect: React.useCallback(
       (

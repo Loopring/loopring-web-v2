@@ -172,6 +172,7 @@ export enum AccountStep {
   UnlockAccount_User_Denied,
   UnlockAccount_Success,
   UnlockAccount_Failed,
+  UnlockAccount_Reset_Key_Confirm,
 
   ResetAccount_Approve_WaitForAuth,
   ResetAccount_First_Method_Denied,
@@ -228,6 +229,11 @@ export enum AccountStep {
   Taiko_Farming_Mint_In_Progress,
   Taiko_Farming_Mint_Failed,
 
+  Transfer_To_Taiko_User_Denied,
+  Transfer_To_Taiko_In_Progress,
+  Transfer_To_Taiko_Success,
+  Transfer_To_Taiko_Failed,
+
 }
 
 /**
@@ -249,6 +255,9 @@ interface InferfaceAssetItem {
   svgIcon: string
   enableKey?: string | null
   handleSelect: (event?: React.MouseEvent) => void
+  type: 'sameLayer' | 'crossLayer' | 'crossChain'
+  cornerTag?: 'Loopring' | '3rd party'
+  description?: string
 }
 
 export interface AddAssetItem extends InferfaceAssetItem {}
@@ -268,10 +277,13 @@ export interface AddAssetProps {
 export interface SendAssetProps {
   isToL1?: boolean
   symbol?: string
-  sendAssetList: AddAssetItem[]
+  sameLayerAssetList: AddAssetItem[]
+  crossLayerAssetList: AddAssetItem[]
+  crossChainAssetList: AddAssetItem[]
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean }
   }
+  toL1Title: string
 }
 
 export interface SendNFTAssetProps {

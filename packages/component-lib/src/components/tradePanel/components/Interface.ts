@@ -235,7 +235,6 @@ export type WithdrawExtendProps<T, I, C> = {
     | 'isSameAddress'
     | undefined
   withdrawType: WithdrawType
-  withdrawTypes?: Partial<WithdrawTypes>
   realAddr?: string
   isAddressCheckLoading: boolean
   isCFAddress: boolean
@@ -261,6 +260,25 @@ export type WithdrawExtendProps<T, I, C> = {
   ens?: string
   title?: string
   geUpdateContact: () => void
+  withdrawMode?: {
+    mode: 'fast' | 'normal',
+    fastModeSupportedTokens: string[],
+    onChange: (mode: 'fast' | 'normal') => void
+    fastMode: undefined | {
+      fee: string,
+      time: string
+    }
+    fastMaxAlert: {
+      show: boolean,
+      message: string
+    }
+    showFastMode: boolean
+    normalMode: undefined | {
+      fee: string,
+      time: string
+    }
+    showTrustUI: boolean
+  }
   // contacts?: { address: string; name: string; addressType: sdk.AddressType }[]
 } & Pick<sdk.GetContactsResponse, 'contacts'> &
   WithdrawInfoProps<C>

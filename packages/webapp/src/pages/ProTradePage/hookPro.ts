@@ -106,8 +106,8 @@ export const usePro = <C extends { [key: string]: any }>({
   }, [])
 
   const precisionList = React.useCallback((market: MarketType) => {
-    const precisionForPrice = marketMap[market].precisionForPrice
-    const orderbookAggLevels = marketMap[market].orderbookAggLevels
+    const precisionForPrice = marketMap[market]?.precisionForPrice
+    const orderbookAggLevels = marketMap[market]?.orderbookAggLevels
     let precisionLevels: { value: number; label: string }[] = []
     for (let i = 0; i < orderbookAggLevels; i++) {
       if (PrecisionTree[precisionForPrice - i]) {

@@ -165,6 +165,14 @@ import {
   Taiko_Farming_Mint_Failed,
   Taiko_Farming_Mint_In_Progress,
   Taiko_Farming_Redeem_In_Progress,
+  useToggle,
+  Transfer_To_TaikoUser_Denied,
+  Transfer_To_TaikoIn_Progress,
+  Transfer_To_Taiko_User_Denied,
+  Transfer_To_Taiko_In_Progress,
+  Transfer_To_Taiko_Success,
+  Transfer_To_Taiko_Failed,
+  UnlockAccount_Reset_Key_Confirm,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -201,12 +209,14 @@ import {
   offFaitService,
   onchainHashInfo,
   OrderENDReason,
+  parseRabbitConfig,
   store,
   unlockAccount,
   useAccount,
   useActiveAccount,
   useCheckActiveStatus,
   useCollectionAdvanceMeta,
+  useConfig,
   useContacts,
   useCreateRedPacket,
   useExportAccount,
@@ -223,7 +233,9 @@ import {
   useReset,
   useStakeTradeExit,
   useSystem,
+  useTokenMap,
   useTransfer,
+  useTransferToTaikoAccount,
   useVendor,
   useWalletLayer2,
   useWithdraw,
@@ -268,6 +280,7 @@ export function useAccountModalForUI({
     setShowActiveAccount,
     setShowNFTTransfer,
     setShowNFTWithdraw,
+    setShowTransferToTaikoAccount
   } = useOpenModals()
   rest = { ...rest, ...isShowAccount.info }
   const {
@@ -312,6 +325,7 @@ export function useAccountModalForUI({
   const { vendorListBuy, banxaRef } = useVendor()
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw()
+  const transferToTaikoProps = useTransferToTaikoAccount()
   const { transferProps } = useTransfer()
   const { nftWithdrawProps } = useNFTWithdraw()
   const { nftTransferProps } = useNFTTransfer()
@@ -664,9 +678,29 @@ export function useAccountModalForUI({
       setShowLayerSwapNotice,
     ],
   )
+
+  const { toggle } = useToggle()
+  const { fastWithdrawConfig } = useConfig()
+  const { idIndex } = useTokenMap()
+
   const sendAssetList: SendAssetItem[] = React.useMemo(
     () =>
-      SendAssetListMap[network].map((item: string) => {
+      SendAssetListMap[network].filter(item => {
+        if (item === SendAssetList.SendAssetToTaikoAccount.key) {
+          // console.log('isShowAccount?.info', isShowAccount?)
+          const parsed = parseRabbitConfig(fastWithdrawConfig, network, idIndex)
+          return (
+            !isShowAccount?.info?.hideSendToTaiko &&
+            toggle.rabbitWithdraw.enable &&
+            parsed.toTaikoNetwork === 'TAIKO' &&
+            (isShowAccount?.info?.symbol
+              ? parsed.toTaikoNetworkSupportedTokens?.includes(isShowAccount.info.symbol)
+              : true)
+          )
+        } else {
+          return true
+        }
+      }).map((item: string) => {
         switch (item) {
           case SendAssetList.SendAssetToL2.key:
             return {
@@ -736,9 +770,23 @@ export function useAccountModalForUI({
                 // window.opener = null
               },
             }
+          case SendAssetList.SendAssetToTaikoAccount.key:
+            return {
+              ...SendAssetList.SendAssetToTaikoAccount,
+              handleSelect: () => {
+                setShowAccount({
+                  isShow: false,
+                  info: { lastFailed: undefined },
+                })
+                setShowTransferToTaikoAccount({
+                  isShow: true,
+                  info: { initSymbol: isShowAccount?.info?.symbol },
+                })
+              },
+            }
         }
       }),
-    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw],
+    [network, isShowAccount?.info?.symbol, setShowAccount, setShowTransfer, setShowWithdraw, toggle.rabbitWithdraw.enable, fastWithdrawConfig],
   )
   const sendNFTAssetList: SendAssetItem[] = React.useMemo(
     () => [
@@ -800,6 +848,7 @@ export function useAccountModalForUI({
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
   })
   const isEarn = app === 'earn'
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
 
   const accountList = React.useMemo(() => {
     // const isShowAccount?.info.
@@ -887,17 +936,17 @@ export function useAccountModalForUI({
           <SendAsset
             isToL1={isShowAccount?.info?.isToL1}
             symbol={isShowAccount?.info?.symbol}
-            sendAssetList={sendAssetList}
             allowTrade={allowTrade}
+            sameLayerAssetList={sendAssetList.filter(item => item.type === 'sameLayer')}
+            crossLayerAssetList={sendAssetList.filter(item => item.type === 'crossLayer')}
+            crossChainAssetList={sendAssetList.filter(item => item.type === 'crossChain')}
+            toL1Title={isTaiko ? 'To Taiko' : 'To Ethereum'}
           />
         ),
+        height: 'auto',
       },
       [AccountStep.SendAssetFromContact]: {
-        view: (
-          <SendFromContact
-            {...(isShowAccount?.info as any)}
-               />
-        ),
+        view: <SendFromContact {...(isShowAccount?.info as any)} />,
       },
       [AccountStep.SendNFTGateway]: {
         view: (
@@ -1932,12 +1981,7 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.General_Failed]: {
-        view: (
-          <General_Failed
-            t={t}
-            {...rest}
-          />
-        ),
+        view: <General_Failed t={t} {...rest} />,
       },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
@@ -2385,7 +2429,6 @@ export function useAccountModalForUI({
         ),
       },
 
-
       // withdraw
       [AccountStep.Withdraw_WaitForAuth]: {
         view: (
@@ -2614,7 +2657,7 @@ export function useAccountModalForUI({
           />
         ),
       },
-			//Burn
+      //Burn
 
       // withdraw
       [AccountStep.NFTWithdraw_WaitForAuth]: {
@@ -2853,6 +2896,23 @@ export function useAccountModalForUI({
         view: (
           <UnlockAccount_Failed
             btnInfo={closeBtnInfo()}
+            onClickReset={() => {
+              setShowAccount({ isShow: true, step: AccountStep.UnlockAccount_Reset_Key_Confirm })
+            }}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              walletType: isShowAccount?.info?.walletType,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UnlockAccount_Reset_Key_Confirm]: {
+        view: (
+          <UnlockAccount_Reset_Key_Confirm
+            t={t}
             resetAccount={() => {
               if (walletServices)
                 if (isShowAccount.info && isShowAccount.info.walletType) {
@@ -2864,18 +2924,12 @@ export function useAccountModalForUI({
               setShowAccount({ isShow: false })
               setShowActiveAccount({
                 isShow: true,
-                info: { isReset: true, confirmationType: 'lockedReset' },
+                info: { isReset: true, confirmationType: undefined },
               })
-            }}
-            {...{
-              ...rest,
-              account,
-              error: isShowAccount.error,
-              walletType: isShowAccount?.info?.walletType,
-              t,
             }}
           />
         ),
+        height: 510
       },
 
       [AccountStep.ResetAccount_Approve_WaitForAuth]: {
@@ -2959,7 +3013,14 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Failed
             patch={{ isReset: true }}
-            btnInfo={closeBtnInfo()}
+            btnInfo={{
+              btnTxt: 'labelClose',
+              callback: (e: any) => {
+                setShouldShow(false)
+                setShowAccount({ isShow: false })
+                setShowActiveAccount({ isShow: false })
+              }
+            }}
             {...{
               ...rest,
               account,
@@ -3076,7 +3137,8 @@ export function useAccountModalForUI({
                 if (isTaikoEarn) {
                   setShowAccount({ isShow: false })
                 } else {
-                  setShowActiveAccount({ isShow: true })
+                  setShowAccount({ isShow: false })
+                  setShowActiveAccount({ isShow: false })
                 }
               },
             }}
@@ -3427,12 +3489,18 @@ export function useAccountModalForUI({
       },
       [AccountStep.VaultDustCollector_Success]: {
         view: (
-          <VaultDustCollector_Success btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+          <VaultDustCollector_Success
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
         ),
       },
       [AccountStep.VaultDustCollector_Failed]: {
         view: (
-          <VaultDustCollector_Failed btnInfo={undefined} {...{ info: isShowAccount?.info, t, ...rest }} />
+          <VaultDustCollector_Failed
+            btnInfo={undefined}
+            {...{ info: isShowAccount?.info, t, ...rest }}
+          />
         ),
       },
       [AccountStep.VaultDustCollector_In_Progress]: {
@@ -3504,6 +3572,87 @@ export function useAccountModalForUI({
           <Taiko_Farming_Mint_In_Progress
             btnInfo={undefined}
             {...{ info: isShowAccount?.info, t, ...rest }}
+          />
+        ),
+      },
+
+
+      [AccountStep.Transfer_To_Taiko_User_Denied]: {
+        view: (
+          <Transfer_To_Taiko_User_Denied
+            btnInfo={{
+              btnTxt: 'labelRetry',
+              callback: () => {
+                transferToTaikoProps.retrySend()
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_To_Taiko_In_Progress]: {
+        view: (
+          <Transfer_To_Taiko_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_To_Taiko_Success]: {
+        view: (
+          <Transfer_To_Taiko_Success
+            btnInfo={{
+              btnTxt: 'Send to Taiko Again',
+              callback: () => {
+                setShowAccount({ isShow: false })
+                setShowTransferToTaikoAccount({
+                  isShow: true,
+                  symbol: isShowAccount?.info?.symbol,
+                })
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: 'Txn Hash',
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_To_Taiko_Failed]: {
+        view: (
+          <Transfer_To_Taiko_Failed
+            btnInfo={closeBtnInfo({
+              closeExtend: () => {
+                setShowAccount({
+                  ...isShowAccount,
+                  isShow: false,
+                  info: {
+                    ...isShowAccount.info,
+                    lastFailed: LAST_STEP.transfer,
+                  },
+                })
+              },
+            })}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
           />
         ),
       },
@@ -3593,6 +3742,7 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    contactAddProps
+    contactAddProps,
+    transferToTaikoProps
 	}
 }
