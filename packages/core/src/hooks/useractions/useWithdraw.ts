@@ -67,7 +67,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap
 
   return {
     belong: offchainFeeInfo.token,
-    fee: ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals),
+    fee: tokenMap[offchainFeeInfo.token] ? ethers.utils.formatUnits(offchainFeeInfo.fee, tokenMap[offchainFeeInfo.token].decimals) : '',
     feeRaw: offchainFeeInfo.fee,
     token: offchainFeeInfo.token,
     hasToken: !!offchainFeeInfo.token,
