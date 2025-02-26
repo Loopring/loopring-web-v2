@@ -341,6 +341,22 @@ export const useVaultSwap = () => {
   const borrowAble = localState.maxBorrowableSellToken
     ? localState.maxBorrowableSellToken
     : undefined
+  
+  const userMaxSellValueWithoutBorrow =
+    sellToken && sellTokenAsset?.total
+      ? numberFormat(
+          utils.formatUnits(
+            BigNumber.from(sellTokenAsset.total ?? 0),
+            sellToken?.decimals,
+          ),
+          {
+            fixed: sellToken.vaultTokenAmounts.qtyStepScale,
+            removeTrailingZero: true,
+            fixedRound: Decimal.ROUND_FLOOR,
+          },
+        )
+      : undefined
+      
   const userMaxSellValue =
     sellToken && sellTokenAsset?.total && borrowAble
       ? numberFormat(
@@ -375,10 +391,29 @@ export const useVaultSwap = () => {
           slipBips: slippageReal.toString(),
         })
       : undefined
+  const maxAmountWithoutBorrowCalcDexOutput =
+    sellToken && buyToken && localState.depth && marketInfo
+      ? calcDexWrap<sdk.VaultMarket>({
+          info: marketInfo as sdk.VaultMarket,
+          input: userMaxSellValueWithoutBorrow ?? '0',
+          sell: sellToken.symbol,
+          buy: buyToken.symbol,
+          isAtoB: isLongOrShort === 'long',
+          marketArr: marketArray,
+          tokenMap,
+          marketMap: marketMap as any,
+          depth: localState.depth,
+          feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
+          slipBips: slippageReal.toString(),
+        })
+      : undefined
 
-  const userMaxBuyValue = maxAmountCalcDexOutput?.amountB
   const userMaxTradeValue =
-    isLongOrShort === 'short' ? userMaxSellValue : userMaxBuyValue
+    isLongOrShort === 'short' ? userMaxSellValue : maxAmountCalcDexOutput?.amountB
+  const userMaxTradeValueWithoutBorrow =
+    isLongOrShort === 'short'
+      ? userMaxSellValueWithoutBorrow
+      : maxAmountWithoutBorrowCalcDexOutput?.amountB
 
   const preCalcDexOutput =
     sellToken && buyToken && localState.depth && marketInfo
@@ -1308,10 +1343,10 @@ export const useVaultSwap = () => {
     },
     isLongOrShort: isLongOrShort,
     onClickBalance: () => {
-      userMaxTradeValue &&
+      userMaxTradeValueWithoutBorrow &&
         setLocalState({
           ...localState,
-          amount: userMaxTradeValue,
+          amount: userMaxTradeValueWithoutBorrow,
         })
     },
     onClickToken: () => {
@@ -1322,10 +1357,10 @@ export const useVaultSwap = () => {
     },
     balance: tryFn(
       () => {
-        if (new Decimal(userMaxTradeValue!).lessThanOrEqualTo('0'))
+        if (new Decimal(userMaxTradeValueWithoutBorrow!).lessThanOrEqualTo('0'))
           return EmptyValueTag + ' ' + selectedTokenSymbol
         return (
-          numberFormatThousandthPlace(userMaxTradeValue!, {
+          numberFormatThousandthPlace(userMaxTradeValueWithoutBorrow!, {
             fixed: selectedVTokenInfo!.vaultTokenAmounts.qtyStepScale,
             removeTrailingZero: true,
             fixedRound: Decimal.ROUND_FLOOR,

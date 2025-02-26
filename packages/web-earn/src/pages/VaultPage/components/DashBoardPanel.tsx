@@ -1563,7 +1563,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 px={2}
               >
                 <Box
-                  mb={4}
+                  mb={3}
                   display={'flex'}
                   justifyContent={'space-between'}
                   alignItems={'flex-start'}
