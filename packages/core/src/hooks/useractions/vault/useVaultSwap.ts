@@ -124,6 +124,8 @@ export const useVaultSwap = () => {
     modals: { isShowVaultSwap },
     setShowAccount,
     setShowVaultSwap,
+    setShowVaultExit,
+    setShowVaultCloseConfirm
   } = useOpenModals()
   const {
     toggle: { VaultInvest },
@@ -331,9 +333,10 @@ export const useVaultSwap = () => {
 
   const smallTradePromptAmtBN = sellToken
     ? isLongOrShort === 'long'
-      ? marketInfo?.minTradePromptAmount?.base
-      : marketInfo?.minTradePromptAmount?.quote
+      ? marketInfo?.minTradePromptAmount?.quote
+      : marketInfo?.minTradePromptAmount?.base
     : undefined
+  console.log('smallTradePromptAmtBN', smallTradePromptAmtBN)
   const smallAmtFeeBips = marketInfo?.upSlippageFeeBips as unknown as number
 
   const sellTokenAsset = sellToken && vaultLayer2 ? vaultLayer2[sellToken.symbol] : undefined
@@ -716,6 +719,11 @@ export const useVaultSwap = () => {
             mainViewRef.current?.scrollTo(0, 0)
           },
           onClickClose: () => {
+            // onClickClose(symbol.slice(2))
+            setShowVaultCloseConfirm({
+              isShow:true,
+              symbol: symbol,
+            })
             // todo close position
           },
         }
@@ -1291,6 +1299,9 @@ export const useVaultSwap = () => {
   
 
   const vaultSwapModalProps = {
+    onClickCloseAll: () => {
+      setShowVaultExit({ isShow: true })
+    },
     mainViewRef,
     open: isShowVaultSwap.isShow,
     hideOther: localState.hideOther,

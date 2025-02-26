@@ -107,7 +107,7 @@ export type VaultAssetsTableProps<R> = {
   noMinHeight?: boolean
   hideDustCollector?: boolean
   onRowClickTrade: ({ row }) => void
-  // onRowClickRepay: ({ row }) => void
+  onRowClickRepay: ({ row }) => void
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -137,6 +137,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       noMinHeight,
       hideDustCollector,
       onRowClickTrade,
+      onRowClickRepay,
       ...rest
     } = props
     const gridRef = React.useRef(null)
@@ -296,14 +297,14 @@ export const VaultAssetsTable = withTranslation('tables')(
               >
                 {t('labelTrade')}
               </Button>
-              {/* <Button
+              <Button
                 onClick={(e) => {
                   e.stopPropagation()
                   onRowClickRepay({ row })
                 }}
               >
                 Repay
-              </Button> */}
+              </Button>
             </Box>
           )
         },
