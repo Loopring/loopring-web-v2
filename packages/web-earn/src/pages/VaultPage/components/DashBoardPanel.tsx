@@ -1122,7 +1122,21 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 pb={5}
                 border={'1px solid var(--color-border)'}
                 borderRadius={1.5}
+                position={'relative'}
               >
+                <Box
+                  bgcolor={'var(--color-box-third)'}
+                  position={'absolute'}
+                  height={'40px'}
+                  px={2.5}
+                  left={0}
+                  top={0}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  <Typography>Cross Account</Typography>
+                </Box>
                 <Button
                   onClick={onClickCollateralManagement}
                   sx={{ alignSelf: 'flex-end', width: 'auto' }}
@@ -1546,6 +1560,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 borderRadius={1.5}
                 marginY={3}
                 paddingY={2}
+                px={2}
               >
                 <Box
                   mb={4}
@@ -1572,37 +1587,39 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   </Button>
                 </Box>
 
-                {assetsTab === 'assetsView' ? (
-                  <VaultAssetsTable
-                    {...assetPanelProps}
-                    onRowClick={(index, row) => {
-                      // @ts-ignore
-                      marketProps.onRowClick(index, {
+                
+                  {assetsTab === 'assetsView' ? (
+                    <VaultAssetsTable
+                      {...assetPanelProps}
+                      onRowClick={(index, row) => {
                         // @ts-ignore
-                        ...vaultTokenMap[row.name],
-                        // @ts-ignore
-                        cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
-                        ...vaultTickerMap[row.erc20Symbol],
-                      })
-                    }}
-                    onClickDustCollector={() => {
-                      if (VaultDustCollector.enable) {
-                        setLocalState({
-                          ...localState,
-                          modalStatus: 'dustCollector',
+                        marketProps.onRowClick(index, {
+                          // @ts-ignore
+                          ...vaultTokenMap[row.name],
+                          // @ts-ignore
+                          cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+                          ...vaultTickerMap[row.erc20Symbol],
                         })
-                      } else {
-                        setLocalState({
-                          ...localState,
-                          modalStatus: 'dustCollectorUnavailable',
-                        })
-                      }
-                    }}
-                    showFilter
-                  />
-                ) : (
-                  <VaultPositionsTable {...vaultPositionsTableProps} />
-                )}
+                      }}
+                      onClickDustCollector={() => {
+                        if (VaultDustCollector.enable) {
+                          setLocalState({
+                            ...localState,
+                            modalStatus: 'dustCollector',
+                          })
+                        } else {
+                          setLocalState({
+                            ...localState,
+                            modalStatus: 'dustCollectorUnavailable',
+                          })
+                        }
+                      }}
+                      showFilter
+                    />
+                  ) : (
+                    <VaultPositionsTable {...vaultPositionsTableProps} />
+                  )}
+
                 <Button
                   onClick={onClickPortalTrade}
                   size={'large'}

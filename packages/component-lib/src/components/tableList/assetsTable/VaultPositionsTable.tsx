@@ -226,7 +226,7 @@ export const VaultPositionsTable = withTranslation('tables')(
         <Table
           {...rest}
           style={{
-            height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
+            height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 200,
             minHeight: 0,
           }}
           onRowClick={onRowClick as any}
@@ -238,6 +238,11 @@ export const VaultPositionsTable = withTranslation('tables')(
           showloading={isLoading}
           columnMode={(isMobile ? getColumnMobileAssets(t) : getColumnModeAssets(t)) as any}
           t={t}
+          EmptyRowsRenderer={
+            <Box display='flex' justifyContent='center' alignItems='center' mt={9}>
+              <Typography color='var(--color-text-secondary)'>No Positions</Typography>
+            </Box>
+          }
         />
       </TableWrap>
     )

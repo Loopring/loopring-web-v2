@@ -1058,9 +1058,17 @@ export const useVaultDashboard = ({
       setHideL2Assets(!hideAssets)
     },
     accountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
-    totalEquity: vaultAccountInfo?.totalEquityOfUsdt
-      ? fiatNumberDisplay(getValueInCurrency(vaultAccountInfo?.totalEquityOfUsdt), currency)
-      : EmptyValueTag,
+    totalEquity:
+      vaultAccountInfo?.totalEquityOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
+        ? fiatNumberDisplay(
+            getValueInCurrency(
+              new Decimal(vaultAccountInfo?.totalEquityOfUsdt)
+                .add(vaultAccountInfo?.totalCollateralOfUsdt)
+                .toString(),
+            ),
+            currency,
+          )
+        : EmptyValueTag,
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
