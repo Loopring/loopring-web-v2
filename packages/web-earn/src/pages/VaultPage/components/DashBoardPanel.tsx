@@ -1160,7 +1160,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   )}
                 </Box>
                 <Typography mt={1} variant='h2'>
-                  {accountActive ? hideAssets ? HiddenTag : totalEquity : EmptyValueTag }
+                  {accountActive ? (hideAssets ? HiddenTag : totalEquity) : EmptyValueTag}
                 </Typography>
 
                 <Box mt={6} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
@@ -1210,73 +1210,76 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     </Typography>
                   </Box>
                   <Box width={'25%'}>
-                    <Tooltip
-                      title={
-                        <Box>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips')}
-                          </Typography>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips2')}
-                          </Typography>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips3')}
-                          </Typography>
-                          <Typography
-                            color={'var(--color-success)'}
-                            marginBottom={1}
-                            variant={'body2'}
-                          >
-                            {t('labelVaultMarginLevelTooltips4')}
-                          </Typography>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips5')}
-                          </Typography>
-                          <Typography
-                            color={'var(--color-warning)'}
-                            marginBottom={1}
-                            variant={'body2'}
-                          >
-                            {t('labelVaultMarginLevelTooltips6')}
-                          </Typography>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips7')}
-                          </Typography>
-                          <Typography
-                            color={'var(--color-error)'}
-                            marginBottom={1}
-                            variant={'body2'}
-                          >
-                            {t('labelVaultMarginLevelTooltips8')}
-                          </Typography>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips9')}
-                          </Typography>
-                          <Typography
-                            color={'var(--color-text-primary)'}
-                            marginBottom={1}
-                            variant={'body2'}
-                          >
-                            {t('labelVaultMarginLevelTooltips10')}
-                          </Typography>
-                          <Typography marginBottom={1} variant={'body2'}>
-                            {t('labelVaultMarginLevelTooltips11')}
-                          </Typography>
-                        </Box>
-                      }
-                      placement={'right'}
+                    <Typography
+                      component={'h4'}
+                      variant={'body1'}
+                      color={'textSecondary'}
+                      display={'flex'}
+                      alignItems={'center'}
                     >
-                      <Typography
-                        component={'h4'}
-                        variant={'body1'}
-                        color={'textSecondary'}
-                        display={'flex'}
-                        alignItems={'center'}
+                      {t('labelVaultMarginLevel')}
+                      <Tooltip
+                        title={
+                          <Box>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips')}
+                            </Typography>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips2')}
+                            </Typography>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips3')}
+                            </Typography>
+                            <Typography
+                              color={'var(--color-success)'}
+                              marginBottom={1}
+                              variant={'body2'}
+                            >
+                              {t('labelVaultMarginLevelTooltips4')}
+                            </Typography>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips5')}
+                            </Typography>
+                            <Typography
+                              color={'var(--color-warning)'}
+                              marginBottom={1}
+                              variant={'body2'}
+                            >
+                              {t('labelVaultMarginLevelTooltips6')}
+                            </Typography>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips7')}
+                            </Typography>
+                            <Typography
+                              color={'var(--color-error)'}
+                              marginBottom={1}
+                              variant={'body2'}
+                            >
+                              {t('labelVaultMarginLevelTooltips8')}
+                            </Typography>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips9')}
+                            </Typography>
+                            <Typography
+                              color={'var(--color-text-primary)'}
+                              marginBottom={1}
+                              variant={'body2'}
+                            >
+                              {t('labelVaultMarginLevelTooltips10')}
+                            </Typography>
+                            <Typography marginBottom={1} variant={'body2'}>
+                              {t('labelVaultMarginLevelTooltips11')}
+                            </Typography>
+                          </Box>
+                        }
+                        placement={'right'}
                       >
-                        {t('labelVaultMarginLevel')}
-                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
-                      </Typography>
-                    </Tooltip>
+                        <Box display={'flex'} alignItems={'center'}>
+                          <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                        </Box>
+                      </Tooltip>
+                    </Typography>
+
                     {(() => {
                       if (!accountActive) {
                         return <Typography>{EmptyValueTag}</Typography>
