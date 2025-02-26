@@ -1050,7 +1050,8 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       <Box
         bgcolor={'var(--color-box)'}
         width={'var(--modal-width)'}
-        height={'700px'}
+        minHeight={'700px'}
+        height={'85%'}
         overflow={'auto'}
         ref={mainViewRef}
         borderRadius={1}
@@ -1061,7 +1062,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       >
         <Box
           px={3}
-          py={2.5}
+          py={2}
           borderBottom={'1px solid var(--color-divide)'}
           display={'flex'}
           justifyContent={'space-between'}
@@ -1211,44 +1212,45 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           </Box>
         </Box>
 
-        <Box mt={4} width={'100%'} px={3}>
-          <BgButton
-            variant='contained'
-            sx={{
-              clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0 100%, 0 0)',
-              width: '52%',
-              borderRadius: '4px',
-              borderTopRightRadius: '0',
-              borderBottomRightRadius: '0',
-            }}
-            customBg={
-              isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-box-secondary)'
-            }
-            onClick={() => onClickLongShort('long')}
-          >
-            Buy / Long
-          </BgButton>
-          <BgButton
-            variant='contained'
-            sx={{
-              clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%, 10% 0)',
-              width: '52%',
-              borderRadius: '4px',
-              borderTopLeftRadius: '0',
-              borderBottomLeftRadius: '0',
-              ml: '-4%',
-            }}
-            customBg={
-              isLongOrShort === 'short' ? 'var(--color-error)' : 'var(--color-box-secondary)'
-            }
-            onClick={() => onClickLongShort('short')}
-          >
-            Sell / Short
-          </BgButton>
-        </Box>
+        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'}>
+          <Box mt={2} width={'100%'} px={3}>
+            <BgButton
+              variant='contained'
+              sx={{
+                clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0 100%, 0 0)',
+                width: '52%',
+                borderRadius: '4px',
+                borderTopRightRadius: '0',
+                borderBottomRightRadius: '0',
+              }}
+              customBg={
+                isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-box-secondary)'
+              }
+              onClick={() => onClickLongShort('long')}
+            >
+              Buy / Long
+            </BgButton>
+            <BgButton
+              variant='contained'
+              sx={{
+                clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%, 10% 0)',
+                width: '52%',
+                borderRadius: '4px',
+                borderTopLeftRadius: '0',
+                borderBottomLeftRadius: '0',
+                ml: '-4%',
+              }}
+              customBg={
+                isLongOrShort === 'short' ? 'var(--color-error)' : 'var(--color-box-secondary)'
+              }
+              onClick={() => onClickLongShort('short')}
+            >
+              Sell / Short
+            </BgButton>
+          </Box>
 
-        <Box mt={3} width={'100%'} px={3}>
-          {/* <Tooltip
+          <Box mt={2} width={'100%'} px={3}>
+            {/* <Tooltip
             title={
               positionTypeSelection.items.find((item) => item.value === positionTypeSelection.value)
                 ?.tooltipTitle ?? ''
@@ -1266,313 +1268,475 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </MenuItem>
               ))}
             </Select>
-          {/* </Tooltip> */}
+            {/* </Tooltip> */}
 
-          <Select
-            value={leverageSelection.value}
-            sx={{ ml: 2 }}
-            size='small'
-            onChange={(e, v) => leverageSelection.onChange(e.target.value)}
-            displayEmpty
-          >
-            {leverageSelection.items.map((item) => (
-              <MenuItem key={item.value} value={item.value}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
-        <Box mt={3} width={'100%'} px={3}>
-          <SpaceBetweenBox
-            mb={0.5}
-            leftNode={
-              <Typography fontSize={'14px'} color={'var(--color-text-third)'}>
-                Amount
-              </Typography>
-            }
-            rightNode={
-              <Typography
-                component={'p'}
-                onClick={onClickBalance}
-                sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                fontSize={'14px'}
-                color={'var(--color-text-secondary)'}
-              >
-                Available: {balance}
-              </Typography>
-            }
-          />
-          <Input
-            sx={{
-              height: '48px',
-              bgcolor: 'var(--color-bg-secondary)',
-              textAlign: 'right',
-              px: 2,
-              fontSize: '20px',
-            }}
-            placeholder={inputPlaceholder}
-            disableUnderline
-            fullWidth
-            startAdornment={
-              <Box
-                display={'flex'}
-                alignItems={'center'}
-                component={'div'}
-                sx={{ cursor: 'pointer' }}
-                onClick={onClickToken}
-              >
-                <CoinIcons type={TokenType.single} tokenIcon={[token.coinJSON]} />
-                <Typography ml={0.5} fontSize={'16px'} color={'var(--color-text-primary)'}>
-                  {token.symbol}
+            <Select
+              value={leverageSelection.value}
+              sx={{ ml: 2 }}
+              size='small'
+              onChange={(e, v) => leverageSelection.onChange(e.target.value)}
+              displayEmpty
+            >
+              {leverageSelection.items.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+          <Box mt={2} width={'100%'} px={3}>
+            <SpaceBetweenBox
+              mb={0.5}
+              leftNode={
+                <Typography fontSize={'14px'} color={'var(--color-text-third)'}>
+                  Amount
                 </Typography>
-                <KeyboardArrowDownIcon
-                  sx={{ ml: 0.5, color: 'var(--color-text-secondary)' }}
-                ></KeyboardArrowDownIcon>
-              </Box>
-            }
-            inputProps={{ sx: { textAlign: 'right' } }}
-            onInput={(e: any) => onInputAmount(e.target.value)}
-            value={amountInput}
-          />
-          <Box
-            display={'flex'}
-            justifyContent={'end'}
-            alignItems={'center'}
-            sx={{
-              opacity: inputAlert.show ? 1 : 0,
-              mt: -1,
-              color:
-                inputAlert.type === 'error'
-                  ? 'var(--color-error)'
-                  : inputAlert.type === 'warning'
-                  ? 'var(--color-warning)'
-                  : 'var(--color-success)',
-            }}
-          >
-            {inputAlert.icon === 'wait' ? (
-              <WaitingIcon />
-            ) : (
-              inputAlert.icon === 'completed' && <CompleteIcon />
-            )}
-            <Typography
+              }
+              rightNode={
+                <Typography
+                  component={'p'}
+                  onClick={onClickBalance}
+                  sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                  fontSize={'14px'}
+                  color={'var(--color-text-secondary)'}
+                >
+                  Available: {balance}
+                </Typography>
+              }
+            />
+            <Input
               sx={{
+                height: '48px',
+                bgcolor: 'var(--color-bg-secondary)',
                 textAlign: 'right',
+                px: 2,
+                fontSize: '20px',
+              }}
+              placeholder={inputPlaceholder}
+              disableUnderline
+              fullWidth
+              startAdornment={
+                <Box
+                  display={'flex'}
+                  alignItems={'center'}
+                  component={'div'}
+                  sx={{ cursor: 'pointer' }}
+                  onClick={onClickToken}
+                >
+                  <CoinIcons type={TokenType.single} tokenIcon={[token.coinJSON]} />
+                  <Typography ml={0.5} fontSize={'16px'} color={'var(--color-text-primary)'}>
+                    {token.symbol}
+                  </Typography>
+                  <KeyboardArrowDownIcon
+                    sx={{ ml: 0.5, color: 'var(--color-text-secondary)' }}
+                  ></KeyboardArrowDownIcon>
+                </Box>
+              }
+              inputProps={{ sx: { textAlign: 'right' } }}
+              onInput={(e: any) => onInputAmount(e.target.value)}
+              value={amountInput}
+            />
+            <Box
+              display={'flex'}
+              justifyContent={'end'}
+              alignItems={'center'}
+              sx={{
+                opacity: inputAlert.show ? 1 : 0,
+                mt: -1,
                 color:
                   inputAlert.type === 'error'
                     ? 'var(--color-error)'
                     : inputAlert.type === 'warning'
                     ? 'var(--color-warning)'
                     : 'var(--color-success)',
-                fontSize: '12px',
-                ml: 0.5,
               }}
             >
-              {inputAlert.message || '--'}
+              {inputAlert.icon === 'wait' ? (
+                <WaitingIcon />
+              ) : (
+                inputAlert.icon === 'completed' && <CompleteIcon />
+              )}
+              <Typography
+                sx={{
+                  textAlign: 'right',
+                  color:
+                    inputAlert.type === 'error'
+                      ? 'var(--color-error)'
+                      : inputAlert.type === 'warning'
+                      ? 'var(--color-warning)'
+                      : 'var(--color-success)',
+                  fontSize: '12px',
+                  ml: 0.5,
+                }}
+              >
+                {inputAlert.message || '--'}
+              </Typography>
+            </Box>
+          </Box>
+          <Box mt={1} width={'100%'} display={'flex'} justifyContent={'center'}>
+            <Typography display={'flex'} alignItems={'center'}>
+              {swapRatio}{' '}
+              <ReverseIcon sx={{ ml: 0.5, cursor: 'pointer' }} onClick={onClickReverse} />
             </Typography>
           </Box>
-        </Box>
-        <Box mt={4} width={'100%'} display={'flex'} justifyContent={'center'}>
-          <Typography display={'flex'} alignItems={'center'}>
-            {swapRatio} <ReverseIcon sx={{ ml: 0.5, cursor: 'pointer' }} onClick={onClickReverse} />
-          </Typography>
-        </Box>
-        <Box pb={4} mt={4} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
-          <SpaceBetweenBox
-            leftNode={
-              <Tooltip
-                title={`Max represents the total of your available holdings and borrowable tokens based on your collateral for this trade. If the swap amount exceeds your available balance, the system will automatically borrow the required tokens.`}
-              >
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  variant={'body2'}
-                  color={'var(--color-text-third)'}
+          <Box pb={2} mt={1.5} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
+            <SpaceBetweenBox
+              leftNode={
+                <Tooltip
+                  title={`Max represents the total of your available holdings and borrowable tokens based on your collateral for this trade. If the swap amount exceeds your available balance, the system will automatically borrow the required tokens.`}
                 >
-                  Max <Info2Icon sx={{ ml: 0.5 }} />
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Max <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                  {maxTradeValue}
                 </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {maxTradeValue}
-              </Typography>
-            }
-          />
-          <Box sx={{ width: '100%' }}>
-            <Slider
-              value={ratioSlider.currentRatio ? ratioSlider.currentRatio * 100 : 0}
-              onChange={(e, value) => {
-                ratioSlider.onClickRatio(
-                  new Decimal(value as number).div(100).toDecimalPlaces(2).toNumber(),
-                )
-              }}
-              min={0}
-              max={100}
-              valueLabelDisplay='auto'
-              valueLabelFormat={(value) => `${value}%`}
-              marks={[
-                { value: 0, label: '0%' },
-                { value: 25, label: '25%' },
-                { value: 50, label: '50%' },
-                { value: 75, label: '75%' },
-                { value: 100, label: '100%' },
-              ]}
-              size='small'
+              }
+            />
+            <Box sx={{ width: '100%' }}>
+              <Slider
+                value={ratioSlider.currentRatio ? ratioSlider.currentRatio * 100 : 0}
+                onChange={(e, value) => {
+                  ratioSlider.onClickRatio(
+                    new Decimal(value as number).div(100).toDecimalPlaces(2).toNumber(),
+                  )
+                }}
+                min={0}
+                max={100}
+                valueLabelDisplay='auto'
+                valueLabelFormat={(value) => `${value}%`}
+                marks={[
+                  { value: 0, label: '0%' },
+                  { value: 25, label: '25%' },
+                  { value: 50, label: '50%' },
+                  { value: 75, label: '75%' },
+                  { value: 100, label: '100%' },
+                ]}
+                size='small'
+              />
+            </Box>
+            <SpaceBetweenBox
+              mt={2}
+              leftNode={
+                <Tooltip
+                  title={
+                    <>
+                      · The corresponding amount is automatically borrowed when placing an order.{' '}
+                      <br />· Interest starts accruing once the order is successfully placed,
+                      regardless of whether it is executed or not, and manual repayment is required.{' '}
+                      <br />· Borrowing is not allowed when the fund pool balance is zero.
+                    </>
+                  }
+                >
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Borrowed <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                  {borrowed}
+                </Typography>
+              }
+            />
+            <SpaceBetweenBox
+              mt={1}
+              leftNode={
+                <Tooltip title={'Total Quota is the maximum allowable trading amount.'}>
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Total Quota <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                  {totalQuota}
+                </Typography>
+              }
             />
           </Box>
-          <SpaceBetweenBox
-            mt={2}
-            leftNode={
-              <Tooltip
-                title={
-                  <>
-                    · The corresponding amount is automatically borrowed when placing an order.{' '}
-                    <br />· Interest starts accruing once the order is successfully placed,
-                    regardless of whether it is executed or not, and manual repayment is required.{' '}
-                    <br />· Borrowing is not allowed when the fund pool balance is zero.
-                  </>
-                }
-              >
+          <Box mt={2} width={'100%'} px={3}>
+            <SpaceBetweenBox
+              leftNode={
                 <Typography
                   display={'flex'}
                   alignItems={'center'}
                   variant={'body2'}
                   color={'var(--color-text-third)'}
                 >
-                  Borrowed <Info2Icon sx={{ ml: 0.5 }} />
+                  Margin Level
                 </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {borrowed}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip title={'Total Quota is the maximum allowable trading amount.'}>
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  variant={'body2'}
-                  color={'var(--color-text-third)'}
+              }
+              rightNode={
+                <Box display={'flex'} alignItems={'center'}>
+                  {marginLevelChange ? (
+                    <>
+                      <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
+                        {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
+                      </Typography>
+                      {marginLevelChange.to && (
+                        <>
+                          <EastIcon sx={{ marginX: 0.5 }} />
+                          <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
+                            {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
+                          </Typography>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    EmptyValueTag
+                  )}
+                </Box>
+              }
+            />
+            <SpaceBetweenBox
+              mt={1}
+              leftNode={
+                <Tooltip
+                  title={
+                    'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.'
+                  }
                 >
-                  Total Quota <Info2Icon sx={{ ml: 0.5 }} />
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Hourly Interest Rate <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                  {hourlyInterestRate}
                 </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {totalQuota}
+              }
+            />
+            <SpaceBetweenBox
+              mt={1}
+              leftNode={
+                <Tooltip title={'The trading fee is fixed at 0.3%.'}>
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Trading Fee (est.) <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                  {tradingFee}
+                </Typography>
+              }
+            />
+            <SpaceBetweenBox
+              mt={1}
+              leftNode={
+                <Tooltip
+                  title={
+                    'Your trade will revert if the price changes unfavorably by more than this percentage.'
+                  }
+                >
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Slippage Tolerance <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                  {slippageTolerance}
+                </Typography>
+              }
+            />
+          </Box>
+          <Box width={'100%'} mt={2} mb={3} px={3} borderRadius={'8px'}>
+            <Box bgcolor={'var(--color-box-secondary)'} px={3} py={2}>
+              <Typography variant='h4' mb={2}>
+                My Positions
               </Typography>
-            }
-          />
-        </Box>
-        <Box mt={2} width={'100%'} px={3}>
-          <SpaceBetweenBox
-            leftNode={
-              <Typography
-                display={'flex'}
-                alignItems={'center'}
-                variant={'body2'}
-                color={'var(--color-text-third)'}
-              >
-                Margin Level
-              </Typography>
-            }
-            rightNode={
-              <Box display={'flex'} alignItems={'center'}>
-                {marginLevelChange ? (
-                  <>
-                    <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
-                      {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
-                    </Typography>
-                    {marginLevelChange.to && (
-                      <>
-                        <EastIcon sx={{ marginX: 0.5 }} />
-                        <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
-                          {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
-                        </Typography>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  EmptyValueTag
+              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography display={'flex'} alignItems={'center'}>
+                  <Checkbox
+                    checked={hideOther}
+                    onChange={() => {
+                      onClickHideOther()
+                    }}
+                    sx={{
+                      width: '16px',
+                      height: '16px',
+                      mr: 1,
+                      ml: -0.25,
+                    }}
+                    checkedIcon={<CheckedIcon />}
+                    icon={<CheckBoxIcon />}
+                    color='default'
+                  />
+                  Hide other tokens
+                </Typography>
+                {myPositions && myPositions.length > 0 && (
+                  <BgButton
+                    variant='contained'
+                    size='small'
+                    customBg='var(--color-button-outlined)'
+                  >
+                    Close All
+                  </BgButton>
                 )}
               </Box>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip
-                title={
-                  'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.'
-                }
-              >
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  variant={'body2'}
-                  color={'var(--color-text-third)'}
-                >
-                  Hourly Interest Rate <Info2Icon sx={{ ml: 0.5 }} />
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {hourlyInterestRate}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip title={'The trading fee is fixed at 0.3%.'}>
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  variant={'body2'}
-                  color={'var(--color-text-third)'}
-                >
-                  Trading Fee (est.) <Info2Icon sx={{ ml: 0.5 }} />
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {tradingFee}
-              </Typography>
-            }
-          />
-          <SpaceBetweenBox
-            mt={1}
-            leftNode={
-              <Tooltip
-                title={
-                  'Your trade will revert if the price changes unfavorably by more than this percentage.'
-                }
-              >
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  variant={'body2'}
-                  color={'var(--color-text-third)'}
-                >
-                  Slippage Tolerance <Info2Icon sx={{ ml: 0.5 }} />
-                </Typography>
-              </Tooltip>
-            }
-            rightNode={
-              <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                {slippageTolerance}
-              </Typography>
-            }
-          />
+
+              <Box>
+                {myPositions?.length === 0 && (
+                  <Box
+                    width={'100%'}
+                    height={'150px'}
+                    display={'flex'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                  >
+                    <Typography variant='body2'>No positions</Typography>
+                  </Box>
+                )}
+                {myPositions?.map((item) => {
+                  return (
+                    <Box
+                      key={item.tokenSymbol}
+                      py={3}
+                      borderBottom={'1px solid var(--color-border)'}
+                    >
+                      <Box display={'flex'} alignItems={'center'}>
+                        <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
+                        <Typography
+                          ml={1}
+                          fontSize={'12px'}
+                          borderRadius={'4px'}
+                          px={1}
+                          color={
+                            item.longOrShort === 'long'
+                              ? theme.colorBase.success
+                              : theme.colorBase.error
+                          }
+                          bgcolor={hexToRGB(
+                            item.longOrShort === 'long'
+                              ? theme.colorBase.success
+                              : theme.colorBase.error,
+                            0.5,
+                          )}
+                        >
+                          {item.longOrShort}
+                        </Typography>
+                        <Box
+                          color={
+                            marginLevelType(item.marginLevel) === 'warning'
+                              ? theme.colorBase.warning
+                              : marginLevelType(item.marginLevel) === 'danger'
+                              ? theme.colorBase.error
+                              : theme.colorBase.success
+                          }
+                          bgcolor={hexToRGB(
+                            marginLevelType(item.marginLevel) === 'warning'
+                              ? theme.colorBase.warning
+                              : marginLevelType(item.marginLevel) === 'danger'
+                              ? theme.colorBase.error
+                              : theme.colorBase.success,
+                            0.5,
+                          )}
+                          ml={1}
+                          display={'flex'}
+                          alignItems={'center'}
+                          fontSize={'13px'}
+                          borderRadius={'4px'}
+                          py={0.15}
+                          px={0.5}
+                        >
+                          <MarginLevelIcon sx={{ mr: 0.5 }} />
+                          {item.marginLevel}
+                        </Box>
+                      </Box>
+                      <Typography variant='body2'>{item.leverage}</Typography>
+                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                        <Box>
+                          <Typography variant='body2'>Amount</Typography>
+                          <Typography>{item.amount}</Typography>
+                        </Box>
+                        {/* <Box ml={'30%'}>
+                    <Typography variant='body2'>Market Price (USDT)</Typography>
+                    <Typography>{item.marketPrice}</Typography>
+                  </Box> */}
+                      </Box>
+                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                        {/* <BgButton
+                    variant='contained'
+                    size='small'
+                    sx={{
+                      bgcolor: 'var(--color-button-outlined)',
+                      width: '32%',
+                      borderRadius: '4px',
+                    }}
+                    onClick={item.onClickLeverage}
+                  >
+                    Leverage
+                  </BgButton> */}
+                        <BgButton
+                          variant='contained'
+                          size='small'
+                          customBg='var(--color-button-outlined)'
+                          sx={{
+                            width: '32%',
+                            borderRadius: '4px',
+                          }}
+                          onClick={item.onClickTrade}
+                        >
+                          Trade
+                        </BgButton>
+                        <BgButton
+                          variant='contained'
+                          size='small'
+                          customBg='var(--color-button-outlined)'
+                          sx={{
+                            width: '32%',
+                            ml: '2%',
+                            borderRadius: '4px',
+                          }}
+                          onClick={item.onClickClose}
+                        >
+                          Close
+                        </BgButton>
+                      </Box>
+                    </Box>
+                  )
+                })}
+              </Box>
+            </Box>
+          </Box>
         </Box>
+
         <Box width={'100%'} mt={2} px={3}>
           <BgButton
             variant='contained'
@@ -1592,157 +1756,6 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               'Sell/Short'
             )}
           </BgButton>
-        </Box>
-        <Box width={'100%'} mt={2} mb={3} px={3} borderRadius={'8px'}>
-          <Box bgcolor={'var(--color-box-secondary)'} px={3} py={2}>
-            <Typography variant='h4' mb={2}>
-              My Positions
-            </Typography>
-            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-              <Typography display={'flex'} alignItems={'center'}>
-                <Checkbox
-                  checked={hideOther}
-                  onChange={() => {
-                    onClickHideOther()
-                  }}
-                  sx={{
-                    width: '16px',
-                    height: '16px',
-                    mr: 1,
-                    ml: -0.25,
-                  }}
-                  checkedIcon={<CheckedIcon />}
-                  icon={<CheckBoxIcon />}
-                  color='default'
-                />
-                Hide other tokens
-              </Typography>
-              {myPositions && myPositions.length > 0 && (
-                <BgButton variant='contained' size='small' customBg='var(--color-button-outlined)'>
-                  Close All
-                </BgButton>
-              )}
-            </Box>
-
-            <Box>
-              {myPositions?.length === 0 && (
-                <Box
-                  width={'100%'}
-                  height={'150px'}
-                  display={'flex'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                >
-                  <Typography variant='body2'>No positions</Typography>
-                </Box>
-              )}
-              {myPositions?.map((item) => {
-                return (
-                  <Box key={item.tokenSymbol} py={3} borderBottom={'1px solid var(--color-border)'}>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
-                      <Typography
-                        ml={1}
-                        fontSize={'12px'}
-                        borderRadius={'4px'}
-                        px={1}
-                        color={
-                          item.longOrShort === 'long'
-                            ? theme.colorBase.success
-                            : theme.colorBase.error
-                        }
-                        bgcolor={hexToRGB(
-                          item.longOrShort === 'long'
-                            ? theme.colorBase.success
-                            : theme.colorBase.error,
-                          0.5,
-                        )}
-                      >
-                        {item.longOrShort}
-                      </Typography>
-                      <Box
-                        color={
-                          marginLevelType(item.marginLevel) === 'warning'
-                            ? theme.colorBase.warning
-                            : marginLevelType(item.marginLevel) === 'danger'
-                            ? theme.colorBase.error
-                            : theme.colorBase.success
-                        }
-                        bgcolor={hexToRGB(
-                          marginLevelType(item.marginLevel) === 'warning'
-                            ? theme.colorBase.warning
-                            : marginLevelType(item.marginLevel) === 'danger'
-                            ? theme.colorBase.error
-                            : theme.colorBase.success,
-                          0.5,
-                        )}
-                        ml={1}
-                        display={'flex'}
-                        alignItems={'center'}
-                        fontSize={'13px'}
-                        borderRadius={'4px'}
-                        py={0.15}
-                        px={0.5}
-                      >
-                        <MarginLevelIcon sx={{ mr: 0.5 }} />
-                        {item.marginLevel}
-                      </Box>
-                    </Box>
-                    <Typography variant='body2'>{item.leverage}</Typography>
-                    <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                      <Box>
-                        <Typography variant='body2'>Amount</Typography>
-                        <Typography>{item.amount}</Typography>
-                      </Box>
-                      {/* <Box ml={'30%'}>
-                    <Typography variant='body2'>Market Price (USDT)</Typography>
-                    <Typography>{item.marketPrice}</Typography>
-                  </Box> */}
-                    </Box>
-                    <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                      {/* <BgButton
-                    variant='contained'
-                    size='small'
-                    sx={{
-                      bgcolor: 'var(--color-button-outlined)',
-                      width: '32%',
-                      borderRadius: '4px',
-                    }}
-                    onClick={item.onClickLeverage}
-                  >
-                    Leverage
-                  </BgButton> */}
-                      <BgButton
-                        variant='contained'
-                        size='small'
-                        customBg='var(--color-button-outlined)'
-                        sx={{
-                          width: '32%',
-                          borderRadius: '4px',
-                        }}
-                        onClick={item.onClickTrade}
-                      >
-                        Trade
-                      </BgButton>
-                      <BgButton
-                        variant='contained'
-                        size='small'
-                        customBg='var(--color-button-outlined)'
-                        sx={{
-                          width: '32%',
-                          ml: '2%',
-                          borderRadius: '4px',
-                        }}
-                        onClick={item.onClickClose}
-                      >
-                        Close
-                      </BgButton>
-                    </Box>
-                  </Box>
-                )
-              })}
-            </Box>
-          </Box>
         </Box>
       </Box>
     </Modal>
