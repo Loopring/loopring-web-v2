@@ -82,6 +82,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     onSwapPop,
     onBorrowPop,
     onRedeemPop,
+    onRepayPop
   } = _vaultAccountInfo
   const [assetsRawData, setAssetsRawData] = React.useState<R[]>([])
   const [totalAsset, setTotalAsset] = React.useState<string>(EmptyValueTag)
@@ -559,14 +560,13 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       })
     },
     onRowClickTrade: ({ row }: { row: R }) => {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+      if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
         history.push('/portal/portalDashboard')
         if (row?.token?.value === 'USDT') {
           onSwapPop({ symbol: 'ETH', isSell: true })
         } else {
           onSwapPop({ symbol: row?.token?.value })
         }
-        
       } else {
         history.push('/portal')
         setShowNoVaultAccount({
@@ -578,9 +578,9 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       }
     },
     onRowClickRepay: ({ row }: { row: R }) => {
-      if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+      if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
         history.push('/portal/portalDashboard')
-        // todo repay
+        onRepayPop({ symbol: row?.token?.value })
       } else {
         history.push('/portal')
         setShowNoVaultAccount({

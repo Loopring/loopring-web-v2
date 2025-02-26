@@ -982,6 +982,7 @@ export interface VaultSwapModalProps {
     loading?: boolean
   }
   mainViewRef: React.RefObject<HTMLDivElement>
+  onClickCloseAll: () => void
 }
 
 export const VaultSwapModal = (props: VaultSwapModalProps) => {
@@ -1029,7 +1030,8 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
     onClickLongShort,
     tokenSelection,
     tradeBtn,
-    mainViewRef
+    mainViewRef,
+    onClickCloseAll
   } = props
   const { t } = useTranslation()
   const theme = useTheme()
@@ -1605,6 +1607,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                     variant='contained'
                     size='small'
                     customBg='var(--color-button-outlined)'
+                    onClick={onClickCloseAll}
                   >
                     Close All
                   </BgButton>
@@ -1877,6 +1880,44 @@ export const SupplyCollateralHintModal = (props: SupplyCollateralHintModalProps)
           <Button onClick={onClickSupply} sx={{ mt: 5, mb: 4 }} variant={'contained'} fullWidth>
             Suppy Collateral
           </Button>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+
+export interface CloseConfirmModalProps {
+  open: boolean 
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const CloseConfirmModal = (props: CloseConfirmModalProps) => {
+  const { open, onClose, onConfirm } = props
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-box)'}
+          width={'450px'}
+          borderRadius={1}
+          display={'flex'}
+          flexDirection={'column'}
+          px={2.5}
+        >
+          <Box sx={{ height: '55px', py: 2.5 }} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'}>
+            <Typography variant={'h5'} component={'span'} >
+              Close Position
+            </Typography>
+            <CloseIcon className='custom-size' onClick={onClose} sx={{ fontSize: 24, color: 'var(--color-text-secondary)', cursor: 'pointer' }} />
+
+          </Box>
+          <Divider style={{ marginTop: '2px' }} />
+          <Box>
+            <Button onClick={onConfirm} sx={{ mt: 5, mb: 4 }} variant={'contained'} fullWidth>
+              Confirm Close
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Modal>

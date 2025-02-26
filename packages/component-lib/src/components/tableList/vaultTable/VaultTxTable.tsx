@@ -111,6 +111,18 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 (row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW') &&
               row.type === VaultRecordType.closeout
 
+            // console.log('dasdhjsajhdjsa', row)
+             
+            if (row.erc20Symbol === 'USDT' && row.type === 'trade') {
+              var longOrShort: 'long' | 'short' | undefined = 'long'
+            } else if (row.erc20Symbol !== 'USDT' && row.type === 'trade') {
+              longOrShort = 'short'
+            } else {
+              longOrShort = undefined
+            }
+            
+            const upColorStr = upColor === 'green' ? 'var(--color-success)' : 'var(--color-error)'
+            const downColorStr = upColor === 'green' ? 'var(--color-error)' : 'var(--color-success)'
             return (
               <Box
                 display={'flex'}
@@ -119,8 +131,25 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                <Typography component={'span'} display={'flex'} alignItems={'center'}>
-                  {isForcedCloseOut ? t(`labelVaultcloseoutForced`) : t(`labelVault${row.type}`)}
+                <Typography
+                  color={
+                    longOrShort === 'long' 
+                      ? upColorStr
+                      : longOrShort === 'short'
+                      ? downColorStr
+                      : 'var(--color-text-primary)'
+                  }
+                  component={'span'}
+                  display={'flex'}
+                  alignItems={'center'}
+                >
+                  {longOrShort === 'long'
+                    ? t('labelVaultBuyLong')
+                    : longOrShort === 'short'
+                    ? t('labelVaultSellShort')
+                    : isForcedCloseOut
+                    ? t(`labelVaultcloseoutForced`)
+                    : t(`labelVault${row.type}`)}
                 </Typography>
               </Box>
             )
@@ -202,6 +231,8 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           name: t('labelVaultTxType'),
           formatter: ({ row }: FormatterProps<R>) => {
+            
+            
             return (
               <Box
                 display={'flex'}

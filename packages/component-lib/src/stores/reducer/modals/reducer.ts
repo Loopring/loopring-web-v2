@@ -64,6 +64,7 @@ const initialState: ModalState = {
   isShowVaultJoin: { isShow: false },
   isShowVaultSwap: { isShow: false, isSell: undefined },
   isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
+  isShowVaultCloseConfirm: { isShow: false, symbol: undefined },
   isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
   isShowConfirmedVault: { isShow: false },
   isShowTransferToTaikoAccount: { isShow: false },
@@ -455,6 +456,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     ) {
       state.isShowVaultLoan = { ...action.payload }
     },
+    setShowVaultCloseConfirm(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Transaction >,
+    ) {
+      state.isShowVaultCloseConfirm = { ...action.payload }
+    },
     setShowNoVaultAccount(
       state,
       action: PayloadAction<ModalStatePlayLoad & { whichBtn: VaultAction | undefined }>,
@@ -506,6 +513,7 @@ export const {
   setShowVaultJoin,
   setShowVaultSwap,
   setShowVaultLoan,
+  setShowVaultCloseConfirm,
   setShowNoVaultAccount,
   setShowConfirmedVault,
   setShowTransferToTaikoAccount
