@@ -561,7 +561,12 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     onRowClickTrade: ({ row }: { row: R }) => {
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
         history.push('/portal/portalDashboard')
-        onSwapPop({ symbol: row?.token?.value })
+        if (row?.token?.value === 'USDT') {
+          onSwapPop({ symbol: 'ETH', isSell: true })
+        } else {
+          onSwapPop({ symbol: row?.token?.value })
+        }
+        
       } else {
         history.push('/portal')
         setShowNoVaultAccount({

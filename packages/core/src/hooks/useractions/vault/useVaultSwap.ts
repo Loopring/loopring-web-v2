@@ -1608,7 +1608,7 @@ export const useVaultSwap = () => {
                         setLocalState({
                           ...localState,
                           showTokenSelection: false,
-                          selectedToken: symbol.slice(2),
+                          selectedToken: symbol === 'LVUSDT' ? 'ETH' : symbol.slice(2),
                           tokenSelectionInput: '',
                         })
                         restartTimer()

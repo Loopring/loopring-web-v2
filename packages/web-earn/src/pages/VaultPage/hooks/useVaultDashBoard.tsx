@@ -565,14 +565,17 @@ export const useVaultDashboard = ({
   const assetPanelProps = useGetVaultAssets({
     onClickTrade(symbol) {
       if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
-        onSwapPop({ symbol: symbol.slice(2) })
+        if (symbol === 'LVUSDT') {
+          onSwapPop({ symbol: 'ETH'})
+        } else {
+          onSwapPop({ symbol: symbol.slice(2) })
+        }
       } else {
         setLocalState({
           ...localState,
           modalStatus: 'supplyCollateralHint',
         })
       }
-      
     },
     // onClickTrade(symbol) {
     //   if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
