@@ -48,7 +48,6 @@ import { Trans } from 'react-i18next'
 import {
   fiatNumberDisplay,
   useVaultJoin,
-  useVaultSwap,
   VaultAccountInfoStatus,
   ViewAccountTemplate,
 } from '@loopring-web/core'
@@ -69,6 +68,7 @@ import { marginLevelTypeToColor } from '@loopring-web/component-lib/src/componen
 import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 import { useVaultDashboard } from '../hooks/useVaultDashBoard'
 import { VaultDashBoardPanelUIProps } from '../interface'
+import { useVaultSwap } from '../hooks/useVaultSwap'
 
 
 // const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({

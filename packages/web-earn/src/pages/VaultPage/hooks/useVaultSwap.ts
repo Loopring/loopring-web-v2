@@ -57,9 +57,10 @@ import {
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
-import { calcMarinLevel, marginLevelType } from './utils'
+import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
+import { closePosition } from './useVaultDashBoard'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -103,7 +104,7 @@ const calcDexWrap = <R>(input: {
 }
 
 export type VaultTradeTradeData = VaultBorrowTradeData & { borrowAvailable: string }
-export const useVaultSwap = ({onClickClose}: {onClickClose: (symbol: string) => void}) => {
+export const useVaultSwap = () => {
   const borrowHash = React.useRef<null | { hash: string; timer?: any }>(null)
   const refreshRef = React.useRef()
   const mainViewRef = React.useRef<HTMLDivElement>(null)
@@ -125,7 +126,7 @@ export const useVaultSwap = ({onClickClose}: {onClickClose: (symbol: string) => 
     setShowAccount,
     setShowVaultSwap,
     setShowVaultExit,
-    setShowVaultCloseConfirm,
+    setShowGlobalToast,
   } = useOpenModals()
   const {
     toggle: { VaultInvest },
@@ -721,7 +722,29 @@ export const useVaultSwap = ({onClickClose}: {onClickClose: (symbol: string) => 
             mainViewRef.current?.scrollTo(0, 0)
           },
           onClickClose: () => {
-            onClickClose(symbol)
+            closePosition(symbol)
+            .then(response2 => {
+              if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+                throw new Error('failed')
+              }
+              setShowGlobalToast({
+                isShow: true,
+                info: {
+                  content: 'Closed position successfully',
+                  type: ToastType.success
+                }
+              })
+            }).catch((e) => {
+              setShowGlobalToast({
+                isShow: true,
+                info: {
+                  content: 'Close position failed',
+                  type: ToastType.error
+                }
+              })
+            }).finally(() => {
+              updateVaultLayer2({})
+            })
             // setShowVaultCloseConfirm({
             //   isShow:true,
             //   symbol: symbol,
