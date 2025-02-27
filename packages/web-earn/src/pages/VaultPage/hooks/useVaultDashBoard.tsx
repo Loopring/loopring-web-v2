@@ -26,6 +26,7 @@ import {
   TokenType,
   globalSetup,
   MarketType,
+  ToastType,
 } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {
@@ -61,9 +62,10 @@ import {
   useWalletLayer2,
   VaultAccountInfoStatus,
   WalletConnectL2Btn,
-  useVaultSwap,
+  // useVaultSwap,
   MAPFEEBIPS,
   vaultSwapDependAsync,
+  useToast,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
@@ -74,6 +76,7 @@ import _, { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
 import { CloseConfirmModalProps, NoAccountHintModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
+import { useVaultSwap } from './useVaultSwap'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
 
@@ -477,7 +480,103 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   }
 }
 
+export const closePosition = async (symbol: string) => {
+  const {
+    vaultLayer2: { vaultLayer2 },
+    invest: {
+      vaultMap: { tokenMap, marketMap, marketArray },
+    },
+    account,
+    settings: { slippage },
+    system: { exchangeInfo },
+  } = store.getState()
+  const vaultAsset = vaultLayer2 && symbol ? vaultLayer2[symbol] : undefined
+  if (!symbol || !vaultAsset || !exchangeInfo || new Decimal(vaultAsset.netAsset).isZero()) return
 
+  const sellToken = new Decimal(vaultAsset.netAsset).isPos() ? tokenMap[symbol] : tokenMap['LVUSDT']
+  const buyToken = new Decimal(vaultAsset.netAsset).isPos() ? tokenMap['LVUSDT'] : tokenMap[symbol]
+  const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+    {
+      accountId: account.accountId,
+      sellTokenId: sellToken?.vaultTokenId ?? 0,
+    },
+    account.apiKey,
+  )
+  const market = `${symbol}-LVUSDT`
+  const marketInfo = marketMap[market] as sdk.VaultMarket
+  const { depth } = await vaultSwapDependAsync({
+    market: (marketInfo as any).vaultMarket,
+    tokenMap: tokenMap,
+  })
+
+  const slippageReal = slippage === 'N' ? 0.1 : slippage
+  const output = sdk.calcDex({
+    info: marketInfo,
+    input: utils.formatUnits(vaultAsset.netAsset, tokenMap[symbol].decimals),
+    sell: sellToken.symbol,
+    buy: buyToken.symbol,
+    isAtoB: new Decimal(vaultAsset.netAsset).isPos(),
+    marketArr: marketArray,
+    tokenMap: tokenMap,
+    marketMap: marketMap as any,
+    depth: depth!,
+    feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
+    slipBips: slippageReal.toString(),
+  })
+
+  const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
+    ? vaultAsset.netAsset
+    : utils.parseUnits(
+        numberFormat(output!.amountS!, { fixed: sellToken.decimals }),
+        sellToken.decimals,
+      )
+  const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
+    ? utils.parseUnits(
+        numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
+        buyToken.decimals,
+      )
+    : vaultAsset.netAsset
+  const request: sdk.VaultOrderRequest = {
+    exchange: exchangeInfo.exchangeAddress,
+    storageId: storageId!.orderId,
+    accountId: account.accountId,
+    sellToken: {
+      tokenId: sellToken?.vaultTokenId ?? 0,
+      volume: sellAmountBN.toString(),
+    },
+    buyToken: {
+      tokenId: buyToken?.vaultTokenId ?? 0,
+      volume: buyAmountBN.toString(),
+    },
+    validUntil: getTimestampDaysLater(DAYS),
+    maxFeeBips: MAPFEEBIPS,
+    fillAmountBOrS: false,
+    allOrNone: false,
+    eddsaSignature: '',
+    clientOrderId: '',
+    orderType: sdk.OrderTypeResp.TakerOnly,
+    fastMode: false,
+  }
+  const response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
+    {
+      request,
+      privateKey: account.eddsaKey.sk,
+      apiKey: account.apiKey,
+    },
+    '1',
+  )
+  await sdk.sleep(SUBMIT_PANEL_CHECK)
+
+  return LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+    {
+      accountId: account.accountId as any,
+      // @ts-ignore
+      hash: response1.hash,
+    },
+    account.apiKey,
+    '1',
+  )
+}
 
 export const useVaultDashboard = ({
   showLeverage,
@@ -494,8 +593,8 @@ export const useVaultDashboard = ({
   maximumCreditModalProps: MaximumCreditModalProps
   collateralDetailsModalProps: CollateralDetailsModalProps
   noAccountHintModalProps: NoAccountHintModalProps
-  vaultSwapModalProps: VaultSwapModalProps
-  smallOrderAlertProps: SmallOrderAlertProps
+  // vaultSwapModalProps: VaultSwapModalProps
+  // smallOrderAlertProps: SmallOrderAlertProps
   supplyCollateralHintModalProps: SupplyCollateralHintModalProps
   closeConfirmModalProps: CloseConfirmModalProps
 } => {
@@ -524,8 +623,8 @@ export const useVaultDashboard = ({
     },
     setShowAccount,
     setShowVaultSwap,
-    setShowVaultCloseConfirm
-
+    setShowVaultCloseConfirm,
+    setShowGlobalToast
   } = useOpenModals()
 
   const { forexMap, etherscanBaseUrl, getValueInCurrency, exchangeInfo } = useSystem()
@@ -539,6 +638,7 @@ export const useVaultDashboard = ({
     setHideL2Assets,
     slippage
   } = useSettings()
+  const {setToastOpen, closeToast} =useToast()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const priceTag = PriceTag[CurrencyToTag[currency]]
  
@@ -977,15 +1077,50 @@ export const useVaultDashboard = ({
           })
         },
         onClickClose: () => {
-          setShowVaultCloseConfirm({
-            isShow: true,
-            symbol,
-          })
-          // setLocalState({
-          //   ...localState,
-          //   closeConfirmModal: { show: true, symbol: originSymbol }
+          // setShowGlobalToast({
+          //   isShow: true,
+          //   info: {
+          //     content: 'aaa',
+          //     type: ToastType.error
+          //   }
           // })
-          // todo close position
+          // setToastOpenset({
+          //   open: true,
+          //   content: 'e.message',
+          //   type: ToastType.error
+          // })
+          closePosition(symbol)
+          .then(response2 => {
+            if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+              throw new Error('failed')
+            }
+            
+            setShowGlobalToast({
+              isShow: true,
+              info: {
+                content: 'Closed position successfully',
+                type: ToastType.success
+              }
+            })
+          }).catch((e) => {
+            setShowGlobalToast({
+              isShow: true,
+              info: {
+                content: 'Close position failed',
+                type: ToastType.error
+              }
+            })
+          }).finally(() => {
+            updateVaultLayer2({})
+            // sdk.sleep(2000).then(() => {
+            //   setShowGlobalToast({
+            //     isShow: false,
+            //     info: {
+            //       type: ToastType.info
+            //     }
+            //   })
+            // })
+          })
         }
       }
     })
@@ -1003,6 +1138,7 @@ export const useVaultDashboard = ({
     //   // todo close position
     // },
   }
+
   
   const vaultDashBoardPanelUIProps = {
     vaultAccountInfo,
@@ -1247,7 +1383,7 @@ export const useVaultDashboard = ({
   const { vaultSwapModalProps, smallOrderAlertProps } = useVaultSwap()
   console.log('useVaultDashboard', {vaultPositionsTableProps,vaultDashBoardPanelUIProps}, {vaultLayer2, vaultTokenMap})
   return {
-    vaultSwapModalProps: vaultSwapModalProps,
+    // vaultSwapModalProps: vaultSwapModalProps,
     vaultDashBoardPanelUIProps,
     dustCollectorUnAvailableModalProps: {
       open: localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show,
@@ -1531,7 +1667,7 @@ export const useVaultDashboard = ({
       ),
       dialogBtn: noVaultAccountDialogBtn,
     },
-    smallOrderAlertProps: smallOrderAlertProps,
+    // smallOrderAlertProps: smallOrderAlertProps,
     supplyCollateralHintModalProps: {
       open: localState.modalStatus === 'supplyCollateralHint',
       onClose: () => {
@@ -1635,11 +1771,6 @@ export const useVaultDashboard = ({
             '1',
           )
         updateVaultLayer2({})
-
-        // vaultAsset.netAsset
-
-        // onVaultClose(vaultAsset)
-        
       },
     },
   }
