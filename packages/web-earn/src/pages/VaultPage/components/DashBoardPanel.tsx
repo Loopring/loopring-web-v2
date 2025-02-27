@@ -1522,9 +1522,19 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     </Box>
                   )}
                   <Box position={'relative'} width={'25%'}>
-                    <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                      Liquidation Threshold
-                    </Typography>
+                  <Tooltip title={'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'} placement={'top'}>
+                      <Typography
+                        component={'h4'}
+                        variant={'body1'}
+                        color={'textSecondary'}
+                        display={'flex'}
+                        alignItems={'center'}
+                      >
+                        Liquidation Threshold
+                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                      </Typography>
+                    </Tooltip>
+                  
                     <Typography
                       component={'span'}
                       marginTop={1}
@@ -1537,9 +1547,18 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     </Typography>
                   </Box>
                   <Box position={'relative'} width={'25%'}>
-                    <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
-                      Liquidation Penalty
-                    </Typography>
+                  <Tooltip title={'The percentage of the position size deducted during liquidation to prevent bad debt.'} placement={'top'}>
+                      <Typography
+                        component={'h4'}
+                        variant={'body1'}
+                        color={'textSecondary'}
+                        display={'flex'}
+                        alignItems={'center'}
+                      >
+                        Liquidation Penalty
+                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                      </Typography>
+                    </Tooltip>
                     <Typography
                       component={'span'}
                       marginTop={1}

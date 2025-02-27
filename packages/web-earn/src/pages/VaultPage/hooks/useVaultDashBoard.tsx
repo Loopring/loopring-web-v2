@@ -960,7 +960,7 @@ export const useVaultDashboard = ({
       
       return {
         tokenPair: {
-          coinJson: [coinJson[originSymbol]],
+          coinJson: [coinJson[originSymbol], coinJson['USDT']],
           pair: `${originSymbol}/USDT`,
           leverage: vaultAccountInfo?.leverage + 'x',
           marginLevel: vaultAccountInfo?.marginLevel ?? '',
