@@ -1,6 +1,6 @@
 import { Box, Button, Container, Divider, Tab, Tabs, Typography } from '@mui/material'
 import React from 'react'
-import { HelpIcon, OrderListIcon, SoursURL, VaultKey } from '@loopring-web/common-resources'
+import { HelpIcon, LOOPRING_DOCUMENT, OrderListIcon, SoursURL, VaultKey } from '@loopring-web/common-resources'
 import {
   Button as LoopringButton,
   ConfirmVaultRisk,
@@ -79,8 +79,12 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     variant={'h5'}
                     whiteSpace={'pre'}
                     marginRight={1}
-                    className={'invest-Balance-Title'} 
-                    color={tabIndex === VaultKey.VAULT_HOME ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}
+                    className={'invest-Balance-Title'}
+                    color={
+                      tabIndex === VaultKey.VAULT_HOME
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-secondary)'
+                    }
                   >
                     {t('labelVaultMarketTitle')}
                   </Typography>
@@ -97,7 +101,11 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     whiteSpace={'pre'}
                     marginRight={1}
                     className={'invest-Overview-Title'}
-                    color={tabIndex === VaultKey.VAULT_DASHBOARD ? 'var(--color-text-primary)' : 'var(--color-text-secondary)'}
+                    color={
+                      tabIndex === VaultKey.VAULT_DASHBOARD
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-secondary)'
+                    }
                   >
                     {t('labelVaultHomeTitle')}
                   </Typography>
@@ -105,6 +113,25 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
               }
             />
           </Tabs>
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            marginTop={isMobile ? 2 : 'inherit'}
+            width={isMobile ? '100%' : 'initial'}
+            justifyContent={'space-between'}
+          >
+            <Button
+              startIcon={<HelpIcon fontSize={'inherit'} color={'inherit'} />}
+              variant={'text'}
+              onClick={() => {
+                window.open(`${LOOPRING_DOCUMENT}vault_tutorial_en.md`, '_blank')
+                window.opener = null
+              }}
+              sx={{ marginLeft: 2, color: 'var(--color-text-primary)' }}
+            >
+              {t('labelVaultTutorial')}
+            </Button>
+          </Box>
         </Box>
       </Container>
       <Divider />

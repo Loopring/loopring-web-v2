@@ -983,10 +983,16 @@ export interface VaultSwapModalProps {
   }
   mainViewRef: React.RefObject<HTMLDivElement>
   onClickCloseAll: () => void
+  onClickMax: () => void
+  amounInUSDT: string
+  moreToBeBorrowed: string
 }
 
 export const VaultSwapModal = (props: VaultSwapModalProps) => {
   const {
+    moreToBeBorrowed,
+    onClickMax,
+    amounInUSDT,
     open,
     onClose,
     setting: {
@@ -1287,7 +1293,10 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
             </Select>
           </Box>
           <Box mt={2} width={'100%'} px={3}>
-            <SpaceBetweenBox
+            <Typography mb={0.5} fontSize={'14px'} color={'var(--color-text-third)'}>
+              Amount
+            </Typography>
+            {/* <SpaceBetweenBox
               mb={0.5}
               leftNode={
                 <Typography fontSize={'14px'} color={'var(--color-text-third)'}>
@@ -1295,17 +1304,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Typography>
               }
               rightNode={
-                <Typography
-                  component={'p'}
-                  onClick={onClickBalance}
-                  sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                  fontSize={'14px'}
-                  color={'var(--color-text-secondary)'}
-                >
-                  Available: {balance}
-                </Typography>
+                
               }
-            />
+            /> */}
             <Input
               sx={{
                 height: '48px',
@@ -1375,17 +1376,84 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               </Typography>
             </Box>
           </Box>
-          <Box mt={1} width={'100%'} display={'flex'} justifyContent={'center'}>
-            <Typography display={'flex'} alignItems={'center'}>
+          <Box mx={3}>
+            <Slider
+              value={ratioSlider.currentRatio ? ratioSlider.currentRatio * 100 : 0}
+              onChange={(e, value) => {
+                ratioSlider.onClickRatio(
+                  new Decimal(value as number).div(100).toDecimalPlaces(2).toNumber(),
+                )
+              }}
+              min={0}
+              max={100}
+              valueLabelDisplay={'on'}
+              valueLabelFormat={(value) => `${value}%`}
+              step={1}
+              marks={[
+                { value: 0, label: '' },
+                { value: 25, label: '' },
+                { value: 50, label: '' },
+                { value: 75, label: '' },
+                { value: 100, label: '' },
+              ]}
+              size='small'
+            />
+          </Box>
+          <Box
+            borderRadius={'8px'}
+            mx={3}
+            mt={2}
+            display={'flex'}
+            bgcolor={'var(--color-bg)'}
+            border={'1px solid var(--color-border)'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            height={'48px'}
+          >
+            <Typography fontSize={16}>{amounInUSDT}</Typography>
+          </Box>
+          <Box mt={2} width={'100%'} display={'flex'} justifyContent={'center'}>
+            <Typography fontSize='12px' display={'flex'} alignItems={'center'}>
               {swapRatio}{' '}
               <ReverseIcon sx={{ ml: 0.5, cursor: 'pointer' }} onClick={onClickReverse} />
             </Typography>
           </Box>
-          <Box pb={2} mt={1.5} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
+          <Box pb={2} mt={2} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
             <SpaceBetweenBox
               leftNode={
                 <Tooltip
-                  title={`Max represents the total of your available holdings and borrowable tokens based on your collateral for this trade. If the swap amount exceeds your available balance, the system will automatically borrow the required tokens.`}
+                  title={`The quantity you currently hold.`}
+                >
+                  <Typography
+                    display={'flex'}
+                    alignItems={'center'}
+                    variant={'body2'}
+                    color={'var(--color-text-third)'}
+                  >
+                    Available <Info2Icon sx={{ ml: 0.5 }} />
+                  </Typography>
+                </Tooltip>
+              }
+              rightNode={
+                <Typography
+                  component={'p'}
+                  onClick={onClickBalance}
+                  sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                  variant={'body2'}
+                  color={'var(--color-text-primary)'}
+                >
+                  {balance}
+                </Typography>
+              }
+            />
+            <SpaceBetweenBox
+              leftNode={
+                <Tooltip
+                  title={<>
+                  Max = Current holdings + Borrowing limit 
+                  <br/> 
+                  The borrowing limit is determined by the value of your collateral and your net equity in this portal account. If the requested amount exceeds your current holdings, the system will automatically borrow the required asset.
+                  </>}
                 >
                   <Typography
                     display={'flex'}
@@ -1398,44 +1466,23 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Tooltip>
               }
               rightNode={
-                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
+                <Typography
+                  onClick={onClickMax}
+                  sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                  variant={'body2'}
+                  color={'var(--color-text-primary)'}
+                >
                   {maxTradeValue}
                 </Typography>
               }
+              mt={1}
             />
-            <Box sx={{ width: '100%' }}>
-              <Slider
-                value={ratioSlider.currentRatio ? ratioSlider.currentRatio * 100 : 0}
-                onChange={(e, value) => {
-                  ratioSlider.onClickRatio(
-                    new Decimal(value as number).div(100).toDecimalPlaces(2).toNumber(),
-                  )
-                }}
-                min={0}
-                max={100}
-                valueLabelDisplay='auto'
-                valueLabelFormat={(value) => `${value}%`}
-                marks={[
-                  { value: 0, label: '0%' },
-                  { value: 25, label: '25%' },
-                  { value: 50, label: '50%' },
-                  { value: 75, label: '75%' },
-                  { value: 100, label: '100%' },
-                ]}
-                size='small'
-              />
-            </Box>
             <SpaceBetweenBox
-              mt={2}
+              mt={1}
               leftNode={
                 <Tooltip
                   title={
-                    <>
-                      · The corresponding amount is automatically borrowed when placing an order.{' '}
-                      <br />· Interest starts accruing once the order is successfully placed,
-                      regardless of whether it is executed or not, and manual repayment is required.{' '}
-                      <br />· Borrowing is not allowed when the fund pool balance is zero.
-                    </>
+                    'The amount borrowed from the system to fulfill the trade request, subject to an hourly interest rate.'
                   }
                 >
                   <Typography
@@ -1444,18 +1491,22 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                     variant={'body2'}
                     color={'var(--color-text-third)'}
                   >
-                    Borrowed <Info2Icon sx={{ ml: 0.5 }} />
+                    Borrow <Info2Icon sx={{ ml: 0.5 }} />
                   </Typography>
                 </Tooltip>
               }
               rightNode={
                 <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                  {borrowed}
+                  {moreToBeBorrowed}
                 </Typography>
               }
             />
-            <SpaceBetweenBox
-              mt={1}
+
+            
+          </Box>
+          <Box mt={2} width={'100%'} px={3}>
+          <SpaceBetweenBox
+              
               leftNode={
                 <Tooltip title={'Total Quota is the maximum allowable trading amount.'}>
                   <Typography
@@ -1474,9 +1525,8 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Typography>
               }
             />
-          </Box>
-          <Box mt={2} width={'100%'} px={3}>
             <SpaceBetweenBox
+            mt={1}
               leftNode={
                 <Typography
                   display={'flex'}
@@ -1509,30 +1559,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Box>
               }
             />
-            <SpaceBetweenBox
-              mt={1}
-              leftNode={
-                <Tooltip
-                  title={
-                    'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.'
-                  }
-                >
-                  <Typography
-                    display={'flex'}
-                    alignItems={'center'}
-                    variant={'body2'}
-                    color={'var(--color-text-third)'}
-                  >
-                    Hourly Interest Rate <Info2Icon sx={{ ml: 0.5 }} />
-                  </Typography>
-                </Tooltip>
-              }
-              rightNode={
-                <Typography variant={'body2'} color={'var(--color-text-primary)'}>
-                  {hourlyInterestRate}
-                </Typography>
-              }
-            />
+            
             <SpaceBetweenBox
               mt={1}
               leftNode={
@@ -1578,13 +1605,13 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               }
             />
           </Box>
-          <Box width={'100%'} mt={2} mb={3} px={3} borderRadius={'8px'}>
-            <Box bgcolor={'var(--color-box-secondary)'} px={3} py={2}>
-              <Typography variant='h4' mb={2}>
+          <Box width={'100%'} mt={2} mb={3} px={3} >
+            <Box bgcolor={'var(--color-box-secondary)'} pt={2} borderRadius={'8px'}>
+              <Typography px={3} variant='h5' mb={2}>
                 My Positions
               </Typography>
-              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Typography display={'flex'} alignItems={'center'}>
+              <Box px={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'} >
                   <Checkbox
                     checked={hideOther}
                     onChange={() => {
@@ -1608,13 +1635,19 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                     size='small'
                     customBg='var(--color-button-outlined)'
                     onClick={onClickCloseAll}
+                    sx={{
+                      fontSize: '11px',
+                      borderRadius: '4px',
+                      width: '70px',
+                      height: '24px'
+                    }}
                   >
                     Close All
                   </BgButton>
                 )}
               </Box>
 
-              <Box>
+              <Box >
                 {myPositions?.length === 0 && (
                   <Box
                     width={'100%'}
@@ -1631,9 +1664,10 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                     <Box
                       key={item.tokenSymbol}
                       py={3}
+                      px={3}
                       borderBottom={'1px solid var(--color-border)'}
                     >
-                      <Box display={'flex'} alignItems={'center'}>
+                      <Box  display={'flex'} alignItems={'center'}>
                         <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
                         <Typography
                           ml={1}
@@ -1649,7 +1683,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                             item.longOrShort === 'long'
                               ? theme.colorBase.success
                               : theme.colorBase.error,
-                            0.5,
+                            0.2,
                           )}
                         >
                           {item.longOrShort}
@@ -1668,7 +1702,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                               : marginLevelType(item.marginLevel) === 'danger'
                               ? theme.colorBase.error
                               : theme.colorBase.success,
-                            0.5,
+                            0.2,
                           )}
                           ml={1}
                           display={'flex'}
@@ -1682,7 +1716,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           {item.marginLevel}
                         </Box>
                       </Box>
-                      <Typography variant='body2'>{item.leverage}</Typography>
+                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>{item.leverage}</Typography>
                       <Box display={'flex'} alignItems={'center'} mt={2.5}>
                         <Box>
                           <Typography variant='body2'>Amount</Typography>
@@ -1713,6 +1747,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           sx={{
                             width: '32%',
                             borderRadius: '4px',
+                            fontSize: '14px'
                           }}
                           onClick={item.onClickTrade}
                         >
@@ -1726,6 +1761,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                             width: '32%',
                             ml: '2%',
                             borderRadius: '4px',
+                            fontSize: '14px'
                           }}
                           onClick={item.onClickClose}
                         >

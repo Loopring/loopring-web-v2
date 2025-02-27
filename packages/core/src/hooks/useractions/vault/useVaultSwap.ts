@@ -497,6 +497,8 @@ export const useVaultSwap = () => {
   const buyAmountBN =
     buyToken && buyAmount ? utils.parseUnits(buyAmount, buyToken.decimals) : undefined
 
+  const amounInUSDT = isLongOrShort === 'long' ? sellAmount : buyAmount
+
   const borrowRequired =
     sellToken && sellTokenAsset && sellAmountBN
       ? sellAmountBN.gt(
@@ -712,7 +714,7 @@ export const useVaultSwap = () => {
             ? numberFormat(vaultAccountInfo.marginLevel, { fixed: 2 })
             : EmptyValueTag,
           leverage: vaultAccountInfo?.leverage + 'x',
-          amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision }),
+          amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision, removeTrailingZero: true }),
           // onClickLeverage: () => {},
           onClickTrade: () => {
             setShowVaultSwap({ isShow: true, symbol: symbol.slice(2) })
@@ -1357,7 +1359,22 @@ export const useVaultSwap = () => {
       userMaxTradeValueWithoutBorrow &&
         setLocalState({
           ...localState,
-          amount: userMaxTradeValueWithoutBorrow,
+          amount: numberFormat(userMaxTradeValueWithoutBorrow, {
+            fixed: selectedVTokenInfo!.vaultTokenAmounts.qtyStepScale,
+            removeTrailingZero: true,
+            fixedRound: Decimal.ROUND_FLOOR,
+          }),
+        })
+    },
+    onClickMax: () => {
+      maxTradeValue &&
+        setLocalState({
+          ...localState,
+          amount: numberFormat(maxTradeValue, {
+            fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
+            fixedRound: Decimal.ROUND_FLOOR,
+            removeTrailingZero: true,
+          }),
         })
     },
     onClickToken: () => {
@@ -1460,6 +1477,12 @@ export const useVaultSwap = () => {
         isSwapRatioReversed: !localState.isSwapRatioReversed,
       })
     },
+    amounInUSDT: amounInUSDT
+      ? numberFormatThousandthPlace(amounInUSDT, {
+          fixed: LVUSDTInfo?.vaultTokenAmounts.qtyStepScale,
+          removeTrailingZero: true
+        }) + ' USDT'
+      : EmptyValueTag + ' USDT',
     maxTradeValue: tryFn(
       () => {
         return (
@@ -1483,6 +1506,23 @@ export const useVaultSwap = () => {
             {
               fixed: sellToken!.precision,
               fixedRound: Decimal.ROUND_FLOOR,
+              removeTrailingZero: true,
+            },
+          ) +
+          ' ' +
+          sellTokenOriginSymbol
+        )
+      },
+      () => EmptyValueTag,
+    ),
+    moreToBeBorrowed: tryFn(
+      () => {
+        return (
+          numberFormatThousandthPlace(
+            moreToBeBorrowed!,
+            {
+              fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
+              fixedRound: Decimal.ROUND_CEIL,
               removeTrailingZero: true,
             },
           ) +

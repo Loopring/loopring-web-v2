@@ -6,7 +6,7 @@ import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
 import { hexToRGB, HiddenTag, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
-import { CoinIcons } from './components/CoinIcons'
+import { CoinIcons, CoinIconsNew } from './components/CoinIcons'
 import _ from 'lodash'
 import { Button } from '@mui/material'
 import { useTheme } from '@emotion/react'
@@ -96,7 +96,10 @@ export const VaultPositionsTable = withTranslation('tables')(
         formatter: ({ row }) => {
           return (
             <>
-              <CoinIcons type={TokenType.single} tokenIcon={row.tokenPair.coinJson} />
+              <CoinIconsNew
+                secondLogoType={'subscript'}
+                tokenIcon={row.tokenPair.coinJson}
+              />
               <Typography
                 variant={'inherit'}
                 color={'var(--color-text-primary)'}
@@ -173,14 +176,6 @@ export const VaultPositionsTable = withTranslation('tables')(
           return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : row.holding}</Box>
         },
       },
-      // {
-      //   key: 'costPrice',
-      //   name: 'Cost Price (USDT)',
-      //   headerCellClass: 'textAlignRight',
-      //   formatter: ({ row }) => {
-      //     return <Box className={'textAlignRight'}>{row.costPrice}</Box>
-      //   },
-      // },
 
       {
         key: 'actions',
