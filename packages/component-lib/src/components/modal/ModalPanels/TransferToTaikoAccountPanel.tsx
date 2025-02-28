@@ -211,7 +211,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
 
       <Box>
         <SpaceBetweenBox
-          leftNode={<Typography color={'var(--color-text-primary)'}>Transaction Cost</Typography>}
+          leftNode={<Typography color={'var(--color-text-primary)'}>Transaction Fee</Typography>}
           rightNode={
             <Typography
               color={'var(--color-text-primary)'}
@@ -222,8 +222,6 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             >
               {feeSelect.feeLoading ? (
                 <Typography color={'var(--color-warning)'}>calculating</Typography>
-              ) : feeSelect.isFeeNotEnough ? (
-                <Typography color={'var(--color-error)'}>insufficient</Typography>
               ) : (
                 fee
               )}
@@ -233,6 +231,16 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             </Typography>
           }
         />
+        <Typography
+          sx={{
+            opacity: (!feeSelect.feeLoading&& feeSelect.isFeeNotEnough) ? 1 : 0,
+            mt: 0.5,
+          }}
+          color={'var(--color-error)'}
+          textAlign={'right'}
+        >
+          insufficient balance
+        </Typography>
         <Button
           disabled={sendBtn.disabled}
           onClick={sendBtn.onClick}

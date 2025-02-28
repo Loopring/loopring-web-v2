@@ -117,7 +117,7 @@ export const FeeSelectModal = (props: FeeSelectModalProps) => {
                 })}
               </Box>
             )}
-            {chargeFeeTokenList.map((feeInfo, index) => {
+            {chargeFeeTokenList?.map((feeInfo, index) => {
               const inefficient =
                 !feeInfo.count ||
                 toBig(feeInfo.count).isZero() ||
