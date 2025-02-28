@@ -183,7 +183,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     .filter((fee) => fee)[0]
   const feeInfo = _feeInfo
     ? _feeInfo
-    : state.feeList?.[0]
+    : state.feeList?.find(feeInfo => feeInfo.token === 'ETH')
   const feeTokenSymbol = feeInfo?.token
   const feeToken = (tokenMap && feeTokenSymbol) ? tokenMap[feeTokenSymbol] : undefined
   
