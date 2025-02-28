@@ -395,7 +395,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
             flexDirection={'column'}
             justifyContent={'space-between'}
             width={'var(--modal-width)'}
-            height={'500px'}
+            height={'530px'}
             px={panel === 'tokenSelection' ? 2.5 : 4}
             pb={4}
           >
