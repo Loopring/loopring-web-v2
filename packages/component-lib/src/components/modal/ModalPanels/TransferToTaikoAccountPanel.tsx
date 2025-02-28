@@ -81,7 +81,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
                 fontSize={'14px'}
                 color={'var(--color-text-secondary)'}
               >
-                Balance {balance}
+                Available: {balance}
               </Typography>
             }
           />
