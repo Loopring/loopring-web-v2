@@ -37,9 +37,10 @@ import {
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from './hook'
+import { symbol } from 'prop-types'
 
 export const VaultHomePanel = ({
-  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop },
+  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop, onSwapPop },
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
@@ -59,7 +60,7 @@ export const VaultHomePanel = ({
   const { hideL2Assets, currency } = useSettings()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
-      <BoxBannerStyle className={isMobile ? 'mobile' : ''} direction={'right'}>
+      {/* <BoxBannerStyle className={isMobile ? 'mobile' : ''} direction={'right'}>
         <Container
           maxWidth='lg'
           style={{
@@ -130,26 +131,31 @@ export const VaultHomePanel = ({
             )}
           </Box>
         </Container>
-      </BoxBannerStyle>
-      <Box
+      </BoxBannerStyle> */}
+      {/* <Box
         flex={1}
         display={'flex'}
         flexDirection={'column'}
         sx={{
           background: 'var(--color-pop-bg)',
         }}
+        mt={6}
+      > */}
+      <Container
+        maxWidth='lg'
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          background: 'var(--color-pop-bg)',
+          flex: 1,
+          mt: 6,
+          mb: 4,
+          borderRadius: '8px',
+        }}
       >
-        <Container
-          maxWidth='lg'
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-          }}
-        >
-          <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
-        </Container>
-      </Box>
+        <MarketTable {...{ ...vaultMarketProps }} hiddenFav={true} />
+      </Container>
+
       <Modal
         open={detail?.isShow && !isShowConfirmedVault?.isShow && !isShowVaultJoin?.isShow}
         onClose={() => setShowDetail({ isShow: false })}
@@ -233,7 +239,7 @@ export const VaultHomePanel = ({
                             : PriceTag[CurrencyToTag[currency]] + '0.00'
                           : HiddenTag}
                       </Typography>
-                      <Box marginTop={2} display={'flex'} flexDirection={'row'}>
+                      {/* <Box marginTop={2} display={'flex'} flexDirection={'row'}>
                         <Box
                           display={'flex'}
                           flexDirection={'column'}
@@ -309,7 +315,7 @@ export const VaultHomePanel = ({
                             {t('labelVaultTradeSimpleBtn')}
                           </Typography>
                         </Box>
-                      </Box>
+                      </Box> */}
                     </Box>
                     <Divider style={{ marginTop: '-1px', width: '100%' }} />
                   </>
@@ -320,6 +326,30 @@ export const VaultHomePanel = ({
                   isShow={detail.isShow}
                   forexMap={forexMap}
                   isLoading={detail.isLoading}
+                  showBtns={
+                    vaultAccountInfo &&
+                    [sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus)
+                  }
+                  onClickBuy={() => {
+                    const symbol = detail.detail?.tokenInfo.symbol?.slice(2)
+                    history.push('/portal/portalDashboard')
+                    if (symbol === 'USDT') {
+                      onSwapPop({ isSell: true })  
+                    } else {
+                      onSwapPop({ symbol })  
+                    }
+                    
+                  }}
+                  onClickSell={() => {
+                    const symbol = detail.detail?.tokenInfo.symbol?.slice(2)
+                    history.push('/portal/portalDashboard')
+                    
+                    if (symbol === 'USDT') {
+                      onSwapPop({ isSell: false })  
+                    } else {
+                      onSwapPop({ symbol, isSell: true })
+                    }
+                  }}
                   {...{ ...detail?.detail }}
                 />
               </Box>
@@ -343,6 +373,7 @@ export const VaultHomePanel = ({
                   <Button
                     size={'medium'}
                     onClick={() => {
+                      history.push('/portal/portalDashboard')
                       setShowDetail({ isShow: false })
                       onJoinPop({})
                     }}

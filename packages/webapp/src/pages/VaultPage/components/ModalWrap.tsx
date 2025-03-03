@@ -16,6 +16,7 @@ import {
   useOpenModals,
   VaultExitPanel,
   VaultJoinPanel,
+  VaultJoinPanelModal,
   VaultLoanPanel,
   VaultSwapCancel,
 } from '@loopring-web/component-lib'
@@ -50,72 +51,54 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     openCancel: false,
     shouldClose: false,
   })
-  const joinVaultProps = useVaultJoin()
   const exitVaultProps = useVaultRedeem()
   const {
-    isMarketInit,
-    toastOpen,
-    closeToast,
-    tradeCalcData,
-    tradeData,
-    swapBtnI18nKey,
-    swapBtnStatus,
-    handleSwapPanelEvent,
-    refreshData,
-    refreshRef,
-    onSwapClick,
-    tradeVault,
-    isSwapLoading,
-    market,
-    isMobile,
-    disabled,
-    cancelBorrow,
-    borrowedAmount,
-    marginLevelChange,
-    showSmallTradePrompt,
-    setShowSmallTradePrompt,
-    hideLeverage
+    // isMarketInit,
+    // toastOpen,
+    // closeToast,
+    // tradeCalcData,
+    // tradeData,
+    // swapBtnI18nKey,
+    // swapBtnStatus,
+    // handleSwapPanelEvent,
+    // refreshData,
+    // refreshRef,
+    // onSwapClick,
+    // tradeVault,
+    // isSwapLoading,
+    // market,
+    // isMobile,
+    // disabled,
+    // cancelBorrow,
+    // borrowedAmount,
+    // marginLevelChange,
+    // showSmallTradePrompt,
+    // setShowSmallTradePrompt,
+    // hideLeverage
   } = useVaultSwap({ path: 'portal' })
-  const { BtnEle, maxEle } = useVaultSwapExtends({
-    tradeCalcData,
-    swapBtnI18nKey,
-    swapBtnStatus,
-    onSwapClick,
-    isSwapLoading,
-    disabled,
-    handleSwapPanelEvent,
-    tradeData,
-    toastOpen,
-    borrowedAmount
-  })
+  // const { BtnEle, maxEle } = useVaultSwapExtends({
+  //   tradeCalcData,
+  //   swapBtnI18nKey,
+  //   swapBtnStatus,
+  //   onSwapClick,
+  //   isSwapLoading,
+  //   disabled,
+  //   handleSwapPanelEvent,
+  //   tradeData,
+  //   toastOpen,
+  //   borrowedAmount
+  // })
   const { vaultRepayProps, vaultBorrowProps, vaultLoanType, handleTabChange } = useVaultLoan()
   return (
     <>
-      <Toast
+      {/* <Toast
         alertText={toastOpen?.content ?? ''}
         open={toastOpen?.open ?? false}
         autoHideDuration={TOAST_TIME}
         onClose={closeToast}
         severity={toastOpen.type}
-      />
-      <Modal
-        contentClassName={'vault-wrap'}
-        open={isShowVaultJoin.isShow}
-        onClose={() => {
-          setShowVaultJoin({ isShow: false })
-        }}
-        content={
-          <VaultJoinPanel
-            {...{
-              ...(joinVaultProps as any),
-              type: TRADE_TYPE.TOKEN,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: `auto`,
-            }}
-          />
-        }
-      />
-      <Modal
+      /> */}
+      {/* <Modal
         contentClassName={'vault-wrap'}
         open={isShowVaultSwap.isShow}
         onClose={() => {
@@ -210,8 +193,8 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
             <></>
           )
         }
-      />
-      <SmallOrderAlert
+      /> */}
+      {/* <SmallOrderAlert
         open={showSmallTradePrompt.show}
         handleClose={() => {
           setShowSmallTradePrompt({
@@ -227,7 +210,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
         estimatedFee={showSmallTradePrompt.estimatedFee ?? ''}
         feePercentage={showSmallTradePrompt.feePercentage ?? ''}
         minimumReceived={showSmallTradePrompt.minimumConverted ?? ''}
-      />
+      /> */}
       <Modal
         contentClassName={'vault-wrap'}
         open={isShowVaultExit.isShow}
@@ -251,7 +234,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
           />
         }
       />
-      <VaultSwapCancel
+      {/* <VaultSwapCancel
         open={openCancel}
         handleClose={(_, isAgree) => {
           setOpenCancel({ openCancel: false, shouldClose: false })
@@ -259,7 +242,7 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
             cancelBorrow(shouldClose)
           }
         }}
-      />
+      /> */}
     </>
   )
 }
