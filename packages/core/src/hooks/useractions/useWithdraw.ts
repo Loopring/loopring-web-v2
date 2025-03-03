@@ -164,10 +164,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     })
   }, () => [])
   
+  const _feeInfo = [feeSymbol, ...feeChargeOrder]
+    .map((order) => enoughFeeList?.find((fee) => fee.token === order))
+    .filter((fee) => fee)[0]
   
-  const feeInfo = enoughFeeList.find((f) => f.token === feeSymbol) 
-    ? enoughFeeList.find((f) => f.token === feeSymbol) 
-    : feeChargeOrder.map(symbol => enoughFeeList.find(fee => fee.token === symbol)).filter(fee => fee)[0]
+  const feeInfo = _feeInfo
+    ? _feeInfo
+    : chargeFeeTokenList?.find(feeInfo => feeInfo.token === 'ETH')
     
   const feeInfo2 = feeInfo && walletMap2 && tokenMap 
     ? offchainFeeInfoToFeeInfo(feeInfo, tokenMap, walletMap2 as any)
