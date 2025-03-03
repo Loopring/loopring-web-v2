@@ -597,7 +597,7 @@ export const WithdrawWrap = <
                       color={'inherit'}
                       minWidth={28}
                     >
-                      Transaction Cost{' '}
+                      Transaction Fee{' '}
                       <Info2Icon sx={{ ml: 0.5, color: 'var(--color-text-third)' }} />
                     </Typography>
                   </Tooltip>
