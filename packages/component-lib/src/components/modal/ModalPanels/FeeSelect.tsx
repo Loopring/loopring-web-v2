@@ -117,7 +117,7 @@ export const FeeSelectModal = (props: FeeSelectModalProps) => {
                 })}
               </Box>
             )}
-            {chargeFeeTokenList.map((feeInfo, index) => {
+            {chargeFeeTokenList?.map((feeInfo, index) => {
               const inefficient =
                 !feeInfo.count ||
                 toBig(feeInfo.count).isZero() ||
@@ -227,15 +227,7 @@ export const FeeSelect = (props: FeeSelectProps) => {
                 ? t('labelL2toL1Fast')
                 : '')}
           </Typography>
-          {isFeeNotEnough ? (
-            feeNotEnoughContent ? (
-              feeNotEnoughContent
-            ) : (
-              <Typography component={'span'} color={'var(--color-error)'}>
-                {t('labelL2toL2FeeNotEnough')}
-              </Typography>
-            )
-          ) : feeLoading ? (
+          {feeLoading ? (
             <LoadingIcon fontSize={'medium'} htmlColor={'var(--color-text-primary)'}></LoadingIcon>
           ) : isFastWithdrawAmountLimit ? (
             <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
@@ -248,6 +240,17 @@ export const FeeSelect = (props: FeeSelectProps) => {
           )}
           <BackIconStyled fontSize={'medium'} />
         </Box>
+      </Typography>
+      <Typography
+        sx={{
+          opacity: !feeLoading && isFeeNotEnough ? 1 : 0,
+          mt: 0.5,
+          pr: 0.5
+        }}
+        color={'var(--color-error)'}
+        textAlign={'right'}
+      >
+        insufficient balance
       </Typography>
       {middleContent}
       <FeeSelectModal

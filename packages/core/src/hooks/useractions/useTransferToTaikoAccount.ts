@@ -50,7 +50,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
 
   const initialState = {
     transferToken: undefined as string | undefined,
-    feeList: [] as OffchainFeeInfo[],
+    feeList: undefined as OffchainFeeInfo[] | undefined,
     feeToken: undefined as string | undefined,
     panel: 'main' as 'main' | 'contacts' | 'tokenSelection' | 'confirm',
     showFeeModal: false,
@@ -76,6 +76,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     ethers.utils
       .parseUnits(state.amount, transferToken.decimals)
       .gt(state.maxTransferAmount ?? '0')
+  
   
   const { contacts, updateContacts } = useContacts()
   const parsed = fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
@@ -172,16 +173,19 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     }
   }, [modals.isShowTransferToTaikoAccount.isShow, fastWithdrawConfig])
   const { walletMap } = makeWalletLayer2({ needFilterZero: true })
-  const enoughFeeList = walletMap && tokenMap ? state.feeList.filter(fee => {
+  const enoughFeeList = walletMap && tokenMap ? state.feeList?.filter(fee => {
     
     return ethers.utils.parseUnits(walletMap[fee.token]?.count.toString() ?? '0', tokenMap[fee.token].decimals).gte(fee.fee)
     
   }) : []
-  const feeInfo = enoughFeeList.find((f) => f.token === state.feeToken)
-    ? enoughFeeList.find((f) => f.token === state.feeToken)
-    : feeChargeOrder.map(order => enoughFeeList.find(fee => fee.token === order)).filter(fee => fee)[0]
+  const _feeInfo = [state.feeToken, ...feeChargeOrder]
+    .map((order) => enoughFeeList?.find((fee) => fee.token === order))
+    .filter((fee) => fee)[0]
+  const feeInfo = _feeInfo
+    ? _feeInfo
+    : state.feeList?.find(feeInfo => feeInfo.token === 'ETH')
   const feeTokenSymbol = feeInfo?.token
-  const feeToken = tokenMap && feeTokenSymbol ? tokenMap[feeTokenSymbol] : undefined
+  const feeToken = (tokenMap && feeTokenSymbol) ? tokenMap[feeTokenSymbol] : undefined
   
   const feeRaw = feeInfo?.fee
   
@@ -189,12 +193,29 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const transferTokenWallet = walletMap ? walletMap[transferTokenSymbol] : undefined
 
   const isInvalidAddress = state.receipt && !ethers.utils.isAddress(state.receipt)
+  const balance = 
+      transferTokenWallet && transferToken
+        ? transferTokenWallet.count
+        : undefined;
+  const isOverBalance =
+    state.amount &&
+    new Decimal(state.amount)
+      .gt(balance ?? '0')
+  const isFeeNotEnough = (() => {
+    if (!tokenMap) return false
+    if (!feeInfo || !walletMap || !feeTokenSymbol || !walletMap[feeTokenSymbol]?.count || !feeToken)
+      return true
+    const count = walletMap[feeTokenSymbol]!.count
+    return new Decimal(count).lt(utils.formatUnits(feeInfo.fee, feeToken.decimals))
+  })()
   const sendBtnDisabled =
     state.feeLoading ||
     !state.amount ||
     new Decimal(state.amount).lessThanOrEqualTo('0') ||
     !state.receipt ||
     isOverMax ||
+    isOverBalance ||
+    isFeeNotEnough ||
     isInvalidAddress
   const {walletProvider} = useWeb3ModalProvider()
 
@@ -307,6 +328,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     })
     
   }
+  
   const output = {
     onClickContact: () => {
       setState({
@@ -359,15 +381,14 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           ' ' +
           feeToken.symbol
         : '--',
-    balance:
-      transferTokenWallet && transferToken
-        ? numberFormat(transferTokenWallet.count, {
-            fixed: transferToken.precision,
-            removeTrailingZero: true,
-          }) +
-          ' ' +
-          transferTokenSymbol
-        : '--',
+    balance: balance
+      ? numberFormat(balance, {
+          fixed: transferToken.precision,
+          removeTrailingZero: true,
+        }) +
+        ' ' +
+        transferTokenSymbol
+      : '--',
     token: {
       coinJSON: coinJson[transferTokenSymbol],
       symbol: transferTokenSymbol,
@@ -386,7 +407,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           : undefined,
       chargeFeeTokenList:
         walletMap && tokenMap
-          ? state.feeList.map((item) => offchainFeeInfoToFeeInfo(item, tokenMap, walletMap as any))
+          ? state.feeList?.map((item) => offchainFeeInfoToFeeInfo(item, tokenMap, walletMap as any))
           : [],
       handleToggleChange: (feeInfo) => {
         setState({
@@ -396,16 +417,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       },
       disableNoToken: false,
       onClickFee: () => {},
-      feeLoading: state.feeLoading,
-      isFeeNotEnough: (() => {
-        
-        if (!feeInfo || !tokenMap || !feeToken) return false
-        if (!walletMap || !feeTokenSymbol || !walletMap[feeTokenSymbol]?.count) return true
-        const count = walletMap[feeTokenSymbol]!.count
-        return new Decimal(count).lt(
-          utils.formatUnits(feeInfo.fee, feeToken.decimals),
-        )
-      })(),
+      feeLoading: state.feeLoading || state.feeList === undefined,
+      // isFeeNotEnough: true,
+      isFeeNotEnough,
       isFastWithdrawAmountLimit: false,
     },
     panel: state.panel,
@@ -459,7 +473,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
           ...state,
           transferToken: symbol,
           panel: 'main',
-          amount: ''
+          amount: '',
         })
         refreshData()
       },
@@ -490,12 +504,15 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     supportedTokens: transferTokenList,
     sendBtn: sendBtn,
     maxAlert: {
-      show: isOverMax,
+      show: isOverMax || isOverBalance,
       message:
         isOverMax && state.maxTransferAmount
-          ? `Quota: ${numberFormat(utils.formatUnits(state.maxTransferAmount!, transferToken.decimals), {fixed: transferToken.precision, removeTrailingZero: true}) } ${
-              transferToken.symbol
-            }`
+          ? `Quota: ${numberFormat(
+              utils.formatUnits(state.maxTransferAmount!, transferToken.decimals),
+              { fixed: transferToken.precision, removeTrailingZero: true },
+            )} ${transferToken.symbol}`
+          : isOverBalance
+          ? `Insufficient ${transferToken.symbol} balance`
           : '',
     },
     receiptError: {
@@ -514,7 +531,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     showReceiptWarning: state.receipt && !isInvalidAddress,
     retrySend: () => {
       confirmSend()
-    }
+    },
   } as TransferToTaikoAccountProps
   return output
 }
