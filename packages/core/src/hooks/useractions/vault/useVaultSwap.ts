@@ -1385,20 +1385,20 @@ export const useVaultSwap = ({onClickClose}: {onClickClose: (symbol: string) => 
     },
     balance: tryFn(
       () => {
-        if (new Decimal(userMaxTradeValueWithoutBorrow!).lessThanOrEqualTo('0'))
-          return EmptyValueTag + ' ' + selectedTokenSymbol
+        if (new Decimal(userMaxSellValueWithoutBorrow!).lessThanOrEqualTo('0'))
+          return EmptyValueTag + ' ' + sellTokenOriginSymbol + 'aaa'
         return (
-          numberFormatThousandthPlace(userMaxTradeValueWithoutBorrow!, {
-            fixed: selectedVTokenInfo!.vaultTokenAmounts.qtyStepScale,
+          numberFormatThousandthPlace(userMaxSellValueWithoutBorrow!, {
+            fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
             removeTrailingZero: true,
             fixedRound: Decimal.ROUND_FLOOR,
           }) +
           ' ' +
-          selectedTokenSymbol
+          sellTokenOriginSymbol
         )
       },
       () => {
-        return EmptyValueTag + ' ' + selectedTokenSymbol
+        return EmptyValueTag + ' ' + sellTokenOriginSymbol + 'aaa'
       },
     ),
     token: {
