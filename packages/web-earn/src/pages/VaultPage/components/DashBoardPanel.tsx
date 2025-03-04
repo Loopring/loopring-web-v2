@@ -1147,7 +1147,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 </Button>
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
                   <Box mr={2}>
-                    <Typography color={'var(--color-text-secondary)'} variant='h3'>
+                    <Typography color={'var(--color-text-secondary)'} variant='h3' fontSize={'14px'}>
                       Total Equity
                     </Typography>
                   </Box>

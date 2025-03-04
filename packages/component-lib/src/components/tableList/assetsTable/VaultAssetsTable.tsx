@@ -84,6 +84,7 @@ export type VaultDataAssetsItem = {
   precision: number
   equity: string
   debt: string
+  repayDisabled: boolean
 }
 
 export type VaultAssetsTableProps<R> = {
@@ -298,8 +299,12 @@ export const VaultAssetsTable = withTranslation('tables')(
                 {t('labelTrade')}
               </Button>
               <Button
+                sx={{
+                  opacity: row.repayDisabled ? 0.5 : 1,
+                }}
                 onClick={(e) => {
                   e.stopPropagation()
+                  if (row.repayDisabled) return
                   onRowClickRepay({ row })
                 }}
               >

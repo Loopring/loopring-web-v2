@@ -1716,7 +1716,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           {item.marginLevel}
                         </Box>
                       </Box>
-                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>{item.leverage}</Typography>
+                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>Cross {item.leverage}</Typography>
                       <Box display={'flex'} alignItems={'center'} mt={2.5}>
                         <Box>
                           <Typography variant='body2'>Amount</Typography>
