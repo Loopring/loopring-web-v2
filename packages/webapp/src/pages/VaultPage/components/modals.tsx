@@ -1061,7 +1061,6 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         minHeight={'700px'}
         height={'85%'}
         overflow={'auto'}
-        
         borderRadius={1}
         display={'flex'}
         alignItems={'center'}
@@ -1421,9 +1420,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <Box pb={2} mt={2} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
             <SpaceBetweenBox
               leftNode={
-                <Tooltip
-                  title={`The quantity you currently hold.`}
-                >
+                <Tooltip title={`The quantity you currently hold.`}>
                   <Typography
                     display={'flex'}
                     alignItems={'center'}
@@ -1449,11 +1446,15 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
             <SpaceBetweenBox
               leftNode={
                 <Tooltip
-                  title={<>
-                  Max = Current holdings + Borrowing limit 
-                  <br/> 
-                  The borrowing limit is determined by the value of your collateral and your net equity in this portal account. If the requested amount exceeds your current holdings, the system will automatically borrow the required asset.
-                  </>}
+                  title={
+                    <>
+                      Max = Current holdings + Borrowing limit
+                      <br />
+                      The borrowing limit is determined by the value of your collateral and your net
+                      equity in this portal account. If the requested amount exceeds your current
+                      holdings, the system will automatically borrow the required asset.
+                    </>
+                  }
                 >
                   <Typography
                     display={'flex'}
@@ -1501,12 +1502,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Typography>
               }
             />
-
-            
           </Box>
           <Box mt={2} width={'100%'} px={3}>
-          <SpaceBetweenBox
-              
+            <SpaceBetweenBox
               leftNode={
                 <Tooltip title={'Total Quota is the maximum allowable trading amount.'}>
                   <Typography
@@ -1526,7 +1524,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               }
             />
             <SpaceBetweenBox
-            mt={1}
+              mt={1}
               leftNode={
                 <Typography
                   display={'flex'}
@@ -1559,7 +1557,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Box>
               }
             />
-            
+
             <SpaceBetweenBox
               mt={1}
               leftNode={
@@ -1605,13 +1603,17 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               }
             />
           </Box>
-          <Box width={'100%'} mt={2} mb={3} px={3} >
+          <Box width={'100%'} mt={2} mb={3} px={3}>
             <Box bgcolor={'var(--color-box-secondary)'} pt={2} borderRadius={'8px'}>
               <Typography px={3} variant='h5' mb={2}>
                 My Positions
               </Typography>
               <Box px={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'} >
+                <Typography
+                  display={'flex'}
+                  alignItems={'center'}
+                  color={'var(--color-text-third)'}
+                >
                   <Checkbox
                     checked={hideOther}
                     onChange={() => {
@@ -1629,25 +1631,24 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                   />
                   Hide other tokens
                 </Typography>
-                {myPositions && myPositions.length > 0 && (
-                  <BgButton
-                    variant='contained'
-                    size='small'
-                    customBg='var(--color-button-outlined)'
-                    onClick={onClickCloseAll}
-                    sx={{
-                      fontSize: '11px',
-                      borderRadius: '4px',
-                      width: '70px',
-                      height: '24px'
-                    }}
-                  >
-                    Close All
-                  </BgButton>
-                )}
+
+                <BgButton
+                  variant='contained'
+                  size='small'
+                  customBg='var(--color-button-outlined)'
+                  onClick={onClickCloseAll}
+                  sx={{
+                    fontSize: '11px',
+                    borderRadius: '4px',
+                    width: '70px',
+                    height: '24px',
+                  }}
+                >
+                  Close All
+                </BgButton>
               </Box>
 
-              <Box >
+              <Box>
                 {myPositions?.length === 0 && (
                   <Box
                     width={'100%'}
@@ -1667,7 +1668,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                       px={3}
                       borderBottom={'1px solid var(--color-border)'}
                     >
-                      <Box  display={'flex'} alignItems={'center'}>
+                      <Box display={'flex'} alignItems={'center'}>
                         <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
                         <Typography
                           ml={1}
@@ -1716,7 +1717,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           {item.marginLevel}
                         </Box>
                       </Box>
-                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>Cross {item.leverage}</Typography>
+                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>
+                        Cross {item.leverage}
+                      </Typography>
                       <Box display={'flex'} alignItems={'center'} mt={2.5}>
                         <Box>
                           <Typography variant='body2'>Amount</Typography>
@@ -1747,7 +1750,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           sx={{
                             width: '32%',
                             borderRadius: '4px',
-                            fontSize: '14px'
+                            fontSize: '14px',
                           }}
                           onClick={item.onClickTrade}
                         >
@@ -1761,7 +1764,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                             width: '32%',
                             ml: '2%',
                             borderRadius: '4px',
-                            fontSize: '14px'
+                            fontSize: '14px',
                           }}
                           onClick={item.onClickClose}
                         >
