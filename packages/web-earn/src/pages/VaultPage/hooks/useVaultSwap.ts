@@ -728,8 +728,12 @@ export const useVaultSwap = () => {
           amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision, removeTrailingZero: true }),
           // onClickLeverage: () => {},
           onClickTrade: () => {
-            setShowVaultSwap({ isShow: true, symbol: symbol.slice(2) })
             mainViewRef.current?.scrollTo(0, 0)
+            setLocalState({
+              ...localState,
+              selectedToken: symbol.slice(2),
+              amount: '',
+            })
           },
           onClickClose: () => {
             closePosition(symbol)

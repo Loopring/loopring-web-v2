@@ -6,7 +6,7 @@ import {
   useVaultLoan,
   useVaultMap,
   useVaultRedeem,
-  useVaultSwap,
+
 } from '@loopring-web/core'
 import {
   Modal,
@@ -52,30 +52,30 @@ export const ModalVaultWrap = ({onClickLeverage}: {onClickLeverage: () => void})
     shouldClose: false,
   })
   const exitVaultProps = useVaultRedeem()
-  const {
-    // isMarketInit,
-    // toastOpen,
-    // closeToast,
-    // tradeCalcData,
-    // tradeData,
-    // swapBtnI18nKey,
-    // swapBtnStatus,
-    // handleSwapPanelEvent,
-    // refreshData,
-    // refreshRef,
-    // onSwapClick,
-    // tradeVault,
-    // isSwapLoading,
-    // market,
-    // isMobile,
-    // disabled,
-    // cancelBorrow,
-    // borrowedAmount,
-    // marginLevelChange,
-    // showSmallTradePrompt,
-    // setShowSmallTradePrompt,
-    // hideLeverage
-  } = useVaultSwap({ path: 'portal' })
+  // const {
+  //   // isMarketInit,
+  //   // toastOpen,
+  //   // closeToast,
+  //   // tradeCalcData,
+  //   // tradeData,
+  //   // swapBtnI18nKey,
+  //   // swapBtnStatus,
+  //   // handleSwapPanelEvent,
+  //   // refreshData,
+  //   // refreshRef,
+  //   // onSwapClick,
+  //   // tradeVault,
+  //   // isSwapLoading,
+  //   // market,
+  //   // isMobile,
+  //   // disabled,
+  //   // cancelBorrow,
+  //   // borrowedAmount,
+  //   // marginLevelChange,
+  //   // showSmallTradePrompt,
+  //   // setShowSmallTradePrompt,
+  //   // hideLeverage
+  // } = useVaultSwap({ path: 'portal' })
   // const { BtnEle, maxEle } = useVaultSwapExtends({
   //   tradeCalcData,
   //   swapBtnI18nKey,
