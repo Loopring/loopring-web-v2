@@ -1712,16 +1712,16 @@ export const useVaultSwap = () => {
         })
       },
       tokens:
-        vaultLayer2 && tokenMap
-          ? _.keys(vaultLayer2)
+        tokenMap
+          ? _.keys(tokenMap)
               .map((symbol) => {
-                const asset = vaultLayer2[symbol]
+                const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
                 const tokenInfo = tokenMap[symbol]
                 return tokenInfo
                   ? {
                       symbol: symbol.slice(2),
                       amount: numberFormatThousandthPlace(
-                        utils.formatUnits(asset.total, tokenInfo.decimals),
+                        utils.formatUnits(asset?.total ?? '0', tokenInfo.decimals),
                         { fixed: tokenInfo.precision, removeTrailingZero: true },
                       ),
                       coinJSON: coinJson[symbol.slice(2)],
