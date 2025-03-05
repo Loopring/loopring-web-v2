@@ -6,7 +6,6 @@ import {
   useVaultLoan,
   useVaultMap,
   useVaultRedeem,
-
 } from '@loopring-web/core'
 import {
   Modal,

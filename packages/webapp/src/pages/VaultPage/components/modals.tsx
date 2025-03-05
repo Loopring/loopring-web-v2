@@ -1061,7 +1061,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         minHeight={'700px'}
         height={'85%'}
         overflow={'auto'}
-        ref={mainViewRef}
+        
         borderRadius={1}
         display={'flex'}
         alignItems={'center'}
@@ -1220,7 +1220,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           </Box>
         </Box>
 
-        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'}>
+        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'} ref={mainViewRef}>
           <Box mt={2} width={'100%'} px={3}>
             <BgButton
               variant='contained'
@@ -1716,7 +1716,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           {item.marginLevel}
                         </Box>
                       </Box>
-                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>{item.leverage}</Typography>
+                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>Cross {item.leverage}</Typography>
                       <Box display={'flex'} alignItems={'center'} mt={2.5}>
                         <Box>
                           <Typography variant='body2'>Amount</Typography>

@@ -532,7 +532,7 @@ export const useVaultSwap = () => {
     : undefined
   const feeAmount =
     feeAmountBN && buyToken ? utils.formatUnits(feeAmountBN, buyToken.decimals) : undefined
-  const totalQuota = tryFn(
+  const totalSellQuota = tryFn(
     () => {
       const value =
         isLongOrShort === 'long'
@@ -546,8 +546,18 @@ export const useVaultSwap = () => {
     },
     () => undefined,
   )
+  const totalTradeQuota = tryFn(
+    () => {
+      const value = new Decimal(
+              utils.formatUnits(localState.depth!.bids_amtTotal, selectedVTokenInfo!.decimals),
+            )
+      return value.mul('0.99').toString()
+    },
+    () => undefined,
+  )
 
-  const maxTradeValue = Decimal.min(userMaxTradeValue ?? '0', totalQuota ?? '0').toString()
+  const maxSellValue = Decimal.min(userMaxSellValue ?? '0', totalSellQuota ?? '0').toString()
+  const maxTradeValue = Decimal.min(userMaxTradeValue ?? '0', totalTradeQuota ?? '0').toString()
 
   const tradeMinAmt = tryFn(
     () => {
@@ -718,8 +728,12 @@ export const useVaultSwap = () => {
           amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision, removeTrailingZero: true }),
           // onClickLeverage: () => {},
           onClickTrade: () => {
-            setShowVaultSwap({ isShow: true, symbol: symbol.slice(2) })
             mainViewRef.current?.scrollTo(0, 0)
+            setLocalState({
+              ...localState,
+              selectedToken: symbol.slice(2),
+              amount: '',
+            })
           },
           onClickClose: () => {
             closePosition(symbol)
@@ -1408,20 +1422,20 @@ export const useVaultSwap = () => {
     },
     balance: tryFn(
       () => {
-        if (new Decimal(userMaxTradeValueWithoutBorrow!).lessThanOrEqualTo('0'))
-          return EmptyValueTag + ' ' + selectedTokenSymbol
+        if (new Decimal(userMaxSellValueWithoutBorrow!).lessThanOrEqualTo('0'))
+          return EmptyValueTag + ' ' + sellTokenOriginSymbol
         return (
-          numberFormatThousandthPlace(userMaxTradeValueWithoutBorrow!, {
-            fixed: selectedVTokenInfo!.vaultTokenAmounts.qtyStepScale,
+          numberFormatThousandthPlace(userMaxSellValueWithoutBorrow!, {
+            fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
             removeTrailingZero: true,
             fixedRound: Decimal.ROUND_FLOOR,
           }) +
           ' ' +
-          selectedTokenSymbol
+          sellTokenOriginSymbol
         )
       },
       () => {
-        return EmptyValueTag + ' ' + selectedTokenSymbol
+        return EmptyValueTag + ' ' + sellTokenOriginSymbol
       },
     ),
     token: {
@@ -1509,16 +1523,16 @@ export const useVaultSwap = () => {
     maxTradeValue: tryFn(
       () => {
         return (
-          numberFormatThousandthPlace(maxTradeValue, {
-            fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
+          numberFormatThousandthPlace(maxSellValue, {
+            fixed: sellToken?.vaultTokenAmounts.qtyStepScale,
             fixedRound: Decimal.ROUND_FLOOR,
             removeTrailingZero: true,
           }) +
           ' ' +
-          selectedTokenSymbol
+          sellTokenOriginSymbol
         )
       },
-      () => EmptyValueTag,
+      () => EmptyValueTag + ' ' + sellTokenOriginSymbol,
     ),
     borrowed: tryFn(
       () => {
@@ -1557,7 +1571,7 @@ export const useVaultSwap = () => {
     ),
     totalQuota: tryFn(
       () =>
-        numberFormatThousandthPlace(totalQuota!, {
+        numberFormatThousandthPlace(totalSellQuota!, {
           fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
           fixedRound: Decimal.ROUND_FLOOR,
           removeTrailingZero: true,

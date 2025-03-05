@@ -310,6 +310,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             erc20Symbol,
             debt: tokenInfo.detail?.borrowed ?? '0',
             equity: tokenInfo.detail?.equity ?? '0',
+            repayDisabled: tokenInfo.detail?.borrowed ? new Decimal(tokenInfo.detail?.borrowed).isZero()  : true
           }
         } else {
           item = {
@@ -329,6 +330,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             erc20Symbol,
             debt: '0',
             equity: '0',
+            repayDisabled: true
           }
         }
         if (item) {
@@ -1112,14 +1114,6 @@ export const useVaultDashboard = ({
             })
           }).finally(() => {
             updateVaultLayer2({})
-            // sdk.sleep(2000).then(() => {
-            //   setShowGlobalToast({
-            //     isShow: false,
-            //     info: {
-            //       type: ToastType.info
-            //     }
-            //   })
-            // })
           })
         }
       }
