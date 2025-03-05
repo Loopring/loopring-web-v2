@@ -1423,7 +1423,7 @@ export const useVaultSwap = () => {
     balance: tryFn(
       () => {
         if (new Decimal(userMaxSellValueWithoutBorrow!).lessThanOrEqualTo('0'))
-          return EmptyValueTag + ' ' + sellTokenOriginSymbol
+          return '0 ' + sellTokenOriginSymbol
         return (
           numberFormatThousandthPlace(userMaxSellValueWithoutBorrow!, {
             fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
