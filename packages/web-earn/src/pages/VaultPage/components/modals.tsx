@@ -1061,7 +1061,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         minHeight={'700px'}
         height={'85%'}
         overflow={'auto'}
-        ref={mainViewRef}
+        
         borderRadius={1}
         display={'flex'}
         alignItems={'center'}
@@ -1220,7 +1220,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           </Box>
         </Box>
 
-        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'}>
+        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'} ref={mainViewRef}>
           <Box mt={2} width={'100%'} px={3}>
             <BgButton
               variant='contained'
