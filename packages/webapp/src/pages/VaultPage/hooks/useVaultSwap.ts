@@ -1517,7 +1517,7 @@ export const useVaultSwap = () => {
     amounInUSDT: amounInUSDT
       ? numberFormatThousandthPlace(amounInUSDT, {
           fixed: LVUSDTInfo?.vaultTokenAmounts.qtyStepScale,
-          removeTrailingZero: true
+          removeTrailingZero: true,
         }) + ' USDT'
       : EmptyValueTag + ' USDT',
     maxTradeValue: tryFn(
@@ -1555,14 +1555,11 @@ export const useVaultSwap = () => {
     moreToBeBorrowed: tryFn(
       () => {
         return (
-          numberFormatThousandthPlace(
-            moreToBeBorrowed!,
-            {
-              fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
-              fixedRound: Decimal.ROUND_CEIL,
-              removeTrailingZero: true,
-            },
-          ) +
+          numberFormatThousandthPlace(moreToBeBorrowed!, {
+            fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
+            fixedRound: Decimal.ROUND_CEIL,
+            removeTrailingZero: true,
+          }) +
           ' ' +
           sellTokenOriginSymbol
         )
@@ -1572,12 +1569,12 @@ export const useVaultSwap = () => {
     totalQuota: tryFn(
       () =>
         numberFormatThousandthPlace(totalSellQuota!, {
-          fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
+          fixed: sellToken?.vaultTokenAmounts.qtyStepScale,
           fixedRound: Decimal.ROUND_FLOOR,
           removeTrailingZero: true,
         }) +
         ' ' +
-        selectedTokenSymbol,
+        sellTokenOriginSymbol,
       () => EmptyValueTag,
     ),
     marginLevelChange: tryFn(
@@ -1681,7 +1678,8 @@ export const useVaultSwap = () => {
         {
           label: 'Cross Position',
           value: 'cross',
-          tooltipTitle: 'All positions within this account share a single health factor, determined by the real-time prices of your collateral, holdings, and debts. If the health factor falls below the liquidation threshold, all positions under this account are subject to liquidation.'
+          tooltipTitle:
+            'All positions within this account share a single health factor, determined by the real-time prices of your collateral, holdings, and debts. If the health factor falls below the liquidation threshold, all positions under this account are subject to liquidation.',
         },
       ],
     },
@@ -1742,6 +1740,7 @@ export const useVaultSwap = () => {
               .filter(
                 (item) =>
                   item !== undefined &&
+                  !['USDT', 'LRTAIKO'].includes(item?.symbol) &&
                   (!localState.tokenSelectionInput ||
                     item.symbol
                       .toLowerCase()
