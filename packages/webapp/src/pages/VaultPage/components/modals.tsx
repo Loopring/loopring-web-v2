@@ -1066,6 +1066,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
         alignItems={'center'}
         flexDirection={'column'}
         position={'relative'}
+        ref={mainViewRef}
       >
         <Box
           px={3}
@@ -1219,7 +1220,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           </Box>
         </Box>
 
-        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'} ref={mainViewRef}>
+        <Box width={'100%'} ref={mainViewRef}>
           <Box mt={2} width={'100%'} px={3}>
             <BgButton
               variant='contained'
@@ -1602,94 +1603,113 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Typography>
               }
             />
+            <BgButton
+              sx={{
+                mt: 2,
+                mb: 3,
+              }}
+              variant='contained'
+              customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
+              size='large'
+              fullWidth
+              onClick={tradeBtn.onClick}
+              disabled={tradeBtn.disabled}
+            >
+              {tradeBtn.loading ? (
+                <LoadingIcon className='custom-size' sx={{ fontSize: 24 }} />
+              ) : tradeBtn.label ? (
+                tradeBtn.label
+              ) : isLongOrShort === 'long' ? (
+                'Buy/Long'
+              ) : (
+                'Sell/Short'
+              )}
+            </BgButton>
           </Box>
-          <Box width={'100%'} mt={2} mb={3} px={3}>
-            <Box bgcolor={'var(--color-box-secondary)'} pt={2} borderRadius={'8px'}>
-              <Typography px={3} variant='h5' mb={2}>
-                My Positions
-              </Typography>
-              <Box px={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Typography
-                  display={'flex'}
-                  alignItems={'center'}
-                  color={'var(--color-text-third)'}
-                >
-                  <Checkbox
-                    checked={hideOther}
-                    onChange={() => {
-                      onClickHideOther()
-                    }}
-                    sx={{
-                      width: '16px',
-                      height: '16px',
-                      mr: 1,
-                      ml: -0.25,
-                    }}
-                    checkedIcon={<CheckedIcon />}
-                    icon={<CheckBoxIcon />}
-                    color='default'
-                  />
-                  Hide other tokens
-                </Typography>
+          <Box bgcolor={'var(--color-box-secondary)'} width={'100%'} height={'4px'}></Box>
 
-                <BgButton
-                  variant='contained'
-                  size='small'
-                  customBg='var(--color-button-outlined)'
-                  onClick={onClickCloseAll}
-                  sx={{
-                    fontSize: '11px',
-                    borderRadius: '4px',
-                    width: '70px',
-                    height: '24px',
+          <Box width={'100%'} my={3} pt={2}>
+            <Typography px={3} variant='h5' mb={2}>
+              My Positions
+            </Typography>
+            <Box px={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+              <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'}>
+                <Checkbox
+                  checked={hideOther}
+                  onChange={() => {
+                    onClickHideOther()
                   }}
-                >
-                  Close All
-                </BgButton>
-              </Box>
+                  sx={{
+                    width: '16px',
+                    height: '16px',
+                    mr: 1,
+                    ml: -0.25,
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color='default'
+                />
+                Hide other tokens
+              </Typography>
 
-              <Box>
-                {myPositions?.length === 0 && (
+              <BgButton
+                variant='contained'
+                size='small'
+                customBg='var(--color-button-outlined)'
+                onClick={onClickCloseAll}
+                sx={{
+                  fontSize: '11px',
+                  borderRadius: '4px',
+                  width: '70px',
+                  height: '24px',
+                }}
+              >
+                Close All
+              </BgButton>
+            </Box>
+
+            <Box>
+              {myPositions?.length === 0 && (
+                <Box
+                  width={'100%'}
+                  height={'150px'}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  <Typography variant='body2'>No positions</Typography>
+                </Box>
+              )}
+              {myPositions?.map((item) => {
+                return (
                   <Box
-                    width={'100%'}
-                    height={'150px'}
-                    display={'flex'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
+                    key={item.tokenSymbol}
+                    py={3}
+                    px={3}
+                    borderBottom={'1px solid var(--color-border)'}
                   >
-                    <Typography variant='body2'>No positions</Typography>
-                  </Box>
-                )}
-                {myPositions?.map((item) => {
-                  return (
-                    <Box
-                      key={item.tokenSymbol}
-                      py={3}
-                      px={3}
-                      borderBottom={'1px solid var(--color-border)'}
-                    >
-                      <Box display={'flex'} alignItems={'center'}>
-                        <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
-                        <Typography
-                          ml={1}
-                          fontSize={'12px'}
-                          borderRadius={'4px'}
-                          px={1}
-                          color={
-                            item.longOrShort === 'long'
-                              ? theme.colorBase.success
-                              : theme.colorBase.error
-                          }
-                          bgcolor={hexToRGB(
-                            item.longOrShort === 'long'
-                              ? theme.colorBase.success
-                              : theme.colorBase.error,
-                            0.2,
-                          )}
-                        >
-                          {item.longOrShort}
-                        </Typography>
-                        <Box
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
+                      <Typography
+                        ml={1}
+                        fontSize={'12px'}
+                        borderRadius={'4px'}
+                        px={1}
+                        color={
+                          item.longOrShort === 'long'
+                            ? theme.colorBase.success
+                            : theme.colorBase.error
+                        }
+                        bgcolor={hexToRGB(
+                          item.longOrShort === 'long'
+                            ? theme.colorBase.success
+                            : theme.colorBase.error,
+                          0.2,
+                        )}
+                      >
+                        {item.longOrShort}
+                      </Typography>
+                      {/* <Box
                           color={
                             marginLevelType(item.marginLevel) === 'warning'
                               ? theme.colorBase.warning
@@ -1715,71 +1735,58 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                         >
                           <MarginLevelIcon sx={{ mr: 0.5 }} />
                           {item.marginLevel}
-                        </Box>
+                        </Box> */}
+                    </Box>
+                    <Typography variant='body2' color={'var(--color-text-third)'}>
+                      Cross {item.leverage}
+                    </Typography>
+                    <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                      <Box>
+                        <Typography variant='body2'>Amount</Typography>
+                        <Typography>{item.amount}</Typography>
                       </Box>
-                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>
-                        Cross {item.leverage}
-                      </Typography>
-                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                        <Box>
-                          <Typography variant='body2'>Amount</Typography>
-                          <Typography>{item.amount}</Typography>
-                        </Box>
-                        {/* <Box ml={'30%'}>
+                      {/* <Box ml={'30%'}>
                     <Typography variant='body2'>Market Price (USDT)</Typography>
                     <Typography>{item.marketPrice}</Typography>
                   </Box> */}
-                      </Box>
-                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                        {/* <BgButton
-                    variant='contained'
-                    size='small'
-                    sx={{
-                      bgcolor: 'var(--color-button-outlined)',
-                      width: '32%',
-                      borderRadius: '4px',
-                    }}
-                    onClick={item.onClickLeverage}
-                  >
-                    Leverage
-                  </BgButton> */}
-                        <BgButton
-                          variant='contained'
-                          size='small'
-                          customBg='var(--color-button-outlined)'
-                          sx={{
-                            width: '32%',
-                            borderRadius: '4px',
-                            fontSize: '14px',
-                          }}
-                          onClick={item.onClickTrade}
-                        >
-                          Trade
-                        </BgButton>
-                        <BgButton
-                          variant='contained'
-                          size='small'
-                          customBg='var(--color-button-outlined)'
-                          sx={{
-                            width: '32%',
-                            ml: '2%',
-                            borderRadius: '4px',
-                            fontSize: '14px',
-                          }}
-                          onClick={item.onClickClose}
-                        >
-                          Close
-                        </BgButton>
-                      </Box>
                     </Box>
-                  )
-                })}
-              </Box>
+                    <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                      <BgButton
+                        variant='contained'
+                        size='small'
+                        customBg='var(--color-button-outlined)'
+                        sx={{
+                          width: '32%',
+                          borderRadius: '4px',
+                          fontSize: '14px',
+                        }}
+                        onClick={item.onClickTrade}
+                      >
+                        Trade
+                      </BgButton>
+                      <BgButton
+                        variant='contained'
+                        size='small'
+                        customBg='var(--color-button-outlined)'
+                        sx={{
+                          width: '32%',
+                          ml: '2%',
+                          borderRadius: '4px',
+                          fontSize: '14px',
+                        }}
+                        onClick={item.onClickClose}
+                      >
+                        Close
+                      </BgButton>
+                    </Box>
+                  </Box>
+                )
+              })}
             </Box>
           </Box>
         </Box>
 
-        <Box width={'100%'} mt={2} px={3}>
+        {/* <Box width={'100%'} mt={2} px={3}>
           <BgButton
             variant='contained'
             customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
@@ -1798,7 +1805,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               'Sell/Short'
             )}
           </BgButton>
-        </Box>
+        </Box> */}
       </Box>
     </Modal>
   )

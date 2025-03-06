@@ -611,6 +611,7 @@ export const useVaultDashboard = ({
     onSwapPop,
     onJoinPop,
     onRepayPop,
+    onRedeemPop,
     joinBtnStatus,
     joinBtnLabel,
   } = _vaultAccountInfo
@@ -1198,6 +1199,9 @@ export const useVaultDashboard = ({
     _vaultAccountInfo: _vaultAccountInfo,
     onClickCollateralManagement: () => {
       onJoinPop({})
+    },
+    onClickCloseOut: () => {
+      onRedeemPop({})
     },
     liquidationThreshold: '1.1',
     liquidationPenalty: '0%',

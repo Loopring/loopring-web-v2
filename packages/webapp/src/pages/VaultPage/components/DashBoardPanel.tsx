@@ -9,6 +9,7 @@ import {
   IconButton,
   Tab, 
   Tabs,
+  styled,
 } from '@mui/material'
 import React from 'react'
 import {
@@ -70,7 +71,18 @@ import { useVaultDashboard } from '../hooks/useVaultDashBoard'
 import { VaultDashBoardPanelUIProps } from '../interface'
 import { useVaultSwap } from '../hooks/useVaultSwap'
 
-
+const BgButton = styled(Button)<{ customBg: string }>`
+  background-color: ${({ customBg }) => customBg};
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: ${({ customBg }) => customBg};
+    opacity: 0.8;
+  }
+  &:disabled {
+    background-color: var(--color-button-disabled);
+  }
+  
+`
 // const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 //   t,
 //   forexMap,
@@ -1070,6 +1082,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   history,
   etherscanBaseUrl,
   onClickCollateralManagement,
+  onClickCloseOut,
   onClickPortalTrade,
   liquidationThreshold,
   liquidationPenalty,
@@ -1138,16 +1151,31 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 >
                   <Typography>Cross Account</Typography>
                 </Box>
-                <Button
-                  onClick={onClickCollateralManagement}
-                  sx={{ alignSelf: 'flex-end', width: 'auto' }}
-                  variant='contained'
-                >
-                  Collateral Management
-                </Button>
+                <Box display={'flex'} alignItems={'center'} alignSelf={'flex-end'}>
+                  <Button
+                    onClick={onClickCollateralManagement}
+                    sx={{ width: 'auto' }}
+                    variant='contained'
+                  >
+                    Collateral Management
+                  </Button>
+                  <BgButton
+                    customBg='var(--color-button-outlined)'
+                    onClick={onClickCloseOut}
+                    sx={{ width: 'auto', ml: 1.5 }}
+                    variant='contained'
+                  >
+                    Close Out
+                  </BgButton>
+                </Box>
+
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
                   <Box mr={2}>
-                    <Typography color={'var(--color-text-secondary)'} variant='h3' fontSize={'14px'}>
+                    <Typography
+                      color={'var(--color-text-secondary)'}
+                      variant='h3'
+                      fontSize={'14px'}
+                    >
                       Total Equity
                     </Typography>
                   </Box>
@@ -1522,7 +1550,12 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     </Box>
                   )}
                   <Box position={'relative'} width={'25%'}>
-                  <Tooltip title={'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'} placement={'top'}>
+                    <Tooltip
+                      title={
+                        'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'
+                      }
+                      placement={'top'}
+                    >
                       <Typography
                         component={'h4'}
                         variant={'body1'}
@@ -1534,7 +1567,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
                       </Typography>
                     </Tooltip>
-                  
+
                     <Typography
                       component={'span'}
                       marginTop={1}
@@ -1547,7 +1580,12 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     </Typography>
                   </Box>
                   <Box position={'relative'} width={'25%'}>
-                  <Tooltip title={'The percentage of the position size deducted during liquidation to prevent bad debt.'} placement={'top'}>
+                    <Tooltip
+                      title={
+                        'The percentage of the position size deducted during liquidation to prevent bad debt.'
+                      }
+                      placement={'top'}
+                    >
                       <Typography
                         component={'h4'}
                         variant={'body1'}
@@ -1607,38 +1645,37 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   </Button>
                 </Box>
 
-                
-                  {assetsTab === 'assetsView' ? (
-                    <VaultAssetsTable
-                      {...assetPanelProps}
-                      onRowClick={(index, row) => {
+                {assetsTab === 'assetsView' ? (
+                  <VaultAssetsTable
+                    {...assetPanelProps}
+                    onRowClick={(index, row) => {
+                      // @ts-ignore
+                      marketProps.onRowClick(index, {
                         // @ts-ignore
-                        marketProps.onRowClick(index, {
-                          // @ts-ignore
-                          ...vaultTokenMap[row.name],
-                          // @ts-ignore
-                          cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
-                          ...vaultTickerMap[row.erc20Symbol],
+                        ...vaultTokenMap[row.name],
+                        // @ts-ignore
+                        cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+                        ...vaultTickerMap[row.erc20Symbol],
+                      })
+                    }}
+                    onClickDustCollector={() => {
+                      if (VaultDustCollector.enable) {
+                        setLocalState({
+                          ...localState,
+                          modalStatus: 'dustCollector',
                         })
-                      }}
-                      onClickDustCollector={() => {
-                        if (VaultDustCollector.enable) {
-                          setLocalState({
-                            ...localState,
-                            modalStatus: 'dustCollector',
-                          })
-                        } else {
-                          setLocalState({
-                            ...localState,
-                            modalStatus: 'dustCollectorUnavailable',
-                          })
-                        }
-                      }}
-                      showFilter
-                    />
-                  ) : (
-                    <VaultPositionsTable {...vaultPositionsTableProps} />
-                  )}
+                      } else {
+                        setLocalState({
+                          ...localState,
+                          modalStatus: 'dustCollectorUnavailable',
+                        })
+                      }
+                    }}
+                    showFilter
+                  />
+                ) : (
+                  <VaultPositionsTable {...vaultPositionsTableProps} />
+                )}
 
                 <Button
                   onClick={onClickPortalTrade}

@@ -42,6 +42,7 @@ export interface VaultDashBoardPanelUIProps {
   history: any;
   etherscanBaseUrl: string;
   onClickCollateralManagement: () => void;
+  onClickCloseOut: () => void;
   onClickPortalTrade: () => void;
   liquidationThreshold: string;
   liquidationPenalty: string;

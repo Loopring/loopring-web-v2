@@ -1145,6 +1145,13 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 >
                   Collateral Management
                 </Button>
+                <Button
+                  onClick={onClickCloseOut}
+                  sx={{ alignSelf: 'flex-end', width: 'auto' }}
+                  variant='contained'
+                >
+                  Close Out
+                </Button>
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
                   <Box mr={2}>
                     <Typography color={'var(--color-text-secondary)'} variant='h3' fontSize={'14px'}>
