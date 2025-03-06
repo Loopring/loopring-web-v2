@@ -158,56 +158,132 @@ export const CoinIcons = React.memo(
   },
 )
 
-export const CoinIconsNew = React.memo(
-  ({
-    tokenIcon,
-    size: _size,
-    secondLogoType,
-  }: {
-    tokenIcon: [CoinSource, CoinSource?]
-    size?: number | 'middle' | 'small' | 'large'
-    secondLogoType?: 'normal' | 'subscript'
-  }) => {
-    const size = React.useMemo(() => {
-      if (!_size) {
-        return 24
-      } else if (typeof _size === 'string') {
-        switch (_size) {
-          case 'middle':
-            return 24
-          case 'small':
-            return 20
-          case 'large':
-            return 36
-        }
-      } else {
-        return _size
+export const CoinIconsNew = ({
+  tokenIcon,
+  size: _size,
+  secondLogoType,
+  ...rest
+}: {
+  tokenIcon: [CoinSource, CoinSource?]
+  size?: number | 'middle' | 'small' | 'large'
+  secondLogoType?: 'normal' | 'subscript'
+} & BoxProps) => {
+  const size = React.useMemo(() => {
+    if (!_size) {
+      return 24
+    } else if (typeof _size === 'string') {
+      switch (_size) {
+        case 'middle':
+          return 24
+        case 'small':
+          return 20
+        case 'large':
+          return 36
       }
-    }, [_size])
+    } else {
+      return _size
+    }
+  }, [_size])
 
-    const [coinAInfo, coinBInfo] = tokenIcon
-    return (
-      <BoxStyle display={'flex'} justifyContent={'center'} size={size} alignItems={'initial'}>
+  const [coinAInfo, coinBInfo] = tokenIcon
+  return (
+    <Box display={'flex'} justifyContent={'center'} alignItems={'center'} {...rest}>
+      <Box
+        className={`logo-icon`}
+        display={'flex'}
+        height={size}
+        position={'relative'}
+        zIndex={20}
+        width={size}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        {coinAInfo ? (
+          <AvatarCoin
+            imgx={coinAInfo.x}
+            imgy={coinAInfo.y}
+            imgheight={coinAInfo.h}
+            imgwidth={coinAInfo.w}
+            size={size}
+            variant='circular'
+            alt={coinAInfo?.simpleName as string}
+            // src={sellData?.icon}
+            src={
+              'data:image/svg+xml;utf8,' +
+              '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
+            }
+          />
+        ) : (
+          <Avatar
+            variant='circular'
+            alt={coinAInfo?.simpleName as string}
+            style={{
+              height: size ?? 'var(--list-menu-coin-size)',
+              width: size ?? 'var(--list-menu-coin-size)',
+            }}
+            // src={sellData?.icon}
+            src={SoursURL + 'images/icon-default.png'}
+          />
+        )}
+      </Box>
+      {secondLogoType === 'subscript' && coinBInfo && (
+        <Box
+          className={`logo-icon`}
+          display={'flex'}
+          position={'relative'}
+          zIndex={24}
+          left={-20}
+          top={Math.pow(size, 1.7) / 50 + 3}
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
+          <AvatarCoin
+            imgx={coinBInfo.x}
+            imgy={coinBInfo.y}
+            imgheight={coinBInfo.h}
+            imgwidth={coinBInfo.w}
+            size={size / 2}
+            variant='circular'
+            alt={coinBInfo?.simpleName as string}
+            style={{
+              transformOrigin: 'bottom',
+            }}
+            // src={sellData?.icon}
+            src={
+              'data:image/svg+xml;utf8,' +
+              '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
+            }
+          />
+          {/* <VaultTag
+              style={{
+                height: size / 2,
+                width: size / 2,
+                transformOrigin: 'bottom',
+              }}
+            /> */}
+        </Box>
+      )}
+      {secondLogoType !== 'subscript' && coinBInfo && (
         <Box
           className={`logo-icon`}
           display={'flex'}
           height={'var(--list-menu-coin-size)'}
           position={'relative'}
-          zIndex={20}
+          zIndex={18}
+          left={-8}
           width={'var(--list-menu-coin-size)'}
           alignItems={'center'}
           justifyContent={'center'}
         >
-          {coinAInfo ? (
-            
+          {coinBInfo ? (
             <AvatarCoin
-              imgx={coinAInfo.x}
-              imgy={coinAInfo.y}
-              imgheight={coinAInfo.h}
-              imgwidth={coinAInfo.w}
+              imgx={coinBInfo.x}
+              imgy={coinBInfo.y}
+              imgheight={coinBInfo.h}
+              imgwidth={coinBInfo.w}
               size={size}
               variant='circular'
-              alt={coinAInfo?.simpleName as string}
+              alt={coinBInfo?.simpleName as string}
               // src={sellData?.icon}
               src={
                 'data:image/svg+xml;utf8,' +
@@ -217,7 +293,7 @@ export const CoinIconsNew = React.memo(
           ) : (
             <Avatar
               variant='circular'
-              alt={coinAInfo?.simpleName as string}
+              alt={coinBInfo?.simpleName as string}
               style={{
                 height: size ?? 'var(--list-menu-coin-size)',
                 width: size ?? 'var(--list-menu-coin-size)',
@@ -227,88 +303,11 @@ export const CoinIconsNew = React.memo(
             />
           )}
         </Box>
-        {secondLogoType === 'subscript' && coinBInfo && (
-          <Box
-            className={`logo-icon`}
-            display={'flex'}
-            position={'relative'}
-            zIndex={24}
-            left={-20}
-            top={Math.pow(size, 1.7) / 50 - 3}
-            alignItems={'center'}
-            justifyContent={'center'}
-          >
-            <AvatarCoin
-              imgx={coinBInfo.x}
-              imgy={coinBInfo.y}
-              imgheight={coinBInfo.h}
-              imgwidth={coinBInfo.w}
-              size={size / 2}
-              variant='circular'
-              alt={coinBInfo?.simpleName as string}
-              style={{
-                transformOrigin: 'bottom',
-              }}
-              // src={sellData?.icon}
-              src={
-                'data:image/svg+xml;utf8,' +
-                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-              }
-            />
-            {/* <VaultTag
-              style={{
-                height: size / 2,
-                width: size / 2,
-                transformOrigin: 'bottom',
-              }}
-            /> */}
-          </Box>
-        )}
-        {secondLogoType !== 'subscript' && coinBInfo && (
-          <Box
-            className={`logo-icon`}
-            display={'flex'}
-            height={'var(--list-menu-coin-size)'}
-            position={'relative'}
-            zIndex={18}
-            left={-8}
-            width={'var(--list-menu-coin-size)'}
-            alignItems={'center'}
-            justifyContent={'center'}
-          >
-            {coinBInfo ? (
-              <AvatarCoin
-                imgx={coinBInfo.x}
-                imgy={coinBInfo.y}
-                imgheight={coinBInfo.h}
-                imgwidth={coinBInfo.w}
-                size={size}
-                variant='circular'
-                alt={coinBInfo?.simpleName as string}
-                // src={sellData?.icon}
-                src={
-                  'data:image/svg+xml;utf8,' +
-                  '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                }
-              />
-            ) : (
-              <Avatar
-                variant='circular'
-                alt={coinBInfo?.simpleName as string}
-                style={{
-                  height: size ?? 'var(--list-menu-coin-size)',
-                  width: size ?? 'var(--list-menu-coin-size)',
-                }}
-                // src={sellData?.icon}
-                src={SoursURL + 'images/icon-default.png'}
-              />
-            )}
-          </Box>
-        )}
-      </BoxStyle>
-    )
-  },
-)
+      )}
+    </Box>
+  )
+}
+
 
 export const ColumnCoinDeep = React.memo(
   ({

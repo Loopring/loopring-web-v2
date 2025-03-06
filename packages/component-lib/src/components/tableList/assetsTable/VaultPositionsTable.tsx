@@ -95,11 +95,9 @@ export const VaultPositionsTable = withTranslation('tables')(
         name: t('labelToken'),
         formatter: ({ row }) => {
           return (
-            <>
-              <CoinIconsNew
-                secondLogoType={'subscript'}
-                tokenIcon={row.tokenPair.coinJson}
-              />
+            <Box height={'100%'} display={'flex'} alignItems={'center'}>
+              <CoinIconsNew secondLogoType={'subscript'} tokenIcon={row.tokenPair.coinJson} />
+
               <Typography
                 variant={'inherit'}
                 color={'var(--color-text-primary)'}
@@ -111,7 +109,7 @@ export const VaultPositionsTable = withTranslation('tables')(
               >
                 {row.tokenPair.pair}
               </Typography>
-              <Typography
+              {/* <Typography
                 bgcolor={hexToRGB(theme.colorBase.warning, 0.5)}
                 color={'var(--color-text-primary)'}
                 marginLeft={1}
@@ -148,8 +146,8 @@ export const VaultPositionsTable = withTranslation('tables')(
               >
                 <MarginLevelIcon sx={{ mr: 0.5, mb: 0.2 }} />
                 {row.tokenPair.marginLevel}
-              </Typography>
-            </>
+              </Typography> */}
+            </Box>
           )
         },
       },
