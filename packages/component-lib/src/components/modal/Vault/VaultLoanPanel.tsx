@@ -1,4 +1,4 @@
-import { Box, BoxProps, Divider, Tab, Tabs, Toolbar } from '@mui/material'
+import { Box, BoxProps, Divider, Tab, Tabs, Toolbar, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { boxLiner, toolBarPanel } from '../../styled'
 import { useTranslation, WithTranslation } from 'react-i18next'
@@ -124,13 +124,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
         sx={{ minHeight: 'var(--header-submenu-item-height) !important' }}
       >
         <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'} marginLeft={-2}>
-          <TabPanelBtn
-            {...{
-              t,
-              value: vaultLoanType,
-              handleChange: (_e: any, value: any) => handleTabChange(value),
-            }}
-          />
+          <Typography variant='h5' ml={2}>Repay</Typography>
         </Box>
       </Toolbar>
       <Divider style={{ marginTop: '-1px' }} />
