@@ -54,6 +54,7 @@ import {
   vaultSwapDependAsync,
   toPercent,
   strNumDecimalPlacesLessThan,
+  NETWORKEXTEND,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
@@ -61,6 +62,7 @@ import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/us
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
 import { closePosition } from './useVaultDashBoard'
+import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -104,6 +106,74 @@ const calcDexWrap = <R>(input: {
 }
 
 export type VaultTradeTradeData = VaultBorrowTradeData & { borrowAvailable: string }
+
+const repayIfNeeded = async (symbol) => {
+  const {
+    vaultLayer2: { vaultLayer2 },
+    invest: {
+      vaultMap: {
+        tokenMap
+      },
+    },
+    system: { exchangeInfo, chainId },
+    account
+  } = store.getState()
+  const asset = vaultLayer2?.[symbol]
+  const shouldRepay = new Decimal(asset?.borrowed ?? '0').gt('0') && new Decimal(asset?.total ?? '0').gt('0')
+  if (!shouldRepay) return
+  const tokenInfo = tokenMap[symbol]
+  const [{ broker }, { offchainId }] = await Promise.all([
+    LoopringAPI.userAPI!.getAvailableBroker({
+      type: 4,
+    }),
+    LoopringAPI.userAPI!.getNextStorageId(
+      {
+        accountId: account.accountId,
+        sellTokenId: tokenInfo.vaultTokenId,
+      },
+      account.apiKey,
+    ),
+  ])
+  const request = {
+    exchange: exchangeInfo!.exchangeAddress,
+    payerAddr: account.accAddress,
+    payerId: account.accountId,
+    payeeId: 0,
+    payeeAddr: broker,
+    storageId: offchainId,
+    token: {
+      tokenId: tokenInfo.vaultTokenId,
+      volume: asset!.borrowed,
+    },
+    maxFee: {
+      tokenId: tokenInfo.vaultTokenId,
+      volume: '0',
+    },
+    validUntil: getTimestampDaysLater(DAYS),
+    memo: '',
+  }
+
+  return await LoopringAPI.vaultAPI?.submitVaultRepay(
+    {
+    
+      request: request,
+      web3: connectProvides.usedWeb3 as any,
+      chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
+      walletType: (ConnectProviders[account.connectName] ??
+        account.connectName) as unknown as sdk.ConnectorNames,
+      eddsaKey: account.eddsaKey.sk,
+      apiKey: account.apiKey,
+    },
+    {
+      accountId: account.accountId,
+      counterFactualInfo: account.eddsaKey.counterFactualInfo,
+    },
+    '1'
+  )
+
+
+  
+}
 export const useVaultSwap = () => {
   const borrowHash = React.useRef<null | { hash: string; timer?: any }>(null)
   const refreshRef = React.useRef()
@@ -127,6 +197,7 @@ export const useVaultSwap = () => {
     setShowVaultSwap,
     setShowVaultExit,
     setShowGlobalToast,
+    setShowVaultCloseConfirm,
   } = useOpenModals()
   const {
     toggle: { VaultInvest },
@@ -738,29 +809,30 @@ export const useVaultSwap = () => {
             })
           },
           onClickClose: () => {
-            closePosition(symbol)
-            .then(response2 => {
-              if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-                throw new Error('failed')
-              }
-              setShowGlobalToast({
-                isShow: true,
-                info: {
-                  content: 'Closed position successfully',
-                  type: ToastType.success
-                }
-              })
-            }).catch((e) => {
-              setShowGlobalToast({
-                isShow: true,
-                info: {
-                  content: 'Close position failed',
-                  type: ToastType.error
-                }
-              })
-            }).finally(() => {
-              updateVaultLayer2({})
-            })
+            setShowVaultCloseConfirm({ isShow: true, symbol: symbol })
+            // closePosition(symbol)
+            // .then(response2 => {
+            //   if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+            //     throw new Error('failed')
+            //   }
+            //   setShowGlobalToast({
+            //     isShow: true,
+            //     info: {
+            //       content: 'Closed position successfully',
+            //       type: ToastType.success
+            //     }
+            //   })
+            // }).catch((e) => {
+            //   setShowGlobalToast({
+            //     isShow: true,
+            //     info: {
+            //       content: 'Close position failed',
+            //       type: ToastType.error
+            //     }
+            //   })
+            // }).finally(() => {
+            //   updateVaultLayer2({})
+            // })
             // setShowVaultCloseConfirm({
             //   isShow:true,
             //   symbol: symbol,
@@ -1127,6 +1199,13 @@ export const useVaultSwap = () => {
           isSwapLoading: false,
         }
       })
+
+      // repay if needed
+      setTimeout(() => {
+        repayIfNeeded(selectedVTokenSymbol).then(() => {
+          updateVaultLayer2({})
+        })
+      }, 500)
     }
   }
   const borrowSubmit = async () => {

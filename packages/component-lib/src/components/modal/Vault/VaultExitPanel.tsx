@@ -1,10 +1,11 @@
 import { useSettings } from '../../../stores'
 import { L1L2_NAME_DEFINED, MapChainId, TradeBtnStatus } from '@loopring-web/common-resources'
-import { Box, Divider, Typography } from '@mui/material'
+import { Box, Divider, Typography, IconButton } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button } from '../../basic-lib'
 import React from 'react'
 import { VaultExitBaseProps } from '../../tradePanel'
+import CloseIcon from '@mui/icons-material/Close'
 
 export const VaultExitPanel = ({
   onSubmitClick,
@@ -54,80 +55,55 @@ export const VaultExitPanel = ({
   }, [confirmLabel])
   return (
     <>
-      <Box className={'toolbarTitle'} sx={{ position: 'relative !important' }} height={'48px'}>
-        <Typography
-          marginBottom={1.5}
-          paddingTop={2}
-          variant={'h5'}
-          component={'span'}
-          paddingX={3}
-        >
-          {t('labelVaultExitTitle')}
+      <Box sx={{
+        position: 'relative',
+        width: 'var(--modal-width)',
+        maxWidth: '450px',
+        bgcolor: 'var(--color-global-bg)',
+        border: 'none',
+        boxShadow: 24,
+        px: 4,
+        py: 5,
+        borderRadius: 2,
+      }}>
+
+        <Typography variant='h4' component='h2' textAlign='center' mb={4}>
+          Settle
         </Typography>
-        <Divider />
-      </Box>
-      <Box
-        flex={1}
-        marginX={3}
-        marginTop={2}
-        marginBottom={3}
-        width={'calc(var(--modal-width) - 48px)'}
-      >
-        <Typography marginBottom={2}>
-          <Trans
-            i18nKey={'labelVaultExitDes'}
-            tOptions={{
-              l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
-              loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
-              l2Symbol: L1L2_NAME_DEFINED[network].l2Symbol,
-              l1Symbol: L1L2_NAME_DEFINED[network].l1Symbol,
-              ethereumL1: L1L2_NAME_DEFINED[network].ethereumL1,
-            }}
+
+        <Typography mb={3}>
+          You can only settle your account after all existing positions have been closed.
+        </Typography>
+
+        <Typography mb={3} variant='body1' color={'var(--color-text-secondary)'}>
+          · If there is a loss (due to an unprofitable trade or interest payments), a portion of
+          your collateral may be used to cover the deficit. In this case, only the remaining
+          collateral will be available for withdrawal from Portal.
+        </Typography>
+
+        <Typography color={'var(--color-text-secondary)'} variant='body1'>
+          · If your trades are profitable, your full collateral will be available for withdrawal,
+          and any profits will be credited to your Loopring DeFi account accordingly.
+        </Typography>
+
+        <Box display='flex' gap={2} mt={4}>
+          <Button variant='outlined' sx={{ height: '40px' }} fullWidth onClick={onClose}>
+            Cancel
+          </Button>
+
+          <Button 
+            variant='contained'
+            fullWidth
+            onClick={onSubmitClick}
+            loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+            disabled={
+              getDisabled ||
+              btnStatus === TradeBtnStatus.DISABLED ||
+              btnStatus === TradeBtnStatus.LOADING
+            }
           >
-            Upon closing your position, all open orders will be canceled, and any outstanding debts
-            will be automatically repaid. If the available balance of the Vault_Token is
-            insufficient to cover the debt, Loopring will sell a portion of your assets at the
-            market price to repay the debt. The remaining Vault_Token will be converted to the token
-            you have staked at the current market price and returned to your Loopring L2 Account.
-          </Trans>
-        </Typography>
-        <Box
-          display={'flex'}
-          justifyContent={'space-between'}
-          width={'100%'}
-          className={'action-btn'}
-          flexDirection={'row'}
-          alignItems={'center'}
-        >
-          <Box width={'48%'}>
-            <Button
-              variant={'outlined'}
-              size={'medium'}
-              sx={{ height: '4rem' }}
-              onClick={(_) => onClose()}
-              color={'primary'}
-              fullWidth
-            >
-              {t(cancelLabel)}
-            </Button>
-          </Box>
-          <Box width={'48%'}>
-            <Button
-              sx={{ height: '4rem' }}
-              variant={'contained'}
-              size={'medium'}
-              fullWidth
-              onClick={(_) => onSubmitClick()}
-              loading={!getDisabled && btnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-              disabled={
-                getDisabled ||
-                btnStatus === TradeBtnStatus.DISABLED ||
-                btnStatus === TradeBtnStatus.LOADING
-              }
-            >
-              {label}
-            </Button>
-          </Box>
+            Settle
+          </Button>
         </Box>
       </Box>
     </>

@@ -1932,6 +1932,82 @@ export const SupplyCollateralHintModal = (props: SupplyCollateralHintModalProps)
   )
 }
 
+export interface SettleConfirmModalProps {
+  open: boolean 
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const SettleConfirmModal = (props: SettleConfirmModalProps) => {
+  const { open, onClose, onConfirm } = props
+  const { t } = useTranslation('common')
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby='modal-modal-title'
+      aria-describedby='modal-modal-description'
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'var(--modal-width)',
+          maxWidth: '450px',
+          bgcolor: 'var(--color-global-bg)',
+          // padding: 3,
+          px: 4,
+          py: 5,
+          borderRadius: 2,
+        }}
+      >
+        <IconButton
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+          onClick={onClose}
+          aria-label='close'
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <Typography variant='h4' component='h2' textAlign='center' mb={4}>
+          Settle
+        </Typography>
+
+        <Typography mb={3}>
+          You can only settle your account after all existing positions have been closed.
+        </Typography>
+
+        <Typography mb={3} variant='body1' color={'var(--color-text-secondary)'}>
+          · If there is a loss (due to an unprofitable trade or interest payments), a portion of
+          your collateral may be used to cover the deficit. In this case, only the remaining
+          collateral will be available for withdrawal from Portal.
+        </Typography>
+
+        <Typography color={'var(--color-text-secondary)'} variant='body1'>
+          · If your trades are profitable, your full collateral will be available for withdrawal,
+          and any profits will be credited to your Loopring DeFi account accordingly.
+        </Typography>
+
+        <Box display='flex' gap={2} mt={4}>
+          <Button variant='outlined' sx={{height: '40px'}} fullWidth onClick={onClose}>
+            Cancel
+          </Button>
+
+          <Button variant='contained' fullWidth onClick={onConfirm}>
+            Settle
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  )
+};
+
 export interface CloseConfirmModalProps {
   open: boolean 
   onClose: () => void
@@ -1944,125 +2020,53 @@ export const CloseConfirmModal = (props: CloseConfirmModalProps) => {
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
         <Box
-          bgcolor={'var(--color-box)'}
+          bgcolor={'var(--color-global-bg)'}
           width={'450px'}
-          borderRadius={1}
+          borderRadius={2}
           display={'flex'}
           flexDirection={'column'}
-          px={2.5}
+          p={4}
+          position={'relative'}
         >
-          <Box sx={{ height: '55px', py: 2.5 }} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'}>
-            <Typography variant={'h5'} component={'span'} >
+          <IconButton
+            className='custom-size'
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: 'var(--color-text-secondary)',
+              fontSize: '16px'
+            }}
+            onClick={onClose}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={4}>
+            <Typography variant={'h4'} component={'h2'} textAlign={'center'} width={'100%'}>
               Close Position
             </Typography>
-            <CloseIcon className='custom-size' onClick={onClose} sx={{ fontSize: 24, color: 'var(--color-text-secondary)', cursor: 'pointer' }} />
+          </Box>
 
-          </Box>
-          <Divider style={{ marginTop: '2px' }} />
-          <Box>
-            <Button onClick={onConfirm} sx={{ mt: 5, mb: 4 }} variant={'contained'} fullWidth>
-              Confirm Close
-            </Button>
-          </Box>
+          <Typography mb={2}>
+            Executing this operation will fully close the SHORT or LONG position associated with the
+            selected token, eliminating any positive or negative exposure. Additionally, the
+            corresponding debt will be repaid.
+          </Typography>
+          <Typography color={'var(--color-text-secondary)'} mb={2}>
+            · For a LONG position: Your held asset will be sold for USDT, and any USDT debt will be
+            repaid.
+          </Typography>
+          <Typography color={'var(--color-text-secondary)'} mb={4}>
+            · For a SHORT position: You will need to borrow USDT to purchase the token required for
+            debt repayment. In other words, your debt will shift from the original token to USDT.
+          </Typography>
+
+          <Button onClick={onConfirm} variant={'contained'}>
+            I Know
+          </Button>
         </Box>
       </Box>
     </Modal>
   )
 }
-
- {/* <Modal
-        contentClassName={'vault-wrap'}
-        open={isShowVaultSwap.isShow}
-        onClose={() => {
-          if (
-            (tradeCalcData as any)?.isVault &&
-            (tradeCalcData as any).step !== VaultSwapStep.Edit
-          ) {
-            setOpenCancel({ openCancel: true, shouldClose: true })
-          } else {
-            setShowVaultSwap({ isShow: false })
-          }
-        }}
-        content={
-          tradeData ? (
-            // @ts-ignore
-            <SwapPanel
-              _width={'var(--modal-width)'}
-              classWrapName={'vaultSwap'}
-              titleI8nKey={'labelVaultSwap'}
-              tokenBuyProps={{
-                tokenImageKey: tradeData?.buy?.belong?.slice(2),
-                belongAlice: tradeData?.buy?.belong?.slice(2),
-                tokenType: TokenType.vault,
-                disableInputValue: isMarketInit,
-                disabled: isSwapLoading || isMarketInit,
-                decimalsLimit: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision,
-                allowDecimals: vaultTokenMao[tradeData?.buy?.belong?.toString() ?? '']?.precision
-                  ? true
-                  : false,
-              }}
-              covertOnClickPreCheck={() => {
-                if (
-                  (tradeCalcData as any)?.isVault &&
-                  (tradeCalcData as any).step !== VaultSwapStep.Edit
-                ) {
-                  setOpenCancel({ openCancel: true, shouldClose: true })
-                  return false
-                } else {
-                  return true
-                }
-              }}
-              onCancelClick={() => {
-                setOpenCancel({ openCancel: true, shouldClose: false })
-              }}
-              BtnEle={BtnEle}
-              tokenSellProps={{
-                decimalsLimit:
-                  vaultTokenMao[tradeData?.sell?.belong?.toString() ?? '']?.vaultTokenAmounts
-                    ?.qtyStepScale,
-                allowDecimals: vaultTokenMao[tradeData?.sell?.belong?.toString() ?? '']
-                  ?.vaultTokenAmounts?.qtyStepScale
-                  ? true
-                  : false,
-                tokenImageKey: tradeData?.sell?.belong?.slice(2),
-                belongAlice: tradeData?.sell?.belong?.slice(2),
-                tokenType: TokenType.vault,
-                subEle: maxEle,
-                subLabel: undefined,
-                disableInputValue: isMarketInit,
-                disabled: isSwapLoading || isMarketInit,
-                placeholderText:
-                  tradeCalcData.sellMaxAmtStr && tradeCalcData.sellMaxAmtStr !== ''
-                    ? t('labelBtradeSwapMiniMax', {
-                        minValue: tradeCalcData.sellMinAmtStr,
-                        maxValue: tradeCalcData.sellMaxAmtStr,
-                      })
-                    : t('labelBtradeSwapMini', {
-                        minValue: tradeCalcData.sellMinAmtStr,
-                      }),
-              }}
-              campaignTagConfig={campaignTagConfig}
-              tradeCalcData={tradeCalcData}
-              tradeData={tradeData as any}
-              onSwapClick={onSwapClick}
-              swapBtnI18nKey={swapBtnI18nKey}
-              swapBtnStatus={swapBtnStatus}
-              handleSwapPanelEvent={handleSwapPanelEvent}
-              onRefreshData={refreshData}
-              refreshRef={refreshRef}
-              tradeVault={tradeVault}
-              market={market}
-              isMobile={isMobile}
-              marginLevelChange={marginLevelChange!}
-              vaultLeverage={{
-                onClickLeverage: onClickLeverage,
-                leverage: vaultAccountInfo?.leverage ?? '0',
-                hideLeverage
-              }}
-              refreshTime={10}
-            />
-          ) : (
-            <></>
-          )
-        }
-      /> */}

@@ -1082,7 +1082,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   history,
   etherscanBaseUrl,
   onClickCollateralManagement,
-  onClickCloseOut,
+  onClickSettle,
   onClickPortalTrade,
   liquidationThreshold,
   liquidationPenalty,
@@ -1161,16 +1161,16 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   </Button>
                   <BgButton
                     customBg='var(--color-button-outlined)'
-                    onClick={onClickCloseOut}
+                    onClick={onClickSettle}
                     sx={{ width: 'auto', ml: 1.5 }}
                     variant='contained'
                   >
-                    Close Out
+                    Settle
                   </BgButton>
                 </Box>
 
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
-                  <Box mr={2}>
+                  <Box mr={0.5}>
                     <Typography
                       color={'var(--color-text-secondary)'}
                       variant='h3'
@@ -1184,7 +1184,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     <HideIcon
                       className='custom-size'
                       sx={{
-                        fontSize: '24px',
+                        fontSize: '20px',
                         color: 'var(--color-text-secondary)',
                         cursor: 'pointer',
                       }}
@@ -1194,7 +1194,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     <ViewIcon
                       className='custom-size'
                       sx={{
-                        fontSize: '24px',
+                        fontSize: '20px',
                         color: 'var(--color-text-secondary)',
                         cursor: 'pointer',
                       }}
@@ -1217,6 +1217,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive
@@ -1235,7 +1236,6 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         : EmptyValueTag}
                       {accountActive && (
                         <Typography
-                          variant={'body2'}
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
                           marginLeft={1}
@@ -1257,6 +1257,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       component={'h4'}
                       variant={'body1'}
                       color={'textSecondary'}
+                      
                       display={'flex'}
                       alignItems={'center'}
                     >
@@ -1337,9 +1338,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               alignItems={'center'}
                               marginTop={1}
                               variant={'body1'}
+                              fontSize={'16px'}
                               color={marginLevelTypeToColor(marginLevelType(item))}
                             >
-                              <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+                              <MarginLevelIcon className='custom-size' sx={{ fontSize: '20px', marginRight: 1 / 2 }} />
                               {item}
                             </Typography>
                           ) : (
@@ -1349,9 +1351,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               alignItems={'center'}
                               marginTop={1}
                               variant={'body1'}
+                              fontSize={'16px'}
                               color={'textSecondary'}
                             >
-                              <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+                              <MarginLevelIcon className='custom-size' sx={{ fontSize: '20px', marginRight: 1 / 2 }} />
                               {EmptyValueTag}
                             </Typography>
                           )}
@@ -1378,6 +1381,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive
@@ -1396,7 +1400,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         : EmptyValueTag}
                       {accountActive && (
                         <Typography
-                          variant={'body2'}
+
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
                           marginLeft={1}
@@ -1423,6 +1427,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       marginTop={1}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                     >
                       {(() => {
                         const profit =
@@ -1438,12 +1443,13 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         return (
                           <>
                             {accountActive ? (
-                              <>
+                              <Box display={'flex'} alignItems={'center'}>
                                 <Typography
                                   component={'span'}
                                   display={'flex'}
                                   variant={'body1'}
                                   color={'textPrimary'}
+                                  fontSize={'20px'}
                                 >
                                   {hideAssets
                                     ? HiddenTag
@@ -1466,6 +1472,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                                   variant={'body1'}
                                   marginLeft={1 / 2}
                                   color={colors[colorIs]}
+                                  fontSize={'20px'}
                                 >
                                   {getValuePrecisionThousand(
                                     profit
@@ -1486,7 +1493,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                                   )}
                                   %
                                 </Typography>
-                              </>
+                              </Box>
                             ) : (
                               EmptyValueTag
                             )}
@@ -1508,6 +1515,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         display={'inline-flex'}
                         variant={'body1'}
                         color={'textPrimary'}
+                        fontSize={'20px'}
                         alignItems={'center'}
                       >
                         {vaultAccountInfo?.leverage && accountActive
@@ -1515,7 +1523,6 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                           : EmptyValueTag}
                         {accountActive && (
                           <Typography
-                            variant={'body2'}
                             sx={{ cursor: 'pointer' }}
                             color={'var(--color-primary)'}
                             marginLeft={1}
@@ -1574,6 +1581,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive ? liquidationThreshold : EmptyValueTag}
@@ -1603,6 +1611,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive ? liquidationPenalty : EmptyValueTag}
@@ -1951,7 +1960,8 @@ export const VaultDashBoardPanel = ({
     vaultDashBoardPanelUIProps,
     noAccountHintModalProps,
     supplyCollateralHintModalProps,
-    closeConfirmModalProps
+    closeConfirmModalProps,
+    settleConfirmModalProps
     // vaultSwapModalProps,
     // smallOrderAlertProps,
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
