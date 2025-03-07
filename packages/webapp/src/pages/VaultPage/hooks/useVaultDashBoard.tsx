@@ -514,7 +514,10 @@ export const closePosition = async (symbol: string) => {
   const slippageReal = slippage === 'N' ? 0.1 : slippage
   const output = sdk.calcDex({
     info: marketInfo,
-    input: utils.formatUnits(vaultAsset.netAsset, tokenMap[symbol].decimals),
+    input: utils.formatUnits(
+      new Decimal(vaultAsset.netAsset).abs().toString(),
+      tokenMap[symbol].decimals,
+    ),
     sell: sellToken.symbol,
     buy: buyToken.symbol,
     isAtoB: new Decimal(vaultAsset.netAsset).isPos(),
@@ -525,48 +528,93 @@ export const closePosition = async (symbol: string) => {
     feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
     slipBips: slippageReal.toString(),
   })
+  const USDTAmount = new Decimal(vaultAsset.netAsset).isPos() ? output!.amountS! : output!.amountB!
+  if (new Decimal(USDTAmount).lt('10')) {
+    const closeTokenInfo = tokenMap[symbol]
+    const tokenId = closeTokenInfo.vaultTokenId
 
-  const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-    ? vaultAsset.netAsset
-    : utils.parseUnits(
-        numberFormat(output!.amountS!, { fixed: sellToken.decimals }),
-        sellToken.decimals,
-      )
-  const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-    ? utils.parseUnits(
-        numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
-        buyToken.decimals,
-      )
-    : vaultAsset.netAsset
-  const request: sdk.VaultOrderRequest = {
-    exchange: exchangeInfo.exchangeAddress,
-    storageId: storageId!.orderId,
-    accountId: account.accountId,
-    sellToken: {
-      tokenId: sellToken?.vaultTokenId ?? 0,
-      volume: sellAmountBN.toString(),
-    },
-    buyToken: {
-      tokenId: buyToken?.vaultTokenId ?? 0,
-      volume: buyAmountBN.toString(),
-    },
-    validUntil: getTimestampDaysLater(DAYS),
-    maxFeeBips: MAPFEEBIPS,
-    fillAmountBOrS: false,
-    allOrNone: false,
-    eddsaSignature: '',
-    clientOrderId: '',
-    orderType: sdk.OrderTypeResp.TakerOnly,
-    fastMode: false,
+    const { offchainId } = await LoopringAPI.userAPI?.getNextStorageId(
+      {
+        accountId: account.accountId,
+        sellTokenId: tokenId,
+      },
+      account.apiKey,
+    )!
+    const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+      type: 4,
+    })!
+    // debugger
+    const dustTransfer = {
+      exchange: exchangeInfo.exchangeAddress,
+      payerAddr: account.accAddress,
+      payerId: account.accountId,
+      payeeId: 0,
+      payeeAddr: broker,
+      storageId: offchainId,
+      token: {
+        tokenId: tokenId,
+        volume: vaultAsset.netAsset,
+      },
+      maxFee: {
+        tokenId: tokenId,
+        volume: '0',
+      },
+      validUntil: getTimestampDaysLater(DAYS),
+      memo: '',
+    }
+
+    var response1: any = await LoopringAPI.vaultAPI?.submitDustCollector(
+      {
+        dustTransfers: [dustTransfer],
+        apiKey: account.apiKey,
+        accountId: account.accountId,
+        eddsaKey: account.eddsaKey.sk,
+      },
+      '1',
+    )
+  } else {
+    const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
+      ? vaultAsset.netAsset
+      : utils.parseUnits(
+          numberFormat(output!.amountS!, { fixed: sellToken.decimals }),
+          sellToken.decimals,
+        )
+    const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
+      ? utils.parseUnits(
+          numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
+          buyToken.decimals,
+        )
+      : vaultAsset.netAsset
+    const request: sdk.VaultOrderRequest = {
+      exchange: exchangeInfo.exchangeAddress,
+      storageId: storageId!.orderId,
+      accountId: account.accountId,
+      sellToken: {
+        tokenId: sellToken?.vaultTokenId ?? 0,
+        volume: sellAmountBN.toString(),
+      },
+      buyToken: {
+        tokenId: buyToken?.vaultTokenId ?? 0,
+        volume: buyAmountBN.toString(),
+      },
+      validUntil: getTimestampDaysLater(DAYS),
+      maxFeeBips: MAPFEEBIPS,
+      fillAmountBOrS: false,
+      allOrNone: false,
+      eddsaSignature: '',
+      clientOrderId: '',
+      orderType: sdk.OrderTypeResp.TakerOnly,
+      fastMode: false,
+    }
+    response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
+      {
+        request,
+        privateKey: account.eddsaKey.sk,
+        apiKey: account.apiKey,
+      },
+      '1',
+    )
   }
-  const response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
-    {
-      request,
-      privateKey: account.eddsaKey.sk,
-      apiKey: account.apiKey,
-    },
-    '1',
-  )
   await sdk.sleep(SUBMIT_PANEL_CHECK)
 
   return LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
@@ -1201,7 +1249,8 @@ export const useVaultDashboard = ({
       onJoinPop({})
     },
     onClickCloseOut: () => {
-      onRedeemPop({})
+      
+      // onRedeemPop({})
     },
     liquidationThreshold: '1.1',
     liquidationPenalty: '0%',

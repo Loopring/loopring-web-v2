@@ -234,7 +234,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                 color={'textPrimary'}
                 display={'flex'}
                 flexDirection={'column'}
-                marginLeft={2}
+                marginLeft={0.5}
                 component={'span'}
                 paddingRight={1}
               >
