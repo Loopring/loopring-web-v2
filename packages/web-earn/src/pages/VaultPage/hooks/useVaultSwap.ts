@@ -736,29 +736,30 @@ export const useVaultSwap = () => {
             })
           },
           onClickClose: () => {
-            closePosition(symbol)
-            .then(response2 => {
-              if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-                throw new Error('failed')
-              }
-              setShowGlobalToast({
-                isShow: true,
-                info: {
-                  content: 'Closed position successfully',
-                  type: ToastType.success
-                }
-              })
-            }).catch((e) => {
-              setShowGlobalToast({
-                isShow: true,
-                info: {
-                  content: 'Close position failed',
-                  type: ToastType.error
-                }
-              })
-            }).finally(() => {
-              updateVaultLayer2({})
-            })
+            setShowVaultCloseConfirm({ isShow: true, symbol: symbol })
+            // closePosition(symbol)
+            // .then(response2 => {
+            //   if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+            //     throw new Error('failed')
+            //   }
+            //   setShowGlobalToast({
+            //     isShow: true,
+            //     info: {
+            //       content: 'Closed position successfully',
+            //       type: ToastType.success
+            //     }
+            //   })
+            // }).catch((e) => {
+            //   setShowGlobalToast({
+            //     isShow: true,
+            //     info: {
+            //       content: 'Close position failed',
+            //       type: ToastType.error
+            //     }
+            //   })
+            // }).finally(() => {
+            //   updateVaultLayer2({})
+            // })
             // setShowVaultCloseConfirm({
             //   isShow:true,
             //   symbol: symbol,

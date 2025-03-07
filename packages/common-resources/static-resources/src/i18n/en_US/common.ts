@@ -2255,7 +2255,7 @@ export default {
   labelVaultVAULT_STATUS_FAILED: 'Failed',
   labelVaultVAULT_STATUS_PENDING: 'Pending',
   labelVaultAccountWait: 'Portal account in loading...',
-  labelVaultInRedeemWaiting: 'Portal account is in process of close out...',
+  labelVaultInRedeemWaiting: 'Portal account is in process of settle...',
   labelVaultJoinSymbolNotSame: 'Only {{symbol}} allow Margin Call',
   labelVaultRepaySuccess: 'Successfully',
   labelVaultJoinSuccess: 'Successfully',
@@ -2280,10 +2280,10 @@ export default {
   labelStats: 'Stats',
   label24PriceChange: '24h Price Change',
   label7dPriceChange: '7d Price Change',
-  labelVaultREDEEMPendingBtn: 'Close out in Processing',
-  labelVaultlnredeemWaiting: 'Close out in Processing',
+  labelVaultREDEEMPendingBtn: 'Settle in Processing',
+  labelVaultlnredeemWaiting: 'Settle in Processing',
   labelJoinTitle: 'Suppy Collateral',
-  labelRedeemTitle: 'Close out',
+  labelRedeemTitle: 'Settle',
   labelRedeemDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
   labelJoinDesMessage:
