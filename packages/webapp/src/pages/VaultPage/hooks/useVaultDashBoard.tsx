@@ -70,7 +70,7 @@ import {
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory, useLocation, useRouteMatch } from 'react-router'
-import { utils } from 'ethers'
+import { utils, BigNumber } from 'ethers'
 import Decimal from 'decimal.js'
 import _, { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
@@ -529,7 +529,8 @@ export const closePosition = async (symbol: string) => {
     feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
     slipBips: slippageReal.toString(),
   })
-  const USDTAmount = new Decimal(vaultAsset.netAsset).isPos() ? output!.amountS! : output!.amountB!
+  const USDTAmount = new Decimal(vaultAsset.netAsset).isPos() ? output!.amountB! : output!.amountS!
+  debugger
   if (new Decimal(USDTAmount).lt('10')) {
     const closeTokenInfo = tokenMap[symbol]
     const tokenId = closeTokenInfo.vaultTokenId
@@ -575,7 +576,7 @@ export const closePosition = async (symbol: string) => {
     )
   } else {
     const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-      ? vaultAsset.netAsset
+      ? BigNumber.from(vaultAsset.netAsset).abs()
       : utils.parseUnits(
           numberFormat(output!.amountS!, { fixed: sellToken.decimals }),
           sellToken.decimals,
@@ -585,7 +586,7 @@ export const closePosition = async (symbol: string) => {
           numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
           buyToken.decimals,
         )
-      : vaultAsset.netAsset
+      : BigNumber.from(vaultAsset.netAsset).abs()
     const request: sdk.VaultOrderRequest = {
       exchange: exchangeInfo.exchangeAddress,
       storageId: storageId!.orderId,
