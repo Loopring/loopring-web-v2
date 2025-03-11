@@ -1431,7 +1431,7 @@ export const useVaultSwap = () => {
     },
     onConfirm: async () => {
 
-      alert('skr')
+      alert('close all')
       return 
     }
   }
