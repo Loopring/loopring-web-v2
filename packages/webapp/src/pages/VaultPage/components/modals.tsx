@@ -1607,6 +1607,12 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               sx={{
                 mt: 2,
                 mb: 3,
+                // '& .MuiTypography-root': {
+                //   fontSize: 'clamp(10px, 5vw, 14px)', 
+                //   lineHeight: 1.2
+                // },
+                fontSize: 'clamp(10px, 5vw, 16px)',
+                lineHeight: 1.2
               }}
               variant='contained'
               customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
@@ -1618,7 +1624,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               {tradeBtn.loading ? (
                 <LoadingIcon className='custom-size' sx={{ fontSize: 24 }} />
               ) : tradeBtn.label ? (
-                tradeBtn.label
+                <Typography color={'inherit'} noWrap={false}>
+                  {tradeBtn.label}
+                </Typography>
               ) : isLongOrShort === 'long' ? (
                 'Buy/Long'
               ) : (
