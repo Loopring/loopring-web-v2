@@ -1726,7 +1726,8 @@ export const useVaultSwap = () => {
         isLongOrShort: v,
         maxBorrowableSellToken: undefined,
         slideValue: 0,
-        amount: ''
+        amount: '',
+        depth: undefined,
       })
       restartTimer()
     },
