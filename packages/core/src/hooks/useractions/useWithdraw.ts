@@ -13,6 +13,7 @@ import {
   IBData,
   MapChainId,
   myLog,
+  NetworkMap,
   SagaStatus,
   SUBMIT_PANEL_AUTO_CLOSE,
   TRADE_TYPE,
@@ -150,8 +151,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     ? tradeValueBN.gte(state.withdrawMode.maxFastWithdrawAmountBN)
     : undefined
   const fastModeSupportted = 
-    toggle.rabbitWithdraw.enable &&
-    fastModeTokens?.includes(withdrawValue.belong as string)
+    true 
+    // && fastModeTokens?.includes(withdrawValue.belong as string)
 
   const isFastMode =
     fastWithdrawOverflow === false && fastModeSupportted ? withdrawMode.mode === 'fast' : false
@@ -410,7 +411,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     try {
       const globalState = store.getState()
       const account = globalState.account
-      const network = MapChainId[globalState.settings.defaultNetwork]
+      const network = NetworkMap[globalState.settings.defaultNetwork].walletType
       const symbol = globalState._router_modalData.withdrawValue.belong as string
       const withdrawValue = globalState._router_modalData.withdrawValue.tradeValue
         ? globalState._router_modalData.withdrawValue.tradeValue.toString()
@@ -428,11 +429,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
         account.apiKey,
       )
-      const feeResFast = await LoopringAPI.userAPI?.getUserCrossChainFee(
+      const feeResFast = await LoopringAPI.rabbitWithdrawAPI?.getUserCrossChainFee(
         {
           receiveFeeNetwork: network,
           requestType: sdk.OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
-          calFeeNetwork: network,
+          calFeeNetwork: 'SEPOLIA',
           tokenSymbol: symbol,
           amount: ethers.utils.parseUnits(withdrawValue ? withdrawValue : '0', withdrawToken?.decimals).toString(),
         },
@@ -783,7 +784,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         feeToken.tokenId === withdrawToken.tokenId && tradeValue.plus(fee).gt(balance)
       const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue
       const withdrawVol = finalVol.toFixed(0, 0)
-      const network = MapChainId[chainId]
+      const network = NetworkMap[chainId].walletType
       const configiJSON = fastWithdrawConfig!
       const storageId = await LoopringAPI.userAPI?.getNextStorageId(
         {
@@ -798,7 +799,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
       const request: sdk.RabbitWithdrawRequest = {
         fromNetwork: network,
-        toNetwork: network,
+        toNetwork: 'SEPOLIA',
         toAddress: toAddress,
         transfer: {
           exchange: exchange,
@@ -813,7 +814,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           maxFee: {
             // @ts-ignore
             tokenId: feeToken.tokenId,
-            volume: feeRaw
+            volume: ethers.BigNumber.from(feeRaw).toString()
           },
           storageId: storageId!.offchainId,
           validUntil: getTimestampDaysLater(DAYS),
@@ -1109,7 +1110,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       
       return {
         mode: isFastMode ? 'fast' : 'normal',
-        showTrustUI: !isTaiko,
+        showTrustUI: true,
         showFastMode: fastModeSupportted,
         fastMode: {
           fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',
