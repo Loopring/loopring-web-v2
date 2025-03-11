@@ -589,10 +589,8 @@ export const useVaultSwap = () => {
           .mul(
             utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
           )
-          .add(
-            utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
-          )
       : undefined
+
   const moreToBeBorrowed = moreToBeBorrowedBN
     ? utils.formatUnits(moreToBeBorrowedBN, sellToken?.decimals)
     : undefined
@@ -1546,6 +1544,7 @@ export const useVaultSwap = () => {
       ? `Min ${numberFormat(tradeMinAmt, {
           fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
           removeTrailingZero: true,
+          fixedRound: Decimal.ROUND_CEIL,
         })}`
       : '0.00',
     amountInput: localState.amount,
