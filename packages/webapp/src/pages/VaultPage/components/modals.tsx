@@ -2016,6 +2016,65 @@ export const SettleConfirmModal = (props: SettleConfirmModalProps) => {
   )
 };
 
+export interface CloseAllConfirmModalProps {
+  open: boolean 
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const CloseAllConfirmModal = (props: CloseAllConfirmModalProps) => {
+  const { open, onClose, onConfirm } = props
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-global-bg)'}
+          width={'450px'}
+          borderRadius={2}
+          display={'flex'}
+          flexDirection={'column'}
+          p={4}
+          position={'relative'}
+        >
+          <IconButton
+            className='custom-size'
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: 'var(--color-text-secondary)',
+              fontSize: '16px'
+            }}
+            onClick={onClose}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={4}>
+            <Typography variant={'h4'} component={'h2'} textAlign={'center'} width={'100%'}>
+              Close All Position
+            </Typography>
+          </Box>
+
+          <Typography mb={5}>
+            This operation will close all existing positions in your account.
+          </Typography>
+
+          <Box display='flex' gap={2} mt={2}>
+            <Button variant='outlined' sx={{height: '40px'}} fullWidth onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button variant='contained' fullWidth onClick={onConfirm}>
+              Confirm
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+
 export interface CloseConfirmModalProps {
   open: boolean 
   onClose: () => void
@@ -2070,9 +2129,15 @@ export const CloseConfirmModal = (props: CloseConfirmModalProps) => {
             debt repayment. In other words, your debt will shift from the original token to USDT.
           </Typography>
 
-          <Button onClick={onConfirm} variant={'contained'}>
-            I Know
-          </Button>
+          <Box display='flex' gap={2} mt={2}>
+            <Button variant='outlined' sx={{height: '40px'}} fullWidth onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button variant='contained' fullWidth onClick={onConfirm}>
+              Confirm
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Modal>

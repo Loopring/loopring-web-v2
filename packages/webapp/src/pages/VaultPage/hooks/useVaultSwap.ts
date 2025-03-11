@@ -59,10 +59,9 @@ import {
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
+import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-import { closePosition } from './useVaultDashBoard'
-import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -244,6 +243,10 @@ export const useVaultSwap = () => {
     maxBorrowableSellToken: undefined as string | undefined,
     depth: undefined as sdk.DepthData | undefined,
     slideValue: 0,
+    closeAllConfirmModal: {
+      show: false,
+      symbol: undefined as undefined | string
+    }
   }
   const [getLocalState, setLocalState] = useGetSet(initLocalState)
 
@@ -1066,7 +1069,7 @@ export const useVaultSwap = () => {
                   tokenMap[item.fromSymbol].precision,
                   false,
                   { isAbbreviate: true },
-                )} ${item.fromSymbol.slice(2)}`
+                )} ${sellToken.symbol.slice(2)}`
               : EmptyValueTag,
           executedAmount:
             tokenMap &&
@@ -1415,11 +1418,28 @@ export const useVaultSwap = () => {
   useL2CommonSocket({ vaultLayer2Callback })
 
   
+  const [showCloseAllConfirm, setShowCloseAllConfirm] = React.useState({
+    show: false
+  })
   
+  const closeAllConfirmModalProps: CloseAllConfirmModalProps = {
+    open: showCloseAllConfirm.show,
+    onClose: () => {
+      setShowCloseAllConfirm({
+        show: false
+      })
+    },
+    onConfirm: async () => {
 
+      alert('skr')
+      return 
+    }
+  }
   const vaultSwapModalProps = {
     onClickCloseAll: () => {
-      setShowVaultExit({ isShow: true })
+      setShowCloseAllConfirm({
+        show: true
+      })
     },
     mainViewRef,
     open: isShowVaultSwap.isShow,
@@ -1892,5 +1912,6 @@ export const useVaultSwap = () => {
     vaultSwapModalProps,
     smallOrderAlertProps,
     toastProps,
+    closeAllConfirmModalProps,
   }
 }
