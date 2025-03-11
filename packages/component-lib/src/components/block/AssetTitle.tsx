@@ -40,6 +40,7 @@ export const AssetTitle = withTranslation('common')(
     assetBtnStatus,
     isWebEarn,
     forexMap,
+    onClickBridge,
   }: AssetTitleProps & WithTranslation) => {
     const history = useHistory()
     const { defaultNetwork, currency } = useSettings()
@@ -138,6 +139,14 @@ export const AssetTitle = withTranslation('common')(
                 onClick={() => onShowSend()}
               >
                 {t('labelWithdrawBtn')}
+              </Button>
+              <Button
+                variant={'outlined'}
+                size={'medium'}
+                color={'secondary'}
+                onClick={onClickBridge}
+              >
+                {t('Bridge')}
               </Button>
             </>
           ) : (
@@ -338,6 +347,7 @@ export const AssetTitleMobileEarn = ({
   onShowReceive,
   hideL2Assets,
   setHideL2Assets,
+  onClickBridge,
 }: AssetTitleMobileProps) => {
   const { t } = useTranslation(['common', 'layout'])
   const history = useHistory()
@@ -409,6 +419,15 @@ export const AssetTitleMobileEarn = ({
           sx={{ mr: 2 }}
         >
           {t('labelWithdrawBtn')}
+        </Button>
+
+        <Button
+          variant={'outlined'}
+          size={'medium'}
+          color={'secondary'}
+          onClick={onClickBridge}
+        >
+          {t('Bridge')}
         </Button>
 
         <Button

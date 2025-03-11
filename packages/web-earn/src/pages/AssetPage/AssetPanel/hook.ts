@@ -79,6 +79,7 @@ export const useGetAssets = (): AssetPanelProps & {
     setShowAccount,
     setShowDeposit,
     setShowWithdraw,
+    setShowBridge,
     modals: { isShowAccount },
   } = useOpenModals()
   const { resetDepositData, resetWithdrawData } = useModalData()
@@ -294,6 +295,20 @@ export const useGetAssets = (): AssetPanelProps & {
     [setShowAccount],
   )
 
+  const onClickBridge = React.useCallback(
+    (token?: any) => {
+      setShowAccount({
+        isShow: false,
+        info: { lastFailed: undefined },
+      });
+      setShowBridge({
+        isShow: true,
+        info: undefined
+      });
+    },
+    [setShowAccount, setShowBridge],
+  );
+
   const assetTitleProps: AssetTitleProps = {
     setHideL2Assets,
     assetInfo: {
@@ -304,6 +319,7 @@ export const useGetAssets = (): AssetPanelProps & {
     hideL2Assets,
     onShowReceive: onReceive,
     onShowSend: onSend,
+    onClickBridge,
   } as any
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
