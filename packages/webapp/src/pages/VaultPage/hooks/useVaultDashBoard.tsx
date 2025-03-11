@@ -304,14 +304,20 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               belongAlice: erc20Symbol,
             },
             amount: totalAmount?.toString(),
-            available: tokenInfo?.detail?.count??0,
+            available: tokenInfo?.detail?.count ?? 0,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
             erc20Symbol,
             debt: tokenInfo.detail?.borrowed ?? '0',
-            equity: tokenInfo.detail?.equity ?? '0',
-            repayDisabled: tokenInfo.detail?.borrowed ? new Decimal(tokenInfo.detail?.borrowed).isZero()  : true
+            equity: numberFormat(tokenInfo.detail?.equity ?? '0', {
+              fixed: tokenInfo.precision,
+              removeTrailingZero: true,
+              fixedRound: Decimal.ROUND_FLOOR,
+            }),
+            repayDisabled: tokenInfo.detail?.borrowed
+              ? new Decimal(tokenInfo.detail?.borrowed).isZero()
+              : true,
           }
         } else {
           item = {
