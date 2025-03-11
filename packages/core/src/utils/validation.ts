@@ -86,6 +86,10 @@ export const isValidateNumberStr = (str:string, decimals: number) => {
 export const isNumberStr = (str: string): boolean => {
   return !isNaN(Number(str)) && !isNaN(parseFloat(str));
 }
+
 export const strNumDecimalPlacesLessThan = (str: string, length: number): boolean => {
-  return isNumberStr(str) && new Decimal(str).decimalPlaces() < length;
+  if (!isNumberStr(str)) return false;
+  const parts = str.split('.');
+  const decimalPlaces = parts.length > 1 ? parts[1].length : 0;
+  return decimalPlaces < length;
 }

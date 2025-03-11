@@ -1387,7 +1387,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               min={0}
               max={100}
               valueLabelDisplay={'on'}
-              valueLabelFormat={(value) => `${value}%`}
+              valueLabelFormat={(value) => `${new Decimal(value).toFixed(0)}%`}
               step={1}
               marks={[
                 { value: 0, label: '' },

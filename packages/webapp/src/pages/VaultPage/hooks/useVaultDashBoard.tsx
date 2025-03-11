@@ -38,6 +38,7 @@ import {
   VaultAssetsTableProps,
   setShowWrongNetworkGuide,
   Button as MyButton,
+  setHideSmallBalances,
 } from '@loopring-web/component-lib'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -690,7 +691,9 @@ export const useVaultDashboard = ({
     defaultNetwork,
     coinJson,
     setHideL2Assets,
-    slippage
+    slippage,
+    hideSmallBalances,
+    setHideSmallBalances
   } = useSettings()
   const {setToastOpen, closeToast} =useToast()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -1100,16 +1103,17 @@ export const useVaultDashboard = ({
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
   const [assetsTab, setAssetsTab] = React.useState('assetsView' as 'assetsView' | 'positionsView')
-  const {vaultLayer2}=useVaultLayer2()
+  const {vaultLayer2} = useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
     rawData: _.keys(vaultLayer2)
     .map((symbol) => {
       const originSymbol = symbol.slice(2)
       const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
       const tokenInfo = vaultTokenMap[symbol]
-      console.log('askjdhakjwhe', originSymbol,asset, tokenInfo)
       if (!asset || !tokenInfo) return undefined
-      const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
+      const position = new Decimal(
+        utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
+      )
       if (symbol === 'LVUSDT' || position.isZero())
         return undefined
       
@@ -1172,22 +1176,33 @@ export const useVaultDashboard = ({
           // }).finally(() => {
           //   updateVaultLayer2({})
           // })
-        }
+        },
+        valueInUSD: position.abs().mul(tokenPrices[symbol])
       }
     })
     .filter((item) => {
-      return item !== undefined
+      return item !== undefined && (hideSmallBalances ? item.valueInUSD.gt('1') : true)
     }),
     onRowClick: (index: number, row: PositionItem) => {},
     isLoading: false,
     hideAssets: hideAssets,
-    // onRowClickLeverage: ({ row }: { row: PositionItem }) => {},
-    // onRowClickTrade: ({ row }: { row: PositionItem }) => {
-      
-    // },
-    // onRowClickClose: ({ row }: { row: PositionItem }) => {
-    //   // todo close position
-    // },
+    showFilter: true,
+    onClickDustCollector: () => {
+      if (VaultDustCollector.enable) {
+        setLocalState({
+          ...localState,
+          modalStatus: 'dustCollector',
+        })
+      } else {
+        setLocalState({
+          ...localState,
+          modalStatus: 'dustCollectorUnavailable',
+        })
+      }
+    },
+    hideDustCollector: false,
+    hideSmallBalances: hideSmallBalances,
+    setHideSmallBalances: setHideSmallBalances,
   }
 
   

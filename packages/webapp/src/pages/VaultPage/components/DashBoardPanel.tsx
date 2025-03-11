@@ -1683,7 +1683,9 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     showFilter
                   />
                 ) : (
-                  <VaultPositionsTable {...vaultPositionsTableProps} />
+                  <VaultPositionsTable 
+                    {...vaultPositionsTableProps} 
+                  />
                 )}
 
                 <Button

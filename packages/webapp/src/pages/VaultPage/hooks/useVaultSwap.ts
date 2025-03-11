@@ -418,10 +418,10 @@ export const useVaultSwap = () => {
     : undefined
   
   const userMaxSellValueWithoutBorrow =
-    sellToken && sellTokenAsset?.total
+    sellToken
       ? numberFormat(
           utils.formatUnits(
-            BigNumber.from(sellTokenAsset.total ?? 0),
+            BigNumber.from(sellTokenAsset?.total ?? 0),
             sellToken?.decimals,
           ),
           {
@@ -433,10 +433,10 @@ export const useVaultSwap = () => {
       : undefined
       
   const userMaxSellValue =
-    sellToken && sellTokenAsset?.total
+    sellToken
       ? numberFormat(
           utils.formatUnits(
-            BigNumber.from(sellTokenAsset.total ?? 0).add(
+            BigNumber.from(sellTokenAsset?.total ?? 0).add(
               utils.parseUnits(borrowAble ?? '0', sellToken?.decimals),
             ),
             sellToken?.decimals,
@@ -449,7 +449,7 @@ export const useVaultSwap = () => {
         )
       : undefined
 
-  const slippageReal = slippage === 'N' ? 0.1 : slippage
+  const slippageReal = slippage ? (slippage === 'N' ? 0.1 : slippage) : 0.1
   const maxAmountCalcDexOutput =
     sellToken && buyToken && localState.depth && marketInfo
       ? calcDexWrap<sdk.VaultMarket>({
@@ -573,14 +573,14 @@ export const useVaultSwap = () => {
   const amounInUSDT = isLongOrShort === 'long' ? sellAmount : buyAmount
 
   const borrowRequired =
-    sellToken && sellTokenAsset && sellAmountBN
+    sellToken && sellAmountBN
       ? sellAmountBN.gt(
           sellTokenAsset?.total && sellTokenAsset?.total !== 'NaN' ? sellTokenAsset?.total : 0,
         )
       : false
 
   const moreToBeBorrowedBN =
-    sellToken && sellTokenAsset && borrowRequired && sellAmountBN
+    sellToken && borrowRequired && sellAmountBN
       ? sellAmountBN
           .sub(sellTokenAsset?.total ?? 0)
           .div(
@@ -1459,10 +1459,11 @@ export const useVaultSwap = () => {
       slippageList: ['0.1', '0.5', '1', `slippage:${slippage}`],
       currentSlippage: slippage,
       onSlippageChange: (slippage, customSlippage) => {
-        if (customSlippage === 'N') {
-          setSlippage(slippage)
-        } else {
+        // debugger
+        if (customSlippage && customSlippage !== 'N') {
           setSlippage(customSlippage)
+        } else {
+          setSlippage(slippage)
         }
       },
     },
@@ -1537,6 +1538,7 @@ export const useVaultSwap = () => {
         return
       setLocalState({
         ...localState,
+        slideValue: 0,
         amount,
       })
     },
@@ -1816,6 +1818,7 @@ export const useVaultSwap = () => {
                           tokenSelectionInput: '',
                           amount: '',
                           slideValue: 0,
+                          depth: undefined,
                         })
                         setTimeout(() => {
                           restartTimer()  

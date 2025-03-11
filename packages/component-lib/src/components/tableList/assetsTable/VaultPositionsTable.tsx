@@ -3,10 +3,11 @@ import { Box, BoxProps, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { Column, Table } from '../../basic-lib'
+import { VaultAssetFilter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
-import { hexToRGB, HiddenTag, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
+import { BrushIcon, hexToRGB, HiddenTag, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
-import { CoinIcons, CoinIconsNew } from './components/CoinIcons'
+import { CoinIconsNew } from './components/CoinIcons'
 import _ from 'lodash'
 import { Button } from '@mui/material'
 import { useTheme } from '@emotion/react'
@@ -64,10 +65,11 @@ export type VaultPositionsTableProps = {
   isLoading?: boolean
   rowConfig?: typeof RowConfig
   hideAssets?: boolean
-
-  // onRowClickLeverage: ({ row }: { row: PositionItem }) => void
-  // onRowClickTrade: ({ row }: { row: PositionItem }) => void
-  // onRowClickClose: ({ row }: { row: PositionItem }) => void
+  showFilter?: boolean
+  hideSmallBalances?: boolean
+  setHideSmallBalances?: (status: boolean) => void
+  hideDustCollector?: boolean
+  onClickDustCollector?: () => void
 }
 
 export const VaultPositionsTable = withTranslation('tables')(
@@ -78,16 +80,27 @@ export const VaultPositionsTable = withTranslation('tables')(
       onRowClick,
       rowConfig = RowConfig,
       hideAssets,
-
-      // onRowClickLeverage,
-      // onRowClickTrade,
-      // onRowClickClose,
+      showFilter,
+      hideSmallBalances = false,
+      setHideSmallBalances,
+      hideDustCollector = false,
+      onClickDustCollector,
       isLoading,
       ...rest
     } = props
     const total  = rawData.length
     const { language, isMobile } = useSettings()
     const theme = useTheme()
+    const [filter, setFilter] = React.useState({
+      searchValue: '',
+    })
+
+    const handleFilterChange = React.useCallback(
+      (props: { searchValue: string }) => {
+        setFilter(props)
+      },
+      [setFilter]
+    )
 
     const getColumnModeAssets = (t: TFunction): Column<PositionItem, unknown>[] => [
       {
@@ -216,6 +229,34 @@ export const VaultPositionsTable = withTranslation('tables')(
 
     return (
       <TableWrap lan={language} isMobile={isMobile}>
+        {showFilter && (
+          <Box marginX={2} display={'flex'} alignItems={'center'}>
+            <Box>
+              <VaultAssetFilter
+                handleFilterChange={handleFilterChange}
+                filter={filter}
+                hideSmallBalances={hideSmallBalances}
+                setHideSmallBalances={setHideSmallBalances}
+                noHideInvestToken
+              />
+            </Box>
+
+            {!hideDustCollector && <Typography
+              sx={{ cursor: 'pointer' }}
+              component={'span'}
+              onClick={onClickDustCollector}
+              width={'140px'}
+              color={'var(--color-text-primary)'}
+              display={'flex'}
+              alignItems={'center'}
+            >
+              <BrushIcon
+                sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }}
+              />{' '}
+              {t('labelVaultDustCollector')}
+            </Typography>}
+          </Box>
+        )}
         <Table
           {...rest}
           style={{
