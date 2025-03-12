@@ -1079,7 +1079,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   vaultPositionsTableProps,
   onClickHideShowAssets,
   accountActive,
-  totalEquity
+  totalEquity,
+  onClickCloseOut
 
 }) => {
   return (
