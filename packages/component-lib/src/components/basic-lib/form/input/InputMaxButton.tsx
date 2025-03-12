@@ -233,9 +233,12 @@ function _InputMaxButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>
               <DropDownIcon color={'inherit'} fontSize={'large'} style={{ marginLeft: '-4px' }} />
             }
             disabled={disabled}
+            sx={{
+              justifyContent: 'left'
+            }}
           >
             {belong ? (
-              <Grid container align-items={'center'} display={'flex'} wrap={'nowrap'}>
+              <Grid container width={'auto'} align-items={'center'} display={'flex'} wrap={'nowrap'}>
                 {isShowCoinIcon && (
                   <Grid
                     item
