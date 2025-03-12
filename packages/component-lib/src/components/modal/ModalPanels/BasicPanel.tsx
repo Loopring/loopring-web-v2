@@ -696,7 +696,7 @@ export const TaikoFarmingRedeemBase = (props: PanelProps) => {
 
 export const TransferToTaikoBase = (props: PanelProps) => {
   const propsPatch = {
-    title: 'Send to Taiko',
+    // title: 'Send to Taiko',
   }
   return <BasicPanel {...propsPatch} {...props} />
 }

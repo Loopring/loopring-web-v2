@@ -308,7 +308,9 @@ export const useGetAssets = (): AssetPanelProps & {
     },
     [setShowAccount, setShowBridge],
   );
-
+  const { tokenPrices } = useTokenPrices()
+  const {defaultNetwork} = useSettings()
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
   const assetTitleProps: AssetTitleProps = {
     setHideL2Assets,
     assetInfo: {
@@ -320,14 +322,14 @@ export const useGetAssets = (): AssetPanelProps & {
     onShowReceive: onReceive,
     onShowSend: onSend,
     onClickBridge,
+    showBridgeBtn: isTaiko,
   } as any
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
-  const { tokenPrices } = useTokenPrices()
-  const {defaultNetwork} = useSettings()
-  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
+  
+  
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,

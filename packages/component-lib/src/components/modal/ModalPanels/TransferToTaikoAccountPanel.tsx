@@ -55,7 +55,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     receiptError,
     receiptClear,
     showReceiptWarning,
-    onClickConfirm
+    onClickConfirm,
+    title
   } = props
 
   const theme = useTheme();
@@ -63,7 +64,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     <>
       <Box>
         <Typography variant={'h3'} textAlign={'center'}>
-          Send to Taiko
+          {title}
         </Typography>
         <Box mt={6}>
           <SpaceBetweenBox
@@ -256,7 +257,7 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
   const confirmPanel = (
     <Box display={'flex'} justifyContent={'space-between'} flexDirection={'column'}>
       <Typography variant={'h3'} textAlign={'center'}>
-        Send to Taiko
+        {title}
       </Typography>
       <Box mt={6} mb={4}>
         <Box mb={4}>

@@ -308,11 +308,16 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   }
   const debouncedRefreshData = useDebouncedCallback(refreshData, 500)
 
-
+  const isToEthereum =
+    parsed?.toOtherNetworks[0].network &&
+    ['SEPOLIA', 'ETHEREUM'].includes(parsed?.toOtherNetworks[0].network)
   const confirmSend = async () => {
     setShowAccount({
       step: AccountStep.Transfer_To_Taiko_In_Progress,
-      isShow: true
+      isShow: true,
+      info: {
+        isToEthereum
+      }
     })
     return transferToOtherNetwork({
       account,
@@ -335,7 +340,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       setState(initialState)
       setShowAccount({
         step: AccountStep.Transfer_To_Taiko_Success,
-        isShow: true
+        isShow: true,
+        info: {
+          isToEthereum
+        }
       })
     })
     .catch(e => {
@@ -347,6 +355,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         setShowAccount({
           step: AccountStep.Transfer_To_Taiko_User_Denied,
           isShow: true,
+          info: {
+            isToEthereum
+          }
         })
       } else {
         setShowAccount({
@@ -362,6 +373,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
                 }
               : e ?? {}),
           },
+          info: {
+            isToEthereum
+          }
         })
       }
     })
@@ -575,6 +589,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     retrySend: () => {
       confirmSend()
     },
+    title: fromNetwork === 'TAIKO' 
+      ? 'Send to Ethereum'
+      : 'Send to TAIKO'
   } as TransferToTaikoAccountProps
   return output
 }

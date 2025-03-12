@@ -275,6 +275,7 @@ export type VaultBorrowProps<T, I, V> = BasicACoinTradeHookProps<T, I> &
 export type VaultRepayProps<T, I, V> = BasicACoinTradeHookProps<T, I> & VaultRepayWrapProps<T, I, V>
 export type VaultExitProps = VaultExitBaseProps
 export type TransferToTaikoAccountProps = {
+  title: string
   onClickContact: () => void
   onClickToken: () => void
   onClickFee: () => void

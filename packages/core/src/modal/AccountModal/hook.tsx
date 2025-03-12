@@ -3590,6 +3590,7 @@ export function useAccountModalForUI({
               ...rest,
               account,
               t,
+              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko'
             }}
           />
         ),
@@ -3601,6 +3602,7 @@ export function useAccountModalForUI({
               ...rest,
               account,
               t,
+              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko'
             }}
           />
         ),
@@ -3628,6 +3630,7 @@ export function useAccountModalForUI({
                   }
                 : undefined,
               t,
+              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko'
             }}
           />
         ),
@@ -3652,6 +3655,7 @@ export function useAccountModalForUI({
               account,
               error: isShowAccount.error,
               t,
+              title: isShowAccount.info?.isEthereum ? 'Send to Ethereum' : 'Send to Taiko'
             }}
           />
         ),
