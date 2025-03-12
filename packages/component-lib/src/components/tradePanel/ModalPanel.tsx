@@ -317,11 +317,10 @@ export const ModalPanel = <
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
     isShowEditContact,
-    isShowTransferToTaikoAccount,
     isShowBridge,
   } = modals
   const theme = useTheme()
-  const { defaultNetwork } = useSettings()
+  
   const etherscanBaseUrl = 'https://etherscan.io/'
   return (
     <>
