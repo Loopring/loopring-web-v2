@@ -41,7 +41,7 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
 
 
 export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
-  const { setShowAccount, setShowTransferToTaikoAccount, modals } = useOpenModals()
+  const { setShowAccount, setShowTransferToTaikoAccount, setShowBridge, modals } = useOpenModals()
   const { coinJson, defaultNetwork, feeChargeOrder } = useSettings()
   const { tokenMap, idIndex } = useTokenMap()
 
@@ -482,11 +482,16 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     amountInput: state.amount,
     onClickBack() {
       if (state.panel === 'main') {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.SendAssetGateway,
-          info: { symbol: modals.isShowTransferToTaikoAccount.info?.initSymbol },
-        })
+        if (modals.isShowTransferToTaikoAccount.from === 'bridge') {
+          setShowBridge({ isShow: true })
+        } else {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.SendAssetGateway,
+            info: { symbol: modals.isShowTransferToTaikoAccount.info?.initSymbol },
+          })
+        }
+        
         setShowTransferToTaikoAccount({ isShow: false })
         setState(initialState)
       } else {

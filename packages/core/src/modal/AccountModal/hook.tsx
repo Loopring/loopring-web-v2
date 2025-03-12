@@ -780,7 +780,7 @@ export function useAccountModalForUI({
                 })
                 setShowTransferToTaikoAccount({
                   isShow: true,
-                  info: { initSymbol: isShowAccount?.info?.symbol },
+                  from: 'send'
                 })
               },
             }
@@ -3614,7 +3614,7 @@ export function useAccountModalForUI({
                 setShowAccount({ isShow: false })
                 setShowTransferToTaikoAccount({
                   isShow: true,
-                  symbol: isShowAccount?.info?.symbol,
+                  from: 'send'
                 })
               },
             }}

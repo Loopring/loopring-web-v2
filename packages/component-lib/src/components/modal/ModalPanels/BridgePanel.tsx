@@ -17,11 +17,13 @@ export const BridgePanel = withTranslation('common')(
   }: BridgeProps) => {
     return (
       <Box
-        height={'var(--min-height)'}
+        height={'auto'}
         width={'var(--modal-width)'}
         display={'flex'}
         flexDirection={'column'}
-        padding={3}
+        px={3}
+        pt={2}
+        pb={4}
       >
         <Typography fontSize={24}>Bridge</Typography>
 

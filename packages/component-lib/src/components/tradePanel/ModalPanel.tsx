@@ -686,6 +686,7 @@ export const ModalPanel = <
               onClickEthereum: () => {
                 setShowTransferToTaikoAccount({
                   isShow: true,
+                  from: 'bridge'
                 })
               }
             }}
