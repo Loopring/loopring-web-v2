@@ -175,6 +175,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     const idIndex = globalState.tokenMap.idIndex
     const defaultNetwork = globalState.settings.defaultNetwork
     const fastWithdrawConfig = globalState.config.fastWithdrawConfig
+
     const fromNetwork = networkById(defaultNetwork)
     const parsed = fastWithdrawConfig && idIndex && fromNetwork
       ? parseRabbitConfig2(fastWithdrawConfig, fromNetwork, idIndex)
@@ -216,7 +217,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     const desTokens = await desExchangeAPI.getTokens()
     transferToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
       tokenId: desTokens.tokensMap[transferToken.symbol].tokenId,
-      network: toTaikoNetwork!,
+      network: destinationNetwork!,
       amount: '0'
     }).then(res => {
       const amounts = res.map(agent => {
