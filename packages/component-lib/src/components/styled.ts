@@ -375,10 +375,11 @@ export const MenuBtnStyled = styled(Button)<ButtonProps>`
     font-size: ${({ theme }) => theme.fontDefault.h5};
     justify-content: space-between;
     flex-direction: row;
-    height: ${({ theme }) => theme.unit * 8}px;
+    height: 64px;
 
     &.isMobile {
-      font-size: ${({ theme }) => theme.fontDefault.h6};
+      font-size: 14px;
+      height: 48px;
     }
   }
 

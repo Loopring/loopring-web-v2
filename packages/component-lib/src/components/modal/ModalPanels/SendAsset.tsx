@@ -107,7 +107,9 @@ export const SendAsset = ({
               borderBottomRightRadius: index === list.length - 1 ? '4px' : '0px',
               '&&&&:hover' : {
                 borderColor: 'var(--color-border)'
-              }
+              },
+              height: isMobile ? '48px' : '64px',
+              
            }}
           >
             <Box display={'flex'} alignItems={'center'}>
@@ -131,7 +133,10 @@ export const SendAsset = ({
                   textAlign={'left'}
                   color={'var(--color-text-secondary)'}
                   className='title'
-                  fontSize={item.description ? '14px' : '16px'}
+                  fontSize={
+                    isMobile 
+                    ? item.description ? '12px' : '14px'
+                    : item.description ? '14px' : '16px'}
                 >
                   {t('label' + item.key, {
                     loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
@@ -148,7 +153,7 @@ export const SendAsset = ({
                     color={'var(--color-text-primary)'}
                     mt={0.5}
                     className='description'
-                    fontSize={'12px'}
+                    fontSize={isMobile ? '11px' : '12px'}
                   >
                     {item.description}
                   </Typography>
