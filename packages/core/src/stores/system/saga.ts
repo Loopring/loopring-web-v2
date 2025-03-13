@@ -501,7 +501,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
             ]
         }
       }
-      LoopringAPI.setBaseURL(baseURL, `https://${process.env['REACT_APP_API_URL_1']}`)
+      LoopringAPI.setBaseURL(baseURL)
       if (process.env && process.env[`REACT_APP_WALLET_API_URL_${chainId}`]) {
         LoopringAPI.walletAPI?.setBaseUrl('https://' + process.env[`REACT_APP_WALLET_API_URL_${chainId}`]!)
       }
