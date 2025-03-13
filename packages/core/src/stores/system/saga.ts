@@ -505,7 +505,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       if (process.env && process.env[`REACT_APP_WALLET_API_URL_${chainId}`]) {
         LoopringAPI.walletAPI?.setBaseUrl('https://' + process.env[`REACT_APP_WALLET_API_URL_${chainId}`]!)
       }
-      LoopringAPI.setBaseURL(baseURL, `https://${process.env['REACT_APP_API_URL_11155111']}`)
+      LoopringAPI.setBaseURL(baseURL, `https://${process.env['REACT_APP_API_URL_RABBIT']}`)
       const etherscanBaseUrl =
         sdk.ChainId.MAINNET === chainId
           ? `https://etherscan.io/`
