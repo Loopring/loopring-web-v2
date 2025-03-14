@@ -503,8 +503,8 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(_chainId: any) =
       }
       
       LoopringAPI.setBaseURL(baseURL, {
-        walletAPIURL: process.env?.[`REACT_APP_WALLET_API_URL_${chainId}`],
-        rabbitWithdrawAPIURL: process.env?.[`REACT_APP_RABBIT_API_URL_${chainId}`]
+        walletAPIURL: process.env?.[`REACT_APP_WALLET_API_URL_${chainId}`] ? 'https://' + process.env?.[`REACT_APP_WALLET_API_URL_${chainId}`] : undefined,
+        rabbitWithdrawAPIURL: process.env?.[`REACT_APP_RABBIT_API_URL_${chainId}`] ? 'https://' + process.env?.[`REACT_APP_RABBIT_API_URL_${chainId}`] : undefined
       })
       const etherscanBaseUrl =
         sdk.ChainId.MAINNET === chainId
