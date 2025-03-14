@@ -333,6 +333,7 @@ export type TransferToTaikoAccountProps = {
   showReceiptWarning: boolean
   onClickConfirm: () => void
   retrySend: () => void
+  hideContactBtn?: boolean
 }
 
 export * from './components/Interface'

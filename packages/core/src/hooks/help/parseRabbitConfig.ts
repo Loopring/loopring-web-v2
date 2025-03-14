@@ -46,7 +46,9 @@ export const parseRabbitConfig = (
     toL1SupportedTokens: toL1SupportedTokens as string[],
   }
 }
-
+export const networkById = (id: ChainId) => {
+  return MapChainId[id] ? (167009 === id ? 'TAIKO' : MapChainId[id]) : undefined
+}
 
 export const parseRabbitConfig2 = (
   config: any,

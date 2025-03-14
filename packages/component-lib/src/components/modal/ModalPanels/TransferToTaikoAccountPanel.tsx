@@ -56,7 +56,8 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
     receiptClear,
     showReceiptWarning,
     onClickConfirm,
-    title
+    title,
+    hideContactBtn
   } = props
 
   const theme = useTheme();
@@ -161,11 +162,11 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
                     }}
                   />
                 )}
-                <ContactIcon
+                {!hideContactBtn && <ContactIcon
                   onClick={onClickContact}
                   className='custom-size'
                   sx={{ fontSize: '24px', width: '24px', height: '24px', cursor: 'pointer' }}
-                />
+                />}
               </Box>
             }
             onInput={(e: any) => onInputAddress(e.target.value)}
@@ -212,7 +213,18 @@ export const TransferToTaikoAccountModal = (props: TransferToTaikoAccountProps) 
 
       <Box>
         <SpaceBetweenBox
-          leftNode={<Typography color={'var(--color-text-primary)'}>Transaction Fee</Typography>}
+          leftNode={
+            <Box display="flex" alignItems="center">
+              <Typography color={'var(--color-text-primary)'}>
+                Transaction Fee
+              </Typography>
+              <Tooltip title={'The total cost of completing the transaction, including network fees, service fees, and other associated charges.'} placement={'top'}>
+                <Typography component="span" marginLeft={0.5} display="flex" alignItems="center">
+                  <Info2Icon fontSize={'small'} color={'inherit'} sx={{ cursor: 'pointer' }} />
+                </Typography>
+              </Tooltip>
+            </Box>
+          }
           rightNode={
             <Typography
               color={'var(--color-text-primary)'}

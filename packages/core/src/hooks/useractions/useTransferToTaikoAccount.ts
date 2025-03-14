@@ -4,12 +4,12 @@ import {
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
-import { store, TokenMap, useAccount, useConfig, useContacts, useTokenMap } from '../../stores'
+import { store, TokenMap, useAccount, useConfig, useContacts, useSystem, useTokenMap, useWalletLayer2 } from '../../stores'
 import { useEffect } from 'react'
 import { useGetSet } from 'react-use'
 import { LoopringAPI } from '../../api_wrapper'
 import { Account, MapChainId, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
-import { ChainId, checkErrorInfo, ConnectorError, ExchangeAPI, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO, TokenInfo } from '@loopring-web/loopring-sdk'
+import { ChainId, checkErrorInfo, ConnectorError, ExchangeAPI, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO, sleep, TokenInfo } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { getTimestampDaysLater, isValidateNumberStr, numberFormat } from '../../utils'
 import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
@@ -71,7 +71,7 @@ const transferToOtherNetwork = async ({
   chainId: number
 }) => {
   const network = networkById(defaultNetwork)!
-  const toNetwork = configJSON.toOtherNetworks[0].network
+  const toNetwork = configJSON.toOtherNetworks[0]?.network
   
   // Get next storage Id for the transfer
   const storageId = await LoopringAPI.userAPI?.getNextStorageId(
@@ -122,7 +122,9 @@ const transferToOtherNetwork = async ({
 export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const { setShowAccount, setShowTransferToTaikoAccount, setShowBridge, modals } = useOpenModals()
   const { coinJson, defaultNetwork, feeChargeOrder } = useSettings()
+  const { app } = useSystem()
   const { tokenMap, idIndex } = useTokenMap()
+  const { updateWalletLayer2 } = useWalletLayer2()
 
   const { fastWithdrawConfig } = useConfig()
   const { account } = useAccount()
@@ -167,7 +169,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   console.log('asjdhjashdjsa', parsed)
   const transferTokenList = parsed?.toOtherNetworks[0]?.supportedTokens || []
 
-  const toTaikoNetwork = parsed?.toOtherNetworks[0].network
+  // const toTaikoNetwork = parsed?.toOtherNetworks[0].network
 
   const refreshData = async () => {
     const globalState = store.getState()
@@ -295,6 +297,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     isFeeNotEnough ||
     isInvalidAddress
   const {walletProvider} = useWeb3ModalProvider()
+  
 
   const sendBtn = {
     
@@ -310,8 +313,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   const debouncedRefreshData = useDebouncedCallback(refreshData, 500)
 
   const isToEthereum =
-    parsed?.toOtherNetworks[0].network &&
-    ['SEPOLIA', 'ETHEREUM'].includes(parsed?.toOtherNetworks[0].network)
+    parsed?.toOtherNetworks[0]?.network &&
+    ['SEPOLIA', 'ETHEREUM'].includes(parsed?.toOtherNetworks[0]?.network)
   const confirmSend = async () => {
     setShowAccount({
       step: AccountStep.Transfer_To_Taiko_In_Progress,
@@ -345,6 +348,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         info: {
           isToEthereum
         }
+      })
+      sleep(1000).then(() => {
+        updateWalletLayer2()
       })
     })
     .catch(e => {
@@ -592,7 +598,8 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     },
     title: fromNetwork === 'TAIKO' 
       ? 'Send to Ethereum'
-      : 'Send to TAIKO'
+      : 'Send to TAIKO',
+    hideContactBtn: app === 'earn'
   } as TransferToTaikoAccountProps
   return output
 }

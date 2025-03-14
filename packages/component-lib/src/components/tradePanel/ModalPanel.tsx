@@ -683,6 +683,9 @@ export const ModalPanel = <
               symbol: isShowBridge.symbol,
               etherscanBaseUrl,
               onClickEthereum: () => {
+                setShowBridge({
+                  isShow: false
+                })
                 setShowTransferToTaikoAccount({
                   isShow: true,
                   from: 'bridge'
