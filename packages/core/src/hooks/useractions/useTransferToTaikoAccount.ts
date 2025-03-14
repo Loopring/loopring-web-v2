@@ -52,6 +52,7 @@ const transferToOtherNetwork = async ({
   feeRaw,
   walletProvider,
   chainId: defaultNetwork,
+  balance
 }: {
   account: Account
   transferToken: TokenInfo
@@ -69,6 +70,7 @@ const transferToOtherNetwork = async ({
   feeRaw: string
   walletProvider: any
   chainId: number
+  balance: string
 }) => {
   const network = networkById(defaultNetwork)!
   const toNetwork = configJSON.toOtherNetworks[0]?.network
@@ -83,6 +85,21 @@ const transferToOtherNetwork = async ({
   )
   // Get agent and exchange information from config
   // Prepare the transfer request
+
+  if (
+    transferToken.tokenId === feeToken?.tokenId &&
+    utils
+      .parseUnits(state.amount, transferToken.decimals)
+      .add(feeRaw!)
+      .gt(utils.parseUnits(balance, transferToken.decimals))
+  ) {
+    var transferVolume = utils
+      .parseUnits(state.amount, transferToken.decimals)
+      .sub(ethers.BigNumber.from(feeRaw!))
+      .toString()
+  } else {
+    transferVolume = utils.parseUnits(state.amount, transferToken.decimals).toString()
+  }
   const request: RabbitWithdrawRequest = {
     fromNetwork: network,
     toNetwork: toNetwork,
@@ -95,7 +112,7 @@ const transferToOtherNetwork = async ({
       payeeAddr: configJSON.agentAddr!,
       token: {
         tokenId: transferToken.tokenId,
-        volume: utils.parseUnits(state.amount, transferToken.decimals).toString(),
+        volume: transferVolume,
       },
       maxFee: {
         // @ts-ignore
@@ -332,6 +349,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       configJSON: parsed!,
       feeRaw: feeRaw!,
       walletProvider: walletProvider,
+      balance: balance?.toString() ?? '0',
     }).then((response) => {
       if ((response as any)?.resultInfo?.code || (response as any)?.resultInfo?.message) {
         throw (response as any).resultInfo
