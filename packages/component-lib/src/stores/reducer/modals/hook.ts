@@ -43,6 +43,7 @@ import {
   setShowETHStakingApr,
   setShowTransferToTaikoAccount,
   setShowVaultCloseConfirm,
+  setShowBridge,
 } from './reducer'
 
 import React from 'react'
@@ -112,7 +113,7 @@ export const useOpenModals = () => {
       [dispatch, toggle.transfer.enable],
     ),
     setShowTransferToTaikoAccount: React.useCallback(
-      (state: ModalStatePlayLoad) => {
+      (state: ModalStatePlayLoad & { from?: string }) => {
         if (toggle.transferToTaikoAccount.enable) {
           dispatch(setShowTransferToTaikoAccount(state))
         } else {
@@ -363,8 +364,13 @@ export const useOpenModals = () => {
       ) => dispatch(setShowNoVaultAccount(state)),
       [dispatch],
     ),
-    setShowConfirmedVault(state: ModalStatePlayLoad) {
-      dispatch(setShowConfirmedVault(state))
-    },
+    setShowConfirmedVault: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowConfirmedVault(state)),
+      [dispatch],
+    ),
+    setShowBridge: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowBridge(state)),
+      [dispatch],
+    ),
   }
 }

@@ -30,6 +30,7 @@ import {
   EditContact,
   TransferToTaikoAccountModal,
   TransferToTaikoAccountProps,
+  BridgePanel,
 } from '../..'
 import {
   Account,
@@ -47,7 +48,6 @@ import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap'
 import { ClaimWithdrawPanel } from '../modal/ModalPanels/ClaimWithdrawPanel'
 import { TargetRedpacketWrap } from './components/TargetRedpacketWrap'
 import { TransferNFTBurn } from './components'
-
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -295,7 +295,8 @@ export const ModalPanel = <
     setShowTargetRedpacketPop,
     setShowRedPacket,
     setShowEditContact,
-    setShowTransferToTaikoAccount    // setShowDual,
+    setShowTransferToTaikoAccount,
+    setShowBridge,
   } = useOpenModals()
 
   const {
@@ -316,9 +317,11 @@ export const ModalPanel = <
     isShowSideStakingRedeem,
     isShowTargetRedpacketPop,
     isShowEditContact,
-    isShowTransferToTaikoAccount
+    isShowBridge,
   } = modals
   const theme = useTheme()
+  
+  const etherscanBaseUrl = 'https://etherscan.io/'
   return (
     <>
       <Modal
@@ -659,6 +662,36 @@ export const ModalPanel = <
             }
             // contacts={isShowAccount.info?.contacts}
             // setToast={setToast}
+          />
+        }
+      />
+      <Modal
+        open={isShowBridge.isShow}
+        contentClassName={'trade-wrap'}
+        onClose={() => {
+          console.log('bfSJk8Lp', 'closing bridge modal')
+          setShowBridge({ 
+            isShow: false
+          })
+        }}
+        content={
+          <BridgePanel
+            {...{
+              ...rest,
+              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              _height: 'auto',
+              symbol: isShowBridge.symbol,
+              etherscanBaseUrl,
+              onClickEthereum: () => {
+                setShowBridge({
+                  isShow: false
+                })
+                setShowTransferToTaikoAccount({
+                  isShow: true,
+                  from: 'bridge'
+                })
+              }
+            }}
           />
         }
       />

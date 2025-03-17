@@ -542,14 +542,13 @@ export const AssetsTable = withTranslation('tables')(
         {!isWebEarn && showFilter && (
           <Box marginX={2}>
             <Filter
-              {...{
-                handleFilterChange,
-                filter,
-                hideInvestToken,
-                hideSmallBalances,
-                setHideLpToken,
-                setHideSmallBalances,
-              }}
+              handleFilterChange={handleFilterChange}
+              filter={filter}
+              hideInvestToken={hideInvestToken}
+              hideSmallBalances={hideSmallBalances}
+              setHideLpToken={setHideLpToken}
+              setHideSmallBalances={setHideSmallBalances}
+              noHideInvestToken
             />
           </Box>
         )}

@@ -428,7 +428,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         },
         account.apiKey,
       )
-      const feeResFast = await LoopringAPI.userAPI?.getUserCrossChainFee(
+      const feeResFast = await LoopringAPI.rabbitWithdrawAPI?.getUserCrossChainFee(
         {
           receiveFeeNetwork: network,
           requestType: sdk.OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
