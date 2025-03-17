@@ -8,7 +8,7 @@ import { store, TokenMap, useAccount, useConfig, useContacts, useSystem, useToke
 import { useEffect } from 'react'
 import { useGetSet } from 'react-use'
 import { LoopringAPI } from '../../api_wrapper'
-import { Account, MapChainId, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
+import { Account, MapChainId, NetworkMap, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
 import { ChainId, checkErrorInfo, ConnectorError, ExchangeAPI, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO, sleep, TokenInfo } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { getTimestampDaysLater, isValidateNumberStr, numberFormat } from '../../utils'
@@ -614,7 +614,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     retrySend: () => {
       confirmSend()
     },
-    title: fromNetwork === 'TAIKO' 
+    title: isToEthereum
       ? 'Send to Ethereum'
       : 'Send to TAIKO',
     hideContactBtn: app === 'earn'
