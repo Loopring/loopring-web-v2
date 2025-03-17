@@ -110,5 +110,6 @@ export interface ModalState {
     }
   isShowNoVaultAccount: ModalStatePlayLoad & { whichBtn: VaultAction | undefined; des?: string }
   isShowConfirmedVault: ModalStatePlayLoad
-  isShowTransferToTaikoAccount: ModalStatePlayLoad
+  isShowTransferToTaikoAccount: ModalStatePlayLoad & { from?: string }
+  isShowBridge: ModalStatePlayLoad & Partial<Transaction>
 }

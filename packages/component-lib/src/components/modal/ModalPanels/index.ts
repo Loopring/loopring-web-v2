@@ -7,6 +7,7 @@ export * from './DepositNFT'
 export * from './Transfer'
 export * from './Withdraw'
 export * from './Dual'
+export {BridgePanel} from './BridgePanel'
 
 export * from './UpdateAccount'
 export * from './UnlockAccount'

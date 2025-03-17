@@ -4,12 +4,12 @@ import {
   useOpenModals,
   useSettings,
 } from '@loopring-web/component-lib'
-import { store, TokenMap, useAccount, useConfig, useContacts, useTokenMap } from '../../stores'
+import { store, TokenMap, useAccount, useConfig, useContacts, useSystem, useTokenMap, useWalletLayer2 } from '../../stores'
 import { useEffect } from 'react'
 import { useGetSet } from 'react-use'
 import { LoopringAPI } from '../../api_wrapper'
-import { MapChainId, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
-import { checkErrorInfo, ConnectorError, ExchangeAPI, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO } from '@loopring-web/loopring-sdk'
+import { Account, MapChainId, NetworkMap, UIERROR_CODE, WalletMap } from '@loopring-web/common-resources'
+import { ChainId, checkErrorInfo, ConnectorError, ExchangeAPI, OffchainFeeInfo, OffchainFeeReqType, RabbitWithdrawRequest, RESULT_INFO, sleep, TokenInfo } from '@loopring-web/loopring-sdk'
 import { ethers, utils } from 'ethers'
 import { getTimestampDaysLater, isValidateNumberStr, numberFormat } from '../../utils'
 import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
@@ -18,6 +18,7 @@ import { DAYS } from '../../defs'
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { useDebouncedCallback } from '../../hooks/common'
 import _ from 'lodash'
+import { parseRabbitConfig2 } from '../../hooks/help/parseRabbitConfig'
 
 const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: TokenMap<{
   [key: string]: any;
@@ -38,12 +39,109 @@ const offchainFeeInfoToFeeInfo = (offchainFeeInfo: OffchainFeeInfo, tokenMap: To
   }
 }
 
+const networkById = (id: ChainId) => {
+  return MapChainId[id] ? (167009 === id ? 'TAIKO' : MapChainId[id]) : undefined
+}
 
+const transferToOtherNetwork = async ({
+  account,
+  transferToken,
+  feeToken,
+  state,
+  configJSON,
+  feeRaw,
+  walletProvider,
+  chainId: defaultNetwork,
+  balance
+}: {
+  account: Account
+  transferToken: TokenInfo
+  feeToken: TokenInfo
+  state: any
+  configJSON:  {
+    toOtherNetworks: {
+      network: string
+      supportedTokens: string[]
+    }[]
+    agentId?: number
+    agentAddr?: string
+    exchange?: string
+  }
+  feeRaw: string
+  walletProvider: any
+  chainId: number
+  balance: string
+}) => {
+  const network = networkById(defaultNetwork)!
+  const toNetwork = configJSON.toOtherNetworks[0]?.network
+  
+  // Get next storage Id for the transfer
+  const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+    {
+      accountId: account.accountId,
+      sellTokenId: transferToken.tokenId,
+    },
+    account.apiKey,
+  )
+  // Get agent and exchange information from config
+  // Prepare the transfer request
+
+  if (
+    transferToken.tokenId === feeToken?.tokenId &&
+    utils
+      .parseUnits(state.amount, transferToken.decimals)
+      .add(feeRaw!)
+      .gt(utils.parseUnits(balance, transferToken.decimals))
+  ) {
+    var transferVolume = utils
+      .parseUnits(state.amount, transferToken.decimals)
+      .sub(ethers.BigNumber.from(feeRaw!))
+      .toString()
+  } else {
+    transferVolume = utils.parseUnits(state.amount, transferToken.decimals).toString()
+  }
+  const request: RabbitWithdrawRequest = {
+    fromNetwork: network,
+    toNetwork: toNetwork,
+    toAddress: state.receipt,
+    transfer: {
+      exchange: configJSON.exchange!,
+      payerId: account.accountId,
+      payerAddr: account.accAddress,
+      payeeId: configJSON.agentId!,
+      payeeAddr: configJSON.agentAddr!,
+      token: {
+        tokenId: transferToken.tokenId,
+        volume: transferVolume,
+      },
+      maxFee: {
+        // @ts-ignore
+        tokenId: feeToken.tokenId,
+        volume: ethers.BigNumber.from(feeRaw).toString(),
+      },
+      storageId: storageId!.offchainId,
+      validUntil: getTimestampDaysLater(DAYS),
+      counterFactualInfo: account.eddsaKey.counterFactualInfo,
+    },
+  }
+  // Setup provider for transaction signing
+  const provider = new ethers.providers.Web3Provider(walletProvider as any)
+
+  // Submit the withdraw request
+  return LoopringAPI.rabbitWithdrawAPI!.submitRabitWithdraw(request, {
+    exchangeAddr: configJSON.exchange!,
+    signer: provider.getSigner(),
+    eddsaSignKey: account.eddsaKey.sk,
+    chainId: defaultNetwork as number,
+  })
+}
 
 export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
-  const { setShowAccount, setShowTransferToTaikoAccount, modals } = useOpenModals()
+  const { setShowAccount, setShowTransferToTaikoAccount, setShowBridge, modals } = useOpenModals()
   const { coinJson, defaultNetwork, feeChargeOrder } = useSettings()
+  const { app } = useSystem()
   const { tokenMap, idIndex } = useTokenMap()
+  const { updateWalletLayer2 } = useWalletLayer2()
 
   const { fastWithdrawConfig } = useConfig()
   const { account } = useAccount()
@@ -79,13 +177,16 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   
   
   const { contacts, updateContacts } = useContacts()
-  const parsed = fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
-    ? parseRabbitConfig(fastWithdrawConfig, MapChainId[defaultNetwork], idIndex)
+  
+  const fromNetwork = networkById(defaultNetwork)
+  const parsed = fastWithdrawConfig && idIndex && fromNetwork
+    ? parseRabbitConfig2(fastWithdrawConfig, fromNetwork, idIndex)
     : undefined
   
-  const transferTokenList = parsed?.toTaikoNetworkSupportedTokens || []
-  console.log('asdhsakjdhsa',fastWithdrawConfig, parsed, transferTokenList) 
-  const toTaikoNetwork = parsed?.toTaikoNetwork
+  console.log('asjdhjashdjsa', parsed)
+  const transferTokenList = parsed?.toOtherNetworks[0]?.supportedTokens || []
+
+  // const toTaikoNetwork = parsed?.toOtherNetworks[0].network
 
   const refreshData = async () => {
     const globalState = store.getState()
@@ -93,10 +194,12 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     const idIndex = globalState.tokenMap.idIndex
     const defaultNetwork = globalState.settings.defaultNetwork
     const fastWithdrawConfig = globalState.config.fastWithdrawConfig
-    const parsed = fastWithdrawConfig && idIndex && MapChainId[defaultNetwork]
-      ? parseRabbitConfig(fastWithdrawConfig, MapChainId[defaultNetwork], idIndex)
+
+    const fromNetwork = networkById(defaultNetwork)
+    const parsed = fastWithdrawConfig && idIndex && fromNetwork
+      ? parseRabbitConfig2(fastWithdrawConfig, fromNetwork, idIndex)
       : undefined
-    const destinationNetwork = parsed?.toTaikoNetwork
+    const destinationNetwork = parsed?.toOtherNetworks[0]?.network
 
     const state = getState()
     const modals = globalState.modals
@@ -111,10 +214,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       ...state,
       feeLoading: true
     }))
-    const feeRes = await LoopringAPI.userAPI
+    const feeRes = await LoopringAPI.rabbitWithdrawAPI
       ?.getUserCrossChainFee(
         {
-          receiveFeeNetwork: MapChainId[defaultNetwork],
+          receiveFeeNetwork: fromNetwork!,
           requestType: OffchainFeeReqType.RABBIT_OFFCHAIN_WITHDRAWAL,
           calFeeNetwork: destinationNetwork!,
           tokenSymbol: transferTokenSymbol,
@@ -133,7 +236,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     const desTokens = await desExchangeAPI.getTokens()
     transferToken && LoopringAPI.rabbitWithdrawAPI?.getNetworkWithdrawalAgents({
       tokenId: desTokens.tokensMap[transferToken.symbol].tokenId,
-      network: toTaikoNetwork!,
+      network: destinationNetwork!,
       amount: '0'
     }).then(res => {
       const amounts = res.map(agent => {
@@ -156,13 +259,6 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   useEffect(() => {
     var timer: NodeJS.Timeout
     if (modals.isShowTransferToTaikoAccount.isShow && fastWithdrawConfig) {
-      const defaultNetwork = store.getState().settings.defaultNetwork
-      const idIndex = store.getState().tokenMap.idIndex
-      const { toTaikoNetwork } = parseRabbitConfig(
-        fastWithdrawConfig,
-        MapChainId[defaultNetwork],
-        idIndex,
-      )
       timer = setInterval(() => {
         refreshData()
       }, 10 * 1000)
@@ -218,6 +314,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     isFeeNotEnough ||
     isInvalidAddress
   const {walletProvider} = useWeb3ModalProvider()
+  
 
   const sendBtn = {
     
@@ -232,59 +329,28 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
   }
   const debouncedRefreshData = useDebouncedCallback(refreshData, 500)
 
-
+  const isToEthereum =
+    parsed?.toOtherNetworks[0]?.network &&
+    ['SEPOLIA', 'ETHEREUM'].includes(parsed?.toOtherNetworks[0]?.network)
   const confirmSend = async () => {
     setShowAccount({
       step: AccountStep.Transfer_To_Taiko_In_Progress,
-      isShow: true
+      isShow: true,
+      info: {
+        isToEthereum
+      }
     })
-    const network = MapChainId[defaultNetwork]
-    const configiJSON = fastWithdrawConfig!
-    const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-      {
-        accountId: account.accountId,
-        sellTokenId: transferToken.tokenId,
-      },
-      account.apiKey,
-    )
-    const agentId = configiJSON.networkL2AgentAccountIds[network]
-    const agentAddr = configiJSON.networkL2AgentAddresses[network]
-    const exchange = configiJSON.networkExchanges[network]
-    
-
-    const request: RabbitWithdrawRequest = {
-      fromNetwork: network,
-      toNetwork: toTaikoNetwork!,
-      toAddress: state.receipt,
-      transfer: {
-        exchange: exchange,
-        payerId: account.accountId,
-        payerAddr: account.accAddress,
-        payeeId: agentId,
-        payeeAddr: agentAddr,
-        token: {
-          tokenId: transferToken.tokenId,
-          volume: utils.parseUnits(state.amount, transferToken.decimals).toString(),
-        },
-        maxFee: {
-          // @ts-ignore
-          tokenId: feeToken.tokenId,
-          volume: ethers.BigNumber.from(feeRaw!).toString() 
-        },
-        storageId: storageId!.offchainId,
-        validUntil: getTimestampDaysLater(DAYS),
-        counterFactualInfo: account.eddsaKey.counterFactualInfo
-      },
-    }
-    const provider = new ethers.providers.Web3Provider(walletProvider as any)
-
-    LoopringAPI.rabbitWithdrawAPI?.submitRabitWithdraw(request, {
-      exchangeAddr: exchange,
-      signer: provider.getSigner(),
-      eddsaSignKey: account.eddsaKey.sk,
-      chainId: defaultNetwork as number,
+    return transferToOtherNetwork({
+      account,
+      chainId: defaultNetwork,
+      transferToken,
+      feeToken: feeToken!,
+      state,
+      configJSON: parsed!,
+      feeRaw: feeRaw!,
+      walletProvider: walletProvider,
+      balance: balance?.toString() ?? '0',
     }).then((response) => {
-
       if ((response as any)?.resultInfo?.code || (response as any)?.resultInfo?.message) {
         throw (response as any).resultInfo
       } else if (response.status === 'failed') {
@@ -296,7 +362,13 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
       setState(initialState)
       setShowAccount({
         step: AccountStep.Transfer_To_Taiko_Success,
-        isShow: true
+        isShow: true,
+        info: {
+          isToEthereum
+        }
+      })
+      sleep(1000).then(() => {
+        updateWalletLayer2()
       })
     })
     .catch(e => {
@@ -308,6 +380,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
         setShowAccount({
           step: AccountStep.Transfer_To_Taiko_User_Denied,
           isShow: true,
+          info: {
+            isToEthereum
+          }
         })
       } else {
         setShowAccount({
@@ -323,6 +398,9 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
                 }
               : e ?? {}),
           },
+          info: {
+            isToEthereum
+          }
         })
       }
     })
@@ -482,11 +560,15 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     amountInput: state.amount,
     onClickBack() {
       if (state.panel === 'main') {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.SendAssetGateway,
-          info: { symbol: modals.isShowTransferToTaikoAccount.info?.initSymbol },
-        })
+        if (modals.isShowTransferToTaikoAccount.from === 'bridge') {
+          setShowBridge({ isShow: true })
+        } else {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.SendAssetGateway,
+            info: { symbol: modals.isShowTransferToTaikoAccount.info?.initSymbol },
+          })
+        }
         setShowTransferToTaikoAccount({ isShow: false })
         setState(initialState)
       } else {
@@ -532,6 +614,10 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     retrySend: () => {
       confirmSend()
     },
+    title: isToEthereum
+      ? 'Send to Ethereum'
+      : 'Send to TAIKO',
+    hideContactBtn: app === 'earn'
   } as TransferToTaikoAccountProps
   return output
 }

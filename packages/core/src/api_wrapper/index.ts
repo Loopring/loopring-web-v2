@@ -46,20 +46,26 @@ export class LoopringAPI {
     LoopringAPI.rabbitWithdrawAPI = new RabbitWithdrawAPI({ chainId }, 15000)
     LoopringAPI.__chainId__ = chainId
   }
-  public static setBaseURL = (baseURL: string) => {
+  public static setBaseURL = (baseURL: string, {
+    walletAPIURL,
+    rabbitWithdrawAPIURL
+  }: {
+    walletAPIURL?: string
+    rabbitWithdrawAPIURL?: string
+  }) => {
     LoopringAPI.userAPI?.setBaseUrl(baseURL)
     LoopringAPI.luckTokenAPI?.setBaseUrl(baseURL)
     LoopringAPI.exchangeAPI?.setBaseUrl(baseURL)
     LoopringAPI.globalAPI?.setBaseUrl(baseURL)
     LoopringAPI.ammpoolAPI?.setBaseUrl(baseURL)
-    LoopringAPI.walletAPI?.setBaseUrl(baseURL)
+    LoopringAPI.walletAPI?.setBaseUrl(walletAPIURL ? walletAPIURL : baseURL)
     LoopringAPI.wsAPI?.setBaseUrl(baseURL)
     LoopringAPI.nftAPI?.setBaseUrl(baseURL)
     LoopringAPI.delegate?.setBaseUrl(baseURL)
     LoopringAPI.defiAPI?.setBaseUrl(baseURL)
     LoopringAPI.contactAPI?.setBaseUrl(baseURL)
     LoopringAPI.vaultAPI?.setBaseUrl(baseURL)
-    LoopringAPI.rabbitWithdrawAPI?.setBaseUrl(baseURL)
+    LoopringAPI.rabbitWithdrawAPI?.setBaseUrl(rabbitWithdrawAPIURL ? rabbitWithdrawAPIURL : baseURL)
   }
 }
 

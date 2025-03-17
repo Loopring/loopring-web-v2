@@ -46,3 +46,55 @@ export const parseRabbitConfig = (
     toL1SupportedTokens: toL1SupportedTokens as string[],
   }
 }
+export const networkById = (id: ChainId) => {
+  return MapChainId[id] ? (167009 === id ? 'TAIKO' : MapChainId[id]) : undefined
+}
+
+export const parseRabbitConfig2 = (
+  config: any,
+  fromNetwork: string,
+  fromNetworkIdIndex: any,
+): {
+  toOtherNetworks: {
+    network: string
+    supportedTokens: string[]
+  }[]
+  agentId?: number
+  agentAddr?: string
+  exchange?: string
+} => {
+  if (!config)
+    return {
+      toOtherNetworks: [],
+    }
+  const toNetworks: string[] = config.fromToNetworks[fromNetwork] ?? []
+
+  const toOtherNetworks = toNetworks.filter(otherNetwork => otherNetwork !== fromNetwork).map((otherNetwork) => {
+    const networkL2TokenIds = config.networkL2TokenIds[fromNetwork] ?? []
+    const toOtherNetworkL1Tokens = config.networkL1Tokens[otherNetwork] ?? {}
+    const supportedTokens = networkL2TokenIds
+      .map((id: number) => {
+        return fromNetworkIdIndex[id]
+      })
+      .filter((symbol) => {
+        return toOtherNetworkL1Tokens[symbol]
+      })
+    
+    return {
+      network: otherNetwork,
+      supportedTokens,
+      // agentId,
+      // agentAddr,
+      // exchange,
+    }
+  })
+  const agentId = config.networkL2AgentAccountIds[fromNetwork]
+  const agentAddr = config.networkL2AgentAddresses[fromNetwork]
+  const exchange = config.networkExchanges[fromNetwork]
+  return {
+    toOtherNetworks,
+    agentId,
+    agentAddr,
+    exchange,
+  }
+}

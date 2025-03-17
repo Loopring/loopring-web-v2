@@ -160,7 +160,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         label: 'Taiko Hekla',
         chainId: '167009',
         isTest: true,
-        walletType: 'TAIKOHEKLA',
+        walletType: 'TAIKO',
       },
       167000: {
         label: 'Taiko',

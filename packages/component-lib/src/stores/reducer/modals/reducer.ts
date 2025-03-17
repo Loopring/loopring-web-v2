@@ -66,7 +66,8 @@ const initialState: ModalState = {
   isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
   isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
   isShowConfirmedVault: { isShow: false },
-  isShowTransferToTaikoAccount: { isShow: false },
+  isShowTransferToTaikoAccount: { isShow: false, from: undefined },
+  isShowBridge: { isShow: false, symbol: undefined, info: undefined },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -242,11 +243,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         addressType,
       }
     },
-    setShowTransferToTaikoAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow, info } = action.payload
+    setShowTransferToTaikoAccount(state, action: PayloadAction<ModalStatePlayLoad & { from?: string }>) {
+      const { isShow, info, from } = action.payload
       state.isShowTransferToTaikoAccount = {
         isShow,
-        info
+        info,
+        from
       }
     },
     setShowWithdraw(state, action: PayloadAction<ModalStatePlayLoad & Transaction & Contact>) {
@@ -462,9 +464,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state.isShowNoVaultAccount = { ...action.payload }
     },
     setShowConfirmedVault(state, action: PayloadAction<ModalStatePlayLoad>) {
-      state.isShowConfirmedVault = { ...action.payload }
+      state.isShowConfirmedVault = action.payload
     },
-    
+    setShowBridge(state, action: PayloadAction<ModalStatePlayLoad & Partial<Transaction & { contactName?: string }>>) {
+      state.isShowBridge = action.payload
+    },
   },
 })
 export const {
@@ -508,5 +512,6 @@ export const {
   setShowVaultLoan,
   setShowNoVaultAccount,
   setShowConfirmedVault,
+  setShowBridge,
   setShowTransferToTaikoAccount
 } = modalsSlice.actions
