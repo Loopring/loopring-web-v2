@@ -32,6 +32,8 @@ export type AssetTitleProps = {
   accountId: number
   onShowReceive: (token?: string) => void
   onShowSend: (token?: string) => void
+  onClickBridge?: () => void
+  showBridgeBtn?: boolean
   hideL2Assets: boolean
   setHideL2Assets: (value: boolean) => void
   assetBtnStatus: TradeBtnStatus

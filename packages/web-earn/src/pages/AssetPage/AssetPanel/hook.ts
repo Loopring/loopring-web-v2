@@ -4,10 +4,12 @@ import {
   LoopringAPI,
   makeWalletLayer2,
   makeWalletLayer2NoStatus,
+  networkById,
   numberStringListSum,
   store,
   useAccount,
   useBtnStatus,
+  useConfig,
   useDefiMap,
   useModalData,
   useSystem,
@@ -45,6 +47,7 @@ import { omitBy } from 'lodash'
 import Decimal from 'decimal.js'
 
 import _ from 'lodash'
+import { parseRabbitConfig2 } from '@loopring-web/core/src/hooks/help/parseRabbitConfig'
 
 export type AssetPanelProps<R = AssetsRawDataItem> = {
   assetsRawData: R[]
@@ -79,6 +82,7 @@ export const useGetAssets = (): AssetPanelProps & {
     setShowAccount,
     setShowDeposit,
     setShowWithdraw,
+    setShowBridge,
     modals: { isShowAccount },
   } = useOpenModals()
   const { resetDepositData, resetWithdrawData } = useModalData()
@@ -294,6 +298,30 @@ export const useGetAssets = (): AssetPanelProps & {
     [setShowAccount],
   )
 
+  const onClickBridge = React.useCallback(
+    (token?: any) => {
+      setShowAccount({
+        isShow: false,
+        info: { lastFailed: undefined },
+      });
+      setShowBridge({
+        isShow: true,
+        info: undefined
+      });
+    },
+    [setShowAccount, setShowBridge],
+  );
+  const { tokenPrices } = useTokenPrices()
+  const {defaultNetwork} = useSettings()
+  const {fastWithdrawConfig} = useConfig()
+  const {idIndex}=useTokenMap()
+  const fromNetwork = networkById(defaultNetwork)
+  const parsedConfig = fromNetwork 
+    ? parseRabbitConfig2(fastWithdrawConfig, fromNetwork, idIndex)
+    : undefined
+  const hasToOtherNetwork = parsedConfig?.toOtherNetworks?.find(item => item.network !== fromNetwork)
+  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
+  
   const assetTitleProps: AssetTitleProps = {
     setHideL2Assets,
     assetInfo: {
@@ -304,14 +332,15 @@ export const useGetAssets = (): AssetPanelProps & {
     hideL2Assets,
     onShowReceive: onReceive,
     onShowSend: onSend,
+    onClickBridge,
+    showBridgeBtn: isTaiko && hasToOtherNetwork,
   } as any
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   }
-  const { tokenPrices } = useTokenPrices()
-  const {defaultNetwork} = useSettings()
-  const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork )
+  
+  
   return {
     assetTitleProps,
     assetTitleMobileExtendProps,
