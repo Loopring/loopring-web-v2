@@ -24,6 +24,8 @@ const initialState: RedPacketHashInfos = {
   [ChainId.MAINNET]: {},
   [ChainId.TAIKOHEKLA]: {},
   [ChainId.TAIKO]: {},
+  [ChainId.BASE]: {},
+  [ChainId.BASESEPOLIA]: {},
   // withdrawHashes:{},
 }
 const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
@@ -71,6 +73,8 @@ const redPacketHistorySlice: Slice<RedPacketHashInfos> = createSlice<
         [ChainId.MAINNET]: make(state, ChainId.MAINNET.toString()),
         [ChainId.TAIKOHEKLA]: make(state, ChainId.TAIKOHEKLA.toString()),
         [ChainId.TAIKO]: make(state, ChainId.TAIKO.toString()),
+        [ChainId.BASE]: make(state, ChainId.BASE.toString()),
+        [ChainId.BASESEPOLIA]: make(state, ChainId.BASESEPOLIA.toString()),
       }
     },
     updateRedpacketHash(state: ChainHashInfos, action: PayloadAction<updateRedpacketHashProps>) {

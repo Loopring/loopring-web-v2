@@ -14,6 +14,8 @@ const initialState: OffRampHashInfos = {
   [ChainId.MAINNET]: {},
   [ChainId.TAIKOHEKLA]: {},
   [ChainId.TAIKO]: {},
+  [ChainId.BASE]: {},
+  [ChainId.BASESEPOLIA]: {},
   // withdrawHashes:{},
 }
 const offRampHistorySlice: Slice<OffRampHashInfos> = createSlice<
