@@ -1093,8 +1093,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   vaultPositionsTableProps,
   onClickHideShowAssets,
   accountActive,
-  totalEquity
-
+  totalEquity,
+  showSettleBtn,
+  onClickBuy,
+  onClickSell
 }) => {
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -1160,14 +1162,16 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   >
                     Collateral Management
                   </Button>
-                  <BgButton
-                    customBg='var(--color-button-outlined)'
-                    onClick={onClickSettle}
-                    sx={{ width: 'auto', ml: 1.5 }}
-                    variant='contained'
-                  >
-                    Settle
-                  </BgButton>
+                  {showSettleBtn && (
+                    <BgButton
+                      customBg='var(--color-button-outlined)'
+                      onClick={onClickSettle}
+                      sx={{ width: 'auto', ml: 1.5 }}
+                      variant='contained'
+                    >
+                      Settle
+                    </BgButton>
+                  )}
                 </Box>
 
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
@@ -1811,6 +1815,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               vaultAccountInfo?.accountStatus,
                             )
                           }
+                          onClickBuy={() => onClickBuy(detail?.detail)}
+                          onClickSell={() => onClickSell(detail?.detail)}
                           {...{ ...detail?.detail }}
                         />
                       </Box>

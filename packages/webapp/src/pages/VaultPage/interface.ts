@@ -53,6 +53,9 @@ export interface VaultDashBoardPanelUIProps {
   onClickHideShowAssets: () => void;
   accountActive: boolean
   totalEquity: string
+  showSettleBtn: boolean
+  onClickBuy: (market: any) => void;
+  onClickSell: (market: any) => void;
 }
 
 export interface CollateralDetailsModalProps {

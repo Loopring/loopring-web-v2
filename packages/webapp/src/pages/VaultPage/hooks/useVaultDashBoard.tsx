@@ -295,8 +295,11 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
           const totalAmount = sdk.toBig(tokenInfo.detail?.asset ?? 0)
+          const borrowedAmount = sdk.toBig(tokenInfo.detail?.borrowed ?? 0)
           const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
-          const isSmallBalance = tokenValueDollar.lt(1)
+          const tokenBorrowedValueDollar = borrowedAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
+          const isSmallBalance = tokenValueDollar.lt(1) 
+            && tokenBorrowedValueDollar.lt(1)
           item = {
             token: {
               type: TokenType.vault,
@@ -1316,6 +1319,25 @@ export const useVaultDashboard = ({
             currency,
           )
         : EmptyValueTag,
+    showSettleBtn: vaultPositionsTableProps.rawData.length > 0,
+    onClickBuy: (detail) => {
+      const symbol=detail?.tokenInfo.symbol?.slice(2)
+        setShowVaultSwap({
+          isShow: true,
+          symbol,
+          isSell: false
+        });
+      
+    },
+    onClickSell: (detail) => {
+      const symbol = detail?.tokenInfo.symbol?.slice(2)
+        setShowVaultSwap({
+          isShow: true,
+          symbol,
+          isSell: true
+        });
+      
+    }
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {

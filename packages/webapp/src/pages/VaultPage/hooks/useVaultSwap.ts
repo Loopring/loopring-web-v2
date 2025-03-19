@@ -582,17 +582,26 @@ export const useVaultSwap = () => {
         )
       : false
 
-  const moreToBeBorrowedBN =
-    sellToken && borrowRequired && sellAmountBN
-      ? sellAmountBN
-          .sub(sellTokenAsset?.total ?? 0)
-          .div(
-            utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
-          )
-          .mul(
-            utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
-          )
-      : undefined
+  const moreToBeBorrowedBN = tryFn(
+    () => {
+      const subbed =
+        sellToken && borrowRequired && sellAmountBN
+          ? sellAmountBN.sub(sellTokenAsset?.total ?? 0)
+          : undefined
+      const oneUnit = utils.parseUnits(
+        '1',
+        sellToken!.decimals - sellToken!.vaultTokenAmounts?.qtyStepScale,
+      )
+      const floorred = subbed?.div(oneUnit).mul(oneUnit)
+      if (subbed && floorred && floorred.eq(subbed)) {
+        return floorred
+      } else {
+        return floorred?.add(oneUnit)
+      }
+    },
+    () => undefined,
+  )
+    
 
   const moreToBeBorrowed = moreToBeBorrowedBN
     ? utils.formatUnits(moreToBeBorrowedBN, sellToken?.decimals)
@@ -783,7 +792,7 @@ export const useVaultSwap = () => {
         const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
         const tokenInfo = tokenMap[symbol]
         if (!asset || !tokenInfo) return undefined
-        const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
+        const position = new Decimal(utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals))
         if (
           symbol === 'LVUSDT' ||
           position.isZero() ||
@@ -1476,13 +1485,13 @@ export const useVaultSwap = () => {
       },
       slippageList: ['0.1', '0.5', '1', `slippage:${slippage}`],
       currentSlippage: slippage,
-      onSlippageChange: (slippage, customSlippage) => {
-        // debugger
-        if (customSlippage && customSlippage !== 'N') {
-          setSlippage(customSlippage)
-        } else {
-          setSlippage(slippage)
-        }
+      onSlippageChange: (_slippage, customSlippage) => {
+        setSlippage(_slippage)
+        // if (customSlippage && customSlippage !== 'N' && customSlippage !== slippage) {
+        //   setSlippage(customSlippage)
+        // } else {
+        //   setSlippage(_slippage)
+        // }
       },
     },
     countdown: {
