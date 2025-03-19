@@ -1118,7 +1118,7 @@ export const useVaultDashboard = ({
     .map((symbol) => {
       const originSymbol = symbol.slice(2)
       const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
-      const tokenInfo = vaultTokenMap[symbol]
+      const tokenInfo = vaultTokenMap?.[symbol]
       if (!asset || !tokenInfo) return undefined
       const position = new Decimal(
         utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
