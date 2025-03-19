@@ -921,6 +921,7 @@ export interface VaultSwapModalProps {
   }
   hourlyInterestRate: string
   tradingFee: string
+  tradingFeeDescription: string
   slippageTolerance: string
   myPositions:
     | {
@@ -1026,6 +1027,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
     marginLevelChange,
     hourlyInterestRate,
     tradingFee,
+    tradingFeeDescription,
     slippageTolerance ,
     myPositions,
     leverageSelection,
@@ -1562,7 +1564,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
             <SpaceBetweenBox
               mt={1}
               leftNode={
-                <Tooltip title={'The trading fee is fixed at 0.3%.'}>
+                <Tooltip title={tradingFeeDescription}>
                   <Typography
                     display={'flex'}
                     alignItems={'center'}

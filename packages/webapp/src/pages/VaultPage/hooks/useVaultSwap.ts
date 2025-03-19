@@ -790,7 +790,7 @@ export const useVaultSwap = () => {
     return _.keys(vaultLayer2)
       .map((symbol) => {
         const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
-        const tokenInfo = tokenMap[symbol]
+        const tokenInfo = tokenMap?.[symbol]
         if (!asset || !tokenInfo) return undefined
         const position = new Decimal(utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals))
         if (
@@ -1628,7 +1628,7 @@ export const useVaultSwap = () => {
     },
     amounInUSDT: amounInUSDT
       ? numberFormatThousandthPlace(amounInUSDT, {
-          fixed: LVUSDTInfo?.vaultTokenAmounts.qtyStepScale,
+          fixed: LVUSDTInfo?.precisionForOrder,
           removeTrailingZero: true,
         }) + ' USDT'
       : EmptyValueTag + ' USDT',
@@ -1747,6 +1747,13 @@ export const useVaultSwap = () => {
         )
       },
       () => EmptyValueTag + ' ' + buyTokenOriginSymbol,
+    ),
+    tradingFeeDescription: tryFn(
+      () => {
+        const feeBips = maxFeeBips ?? marketInfo?.feeBips ?? MAPFEEBIPS;
+        return `The trading fee is ${toPercent((feeBips/100).toString(), 2)}.`;
+      },
+      () => '',
     ),
     slippageTolerance: `${slippageReal}%`,
     onClickLongShort: (v: 'long' | 'short') => {
