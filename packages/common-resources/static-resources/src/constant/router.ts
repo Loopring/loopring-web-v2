@@ -1178,7 +1178,7 @@ export const TokenPriceBase = {
   SEPOLIA: '0xa7bc5a2731803be668090125b5074555f91cbc9d',
   ARBGOERLI: '0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a',
   BASE: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-  BASESEPOLIA: '0xa7bc5a2731803be668090125b5074555f91cbc9d',
+  BASESEPOLIA: '0x5cc6b635bb68976e4ae3d0546ba0f20f66872a72',
 }
 export const RecordMap: { [key: string]: RecordTabIndex[] } = {
   TAIKOHEKLA: [
