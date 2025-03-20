@@ -1856,9 +1856,8 @@ export const useVaultSwap = () => {
                           slideValue: 0,
                           depth: undefined,
                         })
-                        setTimeout(() => {
-                          restartTimer()  
-                        }, 100);
+                        restartTimer()
+                        refreshData()
                       },
                     }
                   : undefined
