@@ -33,7 +33,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     flex: 1;
     ${({ isMobile }) =>
     isMobile
-        ? `--template-columns: 54% 40% 6% !important;`
+        ? `--template-columns: 30% 30% 40% !important;`
         :`--template-columns: 200px 150px auto auto !important;`}
     .rdg-cell:first-of-type {
       display: flex;
@@ -316,50 +316,122 @@ export const VaultAssetsTable = withTranslation('tables')(
       },
     ]
 		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
-			{
-				key: 'token',
-				name: t('labelToken'),
-				formatter: ({row}) => {
-					const {token, precision, erc20Symbol: symbol, available, amount} = row
-					let tokenIcon: [any, any] = [coinJson[symbol], undefined]
-					return (
-						<>
-							<Typography width={'56px'} display={'flex'}>
-								<CoinIcons type={row?.token?.type} tokenIcon={tokenIcon}/>
-							</Typography>
-							<Typography
-								variant={'body1'}
-								display={'flex'}
-								flexDirection={'row'}
-								justifyContent={'flex-end'}
-								textAlign={'right'}
-								flex={1}
-							>
-								<Typography display={'flex'}>
-									{hideAssets
-										? HiddenTag
-										: amount && Number(amount) > 0
-                    ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
-                        floor: true,
-                      })
-										 : EmptyValueTag}
-								</Typography>
-								<Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
-									{hideAssets ? HiddenTag : token.belongAlice}
-								</Typography>
-							</Typography>
-						</>
-					)
-				},
-			},
-			{
+      // {
+      // 	key: 'token',
+      // 	name: t('labelToken'),
+      // 	formatter: ({row}) => {
+      // 		const {token, precision, erc20Symbol: symbol, available, amount} = row
+      // 		let tokenIcon: [any, any] = [coinJson[symbol], undefined]
+      // 		return (
+      // 			<>
+      // 				<Typography width={'56px'} display={'flex'}>
+      // 					<CoinIcons type={row?.token?.type} tokenIcon={tokenIcon}/>
+      // 				</Typography>
+      // 				<Typography
+      // 					variant={'body1'}
+      // 					display={'flex'}
+      // 					flexDirection={'row'}
+      // 					justifyContent={'flex-end'}
+      // 					textAlign={'right'}
+      // 					flex={1}
+      // 				>
+      // 					<Typography display={'flex'}>
+      // 						{hideAssets
+      // 							? HiddenTag
+      // 							: amount && Number(amount) > 0
+      //               ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+      //                   floor: true,
+      //                 })
+      // 							 : EmptyValueTag}
+      // 					</Typography>
+      // 					<Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
+      // 						{hideAssets ? HiddenTag : token.belongAlice}
+      // 					</Typography>
+      // 				</Typography>
+      // 			</>
+      // 		)
+      // 	},
+      // },
+      {
+        key: 'token',
+        name: t('labelToken'),
+        formatter: ({ row }) => {
+          const symbol = row.erc20Symbol
+          let tokenIcon: [any, any] = [coinJson[symbol], undefined]
+          return (
+            <>
+              <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+              <Typography
+                variant={'inherit'}
+                color={'textPrimary'}
+                display={'flex'}
+                flexDirection={'column'}
+                marginLeft={0.5}
+                component={'span'}
+                paddingRight={1}
+              >
+                <Typography component={'span'} className={'next-coin'}>
+                  {row.token.belongAlice ?? row.token.vaule}
+                </Typography>
+              </Typography>
+            </>
+          )
+        },
+      },
+      {
+        key: 'holding',
+        name: 'Holding',
+        headerCellClass: 'textAlignLeft',
+        formatter: ({ row }) => {
+          const { amount, precision } = row
+          return (
+            <Box className={'textAlignLeft'}>
+              {hideAssets
+                ? HiddenTag
+                : amount && Number(amount) > 0
+                ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+                    floor: true,
+                  })
+                : EmptyValueTag}
+            </Box>
+          )
+        },
+      },
+      {
         key: 'actions',
-        name: '',
+        name: t('labelActions'),
         headerCellClass: 'textAlignRight',
         // minWidth: 280,
-        formatter: actionRow,
+        formatter: ({ row }) => {
+          return (
+            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickTrade({ row })
+                }}
+                size='small'
+              >
+                {t('labelTrade')}
+              </Button>
+              <Button
+                sx={{
+                  opacity: row.repayDisabled ? 0.5 : 1,
+                }}
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (row.repayDisabled) return
+                  onRowClickRepay({ row })
+                }}
+              >
+                Repay
+              </Button>
+            </Box>
+          )
+        },
       },
-		]
+    ]
 
 		return (
       <TableWrap lan={language} isMobile={isMobile}>

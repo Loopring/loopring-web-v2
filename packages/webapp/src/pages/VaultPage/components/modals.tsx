@@ -1060,8 +1060,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       <Box
         bgcolor={'var(--color-box)'}
         width={'var(--modal-width)'}
-        minHeight={'700px'}
-        height={'85%'}
+        // minHeight={'700px'}
+        height={'700px'}
+        maxHeight={'90%'}
         overflow={'auto'}
         borderRadius={1}
         display={'flex'}
@@ -1834,6 +1835,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       <Box
         bgcolor={'var(--color-box)'}
         width={'350px'}
+        maxWidth={'90%'}
         height={'400px'}
         overflow={'auto'}
         borderRadius={1}
