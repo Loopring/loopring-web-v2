@@ -22,7 +22,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     flex: 1;
     ${({ isMobile }) =>
       isMobile
-        ? `--template-columns: 250px auto auto 290px !important;`
+        ? `--template-columns: 30% auto 50% !important;`
         : `--template-columns: 250px auto auto 290px !important;`}
     .rdg-cell:first-of-type {
       display: flex;
@@ -122,44 +122,7 @@ export const VaultPositionsTable = withTranslation('tables')(
               >
                 {row.tokenPair.pair}
               </Typography>
-              {/* <Typography
-                bgcolor={hexToRGB(theme.colorBase.warning, 0.5)}
-                color={'var(--color-text-primary)'}
-                marginLeft={1}
-                px={1}
-                component={'span'}
-                borderRadius={'4px'}
-                display={'flex'}
-                justifyContent={'center'}
-                alignItems={'center'}
-              >
-                {row.tokenPair.leverage}
-              </Typography>
-              <Typography
-                color={
-                  marginLevelType(row.tokenPair.marginLevel) === 'warning'
-                    ? theme.colorBase.warning
-                    : marginLevelType(row.tokenPair.marginLevel) === 'danger'
-                    ? theme.colorBase.error
-                    : theme.colorBase.success
-                }
-                bgcolor={hexToRGB(
-                  marginLevelType(row.tokenPair.marginLevel) === 'warning'
-                    ? theme.colorBase.warning
-                    : marginLevelType(row.tokenPair.marginLevel) === 'danger'
-                    ? theme.colorBase.error
-                    : theme.colorBase.success,
-                  0.5,
-                )}
-                ml={1}
-                display={'flex'}
-                alignItems={'center'}
-                borderRadius={'4px'}
-                px={0.5}
-              >
-                <MarginLevelIcon sx={{ mr: 0.5, mb: 0.2 }} />
-                {row.tokenPair.marginLevel}
-              </Typography> */}
+             
             </Box>
           )
         },
@@ -196,19 +159,12 @@ export const VaultPositionsTable = withTranslation('tables')(
         formatter: ({ row }) => {
           return (
             <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
-              {/* <Button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onRowClickLeverage({ row })
-                }}
-              >
-                Leverage
-              </Button> */}
               <Button
                 onClick={(e) => {
                   e.stopPropagation()
                   row.onClickTrade()
                 }}
+                size={'medium'}
               >
                 Trade
               </Button>
@@ -217,6 +173,7 @@ export const VaultPositionsTable = withTranslation('tables')(
                   e.stopPropagation()
                   row.onClickClose()
                 }}
+                size={'medium'}
               >
                 Close
               </Button>
@@ -225,7 +182,70 @@ export const VaultPositionsTable = withTranslation('tables')(
         },
       },
     ]
-    const getColumnMobileAssets = getColumnModeAssets
+    const getColumnMobileAssets = (t: TFunction): Column<PositionItem, unknown>[] => [
+      {
+        key: 'token',
+        name: t('labelToken'),
+        formatter: ({ row }) => {
+          return (
+            <Box height={'100%'} display={'flex'} alignItems={'center'}>
+              <Typography
+                variant={'inherit'}
+                color={'var(--color-text-primary)'}
+                flexDirection={'column'}
+                component={'span'}
+                paddingRight={1}
+                width={'80px'}
+              >
+                {row.tokenPair.pair}
+              </Typography>
+            </Box>
+          )
+        },
+      },
+      {
+        key: 'holding',
+        name: 'Holding',
+        headerCellClass: 'textAlignRight',
+        formatter: ({ row }) => {
+          return <Box className={'textAlignRight'}>
+            <Typography mr={1} component={'span'} color={row.direction === 'long' ? 'var(--color-success)' : 'var(--color-error)'}>{row.direction === 'long' ? 'Long' : 'Short'}</Typography>
+            {hideAssets ? HiddenTag : row.holding}
+            </Box>
+        },
+      },
+
+      {
+        key: 'actions',
+        name: t('labelActions'),
+        headerCellClass: 'textAlignRight',
+        cellClass: 'textAlignRight',
+        formatter: ({ row }) => {
+          return (
+            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  row.onClickTrade()
+                }}
+                size={'small'}
+              >
+                Trade
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  row.onClickClose()
+                }}
+                size={'small'}
+              >
+                Close
+              </Button>
+            </Box>
+          )
+        },
+      },
+    ]
 
     return (
       <TableWrap lan={language} isMobile={isMobile}>

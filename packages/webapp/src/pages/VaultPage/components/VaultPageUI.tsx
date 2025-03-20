@@ -59,8 +59,8 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
         <Box
           display={'flex'}
           justifyContent={'space-between'}
-          alignItems={isMobile ? 'left' : 'center'}
-          flexDirection={isMobile ? 'column' : 'row'}
+          alignItems={'center'}
+          flexDirection={'row'}
         >
           <Tabs
             variant={'scrollable'}
@@ -117,7 +117,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
             display={'flex'}
             flexDirection={'row'}
             marginTop={isMobile ? 2 : 'inherit'}
-            width={isMobile ? '100%' : 'initial'}
             justifyContent={'space-between'}
           >
             <Button

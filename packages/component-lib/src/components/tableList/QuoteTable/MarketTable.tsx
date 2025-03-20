@@ -236,12 +236,12 @@ export const MarketTable = withTranslation('tables')(
             key: 'change',
             name: t(isMobile ? 'labelQuota24hChangeLit' : 'labelQuota24hChange'),
             sortable: true,
-            headerCellClass: 'textAlignLeft',
-            cellClass: 'textAlignLeft',
+            headerCellClass: isMobile ? 'textAlignRight' : 'textAlignLeft',
+            cellClass: isMobile ? 'textAlignRight' : 'textAlignLeft',
             formatter: ({ row }: any) => {
               const value = row.percentChange24H
               return (
-                <div className='rdg-cell-value textAlignLeft'>
+                <div className={isMobile ? 'rdg-cell-value textAlignRight' : 'rdg-cell-value textAlignLeft'}>
                   <QuoteTableChangedCell value={value} upColor={upColor}>
                     {typeof value !== 'undefined'
                       ? (sdk.toBig(value).gt(0) ? '+' : '') +

@@ -44,6 +44,7 @@ import {
   VaultJoinPanelModal,
   VaultPositionsTable,
   Toast,
+  useSettings,
 } from '@loopring-web/component-lib'
 import { Trans } from 'react-i18next'
 import {
@@ -1098,6 +1099,11 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   onClickBuy,
   onClickSell
 }) => {
+  const { isMobile } = useSettings()
+  const boxSx = {
+    my: isMobile ? 2 : 2,
+    width: isMobile ? '50%' : '25%',
+  }
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -1154,7 +1160,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 >
                   <Typography>Cross Account</Typography>
                 </Box>
-                <Box display={'flex'} alignItems={'center'} alignSelf={'flex-end'}>
+                <Box display={'flex'} flexDirection={isMobile ? 'column' : 'row'} alignItems={isMobile ? 'end' : 'center'} alignSelf={'flex-end'}>
                   <Button
                     onClick={onClickCollateralManagement}
                     sx={{ width: 'auto' }}
@@ -1166,7 +1172,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     <BgButton
                       customBg='var(--color-button-outlined)'
                       onClick={onClickSettle}
-                      sx={{ width: 'auto', ml: 1.5 }}
+                      sx={{ width: 'auto', ml: 1.5, mt: isMobile ? 2 : 0 }}
                       variant='contained'
                     >
                       Settle
@@ -1211,8 +1217,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   {accountActive ? (hideAssets ? HiddenTag : totalEquity) : EmptyValueTag}
                 </Typography>
 
-                <Box mt={6} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
-                  <Box width={'25%'}>
+                <Box mt={isMobile ? 2 : 4} display={'flex'} flexWrap={'wrap'} flexDirection={'row'}>
+                  <Box sx={boxSx}>
                     <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                       {t('labelVaultTotalCollateral')}
                     </Typography>
@@ -1257,7 +1263,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       )}
                     </Typography>
                   </Box>
-                  <Box width={'25%'}>
+                  <Box sx={boxSx}>
                     <Typography
                       component={'h4'}
                       variant={'body1'}
@@ -1367,7 +1373,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       )
                     })()}
                   </Box>
-                  <Box width={'25%'}>
+                  <Box sx={boxSx}>
                     <Tooltip title={t('labelVaultTotalDebtTooltips').toString()} placement={'top'}>
                       <Typography
                         component={'h4'}
@@ -1422,7 +1428,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       )}
                     </Typography>
                   </Box>
-                  <Box width={'25%'}>
+                  <Box sx={boxSx}>
                     <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                       {t('labelVaultProfit')}
                     </Typography>
@@ -1507,10 +1513,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       })()}
                     </Typography>
                   </Box>
-                </Box>
-                <Box mt={4} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
                   {!hideLeverage && (
-                    <Box position={'relative'} width={'25%'}>
+                    <Box sx={boxSx} position={'relative'}>
                       <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                         {t('labelVaultLeverage')}
                       </Typography>
@@ -1561,7 +1565,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       </Typography>
                     </Box>
                   )}
-                  <Box position={'relative'} width={'25%'}>
+                  <Box sx={boxSx} position={'relative'}>
                     <Tooltip
                       title={
                         'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'
@@ -1592,7 +1596,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       {accountActive ? liquidationThreshold : EmptyValueTag}
                     </Typography>
                   </Box>
-                  <Box position={'relative'} width={'25%'}>
+                  <Box sx={boxSx} position={'relative'}>
                     <Tooltip
                       title={
                         'The percentage of the position size deducted during liquidation to prevent bad debt.'
@@ -1623,6 +1627,121 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     </Typography>
                   </Box>
                 </Box>
+                {/* <Box mt={4} display={'flex'} flexWrap={isMobile ? 'wrap' : 'nowrap'} flexDirection={'row'}>
+                  {!hideLeverage && (
+                    <Box position={'relative'} width={isMobile ? '50%' : '25%'}>
+                      <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
+                        {t('labelVaultLeverage')}
+                      </Typography>
+                      <Typography
+                        component={'span'}
+                        marginTop={1}
+                        display={'inline-flex'}
+                        variant={'body1'}
+                        color={'textPrimary'}
+                        fontSize={'20px'}
+                        alignItems={'center'}
+                      >
+                        {vaultAccountInfo?.leverage && accountActive
+                          ? `${vaultAccountInfo?.leverage}x`
+                          : EmptyValueTag}
+                        {accountActive && (
+                          <Typography
+                            sx={{ cursor: 'pointer' }}
+                            color={'var(--color-primary)'}
+                            marginLeft={1}
+                            component={'span'}
+                            onClick={() => {
+                              setLocalState({
+                                ...localState,
+                                modalStatus: 'leverage',
+                              })
+                            }}
+                          >
+                            {t('labelVaultDetail')}
+                          </Typography>
+                        )}
+                      </Typography>
+                      <Typography
+                        marginTop={0.5}
+                        width={'200px'}
+                        color={'var(--color-text-secondary)'}
+                        variant={'body2'}
+                      >
+                        {t('labelVaultMaximumCredit')}:{' '}
+                        {(vaultAccountInfo as any)?.maxCredit &&
+                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit) &&
+                        accountActive
+                          ? fiatNumberDisplay(
+                              getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
+                              currency,
+                            )
+                          : EmptyValueTag}
+                      </Typography>
+                    </Box>
+                  )}
+                  <Box position={'relative'} width={isMobile ? '50%' : '25%'}>
+                    <Tooltip
+                      title={
+                        'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'
+                      }
+                      placement={'top'}
+                    >
+                      <Typography
+                        component={'h4'}
+                        variant={'body1'}
+                        color={'textSecondary'}
+                        display={'flex'}
+                        alignItems={'center'}
+                      >
+                        Liquidation Threshold
+                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                      </Typography>
+                    </Tooltip>
+
+                    <Typography
+                      component={'span'}
+                      marginTop={1}
+                      display={'inline-flex'}
+                      variant={'body1'}
+                      color={'textPrimary'}
+                      fontSize={'20px'}
+                      alignItems={'center'}
+                    >
+                      {accountActive ? liquidationThreshold : EmptyValueTag}
+                    </Typography>
+                  </Box>
+                  <Box position={'relative'} width={isMobile ? '50%' : '25%'}>
+                    <Tooltip
+                      title={
+                        'The percentage of the position size deducted during liquidation to prevent bad debt.'
+                      }
+                      placement={'top'}
+                    >
+                      <Typography
+                        component={'h4'}
+                        variant={'body1'}
+                        color={'textSecondary'}
+                        display={'flex'}
+                        alignItems={'center'}
+                      >
+                        Liquidation Penalty
+                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                      </Typography>
+                    </Tooltip>
+                    <Typography
+                      component={'span'}
+                      marginTop={1}
+                      display={'inline-flex'}
+                      variant={'body1'}
+                      color={'textPrimary'}
+                      fontSize={'20px'}
+                      alignItems={'center'}
+                    >
+                      {accountActive ? liquidationPenalty : EmptyValueTag}
+                    </Typography>
+                  </Box>
+                </Box> */}
               </Box>
               <Box
                 flex={1}

@@ -1319,7 +1319,7 @@ export const useVaultDashboard = ({
             currency,
           )
         : EmptyValueTag,
-    showSettleBtn: vaultPositionsTableProps.rawData.length > 0,
+    showSettleBtn: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
     onClickBuy: (detail) => {
       const symbol=detail?.tokenInfo.symbol?.slice(2)
         setShowVaultSwap({
