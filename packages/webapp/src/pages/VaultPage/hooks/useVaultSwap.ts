@@ -118,9 +118,15 @@ const repayIfNeeded = async (symbol) => {
     account
   } = store.getState()
   const asset = vaultLayer2?.[symbol]
-  const shouldRepay = new Decimal(asset?.borrowed ?? '0').gt('0') && new Decimal(asset?.total ?? '0').gt('0')
-  if (!shouldRepay) return
   const tokenInfo = tokenMap[symbol]
+  
+  const minLoanAmount = tokenInfo?.vaultTokenAmounts?.minLoanAmount
+  const shouldRepay =
+    new Decimal(asset?.borrowed ?? '0').gt('0') &&
+    new Decimal(asset?.total ?? '0').gt('0') &&
+    (!minLoanAmount || sdk.toBig(asset?.borrowed ?? '0').gte(minLoanAmount))
+  
+  if (!shouldRepay) return
   const [{ broker }, { offchainId }] = await Promise.all([
     LoopringAPI.userAPI!.getAvailableBroker({
       type: 4,
