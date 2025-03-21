@@ -744,7 +744,7 @@ export const useVaultDashboard = ({
       | 'autoRepayConfirm',
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
-    showedAutoRepayModal: false,
+    checkedAutoRepay: false,
     // closeConfirmModal: {
     //   show: false,
     //   symbol: undefined as undefined | string
@@ -1482,17 +1482,29 @@ export const useVaultDashboard = ({
     }
   })()
   useEffect(() => {
-    if (localState.showedAutoRepayModal) return
+
+    if (localState.checkedAutoRepay || vaultLayer2Status !== SagaStatus.UNSET) return
+    
     const list = checkHasTokenNeedRepay()
     if (list.length > 0) {
       setLocalState((state) => ({
         ...state,
         modalStatus: 'autoRepayConfirm',
-        showedAutoRepayModal: true
+        checkedAutoRepay: true
+      }))
+    } else {
+      setLocalState((state) => ({
+        ...state,
+        checkedAutoRepay: true
       }))
     }
-  }, [vaultLayer2, localState.showedAutoRepayModal])
-  console.log('useVaultDashboard', {vaultPositionsTableProps,vaultDashBoardPanelUIProps}, {vaultLayer2, vaultTokenMap})
+  }, [vaultLayer2Status, localState.checkedAutoRepay])
+  console.log(
+    'useVaultDashboard',
+    localState,
+    { vaultPositionsTableProps, vaultDashBoardPanelUIProps },
+    { vaultLayer2, vaultTokenMap },
+  )
   
   return {
     // vaultSwapModalProps: vaultSwapModalProps,
