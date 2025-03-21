@@ -54,6 +54,7 @@ import {
   ViewAccountTemplate,
 } from '@loopring-web/core'
 import {
+  AutoRepayConfirmModal,
   CloseAllConfirmModal,
   CloseConfirmModal,
   CollateralDetailsModal,
@@ -2008,7 +2009,7 @@ export const VaultDashBoardPanel = ({
     noAccountHintModalProps,
     supplyCollateralHintModalProps,
     closeConfirmModalProps,
-    settleConfirmModalProps
+    autoRepayModalProps
     // vaultSwapModalProps,
     // smallOrderAlertProps,
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
@@ -2034,6 +2035,7 @@ export const VaultDashBoardPanel = ({
       <Toast {...toastProps} />
       <CloseConfirmModal {...closeConfirmModalProps}/>
       <CloseAllConfirmModal {...closeAllConfirmModalProps}/>
+      <AutoRepayConfirmModal {...autoRepayModalProps}/>
     </>
   ) 
 }

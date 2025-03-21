@@ -76,8 +76,10 @@ import Decimal from 'decimal.js'
 import _, { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
-import { CloseConfirmModalProps, NoAccountHintModalProps, SettleConfirmModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
+import { AutoRepayModalProps, CloseConfirmModalProps, NoAccountHintModalProps, SettleConfirmModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
 import { useVaultSwap } from './useVaultSwap'
+import { checkHasTokenNeedRepay, repayIfNeeded } from '../utils'
+import { promiseAllSequently } from '@loopring-web/core/src/utils/promise'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
 
@@ -493,7 +495,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
 }
 
 export const closePosition = async (symbol: string) => {
-  debugger
+  
   const {
     vaultLayer2: { vaultLayer2 },
     invest: {
@@ -540,7 +542,7 @@ export const closePosition = async (symbol: string) => {
     slipBips: slippageReal.toString(),
   })
   const USDTAmount = new Decimal(vaultAsset.netAsset).isPos() ? output!.amountB! : output!.amountS!
-  debugger
+  
   if (new Decimal(USDTAmount).lt('10')) {
     const closeTokenInfo = tokenMap[symbol]
     const tokenId = closeTokenInfo.vaultTokenId
@@ -660,6 +662,7 @@ export const useVaultDashboard = ({
   supplyCollateralHintModalProps: SupplyCollateralHintModalProps
   closeConfirmModalProps: CloseConfirmModalProps
   settleConfirmModalProps: SettleConfirmModalProps
+  autoRepayModalProps: AutoRepayModalProps
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
   
@@ -737,9 +740,11 @@ export const useVaultDashboard = ({
       | 'dustCollector'
       | 'dustCollectorUnavailable'
       | 'supplyCollateralHint'
-      | 'settleConfirm',
+      | 'settleConfirm'
+      | 'autoRepayConfirm',
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
+    showedAutoRepayModal: false,
     // closeConfirmModal: {
     //   show: false,
     //   symbol: undefined as undefined | string
@@ -1112,7 +1117,7 @@ export const useVaultDashboard = ({
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
   const [assetsTab, setAssetsTab] = React.useState('assetsView' as 'assetsView' | 'positionsView')
-  const {vaultLayer2} = useVaultLayer2()
+  const {vaultLayer2, status: vaultLayer2Status} = useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
     rawData: _.keys(vaultLayer2)
     .map((symbol) => {
@@ -1476,10 +1481,19 @@ export const useVaultDashboard = ({
         return <></>
     }
   })()
-    
-  
-  const { vaultSwapModalProps, smallOrderAlertProps } = useVaultSwap()
+  useEffect(() => {
+    if (localState.showedAutoRepayModal) return
+    const list = checkHasTokenNeedRepay()
+    if (list.length > 0) {
+      setLocalState((state) => ({
+        ...state,
+        modalStatus: 'autoRepayConfirm',
+        showedAutoRepayModal: true
+      }))
+    }
+  }, [vaultLayer2, localState.showedAutoRepayModal])
   console.log('useVaultDashboard', {vaultPositionsTableProps,vaultDashBoardPanelUIProps}, {vaultLayer2, vaultTokenMap})
+  
   return {
     // vaultSwapModalProps: vaultSwapModalProps,
     vaultDashBoardPanelUIProps,
@@ -1911,6 +1925,26 @@ export const useVaultDashboard = ({
       },
       onConfirm: async () => {
 
+      },
+    },
+    autoRepayModalProps: {
+      open: localState.modalStatus === 'autoRepayConfirm',
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal'
+        })
+      },
+      onConfirm: async () => {
+        const list = checkHasTokenNeedRepay()
+        await promiseAllSequently(list.map((symbol) => {
+          return () => repayIfNeeded(symbol).catch(() => {})
+        }))
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal'
+        })
+        updateVaultLayer2({})
       },
     },
   }

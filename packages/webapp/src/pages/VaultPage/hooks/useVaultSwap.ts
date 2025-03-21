@@ -62,6 +62,7 @@ import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/us
 import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
+import { repayIfNeeded } from '../utils'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -106,79 +107,82 @@ const calcDexWrap = <R>(input: {
 
 export type VaultTradeTradeData = VaultBorrowTradeData & { borrowAvailable: string }
 
-const repayIfNeeded = async (symbol) => {
-  const {
-    vaultLayer2: { vaultLayer2 },
-    invest: {
-      vaultMap: {
-        tokenMap
-      },
-    },
-    system: { exchangeInfo, chainId },
-    account
-  } = store.getState()
-  const asset = vaultLayer2?.[symbol]
-  const tokenInfo = tokenMap[symbol]
+// const repayIfNeeded = async (symbol: string) => {
+//   if (symbol === 'LVUSDT') {
+//     debugger
+//   }
+//   const {
+//     vaultLayer2: { vaultLayer2 },
+//     invest: {
+//       vaultMap: {
+//         tokenMap
+//       },
+//     },
+//     system: { exchangeInfo, chainId },
+//     account
+//   } = store.getState()
+//   const asset = vaultLayer2?.[symbol]
+//   const tokenInfo = tokenMap[symbol]
   
-  const minLoanAmount = tokenInfo?.vaultTokenAmounts?.minLoanAmount
-  const shouldRepay =
-    new Decimal(asset?.borrowed ?? '0').gt('0') &&
-    new Decimal(asset?.total ?? '0').gt('0') &&
-    (!minLoanAmount || sdk.toBig(asset?.borrowed ?? '0').gte(minLoanAmount))
+//   const minLoanAmount = tokenInfo?.vaultTokenAmounts?.minLoanAmount
+//   const shouldRepay =
+//     new Decimal(asset?.borrowed ?? '0').gt('0') &&
+//     new Decimal(asset?.total ?? '0').gt('0') &&
+//     (!minLoanAmount || sdk.toBig(asset?.borrowed ?? '0').gte(minLoanAmount))
   
-  if (!shouldRepay) return
-  const [{ broker }, { offchainId }] = await Promise.all([
-    LoopringAPI.userAPI!.getAvailableBroker({
-      type: 4,
-    }),
-    LoopringAPI.userAPI!.getNextStorageId(
-      {
-        accountId: account.accountId,
-        sellTokenId: tokenInfo.vaultTokenId,
-      },
-      account.apiKey,
-    ),
-  ])
-  const request = {
-    exchange: exchangeInfo!.exchangeAddress,
-    payerAddr: account.accAddress,
-    payerId: account.accountId,
-    payeeId: 0,
-    payeeAddr: broker,
-    storageId: offchainId,
-    token: {
-      tokenId: tokenInfo.vaultTokenId,
-      volume: asset!.borrowed,
-    },
-    maxFee: {
-      tokenId: tokenInfo.vaultTokenId,
-      volume: '0',
-    },
-    validUntil: getTimestampDaysLater(DAYS),
-    memo: '',
-  }
+//   if (!shouldRepay) return
+//   const [{ broker }, { offchainId }] = await Promise.all([
+//     LoopringAPI.userAPI!.getAvailableBroker({
+//       type: 4,
+//     }),
+//     LoopringAPI.userAPI!.getNextStorageId(
+//       {
+//         accountId: account.accountId,
+//         sellTokenId: tokenInfo.vaultTokenId,
+//       },
+//       account.apiKey,
+//     ),
+//   ])
+//   const request = {
+//     exchange: exchangeInfo!.exchangeAddress,
+//     payerAddr: account.accAddress,
+//     payerId: account.accountId,
+//     payeeId: 0,
+//     payeeAddr: broker,
+//     storageId: offchainId,
+//     token: {
+//       tokenId: tokenInfo.vaultTokenId,
+//       volume: asset!.borrowed,
+//     },
+//     maxFee: {
+//       tokenId: tokenInfo.vaultTokenId,
+//       volume: '0',
+//     },
+//     validUntil: getTimestampDaysLater(DAYS),
+//     memo: '',
+//   }
 
-  return await LoopringAPI.vaultAPI?.submitVaultRepay(
-    {
+//   return await LoopringAPI.vaultAPI?.submitVaultRepay(
+//     {
     
-      request: request,
-      web3: connectProvides.usedWeb3 as any,
-      chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
-      walletType: (ConnectProviders[account.connectName] ??
-        account.connectName) as unknown as sdk.ConnectorNames,
-      eddsaKey: account.eddsaKey.sk,
-      apiKey: account.apiKey,
-    },
-    {
-      accountId: account.accountId,
-      counterFactualInfo: account.eddsaKey.counterFactualInfo,
-    },
-    '1'
-  )
+//       request: request,
+//       web3: connectProvides.usedWeb3 as any,
+//       chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
+//       walletType: (ConnectProviders[account.connectName] ??
+//         account.connectName) as unknown as sdk.ConnectorNames,
+//       eddsaKey: account.eddsaKey.sk,
+//       apiKey: account.apiKey,
+//     },
+//     {
+//       accountId: account.accountId,
+//       counterFactualInfo: account.eddsaKey.counterFactualInfo,
+//     },
+//     '1'
+//   )
 
 
   
-}
+// }
 export const useVaultSwap = () => {
   const borrowHash = React.useRef<null | { hash: string; timer?: any }>(null)
   const refreshRef = React.useRef()
