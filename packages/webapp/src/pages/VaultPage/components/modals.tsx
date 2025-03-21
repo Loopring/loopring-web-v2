@@ -2147,3 +2147,56 @@ export const CloseConfirmModal = (props: CloseConfirmModalProps) => {
     </Modal>
   )
 }
+export interface AutoRepayModalProps {
+  open: boolean
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const AutoRepayConfirmModal = ({
+  open,
+  onClose,
+  onConfirm,
+}: AutoRepayModalProps) => {
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="auto-repay-confirm-modal"
+      aria-describedby="auto-repay-confirm-description"
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: { xs: '90%', sm: 480 },
+          maxWidth: '100%',
+          bgcolor: 'var(--color-box-secondary)',
+          px: 4,
+          py: 8,
+          borderRadius: '8px',
+        }}
+      >
+        <Box>
+          <Typography>
+            It looks like you're holding the same asset as your debt. To avoid
+            extra interest charges, consider repaying your debt with your
+            holdings now.
+          </Typography>
+
+          <Box display="flex" justifyContent="center" mt={6}>
+            <Button
+              variant="contained"
+              onClick={onConfirm}
+              fullWidth
+            >
+              I Know
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
