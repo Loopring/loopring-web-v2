@@ -1216,9 +1216,14 @@ export const useVaultSwap = () => {
         }
       })
 
-      // repay if needed
       setTimeout(() => {
-        repayIfNeeded(selectedVTokenSymbol).then(() => {
+        // repay if needed
+        repayIfNeeded(selectedVTokenSymbol)
+        .finally(() => {
+          // repay if needed
+          return repayIfNeeded('LVUSDT')
+        })
+        .finally(() => {
           updateVaultLayer2({})
         })
       }, 500)
