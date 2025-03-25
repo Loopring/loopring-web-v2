@@ -1,5 +1,5 @@
 import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND, store, VaultUIMap } from "@loopring-web/core"
-import { ChainId, ConnectorNames, toBig } from "@loopring-web/loopring-sdk"
+import { ChainId, ConnectorNames, toBig, VaultToken } from "@loopring-web/loopring-sdk"
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider"
 import Decimal from "decimal.js"
 import { keys } from "lodash"
@@ -18,11 +18,15 @@ const checkIfNeedRepay = (symbol: string) => {
   } = store.getState()
   const asset = vaultLayer2?.[symbol]
   const tokenInfo = tokenMap[symbol]
+  if (!asset) return false
   
   const minLoanAmount = tokenInfo?.vaultTokenAmounts?.minLoanAmount
+  const repayVolume = BigNumber.from(asset.borrowed).lte(BigNumber.from(asset.total)) 
+    ? asset.borrowed 
+    : asset.total
   return new Decimal(asset?.borrowed ?? '0').gt('0') &&
     new Decimal(asset?.total ?? '0').gt('0') &&
-    (!minLoanAmount || toBig(asset?.borrowed ?? '0').gte(minLoanAmount))
+    (!minLoanAmount || toBig(repayVolume ?? '0').gte(minLoanAmount))
 }
 
 export const checkHasTokenNeedRepay = () => {
@@ -41,17 +45,13 @@ export const repayIfNeeded = async (symbol: string) => {
     invest: {
       vaultMap: {
         tokenMap,
-        marketMap
       },
     },
     system: { exchangeInfo, chainId },
     account
   } = store.getState()
-  const market: MarketType = `${symbol}-LVUSDT`
-  const marketInfo = marketMap[market] as VaultUIMap
   const asset = vaultLayer2?.[symbol]
-  const tokenInfo = tokenMap[symbol]
-  
+  const tokenInfo = tokenMap[symbol] as VaultToken
   if (!checkIfNeedRepay(symbol)) return
   const [{ broker }, { offchainId }] = await Promise.all([
     LoopringAPI.userAPI!.getAvailableBroker({
@@ -68,7 +68,12 @@ export const repayIfNeeded = async (symbol: string) => {
   const volume = BigNumber.from(asset!.borrowed).lte(BigNumber.from(asset!.total)) 
     ? asset!.borrowed 
     : asset!.total
-  const volumeFixed = bignumberFix(BigNumber.from(volume), marketInfo.qtyStepScale) 
+  const volumeFixed = bignumberFix(
+    BigNumber.from(volume),
+    tokenInfo.decimals,
+    tokenInfo.vaultTokenAmounts.qtyStepScale,
+    'FLOOR'
+  )
     
 
   const request = {
