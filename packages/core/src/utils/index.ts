@@ -14,7 +14,8 @@ export {
   bigNumberFormat,
   fiatNumberDisplay,
   toPercent,
-  fiatNumberDisplaySafe
+  fiatNumberDisplaySafe,
+  bignumberFix
 } from './numberFormat'
 export {
   numberStringListSum
