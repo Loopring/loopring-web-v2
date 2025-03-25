@@ -3,7 +3,7 @@ import { ChainId, ConnectorNames, toBig } from "@loopring-web/loopring-sdk"
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider"
 import Decimal from "decimal.js"
 import { keys } from "lodash"
-
+import { BigNumber } from "ethers"
 
 const checkIfNeedRepay = (symbol: string) => {
   const {
@@ -69,7 +69,9 @@ export const repayIfNeeded = async (symbol: string) => {
     storageId: offchainId,
     token: {
       tokenId: tokenInfo.vaultTokenId,
-      volume: asset!.borrowed,
+      volume: BigNumber.from(asset!.borrowed).lte(BigNumber.from(asset!.total)) 
+        ? asset!.borrowed 
+        : asset!.total,
     },
     maxFee: {
       tokenId: tokenInfo.vaultTokenId,
