@@ -1219,18 +1219,17 @@ export const useVaultSwap = () => {
           isSwapLoading: false,
         }
       })
-
-      setTimeout(() => {
-        // repay if needed
-        repayIfNeeded(selectedVTokenSymbol)
-        .finally(() => {
-          // repay if needed
-          return repayIfNeeded('LVUSDT')
-        })
-        .finally(() => {
-          updateVaultLayer2({})
-        })
-      }, 500)
+      
+      await sdk.sleep(500)
+      updateVaultLayer2({})
+      await sdk.sleep(500)
+      repayIfNeeded(selectedVTokenSymbol)
+      .finally(() => {
+        return repayIfNeeded('LVUSDT')
+      })
+      .finally(() => {
+        updateVaultLayer2({})
+      })
     }
   }
   const borrowSubmit = async () => {
