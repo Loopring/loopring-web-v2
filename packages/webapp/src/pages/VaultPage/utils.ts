@@ -1,9 +1,11 @@
-import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND, store } from "@loopring-web/core"
+import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND, store, VaultUIMap } from "@loopring-web/core"
 import { ChainId, ConnectorNames, toBig } from "@loopring-web/loopring-sdk"
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider"
 import Decimal from "decimal.js"
 import { keys } from "lodash"
 import { BigNumber } from "ethers"
+import { bignumberFix } from "@loopring-web/core/src/utils/numberFormat"
+import { MarketType } from "@loopring-web/common-resources"
 
 const checkIfNeedRepay = (symbol: string) => {
   const {
@@ -38,12 +40,15 @@ export const repayIfNeeded = async (symbol: string) => {
     vaultLayer2: { vaultLayer2 },
     invest: {
       vaultMap: {
-        tokenMap
+        tokenMap,
+        marketMap
       },
     },
     system: { exchangeInfo, chainId },
     account
   } = store.getState()
+  const market: MarketType = `${symbol}-LVUSDT`
+  const marketInfo = marketMap[market] as VaultUIMap
   const asset = vaultLayer2?.[symbol]
   const tokenInfo = tokenMap[symbol]
   
@@ -60,6 +65,12 @@ export const repayIfNeeded = async (symbol: string) => {
       account.apiKey,
     ),
   ])
+  const volume = BigNumber.from(asset!.borrowed).lte(BigNumber.from(asset!.total)) 
+    ? asset!.borrowed 
+    : asset!.total
+  const volumeFixed = bignumberFix(BigNumber.from(volume), marketInfo.qtyStepScale) 
+    
+
   const request = {
     exchange: exchangeInfo!.exchangeAddress,
     payerAddr: account.accAddress,
@@ -69,9 +80,7 @@ export const repayIfNeeded = async (symbol: string) => {
     storageId: offchainId,
     token: {
       tokenId: tokenInfo.vaultTokenId,
-      volume: BigNumber.from(asset!.borrowed).lte(BigNumber.from(asset!.total)) 
-        ? asset!.borrowed 
-        : asset!.total,
+      volume: volumeFixed.toString(),
     },
     maxFee: {
       tokenId: tokenInfo.vaultTokenId,

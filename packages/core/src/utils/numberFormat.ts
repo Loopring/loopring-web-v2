@@ -90,3 +90,13 @@ export const bigNumberFormat = (number: BigNumber | string, decimals: number, fo
 export const toPercent = (number: string | number, fixed: number) => {
   return numberFormat(number, {showInPercent: true, fixed: fixed})
 }
+
+export const bignumberFix = (number: BigNumber, fix: number, fixRound?: 'FLOOR' | 'CEIL') => {
+  const oneUnit = BigNumber.from(10 ** fix)
+  const floor = number
+    .div(oneUnit)
+    .mul(oneUnit)
+  const ceil = floor.add(oneUnit)
+  const nearCeil = ceil.sub(number).gte(number.sub(floor))
+  return fixRound === 'CEIL' ? ceil : fixRound === 'FLOOR' ? floor : nearCeil ? ceil : floor
+}
