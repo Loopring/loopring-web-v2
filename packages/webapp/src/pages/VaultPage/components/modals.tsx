@@ -1080,7 +1080,20 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           width={'100%'}
           alignItems={'center'}
         >
-          <Typography variant='h4'>Portal Trade</Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            <Typography mr={1 / 2} variant='h4'>Portal Trade</Typography>
+            <Tooltip
+              title={
+                "To trade on Portal with leverage, you first need to borrow assets. If you're unable to execute the full amount, a portion of the borrowed assets may remain unused. The Auto Repay feature ensures any remaining borrowed assets are automatically repaid, helping you avoid unnecessary interest charges."
+              }
+              sx={{ ml: 1 / 2 }}
+            >
+              <Typography display={'flex'} alignItems={'center'}>
+                <Info2Icon color={'inherit'} />
+              </Typography>
+            </Tooltip>
+          </Box>
+
           <Box display={'flex'} alignItems={'center'}>
             <Box>
               <IconButtonStyled
@@ -1611,11 +1624,11 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 mt: 2,
                 mb: 3,
                 // '& .MuiTypography-root': {
-                //   fontSize: 'clamp(10px, 5vw, 14px)', 
+                //   fontSize: 'clamp(10px, 5vw, 14px)',
                 //   lineHeight: 1.2
                 // },
                 fontSize: 'clamp(10px, 5vw, 16px)',
-                lineHeight: 1.2
+                lineHeight: 1.2,
               }}
               variant='contained'
               customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
