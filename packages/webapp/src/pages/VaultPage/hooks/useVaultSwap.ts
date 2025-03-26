@@ -1186,16 +1186,17 @@ export const useVaultSwap = () => {
             ...info,
           },
         })
-        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        l2CommonService.sendUserUpdate()
-        if (
-          store.getState().modals.isShowAccount.isShow &&
-          [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
-            store.getState().modals.isShowAccount.step,
-          )
-        ) {
-          setShowAccount({ isShow: false })
-        }
+        sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE).then(() => {
+          l2CommonService.sendUserUpdate()
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
+              store.getState().modals.isShowAccount.step,
+            )
+          ) {
+            setShowAccount({ isShow: false })
+          }
+        })
       }
     } catch (error: any) {
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
@@ -1220,9 +1221,9 @@ export const useVaultSwap = () => {
         }
       })
       
-      await sdk.sleep(500)
+      await sdk.sleep(1000)
       updateVaultLayer2({})
-      await sdk.sleep(500)
+      await sdk.sleep(1000)
       repayIfNeeded(selectedVTokenSymbol)
       .finally(() => {
         return repayIfNeeded('LVUSDT')
