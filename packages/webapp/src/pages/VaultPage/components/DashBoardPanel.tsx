@@ -1328,7 +1328,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                             </Typography>
                           </Box>
                         }
-                        placement={'right'}
+                        placement={isMobile ? 'bottom' : 'right'}
                       >
                         <Box display={'flex'} alignItems={'center'}>
                           <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
