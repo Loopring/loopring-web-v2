@@ -667,7 +667,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                     title={
                       'The token price changes dynamically, the dust value you see here may be inconsistent with the final value.'
                     }
-                    placement={'top'}
+                    placement={'bottom'}
                   >
                     <IconButton>
                       <Info2Icon sx={{ color: 'var(--color-text-secondary)', marginLeft: 1 / 2 }} />

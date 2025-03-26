@@ -92,7 +92,7 @@ export const toPercent = (number: string | number, fixed: number) => {
 }
 
 export const bignumberFix = (number: BigNumber, decimals: number, fix: number, fixRound?: 'FLOOR' | 'CEIL') => {
-  const oneUnit = BigNumber.from(10 ** (decimals - fix))
+  const oneUnit = utils.parseUnits('1', decimals - fix)
   const floor = number
     .div(oneUnit)
     .mul(oneUnit)
