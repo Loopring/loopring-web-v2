@@ -1949,13 +1949,13 @@ export const useVaultDashboard = ({
       },
       onConfirm: async () => {
         const list = checkHasTokenNeedRepay()
-        await promiseAllSequently(list.map((symbol) => {
-          return () => repayIfNeeded(symbol).catch(() => {})
-        }))
         setLocalState({
           ...localState,
           modalStatus: 'noModal'
         })
+        await promiseAllSequently(list.map((symbol) => {
+          return () => repayIfNeeded(symbol).catch(() => {})
+        }))
         updateVaultLayer2({})
       },
     },
