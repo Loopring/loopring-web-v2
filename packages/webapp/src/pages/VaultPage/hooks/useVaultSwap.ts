@@ -62,7 +62,7 @@ import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/us
 import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-import { repayIfNeeded } from '../utils'
+import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, repayIfNeeded } from '../utils'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -830,34 +830,6 @@ export const useVaultSwap = () => {
           },
           onClickClose: () => {
             setShowVaultCloseConfirm({ isShow: true, symbol: symbol })
-            // closePosition(symbol)
-            // .then(response2 => {
-            //   if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-            //     throw new Error('failed')
-            //   }
-            //   setShowGlobalToast({
-            //     isShow: true,
-            //     info: {
-            //       content: 'Closed position successfully',
-            //       type: ToastType.success
-            //     }
-            //   })
-            // }).catch((e) => {
-            //   setShowGlobalToast({
-            //     isShow: true,
-            //     info: {
-            //       content: 'Close position failed',
-            //       type: ToastType.error
-            //     }
-            //   })
-            // }).finally(() => {
-            //   updateVaultLayer2({})
-            // })
-            // setShowVaultCloseConfirm({
-            //   isShow:true,
-            //   symbol: symbol,
-            // })
-            // todo close position
           },
         }
       })
@@ -1454,9 +1426,49 @@ export const useVaultSwap = () => {
       })
     },
     onConfirm: async () => {
-
-      alert('close all')
-      return 
+      const symbols = _.keys(vaultLayer2).filter((symbol) => {
+        const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
+        const tokenInfo = tokenMap?.[symbol]
+        if (!asset || !tokenInfo) return false
+        const position = new Decimal(
+          utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
+        )
+        return symbol !== 'LVUSDT' && !position.isZero()
+      })
+      closePositionsAndRepayIfNeeded(symbols)
+        .then((resList) => {
+          const foundErr = resList.find(
+            (res) => res.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
+          )
+          if (foundErr) {
+            throw new Error('failed')
+          }
+          setShowGlobalToast({
+            isShow: true,
+            info: {
+              content: 'Closed position successfully',
+              type: ToastType.success,
+            },
+          })
+          
+        })
+        .catch((e) => {
+          setShowGlobalToast({
+            isShow: true,
+            info: {
+              content: 'Close position failed',
+              type: ToastType.error,
+            },
+          })
+        })
+        .finally(() => {
+          setShowCloseAllConfirm({
+            show: false
+          })
+          updateVaultLayer2({})
+        })
+      
+      
     }
   }
   const vaultSwapModalProps = {

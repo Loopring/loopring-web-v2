@@ -78,7 +78,7 @@ import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCo
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
 import { AutoRepayModalProps, CloseConfirmModalProps, NoAccountHintModalProps, SettleConfirmModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
 import { useVaultSwap } from './useVaultSwap'
-import { checkHasTokenNeedRepay, repayIfNeeded } from '../utils'
+import { checkHasTokenNeedRepay, closePositionAndRepayIfNeeded, repayIfNeeded } from '../utils'
 import { promiseAllSequently } from '@loopring-web/core/src/utils/promise'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
@@ -494,153 +494,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   }
 }
 
-export const closePosition = async (symbol: string) => {
-  
-  const {
-    vaultLayer2: { vaultLayer2 },
-    invest: {
-      vaultMap: { tokenMap, marketMap, marketArray },
-    },
-    account,
-    settings: { slippage },
-    system: { exchangeInfo },
-  } = store.getState()
-  const vaultAsset = vaultLayer2 && symbol ? vaultLayer2[symbol] : undefined
-  if (!symbol || !vaultAsset || !exchangeInfo || new Decimal(vaultAsset.netAsset).isZero()) throw new Error('error')
 
-  const sellToken = new Decimal(vaultAsset.netAsset).isPos() ? tokenMap[symbol] : tokenMap['LVUSDT']
-  const buyToken = new Decimal(vaultAsset.netAsset).isPos() ? tokenMap['LVUSDT'] : tokenMap[symbol]
-  const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-    {
-      accountId: account.accountId,
-      sellTokenId: sellToken?.vaultTokenId ?? 0,
-    },
-    account.apiKey,
-  )
-  const market = `${symbol}-LVUSDT`
-  const marketInfo = marketMap[market] as sdk.VaultMarket
-  const { depth } = await vaultSwapDependAsync({
-    market: (marketInfo as any).vaultMarket,
-    tokenMap: tokenMap,
-  })
-
-  const slippageReal = slippage === 'N' ? 0.1 : slippage
-  const output = sdk.calcDex({
-    info: marketInfo,
-    input: utils.formatUnits(
-      new Decimal(vaultAsset.netAsset).abs().toString(),
-      tokenMap[symbol].decimals,
-    ),
-    sell: sellToken.symbol,
-    buy: buyToken.symbol,
-    isAtoB: new Decimal(vaultAsset.netAsset).isPos(),
-    marketArr: marketArray,
-    tokenMap: tokenMap,
-    marketMap: marketMap as any,
-    depth: depth!,
-    feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
-    slipBips: slippageReal.toString(),
-  })
-  const USDTAmount = new Decimal(vaultAsset.netAsset).isPos() ? output!.amountB! : output!.amountS!
-  
-  if (new Decimal(USDTAmount).lt('10')) {
-    const closeTokenInfo = tokenMap[symbol]
-    const tokenId = closeTokenInfo.vaultTokenId
-
-    const { offchainId } = await LoopringAPI.userAPI?.getNextStorageId(
-      {
-        accountId: account.accountId,
-        sellTokenId: tokenId,
-      },
-      account.apiKey,
-    )!
-    const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
-      type: 4,
-    })!
-    // debugger
-    const dustTransfer = {
-      exchange: exchangeInfo.exchangeAddress,
-      payerAddr: account.accAddress,
-      payerId: account.accountId,
-      payeeId: 0,
-      payeeAddr: broker,
-      storageId: offchainId,
-      token: {
-        tokenId: tokenId,
-        volume: vaultAsset.total,
-      },
-      maxFee: {
-        tokenId: tokenId,
-        volume: '0',
-      },
-      validUntil: getTimestampDaysLater(DAYS),
-      memo: '',
-    }
-
-    var response1: any = await LoopringAPI.vaultAPI?.submitDustCollector(
-      {
-        dustTransfers: [dustTransfer],
-        apiKey: account.apiKey,
-        accountId: account.accountId,
-        eddsaKey: account.eddsaKey.sk,
-      },
-      '1',
-    )
-  } else {
-    const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-      ? BigNumber.from(vaultAsset.netAsset).abs()
-      : utils.parseUnits(
-          numberFormat(output!.amountS!, { fixed: sellToken.decimals }),
-          sellToken.decimals,
-        )
-    const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-      ? utils.parseUnits(
-          numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
-          buyToken.decimals,
-        )
-      : BigNumber.from(vaultAsset.netAsset).abs()
-    const request: sdk.VaultOrderRequest = {
-      exchange: exchangeInfo.exchangeAddress,
-      storageId: storageId!.orderId,
-      accountId: account.accountId,
-      sellToken: {
-        tokenId: sellToken?.vaultTokenId ?? 0,
-        volume: sellAmountBN.toString(),
-      },
-      buyToken: {
-        tokenId: buyToken?.vaultTokenId ?? 0,
-        volume: buyAmountBN.toString(),
-      },
-      validUntil: getTimestampDaysLater(DAYS),
-      maxFeeBips: MAPFEEBIPS,
-      fillAmountBOrS: false,
-      allOrNone: false,
-      eddsaSignature: '',
-      clientOrderId: '',
-      orderType: sdk.OrderTypeResp.TakerOnly,
-      fastMode: false,
-    }
-    response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
-      {
-        request,
-        privateKey: account.eddsaKey.sk,
-        apiKey: account.apiKey,
-      },
-      '1',
-    )
-  }
-  await sdk.sleep(SUBMIT_PANEL_CHECK)
-
-  return LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
-    {
-      accountId: account.accountId as any,
-      // @ts-ignore
-      hash: response1.hash,
-    },
-    account.apiKey,
-    '1',
-  )
-}
 
 export const useVaultDashboard = ({
   showLeverage,
@@ -1809,12 +1663,11 @@ export const useVaultDashboard = ({
       },
       onConfirm: async () => {
         const { symbol } = isShowVaultCloseConfirm
-        closePosition(symbol!)
+        closePositionAndRepayIfNeeded(symbol!)
           .then(response2 => {
             if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
               throw new Error('failed')
             }
-            debugger
             setShowVaultCloseConfirm({ isShow: false, symbol: undefined })
             setShowGlobalToast({
               isShow: true,

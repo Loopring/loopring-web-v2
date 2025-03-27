@@ -4,7 +4,7 @@ import {
   Button,
 } from '@mui/material'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   PriceTag,
   CurrencyToTag,
@@ -481,7 +481,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     noMinHeight: true
   }
 }
-
+// closePosition
 export const closePosition = async (symbol: string) => {
   const {
     vaultLayer2: { vaultLayer2 },
