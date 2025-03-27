@@ -1663,12 +1663,12 @@ export const useVaultDashboard = ({
       },
       onConfirm: async () => {
         const { symbol } = isShowVaultCloseConfirm
+        setShowVaultCloseConfirm({ isShow: false, symbol: undefined })
         closePositionAndRepayIfNeeded(symbol!)
           .then(response2 => {
             if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
               throw new Error('failed')
             }
-            setShowVaultCloseConfirm({ isShow: false, symbol: undefined })
             setShowGlobalToast({
               isShow: true,
               info: {
