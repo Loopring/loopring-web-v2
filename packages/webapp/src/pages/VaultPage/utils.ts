@@ -205,6 +205,17 @@ const closeLongDust = async (symbol: string) => {
     '1',
   )
 }
+const closeLongDustIfNeeded = async (symbol: string) => {
+  const {
+    vaultLayer2: { vaultLayer2 }
+  } = store.getState()
+  const vaultAsset = vaultLayer2 && symbol ? vaultLayer2[symbol] : undefined
+  if (!vaultAsset || !new Decimal(vaultAsset.netAsset).isPos()) {
+    return undefined
+  } else {
+    return closeLongDust(symbol)
+  }
+}
 
 const closeLong = async (symbol: string, depth: sdk.DepthData) => {
   const {
@@ -332,13 +343,17 @@ const closePosition = async (symbol: string) => {
     throw new Error('error')
 
   if (!new Decimal(vaultAsset.netAsset).isPos()) {
-    var response1 = await closeShort(symbol)
+    var response = await closeShort(symbol)
   } else {
     const { isDust, depth } = await checkIsDust(symbol)
     if (isDust) {
-      response1 = await closeLongDust(symbol)
+      response = await closeLongDust(symbol)
     } else {
-      response1 = await closeLong(symbol, depth!)
+      const closeLongResponse = await closeLong(symbol, depth!)
+      updateVaultLayer2({})
+      await sdk.sleep(1000)
+      const closeLongDustIfNeededResponse = await closeLongDustIfNeeded(symbol)
+      response = closeLongDustIfNeededResponse ? closeLongDustIfNeededResponse : closeLongResponse
     }
   }
 
@@ -348,7 +363,7 @@ const closePosition = async (symbol: string) => {
     {
       accountId: account.accountId as any,
       // @ts-ignore
-      hash: response1.hash,
+      hash: response.hash,
     },
     account.apiKey,
     '1',
