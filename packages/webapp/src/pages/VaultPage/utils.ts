@@ -282,10 +282,12 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
   const marketInfo = marketMap[market] as sdk.VaultMarket
 
   const slippageReal = slippage === 'N' ? 0.1 : slippage
+
+  const sellAmountBN = BigNumber.from(vaultAsset.total).abs()
   const output = sdk.calcDex({
     info: marketInfo,
     input: utils.formatUnits(
-      new Decimal(vaultAsset.netAsset).abs().toString(),
+      sellAmountBN.toString(),
       tokenMap[symbol].decimals,
     ),
     sell: sellToken.symbol,
@@ -298,7 +300,6 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
     feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
     slipBips: slippageReal.toString(),
   })
-  const sellAmountBN = BigNumber.from(vaultAsset.netAsset).abs()
 
   const buyAmountBN = utils.parseUnits(
     numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
