@@ -126,9 +126,37 @@ export const repayIfNeeded = async (symbol: string) => {
     },
     '1'
   )
+}
 
-
-  
+const recursiveCheckHash = async (hash: string): Promise<{
+  operation: sdk.VaultOperation;
+  order: sdk.VaultOrder;
+  raw_data: {
+    operation: sdk.VaultOperation;
+    order: sdk.VaultOrder;
+};
+}> => {
+  const { account } = store.getState()
+  return LoopringAPI.vaultAPI!.getVaultGetOperationByHash(
+    {
+      accountId: account.accountId as any,
+      // @ts-ignore
+      hash: hash,
+    },
+    account.apiKey,
+    '1',
+  ).then((res) => {
+    if (res.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_PROCESSING || res.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_PENDING) {
+      return sdk.sleep(2000)
+      .then(() => {
+        return recursiveCheckHash(hash)
+      })
+    } else if (res.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+      throw res
+    } else {
+      return res
+    }
+  })
 }
 
 const closeShort = async (symbol: string) => {
@@ -139,7 +167,7 @@ const closeShort = async (symbol: string) => {
     account,
   } = store.getState()
   
-  return LoopringAPI.vaultAPI?.closeShort(
+  const res = await LoopringAPI.vaultAPI?.closeShort(
     {
       request: {
         accountId: account.accountId,
@@ -150,6 +178,12 @@ const closeShort = async (symbol: string) => {
     account.apiKey,
     account.eddsaKey.sk,
   )
+  if ((res as sdk.RESULT_INFO).code || (res as sdk.RESULT_INFO).message) {
+    throw res
+  } else {
+    const hash = (res as {hash: string}).hash
+    return recursiveCheckHash(hash)
+  }
 }
 
 const closeLongDust = async (symbol: string) => {
@@ -195,7 +229,7 @@ const closeLongDust = async (symbol: string) => {
     memo: '',
   }
 
-  return LoopringAPI.vaultAPI?.submitDustCollector(
+  const res = await LoopringAPI.vaultAPI?.submitDustCollector(
     {
       dustTransfers: [dustTransfer],
       apiKey: account.apiKey,
@@ -204,7 +238,14 @@ const closeLongDust = async (symbol: string) => {
     },
     '1',
   )
+  if ((res as sdk.RESULT_INFO).code || (res as sdk.RESULT_INFO).message) {
+    throw res
+  } else {
+    const hash = (res as {hash: string}).hash
+    return recursiveCheckHash(hash)
+  }
 }
+
 const closeLongDustIfNeeded = async (symbol: string) => {
   const {
     vaultLayer2: { vaultLayer2 }
@@ -284,7 +325,7 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
     orderType: sdk.OrderTypeResp.TakerOnly,
     fastMode: false,
   }
-  return LoopringAPI.vaultAPI?.submitVaultOrder(
+  const response = await LoopringAPI.vaultAPI?.submitVaultOrder(
     {
       request,
       privateKey: account.eddsaKey.sk,
@@ -292,6 +333,13 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
     },
     '1',
   )
+  if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+    throw response
+  } else {
+    const hash = (response as {hash: string}).hash
+    return recursiveCheckHash(hash)
+  }
+  
 }
 
 const checkIsDust = async (symbol: string) => {
@@ -335,7 +383,6 @@ const closePosition = async (symbol: string) => {
   console.log('asdhjakshdjkha close', symbol)
   const {
     vaultLayer2: { vaultLayer2 },
-    account,
     system: { exchangeInfo },
   } = store.getState()
   const vaultAsset = vaultLayer2 && symbol ? vaultLayer2[symbol] : undefined
@@ -357,21 +404,11 @@ const closePosition = async (symbol: string) => {
     }
   }
 
-  await sdk.sleep(SUBMIT_PANEL_CHECK)
-
-  return LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
-    {
-      accountId: account.accountId as any,
-      // @ts-ignore
-      hash: response.hash,
-    },
-    account.apiKey,
-    '1',
-  )
+  return response
 }
 
 export const closePositionAndRepayIfNeeded = async (symbol: string) => {
-  const response = closePosition(symbol)
+  const response = await closePosition(symbol)
   sdk.sleep(500).then(() => {
     repayIfNeeded(symbol)
   })
