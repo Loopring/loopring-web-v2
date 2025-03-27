@@ -269,7 +269,7 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
     system: { exchangeInfo },
   } = store.getState()
   const vaultAsset = vaultLayer2![symbol]
-  const sellToken = tokenMap[symbol]
+  const sellToken = tokenMap[symbol] as VaultToken
   const buyToken = tokenMap['LVUSDT']
   const storageId = await LoopringAPI.userAPI?.getNextStorageId(
     {
@@ -282,8 +282,13 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
   const marketInfo = marketMap[market] as sdk.VaultMarket
 
   const slippageReal = slippage === 'N' ? 0.1 : slippage
-
-  const sellAmountBN = BigNumber.from(vaultAsset.total).abs()
+  
+  const sellAmountBN = bignumberFix(
+    BigNumber.from(vaultAsset.total).abs(),
+    sellToken.decimals,
+    sellToken.vaultTokenAmounts.qtyStepScale,
+    'FLOOR',
+  )
   const output = sdk.calcDex({
     info: marketInfo,
     input: utils.formatUnits(
