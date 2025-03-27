@@ -410,7 +410,9 @@ const closePosition = async (symbol: string) => {
 export const closePositionAndRepayIfNeeded = async (symbol: string) => {
   const response = await closePosition(symbol)
   sdk.sleep(500).then(() => {
-    repayIfNeeded(symbol)
+    return promiseAllSequently(
+      [symbol, 'LVUSDT'].map((symbol) => () => repayIfNeeded(symbol).catch(() => undefined)),
+    )
   })
   return response
 }
@@ -432,8 +434,8 @@ export const closePositionsAndRepayIfNeeded = async (symbols: string[]) => {
   const responses = await closePositions(symbols)
   updateVaultLayer2({})
   await sdk.sleep(500)
-  promiseAllSequently(
-    symbols.concat('LVUSDT').map((symbol) => () => repayIfNeeded(symbol)),
+  await promiseAllSequently(
+    symbols.concat('LVUSDT').map((symbol) => () => repayIfNeeded(symbol).catch(() => undefined)),
   )
   return responses
 }
