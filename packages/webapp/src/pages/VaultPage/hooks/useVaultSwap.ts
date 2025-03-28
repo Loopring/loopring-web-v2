@@ -265,11 +265,18 @@ export const useVaultSwap = () => {
       account,
       settings: { defaultNetwork },
       invest: {
-        vaultMap: { marketMap },
+        vaultMap: { marketMap, tokenMap },
       },
     } = store.getState()
-    const market: MarketType = `LV${getSelectedTokenSymbol()}-LVUSDT`
+    const {isLongOrShort} = getLocalState()
+    const selectedVTokenSymbol = 'LV' + getSelectedTokenSymbol()
+    const market: MarketType = `${selectedVTokenSymbol}-LVUSDT`
     myLog('useVaultSwap: refreshData', market)
+    
+    const selectedVTokenInfo = tokenMap ? tokenMap[selectedVTokenSymbol] : undefined
+    const LVUSDTInfo = tokenMap ? tokenMap['LVUSDT'] : undefined
+    const sellToken = isLongOrShort === 'long' ? LVUSDTInfo : selectedVTokenInfo
+    const buyToken = isLongOrShort === 'long' ? selectedVTokenInfo : LVUSDTInfo
 
     if (!market || !sellToken || !buyToken) return
     
@@ -1784,7 +1791,7 @@ export const useVaultSwap = () => {
         amount: '',
         depth: undefined,
       })
-      restartTimer()
+      refreshData()
     },
     myPositions,
     leverageSelection: {
