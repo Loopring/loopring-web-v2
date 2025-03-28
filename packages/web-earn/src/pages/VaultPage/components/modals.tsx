@@ -1629,7 +1629,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                   />
                   Hide other tokens
                 </Typography>
-                {myPositions && myPositions.length > 0 && (
+                {/* {myPositions && myPositions.length > 0 && (
                   <BgButton
                     variant='contained'
                     size='small'
@@ -1644,7 +1644,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                   >
                     Close All
                   </BgButton>
-                )}
+                )} */}
               </Box>
 
               <Box >
