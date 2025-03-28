@@ -2556,5 +2556,6 @@ export default {
     'resetting your Loopring EDDSA keypair ',
   labelUnlockErrorLine1Part3:
     'to resolve the issue',
+  labelVaultCloseShort: 'Close Short',
 }
 

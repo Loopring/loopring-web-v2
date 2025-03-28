@@ -616,6 +616,8 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                             ? t('labelDustCollectorDetail')
                             : vaultOperationDetail.type === 'VAULT_JOIN_REDEEM'
                             ? t('labelVaultJoinRedeem')
+                            : vaultOperationDetail.type === 'VAULT_CLOSE_SHORT' 
+                            ? 'Close Short'
                             : t('labelCloseOutDetail'))
                             }
                       </Typography>
@@ -642,7 +644,8 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         vaultOperationDetail.type === 'VAULT_MARGIN_CALL' ||
                         vaultOperationDetail.type === 'VAULT_OPEN_POSITION' ||
                         vaultOperationDetail.type === 'VAULT_JOIN_REDEEM' ||
-                        vaultOperationDetail.type === 'VAULT_REPAY') && (
+                        vaultOperationDetail.type === 'VAULT_REPAY' ||
+                        vaultOperationDetail.type === 'VAULT_CLOSE_SHORT') && (
                         <VaultOperationDetail
                           statusColor={vaultOperationDetail.statusColor}
                           statusLabel={vaultOperationDetail.statusLabel}

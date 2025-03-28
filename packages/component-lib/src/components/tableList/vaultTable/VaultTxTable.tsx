@@ -514,7 +514,7 @@ export const VaultOperationDetail = (props: {
   statusLabel: string
   statusType: "success" | "processing" | "failed"
   time: number
-  type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION' | 'VAULT_JOIN_REDEEM'
+  type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION' | 'VAULT_JOIN_REDEEM' | 'VAULT_CLOSE_SHORT'
   amount: string
   amountSymbol: string
 }) => {
@@ -583,6 +583,8 @@ export const VaultOperationDetail = (props: {
               ? t('labelVaultBorrow')
               : type === 'VAULT_JOIN_REDEEM'
               ? t('labelVaultJoinRedeem')
+              : type === 'VAULT_CLOSE_SHORT'
+              ? t('labelVaultCloseShort')
               : t('labelVaultRepay')}
           </Typography>
         </Typography>
@@ -608,7 +610,7 @@ export const VaultOperationDetail = (props: {
           order={9}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY' || type === 'VAULT_JOIN_REDEEM'
+            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY' || type === 'VAULT_JOIN_REDEEM' || type === 'VAULT_CLOSE_SHORT'
               ? t('labelVaultAmount')
               : t('labelVaultCollateral')}
           </Typography>
