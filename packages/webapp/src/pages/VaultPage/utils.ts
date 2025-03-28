@@ -65,6 +65,7 @@ export const repayIfNeeded = async (symbol: string) => {
   } = store.getState()
   const asset = vaultLayer2?.[symbol]
   const tokenInfo = tokenMap[symbol] as VaultToken
+  console.log('repayIfNeeded', symbol, asset)
   if (!checkIfNeedRepay(symbol)) return
   const [{ broker }, { offchainId }] = await Promise.all([
     LoopringAPI.userAPI!.getAvailableBroker({
@@ -411,7 +412,8 @@ const closePosition = async (symbol: string) => {
 
 export const closePositionAndRepayIfNeeded = async (symbol: string) => {
   const response = await closePosition(symbol)
-  sdk.sleep(500).then(() => {
+  updateVaultLayer2({})
+  sdk.sleep(1000).then(() => {
     return promiseAllSequently(
       [symbol, 'LVUSDT'].map((symbol) => () => repayIfNeeded(symbol).catch(() => undefined)),
     )
