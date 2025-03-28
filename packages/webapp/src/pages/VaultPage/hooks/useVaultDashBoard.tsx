@@ -285,10 +285,17 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           }
           const totalAmount = sdk.toBig(tokenInfo.detail?.asset ?? 0)
           const borrowedAmount = sdk.toBig(tokenInfo.detail?.borrowed ?? 0)
+
           const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
           const tokenBorrowedValueDollar = borrowedAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
           const isSmallBalance = tokenValueDollar.lt(1) 
             && tokenBorrowedValueDollar.lt(1)
+          
+          const minRepayAmount = utils.formatUnits(
+            utils.parseUnits('1', tokenInfo.decimals - tokenInfo.vaultTokenAmounts.qtyStepScale),
+            tokenInfo.decimals,
+          )
+          
           item = {
             token: {
               type: TokenType.vault,
@@ -301,14 +308,17 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
             erc20Symbol,
-            debt: tokenInfo.detail?.borrowed ?? '0',
+            debt:borrowedAmount.toString(),
             equity: numberFormat(tokenInfo.detail?.equity ?? '0', {
               fixed: tokenInfo.precision,
               removeTrailingZero: true,
               fixedRound: Decimal.ROUND_FLOOR,
             }),
-            repayDisabled: borrowedAmount.isZero() || totalAmount.isZero()
-              
+            repayDisabled:
+              borrowedAmount.isZero() ||
+              totalAmount.isZero() ||
+              totalAmount.lt(minRepayAmount) ||
+              borrowedAmount.lt(minRepayAmount),
           }
         } else {
           item = {
