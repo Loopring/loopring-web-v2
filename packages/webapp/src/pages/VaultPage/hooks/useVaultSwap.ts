@@ -812,7 +812,7 @@ export const useVaultSwap = () => {
 
         return {
           tokenSymbol: symbol.slice(2),
-          longOrShort: position.isPos() ? 'long' : 'short',
+          longOrShort: position.isPos() ? 'Long' : 'Short',
           marginLevel: vaultAccountInfo?.marginLevel
             ? numberFormat(vaultAccountInfo.marginLevel, { fixed: 2 })
             : EmptyValueTag,
