@@ -926,7 +926,7 @@ export interface VaultSwapModalProps {
   myPositions:
     | {
         tokenSymbol: string
-        longOrShort: 'long' | 'short'
+        longOrShort: 'Long' | 'Short'
         marginLevel: string
         leverage: string
         amount: string
@@ -1720,12 +1720,12 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                         borderRadius={'4px'}
                         px={1}
                         color={
-                          item.longOrShort === 'long'
+                          item.longOrShort === 'Long'
                             ? theme.colorBase.success
                             : theme.colorBase.error
                         }
                         bgcolor={hexToRGB(
-                          item.longOrShort === 'long'
+                          item.longOrShort === 'Long'
                             ? theme.colorBase.success
                             : theme.colorBase.error,
                           0.2,
