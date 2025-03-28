@@ -418,4 +418,5 @@ export default {
   labelTotalLocked: 'Total/Locked',
   labelLocked2: 'Locked',
   labelTAIKO_FARMING: 'Taiko Farming',
+  labelVaultcloseShort: 'Close Short'
 }

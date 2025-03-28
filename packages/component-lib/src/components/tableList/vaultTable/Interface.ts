@@ -9,6 +9,7 @@ export enum VaultRecordType {
   trade = 'trade',
   convert = 'convert',
   redeem = 'redeem',
+  closeShort = 'closeShort',
 }
 
 export type RawDataVaultTxItem = {
