@@ -1049,7 +1049,7 @@ export const useVaultDashboard = ({
   const [assetsTab, setAssetsTab] = React.useState('assetsView' as 'assetsView' | 'positionsView')
   const {vaultLayer2}=useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
-    rawData: _.keys(vaultLayer2)
+    rawData: filterPositions(vaultLayer2, tokenMap, tokenPrices)
     .map((symbol) => {
       const originSymbol = symbol.slice(2)
       const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined

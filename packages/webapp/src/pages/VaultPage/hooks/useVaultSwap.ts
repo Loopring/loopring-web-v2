@@ -62,7 +62,7 @@ import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/us
 import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, repayIfNeeded } from '../utils'
+import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -797,7 +797,7 @@ export const useVaultSwap = () => {
     }
   })()
   const myPositions = (() => {
-    return _.keys(vaultLayer2)
+    return filterPositions(vaultLayer2!, tokenMap, vaultTokenPrices)
       .map((symbol) => {
         const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
         const tokenInfo = tokenMap?.[symbol]
@@ -1426,15 +1426,7 @@ export const useVaultSwap = () => {
       })
     },
     onConfirm: async () => {
-      const symbols = _.keys(vaultLayer2).filter((symbol) => {
-        const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
-        const tokenInfo = tokenMap?.[symbol]
-        if (!asset || !tokenInfo) return false
-        const position = new Decimal(
-          utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
-        )
-        return symbol !== 'LVUSDT' && !position.isZero()
-      })
+      const symbols = filterPositions(vaultLayer2!, tokenMap, vaultTokenPrices)
       closePositionsAndRepayIfNeeded(symbols)
         .then((resList) => {
           const foundErr = resList.find(

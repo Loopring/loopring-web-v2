@@ -249,7 +249,7 @@ export const VaultPositionsTable = withTranslation('tables')(
 
     return (
       <TableWrap lan={language} isMobile={isMobile}>
-        {showFilter && (
+        {/* {showFilter && (
           <Box marginX={2} display={'flex'} alignItems={'center'}>
             <Box>
               <VaultAssetFilter
@@ -276,7 +276,7 @@ export const VaultPositionsTable = withTranslation('tables')(
               {t('labelVaultDustCollector')}
             </Typography>}
           </Box>
-        )}
+        )} */}
         <Table
           {...rest}
           style={{

@@ -1,4 +1,4 @@
-import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND } from "@loopring-web/core"
+import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND, VaultLayer2Map } from "@loopring-web/core"
 import { ChainId, ConnectorNames, toBig, VaultToken } from "@loopring-web/loopring-sdk"
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider"
 
@@ -402,11 +402,7 @@ const closePosition = async (symbol: string) => {
     if (isDust) {
       response = await closeLongDust(symbol)
     } else {
-      const closeLongResponse = await closeLong(symbol, depth!)
-      updateVaultLayer2({})
-      await sdk.sleep(1000)
-      const closeLongDustIfNeededResponse = await closeLongDustIfNeeded(symbol)
-      response = closeLongDustIfNeededResponse ? closeLongDustIfNeededResponse : closeLongResponse
+      response = await closeLong(symbol, depth!)
     }
   }
 
@@ -444,4 +440,20 @@ export const closePositionsAndRepayIfNeeded = async (symbols: string[]) => {
     symbols.concat('LVUSDT').map((symbol) => () => repayIfNeeded(symbol).catch(() => undefined)),
   )
   return responses
+}
+
+export const filterPositions = (vaultLayer2: VaultLayer2Map<any>, tokenMap: sdk.LoopringMap<sdk.TokenInfo>, tokenPrices: sdk.LoopringMap<string>) => {
+  return _.keys(vaultLayer2).filter((symbol) => {
+    const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
+    const tokenInfo = tokenMap?.[symbol]
+    const tokenPrice = tokenPrices?.[symbol]
+    
+    if (!asset || !tokenInfo || !tokenPrice) return false
+    const position = new Decimal(
+      utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
+    )
+    const positionValue = position.abs().times(tokenPrice)
+    console.log('askjdhakjwhe', symbol,asset, tokenInfo, tokenPrice, position.toString(), positionValue.toString())
+    return symbol !== 'LVUSDT' && positionValue.greaterThan('10')
+  })
 }

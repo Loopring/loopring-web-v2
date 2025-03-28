@@ -78,7 +78,7 @@ import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCo
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
 import { AutoRepayModalProps, CloseConfirmModalProps, NoAccountHintModalProps, SettleConfirmModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
 import { useVaultSwap } from './useVaultSwap'
-import { checkHasTokenNeedRepay, closePositionAndRepayIfNeeded, repayIfNeeded } from '../utils'
+import { checkHasTokenNeedRepay, closePositionAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
 import { promiseAllSequently } from '@loopring-web/core/src/utils/promise'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
@@ -199,11 +199,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
-          setShowNoVaultAccount({
-            isShow: true,
-            des: 'labelRedeemDesMessage',
-            title: 'labelRedeemTitle',
-          })
+          
         } else {
           setShowNoVaultAccount({
             isShow: true,
@@ -245,15 +241,6 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             }
             history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
           }
-        } else if (
-          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
-        ) {
-          setShowNoVaultAccount({
-            isShow: true,
-            des: 'labelRedeemDesMessage',
-            title: 'labelRedeemTitle',
-          })
-        } else {
         }
       } else {
         
@@ -320,9 +307,8 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               removeTrailingZero: true,
               fixedRound: Decimal.ROUND_FLOOR,
             }),
-            repayDisabled: tokenInfo.detail?.borrowed
-              ? new Decimal(tokenInfo.detail?.borrowed).isZero()
-              : true,
+            repayDisabled: borrowedAmount.isZero() || totalAmount.isZero()
+              
           }
         } else {
           item = {
@@ -973,7 +959,7 @@ export const useVaultDashboard = ({
   const [assetsTab, setAssetsTab] = React.useState('assetsView' as 'assetsView' | 'positionsView')
   const {vaultLayer2, status: vaultLayer2Status} = useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
-    rawData: _.keys(vaultLayer2)
+    rawData: filterPositions(vaultLayer2!, vaultTokenMap, tokenPrices)
     .map((symbol) => {
       const originSymbol = symbol.slice(2)
       const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
@@ -1047,9 +1033,6 @@ export const useVaultDashboard = ({
         },
         valueInUSD: position.abs().mul(tokenPrices[symbol])
       }
-    })
-    .filter((item) => {
-      return item !== undefined && (hideSmallBalances ? item.valueInUSD.gt('1') : true)
     }),
     onRowClick: (index: number, row: PositionItem) => {},
     isLoading: false,
