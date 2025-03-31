@@ -76,7 +76,7 @@ export const VaultJoinPanelModal = <T extends IBData<I>, V extends VaultJoinData
               <Box sx={{ height: '55px' }} className={'toolbarTitle'}>
                 {isActiveAccount ? (
                   <Typography marginBottom={1.5} variant={'h5'} component={'span'} paddingX={3}>
-                    Suppy Collateral
+                    Supply Collateral
                   </Typography>
                 ) : (
                   <Tabs

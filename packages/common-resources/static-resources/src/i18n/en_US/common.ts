@@ -2150,7 +2150,7 @@ export default {
   labelVaultDashboard: 'Dashboard',
   labelVaultRefresh: 'Refresh',
   labelVaultAddBtn: 'Margin Call',
-  labelVaultJoinBtn: 'Suppy Collateral',
+  labelVaultJoinBtn: 'Supply Collateral',
   labelVaultCheckInProcessing: 'Checking Portal status',
   labelVaultRecord: 'Records',
   labelEnterToken: 'Select Token',
@@ -2162,7 +2162,7 @@ export default {
   labelVaultJoinMax: 'Maximum of {{arg}}',
   labelVaultJoinNotEnough: 'Insufficient {{arg}} balance',
   labelVaultJoinMarginTitle: 'Add Collateral',
-  labelVaultJoinTitle: 'Suppy Collateral',
+  labelVaultJoinTitle: 'Supply Collateral',
   labelVaultTradeBtn: 'Portal Trade',
   labelVaultRedeemBtn: 'Settle',
   labelVaultExitDes:
@@ -2173,7 +2173,7 @@ export default {
   labelVaultSwapBtn: 'Swap',
   labelVaultSwap: 'Portal Trade',
   labelVaultType: 'Type',
-  labelVaultTypeOpenPosition: 'Suppy Collateral',
+  labelVaultTypeOpenPosition: 'Supply Collateral',
   labelVaultStatus: 'Status',
   labelVaultJoinStatus: '{{status}} {{percentage}}',
   labelVaultTradeStatus: '{{status}} {{percentage}}',
@@ -2282,7 +2282,7 @@ export default {
   label7dPriceChange: '7d Price Change',
   labelVaultREDEEMPendingBtn: 'Settle in Processing',
   labelVaultlnredeemWaiting: 'Settle in Processing',
-  labelJoinTitle: 'Suppy Collateral',
+  labelJoinTitle: 'Supply Collateral',
   labelRedeemTitle: 'Settle',
   labelRedeemDesMessage:
     'Please be aware that there may be a brief waiting period due to automatic liquidation. We appreciate your patience and assure you that we are working to process your request as quickly as possible. Thank you for your understanding.',
@@ -2305,7 +2305,7 @@ export default {
   labelVaultSell: 'Sell',
   labelVaultBuy: 'Buy',
   labelVaultFee: 'Trade Fee',
-  labelVaultJoin: 'Suppy Collateral',
+  labelVaultJoin: 'Supply Collateral',
   labelVaultMarginCall: 'Add Collateral',
   labelVaultMaxBrowserLabel: 'Max borrowable: ',
   labelVaultBorrowed: 'Borrowed',
@@ -2315,7 +2315,7 @@ export default {
   labelVaultTotalDebtTooltips:
     'Total Debt is comprised of two parts: loans and the cost incurred from utilizing the capital. The cost is determined by multiplying the Total Balance by the Funding Rate, which will accumulate on an hourly basis.',
   labelVaultMarginLevelTooltips:
-    'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+    'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidation, you can either supply more collateral or repay borrowed positions.',
   labelVaultActiveLoanAlert:
     'You currently have an active loan order in progress. This may affect the available tokens for trading. Please proceed with caution.',
   labelVaultSwapBorrowTip: 'Max is sum of Holding and Borrowable tokens. When the swap amount exceeds the available balance, it will automatically borrow tokens. This Amount is the borrowed quantity.',
@@ -2344,7 +2344,7 @@ export default {
   labelL2NFTBurnTip:
     'The NFT will be permanently sent to a burn address and unrecoverable. Please proceed with caution.',
   labelL2NFTBurSuccess: 'Burned {{value}} {{symbol}} successfully!',
-  labelOpenPositionDetail: 'Suppy Collateral Detail',
+  labelOpenPositionDetail: 'Supply Collateral Detail',
   labelMarginCallDetail: 'Add Collateral',
   labelBorrowDetail: 'Borrow',
   labelRepayDetail: 'Repay',
@@ -2379,23 +2379,23 @@ export default {
   labelHourlyInterestRateTips: 'Interest Rate will change every hour based on current market conditions. Interest will accrue as soon as tokens are borrowed and it will continue to accrue every hour.',
 
   labelVaultMarginLevelTooltips2:
-    'Margin Level = (Balance +Collateral) / Total Debt',
+    'Margin Level = (Balance + Collateral) / Total Debt',
   labelVaultMarginLevelTooltips3:
     'Default Margin Level is 999.00',
   labelVaultMarginLevelTooltips4:
-    'Low Risk    Margin Level ≥ 1.5',
+    'Low Risk: Margin Level ≥ 1.5',
   labelVaultMarginLevelTooltips5:
     'At Low Risk, your collateral is relatively sufficient. You should mainly focus on whether the market fluctuates violently and causes liquidation.',
   labelVaultMarginLevelTooltips6:
-    'Middle Risk    1.15 ≤ Margin Level < 1.5',
+    'Middle Risk: 1.15 ≤ Margin Level < 1.5',
   labelVaultMarginLevelTooltips7:
     'At Middle Risk, it is recommended that you always pay attention to changes in market conditions and add collateral or repay borrowed tokens to reduce the risk of liquidation.',
   labelVaultMarginLevelTooltips8:
-    'High Risk    1.1 ≤ Margin Level < 1.15',
+    'High Risk: 1.1 ≤ Margin Level < 1.15',
   labelVaultMarginLevelTooltips9:
     'At High Risk, it is strongly recommended that you add collateral or repay borrowed tokens immediately to reduce the risk of liquidation.',
   labelVaultMarginLevelTooltips10:
-    'Liquidation Margin Level < 1.1',
+    'Liquidation: Margin Level < 1.1',
   labelVaultMarginLevelTooltips11:
     'When Margin Level is lower than 1.1, the position will be liquidated.',
   labelVaultCollateralManagement: 'Collateral Management',
@@ -2487,7 +2487,7 @@ export default {
   labelVaultDustCollectorUnavailableTitle: 'Feature Unavailable',
   labelVaultDustCollectorUnavailableDes: 'This feature is temporarily unavailable. Please try again later.',
   labelVaultMaximumCreditDesLong: 'Maximum Credit means the maximum amount of money you can borrow from Portal based on your collateral. It is calculated by taking the total value of your collateral, adjusted for price factor and the maximum leverage.',
-  labelVaultMarginLevelDes: 'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidations, you can either supply more collateral or repay borrowed positions.',
+  labelVaultMarginLevelDes: 'Margin Level provides an indication of how close your account is to experiencing a margin call or being liquidated. To avoid liquidation, you can either supply more collateral or repay borrowed positions.',
   labelLayer2HistoryTaikoLockRecords: 'Taiko Farming',
   labelL2TaikoFarming: 'Taiko Farming',
   labelTaikoFarmingNotChecked: 'Please check the above box',

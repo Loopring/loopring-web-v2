@@ -447,20 +447,22 @@ export const VaultAssetsTable = withTranslation('tables')(
               />
             </Box>
 
-            {!hideDustCollector && <Typography
-              sx={{ cursor: 'pointer' }}
-              component={'span'}
+            {!hideDustCollector && <Box
+              sx={{ 
+                marginLeft: 3,
+                
+              }}
+              component={'button'}
               onClick={onClickDustCollector}
-              width={'140px'}
               color={'var(--color-text-primary)'}
               display={'flex'}
               alignItems={'center'}
             >
               <BrushIcon
-                sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }}
+                sx={{ fontSize: '24px', color: 'inherit', marginRight: 0.5 }}
               />{' '}
               {t('labelVaultDustCollector')}
-            </Typography>}
+            </Box>}
           </Box>
         )}
         <Table

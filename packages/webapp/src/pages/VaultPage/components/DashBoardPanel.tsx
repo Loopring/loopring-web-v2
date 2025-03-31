@@ -1765,8 +1765,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     value={assetsTab}
                     onChange={(_, value) => onChangeAssetsTab(value)}
                   >
-                    <Tab value={'assetsView'} label={'Assets View'} />
-                    <Tab value={'positionsView'} label={'Positions View'} />
+                    <Tab value={'assetsView'} label={'Assets'} />
+                    <Tab value={'positionsView'} label={'Positions'} />
                   </Tabs>
 
                   <Button
