@@ -630,7 +630,7 @@ export const useVaultSwap = () => {
         isLongOrShort === 'long'
           ? new Decimal(
               utils.formatUnits(localState.depth!.asks_volTotal, LVUSDTInfo!.decimals),
-            ).div(localState.depth!.mid_price)
+            )
           : new Decimal(
               utils.formatUnits(localState.depth!.bids_amtTotal, selectedVTokenInfo!.decimals),
             )
@@ -647,6 +647,8 @@ export const useVaultSwap = () => {
     },
     () => undefined,
   )
+  console.log('totalSellQuota', totalSellQuota)
+  
 
   const maxSellValue = Decimal.min(userMaxSellValue ?? '0', totalSellQuota ?? '0').toString()
   const maxTradeValue = Decimal.min(userMaxTradeValue ?? '0', totalTradeQuota ?? '0').toString()
