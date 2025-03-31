@@ -43,6 +43,7 @@ import {
   VaultJoinPanelModal,
   VaultPositionsTable,
   Toast,
+  useSettings,
 } from '@loopring-web/component-lib'
 import { Trans } from 'react-i18next'
 import {
@@ -1083,6 +1084,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   onClickCloseOut
 
 }) => {
+  const {isMobile} = useSettings()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -1650,7 +1652,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 
                 <Button
                   onClick={onClickPortalTrade}
-                  size={'large'}
+                  size={isMobile ? 'medium' : 'large'}
                   variant='contained'
                   sx={{ mt: 5, mb: 3, alignSelf: 'center', width: '200px' }}
                 >

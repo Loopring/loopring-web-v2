@@ -1816,9 +1816,9 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 
                 <Button
                   onClick={onClickPortalTrade}
-                  size={'large'}
+                  size={isMobile ? 'medium' : 'large'}
                   variant='contained'
-                  sx={{ mt: 5, mb: 3, alignSelf: 'center', width: '200px' }}
+                  sx={{ mt: isMobile ? 3 : 5, mb: 3, alignSelf: 'center', width: '200px' }}
                 >
                   Portal Trade
                 </Button>

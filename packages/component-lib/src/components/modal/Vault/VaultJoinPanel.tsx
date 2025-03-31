@@ -4,6 +4,7 @@ import {
   Modal,
   SwitchPanel,
   SwitchPanelProps,
+  useSettings,
   VaultJoinProps,
 } from '@loopring-web/component-lib'
 import React from 'react'
@@ -29,6 +30,7 @@ export const VaultJoinPanelModal = <T extends IBData<I>, V extends VaultJoinData
   onCloseModal,
   ...rest
 }: VaultJoinProps<T, I, V>) => {
+  const isMobile = useSettings().isMobile
   const { t, i18n } = useTranslation()
   const theme = useTheme()
 
@@ -155,6 +157,14 @@ export const VaultJoinPanelModal = <T extends IBData<I>, V extends VaultJoinData
               alt={'loading'}
               width='60'
               src={`${SoursURL}images/loading-line.gif`}
+            />
+          </Box>
+        ) : isMobile ? (
+          <Box width={'var(--modal-width)'}>
+            <SwitchPanel
+              _width={`calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
+              _height={'auto'}
+              {...{ ...rest, i18n, t, tReady: true, ...props }}
             />
           </Box>
         ) : (
