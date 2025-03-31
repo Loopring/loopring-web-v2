@@ -156,7 +156,6 @@ export const WalletConnectBtn = ({
   return (
     <>
       {NetWorkItems}
-      {!isMobile && <ProviderBox account={accountState?.account} />}
       { ((isLocked || accountState?.account.readyState === AccountStatus.NOT_ACTIVE) && !isMobile) ? (
         <Box
           display={'flex'}

@@ -1901,7 +1901,7 @@ export const SupplyCollateralHintModal = (props: SupplyCollateralHintModalProps)
           <SpaceBetweenBox
             leftNode={
               <Typography py={3} variant='h3'>
-                Suppy Collateral
+                Supply Collateral
               </Typography>
             }
             rightNode={
@@ -1912,9 +1912,9 @@ export const SupplyCollateralHintModal = (props: SupplyCollateralHintModalProps)
               />
             }
           />
-          <Typography mt={1.5} color={'var(--color-text-secondary)'}>Please Suppy Collateral first.</Typography>
+          <Typography mt={1.5} color={'var(--color-text-secondary)'}>To initiate a trade in Portal, please add collateral to your account.</Typography>
           <Button onClick={onClickSupply} sx={{ mt: 5, mb: 4 }} variant={'contained'} fullWidth>
-            Suppy Collateral
+            Supply Collateral
           </Button>
         </Box>
       </Box>

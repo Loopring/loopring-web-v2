@@ -3148,8 +3148,8 @@ export const ConfirmVaultRisk = withTranslation('common')(
                     color={'textPrimary'}
                   />
                 ),
-                li: <li style={{ display: 'list', listStyle: 'inside' }} />,
-                ul: <ol style={{ listStyle: 'decimal', paddingLeft: 24 }} />,
+                li: <li style={{ display: 'list', listStyle: 'disc' }} />,
+                ul: <ol style={{ listStyle: 'decimal', paddingLeft: 12 }} />,
               }}
             />
           </DialogContentText>
