@@ -625,19 +625,15 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                     <Divider style={{ marginTop: '-1px', width: '100%' }} />
                   </Box>
                   <Box
-                    flex={1}
-                    paddingY={2}
-                    width={'100%'}
-                    display={'flex'}
-                    flexDirection={'column'}
-                    sx={
-                      isMobile
-                        ? {
-                            maxHeight: 'initial',
-                            overflowY: 'initial',
-                          }
-                        : { maxHeight: 'var(--modal-height)', overflowY: 'auto' }
-                    }
+                    sx={{
+                      flex: 1,
+                      paddingY: 2,
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      maxHeight: isMobile ? 'initial' : '80%',
+                      overflowY: isMobile ? 'initial' : 'auto',
+                    }}
                   >
                     {vaultOperationDetail &&
                       (vaultOperationDetail.type === 'VAULT_BORROW' ||

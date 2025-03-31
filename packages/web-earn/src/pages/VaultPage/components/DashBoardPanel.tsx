@@ -1151,7 +1151,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   sx={{ alignSelf: 'flex-end', width: 'auto' }}
                   variant='contained'
                 >
-                  Close Out
+                  Settle
                 </Button>
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
                   <Box mr={2}>
