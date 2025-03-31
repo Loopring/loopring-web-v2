@@ -215,7 +215,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R>) => {
             return (
               <Button variant={'text'} onClick={() => props.onItemClick(row)}>
-                {t('labelDetail')}
+                {t('labelDetails')}
               </Button>
             )
           },

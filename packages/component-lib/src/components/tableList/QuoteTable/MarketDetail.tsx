@@ -465,10 +465,10 @@ export const MarketDetail = ({
       </Box>
       {showBtns && <Box mt={3}>
         <BgButton onClick={onClickBuy}  sx={{ borderRadius: '4px'}} fullWidth customBg={'var(--color-success)'} variant='contained'>
-          Buy/Long
+          Buy / Long
         </BgButton>
         <BgButton onClick={onClickSell} sx={{mt: 2, borderRadius: '4px'}} fullWidth customBg={'var(--color-error)'} variant='contained'>
-          Sell/Short
+          Sell / Short
         </BgButton>
       </Box>}
     </>

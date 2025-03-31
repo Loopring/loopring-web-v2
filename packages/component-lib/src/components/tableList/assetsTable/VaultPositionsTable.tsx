@@ -294,7 +294,7 @@ export const VaultPositionsTable = withTranslation('tables')(
           t={t}
           EmptyRowsRenderer={
             <Box display='flex' justifyContent='center' alignItems='center' mt={9}>
-              <Typography color='var(--color-text-secondary)'>No Positions</Typography>
+              <Typography color='var(--color-text-secondary)'>No positions</Typography>
             </Box>
           }
         />

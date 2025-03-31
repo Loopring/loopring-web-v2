@@ -1158,6 +1158,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   display={'flex'}
                   justifyContent={'center'}
                   alignItems={'center'}
+                  borderRadius={'4px 0 4px 0'}
                 >
                   <Typography>Cross Account</Typography>
                 </Box>
@@ -1250,7 +1251,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         <Typography
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
-                          marginLeft={1}
+                          marginLeft={1.5}
                           component={'span'}
                           onClick={() => {
                             setLocalState({
@@ -1415,7 +1416,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
-                          marginLeft={1}
+                          marginLeft={1.5}
                           component={'span'}
                           onClick={() => {
                             setLocalState({
@@ -1482,7 +1483,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                                   component={'span'}
                                   display={'flex'}
                                   variant={'body1'}
-                                  marginLeft={1 / 2}
+                                  marginLeft={1.5}
                                   color={colors[colorIs]}
                                   fontSize={'20px'}
                                 >
@@ -1535,7 +1536,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                           <Typography
                             sx={{ cursor: 'pointer' }}
                             color={'var(--color-primary)'}
-                            marginLeft={1}
+                            marginLeft={1.5}
                             component={'span'}
                             onClick={() => {
                               setLocalState({

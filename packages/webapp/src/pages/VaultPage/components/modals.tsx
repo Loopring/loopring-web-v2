@@ -96,15 +96,19 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
               flexDirection={'row'}
             >
               <InfoIcon sx={{ mt: 0.5, marginRight: 1, color: 'var(--color-text-secondary)' }} />
-              <Typography>{t('labelVaultMaximumCreditDes')}{' '}
-              <Typography
-                component={'span'}
-                onClick={onClickMaxCredit}
-                color={'var(--color-primary)'}
-                sx={{ cursor: 'pointer' }}
-              >
-                {t('labelLearnMore2')}
-              </Typography></Typography>
+              <Typography>
+                {t('labelVaultMaximumCreditDes')}{' '}
+                <Box component="span" sx={{ whiteSpace: 'nowrap', display: 'inline' }}>
+                  <Typography
+                    component={'span'}
+                    onClick={onClickMaxCredit}
+                    color={'var(--color-primary)'}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    {t('labelLearnMore2')}
+                  </Typography>
+                </Box>
+              </Typography>
               
             </Typography>
             {collateralTokens.map((token) => {
@@ -1465,7 +1469,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 <Tooltip
                   title={
                     <>
-                      Max = Current holdings + Borrowing limit
+                      Max = Current holdings + borrowing limit
                       <br />
                       The borrowing limit is determined by the value of your collateral and your net
                       equity in this portal account. If the requested amount exceeds your current
@@ -1644,9 +1648,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                   {tradeBtn.label}
                 </Typography>
               ) : isLongOrShort === 'long' ? (
-                'Buy/Long'
+                'Buy / Long'
               ) : (
-                'Sell/Short'
+                'Sell / Short'
               )}
             </BgButton>
           </Box>
