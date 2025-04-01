@@ -96,15 +96,19 @@ export const CollateralDetailsModal = (props: CollateralDetailsModalProps) => {
               flexDirection={'row'}
             >
               <InfoIcon sx={{ mt: 0.5, marginRight: 1, color: 'var(--color-text-secondary)' }} />
-              <Typography>{t('labelVaultMaximumCreditDes')}{' '}
-              <Typography
-                component={'span'}
-                onClick={onClickMaxCredit}
-                color={'var(--color-primary)'}
-                sx={{ cursor: 'pointer' }}
-              >
-                {t('labelLearnMore2')}
-              </Typography></Typography>
+              <Typography>
+                {t('labelVaultMaximumCreditDes')}{' '}
+                <Box component="span" sx={{ whiteSpace: 'nowrap', display: 'inline' }}>
+                  <Typography
+                    component={'span'}
+                    onClick={onClickMaxCredit}
+                    color={'var(--color-primary)'}
+                    sx={{ cursor: 'pointer' }}
+                  >
+                    {t('labelLearnMore2')}
+                  </Typography>
+                </Box>
+              </Typography>
               
             </Typography>
             {collateralTokens.map((token) => {
@@ -667,7 +671,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                     title={
                       'The token price changes dynamically, the dust value you see here may be inconsistent with the final value.'
                     }
-                    placement={'top'}
+                    placement={'bottom'}
                   >
                     <IconButton>
                       <Info2Icon sx={{ color: 'var(--color-text-secondary)', marginLeft: 1 / 2 }} />
@@ -921,11 +925,12 @@ export interface VaultSwapModalProps {
   }
   hourlyInterestRate: string
   tradingFee: string
+  tradingFeeDescription: string
   slippageTolerance: string
   myPositions:
     | {
         tokenSymbol: string
-        longOrShort: 'long' | 'short'
+        longOrShort: 'Long' | 'Short'
         marginLevel: string
         leverage: string
         amount: string
@@ -1026,6 +1031,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
     marginLevelChange,
     hourlyInterestRate,
     tradingFee,
+    tradingFeeDescription,
     slippageTolerance ,
     myPositions,
     leverageSelection,
@@ -1058,15 +1064,16 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       <Box
         bgcolor={'var(--color-box)'}
         width={'var(--modal-width)'}
-        minHeight={'700px'}
-        height={'85%'}
+        // minHeight={'700px'}
+        height={'700px'}
+        maxHeight={'90%'}
         overflow={'auto'}
-        
         borderRadius={1}
         display={'flex'}
         alignItems={'center'}
         flexDirection={'column'}
         position={'relative'}
+        ref={mainViewRef}
       >
         <Box
           px={3}
@@ -1077,7 +1084,20 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           width={'100%'}
           alignItems={'center'}
         >
-          <Typography variant='h4'>Portal Trade</Typography>
+          <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
+            <Typography mr={1 / 2} variant='h4'>Portal Trade</Typography>
+            <Tooltip
+              title={
+                "To trade on Portal with leverage, you first need to borrow assets. If you're unable to execute the full amount, a portion of the borrowed assets may remain unused. The Auto Repay feature ensures any remaining borrowed assets are automatically repaid, helping you avoid unnecessary interest charges."
+              }
+              sx={{ ml: 1 / 2 }}
+            >
+              <Typography display={'flex'} alignItems={'center'}>
+                <Info2Icon color={'inherit'} />
+              </Typography>
+            </Tooltip>
+          </Box>
+
           <Box display={'flex'} alignItems={'center'}>
             <Box>
               <IconButtonStyled
@@ -1220,7 +1240,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           </Box>
         </Box>
 
-        <Box width={'100%'} height={'calc(100% - 150px)'} overflow={'auto'} ref={mainViewRef}>
+        <Box width={'100%'} ref={mainViewRef}>
           <Box mt={2} width={'100%'} px={3}>
             <BgButton
               variant='contained'
@@ -1387,7 +1407,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               min={0}
               max={100}
               valueLabelDisplay={'on'}
-              valueLabelFormat={(value) => `${value}%`}
+              valueLabelFormat={(value) => `${new Decimal(value).toFixed(0)}%`}
               step={1}
               marks={[
                 { value: 0, label: '' },
@@ -1421,9 +1441,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           <Box pb={2} mt={2} width={'100%'} px={3} borderBottom={'1px solid var(--color-border)'}>
             <SpaceBetweenBox
               leftNode={
-                <Tooltip
-                  title={`The quantity you currently hold.`}
-                >
+                <Tooltip title={`The quantity you currently hold.`}>
                   <Typography
                     display={'flex'}
                     alignItems={'center'}
@@ -1449,11 +1467,15 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
             <SpaceBetweenBox
               leftNode={
                 <Tooltip
-                  title={<>
-                  Max = Current holdings + Borrowing limit 
-                  <br/> 
-                  The borrowing limit is determined by the value of your collateral and your net equity in this portal account. If the requested amount exceeds your current holdings, the system will automatically borrow the required asset.
-                  </>}
+                  title={
+                    <>
+                      Max = Current holdings + borrowing limit
+                      <br />
+                      The borrowing limit is determined by the value of your collateral and your net
+                      equity in this portal account. If the requested amount exceeds your current
+                      holdings, the system will automatically borrow the required asset.
+                    </>
+                  }
                 >
                   <Typography
                     display={'flex'}
@@ -1501,12 +1523,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Typography>
               }
             />
-
-            
           </Box>
           <Box mt={2} width={'100%'} px={3}>
-          <SpaceBetweenBox
-              
+            <SpaceBetweenBox
               leftNode={
                 <Tooltip title={'Total Quota is the maximum allowable trading amount.'}>
                   <Typography
@@ -1526,7 +1545,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               }
             />
             <SpaceBetweenBox
-            mt={1}
+              mt={1}
               leftNode={
                 <Typography
                   display={'flex'}
@@ -1559,11 +1578,11 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Box>
               }
             />
-            
+
             <SpaceBetweenBox
               mt={1}
               leftNode={
-                <Tooltip title={'The trading fee is fixed at 0.3%.'}>
+                <Tooltip title={tradingFeeDescription}>
                   <Typography
                     display={'flex'}
                     alignItems={'center'}
@@ -1604,91 +1623,121 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 </Typography>
               }
             />
-          </Box>
-          <Box width={'100%'} mt={2} mb={3} px={3} >
-            <Box bgcolor={'var(--color-box-secondary)'} pt={2} borderRadius={'8px'}>
-              <Typography px={3} variant='h5' mb={2}>
-                My Positions
-              </Typography>
-              <Box px={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'} >
-                  <Checkbox
-                    checked={hideOther}
-                    onChange={() => {
-                      onClickHideOther()
-                    }}
-                    sx={{
-                      width: '16px',
-                      height: '16px',
-                      mr: 1,
-                      ml: -0.25,
-                    }}
-                    checkedIcon={<CheckedIcon />}
-                    icon={<CheckBoxIcon />}
-                    color='default'
-                  />
-                  Hide other tokens
+            <BgButton
+              sx={{
+                mt: 2,
+                mb: 3,
+                // '& .MuiTypography-root': {
+                //   fontSize: 'clamp(10px, 5vw, 14px)',
+                //   lineHeight: 1.2
+                // },
+                fontSize: 'clamp(10px, 5vw, 16px)',
+                lineHeight: 1.2,
+              }}
+              variant='contained'
+              customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
+              size='large'
+              fullWidth
+              onClick={tradeBtn.onClick}
+              disabled={tradeBtn.disabled}
+            >
+              {tradeBtn.loading ? (
+                <LoadingIcon className='custom-size' sx={{ fontSize: 24 }} />
+              ) : tradeBtn.label ? (
+                <Typography color={'inherit'} noWrap={false}>
+                  {tradeBtn.label}
                 </Typography>
-                {/* {myPositions && myPositions.length > 0 && (
-                  <BgButton
-                    variant='contained'
-                    size='small'
-                    customBg='var(--color-button-outlined)'
-                    onClick={onClickCloseAll}
-                    sx={{
-                      fontSize: '11px',
-                      borderRadius: '4px',
-                      width: '70px',
-                      height: '24px'
-                    }}
-                  >
-                    Close All
-                  </BgButton>
-                )} */}
-              </Box>
+              ) : isLongOrShort === 'long' ? (
+                'Buy / Long'
+              ) : (
+                'Sell / Short'
+              )}
+            </BgButton>
+          </Box>
+          <Box bgcolor={'var(--color-box-secondary)'} width={'100%'} height={'4px'}></Box>
 
-              <Box >
-                {myPositions?.length === 0 && (
+          <Box width={'100%'} my={3} pt={2}>
+            <Typography px={3} variant='h5' mb={2}>
+              My Positions
+            </Typography>
+            <Box px={3} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+              <Typography display={'flex'} alignItems={'center'} color={'var(--color-text-third)'}>
+                <Checkbox
+                  checked={hideOther}
+                  onChange={() => {
+                    onClickHideOther()
+                  }}
+                  sx={{
+                    width: '16px',
+                    height: '16px',
+                    mr: 1,
+                    ml: -0.25,
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color='default'
+                />
+                Hide other tokens
+              </Typography>
+
+              {/* <BgButton
+                variant='contained'
+                size='small'
+                customBg='var(--color-button-outlined)'
+                onClick={onClickCloseAll}
+                sx={{
+                  fontSize: '11px',
+                  borderRadius: '4px',
+                  width: '70px',
+                  height: '24px',
+                }}
+              >
+                Close All
+              </BgButton> */}
+            </Box>
+
+            <Box>
+              {myPositions?.length === 0 && (
+                <Box
+                  width={'100%'}
+                  height={'150px'}
+                  display={'flex'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                >
+                  <Typography variant='body2'>No positions</Typography>
+                </Box>
+              )}
+              {myPositions?.map((item) => {
+                return (
                   <Box
-                    width={'100%'}
-                    height={'150px'}
-                    display={'flex'}
-                    justifyContent={'center'}
-                    alignItems={'center'}
+                    key={item.tokenSymbol}
+                    py={3}
+                    px={3}
+                    borderBottom={'1px solid var(--color-border)'}
                   >
-                    <Typography variant='body2'>No positions</Typography>
-                  </Box>
-                )}
-                {myPositions?.map((item) => {
-                  return (
-                    <Box
-                      key={item.tokenSymbol}
-                      py={3}
-                      px={3}
-                      borderBottom={'1px solid var(--color-border)'}
-                    >
-                      <Box  display={'flex'} alignItems={'center'}>
-                        <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
-                        <Typography
-                          ml={1}
-                          fontSize={'12px'}
-                          borderRadius={'4px'}
-                          px={1}
-                          color={
-                            item.longOrShort === 'long'
-                              ? theme.colorBase.success
-                              : theme.colorBase.error
-                          }
-                          bgcolor={hexToRGB(
-                            item.longOrShort === 'long'
-                              ? theme.colorBase.success
-                              : theme.colorBase.error,
-                            0.2,
-                          )}
-                        >
-                          {item.longOrShort}
-                        </Typography>
-                        <Box
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Typography fontSize={'17px'}>{item.tokenSymbol}</Typography>
+                      <Typography
+                        ml={1}
+                        fontSize={'12px'}
+                        borderRadius={'4px'}
+                        px={1}
+                        color={
+                          item.longOrShort === 'Long'
+                            ? theme.colorBase.success
+                            : theme.colorBase.error
+                        }
+                        bgcolor={hexToRGB(
+                          item.longOrShort === 'Long'
+                            ? theme.colorBase.success
+                            : theme.colorBase.error,
+                          0.2,
+                        )}
+                      >
+                        {item.longOrShort}
+                      </Typography>
+                      {/* <Box
                           color={
                             marginLevelType(item.marginLevel) === 'warning'
                               ? theme.colorBase.warning
@@ -1714,69 +1763,58 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                         >
                           <MarginLevelIcon sx={{ mr: 0.5 }} />
                           {item.marginLevel}
-                        </Box>
+                        </Box> */}
+                    </Box>
+                    <Typography variant='body2' color={'var(--color-text-third)'}>
+                      Cross {item.leverage}
+                    </Typography>
+                    <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                      <Box>
+                        <Typography variant='body2'>Amount</Typography>
+                        <Typography>{item.amount}</Typography>
                       </Box>
-                      <Typography px={3} variant='body2' color={'var(--color-text-third)'}>Cross {item.leverage}</Typography>
-                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                        <Box>
-                          <Typography variant='body2'>Amount</Typography>
-                          <Typography>{item.amount}</Typography>
-                        </Box>
-                        {/* <Box ml={'30%'}>
+                      {/* <Box ml={'30%'}>
                     <Typography variant='body2'>Market Price (USDT)</Typography>
                     <Typography>{item.marketPrice}</Typography>
                   </Box> */}
-                      </Box>
-                      <Box display={'flex'} alignItems={'center'} mt={2.5}>
-                        {/* <BgButton
-                    variant='contained'
-                    size='small'
-                    sx={{
-                      bgcolor: 'var(--color-button-outlined)',
-                      width: '32%',
-                      borderRadius: '4px',
-                    }}
-                    onClick={item.onClickLeverage}
-                  >
-                    Leverage
-                  </BgButton> */}
-                        <BgButton
-                          variant='contained'
-                          size='small'
-                          customBg='var(--color-button-outlined)'
-                          sx={{
-                            width: '32%',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }}
-                          onClick={item.onClickTrade}
-                        >
-                          Trade
-                        </BgButton>
-                        <BgButton
-                          variant='contained'
-                          size='small'
-                          customBg='var(--color-button-outlined)'
-                          sx={{
-                            width: '32%',
-                            ml: '2%',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }}
-                          onClick={item.onClickClose}
-                        >
-                          Close
-                        </BgButton>
-                      </Box>
                     </Box>
-                  )
-                })}
-              </Box>
+                    <Box display={'flex'} alignItems={'center'} mt={2.5}>
+                      <BgButton
+                        variant='contained'
+                        size='small'
+                        customBg='var(--color-button-outlined)'
+                        sx={{
+                          width: '32%',
+                          borderRadius: '4px',
+                          fontSize: '14px',
+                        }}
+                        onClick={item.onClickTrade}
+                      >
+                        Trade
+                      </BgButton>
+                      <BgButton
+                        variant='contained'
+                        size='small'
+                        customBg='var(--color-button-outlined)'
+                        sx={{
+                          width: '32%',
+                          ml: '2%',
+                          borderRadius: '4px',
+                          fontSize: '14px',
+                        }}
+                        onClick={item.onClickClose}
+                      >
+                        Close
+                      </BgButton>
+                    </Box>
+                  </Box>
+                )
+              })}
             </Box>
           </Box>
         </Box>
 
-        <Box width={'100%'} mt={2} px={3}>
+        {/* <Box width={'100%'} mt={2} px={3}>
           <BgButton
             variant='contained'
             customBg={isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)'}
@@ -1795,7 +1833,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
               'Sell/Short'
             )}
           </BgButton>
-        </Box>
+        </Box> */}
       </Box>
     </Modal>
   )
@@ -1814,6 +1852,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
       <Box
         bgcolor={'var(--color-box)'}
         width={'350px'}
+        maxWidth={'90%'}
         height={'400px'}
         overflow={'auto'}
         borderRadius={1}
@@ -1922,6 +1961,141 @@ export const SupplyCollateralHintModal = (props: SupplyCollateralHintModalProps)
   )
 }
 
+export interface SettleConfirmModalProps {
+  open: boolean 
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const SettleConfirmModal = (props: SettleConfirmModalProps) => {
+  const { open, onClose, onConfirm } = props
+  const { t } = useTranslation('common')
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby='modal-modal-title'
+      aria-describedby='modal-modal-description'
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 'var(--modal-width)',
+          maxWidth: '450px',
+          bgcolor: 'var(--color-global-bg)',
+          // padding: 3,
+          px: 4,
+          py: 5,
+          borderRadius: 2,
+        }}
+      >
+        <IconButton
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+          }}
+          onClick={onClose}
+          aria-label='close'
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <Typography variant='h4' component='h2' textAlign='center' mb={4}>
+          Settle
+        </Typography>
+
+        <Typography mb={3}>
+          You can only settle your account after all existing positions have been closed.
+        </Typography>
+
+        <Typography mb={3} variant='body1' color={'var(--color-text-secondary)'}>
+          · If there is a loss (due to an unprofitable trade or interest payments), a portion of
+          your collateral may be used to cover the deficit. In this case, only the remaining
+          collateral will be available for withdrawal from Portal.
+        </Typography>
+
+        <Typography color={'var(--color-text-secondary)'} variant='body1'>
+          · If your trades are profitable, your full collateral will be available for withdrawal,
+          and any profits will be credited to your Loopring DeFi account accordingly.
+        </Typography>
+
+        <Box display='flex' gap={2} mt={4}>
+          <Button variant='outlined' sx={{height: '40px'}} fullWidth onClick={onClose}>
+            Cancel
+          </Button>
+
+          <Button variant='contained' fullWidth onClick={onConfirm}>
+            Settle
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  )
+};
+
+export interface CloseAllConfirmModalProps {
+  open: boolean 
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const CloseAllConfirmModal = (props: CloseAllConfirmModalProps) => {
+  const { open, onClose, onConfirm } = props
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+        <Box
+          bgcolor={'var(--color-global-bg)'}
+          width={'450px'}
+          borderRadius={2}
+          display={'flex'}
+          flexDirection={'column'}
+          p={4}
+          position={'relative'}
+        >
+          <IconButton
+            className='custom-size'
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: 'var(--color-text-secondary)',
+              fontSize: '16px'
+            }}
+            onClick={onClose}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={4}>
+            <Typography variant={'h4'} component={'h2'} textAlign={'center'} width={'100%'}>
+              Close All Position
+            </Typography>
+          </Box>
+
+          <Typography mb={5}>
+            This operation will close all existing positions in your account.
+          </Typography>
+
+          <Box display='flex' gap={2} mt={2}>
+            <Button variant='outlined' sx={{height: '40px'}} fullWidth onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button variant='contained' fullWidth onClick={onConfirm}>
+              Confirm
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+
 export interface CloseConfirmModalProps {
   open: boolean 
   onClose: () => void
@@ -1934,24 +2108,108 @@ export const CloseConfirmModal = (props: CloseConfirmModalProps) => {
     <Modal open={open} onClose={onClose}>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
         <Box
-          bgcolor={'var(--color-box)'}
+          bgcolor={'var(--color-global-bg)'}
           width={'450px'}
-          borderRadius={1}
+          borderRadius={2}
           display={'flex'}
           flexDirection={'column'}
-          px={2.5}
+          p={4}
+          position={'relative'}
         >
-          <Box sx={{ height: '55px', py: 2.5 }} display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'}>
-            <Typography variant={'h5'} component={'span'} >
+          <IconButton
+            className='custom-size'
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: 'var(--color-text-secondary)',
+              fontSize: '16px'
+            }}
+            onClick={onClose}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={4}>
+            <Typography variant={'h4'} component={'h2'} textAlign={'center'} width={'100%'}>
               Close Position
             </Typography>
-            <CloseIcon className='custom-size' onClick={onClose} sx={{ fontSize: 24, color: 'var(--color-text-secondary)', cursor: 'pointer' }} />
-
           </Box>
-          <Divider style={{ marginTop: '2px' }} />
-          <Box>
-            <Button onClick={onConfirm} sx={{ mt: 5, mb: 4 }} variant={'contained'} fullWidth>
-              Confirm Close
+
+          <Typography mb={2}>
+            Executing this operation will fully close the SHORT or LONG position associated with the
+            selected token, eliminating any positive or negative exposure. Additionally, the
+            corresponding debt will be repaid.
+          </Typography>
+          <Typography color={'var(--color-text-secondary)'} mb={2}>
+            · For a LONG position: Your held asset will be sold for USDT, and any USDT debt will be
+            repaid.
+          </Typography>
+          <Typography color={'var(--color-text-secondary)'} mb={4}>
+            · For a SHORT position: You will need to borrow USDT to purchase the token required for
+            debt repayment. In other words, your debt will shift from the original token to USDT.
+          </Typography>
+
+          <Box display='flex' gap={2} mt={2}>
+            <Button variant='outlined' sx={{height: '40px'}} fullWidth onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button variant='contained' fullWidth onClick={onConfirm}>
+              Confirm
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
+  )
+}
+export interface AutoRepayModalProps {
+  open: boolean
+  onClose: () => void
+  onConfirm: () => void
+}
+
+export const AutoRepayConfirmModal = ({
+  open,
+  onClose,
+  onConfirm,
+}: AutoRepayModalProps) => {
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="auto-repay-confirm-modal"
+      aria-describedby="auto-repay-confirm-description"
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: { xs: '90%', sm: 480 },
+          maxWidth: '100%',
+          bgcolor: 'var(--color-box-secondary)',
+          px: 4,
+          py: 8,
+          borderRadius: '8px',
+        }}
+      >
+        <Box>
+          <Typography>
+            It looks like you're holding the same asset as your debt. To avoid
+            extra interest charges, consider repaying your debt with your
+            holdings now.
+          </Typography>
+
+          <Box display="flex" justifyContent="center" mt={6}>
+            <Button
+              variant="contained"
+              onClick={onConfirm}
+              fullWidth
+            >
+              I Know
             </Button>
           </Box>
         </Box>

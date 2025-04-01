@@ -54,13 +54,15 @@ import {
   vaultSwapDependAsync,
   toPercent,
   strNumDecimalPlacesLessThan,
+  NETWORKEXTEND,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
+import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-
+import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -104,6 +106,12 @@ const calcDexWrap = <R>(input: {
 }
 
 export type VaultTradeTradeData = VaultBorrowTradeData & { borrowAvailable: string }
+
+
+
+
+  
+// }
 export const useVaultSwap = () => {
   const borrowHash = React.useRef<null | { hash: string; timer?: any }>(null)
   const refreshRef = React.useRef()
@@ -126,6 +134,8 @@ export const useVaultSwap = () => {
     setShowAccount,
     setShowVaultSwap,
     setShowVaultExit,
+    setShowGlobalToast,
+    setShowVaultCloseConfirm,
   } = useOpenModals()
   const {
     toggle: { VaultInvest },
@@ -171,6 +181,11 @@ export const useVaultSwap = () => {
     },
     maxBorrowableSellToken: undefined as string | undefined,
     depth: undefined as sdk.DepthData | undefined,
+    slideValue: 0,
+    closeAllConfirmModal: {
+      show: false,
+      symbol: undefined as undefined | string
+    }
   }
   const [getLocalState, setLocalState] = useGetSet(initLocalState)
 
@@ -183,14 +198,10 @@ export const useVaultSwap = () => {
       },
     } = store.getState()
     const market: MarketType = `LV${getSelectedTokenSymbol()}-LVUSDT`
-    const { depth } = await vaultSwapDependAsync({
-      market: marketMap[market]?.vaultMarket as MarketType,
-      tokenMap,
-    })
     myLog('useVaultSwap: refreshData', market)
 
     if (!market || !sellToken || !buyToken) return
-
+    
     getVaultMap()
     updateVaultLayer2({})
 
@@ -223,7 +234,10 @@ export const useVaultSwap = () => {
       })
     }
 
-
+    const { depth } = await vaultSwapDependAsync({
+      market: marketMap[market]?.vaultMarket as MarketType,
+      tokenMap,
+    })
     setLocalState((state) => ({
       ...state,
       depth,
@@ -346,10 +360,10 @@ export const useVaultSwap = () => {
     : undefined
   
   const userMaxSellValueWithoutBorrow =
-    sellToken && sellTokenAsset?.total
+    sellToken
       ? numberFormat(
           utils.formatUnits(
-            BigNumber.from(sellTokenAsset.total ?? 0),
+            BigNumber.from(sellTokenAsset?.total ?? 0),
             sellToken?.decimals,
           ),
           {
@@ -361,11 +375,11 @@ export const useVaultSwap = () => {
       : undefined
       
   const userMaxSellValue =
-    sellToken && sellTokenAsset?.total && borrowAble
+    sellToken
       ? numberFormat(
           utils.formatUnits(
-            BigNumber.from(sellTokenAsset.total ?? 0).add(
-              utils.parseUnits(borrowAble, sellToken?.decimals),
+            BigNumber.from(sellTokenAsset?.total ?? 0).add(
+              utils.parseUnits(borrowAble ?? '0', sellToken?.decimals),
             ),
             sellToken?.decimals,
           ),
@@ -377,7 +391,7 @@ export const useVaultSwap = () => {
         )
       : undefined
 
-  const slippageReal = slippage === 'N' ? 0.1 : slippage
+  const slippageReal = slippage ? (slippage === 'N' ? 0.1 : slippage) : 0.1
   const maxAmountCalcDexOutput =
     sellToken && buyToken && localState.depth && marketInfo
       ? calcDexWrap<sdk.VaultMarket>({
@@ -466,15 +480,16 @@ export const useVaultSwap = () => {
         })
       : undefined
 
+  
   const swapRatio = tryFn(
     () => {
       return localState.isSwapRatioReversed
         ? `1 USDT ≈ ${numberFormat(new Decimal(1).div(localState.depth!.mid_price).toString(), {
-            fixed: selectedVTokenInfo!.precision,
+            fixed: 6,
             removeTrailingZero: true,
           })} ${selectedTokenSymbol}`
-        : `1 ${selectedTokenSymbol} ≈ ${numberFormat(localState.depth!.mid_price, {
-            fixed: USDTInfo!.precision,
+        : `1 ${selectedTokenSymbol} ≈ ${numberFormat(localState.depth!.mid_price.toString(), {
+            fixed: marketInfo!.precisionForPrice,
             removeTrailingZero: true,
           })} USDT`
     },
@@ -500,26 +515,33 @@ export const useVaultSwap = () => {
   const amounInUSDT = isLongOrShort === 'long' ? sellAmount : buyAmount
 
   const borrowRequired =
-    sellToken && sellTokenAsset && sellAmountBN
+    sellToken && sellAmountBN
       ? sellAmountBN.gt(
           sellTokenAsset?.total && sellTokenAsset?.total !== 'NaN' ? sellTokenAsset?.total : 0,
         )
       : false
 
-  const moreToBeBorrowedBN =
-    sellToken && sellTokenAsset && borrowRequired && sellAmountBN
-      ? sellAmountBN
-          .sub(sellTokenAsset?.total ?? 0)
-          .div(
-            utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
-          )
-          .mul(
-            utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
-          )
-          .add(
-            utils.parseUnits('1', sellToken.decimals - sellToken.vaultTokenAmounts?.qtyStepScale),
-          )
-      : undefined
+  const moreToBeBorrowedBN = tryFn(
+    () => {
+      const subbed =
+        sellToken && borrowRequired && sellAmountBN
+          ? sellAmountBN.sub(sellTokenAsset?.total ?? 0)
+          : undefined
+      const oneUnit = utils.parseUnits(
+        '1',
+        sellToken!.decimals - sellToken!.vaultTokenAmounts?.qtyStepScale,
+      )
+      const floorred = subbed?.div(oneUnit).mul(oneUnit)
+      if (subbed && floorred && floorred.eq(subbed)) {
+        return floorred
+      } else {
+        return floorred?.add(oneUnit)
+      }
+    },
+    () => undefined,
+  )
+    
+
   const moreToBeBorrowed = moreToBeBorrowedBN
     ? utils.formatUnits(moreToBeBorrowedBN, sellToken?.decimals)
     : undefined
@@ -537,7 +559,7 @@ export const useVaultSwap = () => {
         isLongOrShort === 'long'
           ? new Decimal(
               utils.formatUnits(localState.depth!.asks_volTotal, LVUSDTInfo!.decimals),
-            ).div(localState.depth!.mid_price)
+            )
           : new Decimal(
               utils.formatUnits(localState.depth!.bids_amtTotal, selectedVTokenInfo!.decimals),
             )
@@ -554,6 +576,8 @@ export const useVaultSwap = () => {
     },
     () => undefined,
   )
+
+  
 
   const maxSellValue = Decimal.min(userMaxSellValue ?? '0', totalSellQuota ?? '0').toString()
   const maxTradeValue = Decimal.min(userMaxTradeValue ?? '0', totalTradeQuota ?? '0').toString()
@@ -660,7 +684,7 @@ export const useVaultSwap = () => {
             disabled: true,
           }
         } else if (!amtValid) {
-
+          // const sellSymbol = tradeData?.sell.belong
           if (tradeMinAmt === undefined || tradeMinAmt === 'NaN') {
             return {
               label: 'labelEnterAmount',
@@ -704,12 +728,12 @@ export const useVaultSwap = () => {
     }
   })()
   const myPositions = (() => {
-    return _.keys(vaultLayer2)
+    return filterPositions(vaultLayer2!, tokenMap, vaultTokenPrices)
       .map((symbol) => {
         const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
-        const tokenInfo = tokenMap[symbol]
+        const tokenInfo = tokenMap?.[symbol]
         if (!asset || !tokenInfo) return undefined
-        const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
+        const position = new Decimal(utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals))
         if (
           symbol === 'LVUSDT' ||
           position.isZero() ||
@@ -719,24 +743,24 @@ export const useVaultSwap = () => {
 
         return {
           tokenSymbol: symbol.slice(2),
-          longOrShort: position.isPos() ? 'long' : 'short',
+          longOrShort: position.isPos() ? 'Long' : 'Short',
           marginLevel: vaultAccountInfo?.marginLevel
             ? numberFormat(vaultAccountInfo.marginLevel, { fixed: 2 })
             : EmptyValueTag,
           leverage: vaultAccountInfo?.leverage + 'x',
           amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision, removeTrailingZero: true }),
-
+          // onClickLeverage: () => {},
           onClickTrade: () => {
             mainViewRef.current?.scrollTo(0, 0)
             setLocalState({
               ...localState,
               selectedToken: symbol.slice(2),
               amount: '',
+              slideValue: 0,
             })
           },
           onClickClose: () => {
             setShowVaultCloseConfirm({ isShow: true, symbol: symbol })
-
           },
         }
       })
@@ -752,6 +776,7 @@ export const useVaultSwap = () => {
     timerRef.current = setInterval(() => {
       refreshRef.current && (refreshRef.current as any).firstElementChild.click()
     }, 10 * 1000)
+
     refreshRef.current && (refreshRef.current as any).firstElementChild.click()
   }
   const clearData = () => {
@@ -804,7 +829,7 @@ export const useVaultSwap = () => {
         fastMode: false,
       }
       myLog('useVaultSwap: submitOrder request', request)
-
+      // const selectedVTokenInfo = 'selectedVTokenInfo'
       const item = {
         fromSymbol: sellToken.symbol,
         fromAmount: utils.formatUnits(sellAmountBN, sellToken.decimals),
@@ -966,7 +991,7 @@ export const useVaultSwap = () => {
                   tokenMap[item.fromSymbol].precision,
                   false,
                   { isAbbreviate: true },
-                )} ${item.fromSymbol.slice(2)}`
+                )} ${sellToken.symbol.slice(2)}`
               : EmptyValueTag,
           executedAmount:
             tokenMap &&
@@ -1064,16 +1089,17 @@ export const useVaultSwap = () => {
             ...info,
           },
         })
-        await sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE)
-        l2CommonService.sendUserUpdate()
-        if (
-          store.getState().modals.isShowAccount.isShow &&
-          [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
-            store.getState().modals.isShowAccount.step,
-          )
-        ) {
-          setShowAccount({ isShow: false })
-        }
+        sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE).then(() => {
+          l2CommonService.sendUserUpdate()
+          if (
+            store.getState().modals.isShowAccount.isShow &&
+            [AccountStep.VaultTrade_Success, AccountStep.VaultTrade_In_Progress].includes(
+              store.getState().modals.isShowAccount.step,
+            )
+          ) {
+            setShowAccount({ isShow: false })
+          }
+        })
       }
     } catch (error: any) {
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
@@ -1096,6 +1122,17 @@ export const useVaultSwap = () => {
           swapStatus: { status: 'init' },
           isSwapLoading: false,
         }
+      })
+      
+      await sdk.sleep(1000)
+      updateVaultLayer2({})
+      await sdk.sleep(1000)
+      repayIfNeeded(selectedVTokenSymbol)
+      .finally(() => {
+        return repayIfNeeded('LVUSDT')
+      })
+      .finally(() => {
+        updateVaultLayer2({})
       })
     }
   }
@@ -1165,7 +1202,7 @@ export const useVaultSwap = () => {
               }
             })
         }
-
+        // borrowHash.current = { hash: (response as any).hash }
         await recursiveCheckBorrow((response as any).hash)
         return swapSubmit()
       }
@@ -1251,7 +1288,7 @@ export const useVaultSwap = () => {
   }
 
   React.useEffect(() => {
-    if (isShowVaultSwap.isShow) {
+    if (isShowVaultSwap.isShow && refreshRef.current) {
       restartTimer()
     } else {
       timerRef.current && clearInterval(timerRef.current)
@@ -1271,7 +1308,7 @@ export const useVaultSwap = () => {
         borrowHash.current = null
       }
     }
-  }, [isShowVaultSwap?.isShow])
+  }, [isShowVaultSwap?.isShow, refreshRef.current])
   React.useEffect(() => {
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
       const localState = getLocalState()
@@ -1299,13 +1336,66 @@ export const useVaultSwap = () => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [market, getLocalState, setLocalState, subjectBtradeOrderbook])
+  }, [market])
+
+  
+
+  
 
   useL2CommonSocket({ vaultLayer2Callback })
 
+  
+  const [showCloseAllConfirm, setShowCloseAllConfirm] = React.useState({
+    show: false
+  })
+  
+  const closeAllConfirmModalProps: CloseAllConfirmModalProps = {
+    open: showCloseAllConfirm.show,
+    onClose: () => {
+      setShowCloseAllConfirm({
+        show: false
+      })
+    },
+    onConfirm: async () => {
+      const symbols = filterPositions(vaultLayer2!, tokenMap, vaultTokenPrices)
+      closePositionsAndRepayIfNeeded(symbols)
+        .then((resList) => {
+          const foundErr = resList.find(
+            (res) => res.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED,
+          )
+          if (foundErr) {
+            throw new Error('failed')
+          }
+          setShowGlobalToast({
+            isShow: true,
+            info: {
+              content: 'Closed position successfully',
+              type: ToastType.success,
+            },
+          })
+        })
+        .catch((e) => {
+          setShowGlobalToast({
+            isShow: true,
+            info: {
+              content: 'Close position failed',
+              type: ToastType.error,
+            },
+          })
+        })
+        .finally(() => {
+          setShowCloseAllConfirm({
+            show: false
+          })
+          updateVaultLayer2({})
+        })
+    }
+  }
   const vaultSwapModalProps = {
     onClickCloseAll: () => {
-      setShowVaultExit({ isShow: true })
+      setShowCloseAllConfirm({
+        show: true
+      })
     },
     mainViewRef,
     open: isShowVaultSwap.isShow,
@@ -1342,12 +1432,8 @@ export const useVaultSwap = () => {
       },
       slippageList: ['0.1', '0.5', '1', `slippage:${slippage}`],
       currentSlippage: slippage,
-      onSlippageChange: (slippage, customSlippage) => {
-        if (customSlippage === 'N') {
-          setSlippage(slippage)
-        } else {
-          setSlippage(customSlippage)
-        }
+      onSlippageChange: (_slippage, customSlippage) => {
+        setSlippage(_slippage)
       },
     },
     countdown: {
@@ -1389,7 +1475,7 @@ export const useVaultSwap = () => {
     balance: tryFn(
       () => {
         if (new Decimal(userMaxSellValueWithoutBorrow!).lessThanOrEqualTo('0'))
-          return EmptyValueTag + ' ' + sellTokenOriginSymbol
+          return '0 ' + sellTokenOriginSymbol
         return (
           numberFormatThousandthPlace(userMaxSellValueWithoutBorrow!, {
             fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
@@ -1421,6 +1507,7 @@ export const useVaultSwap = () => {
         return
       setLocalState({
         ...localState,
+        slideValue: 0,
         amount,
       })
     },
@@ -1428,6 +1515,7 @@ export const useVaultSwap = () => {
       ? `Min ${numberFormat(tradeMinAmt, {
           fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
           removeTrailingZero: true,
+          fixedRound: Decimal.ROUND_CEIL,
         })}`
       : '0.00',
     amountInput: localState.amount,
@@ -1482,8 +1570,8 @@ export const useVaultSwap = () => {
     },
     amounInUSDT: amounInUSDT
       ? numberFormatThousandthPlace(amounInUSDT, {
-          fixed: LVUSDTInfo?.vaultTokenAmounts.qtyStepScale,
-          removeTrailingZero: true
+          fixed: LVUSDTInfo?.precisionForOrder,
+          removeTrailingZero: true,
         }) + ' USDT'
       : EmptyValueTag + ' USDT',
     maxTradeValue: tryFn(
@@ -1521,14 +1609,11 @@ export const useVaultSwap = () => {
     moreToBeBorrowed: tryFn(
       () => {
         return (
-          numberFormatThousandthPlace(
-            moreToBeBorrowed!,
-            {
-              fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
-              fixedRound: Decimal.ROUND_CEIL,
-              removeTrailingZero: true,
-            },
-          ) +
+          numberFormatThousandthPlace(moreToBeBorrowed!, {
+            fixed: sellToken!.vaultTokenAmounts.qtyStepScale,
+            fixedRound: Decimal.ROUND_CEIL,
+            removeTrailingZero: true,
+          }) +
           ' ' +
           sellTokenOriginSymbol
         )
@@ -1538,12 +1623,12 @@ export const useVaultSwap = () => {
     totalQuota: tryFn(
       () =>
         numberFormatThousandthPlace(totalSellQuota!, {
-          fixed: selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale,
+          fixed: sellToken?.vaultTokenAmounts.qtyStepScale,
           fixedRound: Decimal.ROUND_FLOOR,
           removeTrailingZero: true,
         }) +
         ' ' +
-        selectedTokenSymbol,
+        sellTokenOriginSymbol,
       () => EmptyValueTag,
     ),
     marginLevelChange: tryFn(
@@ -1582,7 +1667,7 @@ export const useVaultSwap = () => {
       onClick: () => {
         onClickTradeBtn()
       },
-      label: tradeBtnStatus.label ? t(tradeBtnStatus.label) : undefined,
+      label: tradeBtnStatus.label ? tWrap(t, tradeBtnStatus.label) : undefined,
       loading: localState.isSwapLoading,
     },
     hourlyInterestRate:
@@ -1605,12 +1690,22 @@ export const useVaultSwap = () => {
       },
       () => EmptyValueTag + ' ' + buyTokenOriginSymbol,
     ),
+    tradingFeeDescription: tryFn(
+      () => {
+        const feeBips = maxFeeBips ?? marketInfo?.feeBips ?? MAPFEEBIPS;
+        return `The trading fee is ${toPercent((feeBips/100).toString(), 2)}.`;
+      },
+      () => '',
+    ),
     slippageTolerance: `${slippageReal}%`,
     onClickLongShort: (v: 'long' | 'short') => {
       setLocalState({
         ...localState,
         isLongOrShort: v,
         maxBorrowableSellToken: undefined,
+        slideValue: 0,
+        amount: '',
+        depth: undefined,
       })
       restartTimer()
     },
@@ -1647,16 +1742,15 @@ export const useVaultSwap = () => {
         {
           label: 'Cross Position',
           value: 'cross',
-          tooltipTitle: 'All positions within this account share a single health factor, determined by the real-time prices of your collateral, holdings, and debts. If the health factor falls below the liquidation threshold, all positions under this account are subject to liquidation.'
+          tooltipTitle:
+            'All positions within this account share a single health factor, determined by the real-time prices of your collateral, holdings, and debts. If the health factor falls below the liquidation threshold, all positions under this account are subject to liquidation.',
         },
       ],
     },
     ratioSlider: {
-      currentRatio: tryFn(
-        () => new Decimal(localState.amount).div(maxTradeValue).toDecimalPlaces(2).toNumber(),
-        () => 0,
-      ),
+      currentRatio: localState.slideValue,
       onClickRatio: (no: number) => {
+        if (!maxTradeValue || new Decimal(maxTradeValue).eq('0')) return
         setLocalState((state) => {
           return {
             ...state,
@@ -1664,6 +1758,7 @@ export const useVaultSwap = () => {
               .mul(new Decimal(no))
               .toDecimalPlaces(selectedVTokenInfo?.vaultTokenAmounts.qtyStepScale)
               .toString(),
+            slideValue: no,
           }
         })
       },
@@ -1680,16 +1775,16 @@ export const useVaultSwap = () => {
         })
       },
       tokens:
-        vaultLayer2 && tokenMap
-          ? _.keys(vaultLayer2)
+        tokenMap
+          ? _.keys(tokenMap)
               .map((symbol) => {
-                const asset = vaultLayer2[symbol]
+                const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
                 const tokenInfo = tokenMap[symbol]
                 return tokenInfo
                   ? {
                       symbol: symbol.slice(2),
                       amount: numberFormatThousandthPlace(
-                        utils.formatUnits(asset.total, tokenInfo.decimals),
+                        utils.formatUnits(asset?.total ?? '0', tokenInfo.decimals),
                         { fixed: tokenInfo.precision, removeTrailingZero: true },
                       ),
                       coinJSON: coinJson[symbol.slice(2)],
@@ -1699,8 +1794,12 @@ export const useVaultSwap = () => {
                           showTokenSelection: false,
                           selectedToken: symbol === 'LVUSDT' ? 'ETH' : symbol.slice(2),
                           tokenSelectionInput: '',
+                          amount: '',
+                          slideValue: 0,
+                          depth: undefined,
                         })
                         restartTimer()
+                        refreshData()
                       },
                     }
                   : undefined
@@ -1708,6 +1807,7 @@ export const useVaultSwap = () => {
               .filter(
                 (item) =>
                   item !== undefined &&
+                  !['USDT', 'USDC', 'LRTAIKO'].includes(item?.symbol) &&
                   (!localState.tokenSelectionInput ||
                     item.symbol
                       .toLowerCase()
@@ -1719,6 +1819,7 @@ export const useVaultSwap = () => {
           ...localState,
           tokenSelectionInput: v,
           amount: '',
+
         })
       },
     },
@@ -1763,5 +1864,6 @@ export const useVaultSwap = () => {
     vaultSwapModalProps,
     smallOrderAlertProps,
     toastProps,
+    closeAllConfirmModalProps,
   }
 }
