@@ -36,9 +36,6 @@ export const useVaultSwapExtends = ({
   handleSwapPanelEvent,
   tradeData,
   isSwapLoading,
-  // btnBorrowStatus,
-  // onBorrowClick,
-  // borrowBtnI18nKey,
   toastOpen,
   borrowedAmount
 }) => {

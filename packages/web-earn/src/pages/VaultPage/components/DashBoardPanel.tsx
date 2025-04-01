@@ -718,17 +718,7 @@ import { useVaultSwap } from '../hooks/useVaultSwap'
 //                 paddingY={2}
 //               >
 //                 <VaultAssetsTable
-//                   {...assetPanelProps}
-//                   onRowClick={(index, row) => {
-//                     // @ts-ignore
-//                     marketProps.onRowClick(index, {
-//                       // @ts-ignore
-//                       ...vaultTokenMap[row.name],
-//                       // @ts-ignore
-//                       cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
-//                       ...vaultTickerMap[row.erc20Symbol],
-//                     })
-//                   }}
+
 //                   onClickDustCollector={() => {
 //                     if (VaultDustCollector.enable) {
 //                       setLocalState({

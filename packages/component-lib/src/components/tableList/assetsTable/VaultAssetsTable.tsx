@@ -157,7 +157,7 @@ export const VaultAssetsTable = withTranslation('tables')(
     } = props
     const gridRef = React.useRef(null)
     const prevScrollTop = React.useRef(0)
-    // const container = React.useRef<HTMLDivElement>(null)
+
     const [filter, setFilter] = React.useState({
       searchValue: searchValue ?? '',
     })
@@ -167,8 +167,8 @@ export const VaultAssetsTable = withTranslation('tables')(
     const [viewData, setViewData] = React.useState<R[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     React.useEffect(() => {
-      // let height = gridRef?.current?.offsetHeight
-      // @ts-ignore
+
+      // @ts-ignore - gridRef.current.element is accessible at runtime
       let height = gridRef?.current?.element?.parentElement?.offsetHeight
       if (height) {
         const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
@@ -178,7 +178,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       }
     }, [gridRef?.current])
     const handleScroll = _.debounce(() => {
-      // const currentScrollTop = gridRef?.current?.scrollTop;
+
       const currentScrollTop = window.scrollY
       if (currentScrollTop > prevScrollTop.current) {
         setPage((prevPage) => prevPage + 1)
@@ -187,13 +187,13 @@ export const VaultAssetsTable = withTranslation('tables')(
     const updateData = React.useCallback(
       (page) => {
         let resultData = rawData && !!rawData.length ? [...rawData] : []
-        // if (filter.hideSmallBalance) {
+
         
         if (hideSmallBalances) {
           const list = ['ETH', 'LRC', 'USDT']
           resultData = resultData.filter((o) => list.includes(o.erc20Symbol) || !o.smallBalance)
         }
-        // if (filter.hideLpToken) {
+
         if (filter.searchValue) {
           resultData = resultData.filter((o) =>
             o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
@@ -205,7 +205,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           setTotal({ total: pageSize * (page + 1 / 2), hasMore: true })
         }
         setViewData(resultData.slice(0, pageSize * page))
-        // resetTableData(resultData)
+
       },
 			[rawData, hideSmallBalances, pageSize, filter.searchValue, setTotal, setViewData],
     )
@@ -330,42 +330,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       },
     ]
 		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
-      // {
-      // 	key: 'token',
-      // 	name: t('labelToken'),
-      // 	formatter: ({row}) => {
-      // 		const {token, precision, erc20Symbol: symbol, available, amount} = row
-      // 		let tokenIcon: [any, any] = [coinJson[symbol], undefined]
-      // 		return (
-      // 			<>
-      // 				<Typography width={'56px'} display={'flex'}>
-      // 					<CoinIcons type={row?.token?.type} tokenIcon={tokenIcon}/>
-      // 				</Typography>
-      // 				<Typography
-      // 					variant={'body1'}
-      // 					display={'flex'}
-      // 					flexDirection={'row'}
-      // 					justifyContent={'flex-end'}
-      // 					textAlign={'right'}
-      // 					flex={1}
-      // 				>
-      // 					<Typography display={'flex'}>
-      // 						{hideAssets
-      // 							? HiddenTag
-      // 							: amount && Number(amount) > 0
-      //               ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
-      //                   floor: true,
-      //                 })
-      // 							 : EmptyValueTag}
-      // 					</Typography>
-      // 					<Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
-      // 						{hideAssets ? HiddenTag : token.belongAlice}
-      // 					</Typography>
-      // 				</Typography>
-      // 			</>
-      // 		)
-      // 	},
-      // },
+
       {
         key: 'token',
         name: t('labelToken'),
@@ -415,7 +380,7 @@ export const VaultAssetsTable = withTranslation('tables')(
         key: 'actions',
         name: t('labelActions'),
         headerCellClass: 'textAlignRight',
-        // minWidth: 280,
+
         formatter: ({ row }) => {
           return (
             <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
@@ -447,7 +412,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       },
     ]
 
-    // 移动设备卡片组件
+
     const MobileCardView = () => {
       return (
         <Box display="flex" flexDirection="column" width="100%">
@@ -461,9 +426,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                   mb: 1.5,
                   p: 2,
                   backgroundColor: 'var(--color-box)',
-                  // '&:not(:last-child)': {
-                  //   borderBottom: '1px solid var(--color-divide)'
-                  // }
+
                 }}
               >
                 <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
