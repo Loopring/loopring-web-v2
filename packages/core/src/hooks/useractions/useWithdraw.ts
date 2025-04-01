@@ -798,7 +798,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
       const request: sdk.RabbitWithdrawRequest = {
         fromNetwork: network,
-        toNetwork: 'SEPOLIA',
+        toNetwork: network,
         toAddress: toAddress,
         transfer: {
           exchange: exchange,
@@ -1109,7 +1109,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       
       return {
         mode: isFastMode ? 'fast' : 'normal',
-        showTrustUI: true,
+        showTrustUI: !isTaiko,
         showFastMode: fastModeSupportted,
         fastMode: {
           fee: feeFastInCurrency ? '~' + feeFastInCurrency : '--',
