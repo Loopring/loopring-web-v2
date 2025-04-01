@@ -42,6 +42,7 @@ export interface VaultDashBoardPanelUIProps {
   history: any;
   etherscanBaseUrl: string;
   onClickCollateralManagement: () => void;
+  onClickSettle: () => void;
   onClickPortalTrade: () => void;
   liquidationThreshold: string;
   liquidationPenalty: string;
@@ -52,7 +53,9 @@ export interface VaultDashBoardPanelUIProps {
   onClickHideShowAssets: () => void;
   accountActive: boolean
   totalEquity: string
-  onClickCloseOut: () => void
+  showSettleBtn: boolean
+  onClickBuy: (market: any) => void;
+  onClickSell: (market: any) => void;
 }
 
 export interface CollateralDetailsModalProps {

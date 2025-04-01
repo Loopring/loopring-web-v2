@@ -4,7 +4,7 @@ import {
   Button,
 } from '@mui/material'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   PriceTag,
   CurrencyToTag,
@@ -38,6 +38,7 @@ import {
   VaultAssetsTableProps,
   setShowWrongNetworkGuide,
   Button as MyButton,
+  setHideSmallBalances,
 } from '@loopring-web/component-lib'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -62,21 +63,25 @@ import {
   useWalletLayer2,
   VaultAccountInfoStatus,
   WalletConnectL2Btn,
-
+  // useVaultSwap,
   MAPFEEBIPS,
   vaultSwapDependAsync,
   useToast,
+  toPercent,
+  bipsToPercent,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
 import { useHistory, useLocation, useRouteMatch } from 'react-router'
-import { utils } from 'ethers'
+import { utils, BigNumber } from 'ethers'
 import Decimal from 'decimal.js'
 import _, { keys } from 'lodash'
 import { CollateralDetailsModalProps, DebtModalProps, DustCollectorProps, DustCollectorUnAvailableModalProps, LeverageModalProps, MaximumCreditModalProps, VaultDashBoardPanelUIProps } from '../interface'
 import { PositionItem, VaultPositionsTableProps } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultPositionsTable'
-import { CloseConfirmModalProps, NoAccountHintModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
+import { AutoRepayModalProps, CloseConfirmModalProps, NoAccountHintModalProps, SettleConfirmModalProps, SmallOrderAlertProps, SupplyCollateralHintModalProps, VaultSwapModalProps } from '../components/modals'
 import { useVaultSwap } from './useVaultSwap'
+import { checkHasTokenNeedRepay, closePositionAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
+import { promiseAllSequently } from '@loopring-web/core/src/utils/promise'
 
 const VaultPath = `${RouterPath.vault}/:item/:method?`
 
@@ -88,13 +93,13 @@ const parseVaultTokenStatus = (status: number) => ({
   repay: status & 16,
 })
 
-const useGetVaultAssets = <R extends VaultDataAssetsItem>({
+export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   onClickTrade,
   onClickRepay
 }: {
   onClickTrade: (symbol: string) => void
   onClickRepay: (symbol: string) => void
-
+  // onClickRepay: (symbol: string) => void
 }): VaultAssetsTableProps<R> & {
   totalAsset: string
   [key: string]: any
@@ -181,7 +186,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           switch (key) {
             case VaultAction.VaultJoin:
               onJoinPop({})
-
+              // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
               break
             case VaultAction.VaultExit:
               onRedeemPop({ isShow: true })
@@ -196,11 +201,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
-          setShowNoVaultAccount({
-            isShow: true,
-            des: 'labelRedeemDesMessage',
-            title: 'labelRedeemTitle',
-          })
+          
         } else {
           setShowNoVaultAccount({
             isShow: true,
@@ -228,7 +229,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             switch (match?.params?.method) {
               case VaultAction.VaultJoin:
                 onJoinPop({})
-
+                // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
                 break
               case VaultAction.VaultExit:
                 onRedeemPop({ isShow: true, symbol: searchParams.get('symbol') })
@@ -242,15 +243,6 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             }
             history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
           }
-        } else if (
-          [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
-        ) {
-          setShowNoVaultAccount({
-            isShow: true,
-            des: 'labelRedeemDesMessage',
-            title: 'labelRedeemTitle',
-          })
-        } else {
         }
       } else {
         
@@ -261,9 +253,9 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   const { status: walletL2Status } = useWalletLayer2()
   const getAssetsRawData = () => {
     const {
-
+      // vaultLayer2: { vaultAccountInfo },
       tokenMap: {
-
+        // tokenMap: erc20TokenMap,
         idIndex: erc20IdIndex,
       },
 
@@ -294,8 +286,18 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
           const totalAmount = sdk.toBig(tokenInfo.detail?.asset ?? 0)
+          const borrowedAmount = sdk.toBig(tokenInfo.detail?.borrowed ?? 0)
+
           const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
-          const isSmallBalance = tokenValueDollar.lt(1)
+          const tokenBorrowedValueDollar = borrowedAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
+          const isSmallBalance = tokenValueDollar.lt(1) 
+            && tokenBorrowedValueDollar.lt(1)
+          
+          const minRepayAmount = utils.formatUnits(
+            utils.parseUnits('1', tokenInfo.decimals - tokenInfo.vaultTokenAmounts.qtyStepScale),
+            tokenInfo.decimals,
+          )
+          
           item = {
             token: {
               type: TokenType.vault,
@@ -303,14 +305,22 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               belongAlice: erc20Symbol,
             },
             amount: totalAmount?.toString(),
-            available: tokenInfo?.detail?.count??0,
+            available: tokenInfo?.detail?.count ?? 0,
             smallBalance: isSmallBalance,
             tokenValueDollar: tokenValueDollar.toString(),
             name: tokenInfo.token,
             erc20Symbol,
-            debt: tokenInfo.detail?.borrowed ?? '0',
-            equity: tokenInfo.detail?.equity ?? '0',
-            repayDisabled: tokenInfo.detail?.borrowed ? new Decimal(tokenInfo.detail?.borrowed).isZero()  : true
+            debt:borrowedAmount.toString(),
+            equity: numberFormat(tokenInfo.detail?.equity ?? '0', {
+              fixed: tokenInfo.precision,
+              removeTrailingZero: true,
+              fixedRound: Decimal.ROUND_FLOOR,
+            }),
+            repayDisabled:
+              borrowedAmount.isZero() ||
+              totalAmount.isZero() ||
+              totalAmount.lt(minRepayAmount) ||
+              borrowedAmount.lt(minRepayAmount),
           }
         } else {
           item = {
@@ -339,7 +349,8 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             ...item,
             precision: precision,
 
-
+            // holding: '100-todo',
+            // equity: '100-todo',
           }
         } else {
           return undefined
@@ -376,14 +387,14 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     ) {
       onActionBtnClick(whichBtn)
     }
-
+    // enableBtn()
   }, [
     whichBtn,
     walletL2Status,
     vaultAccountInfo?.accountStatus,
     activeInfo,
     assetsRawData,
-
+    // tokenPriceStatus,
   ])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
@@ -443,115 +454,45 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     positionOpend: [sdk.VaultAccountStatus.IN_REDEEM, sdk.VaultAccountStatus.IN_STAKING]
       .includes(vaultAccountInfo?.accountStatus as any),
     onRowClickTrade: ({ row }: { row: R }) => {
-
+      // debugger
       onClickTrade(row?.token?.value)
+      // if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+      //   history.push('/portal/portalDashboard')
+      //   onSwapPop({ symbol: row?.token?.value })
+      // } else {
+      //   history.push('/portal/portalDashboard')
 
+      //   // setstate
+      //   // setShowNoVaultAccount({
+      //   //   isShow: true,
+      //   //   whichBtn: VaultAction.VaultJoin,
+      //   //   des: 'labelJoinDesMessage',
+      //   //   title: 'labelVaultJoinTitle',
+      //   // })
+      // }
     },
     onRowClickRepay: ({ row }: { row: R }) => {
       onClickRepay(row?.token?.value)
     },
-
+    //   onClickRepay(row?.token?.value)
+    //   // if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
+    //   //   history.push('/portal/portalDashboard')
+    //   //   // todo repay
+    //   // } else {
+    //   //   history.push('/portal')
+    //   //   setShowNoVaultAccount({
+    //   //     isShow: true,
+    //   //     whichBtn: VaultAction.VaultJoin,
+    //   //     des: 'labelJoinDesMessage',
+    //   //     title: 'labelVaultJoinTitle',
+    //   //   })
+    //   // }
+    // },
     noMinHeight: true
   }
 }
 
-export const closePosition = async (symbol: string) => {
-  const {
-    vaultLayer2: { vaultLayer2 },
-    invest: {
-      vaultMap: { tokenMap, marketMap, marketArray },
-    },
-    account,
-    settings: { slippage },
-    system: { exchangeInfo },
-  } = store.getState()
-  const vaultAsset = vaultLayer2 && symbol ? vaultLayer2[symbol] : undefined
-  if (!symbol || !vaultAsset || !exchangeInfo || new Decimal(vaultAsset.netAsset).isZero()) return
 
-  const sellToken = new Decimal(vaultAsset.netAsset).isPos() ? tokenMap[symbol] : tokenMap['LVUSDT']
-  const buyToken = new Decimal(vaultAsset.netAsset).isPos() ? tokenMap['LVUSDT'] : tokenMap[symbol]
-  const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-    {
-      accountId: account.accountId,
-      sellTokenId: sellToken?.vaultTokenId ?? 0,
-    },
-    account.apiKey,
-  )
-  const market = `${symbol}-LVUSDT`
-  const marketInfo = marketMap[market] as sdk.VaultMarket
-  const { depth } = await vaultSwapDependAsync({
-    market: (marketInfo as any).vaultMarket,
-    tokenMap: tokenMap,
-  })
-
-  const slippageReal = slippage === 'N' ? 0.1 : slippage
-  const output = sdk.calcDex({
-    info: marketInfo,
-    input: utils.formatUnits(vaultAsset.netAsset, tokenMap[symbol].decimals),
-    sell: sellToken.symbol,
-    buy: buyToken.symbol,
-    isAtoB: new Decimal(vaultAsset.netAsset).isPos(),
-    marketArr: marketArray,
-    tokenMap: tokenMap,
-    marketMap: marketMap as any,
-    depth: depth!,
-    feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
-    slipBips: slippageReal.toString(),
-  })
-
-  const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-    ? vaultAsset.netAsset
-    : utils.parseUnits(
-        numberFormat(output!.amountS!, { fixed: sellToken.decimals }),
-        sellToken.decimals,
-      )
-  const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-    ? utils.parseUnits(
-        numberFormat(output!.amountB!, { fixed: buyToken.decimals }),
-        buyToken.decimals,
-      )
-    : vaultAsset.netAsset
-  const request: sdk.VaultOrderRequest = {
-    exchange: exchangeInfo.exchangeAddress,
-    storageId: storageId!.orderId,
-    accountId: account.accountId,
-    sellToken: {
-      tokenId: sellToken?.vaultTokenId ?? 0,
-      volume: sellAmountBN.toString(),
-    },
-    buyToken: {
-      tokenId: buyToken?.vaultTokenId ?? 0,
-      volume: buyAmountBN.toString(),
-    },
-    validUntil: getTimestampDaysLater(DAYS),
-    maxFeeBips: MAPFEEBIPS,
-    fillAmountBOrS: false,
-    allOrNone: false,
-    eddsaSignature: '',
-    clientOrderId: '',
-    orderType: sdk.OrderTypeResp.TakerOnly,
-    fastMode: false,
-  }
-  const response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
-    {
-      request,
-      privateKey: account.eddsaKey.sk,
-      apiKey: account.apiKey,
-    },
-    '1',
-  )
-  await sdk.sleep(SUBMIT_PANEL_CHECK)
-
-  return LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
-    {
-      accountId: account.accountId as any,
-      // @ts-ignore
-      hash: response1.hash,
-    },
-    account.apiKey,
-    '1',
-  )
-}
 
 export const useVaultDashboard = ({
   showLeverage,
@@ -568,9 +509,12 @@ export const useVaultDashboard = ({
   maximumCreditModalProps: MaximumCreditModalProps
   collateralDetailsModalProps: CollateralDetailsModalProps
   noAccountHintModalProps: NoAccountHintModalProps
-
+  // vaultSwapModalProps: VaultSwapModalProps
+  // smallOrderAlertProps: SmallOrderAlertProps
   supplyCollateralHintModalProps: SupplyCollateralHintModalProps
   closeConfirmModalProps: CloseConfirmModalProps
+  settleConfirmModalProps: SettleConfirmModalProps
+  autoRepayModalProps: AutoRepayModalProps
 } => {
   const _vaultAccountInfo = useVaultAccountInfo()
   
@@ -583,6 +527,7 @@ export const useVaultDashboard = ({
     onSwapPop,
     onJoinPop,
     onRepayPop,
+    onRedeemPop,
     joinBtnStatus,
     joinBtnLabel,
   } = _vaultAccountInfo
@@ -610,7 +555,9 @@ export const useVaultDashboard = ({
     defaultNetwork,
     coinJson,
     setHideL2Assets,
-    slippage
+    slippage,
+    hideSmallBalances,
+    setHideSmallBalances
   } = useSettings()
   const {setToastOpen, closeToast} =useToast()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
@@ -644,10 +591,13 @@ export const useVaultDashboard = ({
       | 'debt'
       | 'dustCollector'
       | 'dustCollectorUnavailable'
-      | 'supplyCollateralHint',
+      | 'supplyCollateralHint'
+      | 'settleConfirm'
+      | 'autoRepayConfirm',
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
-
+    checkedAutoRepay: false,
+    penaltyFeeBips: undefined as undefined | number,
 
   })
   const assetPanelProps = useGetVaultAssets({
@@ -675,8 +625,16 @@ export const useVaultDashboard = ({
         })
       }
     },
-
-
+    // onClickTrade(symbol) {
+    //   if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
+    //     onRe({ symbol: symbol })
+    //   } else {
+    //     setLocalState({
+    //       ...localState,
+    //       modalStatus: 'supplyCollateralHint',
+    //     })
+    //   }
+    // },
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
@@ -1008,16 +966,17 @@ export const useVaultDashboard = ({
 
   const hideLeverage = (vaultAccountInfo as any)?.accountType === 0
   const [assetsTab, setAssetsTab] = React.useState('assetsView' as 'assetsView' | 'positionsView')
-  const {vaultLayer2}=useVaultLayer2()
+  const {vaultLayer2, status: vaultLayer2Status} = useVaultLayer2()
   const vaultPositionsTableProps: VaultPositionsTableProps = {
-    rawData: filterPositions(vaultLayer2, tokenMap, tokenPrices)
+    rawData: filterPositions(vaultLayer2!, vaultTokenMap, tokenPrices)
     .map((symbol) => {
       const originSymbol = symbol.slice(2)
       const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
-      const tokenInfo = vaultTokenMap[symbol]
-
+      const tokenInfo = vaultTokenMap?.[symbol]
       if (!asset || !tokenInfo) return undefined
-      const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
+      const position = new Decimal(
+        utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
+      )
       if (symbol === 'LVUSDT' || position.isZero())
         return undefined
       
@@ -1040,47 +999,70 @@ export const useVaultDashboard = ({
           })
         },
         onClickClose: () => {
-
-          closePosition(symbol)
-          .then(response2 => {
-            if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-              throw new Error('failed')
-            }
-            
-            setShowGlobalToast({
-              isShow: true,
-              info: {
-                content: 'Closed position successfully',
-                type: ToastType.success
-              }
-            })
-          }).catch((e) => {
-            setShowGlobalToast({
-              isShow: true,
-              info: {
-                content: 'Close position failed',
-                type: ToastType.error
-              }
-            })
-          }).finally(() => {
-            updateVaultLayer2({})
+          // setShowGlobalToast({
+          //   isShow: true,
+          //   info: {
+          //     content: 'aaa',
+          //     type: ToastType.error
+          //   }
+          // })
+          // setToastOpenset({
+          //   open: true,
+          //   content: 'e.message',
+          //   type: ToastType.error
+          // })
+          setShowVaultCloseConfirm({
+            isShow: true,
+            symbol: symbol
           })
-        }
+          // closePosition(symbol)
+          // .then(response2 => {
+          //   if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+          //     throw new Error('failed')
+          //   }
+            
+          //   setShowGlobalToast({
+          //     isShow: true,
+          //     info: {
+          //       content: 'Closed position successfully',
+          //       type: ToastType.success
+          //     }
+          //   })
+          // }).catch((e) => {
+          //   setShowGlobalToast({
+          //     isShow: true,
+          //     info: {
+          //       content: 'Close position failed',
+          //       type: ToastType.error
+          //     }
+          //   })
+          // }).finally(() => {
+          //   updateVaultLayer2({})
+          // })
+        },
+        valueInUSD: position.abs().mul(tokenPrices[symbol])
       }
-    })
-    .filter((item) => {
-      return item !== undefined
     }),
     onRowClick: (index: number, row: PositionItem) => {},
     isLoading: false,
     hideAssets: hideAssets,
-    // onRowClickLeverage: ({ row }: { row: PositionItem }) => {},
-    // onRowClickTrade: ({ row }: { row: PositionItem }) => {
-      
-    // },
-    // onRowClickClose: ({ row }: { row: PositionItem }) => {
-    //   // todo close position
-    // },
+    showFilter: true,
+    onClickDustCollector: () => {
+      if (VaultDustCollector.enable) {
+        setLocalState({
+          ...localState,
+          modalStatus: 'dustCollector',
+        })
+      } else {
+        setLocalState({
+          ...localState,
+          modalStatus: 'dustCollectorUnavailable',
+        })
+      }
+    },
+    hideDustCollector: false,
+    hideSmallBalances: hideSmallBalances,
+    setHideSmallBalances: setHideSmallBalances,
   }
 
   
@@ -1104,9 +1086,9 @@ export const useVaultDashboard = ({
     network,
     isShowVaultJoin,
     setShowAccount,
-
+    // setShowVaultLoan,
     priceTag,
-
+    // onActionBtnClick,
     showNoVaultAccount,
     setShowNoVaultAccount,
     btnProps,
@@ -1149,8 +1131,13 @@ export const useVaultDashboard = ({
     onClickCollateralManagement: () => {
       onJoinPop({})
     },
+    onClickSettle: () => {
+      onRedeemPop({})
+    },
     liquidationThreshold: '1.1',
-    liquidationPenalty: '0%',
+    liquidationPenalty: localState.penaltyFeeBips
+      ? toPercent(localState.penaltyFeeBips * 100, 2) 
+      : '--',
     onClickPortalTrade: () => {
       if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
         onSwapPop({})
@@ -1184,6 +1171,23 @@ export const useVaultDashboard = ({
             currency,
           )
         : EmptyValueTag,
+    showSettleBtn: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
+    onClickBuy: (detail) => {
+      const symbol = detail?.tokenInfo.symbol?.slice(2)
+      setShowVaultSwap({
+        isShow: true,
+        symbol,
+        isSell: false,
+      })
+    },
+    onClickSell: (detail) => {
+      const symbol = detail?.tokenInfo.symbol?.slice(2)
+      setShowVaultSwap({
+        isShow: true,
+        symbol,
+        isSell: true,
+      })
+    },
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
@@ -1322,12 +1326,38 @@ export const useVaultDashboard = ({
         return <></>
     }
   })()
+  React.useEffect(() => {
+    if (!account.apiKey) return
+    LoopringAPI.vaultAPI?.getVaultConfig(account.apiKey, '1').then((res) => {
+      if (res && res.data.penaltyFeeBips !== undefined) {
+        setLocalState((state) => ({
+          ...state,
+          penaltyFeeBips: res.data.penaltyFeeBips
+        }))
+      }
+    })
+  }, [account.apiKey])
+
+  React.useEffect(() => {
+    if (localState.checkedAutoRepay || vaultLayer2Status !== SagaStatus.UNSET) return
     
+    const list = checkHasTokenNeedRepay()
+    if (list.length > 0) {
+      setLocalState((state) => ({
+        ...state,
+        modalStatus: 'autoRepayConfirm',
+        checkedAutoRepay: true
+      }))
+    } else {
+      setLocalState((state) => ({
+        ...state,
+        checkedAutoRepay: true
+      }))
+    }
+  }, [vaultLayer2Status, localState.checkedAutoRepay])
   
-  const { vaultSwapModalProps, smallOrderAlertProps } = useVaultSwap()
-
   return {
-
+    // vaultSwapModalProps: vaultSwapModalProps,
     vaultDashBoardPanelUIProps,
     dustCollectorUnAvailableModalProps: {
       open: localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show,
@@ -1611,7 +1641,7 @@ export const useVaultDashboard = ({
       ),
       dialogBtn: noVaultAccountDialogBtn,
     },
-
+    // smallOrderAlertProps: smallOrderAlertProps,
     supplyCollateralHintModalProps: {
       open: localState.modalStatus === 'supplyCollateralHint',
       onClose: () => {
@@ -1629,91 +1659,152 @@ export const useVaultDashboard = ({
       },
       onConfirm: async () => {
         const { symbol } = isShowVaultCloseConfirm
-        const vaultAsset = (vaultLayer2 && symbol) ?vaultLayer2[symbol]: undefined;
-        if (!symbol || !vaultAsset || !exchangeInfo || new Decimal(vaultAsset.netAsset).isZero()) return
         setShowVaultCloseConfirm({ isShow: false, symbol: undefined })
-        
-        const sellToken = new Decimal(vaultAsset.netAsset).isPos()
-          ? vaultTokenMap[symbol]
-          : vaultTokenMap['LVUSDT']
-        const buyToken = new Decimal(vaultAsset.netAsset).isPos()
-          ? vaultTokenMap['LVUSDT']
-          : vaultTokenMap[symbol]
-        const storageId = await LoopringAPI.userAPI?.getNextStorageId(
-          {
-            accountId: account.accountId,
-            sellTokenId: sellToken?.vaultTokenId ?? 0,
-          },
-          account.apiKey,
-        )
-        const market = `${symbol}-LVUSDT`
-        const marketInfo=  marketMap[market] as sdk.VaultMarket
-        const { depth } = await vaultSwapDependAsync({
-          market: (marketInfo as any).vaultMarket,
-          tokenMap: vaultTokenMap,
-        })
-        
-        const slippageReal = slippage === 'N' ? 0.1 : slippage
-        const output = sdk.calcDex({
-          info: marketInfo,
-          input: utils.formatUnits(vaultAsset.netAsset, vaultTokenMap[symbol].decimals),
-          sell: sellToken.symbol,
-          buy: buyToken.symbol,
-          isAtoB: new Decimal(vaultAsset.netAsset).isPos(),
-          marketArr: marketArray,
-          tokenMap: vaultTokenMap,
-          marketMap: marketMap as any,
-          depth: depth!,
-          feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
-          slipBips: slippageReal.toString(),
-        })
+        closePositionAndRepayIfNeeded(symbol!)
+          .then(response2 => {
+            if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
+              throw new Error('failed')
+            }
+            setShowGlobalToast({
+              isShow: true,
+              info: {
+                content: 'Closed position successfully',
+                type: ToastType.success
+              }
+            })
+          }).catch((e) => {
+            setShowGlobalToast({
+              isShow: true,
+              info: {
+                content: 'Close position failed',
+                type: ToastType.error
+              }
+            })
+          }).finally(() => {
+            
+            updateVaultLayer2({})
+          })
 
-        const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-          ?  vaultAsset.netAsset
-          : utils.parseUnits(numberFormat(output!.amountS!, {fixed: sellToken.decimals}) , sellToken.decimals)
-        const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
-          ? utils.parseUnits(numberFormat(output!.amountB!, {fixed: buyToken.decimals}) , buyToken.decimals)
-          : vaultAsset.netAsset 
-        const request: sdk.VaultOrderRequest = {
-          exchange: exchangeInfo.exchangeAddress,
-          storageId: storageId!.orderId,
-          accountId: account.accountId,
-          sellToken: {
-            tokenId: sellToken?.vaultTokenId ?? 0,
-            volume: sellAmountBN.toString(),
-          },
-          buyToken: {
-            tokenId: buyToken?.vaultTokenId ?? 0,
-            volume: buyAmountBN.toString(),
-          },
-          validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips: MAPFEEBIPS,
-          fillAmountBOrS: false,
-          allOrNone: false,
-          eddsaSignature: '',
-          clientOrderId: '',
-          orderType: sdk.OrderTypeResp.TakerOnly,
-          fastMode: false,
-        }
-        const response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
-          {
-            request,
-            privateKey: account.eddsaKey.sk,
-            apiKey: account.apiKey,
-          },
-          '1',
-        )
-        await sdk.sleep(SUBMIT_PANEL_CHECK)
-        const response2: { hash: string } | any =
-          await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
-            {
-              accountId: account.accountId as any,
-              // @ts-ignore
-              hash: response1.hash,
-            },
-            account.apiKey,
-            '1',
-          )
+        // alert('onConfirm')
+        // return 
+        // const { symbol } = isShowVaultCloseConfirm
+        // const vaultAsset = (vaultLayer2 && symbol) ?vaultLayer2[symbol]: undefined;
+        // if (!symbol || !vaultAsset || !exchangeInfo || new Decimal(vaultAsset.netAsset).isZero()) return
+        // setShowVaultCloseConfirm({ isShow: false, symbol: undefined })
+        
+        // const sellToken = new Decimal(vaultAsset.netAsset).isPos()
+        //   ? vaultTokenMap[symbol]
+        //   : vaultTokenMap['LVUSDT']
+        // const buyToken = new Decimal(vaultAsset.netAsset).isPos()
+        //   ? vaultTokenMap['LVUSDT']
+        //   : vaultTokenMap[symbol]
+        // const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+        //   {
+        //     accountId: account.accountId,
+        //     sellTokenId: sellToken?.vaultTokenId ?? 0,
+        //   },
+        //   account.apiKey,
+        // )
+        // const market = `${symbol}-LVUSDT`
+        // const marketInfo=  marketMap[market] as sdk.VaultMarket
+        // const { depth } = await vaultSwapDependAsync({
+        //   market: (marketInfo as any).vaultMarket,
+        //   tokenMap: vaultTokenMap,
+        // })
+        
+        // const slippageReal = slippage === 'N' ? 0.1 : slippage
+        // const output = sdk.calcDex({
+        //   info: marketInfo,
+        //   input: utils.formatUnits(vaultAsset.netAsset, vaultTokenMap[symbol].decimals),
+        //   sell: sellToken.symbol,
+        //   buy: buyToken.symbol,
+        //   isAtoB: new Decimal(vaultAsset.netAsset).isPos(),
+        //   marketArr: marketArray,
+        //   tokenMap: vaultTokenMap,
+        //   marketMap: marketMap as any,
+        //   depth: depth!,
+        //   feeBips: (marketInfo.feeBips ?? MAPFEEBIPS).toString(),
+        //   slipBips: slippageReal.toString(),
+        // })
+
+        // const sellAmountBN = new Decimal(vaultAsset.netAsset).isPos()
+        //   ?  vaultAsset.netAsset
+        //   : utils.parseUnits(numberFormat(output!.amountS!, {fixed: sellToken.decimals}) , sellToken.decimals)
+        // const buyAmountBN = new Decimal(vaultAsset.netAsset).isPos()
+        //   ? utils.parseUnits(numberFormat(output!.amountB!, {fixed: buyToken.decimals}) , buyToken.decimals)
+        //   : vaultAsset.netAsset 
+        // const request: sdk.VaultOrderRequest = {
+        //   exchange: exchangeInfo.exchangeAddress,
+        //   storageId: storageId!.orderId,
+        //   accountId: account.accountId,
+        //   sellToken: {
+        //     tokenId: sellToken?.vaultTokenId ?? 0,
+        //     volume: sellAmountBN.toString(),
+        //   },
+        //   buyToken: {
+        //     tokenId: buyToken?.vaultTokenId ?? 0,
+        //     volume: buyAmountBN.toString(),
+        //   },
+        //   validUntil: getTimestampDaysLater(DAYS),
+        //   maxFeeBips: MAPFEEBIPS,
+        //   fillAmountBOrS: false,
+        //   allOrNone: false,
+        //   eddsaSignature: '',
+        //   clientOrderId: '',
+        //   orderType: sdk.OrderTypeResp.TakerOnly,
+        //   fastMode: false,
+        // }
+        // const response1 = await LoopringAPI.vaultAPI?.submitVaultOrder(
+        //   {
+        //     request,
+        //     privateKey: account.eddsaKey.sk,
+        //     apiKey: account.apiKey,
+        //   },
+        //   '1',
+        // )
+        // await sdk.sleep(SUBMIT_PANEL_CHECK)
+        // const response2: { hash: string } | any =
+        //   await LoopringAPI.vaultAPI?.getVaultGetOperationByHash(
+        //     {
+        //       accountId: account.accountId as any,
+        //       // @ts-ignore
+        //       hash: response1.hash,
+        //     },
+        //     account.apiKey,
+        //     '1',
+        //   )
+        // updateVaultLayer2({})
+      },
+    },
+    settleConfirmModalProps: {
+      open: localState.modalStatus === 'settleConfirm',
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal'
+        })
+      },
+      onConfirm: async () => {
+
+      },
+    },
+    autoRepayModalProps: {
+      open: localState.modalStatus === 'autoRepayConfirm',
+      onClose: () => {
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal'
+        })
+      },
+      onConfirm: async () => {
+        const list = checkHasTokenNeedRepay()
+        setLocalState({
+          ...localState,
+          modalStatus: 'noModal'
+        })
+        await promiseAllSequently(list.map((symbol) => {
+          return () => repayIfNeeded(symbol).catch(() => {})
+        }))
         updateVaultLayer2({})
       },
     },

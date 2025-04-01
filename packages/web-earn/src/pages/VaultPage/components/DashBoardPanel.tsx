@@ -9,6 +9,7 @@ import {
   IconButton,
   Tab, 
   Tabs,
+  styled,
 } from '@mui/material'
 import React from 'react'
 import {
@@ -53,6 +54,8 @@ import {
   ViewAccountTemplate,
 } from '@loopring-web/core'
 import {
+  AutoRepayConfirmModal,
+  CloseAllConfirmModal,
   CloseConfirmModal,
   CollateralDetailsModal,
   DebtModal,
@@ -71,7 +74,18 @@ import { useVaultDashboard } from '../hooks/useVaultDashBoard'
 import { VaultDashBoardPanelUIProps } from '../interface'
 import { useVaultSwap } from '../hooks/useVaultSwap'
 
-
+const BgButton = styled(Button)<{ customBg: string }>`
+  background-color: ${({ customBg }) => customBg};
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: ${({ customBg }) => customBg};
+    opacity: 0.8;
+  }
+  &:disabled {
+    background-color: var(--color-button-disabled);
+  }
+  
+`
 // const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 //   t,
 //   forexMap,
@@ -370,7 +384,7 @@ import { useVaultSwap } from '../hooks/useVaultSwap'
 //                                 })
 //                               }}
 //                             >
-//                               {t('labelVaultDetail')}
+//                               {t('labelVaultDetails')}
 //                             </Typography>
 //                           </Typography>
 //                         </Box>
@@ -425,7 +439,7 @@ import { useVaultSwap } from '../hooks/useVaultSwap'
 //                                 })
 //                               }}
 //                             >
-//                               {t('labelVaultDetail')}
+//                               {t('labelVaultDetails')}
 //                             </Typography>
 //                           </Typography>
 //                         </Box>
@@ -458,7 +472,7 @@ import { useVaultSwap } from '../hooks/useVaultSwap'
 //                                   })
 //                                 }}
 //                               >
-//                                 {t('labelVaultDetail')}
+//                                 {t('labelVaultDetails')}
 //                               </Typography>
 //                             </Typography>
 //                             <Typography
@@ -718,7 +732,17 @@ import { useVaultSwap } from '../hooks/useVaultSwap'
 //                 paddingY={2}
 //               >
 //                 <VaultAssetsTable
-
+//                   {...assetPanelProps}
+//                   onRowClick={(index, row) => {
+//                     // @ts-ignore
+//                     marketProps.onRowClick(index, {
+//                       // @ts-ignore
+//                       ...vaultTokenMap[row.name],
+//                       // @ts-ignore
+//                       cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+//                       ...vaultTickerMap[row.erc20Symbol],
+//                     })
+//                   }}
 //                   onClickDustCollector={() => {
 //                     if (VaultDustCollector.enable) {
 //                       setLocalState({
@@ -1061,6 +1085,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   history,
   etherscanBaseUrl,
   onClickCollateralManagement,
+  onClickSettle,
   onClickPortalTrade,
   liquidationThreshold,
   liquidationPenalty,
@@ -1071,10 +1096,15 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   onClickHideShowAssets,
   accountActive,
   totalEquity,
-  onClickCloseOut
-
+  showSettleBtn,
+  onClickBuy,
+  onClickSell
 }) => {
-  const {isMobile} = useSettings()
+  const { isMobile } = useSettings()
+  const boxSx = {
+    my: isMobile ? 2 : 2,
+    width: isMobile ? '50%' : '25%',
+  }
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -1128,26 +1158,37 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   display={'flex'}
                   justifyContent={'center'}
                   alignItems={'center'}
+                  borderRadius={'4px 0 4px 0'}
                 >
                   <Typography>Cross Account</Typography>
                 </Box>
-                <Button
-                  onClick={onClickCollateralManagement}
-                  sx={{ alignSelf: 'flex-end', width: 'auto' }}
-                  variant='contained'
-                >
-                  Collateral Management
-                </Button>
-                <Button
-                  onClick={onClickCloseOut}
-                  sx={{ alignSelf: 'flex-end', width: 'auto' }}
-                  variant='contained'
-                >
-                  Settle
-                </Button>
+                <Box display={'flex'} flexDirection={isMobile ? 'column' : 'row'} alignItems={isMobile ? 'end' : 'center'} alignSelf={'flex-end'}>
+                  <Button
+                    onClick={onClickCollateralManagement}
+                    sx={{ width: 'auto' }}
+                    variant='contained'
+                  >
+                    Collateral Management
+                  </Button>
+                  {showSettleBtn && (
+                    <BgButton
+                      customBg='var(--color-button-outlined)'
+                      onClick={onClickSettle}
+                      sx={{ width: 'auto', ml: 1.5, mt: isMobile ? 2 : 0 }}
+                      variant='contained'
+                    >
+                      Settle
+                    </BgButton>
+                  )}
+                </Box>
+
                 <Box mt={1.5} display={'flex'} alignItems={'center'}>
-                  <Box mr={2}>
-                    <Typography color={'var(--color-text-secondary)'} variant='h3' fontSize={'14px'}>
+                  <Box mr={0.5}>
+                    <Typography
+                      color={'var(--color-text-secondary)'}
+                      variant='h3'
+                      fontSize={'14px'}
+                    >
                       Total Equity
                     </Typography>
                   </Box>
@@ -1156,7 +1197,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     <HideIcon
                       className='custom-size'
                       sx={{
-                        fontSize: '24px',
+                        fontSize: '20px',
                         color: 'var(--color-text-secondary)',
                         cursor: 'pointer',
                       }}
@@ -1166,7 +1207,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     <ViewIcon
                       className='custom-size'
                       sx={{
-                        fontSize: '24px',
+                        fontSize: '20px',
                         color: 'var(--color-text-secondary)',
                         cursor: 'pointer',
                       }}
@@ -1178,8 +1219,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   {accountActive ? (hideAssets ? HiddenTag : totalEquity) : EmptyValueTag}
                 </Typography>
 
-                <Box mt={6} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
-                  <Box width={'25%'}>
+                <Box mt={isMobile ? 2 : 4} display={'flex'} flexWrap={'wrap'} flexDirection={'row'}>
+                  <Box sx={boxSx}>
                     <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                       {t('labelVaultTotalCollateral')}
                     </Typography>
@@ -1189,6 +1230,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive
@@ -1207,10 +1249,9 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         : EmptyValueTag}
                       {accountActive && (
                         <Typography
-                          variant={'body2'}
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
-                          marginLeft={1}
+                          marginLeft={1.5}
                           component={'span'}
                           onClick={() => {
                             setLocalState({
@@ -1219,16 +1260,17 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                             })
                           }}
                         >
-                          {t('labelVaultDetail')}
+                          {t('labelVaultDetails')}
                         </Typography>
                       )}
                     </Typography>
                   </Box>
-                  <Box width={'25%'}>
+                  <Box sx={boxSx}>
                     <Typography
                       component={'h4'}
                       variant={'body1'}
                       color={'textSecondary'}
+                      
                       display={'flex'}
                       alignItems={'center'}
                     >
@@ -1287,7 +1329,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                             </Typography>
                           </Box>
                         }
-                        placement={'right'}
+                        placement={isMobile ? 'bottom' : 'right'}
                       >
                         <Box display={'flex'} alignItems={'center'}>
                           <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
@@ -1309,9 +1351,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               alignItems={'center'}
                               marginTop={1}
                               variant={'body1'}
+                              fontSize={'16px'}
                               color={marginLevelTypeToColor(marginLevelType(item))}
                             >
-                              <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+                              <MarginLevelIcon className='custom-size' sx={{ fontSize: '20px', marginRight: 1 / 2 }} />
                               {item}
                             </Typography>
                           ) : (
@@ -1321,9 +1364,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               alignItems={'center'}
                               marginTop={1}
                               variant={'body1'}
+                              fontSize={'16px'}
                               color={'textSecondary'}
                             >
-                              <MarginLevelIcon sx={{ marginRight: 1 / 2 }} />
+                              <MarginLevelIcon className='custom-size' sx={{ fontSize: '20px', marginRight: 1 / 2 }} />
                               {EmptyValueTag}
                             </Typography>
                           )}
@@ -1331,7 +1375,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       )
                     })()}
                   </Box>
-                  <Box width={'25%'}>
+                  <Box sx={boxSx}>
                     <Tooltip title={t('labelVaultTotalDebtTooltips').toString()} placement={'top'}>
                       <Typography
                         component={'h4'}
@@ -1350,6 +1394,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive
@@ -1368,10 +1413,10 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         : EmptyValueTag}
                       {accountActive && (
                         <Typography
-                          variant={'body2'}
+
                           sx={{ cursor: 'pointer' }}
                           color={'var(--color-primary)'}
-                          marginLeft={1}
+                          marginLeft={1.5}
                           component={'span'}
                           onClick={() => {
                             setLocalState({
@@ -1380,12 +1425,12 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                             })
                           }}
                         >
-                          {t('labelVaultDetail')}
+                          {t('labelVaultDetails')}
                         </Typography>
                       )}
                     </Typography>
                   </Box>
-                  <Box width={'25%'}>
+                  <Box sx={boxSx}>
                     <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                       {t('labelVaultProfit')}
                     </Typography>
@@ -1395,6 +1440,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       marginTop={1}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                     >
                       {(() => {
                         const profit =
@@ -1410,12 +1456,13 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         return (
                           <>
                             {accountActive ? (
-                              <>
+                              <Box display={'flex'} alignItems={'center'}>
                                 <Typography
                                   component={'span'}
                                   display={'flex'}
                                   variant={'body1'}
                                   color={'textPrimary'}
+                                  fontSize={'20px'}
                                 >
                                   {hideAssets
                                     ? HiddenTag
@@ -1436,8 +1483,9 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                                   component={'span'}
                                   display={'flex'}
                                   variant={'body1'}
-                                  marginLeft={1 / 2}
+                                  marginLeft={1.5}
                                   color={colors[colorIs]}
+                                  fontSize={'20px'}
                                 >
                                   {getValuePrecisionThousand(
                                     profit
@@ -1458,7 +1506,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                                   )}
                                   %
                                 </Typography>
-                              </>
+                              </Box>
                             ) : (
                               EmptyValueTag
                             )}
@@ -1467,10 +1515,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       })()}
                     </Typography>
                   </Box>
-                </Box>
-                <Box mt={4} display={'flex'} flexWrap={'nowrap'} flexDirection={'row'}>
                   {!hideLeverage && (
-                    <Box position={'relative'} width={'25%'}>
+                    <Box sx={boxSx} position={'relative'}>
                       <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
                         {t('labelVaultLeverage')}
                       </Typography>
@@ -1480,6 +1526,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         display={'inline-flex'}
                         variant={'body1'}
                         color={'textPrimary'}
+                        fontSize={'20px'}
                         alignItems={'center'}
                       >
                         {vaultAccountInfo?.leverage && accountActive
@@ -1487,10 +1534,9 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                           : EmptyValueTag}
                         {accountActive && (
                           <Typography
-                            variant={'body2'}
                             sx={{ cursor: 'pointer' }}
                             color={'var(--color-primary)'}
-                            marginLeft={1}
+                            marginLeft={1.5}
                             component={'span'}
                             onClick={() => {
                               setLocalState({
@@ -1499,7 +1545,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               })
                             }}
                           >
-                            {t('labelVaultDetail')}
+                            {t('labelVaultDetails')}
                           </Typography>
                         )}
                       </Typography>
@@ -1521,8 +1567,13 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       </Typography>
                     </Box>
                   )}
-                  <Box position={'relative'} width={'25%'}>
-                  <Tooltip title={'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'} placement={'top'}>
+                  <Box sx={boxSx} position={'relative'}>
+                    <Tooltip
+                      title={
+                        'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'
+                      }
+                      placement={'top'}
+                    >
                       <Typography
                         component={'h4'}
                         variant={'body1'}
@@ -1534,20 +1585,26 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
                       </Typography>
                     </Tooltip>
-                  
+
                     <Typography
                       component={'span'}
                       marginTop={1}
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive ? liquidationThreshold : EmptyValueTag}
                     </Typography>
                   </Box>
-                  <Box position={'relative'} width={'25%'}>
-                  <Tooltip title={'The percentage of the position size deducted during liquidation to prevent bad debt.'} placement={'top'}>
+                  <Box sx={boxSx} position={'relative'}>
+                    <Tooltip
+                      title={
+                        'The percentage of the position size deducted during liquidation to prevent bad debt.'
+                      }
+                      placement={'top'}
+                    >
                       <Typography
                         component={'h4'}
                         variant={'body1'}
@@ -1565,12 +1622,128 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       variant={'body1'}
                       color={'textPrimary'}
+                      fontSize={'20px'}
                       alignItems={'center'}
                     >
                       {accountActive ? liquidationPenalty : EmptyValueTag}
                     </Typography>
                   </Box>
                 </Box>
+                {/* <Box mt={4} display={'flex'} flexWrap={isMobile ? 'wrap' : 'nowrap'} flexDirection={'row'}>
+                  {!hideLeverage && (
+                    <Box position={'relative'} width={isMobile ? '50%' : '25%'}>
+                      <Typography component={'h4'} variant={'body1'} color={'textSecondary'}>
+                        {t('labelVaultLeverage')}
+                      </Typography>
+                      <Typography
+                        component={'span'}
+                        marginTop={1}
+                        display={'inline-flex'}
+                        variant={'body1'}
+                        color={'textPrimary'}
+                        fontSize={'20px'}
+                        alignItems={'center'}
+                      >
+                        {vaultAccountInfo?.leverage && accountActive
+                          ? `${vaultAccountInfo?.leverage}x`
+                          : EmptyValueTag}
+                        {accountActive && (
+                          <Typography
+                            sx={{ cursor: 'pointer' }}
+                            color={'var(--color-primary)'}
+                            marginLeft={1}
+                            component={'span'}
+                            onClick={() => {
+                              setLocalState({
+                                ...localState,
+                                modalStatus: 'leverage',
+                              })
+                            }}
+                          >
+                            {t('labelVaultDetails')}
+                          </Typography>
+                        )}
+                      </Typography>
+                      <Typography
+                        marginTop={0.5}
+                        width={'200px'}
+                        color={'var(--color-text-secondary)'}
+                        variant={'body2'}
+                      >
+                        {t('labelVaultMaximumCredit')}:{' '}
+                        {(vaultAccountInfo as any)?.maxCredit &&
+                        getValueInCurrency((vaultAccountInfo as any)?.maxCredit) &&
+                        accountActive
+                          ? fiatNumberDisplay(
+                              getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
+                              currency,
+                            )
+                          : EmptyValueTag}
+                      </Typography>
+                    </Box>
+                  )}
+                  <Box position={'relative'} width={isMobile ? '50%' : '25%'}>
+                    <Tooltip
+                      title={
+                        'The minimum health factor (margin level) at which a position becomes subject to forced liquidation.'
+                      }
+                      placement={'top'}
+                    >
+                      <Typography
+                        component={'h4'}
+                        variant={'body1'}
+                        color={'textSecondary'}
+                        display={'flex'}
+                        alignItems={'center'}
+                      >
+                        Liquidation Threshold
+                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                      </Typography>
+                    </Tooltip>
+
+                    <Typography
+                      component={'span'}
+                      marginTop={1}
+                      display={'inline-flex'}
+                      variant={'body1'}
+                      color={'textPrimary'}
+                      fontSize={'20px'}
+                      alignItems={'center'}
+                    >
+                      {accountActive ? liquidationThreshold : EmptyValueTag}
+                    </Typography>
+                  </Box>
+                  <Box position={'relative'} width={isMobile ? '50%' : '25%'}>
+                    <Tooltip
+                      title={
+                        'The percentage of the position size deducted during liquidation to prevent bad debt.'
+                      }
+                      placement={'top'}
+                    >
+                      <Typography
+                        component={'h4'}
+                        variant={'body1'}
+                        color={'textSecondary'}
+                        display={'flex'}
+                        alignItems={'center'}
+                      >
+                        Liquidation Penalty
+                        <Info2Icon color={'inherit'} sx={{ marginLeft: 1 / 2 }} />
+                      </Typography>
+                    </Tooltip>
+                    <Typography
+                      component={'span'}
+                      marginTop={1}
+                      display={'inline-flex'}
+                      variant={'body1'}
+                      color={'textPrimary'}
+                      fontSize={'20px'}
+                      alignItems={'center'}
+                    >
+                      {accountActive ? liquidationPenalty : EmptyValueTag}
+                    </Typography>
+                  </Box>
+                </Box> */}
               </Box>
               <Box
                 flex={1}
@@ -1593,8 +1766,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     value={assetsTab}
                     onChange={(_, value) => onChangeAssetsTab(value)}
                   >
-                    <Tab value={'assetsView'} label={'Assets View'} />
-                    <Tab value={'positionsView'} label={'Positions View'} />
+                    <Tab value={'assetsView'} label={'Assets'} />
+                    <Tab value={'positionsView'} label={'Positions'} />
                   </Tabs>
 
                   <Button
@@ -1607,44 +1780,45 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                   </Button>
                 </Box>
 
-                
-                  {assetsTab === 'assetsView' ? (
-                    <VaultAssetsTable
-                      {...assetPanelProps}
-                      onRowClick={(index, row) => {
+                {assetsTab === 'assetsView' ? (
+                  <VaultAssetsTable
+                    {...assetPanelProps}
+                    onRowClick={(index, row) => {
+                      // @ts-ignore
+                      marketProps.onRowClick(index, {
                         // @ts-ignore
-                        marketProps.onRowClick(index, {
-                          // @ts-ignore
-                          ...vaultTokenMap[row.name],
-                          // @ts-ignore
-                          cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
-                          ...vaultTickerMap[row.erc20Symbol],
+                        ...vaultTokenMap[row.name],
+                        // @ts-ignore
+                        cmcTokenId: vaultTickerMap[row.erc20Symbol].tokenId,
+                        ...vaultTickerMap[row.erc20Symbol],
+                      })
+                    }}
+                    onClickDustCollector={() => {
+                      if (VaultDustCollector.enable) {
+                        setLocalState({
+                          ...localState,
+                          modalStatus: 'dustCollector',
                         })
-                      }}
-                      onClickDustCollector={() => {
-                        if (VaultDustCollector.enable) {
-                          setLocalState({
-                            ...localState,
-                            modalStatus: 'dustCollector',
-                          })
-                        } else {
-                          setLocalState({
-                            ...localState,
-                            modalStatus: 'dustCollectorUnavailable',
-                          })
-                        }
-                      }}
-                      showFilter
-                    />
-                  ) : (
-                    <VaultPositionsTable {...vaultPositionsTableProps} />
-                  )}
+                      } else {
+                        setLocalState({
+                          ...localState,
+                          modalStatus: 'dustCollectorUnavailable',
+                        })
+                      }
+                    }}
+                    showFilter
+                  />
+                ) : (
+                  <VaultPositionsTable 
+                    {...vaultPositionsTableProps} 
+                  />
+                )}
 
                 <Button
                   onClick={onClickPortalTrade}
                   size={isMobile ? 'medium' : 'large'}
                   variant='contained'
-                  sx={{ mt: 5, mb: 3, alignSelf: 'center', width: '200px' }}
+                  sx={{ mt: isMobile ? 3 : 5, mb: 3, alignSelf: 'center', width: '200px' }}
                 >
                   Portal Trade
                 </Button>
@@ -1746,87 +1920,6 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                                     : PriceTag[CurrencyToTag[currency]] + '0.00'
                                   : HiddenTag}
                               </Typography>
-                              <Box marginTop={2} display={'flex'} flexDirection={'row'}>
-                                <Box
-                                  display={'flex'}
-                                  flexDirection={'column'}
-                                  marginRight={5}
-                                  alignItems={'center'}
-                                >
-                                  <IconButton
-                                    sx={{
-                                      height: 'var(--svg-size-huge) !important',
-                                      width: 'var(--svg-size-huge) !important',
-                                      border: 'solid 0.5px var(--color-border)',
-                                    }}
-                                    size={'large'}
-                                    onClick={() => {
-                                      history.push(
-                                        `${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}/${VaultAction.VaultLoan}?symbol=${detail?.detail?.tokenInfo.symbol}`,
-                                      )
-                                    }}
-                                  >
-                                    <Box
-                                      component={'img'}
-                                      src={`${SoursURL}svg/vault_loan_${theme.mode}.svg`}
-                                    />
-                                  </IconButton>
-                                  <Typography
-                                    marginTop={1 / 2}
-                                    component={'span'}
-                                    variant={'body2'}
-                                    color={'textSecondary'}
-                                    display={'inline-flex'}
-                                    alignItems={'center'}
-                                    textAlign={'center'}
-                                    sx={{
-                                      textIndent: 0,
-                                      textAlign: 'center',
-                                    }}
-                                  >
-                                    {t('labelVaultLoanBtn')}
-                                  </Typography>
-                                </Box>
-                                <Box
-                                  display={'flex'}
-                                  flexDirection={'column'}
-                                  alignItems={'center'}
-                                >
-                                  <IconButton
-                                    sx={{
-                                      height: 'var(--svg-size-huge) !important',
-                                      width: 'var(--svg-size-huge) !important',
-                                      border: 'solid 0.5px var(--color-border)',
-                                    }}
-                                    size={'large'}
-                                    onClick={() => {
-                                      history.push(
-                                        `${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}/${VaultAction.VaultSwap}?symbol=${detail?.detail?.tokenInfo.symbol}`,
-                                      )
-                                    }}
-                                  >
-                                    <Box
-                                      component={'img'}
-                                      src={`${SoursURL}svg/vault_trade_${theme.mode}.svg`}
-                                    />
-                                  </IconButton>
-                                  <Typography
-                                    component={'span'}
-                                    variant={'body2'}
-                                    display={'inline-flex'}
-                                    textAlign={'center'}
-                                    alignItems={'center'}
-                                    color={'textSecondary'}
-                                    marginTop={1 / 2}
-                                    sx={{
-                                      textIndent: 0,
-                                      textAlign: 'center',
-                                    }}
-                                  >
-                                    {t('labelVaultTradeSimpleBtn')}
-                                  </Typography>
-                                </Box>
-                              </Box>
                             </Box>
                             <Divider style={{ marginTop: '-1px', width: '100%' }} />
                           </>
@@ -1843,6 +1936,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               vaultAccountInfo?.accountStatus,
                             )
                           }
+                          onClickBuy={() => onClickBuy(detail?.detail)}
+                          onClickSell={() => onClickSell(detail?.detail)}
                           {...{ ...detail?.detail }}
                         />
                       </Box>
@@ -1914,11 +2009,10 @@ export const VaultDashBoardPanel = ({
     vaultDashBoardPanelUIProps,
     noAccountHintModalProps,
     supplyCollateralHintModalProps,
-    closeConfirmModalProps
-    // vaultSwapModalProps,
-    // smallOrderAlertProps,
+    closeConfirmModalProps,
+    autoRepayModalProps
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
-  const {vaultSwapModalProps, smallOrderAlertProps, toastProps} = useVaultSwap()
+  const {vaultSwapModalProps, smallOrderAlertProps, toastProps, closeAllConfirmModalProps} = useVaultSwap()
   const joinVaultProps = useVaultJoin()
   return (
     <>
@@ -1939,6 +2033,8 @@ export const VaultDashBoardPanel = ({
       <SupplyCollateralHintModal {...supplyCollateralHintModalProps} />
       <Toast {...toastProps} />
       <CloseConfirmModal {...closeConfirmModalProps}/>
+      <CloseAllConfirmModal {...closeAllConfirmModalProps}/>
+      <AutoRepayConfirmModal {...autoRepayModalProps}/>
     </>
   ) 
 }
