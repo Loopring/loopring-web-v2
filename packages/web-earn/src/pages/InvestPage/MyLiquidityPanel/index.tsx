@@ -48,7 +48,6 @@ import {
   numberFormatThousandthPlace,
   TableWrapStyled,
   useAccount,
-  useAccountInfo,
   useAmmActivityMap,
   useDefiMap,
   useDualMap,
@@ -57,6 +56,7 @@ import {
   useTokenMap,
   useTokenPrices,
   useUserRewards,
+  useVaultAccountInfo,
   useVaultMap,
   useVaultTicker,
 } from '@loopring-web/core'
@@ -67,11 +67,12 @@ import React from 'react'
 import { containerColors, MaxWidthContainer } from '..'
 import _ from 'lodash'
 import { RowEarnConfig } from '../../../constant/setting'
-import { useGetVaultAssets } from 'pages/VaultPage/DashBoardPanel/hook'
 import { useVaultMarket } from 'pages/VaultPage/HomePanel/hook'
 import Decimal from 'decimal.js'
 import { TaikoFarmingPortfolioTable } from '@loopring-web/component-lib/src/components/tableList/taikoFarmingTable'
 import { utils } from 'ethers'
+import { useGetVaultAssets } from 'pages/VaultPage/hooks/useVaultDashBoard'
+
 const MyLiquidity = withTranslation('common')(
   ({
     t,
@@ -228,7 +229,7 @@ const MyLiquidity = withTranslation('common')(
     const nanToEmptyTag = (value: any, prefix: string) => {
       return value === 'NaN' ? EmptyValueTag : prefix + value
     }
-    const vaultAccountInfo = useAccountInfo()
+    const vaultAccountInfo = useVaultAccountInfo()
     const {
       onActionBtnClick,
       dialogBtn,

@@ -13,7 +13,7 @@ export const numberFormat = (number: string | number, format?: {
   tokenSymbol?: string
   removeTrailingZero?: boolean
 }) => {
-  const numberStr1 = typeof number === 'number' ? number.toFixed() : number
+  const numberStr1 = typeof number === 'number' ? new Decimal(number).toString() : number
   const numberStr2 =
     format?.fixed !== undefined
       ? format.fixedRound
@@ -85,4 +85,22 @@ export const bigNumberFormat = (number: BigNumber | string, decimals: number, fo
 }) => {
   const bn = typeof number === 'string' ? BigNumber.from(number) : number
   return numberFormat(utils.formatUnits(bn, decimals), format)
+}
+
+export const toPercent = (number: string | number, fixed: number) => {
+  return numberFormat(number, {showInPercent: true, fixed: fixed})
+}
+
+export const bipsToPercent = (bips: number, fixed: number) => {
+  return toPercent(new Decimal(bips).div(10000).toString(), fixed)
+}
+
+export const bignumberFix = (number: BigNumber, decimals: number, fix: number, fixRound?: 'FLOOR' | 'CEIL') => {
+  const oneUnit = utils.parseUnits('1', decimals - fix)
+  const floor = number
+    .div(oneUnit)
+    .mul(oneUnit)
+  const ceil = floor.add(oneUnit)
+  const nearCeil = ceil.sub(number).gte(number.sub(floor))
+  return fixRound === 'CEIL' ? ceil : fixRound === 'FLOOR' ? floor : nearCeil ? ceil : floor
 }

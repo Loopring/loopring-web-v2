@@ -26,7 +26,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   onJoinPop: (props: any) => void
   swapBtnStatus: TradeBtnStatus
   swapBtnLabel: string
-  onSwapPop: (props: any & { symbol: string }) => void
+  onSwapPop: (props: any & { symbol: string, isSell?: boolean }) => void
   redeemBtnStatus: TradeBtnStatus
   onRedeemPop: (props: any) => void
   redeemBtnLabel: string
@@ -39,7 +39,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   vaultAccountInfoStatus: SagaStatus
   // isShowFeathure:  vaultAccountInfo?.accountStatus
 }
-export const useAccountInfo = () => {
+export const useVaultAccountInfo = () => {
   const {
     vaultAccountInfo,
     status: vaultAccountInfoStatus,
@@ -143,7 +143,7 @@ export const useAccountInfo = () => {
   } = useSubmitBtn({
     availableTradeCheck: availableSwapCheck,
     isLoading: false,
-    submitCallback: async ({ symbol }: { symbol?: string }) => {
+    submitCallback: async ({ symbol, isSell }: { symbol?: string, isSell?: boolean }) => {
       
       updateVaultLayer2({})
       const { vaultAccountInfo } = store.getState().vaultLayer2
@@ -152,6 +152,7 @@ export const useAccountInfo = () => {
           setShowVaultSwap({
             isShow: true,
             symbol: symbol ?? 'ETH',
+            isSell
           })
           break
       }
@@ -306,7 +307,5 @@ export const useAccountInfo = () => {
     tokenFactors,
     maxLeverage,
     collateralTokens
-
-    // isShowFeathure:  vaultAccountInfo?.accountStatus
   } as VaultAccountInfoStatus
 }

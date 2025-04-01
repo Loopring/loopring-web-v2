@@ -1,5 +1,6 @@
 export * from './AssetsTable'
-export * from './VaultAssetsTable'
+export {VaultAssetsTable} from './VaultAssetsTable'
 export * from './AssetsDefiTable'
 export * from './components/Filter'
 export * from './components/CoinIcons'
+export { VaultPositionsTable } from './VaultPositionsTable'

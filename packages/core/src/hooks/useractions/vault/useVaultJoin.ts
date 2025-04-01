@@ -1,4 +1,4 @@
-import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals, VaultJoinProps } from '@loopring-web/component-lib'
 import {
   AccountStatus,
   CoinInfo,
@@ -49,6 +49,7 @@ import { keys } from 'lodash'
 import { calcMarinLevel, marginLevelType } from './utils'
 import Decimal from 'decimal.js'
 import { utils } from 'ethers'
+import { useBasicTrade } from '@loopring-web/component-lib/src/components/tradePanel/components'
 
 const DATE_IN_TEN_YEARS = 2027988026
 
@@ -74,7 +75,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultAccountInfo?.accountStatus == undefined
   const calcSupportData = (tradeData: T) => {
     let supportData = {}
-    // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
+
     if (tradeData?.belong && walletAllowMap && walletAllowMap[tradeData.belong as any]) {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any]?.vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
@@ -165,7 +166,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     isAddOrRedeem,
   ])
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
-    // const { apiKey, connectName, eddsaKey } = account
+
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData ?? {}
     const ercToken = tokenMap[vaultJoinData?.belong?.toString() ?? '']
     try {
@@ -368,7 +369,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           },
         })
         let number = 3
-        //step 1: has rest balance     //loop three times for dust
+        // Step 1: check rest balance (loop three times for dust)
         while (number--) {
           if (isActiveAccount) {
             const response = await LoopringAPI.vaultAPI.getVaultBalance(
@@ -427,7 +428,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                             },
                             maxFee: {
                               tokenId: tokenListIgnoreZero[index].tokenId,
-                              volume: '0', // TEST: fee.toString(),
+                              volume: '0',
                             },
                             validUntil: getTimestampDaysLater(DAYS),
                             memo: '',
@@ -454,7 +455,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           }
         }
 
-        //step 2: get a NFT
+        // Step 2: get a NFT
         const [avaiableNFT, storageId] = await Promise.all([
           isActiveAccount
             ? LoopringAPI.vaultAPI
@@ -567,7 +568,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     btnStatus,
     onBtnClick,
     btnLabel,
-    // btnStyle: tradeLimitBtnStyle,
+
   } = useSubmitBtn({
     availableTradeCheck,
     isLoading,
@@ -577,7 +578,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const {
     modals: {
       isShowVaultJoin: { isShow, symbol },
-      // isShowAccount: { info },
+
     },
     setShowVaultJoin,
     setShowAccount,
@@ -617,10 +618,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
   const initData = () => {
     let vaultJoinData: any = {}
-    let initSymbol = 'LRC'
-    if (symbol) {
-      initSymbol = symbol
-    }
     let walletMap = makeWalletLayer2ForVault()
     let vaultMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
     vaultJoinData = {
@@ -636,23 +633,38 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           vaultAccountInfo?.accountStatus,
         )
 
-    if (
-      account &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      !isActiveAccount &&
-      vaultAccountInfo?.collateralInfo?.collateralTokenId !== undefined
-    ) {
-      initSymbol = idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
-    } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {
-      const key = Reflect.ownKeys(joinTokenMap).find((keyVal) => {
-        const erc20Symbol = idIndex[joinTokenMap[keyVal.toString()]?.tokenId]
-        const walletInfo = walletMap[erc20Symbol] ?? { count: 0 }
-        if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
-          return true
+    const initSymbol = (() => {
+      const availableCollaterals = Object.keys(walletAllowMap).filter(key => 
+        joinTokenMap[key]?.vaultTokenAmounts.status & 2
+      )    
+      if (symbol && availableCollaterals.includes(`LV${symbol}`)) {
+        return symbol
+      } else if (availableCollaterals.length > 0) {
+        return availableCollaterals[0]
+      }
+      if (
+        account &&
+        account.readyState === AccountStatus.ACTIVATED &&
+        !isActiveAccount &&
+        vaultAccountInfo?.collateralInfo?.collateralTokenId !== undefined
+      ) {
+        return idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
+      } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {
+        const key = Reflect.ownKeys(joinTokenMap).find((keyVal) => {
+          if (!(joinTokenMap[keyVal.toString()]?.vaultTokenAmounts.status & 2)) {
+            return false;
+          }
+          const erc20Symbol = idIndex[joinTokenMap[keyVal.toString()]?.tokenId]
+          const walletInfo = walletMap[erc20Symbol] ?? { count: 0 }
+          return sdk.toBig(walletInfo?.count ?? 0).gt(0);
+        })
+        if (key) {
+          return idIndex[joinTokenMap[key.toString()]?.tokenId].toString()
         }
-      })
-      initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
-    }
+      }
+      return 'ETH'
+    })()
+    
     const maxRedeemCollateral =
       vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
         ? Decimal.max(
@@ -790,7 +802,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const vaultTokenSymbol = idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? '']
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
-  // btnStatus, enableBtn, disableBtn
+
 
   const moreToCollateralizeInUSD =
     vaultJoinData.tradeData &&
@@ -814,8 +826,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       : undefined
 
   const ercToken = vaultJoinData.tradeData && tokenMap[vaultJoinData.tradeData.belong as string]
-
-  const output = {
+  const props = {
     handleError: undefined,
     type: TRADE_TYPE.TOKEN,
     baseURL,
@@ -883,5 +894,25 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           )
         : undefined,
   }
+  const basicTrade = useBasicTrade(props as any)
+  const [panelIndex, setPanelIndex] = React.useState(basicTrade.index)
+  React.useEffect(() => {
+    setPanelIndex(basicTrade.index)
+  }, [basicTrade.index])
+  
+  const output= {
+    ...props,
+    basicTrade,
+    panelIndex,
+    handleConfirm: (index: number) => {
+      setPanelIndex(index)
+    },
+    modalOpen: isShow,
+    onCloseModal: () => {
+      setShowVaultJoin({ isShow: false })
+    }
+  } 
+
   return output
+
 }

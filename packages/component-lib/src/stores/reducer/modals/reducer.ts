@@ -62,8 +62,9 @@ const initialState: ModalState = {
   isShowETHStakingApr: { isShow: false, symbol: undefined },
   isShowVaultExit: { isShow: false },
   isShowVaultJoin: { isShow: false },
-  isShowVaultSwap: { isShow: false },
+  isShowVaultSwap: { isShow: false, isSell: undefined },
   isShowVaultLoan: { isShow: false, type: VaultLoanType.Borrow, symbol: undefined },
+  isShowVaultCloseConfirm: { isShow: false, symbol: undefined },
   isShowNoVaultAccount: { isShow: false, whichBtn: undefined },
   isShowConfirmedVault: { isShow: false },
   isShowTransferToTaikoAccount: { isShow: false, from: undefined },
@@ -448,7 +449,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowVaultJoin(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
       state.isShowVaultJoin = { ...action.payload }
     },
-    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+    setShowVaultSwap(state, action: PayloadAction<ModalStatePlayLoad & Transaction & { isSell?: boolean }>) {
       state.isShowVaultSwap = { ...action.payload }
     },
     setShowVaultLoan(
@@ -456,6 +457,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       action: PayloadAction<ModalStatePlayLoad & Transaction & { type: string }>,
     ) {
       state.isShowVaultLoan = { ...action.payload }
+    },
+    setShowVaultCloseConfirm(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Transaction >,
+    ) {
+      state.isShowVaultCloseConfirm = { ...action.payload }
     },
     setShowNoVaultAccount(
       state,
@@ -510,6 +517,7 @@ export const {
   setShowVaultJoin,
   setShowVaultSwap,
   setShowVaultLoan,
+  setShowVaultCloseConfirm,
   setShowNoVaultAccount,
   setShowConfirmedVault,
   setShowBridge,

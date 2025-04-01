@@ -111,6 +111,17 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 (row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW') &&
               row.type === VaultRecordType.closeout
 
+             
+            if (row.erc20Symbol === 'USDT' && row.type === 'trade') {
+              var longOrShort: 'long' | 'short' | undefined = 'long'
+            } else if (row.erc20Symbol !== 'USDT' && row.type === 'trade') {
+              longOrShort = 'short'
+            } else {
+              longOrShort = undefined
+            }
+            
+            const upColorStr = upColor === 'green' ? 'var(--color-success)' : 'var(--color-error)'
+            const downColorStr = upColor === 'green' ? 'var(--color-error)' : 'var(--color-success)'
             return (
               <Box
                 display={'flex'}
@@ -119,8 +130,25 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 alignItems={'center'}
                 height={'100%'}
               >
-                <Typography component={'span'} display={'flex'} alignItems={'center'}>
-                  {isForcedCloseOut ? t(`labelVaultcloseoutForced`) : t(`labelVault${row.type}`)}
+                <Typography
+                  color={
+                    longOrShort === 'long' 
+                      ? upColorStr
+                      : longOrShort === 'short'
+                      ? downColorStr
+                      : 'var(--color-text-primary)'
+                  }
+                  component={'span'}
+                  display={'flex'}
+                  alignItems={'center'}
+                >
+                  {longOrShort === 'long'
+                    ? t('labelVaultBuyLong')
+                    : longOrShort === 'short'
+                    ? t('labelVaultSellShort')
+                    : isForcedCloseOut
+                    ? t(`labelVaultcloseoutForced`)
+                    : t(`labelVault${row.type}`)}
                 </Typography>
               </Box>
             )
@@ -186,7 +214,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           formatter: ({ row }: FormatterProps<R>) => {
             return (
               <Button variant={'text'} onClick={() => props.onItemClick(row)}>
-                {t('labelDetail')}
+                {t('labelDetails')}
               </Button>
             )
           },
@@ -202,6 +230,8 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
           headerCellClass: 'textAlignLeft',
           name: t('labelVaultTxType'),
           formatter: ({ row }: FormatterProps<R>) => {
+            
+            
             return (
               <Box
                 display={'flex'}
@@ -277,11 +307,11 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
     )
     const updateData = _.debounce(
       ({
-        // tableType,
+
         currPage = page,
         pageSize = pagination.pageSize,
       }: {
-        // tableType: TableType;
+
         currPage?: number
         pageSize?: number
       }) => {
@@ -294,7 +324,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
     )
     const handlePageChange = React.useCallback(
       async (currPage: number) => {
-        // if (currPage === page) return;
+
         setPage(currPage)
         updateData({ currPage: currPage })
       },
@@ -306,15 +336,9 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-    // React.useEffect(() => {
-    //   updateData.cancel();
-    //   handlePageChange(1);
-    //   return () => {
-    //     updateData.cancel();
-    //   };
-    // }, [pagination?.pageSize]);
+
     React.useEffect(() => {
-      // setPageSize(pagination?.pageSize);
+
       updateData.cancel()
       handlePageChange(1)
       return () => {
@@ -483,7 +507,7 @@ export const VaultOperationDetail = (props: {
   statusLabel: string
   statusType: "success" | "processing" | "failed"
   time: number
-  type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION' | 'VAULT_JOIN_REDEEM'
+  type: 'VAULT_BORROW' | 'VAULT_MARGIN_CALL' | 'VAULT_REPAY' | 'VAULT_OPEN_POSITION' | 'VAULT_JOIN_REDEEM' | 'VAULT_CLOSE_SHORT'
   amount: string
   amountSymbol: string
 }) => {
@@ -552,6 +576,8 @@ export const VaultOperationDetail = (props: {
               ? t('labelVaultBorrow')
               : type === 'VAULT_JOIN_REDEEM'
               ? t('labelVaultJoinRedeem')
+              : type === 'VAULT_CLOSE_SHORT'
+              ? t('labelVaultCloseShort')
               : t('labelVaultRepay')}
           </Typography>
         </Typography>
@@ -577,7 +603,7 @@ export const VaultOperationDetail = (props: {
           order={9}
         >
           <Typography variant={'body1'} component={'span'} color={'var(--color-text-secondary)'}>
-            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY' || type === 'VAULT_JOIN_REDEEM'
+            {type === 'VAULT_BORROW' || type === 'VAULT_REPAY' || type === 'VAULT_JOIN_REDEEM' || type === 'VAULT_CLOSE_SHORT'
               ? t('labelVaultAmount')
               : t('labelVaultCollateral')}
           </Typography>

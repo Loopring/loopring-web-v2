@@ -34,7 +34,7 @@ export type TableProps<R, SR> = {
   sortDefaultKey?: string
   sortMethod?: (rows: R[], sortColumn: string, sortDirection: 'DESC' | 'ASC' | undefined) => R[]
   handleSort?: (columnKey: string, direction: SortDirection) => boolean
-  EmptyRowsRenderer?: ''
+  EmptyRowsRenderer?: React.ReactNode
   onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void
 }
 //& XOR<{ rows: R[] }, {generateRows: (rawData: any, ...rest: any[]) => Array<R>}>;

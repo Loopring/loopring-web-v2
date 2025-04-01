@@ -3,7 +3,7 @@ import {Box, BoxProps, Typography} from '@mui/material'
 import styled from '@emotion/styled'
 import {TFunction, withTranslation, WithTranslation} from 'react-i18next'
 import {Column, Table} from '../../basic-lib'
-import {Filter} from './components/Filter'
+import {Filter, VaultAssetFilter} from './components/Filter'
 import {TablePaddingX} from '../../styled'
 import {
   BrushIcon,
@@ -21,6 +21,22 @@ import {CoinIcons} from './components/CoinIcons'
 import * as sdk from '@loopring-web/loopring-sdk'
 import {XOR} from '../../../types/lib'
 import _ from 'lodash'
+import { Button } from '@mui/material'
+import Decimal from 'decimal.js'
+
+const BgButton = styled(Button)<{ customBg: string }>`
+  background-color: ${({ customBg }) => customBg};
+  color: var(--color-text);
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: ${({ customBg }) => customBg};
+    opacity: 0.8;
+  }
+  &:disabled {
+    background-color: var(--color-button-disabled);
+  }
+  
+`
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -31,7 +47,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     flex: 1;
     ${({ isMobile }) =>
     isMobile
-        ? `--template-columns: 54% 40% 6% !important;`
+        ? `--template-columns: 30% 30% 40% !important;`
         :`--template-columns: 200px 150px auto auto !important;`}
     .rdg-cell:first-of-type {
       display: flex;
@@ -80,6 +96,9 @@ export type VaultDataAssetsItem = {
   tokenValueDollar: number
   erc20Symbol: string
   precision: number
+  equity: string
+  debt: string
+  repayDisabled: boolean
 }
 
 export type VaultAssetsTableProps<R> = {
@@ -102,6 +121,8 @@ export type VaultAssetsTableProps<R> = {
   hideActions?: boolean
   noMinHeight?: boolean
   hideDustCollector?: boolean
+  onRowClickTrade: ({ row }) => void
+  onRowClickRepay: ({ row }) => void
 } & XOR<
   {
     setHideSmallBalances: (status: any) => void
@@ -130,11 +151,13 @@ export const VaultAssetsTable = withTranslation('tables')(
       hideActions,
       noMinHeight,
       hideDustCollector,
+      onRowClickTrade,
+      onRowClickRepay,
       ...rest
     } = props
     const gridRef = React.useRef(null)
     const prevScrollTop = React.useRef(0)
-    // const container = React.useRef<HTMLDivElement>(null)
+
     const [filter, setFilter] = React.useState({
       searchValue: searchValue ?? '',
     })
@@ -144,8 +167,8 @@ export const VaultAssetsTable = withTranslation('tables')(
     const [viewData, setViewData] = React.useState<R[]>([])
     const { language, isMobile, coinJson, currency } = useSettings()
     React.useEffect(() => {
-      // let height = gridRef?.current?.offsetHeight
-      // @ts-ignore
+
+      // @ts-ignore - gridRef.current.element is accessible at runtime
       let height = gridRef?.current?.element?.parentElement?.offsetHeight
       if (height) {
         const size = Math.floor((height - RowConfig.rowHeaderHeight) / RowConfig.rowHeight)
@@ -155,7 +178,7 @@ export const VaultAssetsTable = withTranslation('tables')(
       }
     }, [gridRef?.current])
     const handleScroll = _.debounce(() => {
-      // const currentScrollTop = gridRef?.current?.scrollTop;
+
       const currentScrollTop = window.scrollY
       if (currentScrollTop > prevScrollTop.current) {
         setPage((prevPage) => prevPage + 1)
@@ -164,13 +187,13 @@ export const VaultAssetsTable = withTranslation('tables')(
     const updateData = React.useCallback(
       (page) => {
         let resultData = rawData && !!rawData.length ? [...rawData] : []
-        // if (filter.hideSmallBalance) {
+
         
         if (hideSmallBalances) {
           const list = ['ETH', 'LRC', 'USDT']
           resultData = resultData.filter((o) => list.includes(o.erc20Symbol) || !o.smallBalance)
         }
-        // if (filter.hideLpToken) {
+
         if (filter.searchValue) {
           resultData = resultData.filter((o) =>
             o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()),
@@ -182,7 +205,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           setTotal({ total: pageSize * (page + 1 / 2), hasMore: true })
         }
         setViewData(resultData.slice(0, pageSize * page))
-        // resetTableData(resultData)
+
       },
 			[rawData, hideSmallBalances, pageSize, filter.searchValue, setTotal, setViewData],
     )
@@ -225,7 +248,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                 color={'textPrimary'}
                 display={'flex'}
                 flexDirection={'column'}
-                marginLeft={2}
+                marginLeft={0.5}
                 component={'span'}
                 paddingRight={1}
               >
@@ -238,8 +261,8 @@ export const VaultAssetsTable = withTranslation('tables')(
         },
       },
       {
-        key: 'amount',
-        name: t('labelAmount'),
+        key: 'holding',
+        name: 'Holding',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
           const { amount, precision } = row
@@ -256,45 +279,98 @@ export const VaultAssetsTable = withTranslation('tables')(
           )
         },
       },
-      // {
-      //   key: 'avaiable',
-      //   name: t('labelAvaiable'),
-      //   headerCellClass: 'textAlignRight',
-      //   formatter: ({ row }) => {
-      //     const value = row.available
-      //     const precision = row.precision
-      //     return (
-      //       <Box className={'textAlignRight'}>
-      //         {hideAssets
-      //           ? HiddenTag
-      //           : getValuePrecisionThousand(value, precision, precision, undefined, false, {
-      //             floor: true,
-      //           })}
-      //       </Box>
-      //     )
-      //   },
-      // },
 
       {
-        key: 'value',
-        name: t('labelVaultAssetsTableValue'),
+        key: 'debt',
+        name: 'Debt',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          const { amount, tokenValueDollar } = row
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.debt).isZero() ? EmptyValueTag : row.debt}</Box>
+        },
+      },
+      {
+        key: 'equity',
+        name: 'Equity',
+        headerCellClass: 'textAlignRight',
+        formatter: ({ row }) => {
+          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.equity).isZero() ? EmptyValueTag : row.equity}</Box>
+        },
+      },
+      {
+        key: 'actions',
+        name: t('labelActions'),
+        headerCellClass: 'textAlignRight',
+        cellClass: 'textAlignRight',
+        formatter: ({ row }) => {
           return (
-            <Box className={'textAlignRight'}>
+            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickTrade({ row })
+                }}
+              >
+                {t('labelTrade')}
+              </Button>
+              <Button
+                sx={{
+                  opacity: row.repayDisabled ? 0.5 : 1,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (row.repayDisabled) return
+                  onRowClickRepay({ row })
+                }}
+              >
+                Repay
+              </Button>
+            </Box>
+          )
+        },
+      },
+    ]
+		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
+
+      {
+        key: 'token',
+        name: t('labelToken'),
+        formatter: ({ row }) => {
+          const symbol = row.erc20Symbol
+          let tokenIcon: [any, any] = [coinJson[symbol], undefined]
+          return (
+            <>
+              <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+              <Typography
+                variant={'inherit'}
+                color={'textPrimary'}
+                display={'flex'}
+                flexDirection={'column'}
+                marginLeft={0.5}
+                component={'span'}
+                paddingRight={1}
+              >
+                <Typography component={'span'} className={'next-coin'}>
+                  {row.token.belongAlice ?? row.token.vaule}
+                </Typography>
+              </Typography>
+            </>
+          )
+        },
+      },
+      {
+        key: 'holding',
+        name: 'Holding',
+        headerCellClass: 'textAlignLeft',
+        formatter: ({ row }) => {
+          const { amount, precision } = row
+          return (
+            <Box className={'textAlignLeft'}>
               {hideAssets
                 ? HiddenTag
                 : amount && Number(amount) > 0
-                ? PriceTag[CurrencyToTag[currency]] +
-                  getValuePrecisionThousand(
-                    (tokenValueDollar || 0) * (forexMap[currency] ?? 0),
-                    undefined,
-                    undefined,
-                    undefined,
-                    false,
-                    { isFait: true, floor: true },
-                  )
+                ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
+                    floor: true,
+                  })
                 : EmptyValueTag}
             </Box>
           )
@@ -304,125 +380,217 @@ export const VaultAssetsTable = withTranslation('tables')(
         key: 'actions',
         name: t('labelActions'),
         headerCellClass: 'textAlignRight',
-        cellClass: 'textAlignRight',
-        // minWidth: 280,
-        formatter: actionRow,
+
+        formatter: ({ row }) => {
+          return (
+            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRowClickTrade({ row })
+                }}
+                size='small'
+              >
+                {t('labelTrade')}
+              </Button>
+              <Button
+                sx={{
+                  opacity: row.repayDisabled ? 0.5 : 1,
+                }}
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (row.repayDisabled) return
+                  onRowClickRepay({ row })
+                }}
+              >
+                Repay
+              </Button>
+            </Box>
+          )
+        },
       },
     ]
-		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
-			{
-				key: 'token',
-				name: t('labelToken'),
-				formatter: ({row}) => {
-					const {token, precision, erc20Symbol: symbol, available, amount} = row
-					let tokenIcon: [any, any] = [coinJson[symbol], undefined]
-					return (
-						<>
-							<Typography width={'56px'} display={'flex'}>
-								<CoinIcons type={row?.token?.type} tokenIcon={tokenIcon}/>
-							</Typography>
-							<Typography
-								variant={'body1'}
-								display={'flex'}
-								flexDirection={'row'}
-								justifyContent={'flex-end'}
-								textAlign={'right'}
-								flex={1}
-							>
-								<Typography display={'flex'}>
-									{hideAssets
-										? HiddenTag
-										: amount && Number(amount) > 0
-                    ? getValuePrecisionThousand(amount, precision, precision, undefined, false, {
-                        floor: true,
-                      })
-										 : EmptyValueTag}
-								</Typography>
-								<Typography display={'flex'} color={'textSecondary'} marginLeft={1}>
-									{hideAssets ? HiddenTag : token.belongAlice}
-								</Typography>
-							</Typography>
-						</>
-					)
-				},
-			},
-			{
-        key: 'actions',
-        name: '',
-        headerCellClass: 'textAlignRight',
-        // minWidth: 280,
-        formatter: actionRow,
-      },
-		]
 
-		return (
+
+    const MobileCardView = () => {
+      return (
+        <Box display="flex" flexDirection="column" width="100%">
+          {viewData.map((row, index) => {
+            const symbol = row.erc20Symbol;
+            let tokenIcon: [any, any] = [coinJson[symbol], undefined];
+            return (
+              <Box
+                key={`asset-card-${index}`}
+                sx={{
+                  mb: 1.5,
+                  p: 2,
+                  backgroundColor: 'var(--color-box)',
+
+                }}
+              >
+                <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
+                  <Box display='flex' alignItems='center'>
+                    <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+                    <Typography variant='body1' ml={1}>
+                      {row.token.belongAlice ?? row.token.value}
+                    </Typography>
+                  </Box>
+                  <Typography variant='h5'>
+                    {hideAssets
+                      ? HiddenTag
+                      : row.amount && Number(row.amount) > 0
+                      ? getValuePrecisionThousand(
+                          row.amount,
+                          row.precision,
+                          row.precision,
+                          undefined,
+                          false,
+                          {
+                            floor: true,
+                          },
+                        )
+                      : EmptyValueTag}
+                  </Typography>
+                </Box>
+
+                <Box display='flex' flexDirection='column' mb={2}>
+                  <Box mt={1.5} display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='var(--color-text-secondary)'>
+                      Debt
+                    </Typography>
+                    <Typography variant='body1' color='var(--color-text-secondary)'>
+                      {hideAssets
+                        ? HiddenTag
+                        : new Decimal(row.debt).isZero()
+                        ? EmptyValueTag
+                        : row.debt}
+                    </Typography>
+                  </Box>
+                  <Box mt={1.5} display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='var(--color-text-secondary)'>
+                      Equity
+                    </Typography>
+                    <Typography variant='body1' color='var(--color-text-secondary)'>
+                      {hideAssets
+                        ? HiddenTag
+                        : new Decimal(row.equity).isZero()
+                        ? EmptyValueTag
+                        : row.equity}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box display='grid' gridTemplateColumns='1fr 1fr' gap={2}>
+                  <BgButton
+                    customBg='var(--color-button-outlined)'
+                    variant='outlined'
+                    fullWidth
+                    size='medium'
+                    onClick={() => onRowClickTrade({ row })}
+                  >
+                    {t('labelTrade')}
+                  </BgButton>
+                  <BgButton
+                    customBg='var(--color-button-outlined)'
+                    variant='outlined'
+                    fullWidth
+                    size='medium'
+                    sx={{
+                      opacity: row.repayDisabled ? 0.5 : 1,
+                    }}
+                    onClick={() => {
+                      if (!row.repayDisabled) {
+                        onRowClickRepay({ row })
+                      }
+                    }}
+                  >
+                    Repay
+                  </BgButton>
+                </Box>
+              </Box>
+            )
+          })}
+        </Box>
+      );
+    };
+
+    return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
           <Box marginX={2} display={'flex'} alignItems={'center'}>
-            <Box width={hideDustCollector ? '100%' : 'calc(100% - 130px)'}>
-              <Filter
-                {...{
-                  handleFilterChange,
-                  filter,
-                  hideSmallBalances,
-                  setHideSmallBalances,
-                }}
+            <Box>
+              <VaultAssetFilter
+                handleFilterChange={handleFilterChange}
+                filter={filter}
+                hideSmallBalances={hideSmallBalances}
+                setHideSmallBalances={setHideSmallBalances}
                 noHideInvestToken
               />
             </Box>
 
-            {!hideDustCollector && <Typography
-              sx={{ cursor: 'pointer' }}
-              component={'span'}
+            {!hideDustCollector && <Box
+              sx={{ 
+                marginLeft: 3,
+              }}
+              component={'button'}
               onClick={onClickDustCollector}
-              width={'140px'}
               color={'var(--color-text-primary)'}
               display={'flex'}
               alignItems={'center'}
             >
               <BrushIcon
-                sx={{ fontSize: '24px', color: 'inherit', marginLeft: 1, marginRight: 0.5 }}
+                sx={{ fontSize: '24px', color: 'inherit', marginRight: 0.5 }}
               />{' '}
               {t('labelVaultDustCollector')}
-            </Typography>}
+            </Box>}
           </Box>
         )}
-        <Table
-          ref={gridRef}
-          className={''}
-          {...{ ...rest, t }}
-          style={{
-            height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
-            minHeight:noMinHeight ? 0 : undefined
-          }}
-          onRowClick={onRowClick as any}
-          rowHeight={rowConfig.rowHeight}
-          headerRowHeight={rowConfig.rowHeaderHeight}
-          rawData={viewData}
-          generateRows={(rowData: any) => rowData}
-          generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
-          showloading={isLoading}
-          columnMode={(isMobile ? getColumnMobileAssets(t) : getColumnModeAssets(t)) as any}
-        />
-        {hasMore && (
-          <Typography
-            variant={'body1'}
-            display={'inline-flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-            color={'var(--color-primary)'}
-            textAlign={'center'}
-            paddingY={1}
-          >
-            <img
-              alt={'loading'}
-              className='loading-gif'
-              width='16'
-              src={`./static/loading-1.gif`}
-              style={{ paddingRight: 1, display: 'inline-block' }}
+        
+        {isMobile ? (
+          <Box padding={2}>
+            <MobileCardView />
+          </Box>
+        ) : (
+          <>
+            <Table
+              ref={gridRef}
+              className={''}
+              {...{ ...rest, t }}
+              style={{
+                height: total > 0 ? rowConfig.rowHeaderHeight + total * rowConfig.rowHeight : 350,
+                minHeight: noMinHeight ? 0 : undefined
+              }}
+              onRowClick={onRowClick as any}
+              rowHeight={rowConfig.rowHeight}
+              headerRowHeight={rowConfig.rowHeaderHeight}
+              rawData={viewData}
+              generateRows={(rowData: any) => rowData}
+              generateColumns={({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[]}
+              showloading={isLoading}
+              columnMode={getColumnModeAssets(t) as any}
             />
-            {t('labelLoadingMore')}
-          </Typography>
+            {hasMore && (
+              <Typography
+                variant={'body1'}
+                display={'inline-flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
+                color={'var(--color-primary)'}
+                textAlign={'center'}
+                paddingY={1}
+              >
+                <img
+                  alt={'loading'}
+                  className='loading-gif'
+                  width='16'
+                  src={`./static/loading-1.gif`}
+                  style={{ paddingRight: 1, display: 'inline-block' }}
+                />
+                {t('labelLoadingMore')}
+              </Typography>
+            )}
+          </>
         )}
       </TableWrap>
     )

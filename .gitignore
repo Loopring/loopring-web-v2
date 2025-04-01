@@ -115,3 +115,5 @@ test_datadir
 #yalc
 .yalc
 yalc.lock
+
+.windsurfrules

@@ -101,7 +101,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
       justifyContent={'space-between'}
       alignItems={'center'}
       flex={1}
-      height={'310px'}
+      height={'270px'}
       paddingX={3}
     >
       <Grid
@@ -142,7 +142,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
       </Grid>
       <Grid item alignSelf={'stretch'} marginTop={2}>
         <Grid container direction={'column'} spacing={1} alignItems={'stretch'}>
-          <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
+          {/* <Grid item paddingBottom={1} sx={{ color: 'text.secondary' }}>
             {rest.isAddOrRedeem === 'Add' ? (
               <Grid
                 container
@@ -236,7 +236,7 @@ export const VaultJoinWrap = <T extends IBData<I>, I, V extends VaultJoinData>({
                 </Box>
               </Grid>
             ) : null}
-          </Grid>
+          </Grid> */}
 
           <Grid sx={{opacity: rest.isAddOrRedeem === 'Redeem' ? 1 : 0}} item display={'flex'} marginBottom={1}>
             <InfoIcon sx={{ marginRight: 1, color: 'var(--color-text-secondary)' }} />

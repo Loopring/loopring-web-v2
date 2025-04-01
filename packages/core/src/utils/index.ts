@@ -13,7 +13,10 @@ export {
   numberFormatThousandthPlace,
   bigNumberFormat,
   fiatNumberDisplay,
-  fiatNumberDisplaySafe
+  toPercent,
+  bipsToPercent,
+  fiatNumberDisplaySafe,
+  bignumberFix
 } from './numberFormat'
 export {
   numberStringListSum
@@ -28,4 +31,4 @@ export {
 export {isNumberStr,strNumDecimalPlacesLessThan} from './validation'
 
 export {getStateFnState} from './getStateFnState'
-export {tryFn} from './tryFn'
+export { tryFn } from './tryFn'
