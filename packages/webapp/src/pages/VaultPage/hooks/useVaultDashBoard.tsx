@@ -286,10 +286,11 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             detail: walletMap[key],
             erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
-          const totalAmount = sdk.toBig(vaultLayer2?.[key].total ?? 0)
+          const totalAmount = utils.formatUnits(vaultLayer2?.[key].total ?? 0, tokenMap[key].decimals)
+
           const borrowedAmount = sdk.toBig(tokenInfo.detail?.borrowed ?? 0)
 
-          const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
+          const tokenValueDollar = new Decimal(totalAmount).times(tokenPrices?.[tokenInfo.symbol] ?? 0)
           const tokenBorrowedValueDollar = borrowedAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)
           const isSmallBalance = tokenValueDollar.lt(1) 
             && tokenBorrowedValueDollar.lt(1)
@@ -319,9 +320,9 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             }),
             repayDisabled:
               borrowedAmount.isZero() ||
-              totalAmount.isZero() ||
-              totalAmount.lt(minRepayAmount) ||
-              borrowedAmount.lt(minRepayAmount),
+              new Decimal(totalAmount).isZero() ||
+              new Decimal(totalAmount).lt(minRepayAmount) ||
+              borrowedAmount,
           }
         } else {
           item = {
