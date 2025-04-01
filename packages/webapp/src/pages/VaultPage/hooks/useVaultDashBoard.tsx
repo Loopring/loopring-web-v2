@@ -67,6 +67,8 @@ import {
   MAPFEEBIPS,
   vaultSwapDependAsync,
   useToast,
+  toPercent,
+  bipsToPercent,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from '../HomePanel/hook'
@@ -595,10 +597,7 @@ export const useVaultDashboard = ({
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
     checkedAutoRepay: false,
-    // closeConfirmModal: {
-    //   show: false,
-    //   symbol: undefined as undefined | string
-    // }
+    penaltyFeeBips: undefined as undefined | number,
 
   })
   const assetPanelProps = useGetVaultAssets({
@@ -1133,11 +1132,12 @@ export const useVaultDashboard = ({
       onJoinPop({})
     },
     onClickSettle: () => {
-      
       onRedeemPop({})
     },
     liquidationThreshold: '1.1',
-    liquidationPenalty: '0%',
+    liquidationPenalty: localState.penaltyFeeBips
+      ? toPercent(localState.penaltyFeeBips * 100, 2) 
+      : '--',
     onClickPortalTrade: () => {
       if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
         onSwapPop({})
@@ -1173,23 +1173,21 @@ export const useVaultDashboard = ({
         : EmptyValueTag,
     showSettleBtn: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
     onClickBuy: (detail) => {
-      const symbol=detail?.tokenInfo.symbol?.slice(2)
-        setShowVaultSwap({
-          isShow: true,
-          symbol,
-          isSell: false
-        });
-      
+      const symbol = detail?.tokenInfo.symbol?.slice(2)
+      setShowVaultSwap({
+        isShow: true,
+        symbol,
+        isSell: false,
+      })
     },
     onClickSell: (detail) => {
       const symbol = detail?.tokenInfo.symbol?.slice(2)
-        setShowVaultSwap({
-          isShow: true,
-          symbol,
-          isSell: true
-        });
-      
-    }
+      setShowVaultSwap({
+        isShow: true,
+        symbol,
+        isSell: true,
+      })
+    },
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
@@ -1328,8 +1326,19 @@ export const useVaultDashboard = ({
         return <></>
     }
   })()
-  useEffect(() => {
+  React.useEffect(() => {
+    if (!account.apiKey) return
+    LoopringAPI.vaultAPI?.getVaultConfig(account.apiKey, '1').then((res) => {
+      if (res && res.data.penaltyFeeBips !== undefined) {
+        setLocalState((state) => ({
+          ...state,
+          penaltyFeeBips: res.data.penaltyFeeBips
+        }))
+      }
+    })
+  }, [account.apiKey])
 
+  React.useEffect(() => {
     if (localState.checkedAutoRepay || vaultLayer2Status !== SagaStatus.UNSET) return
     
     const list = checkHasTokenNeedRepay()

@@ -91,6 +91,10 @@ export const toPercent = (number: string | number, fixed: number) => {
   return numberFormat(number, {showInPercent: true, fixed: fixed})
 }
 
+export const bipsToPercent = (bips: number, fixed: number) => {
+  return toPercent(new Decimal(bips).div(10000).toString(), fixed)
+}
+
 export const bignumberFix = (number: BigNumber, decimals: number, fix: number, fixRound?: 'FLOOR' | 'CEIL') => {
   const oneUnit = utils.parseUnits('1', decimals - fix)
   const floor = number

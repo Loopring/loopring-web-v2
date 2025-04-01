@@ -14,6 +14,7 @@ export {
   bigNumberFormat,
   fiatNumberDisplay,
   toPercent,
+  bipsToPercent,
   fiatNumberDisplaySafe,
   bignumberFix
 } from './numberFormat'
