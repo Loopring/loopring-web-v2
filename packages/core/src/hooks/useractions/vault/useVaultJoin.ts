@@ -618,10 +618,6 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
 
   const initData = () => {
     let vaultJoinData: any = {}
-    let initSymbol = 'LRC'
-    if (symbol) {
-      initSymbol = symbol
-    }
     let walletMap = makeWalletLayer2ForVault()
     let vaultMap = makeVaultLayer2({ needFilterZero: true }).vaultLayer2Map ?? {}
     vaultJoinData = {
@@ -637,23 +633,38 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           vaultAccountInfo?.accountStatus,
         )
 
-    if (
-      account &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      !isActiveAccount &&
-      vaultAccountInfo?.collateralInfo?.collateralTokenId !== undefined
-    ) {
-      initSymbol = idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
-    } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {
-      const key = Reflect.ownKeys(joinTokenMap).find((keyVal) => {
-        const erc20Symbol = idIndex[joinTokenMap[keyVal.toString()]?.tokenId]
-        const walletInfo = walletMap[erc20Symbol] ?? { count: 0 }
-        if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
-          return true
+    const initSymbol = (() => {
+      const availableCollaterals = Object.keys(walletAllowMap).filter(key => 
+        joinTokenMap[key]?.vaultTokenAmounts.status & 2
+      )    
+      if (symbol && availableCollaterals.includes(`LV${symbol}`)) {
+        return symbol
+      } else if (availableCollaterals.length > 0) {
+        return availableCollaterals[0]
+      }
+      if (
+        account &&
+        account.readyState === AccountStatus.ACTIVATED &&
+        !isActiveAccount &&
+        vaultAccountInfo?.collateralInfo?.collateralTokenId !== undefined
+      ) {
+        return idIndex[vaultAccountInfo?.collateralInfo.collateralTokenId]
+      } else if (account.readyState === AccountStatus.ACTIVATED && !symbol) {
+        const key = Reflect.ownKeys(joinTokenMap).find((keyVal) => {
+          if (!(joinTokenMap[keyVal.toString()]?.vaultTokenAmounts.status & 2)) {
+            return false;
+          }
+          const erc20Symbol = idIndex[joinTokenMap[keyVal.toString()]?.tokenId]
+          const walletInfo = walletMap[erc20Symbol] ?? { count: 0 }
+          return sdk.toBig(walletInfo?.count ?? 0).gt(0);
+        })
+        if (key) {
+          return idIndex[joinTokenMap[key.toString()]?.tokenId].toString()
         }
-      })
-      initSymbol = key ? idIndex[joinTokenMap[key.toString()]?.tokenId].toString() : initSymbol
-    }
+      }
+      return 'ETH'
+    })()
+    
     const maxRedeemCollateral =
       vaultAccountInfo && (vaultAccountInfo as any).maxRedeemCollateral
         ? Decimal.max(

@@ -1886,7 +1886,7 @@ export const useVaultSwap = () => {
               .filter(
                 (item) =>
                   item !== undefined &&
-                  !['USDT', 'LRTAIKO'].includes(item?.symbol) &&
+                  !['USDT', 'USDC', 'LRTAIKO'].includes(item?.symbol) &&
                   (!localState.tokenSelectionInput ||
                     item.symbol
                       .toLowerCase()
