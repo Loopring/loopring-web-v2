@@ -1085,7 +1085,9 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
           alignItems={'center'}
         >
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-            <Typography mr={1 / 2} variant='h4'>Portal Trade</Typography>
+            <Typography mr={1 / 2} variant='h4'>
+              Portal Trade
+            </Typography>
             <Tooltip
               title={
                 "To trade on Portal with leverage, you first need to borrow assets. If you're unable to execute the full amount, a portion of the borrowed assets may remain unused. The Auto Repay feature ensures any remaining borrowed assets are automatically repaid, helping you avoid unnecessary interest charges."
@@ -1250,6 +1252,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 borderRadius: '4px',
                 borderTopRightRadius: '0',
                 borderBottomRightRadius: '0',
+                color: isLongOrShort === 'long' ? 'var(--color-text)' : 'var(--color-black)',
               }}
               customBg={
                 isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-box-secondary)'
@@ -1267,6 +1270,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 borderTopLeftRadius: '0',
                 borderBottomLeftRadius: '0',
                 ml: '-4%',
+                color: isLongOrShort === 'short' ? 'var(--color-text)' : 'var(--color-black)',
               }}
               customBg={
                 isLongOrShort === 'short' ? 'var(--color-error)' : 'var(--color-box-secondary)'
@@ -1787,6 +1791,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           width: '32%',
                           borderRadius: '4px',
                           fontSize: '14px',
+                          color: theme.mode === 'light' ? 'var(--color-black)' : 'var(--color-white)',
                         }}
                         onClick={item.onClickTrade}
                       >
@@ -1801,6 +1806,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                           ml: '2%',
                           borderRadius: '4px',
                           fontSize: '14px',
+                          color: theme.mode === 'light' ? 'var(--color-black)' : 'var(--color-white)',
                         }}
                         onClick={item.onClickClose}
                       >

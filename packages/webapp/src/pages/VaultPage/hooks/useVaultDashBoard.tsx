@@ -258,6 +258,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         // tokenMap: erc20TokenMap,
         idIndex: erc20IdIndex,
       },
+      vaultLayer2: {vaultLayer2},
 
       invest: {
         vaultMap: { tokenMap,  tokenPrices },
@@ -285,7 +286,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             detail: walletMap[key],
             erc20Symbol: erc20IdIndex[tokenMap[key].tokenId],
           }
-          const totalAmount = sdk.toBig(tokenInfo.detail?.asset ?? 0)
+          const totalAmount = sdk.toBig(vaultLayer2?.[key].total ?? 0)
           const borrowedAmount = sdk.toBig(tokenInfo.detail?.borrowed ?? 0)
 
           const tokenValueDollar = totalAmount?.times(tokenPrices?.[tokenInfo.symbol] ?? 0)

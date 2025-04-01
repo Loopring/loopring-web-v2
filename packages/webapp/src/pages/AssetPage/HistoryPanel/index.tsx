@@ -631,7 +631,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                       width: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      maxHeight: isMobile ? 'initial' : '80%',
+                      maxHeight: isMobile ? 'initial' : '75vh',
                       overflowY: isMobile ? 'initial' : 'auto',
                     }}
                   >
