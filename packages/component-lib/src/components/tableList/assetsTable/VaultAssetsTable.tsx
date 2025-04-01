@@ -455,58 +455,73 @@ export const VaultAssetsTable = withTranslation('tables')(
             const symbol = row.erc20Symbol;
             let tokenIcon: [any, any] = [coinJson[symbol], undefined];
             return (
-              <Box 
+              <Box
                 key={`asset-card-${index}`}
                 sx={{
                   mb: 1.5,
                   p: 2,
                   backgroundColor: 'var(--color-box)',
-                  '&:not(:last-child)': {
-                    borderBottom: '1px solid var(--color-divide)'
-                  }
+                  // '&:not(:last-child)': {
+                  //   borderBottom: '1px solid var(--color-divide)'
+                  // }
                 }}
               >
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                  <Box display="flex" alignItems="center">
+                <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
+                  <Box display='flex' alignItems='center'>
                     <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
-                    <Typography variant="body1" ml={1}>
+                    <Typography variant='body1' ml={1}>
                       {row.token.belongAlice ?? row.token.value}
                     </Typography>
                   </Box>
-                  <Typography variant="h5">
+                  <Typography variant='h5'>
                     {hideAssets
                       ? HiddenTag
                       : row.amount && Number(row.amount) > 0
-                        ? getValuePrecisionThousand(row.amount, row.precision, row.precision, undefined, false, {
+                      ? getValuePrecisionThousand(
+                          row.amount,
+                          row.precision,
+                          row.precision,
+                          undefined,
+                          false,
+                          {
                             floor: true,
-                          })
-                        : EmptyValueTag}
+                          },
+                        )
+                      : EmptyValueTag}
                   </Typography>
                 </Box>
-                
-                <Box display="flex" flexDirection="column" mb={2}>
-                  <Box mt={1.5} display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="var(--color-text-secondary)">
-                      Equity
-                    </Typography>
-                    <Typography variant="body1" color="var(--color-text-secondary)">
-                      {hideAssets ? HiddenTag : new Decimal(row.equity).isZero() ? EmptyValueTag : row.equity}
-                    </Typography>
-                  </Box>
-                  <Box mt={1.5} display="flex" justifyContent="space-between">
-                    <Typography variant="body2" color="var(--color-text-secondary)">
+
+                <Box display='flex' flexDirection='column' mb={2}>
+                  <Box mt={1.5} display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='var(--color-text-secondary)'>
                       Debt
                     </Typography>
-                    <Typography variant="body1" color="var(--color-text-secondary)">
-                      {hideAssets ? HiddenTag : new Decimal(row.debt).isZero() ? EmptyValueTag : row.debt}
+                    <Typography variant='body1' color='var(--color-text-secondary)'>
+                      {hideAssets
+                        ? HiddenTag
+                        : new Decimal(row.debt).isZero()
+                        ? EmptyValueTag
+                        : row.debt}
+                    </Typography>
+                  </Box>
+                  <Box mt={1.5} display='flex' justifyContent='space-between'>
+                    <Typography variant='body2' color='var(--color-text-secondary)'>
+                      Equity
+                    </Typography>
+                    <Typography variant='body1' color='var(--color-text-secondary)'>
+                      {hideAssets
+                        ? HiddenTag
+                        : new Decimal(row.equity).isZero()
+                        ? EmptyValueTag
+                        : row.equity}
                     </Typography>
                   </Box>
                 </Box>
-                
-                <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
-                  <BgButton 
+
+                <Box display='grid' gridTemplateColumns='1fr 1fr' gap={2}>
+                  <BgButton
                     customBg='var(--color-button-outlined)'
-                    variant="outlined"
+                    variant='outlined'
                     fullWidth
                     size='medium'
                     onClick={() => onRowClickTrade({ row })}
@@ -515,7 +530,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                   </BgButton>
                   <BgButton
                     customBg='var(--color-button-outlined)'
-                    variant="outlined"
+                    variant='outlined'
                     fullWidth
                     size='medium'
                     sx={{
@@ -531,7 +546,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                   </BgButton>
                 </Box>
               </Box>
-            );
+            )
           })}
         </Box>
       );
