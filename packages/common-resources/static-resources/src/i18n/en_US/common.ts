@@ -2461,7 +2461,7 @@ export default {
   labelVaultLeverage: 'Leverage',
   labelVaultAvailableBorrow: 'Borrowing Limit',
   labelVaultLeverageRisk1: '· Selecting higher leverage will increase your liquidation risk.',
-  labelVaultLeverageRisk2: '· Borrowing Limit is based on the upper limit corresponding to the leverage you choose. The total value of all your borrowed tokens will not exceed Borrowing Limit.',
+  labelVaultLeverageRisk2: '· Borrowing Limit is based on the upper limit corresponding to the leverage you choose. The total value of all your borrowed tokens will not exceed the Borrowing Limit.',
   labelVaultLeverageRisk3: '· Maximum Credit is the maximum amount you can borrow based on your collateral.',
   labelVaultDebt: 'Debt Details',
   labelVaultDebtDetails: 'Details',

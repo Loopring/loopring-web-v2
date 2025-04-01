@@ -384,7 +384,7 @@ const BgButton = styled(Button)<{ customBg: string }>`
 //                                 })
 //                               }}
 //                             >
-//                               {t('labelVaultDetail')}
+//                               {t('labelVaultDetails')}
 //                             </Typography>
 //                           </Typography>
 //                         </Box>
@@ -439,7 +439,7 @@ const BgButton = styled(Button)<{ customBg: string }>`
 //                                 })
 //                               }}
 //                             >
-//                               {t('labelVaultDetail')}
+//                               {t('labelVaultDetails')}
 //                             </Typography>
 //                           </Typography>
 //                         </Box>
@@ -472,7 +472,7 @@ const BgButton = styled(Button)<{ customBg: string }>`
 //                                   })
 //                                 }}
 //                               >
-//                                 {t('labelVaultDetail')}
+//                                 {t('labelVaultDetails')}
 //                               </Typography>
 //                             </Typography>
 //                             <Typography
@@ -1260,7 +1260,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                             })
                           }}
                         >
-                          {t('labelVaultDetail')}
+                          {t('labelVaultDetails')}
                         </Typography>
                       )}
                     </Typography>
@@ -1425,7 +1425,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                             })
                           }}
                         >
-                          {t('labelVaultDetail')}
+                          {t('labelVaultDetails')}
                         </Typography>
                       )}
                     </Typography>
@@ -1545,7 +1545,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               })
                             }}
                           >
-                            {t('labelVaultDetail')}
+                            {t('labelVaultDetails')}
                           </Typography>
                         )}
                       </Typography>
@@ -1660,7 +1660,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                               })
                             }}
                           >
-                            {t('labelVaultDetail')}
+                            {t('labelVaultDetails')}
                           </Typography>
                         )}
                       </Typography>
