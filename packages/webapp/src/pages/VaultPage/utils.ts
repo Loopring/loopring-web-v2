@@ -9,7 +9,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import {
   numberFormat,
   store,
-  // useVaultSwap,
+
   MAPFEEBIPS,
   vaultSwapDependAsync,
   bignumberFix
@@ -65,7 +65,7 @@ export const repayIfNeeded = async (symbol: string) => {
   } = store.getState()
   const asset = vaultLayer2?.[symbol]
   const tokenInfo = tokenMap[symbol] as VaultToken
-  console.log('repayIfNeeded', symbol, asset)
+
   if (!checkIfNeedRepay(symbol)) return
   const [{ broker }, { offchainId }] = await Promise.all([
     LoopringAPI.userAPI!.getAvailableBroker({
@@ -108,7 +108,7 @@ export const repayIfNeeded = async (symbol: string) => {
     validUntil: getTimestampDaysLater(DAYS),
     memo: '',
   }
-  console.log('asdhjakshdjkha repayIfNeeded', symbol, request)
+
 
   return await LoopringAPI.vaultAPI?.submitVaultRepay(
     {
@@ -210,7 +210,7 @@ const closeLongDust = async (symbol: string) => {
   const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
     type: 4,
   })!
-  // debugger
+
   const dustTransfer = {
     exchange: exchangeInfo!.exchangeAddress,
     payerAddr: account.accAddress,
@@ -387,7 +387,7 @@ const checkIsDust = async (symbol: string) => {
 
 const closePosition = async (symbol: string) => {
 
-  console.log('asdhjakshdjkha close', symbol)
+
   const {
     vaultLayer2: { vaultLayer2 },
     system: { exchangeInfo },
@@ -455,7 +455,7 @@ export const filterPositions = (vaultLayer2: VaultLayer2Map<any>, tokenMap: sdk.
       utils.formatUnits(BigNumber.from(asset.netAsset).add(asset.interest), tokenInfo.decimals),
     )
     const positionValue = position.abs().times(tokenPrice)
-    console.log('askjdhakjwhe', symbol,asset, tokenInfo, tokenPrice, position.toString(), positionValue.toString())
+
     return symbol !== 'LVUSDT' && positionValue.greaterThan('10')
   })
 }

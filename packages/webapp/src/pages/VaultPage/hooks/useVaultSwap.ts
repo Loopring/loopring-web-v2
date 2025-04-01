@@ -38,7 +38,7 @@ import {
   numberFormat,
   numberFormatThousandthPlace,
   onchainHashInfo,
-  // reCalcStoB,
+
   store,
   tryFn,
   useAccount,
@@ -107,78 +107,7 @@ const calcDexWrap = <R>(input: {
 
 export type VaultTradeTradeData = VaultBorrowTradeData & { borrowAvailable: string }
 
-// const repayIfNeeded = async (symbol: string) => {
-//   if (symbol === 'LVUSDT') {
-//     debugger
-//   }
-//   const {
-//     vaultLayer2: { vaultLayer2 },
-//     invest: {
-//       vaultMap: {
-//         tokenMap
-//       },
-//     },
-//     system: { exchangeInfo, chainId },
-//     account
-//   } = store.getState()
-//   const asset = vaultLayer2?.[symbol]
-//   const tokenInfo = tokenMap[symbol]
-  
-//   const minLoanAmount = tokenInfo?.vaultTokenAmounts?.minLoanAmount
-//   const shouldRepay =
-//     new Decimal(asset?.borrowed ?? '0').gt('0') &&
-//     new Decimal(asset?.total ?? '0').gt('0') &&
-//     (!minLoanAmount || sdk.toBig(asset?.borrowed ?? '0').gte(minLoanAmount))
-  
-//   if (!shouldRepay) return
-//   const [{ broker }, { offchainId }] = await Promise.all([
-//     LoopringAPI.userAPI!.getAvailableBroker({
-//       type: 4,
-//     }),
-//     LoopringAPI.userAPI!.getNextStorageId(
-//       {
-//         accountId: account.accountId,
-//         sellTokenId: tokenInfo.vaultTokenId,
-//       },
-//       account.apiKey,
-//     ),
-//   ])
-//   const request = {
-//     exchange: exchangeInfo!.exchangeAddress,
-//     payerAddr: account.accAddress,
-//     payerId: account.accountId,
-//     payeeId: 0,
-//     payeeAddr: broker,
-//     storageId: offchainId,
-//     token: {
-//       tokenId: tokenInfo.vaultTokenId,
-//       volume: asset!.borrowed,
-//     },
-//     maxFee: {
-//       tokenId: tokenInfo.vaultTokenId,
-//       volume: '0',
-//     },
-//     validUntil: getTimestampDaysLater(DAYS),
-//     memo: '',
-//   }
 
-//   return await LoopringAPI.vaultAPI?.submitVaultRepay(
-//     {
-    
-//       request: request,
-//       web3: connectProvides.usedWeb3 as any,
-//       chainId: chainId === NETWORKEXTEND.NONETWORK ? sdk.ChainId.MAINNET : chainId,
-//       walletType: (ConnectProviders[account.connectName] ??
-//         account.connectName) as unknown as sdk.ConnectorNames,
-//       eddsaKey: account.eddsaKey.sk,
-//       apiKey: account.apiKey,
-//     },
-//     {
-//       accountId: account.accountId,
-//       counterFactualInfo: account.eddsaKey.counterFactualInfo,
-//     },
-//     '1'
-//   )
 
 
   
@@ -421,7 +350,7 @@ export const useVaultSwap = () => {
       ? marketInfo?.minTradePromptAmount?.quote
       : marketInfo?.minTradePromptAmount?.base
     : undefined
-  console.log('smallTradePromptAmtBN', smallTradePromptAmtBN)
+
   const smallAmtFeeBips = marketInfo?.upSlippageFeeBips as unknown as number
 
   const sellTokenAsset = sellToken && vaultLayer2 ? vaultLayer2[sellToken.symbol] : undefined
@@ -647,7 +576,7 @@ export const useVaultSwap = () => {
     },
     () => undefined,
   )
-  console.log('totalSellQuota', totalSellQuota)
+
   
 
   const maxSellValue = Decimal.min(userMaxSellValue ?? '0', totalSellQuota ?? '0').toString()
@@ -847,7 +776,7 @@ export const useVaultSwap = () => {
     timerRef.current = setInterval(() => {
       refreshRef.current && (refreshRef.current as any).firstElementChild.click()
     }, 10 * 1000)
-    console.log('restartTimer', refreshRef.current)
+
     refreshRef.current && (refreshRef.current as any).firstElementChild.click()
   }
   const clearData = () => {
@@ -1444,7 +1373,6 @@ export const useVaultSwap = () => {
               type: ToastType.success,
             },
           })
-          
         })
         .catch((e) => {
           setShowGlobalToast({
@@ -1461,8 +1389,6 @@ export const useVaultSwap = () => {
           })
           updateVaultLayer2({})
         })
-      
-      
     }
   }
   const vaultSwapModalProps = {
@@ -1508,11 +1434,6 @@ export const useVaultSwap = () => {
       currentSlippage: slippage,
       onSlippageChange: (_slippage, customSlippage) => {
         setSlippage(_slippage)
-        // if (customSlippage && customSlippage !== 'N' && customSlippage !== slippage) {
-        //   setSlippage(customSlippage)
-        // } else {
-        //   setSlippage(_slippage)
-        // }
       },
     },
     countdown: {
@@ -1939,11 +1860,6 @@ export const useVaultSwap = () => {
     onClose: closeToast,
     severity: toastOpen?.type,
   }
-  console.log('useVaultSwap output', isShowVaultSwap, localState, vaultSwapModalProps, {
-    tokenMap,
-    vaultLayer2,
-    marketMap,
-  })
   return {
     vaultSwapModalProps,
     smallOrderAlertProps,

@@ -111,7 +111,6 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
                 (row.raw_data.operation.operateSubType as string) === 'VAULT_FORCE_WITHDRAW') &&
               row.type === VaultRecordType.closeout
 
-            // console.log('dasdhjsajhdjsa', row)
              
             if (row.erc20Symbol === 'USDT' && row.type === 'trade') {
               var longOrShort: 'long' | 'short' | undefined = 'long'
@@ -308,11 +307,11 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
     )
     const updateData = _.debounce(
       ({
-        // tableType,
+
         currPage = page,
         pageSize = pagination.pageSize,
       }: {
-        // tableType: TableType;
+
         currPage?: number
         pageSize?: number
       }) => {
@@ -325,7 +324,7 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
     )
     const handlePageChange = React.useCallback(
       async (currPage: number) => {
-        // if (currPage === page) return;
+
         setPage(currPage)
         updateData({ currPage: currPage })
       },
@@ -337,15 +336,9 @@ export const VaultTxTable = withTranslation(['tables', 'common'])(
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) => columnsRaw as Column<any, unknown>[],
     }
-    // React.useEffect(() => {
-    //   updateData.cancel();
-    //   handlePageChange(1);
-    //   return () => {
-    //     updateData.cancel();
-    //   };
-    // }, [pagination?.pageSize]);
+
     React.useEffect(() => {
-      // setPageSize(pagination?.pageSize);
+
       updateData.cancel()
       handlePageChange(1)
       return () => {

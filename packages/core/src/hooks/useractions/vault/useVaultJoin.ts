@@ -75,7 +75,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     vaultAccountInfo?.accountStatus == undefined
   const calcSupportData = (tradeData: T) => {
     let supportData = {}
-    // const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData
+
     if (tradeData?.belong && walletAllowMap && walletAllowMap[tradeData.belong as any]) {
       const vaultTokenSymbol = walletAllowMap[tradeData.belong as any]?.vaultToken
       const vaultTokenInfo = vaultTokenMap[vaultTokenSymbol]
@@ -166,7 +166,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     isAddOrRedeem,
   ])
   const processRequest = async (request?: sdk.VaultJoinRequest) => {
-    // const { apiKey, connectName, eddsaKey } = account
+
     const vaultJoinData = store.getState()._router_tradeVault.vaultJoinData ?? {}
     const ercToken = tokenMap[vaultJoinData?.belong?.toString() ?? '']
     try {
@@ -369,7 +369,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           },
         })
         let number = 3
-        //step 1: has rest balance     //loop three times for dust
+        // Step 1: check rest balance (loop three times for dust)
         while (number--) {
           if (isActiveAccount) {
             const response = await LoopringAPI.vaultAPI.getVaultBalance(
@@ -428,7 +428,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
                             },
                             maxFee: {
                               tokenId: tokenListIgnoreZero[index].tokenId,
-                              volume: '0', // TEST: fee.toString(),
+                              volume: '0',
                             },
                             validUntil: getTimestampDaysLater(DAYS),
                             memo: '',
@@ -455,7 +455,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
           }
         }
 
-        //step 2: get a NFT
+        // Step 2: get a NFT
         const [avaiableNFT, storageId] = await Promise.all([
           isActiveAccount
             ? LoopringAPI.vaultAPI
@@ -568,7 +568,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     btnStatus,
     onBtnClick,
     btnLabel,
-    // btnStyle: tradeLimitBtnStyle,
+
   } = useSubmitBtn({
     availableTradeCheck,
     isLoading,
@@ -578,7 +578,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
   const {
     modals: {
       isShowVaultJoin: { isShow, symbol },
-      // isShowAccount: { info },
+
     },
     setShowVaultJoin,
     setShowAccount,
@@ -802,7 +802,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
     const vaultTokenSymbol = idIndex[vaultAccountInfo?.collateralInfo?.collateralTokenId ?? '']
     return { [vaultTokenSymbol]: coinMap[vaultTokenSymbol] }
   }, [vaultAccountInfo?.collateralInfo])
-  // btnStatus, enableBtn, disableBtn
+
 
   const moreToCollateralizeInUSD =
     vaultJoinData.tradeData &&
@@ -912,7 +912,7 @@ export const useVaultJoin = <T extends IBData<I>, I>() => {
       setShowVaultJoin({ isShow: false })
     }
   } 
-  console.log('vault joun hook output', output)
+
   return output
 
 }

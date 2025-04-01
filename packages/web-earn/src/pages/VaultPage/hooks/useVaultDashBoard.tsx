@@ -62,7 +62,7 @@ import {
   useWalletLayer2,
   VaultAccountInfoStatus,
   WalletConnectL2Btn,
-  // useVaultSwap,
+
   MAPFEEBIPS,
   vaultSwapDependAsync,
   useToast,
@@ -94,7 +94,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
 }: {
   onClickTrade: (symbol: string) => void
   onClickRepay: (symbol: string) => void
-  // onClickRepay: (symbol: string) => void
+
 }): VaultAssetsTableProps<R> & {
   totalAsset: string
   [key: string]: any
@@ -181,7 +181,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           switch (key) {
             case VaultAction.VaultJoin:
               onJoinPop({})
-              // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
+
               break
             case VaultAction.VaultExit:
               onRedeemPop({ isShow: true })
@@ -228,7 +228,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             switch (match?.params?.method) {
               case VaultAction.VaultJoin:
                 onJoinPop({})
-                // setShowVaultJoin({ isShow: true, info: { isActiveAccount: false } })
+
                 break
               case VaultAction.VaultExit:
                 onRedeemPop({ isShow: true, symbol: searchParams.get('symbol') })
@@ -261,9 +261,9 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   const { status: walletL2Status } = useWalletLayer2()
   const getAssetsRawData = () => {
     const {
-      // vaultLayer2: { vaultAccountInfo },
+
       tokenMap: {
-        // tokenMap: erc20TokenMap,
+
         idIndex: erc20IdIndex,
       },
 
@@ -339,8 +339,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             ...item,
             precision: precision,
 
-            // holding: '100-todo',
-            // equity: '100-todo',
+
           }
         } else {
           return undefined
@@ -377,14 +376,14 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     ) {
       onActionBtnClick(whichBtn)
     }
-    // enableBtn()
+
   }, [
     whichBtn,
     walletL2Status,
     vaultAccountInfo?.accountStatus,
     activeInfo,
     assetsRawData,
-    // tokenPriceStatus,
+
   ])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
@@ -444,44 +443,18 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     positionOpend: [sdk.VaultAccountStatus.IN_REDEEM, sdk.VaultAccountStatus.IN_STAKING]
       .includes(vaultAccountInfo?.accountStatus as any),
     onRowClickTrade: ({ row }: { row: R }) => {
-      // debugger
-      onClickTrade(row?.token?.value)
-      // if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
-      //   history.push('/portal/portalDashboard')
-      //   onSwapPop({ symbol: row?.token?.value })
-      // } else {
-      //   history.push('/portal/portalDashboard')
 
-      //   // setstate
-      //   // setShowNoVaultAccount({
-      //   //   isShow: true,
-      //   //   whichBtn: VaultAction.VaultJoin,
-      //   //   des: 'labelJoinDesMessage',
-      //   //   title: 'labelVaultJoinTitle',
-      //   // })
-      // }
+      onClickTrade(row?.token?.value)
+
     },
     onRowClickRepay: ({ row }: { row: R }) => {
       onClickRepay(row?.token?.value)
     },
-    //   onClickRepay(row?.token?.value)
-    //   // if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
-    //   //   history.push('/portal/portalDashboard')
-    //   //   // todo repay
-    //   // } else {
-    //   //   history.push('/portal')
-    //   //   setShowNoVaultAccount({
-    //   //     isShow: true,
-    //   //     whichBtn: VaultAction.VaultJoin,
-    //   //     des: 'labelJoinDesMessage',
-    //   //     title: 'labelVaultJoinTitle',
-    //   //   })
-    //   // }
-    // },
+
     noMinHeight: true
   }
 }
-// closePosition
+
 export const closePosition = async (symbol: string) => {
   const {
     vaultLayer2: { vaultLayer2 },
@@ -595,8 +568,7 @@ export const useVaultDashboard = ({
   maximumCreditModalProps: MaximumCreditModalProps
   collateralDetailsModalProps: CollateralDetailsModalProps
   noAccountHintModalProps: NoAccountHintModalProps
-  // vaultSwapModalProps: VaultSwapModalProps
-  // smallOrderAlertProps: SmallOrderAlertProps
+
   supplyCollateralHintModalProps: SupplyCollateralHintModalProps
   closeConfirmModalProps: CloseConfirmModalProps
 } => {
@@ -675,10 +647,7 @@ export const useVaultDashboard = ({
       | 'supplyCollateralHint',
     unselectedDustSymbol: [] as string[],
     leverageLoading: false,
-    // closeConfirmModal: {
-    //   show: false,
-    //   symbol: undefined as undefined | string
-    // }
+
 
   })
   const assetPanelProps = useGetVaultAssets({
@@ -706,16 +675,8 @@ export const useVaultDashboard = ({
         })
       }
     },
-    // onClickTrade(symbol) {
-    //   if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
-    //     onRe({ symbol: symbol })
-    //   } else {
-    //     setLocalState({
-    //       ...localState,
-    //       modalStatus: 'supplyCollateralHint',
-    //     })
-    //   }
-    // },
+
+
   })
   const { account } = useAccount()
   const { updateVaultLayer2 } = useVaultLayer2()
@@ -1054,7 +1015,7 @@ export const useVaultDashboard = ({
       const originSymbol = symbol.slice(2)
       const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
       const tokenInfo = vaultTokenMap[symbol]
-      console.log('askjdhakjwhe', originSymbol,asset, tokenInfo)
+
       if (!asset || !tokenInfo) return undefined
       const position = new Decimal(utils.formatUnits(asset.netAsset, tokenInfo.decimals))
       if (symbol === 'LVUSDT' || position.isZero())
@@ -1079,18 +1040,7 @@ export const useVaultDashboard = ({
           })
         },
         onClickClose: () => {
-          // setShowGlobalToast({
-          //   isShow: true,
-          //   info: {
-          //     content: 'aaa',
-          //     type: ToastType.error
-          //   }
-          // })
-          // setToastOpenset({
-          //   open: true,
-          //   content: 'e.message',
-          //   type: ToastType.error
-          // })
+
           closePosition(symbol)
           .then(response2 => {
             if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
@@ -1154,9 +1104,9 @@ export const useVaultDashboard = ({
     network,
     isShowVaultJoin,
     setShowAccount,
-    // setShowVaultLoan,
+
     priceTag,
-    // onActionBtnClick,
+
     showNoVaultAccount,
     setShowNoVaultAccount,
     btnProps,
@@ -1375,9 +1325,9 @@ export const useVaultDashboard = ({
     
   
   const { vaultSwapModalProps, smallOrderAlertProps } = useVaultSwap()
-  console.log('useVaultDashboard', {vaultPositionsTableProps,vaultDashBoardPanelUIProps}, {vaultLayer2, vaultTokenMap})
+
   return {
-    // vaultSwapModalProps: vaultSwapModalProps,
+
     vaultDashBoardPanelUIProps,
     dustCollectorUnAvailableModalProps: {
       open: localState.modalStatus === 'dustCollectorUnavailable' && !showLeverage.show,
@@ -1661,7 +1611,7 @@ export const useVaultDashboard = ({
       ),
       dialogBtn: noVaultAccountDialogBtn,
     },
-    // smallOrderAlertProps: smallOrderAlertProps,
+
     supplyCollateralHintModalProps: {
       open: localState.modalStatus === 'supplyCollateralHint',
       onClose: () => {

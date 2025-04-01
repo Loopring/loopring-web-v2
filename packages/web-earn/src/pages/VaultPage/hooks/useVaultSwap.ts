@@ -38,7 +38,7 @@ import {
   numberFormat,
   numberFormatThousandthPlace,
   onchainHashInfo,
-  // reCalcStoB,
+
   store,
   tryFn,
   useAccount,
@@ -60,7 +60,7 @@ import Decimal from 'decimal.js'
 import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/utils'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-import { closePosition } from './useVaultDashBoard'
+
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -126,7 +126,6 @@ export const useVaultSwap = () => {
     setShowAccount,
     setShowVaultSwap,
     setShowVaultExit,
-    setShowGlobalToast,
   } = useOpenModals()
   const {
     toggle: { VaultInvest },
@@ -224,7 +223,7 @@ export const useVaultSwap = () => {
       })
     }
 
-    // handle depth
+
     setLocalState((state) => ({
       ...state,
       depth,
@@ -337,7 +336,7 @@ export const useVaultSwap = () => {
       ? marketInfo?.minTradePromptAmount?.quote
       : marketInfo?.minTradePromptAmount?.base
     : undefined
-  console.log('smallTradePromptAmtBN', smallTradePromptAmtBN)
+
   const smallAmtFeeBips = marketInfo?.upSlippageFeeBips as unknown as number
 
   const sellTokenAsset = sellToken && vaultLayer2 ? vaultLayer2[sellToken.symbol] : undefined
@@ -661,7 +660,7 @@ export const useVaultSwap = () => {
             disabled: true,
           }
         } else if (!amtValid) {
-          // const sellSymbol = tradeData?.sell.belong
+
           if (tradeMinAmt === undefined || tradeMinAmt === 'NaN') {
             return {
               label: 'labelEnterAmount',
@@ -726,7 +725,7 @@ export const useVaultSwap = () => {
             : EmptyValueTag,
           leverage: vaultAccountInfo?.leverage + 'x',
           amount: numberFormat(position.abs().toString(), { fixed: tokenInfo.precision, removeTrailingZero: true }),
-          // onClickLeverage: () => {},
+
           onClickTrade: () => {
             mainViewRef.current?.scrollTo(0, 0)
             setLocalState({
@@ -737,34 +736,7 @@ export const useVaultSwap = () => {
           },
           onClickClose: () => {
             setShowVaultCloseConfirm({ isShow: true, symbol: symbol })
-            // closePosition(symbol)
-            // .then(response2 => {
-            //   if (response2?.operation.status === sdk.VaultOperationStatus.VAULT_STATUS_FAILED) {
-            //     throw new Error('failed')
-            //   }
-            //   setShowGlobalToast({
-            //     isShow: true,
-            //     info: {
-            //       content: 'Closed position successfully',
-            //       type: ToastType.success
-            //     }
-            //   })
-            // }).catch((e) => {
-            //   setShowGlobalToast({
-            //     isShow: true,
-            //     info: {
-            //       content: 'Close position failed',
-            //       type: ToastType.error
-            //     }
-            //   })
-            // }).finally(() => {
-            //   updateVaultLayer2({})
-            // })
-            // setShowVaultCloseConfirm({
-            //   isShow:true,
-            //   symbol: symbol,
-            // })
-            // todo close position
+
           },
         }
       })
@@ -832,7 +804,7 @@ export const useVaultSwap = () => {
         fastMode: false,
       }
       myLog('useVaultSwap: submitOrder request', request)
-      // const selectedVTokenInfo = 'selectedVTokenInfo'
+
       const item = {
         fromSymbol: sellToken.symbol,
         fromAmount: utils.formatUnits(sellAmountBN, sellToken.decimals),
@@ -1193,7 +1165,7 @@ export const useVaultSwap = () => {
               }
             })
         }
-        // borrowHash.current = { hash: (response as any).hash }
+
         await recursiveCheckBorrow((response as any).hash)
         return swapSubmit()
       }
@@ -1327,16 +1299,9 @@ export const useVaultSwap = () => {
     return () => {
       subscription.unsubscribe()
     }
-  }, [market])
-
-  
-
-  
+  }, [market, getLocalState, setLocalState, subjectBtradeOrderbook])
 
   useL2CommonSocket({ vaultLayer2Callback })
-
-  
-  
 
   const vaultSwapModalProps = {
     onClickCloseAll: () => {
@@ -1794,11 +1759,6 @@ export const useVaultSwap = () => {
     onClose: closeToast,
     severity: toastOpen?.type,
   }
-  console.log('useVaultSwap output', isShowVaultSwap, localState, vaultSwapModalProps, {
-    tokenMap,
-    vaultLayer2,
-    marketMap,
-  })
   return {
     vaultSwapModalProps,
     smallOrderAlertProps,

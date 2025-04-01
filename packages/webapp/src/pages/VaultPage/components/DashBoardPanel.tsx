@@ -2011,8 +2011,6 @@ export const VaultDashBoardPanel = ({
     supplyCollateralHintModalProps,
     closeConfirmModalProps,
     autoRepayModalProps
-    // vaultSwapModalProps,
-    // smallOrderAlertProps,
   } = useVaultDashboard({ showLeverage, closeShowLeverage })
   const {vaultSwapModalProps, smallOrderAlertProps, toastProps, closeAllConfirmModalProps} = useVaultSwap()
   const joinVaultProps = useVaultJoin()

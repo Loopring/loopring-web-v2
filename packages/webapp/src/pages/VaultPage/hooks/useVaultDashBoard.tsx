@@ -1355,12 +1355,6 @@ export const useVaultDashboard = ({
       }))
     }
   }, [vaultLayer2Status, localState.checkedAutoRepay])
-  console.log(
-    'useVaultDashboard',
-    localState,
-    { vaultPositionsTableProps, vaultDashBoardPanelUIProps },
-    { vaultLayer2, vaultTokenMap },
-  )
   
   return {
     // vaultSwapModalProps: vaultSwapModalProps,
