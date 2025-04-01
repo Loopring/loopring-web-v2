@@ -2170,7 +2170,7 @@ export default {
   labelVaultExitTypeClose: 'Settle',
   labelVaultExitStatusLabel: 'Status',
   labelVaultExitStatus: '{{status}}',
-  labelVaultExitStatusSuccess: 'Successful',
+  labelVaultExitStatusSuccess: 'Success',
   labelVaultExitTotalBalance: 'Total Balance',
   labelVaultExitTotalDebt: 'Total Debt',
   labelVaultExitTotalEquity: 'Total Equity',
