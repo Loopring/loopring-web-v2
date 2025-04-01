@@ -1252,7 +1252,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 borderRadius: '4px',
                 borderTopRightRadius: '0',
                 borderBottomRightRadius: '0',
-                color: isLongOrShort === 'long' ? 'var(--color-text)' : 'var(--color-black)',
+                color: (isLongOrShort === 'long' || theme.mode === 'dark') ? 'var(--color-text)' : 'var(--color-black)',
               }}
               customBg={
                 isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-box-secondary)'
@@ -1270,7 +1270,7 @@ export const VaultSwapModal = (props: VaultSwapModalProps) => {
                 borderTopLeftRadius: '0',
                 borderBottomLeftRadius: '0',
                 ml: '-4%',
-                color: isLongOrShort === 'short' ? 'var(--color-text)' : 'var(--color-black)',
+                color: (isLongOrShort === 'short' || theme.mode === 'dark') ? 'var(--color-text)' : 'var(--color-black)',
               }}
               customBg={
                 isLongOrShort === 'short' ? 'var(--color-error)' : 'var(--color-box-secondary)'
