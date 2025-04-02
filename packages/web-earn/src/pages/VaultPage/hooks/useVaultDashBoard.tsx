@@ -201,7 +201,11 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
         } else if (
           [sdk.VaultAccountStatus.IN_REDEEM].includes(vaultAccountInfo?.accountStatus as any)
         ) {
-          
+          setShowNoVaultAccount({
+            isShow: true,
+            des: 'labelRedeemDesMessage',
+            title: 'labelRedeemTitle',
+          })
         } else {
           setShowNoVaultAccount({
             isShow: true,
@@ -1131,7 +1135,15 @@ export const useVaultDashboard = ({
     marginLevel: vaultAccountInfo?.marginLevel ?? '',
     _vaultAccountInfo: _vaultAccountInfo,
     onClickCollateralManagement: () => {
-      onJoinPop({})
+      if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_REDEEM) {
+        setShowNoVaultAccount({
+          isShow: true,
+          des: 'labelRedeemDesMessage',
+          title: 'labelRedeemTitle',
+        })
+      } else {
+        onJoinPop({})
+      }
     },
     onClickSettle: () => {
       onRedeemPop({})
