@@ -296,7 +296,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
             && tokenBorrowedValueDollar.lt(1)
           
           const minRepayAmount = utils.formatUnits(
-            utils.parseUnits('1', tokenInfo.decimals - tokenInfo.vaultTokenAmounts.qtyStepScale),
+            tokenInfo.vaultTokenAmounts.minLoanAmount,
             tokenInfo.decimals,
           )
           
