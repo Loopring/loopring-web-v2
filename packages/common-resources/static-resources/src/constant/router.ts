@@ -544,8 +544,8 @@ export const DEFI_CONFIG = {
     GOERLI: ['ROCKETPOOL'],
     SEPOLIA: ['LIDO'],
     ARBGOERLI: ['ROCKETPOOL'],
-    BASE: ['LIDO'],
-    BASESEPOLIA: ['LIDO'],
+    BASE: [],
+    BASESEPOLIA: [],
   },
   MARKETS: {
     TAIKOHEKLA: [] as string[],
@@ -576,8 +576,8 @@ export const LEVERAGE_ETH_CONFIG = {
     GOERLI: ['lido'],
     SEPOLIA: ['lido'],
     ARBGOERLI: ['lido'],
-    BASE: ['lido'],
-    BASESEPOLIA: ['lido'],
+    BASE: [],
+    BASESEPOLIA: [],
   },
   products: {
     TAIKOHEKLA: [] as string[],
