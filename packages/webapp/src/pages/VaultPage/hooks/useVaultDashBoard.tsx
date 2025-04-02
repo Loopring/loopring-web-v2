@@ -93,7 +93,7 @@ const parseVaultTokenStatus = (status: number) => ({
   repay: status & 16,
 })
 
-const useGetVaultAssets = <R extends VaultDataAssetsItem>({
+export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
   onClickTrade,
   onClickRepay
 }: {
