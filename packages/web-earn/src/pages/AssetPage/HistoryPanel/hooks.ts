@@ -1314,7 +1314,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
             operateTypes:
               props?.operateTypes ??
               [
-                0, 1, 2, 3, 4, 5, 6, 7
+                0, 1, 2, 3, 4, 5, 6, 7, 8
               ].join(','),
           },
           apiKey,
@@ -1519,6 +1519,18 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                       const repaymentInUSDT = numberFormat(numberStringListSum(buyAmountList), {fixed: 2});
                       mainContentRender = repaymentInUSDT + ' USDT'
                       break
+                      case sdk.VaultOperationType.VAULT_CLOSE_SHORT:
+                        vToken = vaultTokenMap[vaultIdIndex[tokenS ?? '']] ?? {}
+                        erc20Symbol = vToken?.symbol.slice(2)
+                        precision = vToken?.precision
+                        amount = sdk.toBig(amountS ?? 0).div('1e' + vToken.decimals)
+                        mainContentRender = `${
+                          amount.gte(0)
+                            ? getValuePrecisionThousand(amount, precision, precision)
+                            : EmptyValueTag
+                        } ${erc20Symbol}`
+                        type = VaultRecordType.closeShort
+                        break
                 }
 
                 let item = {
@@ -1565,6 +1577,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
                 | 'VAULT_BORROW'
                 | 'VAULT_REPAY'
                 | 'VAULT_JOIN_REDEEM'
+                | 'VAULT_CLOSE_SHORT'
               statusColor: string
               statusLabel: string
               statusType: 'success' | 'processing' | 'failed'
@@ -1652,6 +1665,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
         case 'VAULT_MARGIN_CALL':
         case 'VAULT_JOIN_REDEEM':
         case 'VAULT_REPAY':
+        case 'VAULT_CLOSE_SHORT':
         case 'VAULT_OPEN_POSITION': {
           const collateralToken = tokenMap[idIndex[operation.tokenIn]]
           let amount, amountSymbol: string 
@@ -1668,7 +1682,7 @@ export const useVaultTransaction = <R extends RawDataVaultTxItem>(
               },
             )
             amountSymbol = vAmountToken && vAmountToken.symbol.slice(2)
-          } else if (operation.operateType === 'VAULT_REPAY') {
+          } else if (operation.operateType === 'VAULT_REPAY' || operation.operateType === 'VAULT_CLOSE_SHORT') {
             const vAmountToken = vaultTokenMap[vaultIdIndex[operation.tokenIn]]
             amount = getValuePrecisionThousand(
               sdk.toBig(operation.amountIn ?? 0).div('1e' + vAmountToken.decimals).abs(),

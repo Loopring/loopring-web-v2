@@ -1174,7 +1174,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                     <BgButton
                       customBg='var(--color-button-outlined)'
                       onClick={onClickSettle}
-                      sx={{ width: 'auto', ml: 1.5, mt: isMobile ? 2 : 0 }}
+                      sx={{ width: 'auto', ml: 1.5, mt: isMobile ? 2 : 0, color: theme.mode === 'light' ? 'var(--color-black)' : 'var(--color-white)' }}
                       variant='contained'
                     >
                       Settle
