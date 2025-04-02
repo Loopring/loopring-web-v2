@@ -1593,19 +1593,9 @@ export const ProfileIndex = {
   ],
   BASE: [
     Layer2RouterID.security,
-    Layer2RouterID.forcewithdraw,
-    Layer2RouterID.vip,
-    Layer2RouterID.contact,
-    Layer2RouterID.referralrewards,
-    Layer2RouterID.notification,
   ],
   BASESEPOLIA: [
     Layer2RouterID.security,
-    Layer2RouterID.forcewithdraw,
-    Layer2RouterID.vip,
-    Layer2RouterID.contact,
-    Layer2RouterID.referralrewards,
-    Layer2RouterID.notification,
   ],
 }
 

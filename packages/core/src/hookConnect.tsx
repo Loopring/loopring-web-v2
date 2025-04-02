@@ -16,6 +16,7 @@ import {
 } from '@loopring-web/web3-provider'
 import {
   AccountStatus,
+  BaseIcon,
   ChainETHEREUMIcon,
   ChainGOERLIIcon,
   ChainTAIKOIcon,
@@ -167,7 +168,7 @@ const Icon = ({ label = '' }: { label: string }) => {
     case 'BASE':
       return (
         <Box component={'span'} display={'flex'} alignItems={'center'}>
-          <Box component={'img'} src={createImageFromInitials(20, 'BASE', '#E91898')}/> 
+          <BaseIcon style={{width: 20, height: 20}} />
         </Box>
       )
     case 'BASESEPOLIA':
