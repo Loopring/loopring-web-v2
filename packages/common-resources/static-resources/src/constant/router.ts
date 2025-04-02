@@ -554,8 +554,8 @@ export const DEFI_CONFIG = {
     GOERLI: ['RETH-ETH'],
     SEPOLIA: ['WSTETH-ETH'],
     ARBGOERLI: ['RETH-ETH'],
-    BASE: ['WSTETH-ETH'],
-    BASESEPOLIA: ['WSTETH-ETH'],
+    BASE: [],
+    BASESEPOLIA: [],
   },
 }
 export const LEVERAGE_ETH_CONFIG = {
@@ -596,8 +596,8 @@ export const LEVERAGE_ETH_CONFIG = {
     GOERLI: ['WSTETH-ETH'],
     SEPOLIA: ['WSTETH-ETH'],
     ARBGOERLI: ['WSTETH-ETH'],
-    BASE: ['WSTETH-ETH'],
-    BASESEPOLIA: ['WSTETH-ETH'],
+    BASE: [],
+    BASESEPOLIA: [],
   },
   // ['LIDO,ROCKETPOOL', 'CIAN'] : ['ROCKETPOOL', 'LIDO']
 }
@@ -1264,7 +1264,6 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.Trades,
     RecordTabIndex.Orders,
     RecordTabIndex.StopLimitRecords,
-    RecordTabIndex.AmmRecords,
     RecordTabIndex.DefiRecords,
     RecordTabIndex.DualRecords,
     RecordTabIndex.SideStakingRecords,
@@ -1277,7 +1276,6 @@ export const RecordMap: { [key: string]: RecordTabIndex[] } = {
     RecordTabIndex.Trades,
     RecordTabIndex.Orders,
     RecordTabIndex.StopLimitRecords,
-    RecordTabIndex.AmmRecords,
     RecordTabIndex.DefiRecords,
     RecordTabIndex.DualRecords,
     RecordTabIndex.SideStakingRecords,
