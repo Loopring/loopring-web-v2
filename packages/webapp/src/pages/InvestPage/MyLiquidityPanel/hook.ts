@@ -345,7 +345,7 @@ export const useOverview = <R extends { [key: string]: any }, I extends { [key: 
         ...assetsRawMap[item],
         market,
         baseToken,
-        apr: Number(defiInfo.apy),
+        apr: defiInfo?.apy ? Number(defiInfo?.apy) : 0,
         defiInfo,
         average:
           defiAverageMap &&
