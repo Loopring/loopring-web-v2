@@ -34,6 +34,8 @@ export const FeeChargeOrderDefaultMap = new Map([
   [sdk.ChainId.TAIKO, ['ETH', 'USDT', 'LRC', 'USDC', 'TAIKO']],
   [sdk.ChainId.SEPOLIA, ['ETH', 'USDT', 'LRC', 'DAI']],
   [sdk.ChainId.TAIKOHEKLA, ['ETH', 'USDT', 'LRC', 'TAIKO']],
+  [sdk.ChainId.BASE, ['ETH', 'USDT', 'LRC', 'USDC']],
+  [sdk.ChainId.BASESEPOLIA, ['ETH', 'USDT', 'LRC', 'USDC']],
 ])
 export const HEADER_HEIGHT = 64
 export const LandPageHeightConfig = {
@@ -136,6 +138,8 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
       11155111: 'SEPOLIA',
       167009: 'TAIKOHEKLA',
       167000: 'TAIKO',
+      8453: 'BASE',
+      84532: 'BASESEPOLIA',
     },
     NetworkMap: {
       1: {
@@ -160,7 +164,7 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         label: 'Taiko Hekla',
         chainId: '167009',
         isTest: true,
-        walletType: 'TAIKO',
+        walletType: 'Taiko Hekla',
       },
       167000: {
         label: 'Taiko',
@@ -168,8 +172,20 @@ export const { NetworkMap, ChainTests, MapChainId, ChainIdExtends } = (
         isTest: false,
         walletType: 'TAIKO',
       },
+      8453: {
+        label: 'Base',
+        chainId: '8453',
+        isTest: false,
+        walletType: 'BASE',
+      },
+      84532: {
+        label: 'Base Sepolia',
+        chainId: '84532',
+        isTest: true,
+        walletType: 'BASESEPOLIA',
+      },
     },
-    ChainTests: [11155111, 5, 167009],
+    ChainTests: [11155111, 5, 167009, 84532],
     ChainIdExtends: {
       NONETWORK: 'unknown',
     },

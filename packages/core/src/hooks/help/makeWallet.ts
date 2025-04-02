@@ -136,7 +136,7 @@ export const makeVaultLayer2 = <
       const vaultToken = tokenMap[symbol]
       const vaultAsset=(vaultLayer2 &&  vaultLayer2[symbol]) ??{}
       const countBig = sdk.toBig(vaultAsset?.l2balance ?? 0).minus(vaultAsset?.locked ?? 0)
-      if (needFilterZero && countBig.eq(BIGO)) {
+      if (needFilterZero && countBig.eq(BIGO) && !vaultToken) {
         return prev
       }
       const erc20Symbol = erc20IdIndex && erc20IdIndex[vaultToken?.tokenId ?? '']
