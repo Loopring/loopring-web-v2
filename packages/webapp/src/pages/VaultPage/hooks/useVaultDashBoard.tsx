@@ -322,7 +322,7 @@ const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               borrowedAmount.isZero() ||
               new Decimal(totalAmount).isZero() ||
               new Decimal(totalAmount).lt(minRepayAmount) ||
-              borrowedAmount,
+              borrowedAmount.lte(minRepayAmount),
           }
         } else {
           item = {
