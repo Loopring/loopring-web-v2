@@ -34,8 +34,8 @@ export const FeeChargeOrderDefaultMap = new Map([
   [sdk.ChainId.TAIKO, ['ETH', 'USDT', 'LRC', 'USDC', 'TAIKO']],
   [sdk.ChainId.SEPOLIA, ['ETH', 'USDT', 'LRC', 'DAI']],
   [sdk.ChainId.TAIKOHEKLA, ['ETH', 'USDT', 'LRC', 'TAIKO']],
-  [sdk.ChainId.BASE, ['ETH', 'USDT', 'LRC', 'DAI']],
-  [sdk.ChainId.BASESEPOLIA, ['ETH', 'USDT', 'LRC', 'DAI']],
+  [sdk.ChainId.BASE, ['ETH', 'USDT', 'LRC', 'USDC']],
+  [sdk.ChainId.BASESEPOLIA, ['ETH', 'USDT', 'LRC', 'USDC']],
 ])
 export const HEADER_HEIGHT = 64
 export const LandPageHeightConfig = {
