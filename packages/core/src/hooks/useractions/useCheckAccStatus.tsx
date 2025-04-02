@@ -70,7 +70,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowActiveAccount({ isShow: true })
   }
   const onIKnowClick = () => {
-    if (account.isContract || account._accountIdNotActive === -1) {
+    if (account.isContract || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
       setKnow(true)
     } else {
       goUpdateAccount()

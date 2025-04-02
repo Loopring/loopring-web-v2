@@ -14,6 +14,7 @@ import {
   useSystem,
   useConfig,
   parseRabbitConfig,
+  useSocket,
 } from '@loopring-web/core'
 import {
   AccountStep,
@@ -245,7 +246,7 @@ export const useGetAssets = (): AssetPanelProps & {
       startWorker.cancel()
     }
   }, [account.readyState])
-
+  const { sendSocketTopic } = useSocket()
   React.useEffect(() => {
     if (
       tokenPriceStatus === SagaStatus.UNSET &&
@@ -259,6 +260,11 @@ export const useGetAssets = (): AssetPanelProps & {
   React.useEffect(() => {
     setTotalAsset('0')
   }, [account.accAddress, chainId])
+  React.useEffect(() => {
+    sendSocketTopic({
+      [sdk.WsTopicType.account]: true,
+    })
+  }, [])
   const walletLayer2Callback = React.useCallback(() => {
     startWorker()
   }, [])

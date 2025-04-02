@@ -152,6 +152,24 @@ export const RouterAllowIndex = {
     RouterMainKey.btrade,
     RouterMainKey.taikoFarming,
   ],
+  BASE: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    RouterMainKey.layer2,
+    RouterMainKey.invest,
+    RouterMainKey.portal,
+    RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
+  ],
+  BASESEPOLIA: [
+    RouterMainKey.l2assets,
+    RouterMainKey.dualIntro,
+    RouterMainKey.layer2,
+    RouterMainKey.invest,
+    RouterMainKey.portal,
+    RouterMainKey.btrade,
+    RouterMainKey.taikoFarming,
+  ],
 }
 
 export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] } = {
@@ -161,6 +179,8 @@ export const headerMenuDataEarnMap: { [key: string]: HeaderMenuItemInterface[] }
   GOERLI: headerMenuEartData,
   SEPOLIA: headerMenuEartData,
   ARBGOERLI: headerMenuEartData,
+  BASE: headerMenuEartData,
+  BASESEPOLIA: headerMenuEartData,
 }
 
 export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
@@ -170,6 +190,8 @@ export const RecordEarnMap: { [key: string]: RecordTabIndex[] } = {
   SEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   ARBGOERLI: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
   TAIKOHEKLA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords, RecordTabIndex.TaikoLockRecords],
+  BASE: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
+  BASESEPOLIA: [RecordTabIndex.Transactions, RecordTabIndex.DualRecords, RecordTabIndex.VaultRecords, RecordTabIndex.BtradeSwapRecords],
 }
 export enum AssetTabIndex {
   Tokens = 'Tokens',
@@ -183,6 +205,8 @@ export const AssetL2TabEarnIndex = {
   ARBGOERLI: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
   Arbitrum: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
   TAIKOHEKLA: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  BASE: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
+  BASESEPOLIA: [AssetTabIndex.Tokens, AssetTabIndex.DefiPortfolio],
 }
 export const RouterAllowEarnIndex = {
   TAIKOHEKLA: [RouterMainKey.l2assets, RouterMainKey.invest],
@@ -191,6 +215,8 @@ export const RouterAllowEarnIndex = {
   GOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
   SEPOLIA: [RouterMainKey.l2assets, RouterMainKey.invest],
   ARBGOERLI: [RouterMainKey.l2assets, RouterMainKey.invest],
+  BASE: [RouterMainKey.l2assets, RouterMainKey.invest],
+  BASESEPOLIA: [RouterMainKey.l2assets, RouterMainKey.invest],
 }
 
 export const earnHeaderToolBarData: {
