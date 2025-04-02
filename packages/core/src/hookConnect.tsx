@@ -164,6 +164,18 @@ const Icon = ({ label = '' }: { label: string }) => {
           <Box component={'img'} src={createImageFromInitials(20, 'TAIKOHEKLA', '#E91898')}/> 
         </Box>
       )
+    case 'BASE':
+      return (
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <Box component={'img'} src={createImageFromInitials(20, 'BASE', '#E91898')}/> 
+        </Box>
+      )
+    case 'BASESEPOLIA':
+      return (
+        <Box component={'span'} display={'flex'} alignItems={'center'}>
+          <Box component={'img'} src={createImageFromInitials(20, 'BASESEPOLIA', '#E91898')}/> 
+        </Box>
+      )
     default:
       const child = label.split(' ')?.map((item) => item[0])
       return <Avatar component={'span'} variant='circular' children={child} />

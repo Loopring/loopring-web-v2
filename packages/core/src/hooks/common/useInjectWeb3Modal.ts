@@ -44,6 +44,20 @@ const chains = [
     explorerUrl: 'https://hekla.taikoscan.io',
     rpcUrl: process.env.REACT_APP_RPC_URL_167009!,
   },
+  {
+    chainId: 8453,
+    name: 'Base',
+    currency: 'ETH',
+    explorerUrl: 'https://basescan.org',
+    rpcUrl: process.env.REACT_APP_RPC_URL_8453!,
+  },
+  {
+    chainId: 84532,
+    name: 'Base Sepolia',
+    currency: 'ETH',
+    explorerUrl: 'https://sepolia.basescan.org',
+    rpcUrl: process.env.REACT_APP_RPC_URL_84532!,
+  },
 ]
 
 const metadata = {
