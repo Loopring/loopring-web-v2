@@ -361,18 +361,18 @@ export const marketInitCheck = ({
       coinA = defaultA as any
     }
     if (type === 'sell' && coinB !== '#null') {
-      if (!tokenMap[coinA].tradePairs?.includes(coinB as never)) {
+      if (!tokenMap[coinA]?.tradePairs?.includes(coinB as never)) {
         coinB = tokenMap[coinA].tradePairs ? tokenMap[coinA].tradePairs[0] : undefined
       }
     } else if (coinB === '#null' || coinA === '#null') {
       if (
-        !tokenMap[[coinA, coinB][whichCoinIndex]].tradePairs.includes(
+        !tokenMap[[coinA, coinB][whichCoinIndex]]?.tradePairs.includes(
           [coinA, coinB][whichCoinIndex ^ 1] as never,
         )
       ) {
         whichCoinIndex == 0
-          ? (coinB = tokenMap[[coinA, coinB][whichCoinIndex]].tradePairs[0])
-          : (coinA = tokenMap[[coinA, coinB][whichCoinIndex]].tradePairs[0])
+          ? (coinB = tokenMap[[coinA, coinB][whichCoinIndex]]?.tradePairs[0])
+          : (coinA = tokenMap[[coinA, coinB][whichCoinIndex]]?.tradePairs[0])
       }
     }
     return { tradePair: `${coinA}-${coinB}` }
