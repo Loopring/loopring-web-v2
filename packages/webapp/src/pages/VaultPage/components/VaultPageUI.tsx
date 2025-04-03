@@ -5,6 +5,7 @@ import {
   Button as LoopringButton,
   ConfirmVaultRisk,
   EmptyDefault,
+  useSettings,
 } from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from '../components/DashBoardPanel'
 import { VaultHomePanel } from '../HomePanel'
@@ -13,7 +14,6 @@ import { useTranslation } from 'react-i18next'
 
 
 export interface VaultPageUIProps {
-  isMobile: boolean
   tabIndex: VaultKey
   error: boolean
   showLeverage: { show: boolean; closeAfterChange: boolean }
@@ -30,7 +30,6 @@ export interface VaultPageUIProps {
 }
 
 export const VaultPageUI: React.FC<VaultPageUIProps> = ({
-  isMobile,
   tabIndex,
   error,
   showLeverage,
@@ -46,6 +45,7 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
   getVaultMap,
 }) => {
   const { t } = useTranslation()
+  const { isMobile } = useSettings()
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
@@ -71,27 +71,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
             onChange={handleTabChange}
           >
             <Tab
-              value={VaultKey.VAULT_HOME}
-              label={
-                <Typography display={'inline-flex'} alignItems={'center'}>
-                  <Typography
-                    component={'span'}
-                    variant={'h5'}
-                    whiteSpace={'pre'}
-                    marginRight={1}
-                    className={'invest-Balance-Title'}
-                    color={
-                      tabIndex === VaultKey.VAULT_HOME
-                        ? 'var(--color-text-primary)'
-                        : 'var(--color-text-secondary)'
-                    }
-                  >
-                    {t('labelVaultMarketTitle')}
-                  </Typography>
-                </Typography>
-              }
-            />
-            <Tab
               value={VaultKey.VAULT_DASHBOARD}
               label={
                 <Typography display={'inline-flex'} alignItems={'center'}>
@@ -108,6 +87,27 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     }
                   >
                     {t('labelVaultHomeTitle')}
+                  </Typography>
+                </Typography>
+              }
+            />
+            <Tab
+              value={VaultKey.VAULT_HOME}
+              label={
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Typography
+                    component={'span'}
+                    variant={'h5'}
+                    whiteSpace={'pre'}
+                    marginRight={1}
+                    className={'invest-Balance-Title'}
+                    color={
+                      tabIndex === VaultKey.VAULT_HOME
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-secondary)'
+                    }
+                  >
+                    {t('labelVaultMarketTitle')}
                   </Typography>
                 </Typography>
               }

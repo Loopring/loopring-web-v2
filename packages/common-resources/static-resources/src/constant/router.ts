@@ -356,21 +356,21 @@ export enum VaultKey {
 export let vaultItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: VaultKey.VAULT_HOME,
-      i18nKey: 'labelVaultHome',
-      description: 'labelVaultHomeDes',
-      icon: VaultHomeIcon,
-    },
-    router: { path: RouterPath.vault + '' },
-  },
-  {
-    label: {
       id: VaultKey.VAULT_DASHBOARD,
       i18nKey: 'labelVaultDashboard',
       description: 'labelVaultDashboardDes',
       icon: VaultDashboardIcon,
     },
     router: { path: RouterPath.vault + `/${VaultKey.VAULT_DASHBOARD}` },
+  },
+  {
+    label: {
+      id: VaultKey.VAULT_HOME,
+      i18nKey: 'labelVaultHome',
+      description: 'labelVaultHomeDes',
+      icon: VaultHomeIcon,
+    },
+    router: { path: RouterPath.vault + '' },
   },
 ]
 
