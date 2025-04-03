@@ -38,17 +38,17 @@ const BgButton = styled(Button)<{ customBg: string }>`
   
 `
 
-const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; hideActions?: boolean; lan: string }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
     flex: 1;
-    ${({ isMobile }) =>
-    isMobile
-        ? `--template-columns: 30% 30% 40% !important;`
-        :`--template-columns: 200px 150px auto auto !important;`}
+    ${({ hideActions }) =>
+      hideActions
+        ? `--template-columns: 230px 180px auto !important;`
+        : `--template-columns: 200px 150px auto auto !important;`}
     .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -285,7 +285,11 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: 'Debt',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.debt).isZero() ? EmptyValueTag : row.debt}</Box>
+          return (
+            <Box className={'textAlignRight'}>
+              {hideAssets ? HiddenTag : new Decimal(row.debt).isZero() ? EmptyValueTag : row.debt}
+            </Box>
+          )
         },
       },
       {
@@ -293,41 +297,58 @@ export const VaultAssetsTable = withTranslation('tables')(
         name: 'Equity',
         headerCellClass: 'textAlignRight',
         formatter: ({ row }) => {
-          return <Box className={'textAlignRight'}>{hideAssets ? HiddenTag : new Decimal(row.equity).isZero() ? EmptyValueTag : row.equity}</Box>
-        },
-      },
-      {
-        key: 'actions',
-        name: t('labelActions'),
-        headerCellClass: 'textAlignRight',
-        cellClass: 'textAlignRight',
-        formatter: ({ row }) => {
           return (
-            <Box height={'100%'} display={'flex'} alignItems={'center'} justifyContent={'flex-end'}>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onRowClickTrade({ row })
-                }}
-              >
-                {t('labelTrade')}
-              </Button>
-              <Button
-                sx={{
-                  opacity: row.repayDisabled ? 0.5 : 1,
-                }}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  if (row.repayDisabled) return
-                  onRowClickRepay({ row })
-                }}
-              >
-                Repay
-              </Button>
+            <Box className={'textAlignRight'}>
+              {hideAssets
+                ? HiddenTag
+                : new Decimal(row.equity).isZero()
+                ? EmptyValueTag
+                : row.equity}
             </Box>
           )
         },
       },
+      ...(!hideActions
+        ? [
+            {
+              key: 'actions',
+              name: t('labelActions'),
+              headerCellClass: 'textAlignRight',
+              cellClass: 'textAlignRight',
+              formatter: ({ row }) => {
+                return (
+                  <Box
+                    height={'100%'}
+                    display={'flex'}
+                    alignItems={'center'}
+                    justifyContent={'flex-end'}
+                  >
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onRowClickTrade({ row })
+                      }}
+                    >
+                      {t('labelTrade')}
+                    </Button>
+                    <Button
+                      sx={{
+                        opacity: row.repayDisabled ? 0.5 : 1,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (row.repayDisabled) return
+                        onRowClickRepay({ row })
+                      }}
+                    >
+                      Repay
+                    </Button>
+                  </Box>
+                )
+              },
+            },
+          ]
+        : []),
     ]
 		const getColumnMobileAssets = (t: TFunction): Column<R, unknown>[] => [
 
@@ -426,7 +447,6 @@ export const VaultAssetsTable = withTranslation('tables')(
                   mb: 1.5,
                   p: 2,
                   backgroundColor: 'var(--color-box)',
-
                 }}
               >
                 <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
@@ -455,7 +475,7 @@ export const VaultAssetsTable = withTranslation('tables')(
                 </Box>
 
                 <Box display='flex' flexDirection='column' mb={2}>
-                  <Box mt={1.5} display='flex' justifyContent='space-between'>
+                  <Box mt={3} display='flex' justifyContent='space-between'>
                     <Typography variant='body2' color='var(--color-text-secondary)'>
                       Debt
                     </Typography>
@@ -481,33 +501,35 @@ export const VaultAssetsTable = withTranslation('tables')(
                   </Box>
                 </Box>
 
-                <Box display='grid' gridTemplateColumns='1fr 1fr' gap={2}>
-                  <BgButton
-                    customBg='var(--color-button-outlined)'
-                    variant='outlined'
-                    fullWidth
-                    size='medium'
-                    onClick={() => onRowClickTrade({ row })}
-                  >
-                    {t('labelTrade')}
-                  </BgButton>
-                  <BgButton
-                    customBg='var(--color-button-outlined)'
-                    variant='outlined'
-                    fullWidth
-                    size='medium'
-                    sx={{
-                      opacity: row.repayDisabled ? 0.5 : 1,
-                    }}
-                    onClick={() => {
-                      if (!row.repayDisabled) {
-                        onRowClickRepay({ row })
-                      }
-                    }}
-                  >
-                    Repay
-                  </BgButton>
-                </Box>
+                {!hideActions && (
+                  <Box display='grid' gridTemplateColumns='1fr 1fr' gap={2}>
+                    <BgButton
+                      customBg='var(--color-button-outlined)'
+                      variant='outlined'
+                      fullWidth
+                      size='medium'
+                      onClick={() => onRowClickTrade({ row })}
+                    >
+                      {t('labelTrade')}
+                    </BgButton>
+                    <BgButton
+                      customBg='var(--color-button-outlined)'
+                      variant='outlined'
+                      fullWidth
+                      size='medium'
+                      sx={{
+                        opacity: row.repayDisabled ? 0.5 : 1,
+                      }}
+                      onClick={() => {
+                        if (!row.repayDisabled) {
+                          onRowClickRepay({ row })
+                        }
+                      }}
+                    >
+                      Repay
+                    </BgButton>
+                  </Box>
+                )}
               </Box>
             )
           })}
