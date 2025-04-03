@@ -864,36 +864,36 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
     </>
   )
   const inactiveView = (
-    <Box display={'flex'} mt={3} justifyContent={'space-between'} alignItems={'center'}>
+    <Box display={'flex'} mt={3} mb={5} flexDirection={isMobile ? 'column' : 'row'} justifyContent={isMobile ? 'center' : 'space-between'} alignItems={isMobile ? 'flex-start' : 'center'}>
       <Box
         display={'flex'}
         flexDirection={'column'}
         justifyContent={'center'}
         alignItems={'flex-start'}
         padding={2}
-        minHeight={'400px'}
+        minHeight={isMobile ? 'auto' : '400px'}
         width={'100%'}
-        marginTop={10}
+        mt={isMobile ? 2 : 10}
       >
         <Typography
-          variant={'h4'}
-          mb={2}
+          variant={isMobile ? 'h5' : 'h4'}
+          mb={isMobile ? 5 : 2}
           maxWidth={'90%'}
         >
           Loopring Portal functions as an isolated margin account allowing users to borrow and lend tokens using collateral.
         </Typography>
         <Typography
-          variant={'h4'}
+          variant={isMobile ? 'h5' : 'h4'}
           mb={5}
           maxWidth={'90%'}
         >
           It enables leveraged trading and provides access to assets beyond Ethereum.
         </Typography>
-        <WalletConnectL2Btn width='250px' size={'large'} />
+        <WalletConnectL2Btn width={isMobile ? '200px' : '250px'} size={isMobile ? 'medium' : 'large'} />
       </Box>
       <Box
         component={'img'}
-        width={'40%'}
+        width={isMobile ? '80%' : '40%'}
         mt={8}
         src={
           SoursURL +
