@@ -196,6 +196,7 @@ import {
   SendAssetList,
   SendAssetListMap,
   SendNFTAssetList,
+  SPECIAL_ACTIVATION_NETWORKS,
   TradeTypes,
   VendorProviders,
 } from '@loopring-web/common-resources'
@@ -3132,9 +3133,9 @@ export function useAccountModalForUI({
               btnTxt: 'labelClose',
               callback: () => {
                 setShouldShow(false)
-                const isTaikoEarn =
-                  isEarn && [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
-                if (isTaikoEarn) {
+                const isSpecialActivation =
+                  isEarn && SPECIAL_ACTIVATION_NETWORKS.includes(defaultNetwork)
+                if (isSpecialActivation) {
                   setShowAccount({ isShow: false })
                 } else {
                   setShowAccount({ isShow: false })

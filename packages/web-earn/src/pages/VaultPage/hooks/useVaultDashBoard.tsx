@@ -1173,7 +1173,7 @@ export const useVaultDashboard = ({
     onClickHideShowAssets: () => {
       setHideL2Assets(!hideAssets)
     },
-    accountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
+    vaultAccountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
     totalEquity:
       vaultAccountInfo?.totalEquityOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
         ? fiatNumberDisplay(
@@ -1202,6 +1202,7 @@ export const useVaultDashboard = ({
         isSell: true,
       })
     },
+    didAccountSignIn: account.readyState === AccountStatus.ACTIVATED
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
@@ -1414,13 +1415,13 @@ export const useVaultDashboard = ({
         .map((asset) => {
           const vaultSymbol = vaultIdIndex[asset.tokenId as unknown as number] as unknown as string
           const vaultToken = vaultTokenMap[vaultSymbol]
-          const originSymbol = vaultSymbol.replace('LV', '')
+          const originSymbol = vaultSymbol?.replace('LV', '')
           const price = tokenPrices[vaultSymbol]
           const borrowedAmount = vaultToken
             ? utils.formatUnits(asset.borrowed, vaultToken.decimals)
             : undefined
           return {
-            symbol: vaultSymbol.slice(2),
+            symbol: vaultSymbol?.slice(2),
             coinJSON: coinJson[originSymbol],
             amount: borrowedAmount
               ? numberFormat(borrowedAmount, {

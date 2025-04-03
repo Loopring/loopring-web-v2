@@ -8,12 +8,10 @@ import { useVaultPage } from './hooks/useVaultPage'
 import { VaultPageUI } from './components/VaultPageUI'
 
 export const VaultPage = () => {
-  const { isMobile } = useSettings()
   const props = useVaultPage()
 
   return (
     <VaultPageUI
-      isMobile={isMobile}
       {...props}
     />
   )

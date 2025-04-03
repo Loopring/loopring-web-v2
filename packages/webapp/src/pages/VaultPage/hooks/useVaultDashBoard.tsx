@@ -1173,7 +1173,7 @@ export const useVaultDashboard = ({
     onClickHideShowAssets: () => {
       setHideL2Assets(!hideAssets)
     },
-    accountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
+    vaultAccountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
     totalEquity:
       vaultAccountInfo?.totalEquityOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
         ? fiatNumberDisplay(
@@ -1202,6 +1202,7 @@ export const useVaultDashboard = ({
         isSell: true,
       })
     },
+    didAccountSignIn: account.readyState === AccountStatus.ACTIVATED
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {

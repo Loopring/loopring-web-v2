@@ -52,7 +52,7 @@ export const useVaultPage = () => {
     const item = Object.values(VaultKey).find(
       (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
     )
-    setTabIndex(item ? item : VaultKey.VAULT_HOME)
+    setTabIndex(item ? item : VaultKey.VAULT_DASHBOARD)
   }, [match?.params?.item])
 
   const handleTabChange = (_e: any, value: VaultKey) => {

@@ -619,7 +619,7 @@ export const VaultOperationDetail = (props: {
               <>
                 <CoinIcons
                   size='small'
-                  type={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? TokenType.single : TokenType.vault}
+                  type={TokenType.single}
                   tokenIcon={[coinJson[amountSymbol], undefined]}
                 />{' '}
                 <Typography marginLeft={(type === 'VAULT_MARGIN_CALL' || type === 'VAULT_OPEN_POSITION') ? 0.5 : 0}>{amount} {mapSpecialTokenName(amountSymbol)}</Typography>
@@ -779,7 +779,7 @@ export const VaultTradeDetail = withTranslation(['common'])(
             >
               <CoinIcons
                 size='small'
-                type={TokenType.vault}
+                type={TokenType.single}
                 tokenIcon={[coinJson[fromSymbol], undefined]}
               />{' '}
               {placedAmount} {fromSymbol}
@@ -810,7 +810,7 @@ export const VaultTradeDetail = withTranslation(['common'])(
             >
               <CoinIcons
                 size='small'
-                type={TokenType.vault}
+                type={TokenType.single}
                 tokenIcon={[coinJson[fromSymbol], undefined]}
               />{' '}
               {executedAmount} {fromSymbol}
@@ -856,7 +856,7 @@ export const VaultTradeDetail = withTranslation(['common'])(
             >
               <CoinIcons
                 size='small'
-                type={TokenType.vault}
+                type={TokenType.single}
                 tokenIcon={[coinJson[toSymbol], undefined]}
               />{' '}
               {convertedAmount} {toSymbol}
@@ -897,7 +897,7 @@ export const VaultTradeDetail = withTranslation(['common'])(
             >
               <CoinIcons
                 size='small'
-                type={TokenType.vault}
+                type={TokenType.single}
                 tokenIcon={[coinJson[feeSymbol], undefined]}
               />{' '}
               {feeAmount} {feeSymbol}
@@ -1035,7 +1035,7 @@ export const VaultConvertDetail = (props: VaultConvertDetailProps) => {
                 key={dust.symbol}
                 leftNode={
                   <Box alignItems={'center'} display={'flex'}>
-                    <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
+                    <CoinIcons type={TokenType.single} tokenIcon={[dust.coinJSON]} />
                     <Typography marginLeft={1}>{dust.symbol}</Typography>
                   </Box>
                 }

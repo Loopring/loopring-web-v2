@@ -498,6 +498,7 @@ const MyLiquidity = withTranslation('common')(
                   showFilter
                   hideActions
                   noMinHeight
+                  hideDustCollector
                 />
               </Box>
             </Box>

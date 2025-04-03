@@ -229,7 +229,7 @@ export const AssetPage = () => {
         <MaxWidthContainer>
           <Box
             sx={{
-              backgroundImage: `url(${SoursURL + 'earn/assets_banner.png'})`,
+              backgroundImage: `url(${SoursURL}earn/assets_banner_title2_${theme.mode === 'dark' ? 'dark' : 'light'}${isMobile ? '_mobile' : ''}.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
@@ -241,12 +241,13 @@ export const AssetPage = () => {
               flexDirection: 'column',
               position: 'relative',
               mt: isMobile ? 6 : 4,
+              borderRadius: '12px',
             }}
           >
             <CloseIcon
               className='custom-size'
               sx={{
-                color: 'var(--color-white)',
+                color: 'var(--color-text-primary)',
                 position: 'absolute',
                 top: 8,
                 right: 8,
@@ -257,12 +258,12 @@ export const AssetPage = () => {
                 setShowTaikoLaunchBanner2(false)
               }}
             />
-            <Box
+            {/* <Box
               height={isMobile ? '28px' : '32px'}
               component={'img'}
-              src={SoursURL + 'earn/assets_banner_title.png'}
-            />
-            {isMobile ? (
+              src={`${SoursURL}earn/assets_banner_title2_${theme.mode === 'dark' ? 'dark' : 'light'}.png`}
+            /> */}
+            {/* {isMobile ? (
               <Typography
                 mt={1.5}
                 textAlign={'center'}
@@ -282,7 +283,7 @@ export const AssetPage = () => {
                 <br />
                 {t('labelLoopringDeFiIs22')}
               </Typography>
-            )}
+            )} */}
           </Box>
         </MaxWidthContainer>
       )}
@@ -340,7 +341,7 @@ export const AssetPage = () => {
             {isMobile ? (
               <Box mt={1}>{<WalletConnectL2Btn width='120px' size={'medium'} />}</Box>
             ) : (
-              <Box>{<WalletConnectL2Btn width='180px' size={'large'} />}</Box>
+              <Box>{<WalletConnectL2Btn width='250px' size={'large'} />}</Box>
             )}
             {!isMobile && <Box width={'30%'} />}
           </Box>

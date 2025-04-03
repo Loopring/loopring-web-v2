@@ -143,7 +143,7 @@ export const MarketDetail = ({
           >
             {/* eslint-disable-next-line react/jsx-no-undef */}
             <CoinIcons
-              type={tokenInfo.type as any}
+              type={TokenType.single}
               size={SvgSize.svgSizeHuge}
               tokenIcon={[
                 coinJson[

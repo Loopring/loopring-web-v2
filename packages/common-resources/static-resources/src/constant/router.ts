@@ -28,6 +28,7 @@ import {
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
 import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
 export const headerRoot = 'Landing-page'
@@ -355,21 +356,21 @@ export enum VaultKey {
 export let vaultItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: VaultKey.VAULT_HOME,
-      i18nKey: 'labelVaultHome',
-      description: 'labelVaultHomeDes',
-      icon: VaultHomeIcon,
-    },
-    router: { path: RouterPath.vault + '' },
-  },
-  {
-    label: {
       id: VaultKey.VAULT_DASHBOARD,
       i18nKey: 'labelVaultDashboard',
       description: 'labelVaultDashboardDes',
       icon: VaultDashboardIcon,
     },
     router: { path: RouterPath.vault + `/${VaultKey.VAULT_DASHBOARD}` },
+  },
+  {
+    label: {
+      id: VaultKey.VAULT_HOME,
+      i18nKey: 'labelVaultHome',
+      description: 'labelVaultHomeDes',
+      icon: VaultHomeIcon,
+    },
+    router: { path: RouterPath.vault + '' },
   },
 ]
 
@@ -1667,25 +1668,32 @@ export const L1L2_NAME_DEFINED = {
     L2Token: 'LRC',
   },
   BASE: {
-    layer2: 'Layer 2',
+    layer2: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'Layer 3',
     l1ChainName: 'BASE',
-    loopringL2: 'Loopring L2',
-    l2Symbol: 'L2',
+    loopringL2: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'Loopring L3',
+    l2Symbol: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'L3',
     l1Symbol: 'L1',
     ethereumL1: 'BASE',
-    loopringLayer2: 'Loopring Layer 2',
+    loopringLayer2: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'Loopring Layer 3',
     L1Token: 'ETH',
     L2Token: 'ETH',
   },
   BASESEPOLIA: {
-    layer2: 'Layer 2',
+    layer2: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'Layer 3',
     l1ChainName: 'BASE',
-    loopringL2: 'Loopring L2',
-    l2Symbol: 'L2',
+    loopringL2: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'Loopring L3',
+    l2Symbol: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'L3',
     l1Symbol: 'L1',
     ethereumL1: 'BASE',
-    loopringLayer2: 'Loopring Layer 2',
+    loopringLayer2: process.env.REACT_APP_NAME === 'loopring defi' ? 'Loopring DeFi' : 'Loopring Layer 3',
     L1Token: 'ETH',
     L2Token: 'ETH',
   },
 }
+
+export const SPECIAL_ACTIVATION_NETWORKS = [
+  ChainId.TAIKO,
+  ChainId.TAIKOHEKLA, 
+  ChainId.BASE,
+  ChainId.BASESEPOLIA,
+]

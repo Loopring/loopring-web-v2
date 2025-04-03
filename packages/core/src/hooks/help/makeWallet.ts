@@ -274,7 +274,7 @@ export const makeVaultRepay = <
       const vaultToken = tokenMap[vaultSymbol]
       const status = vaultToken?.vaultTokenAmounts?.status?.toString(2)
       if (
-        status[4] == '1' &&
+        status?.[4] == '1' &&
         ((vaultSymbol && needFilterZero && sdk.toBig(item.borrowed).gt(0)) || !needFilterZero)
       ) {
         const borrowed = sdk
