@@ -84,7 +84,7 @@ export const useSubmitBtn = ({
         chainId: defaultNetwork,
         isEarn: app === 'earn',
         readyState: account.readyState,
-        taikoEarnActivation: async () => {
+        specialActivation: async () => {
           const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
             accountId: account._accountIdNotActive,
           })
@@ -109,7 +109,7 @@ export const useSubmitBtn = ({
             },
           })
         },
-        taikoEarnDeposit: async () => {
+        specialActivationDeposit: async () => {
           setShowDeposit({isShow: true})
         },
         exchangeInfoLoaded: exchangeInfo ? true : false,

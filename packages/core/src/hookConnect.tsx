@@ -28,6 +28,7 @@ import {
   NetworkMap,
   SagaStatus,
   SoursURL,
+  SPECIAL_ACTIVATION_NETWORKS,
   ThemeType,
   UIERROR_CODE,
 } from '@loopring-web/common-resources'
@@ -486,8 +487,7 @@ export const ViewAccountTemplate = React.memo(
     const { app } = useSystem()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
 
-    const isTaikoEarn =
-      [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork) && app === 'earn'
+    const isSpecialActivation = app === 'earn' && SPECIAL_ACTIVATION_NETWORKS.includes(defaultNetwork)
 
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
@@ -546,7 +546,7 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
+              maxWidth={isSpecialActivation ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
               <Typography
@@ -555,7 +555,7 @@ export const ViewAccountTemplate = React.memo(
                 whiteSpace={'pre-line'}
                 textAlign={'center'}
               >
-                {isTaikoEarn
+                {isSpecialActivation
                   ? t('labelEarnDepositDes')
                   : t('describeTitleNoAccount', {
                       layer2: L1L2_NAME_DEFINED[network].layer2,
@@ -576,10 +576,10 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
+              maxWidth={isSpecialActivation ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
-              {isTaikoEarn ? (
+              {isSpecialActivation ? (
                 <>
                   <DoneIcon
                     style={{ color: 'var(--color-success)', width: '64px', height: '64px' }}
@@ -613,7 +613,7 @@ export const ViewAccountTemplate = React.memo(
               justifyContent={'center'}
               flexDirection={'column'}
               alignItems={'center'}
-              maxWidth={isTaikoEarn ? 'calc(800px)' : 'calc(1200px - 32px)'}
+              maxWidth={isSpecialActivation ? 'calc(800px)' : 'calc(1200px - 32px)'}
               alignSelf={'center'}
             >
               <img
@@ -623,7 +623,7 @@ export const ViewAccountTemplate = React.memo(
                 src={`${SoursURL}images/loading-line.gif`}
               />
               <Typography marginY={3} variant={isMobile ? 'h4' : 'h1'} textAlign={'center'}>
-                {isTaikoEarn
+                {isSpecialActivation
                   ? t('labelEarnDepositDes')
                   : t('describeTitleOpenAccounting', {
                       l1ChainName: L1L2_NAME_DEFINED[network].l1ChainName,
@@ -657,7 +657,7 @@ export const ViewAccountTemplate = React.memo(
         default:
           break
       }
-    }, [account.readyState, account.connectName, isMobile, t, activeViewTemplate, isTaikoEarn])
+    }, [account.readyState, account.connectName, isMobile, t, activeViewTemplate, isSpecialActivation])
 
     return (
       <>

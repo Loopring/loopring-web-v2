@@ -1,5 +1,5 @@
 import { withTranslation } from 'react-i18next'
-import { accountStaticCallBack, btnClickMap, btnLabel, LoopringAPI, useAccount, useSystem, useUpdateAccount } from '../index'
+import { accountStaticCallBack, btnClickMap, btnLabel, LoopringAPI, store, useAccount, useSystem, useUpdateAccount } from '../index'
 import {
   Button,
   useSettings,
@@ -78,7 +78,8 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
           chainId: defaultNetwork,
           isEarn: app === 'earn',
           readyState: account.readyState,
-          taikoEarnActivation: async () => {
+          specialActivation: async () => {
+            const {account} = store.getState()
             const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
               accountId: account._accountIdNotActive,
             })
@@ -103,7 +104,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
               },
             })
           },
-          taikoEarnDeposit: async () => {
+          specialActivationDeposit: async () => {
             setShowDeposit({isShow: true})
           },
           exchangeInfoLoaded: exchangeInfo ? true : false

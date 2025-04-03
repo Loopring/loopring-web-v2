@@ -340,7 +340,7 @@ export const AssetPage = () => {
             {isMobile ? (
               <Box mt={1}>{<WalletConnectL2Btn width='120px' size={'medium'} />}</Box>
             ) : (
-              <Box>{<WalletConnectL2Btn width='180px' size={'large'} />}</Box>
+              <Box>{<WalletConnectL2Btn width='250px' size={'large'} />}</Box>
             )}
             {!isMobile && <Box width={'30%'} />}
           </Box>

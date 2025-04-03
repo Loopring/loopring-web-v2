@@ -2,6 +2,7 @@ import {
   AccountStatus,
   FeeInfo,
   SagaStatus,
+  SPECIAL_ACTIVATION_NETWORKS,
   UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
@@ -133,8 +134,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
 
   const { app } = useSystem()
   const { defaultNetwork } = useSettings()
-  const isTaikoEarn =
-      [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork) && app === 'earn'
+  const isSpecialActivation = app === 'earn' && SPECIAL_ACTIVATION_NETWORKS.includes(defaultNetwork)
 
   const checkActiveStatusProps: CheckActiveStatusProps<C> = {
     know,
@@ -145,7 +145,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     account: { ...account, isContract: isAddressContract },
     chargeFeeTokenList,
     goSend: () => {
-      if (isTaikoEarn) {
+      if (isSpecialActivation) {
         setShowAccount({ isShow: false })
         setShowDeposit({ isShow: true })
       } else {
