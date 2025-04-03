@@ -362,7 +362,7 @@ export const marketInitCheck = ({
     }
     if (type === 'sell' && coinB !== '#null') {
       if (!tokenMap[coinA]?.tradePairs?.includes(coinB as never)) {
-        coinB = tokenMap[coinA].tradePairs ? tokenMap[coinA].tradePairs[0] : undefined
+        coinB = tokenMap[coinA]?.tradePairs ? tokenMap[coinA]?.tradePairs[0] : undefined
       }
     } else if (coinB === '#null' || coinA === '#null') {
       if (
