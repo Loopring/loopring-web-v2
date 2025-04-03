@@ -125,8 +125,8 @@ export const useBtradeSwap = <
   //High: No not Move!!!!!!
   const { realMarket } = usePairMatch({
     path,
-    coinA: 'LRC',
-    coinB: 'USDT',
+    coinA: 'ETH',
+    coinB: 'USDC',
     marketArray,
     tokenMap: tradeMap,
   })
@@ -169,7 +169,7 @@ export const useBtradeSwap = <
     const { tradePair } = marketInitCheck({
       market: _market,
       type,
-      defaultValue: 'LRC-USDC',
+      defaultValue: 'ETH-USDC',
       marketArray,
       marketMap,
       tokenMap: tradeMap,
@@ -276,6 +276,11 @@ export const useBtradeSwap = <
   React.useEffect(() => {
     resetMarket(realMarket ?? '#null-#null', 'sell')
   }, [])
+  React.useEffect(() => {
+    if (marketArray?.[0]) {
+      resetMarket(marketArray[0] as MarketType, 'sell')
+    }
+  }, [marketArray?.[0]])
   const [isBtradeLoading, setIsBtradeLoading] = React.useState(false)
 
   const { tokenPrices } = useTokenPrices()
