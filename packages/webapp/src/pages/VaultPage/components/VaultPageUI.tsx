@@ -5,6 +5,7 @@ import {
   Button as LoopringButton,
   ConfirmVaultRisk,
   EmptyDefault,
+  useSettings,
 } from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from '../components/DashBoardPanel'
 import { VaultHomePanel } from '../HomePanel'
@@ -13,7 +14,6 @@ import { useTranslation } from 'react-i18next'
 
 
 export interface VaultPageUIProps {
-  isMobile: boolean
   tabIndex: VaultKey
   error: boolean
   showLeverage: { show: boolean; closeAfterChange: boolean }
@@ -30,7 +30,6 @@ export interface VaultPageUIProps {
 }
 
 export const VaultPageUI: React.FC<VaultPageUIProps> = ({
-  isMobile,
   tabIndex,
   error,
   showLeverage,
@@ -46,6 +45,7 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
   getVaultMap,
 }) => {
   const { t } = useTranslation()
+  const { isMobile } = useSettings()
 
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
