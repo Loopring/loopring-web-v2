@@ -247,7 +247,7 @@ export const AssetPage = () => {
             <CloseIcon
               className='custom-size'
               sx={{
-                color: 'var(--color-white)',
+                color: 'var(--color-text-primary)',
                 position: 'absolute',
                 top: 8,
                 right: 8,
