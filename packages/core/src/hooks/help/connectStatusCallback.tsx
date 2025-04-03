@@ -5,7 +5,7 @@ import {
   setShowWrongNetworkGuide,
   WalletConnectStep,
 } from '@loopring-web/component-lib'
-import { Account, AccountStatus, fnType, myLog } from '@loopring-web/common-resources'
+import { Account, AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
 import { accountReducer, LoopringAPI, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
 import _ from 'lodash'
 import { connectProvides } from '@loopring-web/web3-provider'
@@ -25,8 +25,8 @@ export const accountStaticCallBack = (
   }
 }
 const activeBtnLabelFn = function (options?: {chainId: ChainId, isEarn: boolean, readyState: AccountStatus}) {
-  if (options && options.isEarn && [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId) 
-  ) {
+  const isSpecialActivation = options?.isEarn && SPECIAL_ACTIVATION_NETWORKS.includes(options.chainId)
+  if (isSpecialActivation) {
     return options?.readyState === AccountStatus.NOT_ACTIVE ? 'Complete Sign in' : 'labelDeposit'
   } else {
     return 'labelDepositAndActiveBtn'
@@ -63,19 +63,15 @@ export const goActiveAccount = async (options?: {
   chainId: ChainId
   isEarn: boolean
   readyState: AccountStatus
-  taikoEarnActivation: () => Promise<void>
-  taikoEarnDeposit: () => Promise<void>
+  specialActivation: () => Promise<void>
+  specialActivationDeposit: () => Promise<void>
 }) => {
-  // accountServices.sendCheckAcc();
-  if (
-    options &&
-    options.isEarn &&
-    [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(options.chainId)
-  ) {
+  const isSpecialActivation = options?.isEarn && SPECIAL_ACTIVATION_NETWORKS.includes(options.chainId)
+  if (isSpecialActivation) {
     if (options.readyState === AccountStatus.NOT_ACTIVE) {
-      return options.taikoEarnActivation()
+      return options.specialActivation()
     } else {
-      return options.taikoEarnDeposit()
+      return options.specialActivationDeposit()
     }
   } else {
     store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))

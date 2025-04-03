@@ -6,6 +6,7 @@ import {
   L1L2_NAME_DEFINED,
   LinkIcon,
   MapChainId,
+  SPECIAL_ACTIVATION_NETWORKS,
 } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
 import { ChainId } from '@loopring-web/loopring-sdk'
@@ -42,12 +43,12 @@ export const Deposit_WaitForAuth = (props: PanelProps) => {
   const { defaultNetwork } = useSettings()
   const { app } = useSystem()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const isTaikoEarn = app === 'earn' && [ChainId.TAIKO, ChainId.TAIKOHEKLA].includes(defaultNetwork)
+  const isSpecialActivation = app === 'earn' && SPECIAL_ACTIVATION_NETWORKS.includes(defaultNetwork)
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: (
       <Typography variant='h5' width={'400px'}>
-        {isTaikoEarn
+        {isSpecialActivation
           ? props.t('labelL1toL2WaitForAuthTaikoEarn', {
               loopringL2: L1L2_NAME_DEFINED[network].loopringL2,
               symbol: props.symbol,
