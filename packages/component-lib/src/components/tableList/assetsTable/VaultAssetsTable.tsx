@@ -242,7 +242,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           let tokenIcon: [any, any] = [coinJson[symbol], undefined]
           return (
             <>
-              <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+              <CoinIcons type={TokenType.single} tokenIcon={tokenIcon} />
               <Typography
                 variant={'inherit'}
                 color={'textPrimary'}
@@ -360,7 +360,7 @@ export const VaultAssetsTable = withTranslation('tables')(
           let tokenIcon: [any, any] = [coinJson[symbol], undefined]
           return (
             <>
-              <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+              <CoinIcons type={TokenType.single} tokenIcon={tokenIcon} />
               <Typography
                 variant={'inherit'}
                 color={'textPrimary'}
@@ -451,7 +451,7 @@ export const VaultAssetsTable = withTranslation('tables')(
               >
                 <Box display='flex' justifyContent='space-between' alignItems='center' mb={1}>
                   <Box display='flex' alignItems='center'>
-                    <CoinIcons type={row?.token?.type} tokenIcon={tokenIcon} />
+                    <CoinIcons type={TokenType.single} tokenIcon={tokenIcon} />
                     <Typography variant='body1' ml={1}>
                       {row.token.belongAlice ?? row.token.value}
                     </Typography>

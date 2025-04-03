@@ -210,7 +210,7 @@ export const CoinItem = React.memo(
         >
           <ListItemIcon>
             <CoinIcon
-              type={tokenType}
+              type={TokenType.single}
               tokenImageKey={tokenType == TokenType.vault ? erc20Symbol ?? simpleName : undefined}
               symbol={simpleName}
               size={24}

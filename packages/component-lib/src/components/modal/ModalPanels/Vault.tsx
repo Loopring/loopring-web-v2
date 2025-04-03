@@ -119,7 +119,7 @@ const TradeDes2 = (props: PanelProps) => {
           >
             <CoinIcons
               size='small'
-              type={TokenType.vault}
+              type={TokenType.single}
               tokenIcon={[coinJson[sellSymbol], undefined]}
             />{' '}
             {placedAmount}
@@ -156,7 +156,7 @@ const TradeDes2 = (props: PanelProps) => {
             {executedAmount !== EmptyValueTag && (
               <CoinIcons
                 size='small'
-                type={TokenType.vault}
+                type={TokenType.single}
                 tokenIcon={[coinJson[sellSymbol], undefined]}
               />
             )}{' '}
@@ -207,7 +207,7 @@ const TradeDes2 = (props: PanelProps) => {
             {convertedAmount !== EmptyValueTag && (
               <CoinIcons
                 size='small'
-                type={TokenType.vault}
+                type={TokenType.single}
                 tokenIcon={[coinJson[buySymbol], undefined]}
               />
             )}{' '}
@@ -248,7 +248,7 @@ const TradeDes2 = (props: PanelProps) => {
               <>
                 <CoinIcons
                   size='small'
-                  type={TokenType.vault}
+                  type={TokenType.single}
                   tokenIcon={[coinJson[buySymbol], undefined]}
                 />
                 {amountFee + ' ' + buySymbol}
@@ -789,7 +789,7 @@ export const BorrowDes2 = (
           >
             <CoinIcons
               size='small'
-              type={TokenType.vault}
+              type={TokenType.single}
               tokenIcon={[coinJson[symbol], undefined]}
             />
             {sum + ' ' + symbol}
@@ -943,7 +943,7 @@ export const RepayDes2 = (
           >
             <CoinIcons
               size='small'
-              type={TokenType.vault}
+              type={TokenType.single}
               tokenIcon={[coinJson[symbol!], undefined]}
             />
             {sum + ' ' + symbol}
@@ -1082,7 +1082,7 @@ const DustCollectorDes = (
                 key={dust.symbol}
                 leftNode={
                   <Box alignItems={'center'} display={'flex'}>
-                    <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
+                    <CoinIcons type={TokenType.single} tokenIcon={[dust.coinJSON]} />
                     <Typography marginLeft={1}>{dust.symbol}</Typography>
                   </Box>
                 }
