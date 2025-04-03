@@ -89,7 +89,7 @@ const BgButton = styled(Button)<{ customBg: string }>`
   
 `
 
-
+const zeroTag = '0.0'
 const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   t,
   forexMap,
@@ -243,7 +243,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
           )}
         </Box>
         <Typography mt={1} variant='h2'>
-          {vaultAccountActive ? (hideAssets ? HiddenTag : totalEquity) : EmptyValueTag}
+          {vaultAccountActive ? (hideAssets ? HiddenTag : totalEquity) : zeroTag}
         </Typography>
 
         <Box mt={isMobile ? 2 : 4} display={'flex'} flexWrap={'wrap'} flexDirection={'row'}>
@@ -273,7 +273,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       false,
                       { isFait: true, floor: true },
                     )
-                : EmptyValueTag}
+                : zeroTag}
               {vaultAccountActive && (
                 <Typography
                   sx={{ cursor: 'pointer' }}
@@ -353,7 +353,17 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 
             {(() => {
               if (!vaultAccountActive) {
-                return <Typography>{EmptyValueTag}</Typography>
+                return (
+                  <Typography
+                      component={'span'}
+                      display={'inline-flex'}
+                      alignItems={'center'}
+                      marginTop={1}
+                      sx={{ fontSize: '20px', marginRight: 1 / 2 }}
+                    >
+                    {zeroTag}
+                  </Typography>
+                )
               }
               const item = vaultAccountInfo?.marginLevel ?? '0'
               return (
@@ -380,9 +390,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       alignItems={'center'}
                       marginTop={1}
-                      variant={'body1'}
-                      fontSize={'16px'}
-                      color={'textSecondary'}
+                      sx={{ fontSize: '20px', marginRight: 1 / 2 }}
                     >
                       <MarginLevelIcon
                         className='custom-size'
@@ -429,7 +437,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       false,
                       { isFait: true, floor: true },
                     )
-                : EmptyValueTag}
+                : zeroTag}
               {vaultAccountActive && (
                 <Typography
                   sx={{ cursor: 'pointer' }}
@@ -526,7 +534,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         </Typography>
                       </Box>
                     ) : (
-                      EmptyValueTag
+                      zeroTag
                     )}
                   </>
                 )
@@ -581,7 +589,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                       currency,
                     )
-                  : EmptyValueTag}
+                  : zeroTag}
               </Typography>
             </Box>
           )}
@@ -613,7 +621,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
               fontSize={'20px'}
               alignItems={'center'}
             >
-              {vaultAccountActive ? liquidationThreshold : EmptyValueTag}
+              {vaultAccountActive ? liquidationThreshold : zeroTag}
             </Typography>
           </Box>
           <Box sx={boxSx} position={'relative'}>
@@ -643,7 +651,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
               fontSize={'20px'}
               alignItems={'center'}
             >
-              {vaultAccountActive ? liquidationPenalty : EmptyValueTag}
+              {vaultAccountActive ? liquidationPenalty : zeroTag}
             </Typography>
           </Box>
         </Box>
