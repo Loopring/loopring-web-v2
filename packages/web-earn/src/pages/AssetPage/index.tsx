@@ -229,7 +229,7 @@ export const AssetPage = () => {
         <MaxWidthContainer>
           <Box
             sx={{
-              backgroundImage: `url(${SoursURL + 'earn/assets_banner.png'})`,
+              backgroundImage: `url(${SoursURL}earn/assets_banner_title2_${theme.mode === 'dark' ? 'dark' : 'light'}${isMobile ? '_mobile' : ''}.png)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
@@ -241,6 +241,7 @@ export const AssetPage = () => {
               flexDirection: 'column',
               position: 'relative',
               mt: isMobile ? 6 : 4,
+              borderRadius: '12px',
             }}
           >
             <CloseIcon
@@ -257,12 +258,12 @@ export const AssetPage = () => {
                 setShowTaikoLaunchBanner2(false)
               }}
             />
-            <Box
+            {/* <Box
               height={isMobile ? '28px' : '32px'}
               component={'img'}
-              src={SoursURL + 'earn/assets_banner_title.png'}
-            />
-            {isMobile ? (
+              src={`${SoursURL}earn/assets_banner_title2_${theme.mode === 'dark' ? 'dark' : 'light'}.png`}
+            /> */}
+            {/* {isMobile ? (
               <Typography
                 mt={1.5}
                 textAlign={'center'}
@@ -282,7 +283,7 @@ export const AssetPage = () => {
                 <br />
                 {t('labelLoopringDeFiIs22')}
               </Typography>
-            )}
+            )} */}
           </Box>
         </MaxWidthContainer>
       )}
