@@ -2203,7 +2203,7 @@ export default {
   labelTitleVaultDes:
     'Loopring Portal can be treated as an isolated margin account allowing users to borrow/lend tokens with collateral. Other than leveraged trading, it also allows users to trade hot tokens that are not available in Loopring DEX with CEX liquidity.',
   labelTitleVault: 'Portal',
-  labelVaultHomeTitle: 'Home',
+  labelVaultHomeTitle: 'Dashboard',
   labelVaultDashboardTitle: 'Dashboard',
   labelVaultTotalBalance: 'Total Balance',
   labelVaultOpenDate: 'Open Date:',

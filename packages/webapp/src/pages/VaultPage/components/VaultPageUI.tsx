@@ -71,27 +71,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
             onChange={handleTabChange}
           >
             <Tab
-              value={VaultKey.VAULT_HOME}
-              label={
-                <Typography display={'inline-flex'} alignItems={'center'}>
-                  <Typography
-                    component={'span'}
-                    variant={'h5'}
-                    whiteSpace={'pre'}
-                    marginRight={1}
-                    className={'invest-Balance-Title'}
-                    color={
-                      tabIndex === VaultKey.VAULT_HOME
-                        ? 'var(--color-text-primary)'
-                        : 'var(--color-text-secondary)'
-                    }
-                  >
-                    {t('labelVaultMarketTitle')}
-                  </Typography>
-                </Typography>
-              }
-            />
-            <Tab
               value={VaultKey.VAULT_DASHBOARD}
               label={
                 <Typography display={'inline-flex'} alignItems={'center'}>
@@ -108,6 +87,27 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     }
                   >
                     {t('labelVaultHomeTitle')}
+                  </Typography>
+                </Typography>
+              }
+            />
+            <Tab
+              value={VaultKey.VAULT_HOME}
+              label={
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Typography
+                    component={'span'}
+                    variant={'h5'}
+                    whiteSpace={'pre'}
+                    marginRight={1}
+                    className={'invest-Balance-Title'}
+                    color={
+                      tabIndex === VaultKey.VAULT_HOME
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-secondary)'
+                    }
+                  >
+                    {t('labelVaultMarketTitle')}
                   </Typography>
                 </Typography>
               }
