@@ -7,7 +7,7 @@ import { VaultAssetFilter } from './components/Filter'
 import { TablePaddingX } from '../../styled'
 import { BrushIcon, hexToRGB, HiddenTag, MarginLevelIcon, RowConfig, TokenType } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
-import { CoinIconsNew } from './components/CoinIcons'
+import { CoinIcons, CoinIconsNew } from './components/CoinIcons'
 import _ from 'lodash'
 import { Button } from '@mui/material'
 import { useTheme } from '@emotion/react'
@@ -109,13 +109,13 @@ export const VaultPositionsTable = withTranslation('tables')(
         formatter: ({ row }) => {
           return (
             <Box height={'100%'} display={'flex'} alignItems={'center'}>
-              <CoinIconsNew secondLogoType={'subscript'} tokenIcon={row.tokenPair.coinJson} />
+              <CoinIcons type={TokenType.single} tokenIcon={[row.tokenPair.coinJson?.[0]]} />
 
               <Typography
                 variant={'inherit'}
                 color={'var(--color-text-primary)'}
                 flexDirection={'column'}
-                marginLeft={-2.5}
+                marginLeft={1}
                 component={'span'}
                 paddingRight={1}
                 width={'80px'}

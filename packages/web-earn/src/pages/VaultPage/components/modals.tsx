@@ -529,7 +529,7 @@ export const DebtModal = (props: DebtModalProps) => {
                   onClick={token.onClick}
                   leftNode={
                     <Box display={'flex'} alignItems={'center'}>
-                      <CoinIcons type={TokenType.vault} tokenIcon={[token.coinJSON]} />
+                      <CoinIcons type={TokenType.single} tokenIcon={[token.coinJSON]} />
                       <Typography marginLeft={1}>{token.symbol}</Typography>
                     </Box>
                   }
@@ -640,7 +640,7 @@ export const DustCollectorModal = (props: DustCollectorProps) => {
                         color='default'
                         onChange={dust.onCheck}
                       />
-                      <CoinIcons type={TokenType.vault} tokenIcon={[dust.coinJSON]} />
+                      <CoinIcons type={TokenType.single} tokenIcon={[dust.coinJSON]} />
                       <Typography sx={{ marginLeft: 1 }}>{dust.symbol}</Typography>
                     </Box>
                   }
