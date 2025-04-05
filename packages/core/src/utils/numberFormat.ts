@@ -27,8 +27,13 @@ export const numberFormat = (number: string | number, format?: {
     ? numberStr4.replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, '$1,')
     : numberStr4
   const suffix = format?.showInPercent ? '%' : format?.tokenSymbol ? ' ' + format.tokenSymbol : ''
-  const prefix = format?.currency ? PriceTag[CurrencyToTag[format.currency]] : ''
-  return `${prefix}${numberStr5}${suffix}`
+  const currencySymbol = format?.currency ? PriceTag[CurrencyToTag[format.currency]] : ''
+
+  if (numberStr5.startsWith('-')) {
+    return `-${currencySymbol}${numberStr5.substring(1)}${suffix}`
+  } else {
+    return `${currencySymbol}${numberStr5}${suffix}`
+  }
 }
 
 export const numberFormatThousandthPlace = (number: string | number, format?: {
