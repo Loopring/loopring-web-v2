@@ -21,7 +21,6 @@ const chains = [
     name: 'Ethereum',
     currency: 'ETH',
     explorerUrl: 'https://etherscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_1!,
   },
   {
     chainId: 167000,
