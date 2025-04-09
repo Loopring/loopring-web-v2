@@ -523,9 +523,6 @@ export const DebtModal = (props: DebtModalProps) => {
                   borderRadius={'8px'}
                   border={'1px solid var(--color-border)'}
                   alignItems={'center'}
-                  sx={{
-                    cursor: 'pointer'
-                  }}
                   onClick={token.onClick}
                   leftNode={
                     <Box display={'flex'} alignItems={'center'}>
@@ -545,7 +542,6 @@ export const DebtModal = (props: DebtModalProps) => {
                           {token.valueInCurrency}
                         </Typography>
                       </Box>
-                      <ArrowForwardIosIcon sx={{ color: 'var(--color-text-primary)' }} />
                     </Box>
                   }
                 />
