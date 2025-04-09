@@ -183,7 +183,6 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     ? parseRabbitConfig2(fastWithdrawConfig, fromNetwork, idIndex)
     : undefined
   
-  console.log('asjdhjashdjsa', parsed)
   const transferTokenList = parsed?.toOtherNetworks[0]?.supportedTokens || []
 
   // const toTaikoNetwork = parsed?.toOtherNetworks[0].network

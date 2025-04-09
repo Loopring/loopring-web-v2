@@ -164,7 +164,7 @@ export const VaultRepayWrap = <
             <CoinIcon
               tokenImageKey={(vaultRepayData as any).erc20Symbol}
               symbol={vaultRepayData.belong}
-              type={TokenType.single}
+              type={TokenType.vault}
             />
             <Typography component={'p'} variant='body2' color={'textPrimary'}>
               {getValuePrecisionThousand(
@@ -199,7 +199,7 @@ export const VaultRepayWrap = <
             <CoinIcon
               tokenImageKey={(vaultRepayData as any).erc20Symbol}
               symbol={vaultRepayData.belong}
-              type={TokenType.single}
+              type={TokenType.vault}
             />
             <Typography component={'p'} variant='body2' color={'textPrimary'}>
               {getValuePrecisionThousand(
