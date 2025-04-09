@@ -362,12 +362,12 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           return undefined
         }
       })
-      .filter(token => {
+      .filter((token) => {
+        const tokenInfo: sdk.VaultToken = tokenMap[token.name] 
         if (
           _.values(marketMap).every(
-            (market) => market.baseTokenId !== tokenMap['LVUSDC']?.tokenId && market.quoteTokenId !== tokenMap['LVUSDC']?.tokenId,
-          ) &&
-          token.symbol === 'LVUSDC'
+            (market) => market.baseTokenId !== tokenInfo.vaultTokenId && market.quoteTokenId !== tokenInfo.vaultTokenId,
+          )
         ) {
           return false
         }
