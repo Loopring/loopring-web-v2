@@ -183,7 +183,7 @@ export const VaultBorrowWrap = <
               <CoinIcon
                 tokenImageKey={vaultBorrowData.erc20Symbol}
                 symbol={vaultBorrowData.belong}
-                type={TokenType.single}
+                type={TokenType.vault}
               />
             ) : undefined}
             <Typography marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
