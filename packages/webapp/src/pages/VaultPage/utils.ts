@@ -370,7 +370,7 @@ const checkIsDust = async (symbol: string) => {
   const slippageReal = slippage === 'N' ? 0.1 : slippage
   const output = sdk.calcDex({
     info: marketInfo,
-    input: utils.formatUnits(new Decimal(vaultAsset.netAsset).abs().toString(), sellToken.decimals),
+    input: utils.formatUnits(BigNumber.from(vaultAsset.netAsset).abs().toString(), sellToken.decimals),
     sell: sellToken.symbol,
     buy: buyToken.symbol,
     isAtoB: true,
