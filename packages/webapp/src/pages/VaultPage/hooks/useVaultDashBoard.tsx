@@ -367,7 +367,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
           _.values(marketMap).every(
             (market) => market.baseTokenId !== tokenMap['LVUSDC']?.tokenId && market.quoteTokenId !== tokenMap['LVUSDC']?.tokenId,
           ) &&
-          token.symbol === 'LVUSDC'
+          token.name === 'LVUSDC'
         ) {
           return false
         }
