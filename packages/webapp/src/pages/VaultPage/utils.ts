@@ -1,4 +1,4 @@
-import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND, VaultLayer2Map } from "@loopring-web/core"
+import { DAYS, getTimestampDaysLater, LoopringAPI, NETWORKEXTEND, VaultLayer2Map, withRetry } from "@loopring-web/core"
 import { ChainId, ConnectorNames, toBig, VaultToken } from "@loopring-web/loopring-sdk"
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider"
 
@@ -282,7 +282,7 @@ const closeLong = async (symbol: string, depth: sdk.DepthData) => {
   const market = `${symbol}-LVUSDT`
   const marketInfo = marketMap[market] as sdk.VaultMarket
 
-  const slippageReal = slippage === 'N' ? 0.1 : slippage
+  const slippageReal = Math.max(1, slippage === 'N' ? 1 : slippage)
   
   const sellAmountBN = bignumberFix(
     BigNumber.from(vaultAsset.total).abs(),
@@ -403,7 +403,7 @@ const closePosition = async (symbol: string) => {
     if (isDust) {
       response = await closeLongDust(symbol)
     } else {
-      response = await closeLong(symbol, depth!)
+      response = await withRetry(closeLong, 2)(symbol, depth!)
     }
   }
 
