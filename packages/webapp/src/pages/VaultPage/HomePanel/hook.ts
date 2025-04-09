@@ -14,6 +14,7 @@ import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring
 import { useHistory } from 'react-router-dom'
 import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
+import _ from 'lodash'
 
 export const useVaultMarket = <
   R extends TickerNew & { cmcTokenId: number; isFavorite: boolean },
@@ -27,7 +28,7 @@ export const useVaultMarket = <
 }) => {
   let history = useHistory()
   const { tokenMap } = useTokenMap()
-  const { tokenMap: vaultTokenMap } = useVaultMap()
+  const { tokenMap: vaultTokenMap, marketMap: vaultMarketMap } = useVaultMap()
 
   const [detail, setShowDetail] = React.useState<{
     isShow: boolean
@@ -165,13 +166,29 @@ export const useVaultMarket = <
     },
     [history],
   )
-  const marketProps = useMarket<R, T>({
+  const _marketProps = useMarket<R, T>({
     tableRef,
     handleItemClick: handleRowClick,
     handleRowClick,
     tickerMap: vaultTickerMap as any,
     tokenMap: vaultTokenMap,
   })
+  const marketProps = {
+    ..._marketProps,
+    rawData: _marketProps.rawData.filter((item) => {
+      if (
+        _.values(vaultMarketMap).every(
+          (market) =>
+            market.baseTokenId !== vaultTokenMap['LVUSDC']?.tokenId &&
+            market.quoteTokenId !== vaultTokenMap['LVUSDC']?.tokenId,
+        ) &&
+        item.symbol === 'LVUSDC'
+      ) {
+        return false
+      }
+      return true
+    }),
+  }
   const autoReCalc = React.useCallback(() => {
     updateVaultTickers()
     if (autoRefresh.current !== -1) {
