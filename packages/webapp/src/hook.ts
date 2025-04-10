@@ -30,7 +30,7 @@ import {
 import { useAccountInit } from './hookAccountInit'
 import { useSettings } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import {  useAppKitAccount } from '@reown/appkit/react'
 
 /**
  * @description
@@ -86,7 +86,7 @@ export function useInit() {
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
   const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
   const { status: vaultStatus, statusUnset: vaultStatusUnset } = useVaultMap()
-  const { chainId } =  useWeb3ModalAccount()
+  const { chainId } =  useAppKitAccount()
   React.useEffect(() => {
     ConnectProvides.walletConnectClientMeta = {
       ...ConnectProvides.walletConnectClientMeta,

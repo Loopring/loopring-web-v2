@@ -69,6 +69,14 @@ module.exports = function ({env}) {
                     }),
                 ],
             },
+            devServer: {
+              client: {
+                overlay: {
+                  errors: false, // 禁用错误提示
+                  warnings: false, // 可选：禁用警告提示
+                },
+              },
+            },
             configure: (config, {env, paths}) => {
                 const dev = env === 'development'
                 const prod = env === 'production'

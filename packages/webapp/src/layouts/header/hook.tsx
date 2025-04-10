@@ -29,7 +29,7 @@ import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-we
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { useAppKit } from '@reown/appkit/react'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
@@ -38,7 +38,7 @@ export const useHeader = () => {
   const { setShowAccount } = useOpenModals()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const profile = ProfileIndex[network]
-  const modal = useWeb3Modal()
+  const modal = useAppKit()
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [

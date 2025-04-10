@@ -59,7 +59,7 @@ import { addressToExWalletMapFn, exWalletToAddressMapFn } from '@loopring-web/co
 import { useGetSet } from 'react-use'
 import { ethers } from 'ethers'
 import Decimal from 'decimal.js'
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 
 const offchainFeeInfoToFeeInfo = (offchainFeeInfo: sdk.OffchainFeeInfo, tokenMap: TokenMap<{
   [key: string]: any;
@@ -652,7 +652,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     ],
   )
 
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useAppKitProvider('eip155')
 
   const handleWithdraw = React.useCallback(
     async (inputValue: any, address, isFirstTime: boolean = true) => {

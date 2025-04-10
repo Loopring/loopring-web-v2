@@ -61,7 +61,7 @@ import { useTokenPrices, useTradeStake, useVaultLayer2, useWalletLayer2, WalletL
 import Decimal from 'decimal.js'
 import { BigNumber, Contract, ethers, providers, utils } from 'ethers'
 import moment from 'moment'
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 import { useDispatch } from 'react-redux'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { mapObject } from 'react-financial-charts'
@@ -476,7 +476,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     setToastOpen,
     t,
   ])
-  const provider = useWeb3ModalProvider()
+  const provider = useAppKitProvider('eip155')
   const [daysInput, setDaysInput] = React.useState('')
   const [txSubmitModalState, setTxSubmitModalState] = React.useState({
     open: false,
@@ -1246,7 +1246,7 @@ export const useTaikoLock = <T extends IBData<I>, I>({
     : ''
     
   }
-  const { walletProvider } = useWeb3ModalProvider()
+  const { walletProvider } = useAppKitProvider('eip155')
   const { checkHWAddr} = useWalletInfo()
   const accountReadyStateCheck = async (activatedCallBack: () => void) => {
     if (account.readyState === AccountStatus.ACTIVATED) {
