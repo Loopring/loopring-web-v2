@@ -16,49 +16,7 @@ import { mainnet, sepolia, base, baseSepolia, taiko, taikoHekla } from "@reown/a
 
 import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-  },
-  {
-    chainId: 167000,
-    name: 'Taiko',
-    currency: 'ETH',
-    explorerUrl: 'https://taikoscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_167000!,
-  },
-  {
-    chainId: 11155111,
-    name: 'Sepolia',
-    currency: 'ETH',
-    explorerUrl: 'https://sepolia.etherscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_11155111!,
-  },
-  {
-    chainId: 167009,
-    name: 'Taiko Hekla',
-    currency: 'ETH',
-    explorerUrl: 'https://hekla.taikoscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_167009!,
-  },
-  {
-    chainId: 8453,
-    name: 'Base',
-    currency: 'ETH',
-    explorerUrl: 'https://basescan.org',
-    rpcUrl: process.env.REACT_APP_RPC_URL_8453!,
-  },
-  {
-    chainId: 84532,
-    name: 'Base Sepolia',
-    currency: 'ETH',
-    explorerUrl: 'https://sepolia.basescan.org',
-    rpcUrl: process.env.REACT_APP_RPC_URL_84532!,
-  },
-]
+
 const networks = [mainnet, sepolia, base, baseSepolia, taiko, taikoHekla]
 
 const metadata = {
@@ -75,8 +33,12 @@ export const web3Modal = createAppKit({
   networks: networks,
   // .filter(network => chainIds.includes(network.id)),
   projectId,
+  chainImages: {
+    167000: `${SoursURL}earn/taiko.svg`,
+  },
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration
+    
   },
 });
 
