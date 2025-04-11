@@ -9831,7 +9831,7 @@
     "@web3modal/wallet" "4.2.3"
     valtio "1.11.2"
 
-"@web3modal/ethers5@4.2.3":
+"@web3modal/ethers5@^4.1.1":
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/@web3modal/ethers5/-/ethers5-4.2.3.tgz#334b74e84e2959956f821e774fd2fa0f22a7c630"
   integrity sha512-DoOWzWiGi5wCFdNEi8aDrPQSygOhQerrXCsnpL+f3F2UwMzLdldLIMF9Tyyt+zaOc9wsC1mzqXasE1WJ48n/OQ==
@@ -9888,7 +9888,7 @@
     "@web3modal/wallet" "4.2.3"
     lit "3.1.0"
 
-"@web3modal/siwe@4.2.3":
+"@web3modal/siwe@4.2.3", "@web3modal/siwe@^4.1.5":
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/@web3modal/siwe/-/siwe-4.2.3.tgz#57f29a0f2aa75946a30b7623810fe0161dd2f81d"
   integrity sha512-uPma0U/OxAy3LwnF7pCYYX8tn+ONBYNcssuVZxEGsusJD1kF4ueS8lK7eyQogyK5nXqOGdNESOjY1NImNNjMVw==

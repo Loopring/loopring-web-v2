@@ -1,0 +1,1 @@
+export {VaultPage} from './VaultPage'
