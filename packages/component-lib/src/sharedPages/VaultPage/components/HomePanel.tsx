@@ -36,7 +36,7 @@ import {
 } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
 import { useTheme } from '@emotion/react'
-import { useVaultMarket } from './hook'
+import { useVaultMarket } from '../hooks/useVaultMarket'
 import { symbol } from 'prop-types'
 
 export const VaultHomePanel = ({

@@ -71,7 +71,7 @@ import {
   bipsToPercent,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
-import { useVaultMarket } from '../HomePanel/hook'
+import { useVaultMarket } from './useVaultMarket'
 import { useHistory, useLocation, useRouteMatch } from 'react-router'
 import { utils, BigNumber } from 'ethers'
 import Decimal from 'decimal.js'

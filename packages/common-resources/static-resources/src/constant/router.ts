@@ -351,6 +351,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
 export enum VaultKey {
   VAULT_HOME = 'portalHome',
   VAULT_DASHBOARD = 'portalDashboard',
+  VAULT_TRADE = 'portalTrade',
 }
 
 export let vaultItemData: Array<HeaderMenuItemInterface> = [
@@ -371,6 +372,15 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
       icon: VaultHomeIcon,
     },
     router: { path: RouterPath.vault + '' },
+  },
+  {
+    label: {
+      id: VaultKey.VAULT_TRADE,
+      i18nKey: 'labelVaultTradeTabTitle',
+      description: 'labelVaultTradeTabDes', //todo
+      icon: VaultHomeIcon, //todo
+    },
+    router: { path: RouterPath.vault + `/${VaultKey.VAULT_TRADE}` },
   },
 ]
 
