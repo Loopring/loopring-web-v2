@@ -1,1 +1,1 @@
-export {VaultPage} from './VaultPage'
+export {VaultPage, useGetVaultAssets, useVaultMarket} from './VaultPage'
