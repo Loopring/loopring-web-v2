@@ -131,6 +131,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   vaultAccountActive,
   totalEquity,
   showSettleBtn,
+  btnsDisabled,
   onClickBuy,
   onClickSell,
   didAccountSignIn
@@ -193,7 +194,12 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
           alignItems={isMobile ? 'end' : 'center'}
           alignSelf={'flex-end'}
         >
-          <Button onClick={onClickCollateralManagement} sx={{ width: 'auto' }} variant='contained'>
+          <Button
+            disabled={btnsDisabled}
+            onClick={onClickCollateralManagement}
+            sx={{ width: 'auto' }}
+            variant='contained'
+          >
             Collateral Management
           </Button>
           {showSettleBtn && (
@@ -207,6 +213,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 color: theme.mode === 'light' ? 'var(--color-black)' : 'var(--color-white)',
               }}
               variant='contained'
+              disabled={btnsDisabled}
             >
               Settle
             </BgButton>
@@ -355,12 +362,12 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
               if (!vaultAccountActive) {
                 return (
                   <Typography
-                      component={'span'}
-                      display={'inline-flex'}
-                      alignItems={'center'}
-                      marginTop={1}
-                      sx={{ fontSize: '20px', marginRight: 1 / 2 }}
-                    >
+                    component={'span'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                    marginTop={1}
+                    sx={{ fontSize: '20px', marginRight: 1 / 2 }}
+                  >
                     {zeroTag}
                   </Typography>
                 )
@@ -920,7 +927,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
           flex: 1,
         }}
       >
-        {didAccountSignIn ? activeView : inactiveView}
+        {activeView}
+        {/* {didAccountSignIn ? activeView : inactiveView} */}
       </Container>
     </Box>
   )

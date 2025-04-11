@@ -371,7 +371,7 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
       description: 'labelVaultHomeDes',
       icon: VaultHomeIcon,
     },
-    router: { path: RouterPath.vault + '' },
+    router: { path: RouterPath.vault + `/${VaultKey.VAULT_HOME}`  },
   },
   {
     label: {

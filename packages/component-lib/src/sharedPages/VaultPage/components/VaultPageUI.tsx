@@ -8,7 +8,7 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from '../components/DashBoardPanel'
-import { VaultHomePanel } from './HoimePanel'
+import { VaultHomePanel } from './HomePanel'
 import { ModalVaultWrap } from '../components/ModalWrap'
 import { useTranslation } from 'react-i18next'
 import { VaultTradePanel } from '../components/TradePanel'
@@ -79,7 +79,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     component={'span'}
                     variant={'h5'}
                     whiteSpace={'pre'}
-                    marginRight={1}
                     className={'invest-Overview-Title'}
                     color={
                       tabIndex === VaultKey.VAULT_DASHBOARD
@@ -100,7 +99,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     component={'span'}
                     variant={'h5'}
                     whiteSpace={'pre'}
-                    marginRight={1}
                     className={'invest-Balance-Title'}
                     color={
                       tabIndex === VaultKey.VAULT_HOME

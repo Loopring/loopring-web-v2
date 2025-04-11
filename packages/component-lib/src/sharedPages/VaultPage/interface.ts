@@ -54,6 +54,7 @@ export interface VaultDashBoardPanelUIProps {
   vaultAccountActive: boolean
   totalEquity: string
   showSettleBtn: boolean
+  btnsDisabled: boolean
   onClickBuy: (market: any) => void;
   onClickSell: (market: any) => void;
   didAccountSignIn: boolean

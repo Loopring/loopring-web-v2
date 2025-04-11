@@ -123,6 +123,7 @@ export const useSubmitBtn = ({
     onBtnClick,
     btnLabel: _btnLabel,
     btnStyle,
+    isAccountActive: account.readyState === AccountStatus.ACTIVATED,
     // btnClickCallbackArray
   }
 }

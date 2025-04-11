@@ -1,65 +1,48 @@
-import { Box, Container, Typography } from '@mui/material'
-import React from 'react'
-import { VaultAccountInfoStatus } from '@loopring-web/core'
-import { useSettings } from '@loopring-web/component-lib'
-import { useTranslation } from 'react-i18next'
+import { Box, Typography } from '@mui/material'
+import { useVaultSwap } from '../hooks/useVaultSwap'
+import { VaultSwapView } from './VaultSwapView'
+import { CloseIcon } from '@loopring-web/common-resources'
+import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation'
 
-export const VaultTradePanel = ({
-  vaultAccountInfo,
-}: {
-  vaultAccountInfo: VaultAccountInfoStatus
-}) => {
-  const { isMobile } = useSettings()
-  const { t } = useTranslation()
-  
-  // 保留对 vaultAccountInfo 的引用，但通过注释标记将来使用
-  // const _vaultAccountInfo = vaultAccountInfo
+export const VaultTradePanel = () => {
+  const { vaultSwapModalProps } = useVaultSwap()
+  const { confirmation, setShowVaultTradeHint } = useConfirmation()
 
   return (
-    <Box flex={1} display={'flex'} flexDirection={'column'}>
-      <Container 
-        maxWidth='lg'
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
+    <Box display={'flex'} justifyContent={'center'} position='relative' my={5} alignItems={'start'}>
+      <Box
+        sx={{
+          position: 'relative',
+          height: 'auto',
+          borderRadius: '8px',
+          width: '20%',
+          py: 2,
+          px: 3,
+          border: '1px solid var(--color-border)',
+          mr: 3,
+          opacity: confirmation.showVaultTradeHint ? 1 : 0,
         }}
       >
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          justifyContent={'flex-start'}
-          alignItems={'center'}
-          flex={1}
-          marginTop={4}
-        >
-          <Typography variant="h4" component="div" marginBottom={2}>
-            {t('labelVaultTradeTitle')}
-          </Typography>
-          <Typography variant="body1" marginBottom={4}>
-            {t('coming soon')}
-          </Typography>
-          
-          {/* 这里添加交易功能的具体内容 */}
-          <Box
-            bgcolor="var(--color-box-secondary)"
-            borderRadius={2}
-            padding={isMobile ? 2 : 4}
-            width="100%"
-            maxWidth={isMobile ? "100%" : 600}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            <Typography variant={isMobile ? "subtitle1" : "h6"} marginBottom={2}>
-              {t('Trading Interface')}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" textAlign="center">
-              {t('Trade panel is under development. Check back soon for updates.')}
-            </Typography>
-          </Box>
-        </Box>
-      </Container>
+        <Typography>Portal Trade</Typography>
+        <Typography mt={2} color={'var(--color-text-secondary)'}>
+          Loopring Portal functions as an isolated margin account, allowing users to borrow and lend
+          tokens using collateral. It enables leveraged trading and provides access to assets beyond
+          Ethereum.
+        </Typography>
+        <CloseIcon
+          onClick={() => setShowVaultTradeHint(false)}
+          fontSize={'large'}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            cursor: 'pointer',
+            color: 'var(--color-text-secondary)',
+          }}
+        />
+      </Box>
+      <VaultSwapView {...vaultSwapModalProps} />
+      <Box width={'20%'} />
     </Box>
   )
 }

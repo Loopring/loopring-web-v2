@@ -24,8 +24,8 @@ export const useVaultPage = () => {
   const [tabIndex, setTabIndex] = React.useState<VaultKey>(() => {
     return (
       Object.values(VaultKey).find(
-        (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
-      ) ?? VaultKey.VAULT_HOME
+        (item) => item.toLowerCase() === match?.params?.item?.toLowerCase(),
+      ) ?? VaultKey.VAULT_TRADE
     )
   })
 
@@ -52,7 +52,7 @@ export const useVaultPage = () => {
     const item = Object.values(VaultKey).find(
       (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
     )
-    setTabIndex(item ? item : VaultKey.VAULT_DASHBOARD)
+    setTabIndex(item ? item : VaultKey.VAULT_TRADE)
   }, [match?.params?.item])
 
   const handleTabChange = (_e: any, value: VaultKey) => {

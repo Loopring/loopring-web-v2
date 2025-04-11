@@ -1194,6 +1194,7 @@ export const useVaultDashboard = ({
           )
         : EmptyValueTag,
     showSettleBtn: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
+    btnsDisabled: account.readyState !== AccountStatus.ACTIVATED,
     onClickBuy: (detail) => {
       const symbol = detail?.tokenInfo.symbol?.slice(2)
       setShowVaultSwap({
