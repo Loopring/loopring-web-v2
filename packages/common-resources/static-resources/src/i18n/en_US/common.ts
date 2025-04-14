@@ -2557,6 +2557,6 @@ export default {
     'to resolve the issue',
   labelVaultCloseShort: 'Close Short',
   labelVaultTradeTabTitle: 'Trade',
-  labelVaultTradeTabDes: 'Trade',
+  labelVaultTradeTabDes: 'An isolated margin account',
 }
 

@@ -160,5 +160,5 @@ export default {
   labelBtradeTradeDes: 'Swap tokens securely and trustlessly, tapping into CEX liquidity.',
   labelTaikoFarmingDes: 'Farm Trailblazers points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
   labelVaultTradeTabTitle: 'Trade',
-  labelVaultTradeTabDes: 'Trade',
+  labelVaultTradeTabDes: 'An isolated margin account',
 }

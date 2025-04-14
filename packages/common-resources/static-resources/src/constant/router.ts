@@ -1,3 +1,4 @@
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import {
   AssetsIcon,
   ContactIcon,
@@ -24,6 +25,7 @@ import {
   SwapIcon,
   VaultHomeIcon,
   VaultDashboardIcon,
+  VaultTradeIcon2,
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
@@ -377,8 +379,8 @@ export let vaultItemData: Array<HeaderMenuItemInterface> = [
     label: {
       id: VaultKey.VAULT_TRADE,
       i18nKey: 'labelVaultTradeTabTitle',
-      description: 'labelVaultTradeTabDes', //todo
-      icon: VaultHomeIcon, //todo
+      description: 'labelVaultTradeTabDes', 
+      icon: AutorenewIcon, 
     },
     router: { path: RouterPath.vault + `/${VaultKey.VAULT_TRADE}` },
   },

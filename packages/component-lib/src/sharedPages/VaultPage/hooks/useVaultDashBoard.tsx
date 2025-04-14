@@ -117,7 +117,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
     vaultAccountInfo,
     activeInfo,
     onJoinPop,
-    onSwapPop,
+    onGoToSwap,
     onBorrowPop,
     onRedeemPop,
   } = _vaultAccountInfo
@@ -195,7 +195,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
               onBorrowPop({ isShow: true })
               break
             case VaultAction.VaultSwap:
-              onSwapPop({})
+              onGoToSwap({})
               break
           }
         } else if (
@@ -242,7 +242,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
                 onBorrowPop({ isShow: true, symbol: searchParams.get('symbol') })
                 break
               case VaultAction.VaultSwap:
-                onSwapPop({ isShow: true, symbol: searchParams.get('symbol') })
+                onGoToSwap({ symbol: searchParams.get('symbol') })
                 break
             }
             history.replace(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
@@ -423,7 +423,7 @@ export const useGetVaultAssets = <R extends VaultDataAssetsItem>({
       
       if ([sdk.VaultAccountStatus.IN_STAKING].includes(vaultAccountInfo?.accountStatus ?? '')) {
         history.push('/portal/portalDashboard')
-        onSwapPop({ symbol: row?.token?.value })
+        onGoToSwap({ symbol: row?.token?.value })
       } else {
         history.push('/portal')
         setShowNoVaultAccount({
@@ -538,7 +538,7 @@ export const useVaultDashboard = ({
     tokenFactors,
     maxLeverage,
     collateralTokens,
-    onSwapPop,
+    onGoToSwap,
     onJoinPop,
     onRepayPop,
     onRedeemPop,
@@ -618,9 +618,9 @@ export const useVaultDashboard = ({
     onClickTrade(symbol) {
       if (sdk.VaultAccountStatus.IN_STAKING === vaultAccountInfo?.accountStatus) {
         if (symbol === 'LVUSDT') {
-          onSwapPop({ symbol: 'ETH'})
+          onGoToSwap({ symbol: 'ETH'})
         } else {
-          onSwapPop({ symbol: symbol.slice(2) })
+          onGoToSwap({ symbol: symbol.slice(2) })
         }
       } else {
         setLocalState({
@@ -1007,10 +1007,7 @@ export const useVaultDashboard = ({
           removeTrailingZero: true
         }),
         onClickTrade: () => {
-          setShowVaultSwap({
-            isShow: true,
-            symbol: originSymbol
-          })
+          onGoToSwap({ symbol: originSymbol }) 
         },
         onClickClose: () => {
           // setShowGlobalToast({
@@ -1162,7 +1159,7 @@ export const useVaultDashboard = ({
       : '--',
     onClickPortalTrade: () => {
       if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
-        onSwapPop({})
+        onGoToSwap({})
       } else {
         setLocalState({
           ...localState,
@@ -1197,19 +1194,11 @@ export const useVaultDashboard = ({
     btnsDisabled: account.readyState !== AccountStatus.ACTIVATED,
     onClickBuy: (detail) => {
       const symbol = detail?.tokenInfo.symbol?.slice(2)
-      setShowVaultSwap({
-        isShow: true,
-        symbol,
-        isSell: false,
-      })
+      onGoToSwap({ symbol, isSell: false })
     },
     onClickSell: (detail) => {
       const symbol = detail?.tokenInfo.symbol?.slice(2)
-      setShowVaultSwap({
-        isShow: true,
-        symbol,
-        isSell: true,
-      })
+      onGoToSwap({ symbol, isSell: true })
     },
     didAccountSignIn: account.readyState === AccountStatus.ACTIVATED
   }

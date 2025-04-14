@@ -67,7 +67,7 @@ import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
 import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation, useRouteMatch } from 'react-router'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -137,7 +137,6 @@ export const useVaultSwap = () => {
     setShowTradeIsFrozen,
     modals: { isShowVaultSwap },
     setShowAccount,
-    setShowVaultSwap,
     setShowVaultJoin,
     setShowGlobalToast,
     setShowVaultCloseConfirm,
@@ -320,18 +319,23 @@ export const useVaultSwap = () => {
       showSmallTradePrompt,
     }))
   }
+  
+  const { pathname, search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+
+  const isOnPortalTradeRoute = pathname === RouterPath.vault + '/' + VaultKey.VAULT_TRADE
 
   const getSelectedTokenSymbol = () => {
     const localState = getLocalState()
     return localState.selectedToken
       ? localState.selectedToken
-      : isShowVaultSwap.symbol
-      ? isShowVaultSwap.symbol
+      : searchParams.get('symbol')
+      ? searchParams.get('symbol')
       : 'ETH'
   }
   const isLongOrShort = localState.isLongOrShort 
     ? localState.isLongOrShort
-    : isShowVaultSwap.isSell
+    : searchParams.get('isSell') === 'true'
       ? 'short'
       : 'long'
   const selectedTokenSymbol = getSelectedTokenSymbol()
@@ -937,7 +941,6 @@ export const useVaultSwap = () => {
             status: 'init',
           },
         }))
-        setShowVaultSwap({ isShow: false })
         l2CommonService.sendUserUpdate()
         await sdk.sleep(SUBMIT_PANEL_CHECK)
         if (refreshRef.current) {
@@ -1260,7 +1263,6 @@ export const useVaultSwap = () => {
     }
 
     if (vaultAccountInfo?.accountStatus !== sdk.VaultAccountStatus.IN_STAKING) {
-      
       history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
       setShowVaultJoin({ isShow: true})
       return
@@ -1316,7 +1318,7 @@ export const useVaultSwap = () => {
   }
 
   React.useEffect(() => {
-    if (isShowVaultSwap.isShow && refreshRef.current) {
+    if (isOnPortalTradeRoute && refreshRef.current) {
       restartTimer()
     } else {
       timerRef.current && clearInterval(timerRef.current)
@@ -1336,7 +1338,7 @@ export const useVaultSwap = () => {
         borrowHash.current = null
       }
     }
-  }, [isShowVaultSwap?.isShow, refreshRef.current])
+  }, [isOnPortalTradeRoute, refreshRef.current])
   React.useEffect(() => {
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
       const localState = getLocalState()
@@ -1435,7 +1437,6 @@ export const useVaultSwap = () => {
       })
     },
     onClose: () => {
-      setShowVaultSwap({ isShow: false })
     },
     setting: {
       hideLeverage: true,

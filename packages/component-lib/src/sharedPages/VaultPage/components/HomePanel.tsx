@@ -40,7 +40,7 @@ import { useVaultMarket } from '../hooks/useVaultMarket'
 import { symbol } from 'prop-types'
 
 export const VaultHomePanel = ({
-  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop, onSwapPop },
+  vaultAccountInfo: { joinBtnLabel, joinBtnStatus, onJoinPop, onGoToSwap },
 }: {
   vaultAccountInfo: VaultAccountInfoStatus
 }) => {
@@ -332,22 +332,19 @@ export const VaultHomePanel = ({
                   }
                   onClickBuy={() => {
                     const symbol = detail.detail?.tokenInfo.symbol?.slice(2)
-                    history.push('/portal/portalDashboard')
                     if (symbol === 'USDT') {
-                      onSwapPop({ isSell: true })  
+                      onGoToSwap({ isSell: true })
                     } else {
-                      onSwapPop({ symbol })  
+                      onGoToSwap({ symbol})
                     }
                     
                   }}
                   onClickSell={() => {
                     const symbol = detail.detail?.tokenInfo.symbol?.slice(2)
-                    history.push('/portal/portalDashboard')
-                    
                     if (symbol === 'USDT') {
-                      onSwapPop({ isSell: false })  
+                      onGoToSwap({ isSell: false })  
                     } else {
-                      onSwapPop({ symbol, isSell: true })
+                      onGoToSwap({ symbol, isSell: true })
                     }
                   }}
                   {...{ ...detail?.detail }}
