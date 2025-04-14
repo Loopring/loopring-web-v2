@@ -10,11 +10,14 @@ import {
   MapChainId,
   MarketType,
   myLog,
+  RouterPath,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
   TOAST_TIME,
+  TradeBtnStatus,
   UIERROR_CODE,
+  VaultKey,
   VaultSwapStep,
 } from '@loopring-web/common-resources'
 import {
@@ -55,6 +58,7 @@ import {
   toPercent,
   strNumDecimalPlacesLessThan,
   NETWORKEXTEND,
+  useSubmitBtn,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
@@ -63,6 +67,7 @@ import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
 import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
+import { useHistory, useLocation, useRouteMatch } from 'react-router'
 
 const tWrap = (t: any, label: string) => {
   const [theLable, ...rest] = label.split('|')
@@ -132,8 +137,7 @@ export const useVaultSwap = () => {
     setShowTradeIsFrozen,
     modals: { isShowVaultSwap },
     setShowAccount,
-    setShowVaultSwap,
-    setShowVaultExit,
+    setShowVaultJoin,
     setShowGlobalToast,
     setShowVaultCloseConfirm,
   } = useOpenModals()
@@ -315,18 +319,23 @@ export const useVaultSwap = () => {
       showSmallTradePrompt,
     }))
   }
+  
+  const { pathname, search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+
+  const isOnPortalTradeRoute = pathname === RouterPath.vault + '/' + VaultKey.VAULT_TRADE
 
   const getSelectedTokenSymbol = () => {
     const localState = getLocalState()
     return localState.selectedToken
       ? localState.selectedToken
-      : isShowVaultSwap.symbol
-      ? isShowVaultSwap.symbol
+      : searchParams.get('symbol')
+      ? searchParams.get('symbol')
       : 'ETH'
   }
   const isLongOrShort = localState.isLongOrShort 
     ? localState.isLongOrShort
-    : isShowVaultSwap.isSell
+    : searchParams.get('isSell') === 'true'
       ? 'short'
       : 'long'
   const selectedTokenSymbol = getSelectedTokenSymbol()
@@ -597,6 +606,12 @@ export const useVaultSwap = () => {
     () => undefined,
   )
   const tradeBtnStatus = (() => {
+    if (vaultAccountInfo?.accountStatus !== sdk.VaultAccountStatus.IN_STAKING) {
+      return {
+        label: undefined,
+        disabled: false,
+      }
+    }
     if ((!tokenMap || !vaultTokenPrices) && sellToken) {
       return {
         label: undefined,
@@ -609,6 +624,7 @@ export const useVaultSwap = () => {
         disabled: true,
       }
     }
+
     const { account } = store.getState()
     const sellTokenSymbol = sellToken.symbol
 
@@ -622,7 +638,6 @@ export const useVaultSwap = () => {
     )
 
     const notEnough = userMaxTradeValue ? sdk.toBig(userMaxTradeValue).lt(tradeValue) : true
-
     if (localState.isSwapLoading || localState.swapStatus.status !== 'init') {
       return {
         label: undefined,
@@ -727,6 +742,7 @@ export const useVaultSwap = () => {
       }
     }
   })()
+  
   const myPositions = (() => {
     return filterPositions(vaultLayer2!, tokenMap, vaultTokenPrices)
       .map((symbol) => {
@@ -925,7 +941,6 @@ export const useVaultSwap = () => {
             status: 'init',
           },
         }))
-        setShowVaultSwap({ isShow: false })
         l2CommonService.sendUserUpdate()
         await sdk.sleep(SUBMIT_PANEL_CHECK)
         if (refreshRef.current) {
@@ -1231,8 +1246,8 @@ export const useVaultSwap = () => {
       })
     }
   }
-
-  const onClickTradeBtn = async () => {
+  const history = useHistory()
+  const _onClickTradeBtn = async () => {
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true })
       setIsSwapLoading(false)
@@ -1244,6 +1259,12 @@ export const useVaultSwap = () => {
         type: 'Vault',
       })
       setIsSwapLoading(false)
+      return
+    }
+
+    if (vaultAccountInfo?.accountStatus !== sdk.VaultAccountStatus.IN_STAKING) {
+      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+      setShowVaultJoin({ isShow: true})
       return
     }
 
@@ -1281,6 +1302,15 @@ export const useVaultSwap = () => {
     }
   }
 
+  const { btnStatus, onBtnClick: onClickTradeBtn, btnLabel, isAccountActive } = useSubmitBtn({
+    availableTradeCheck: (a: any) => ({
+      tradeBtnStatus: tradeBtnStatus.disabled ? TradeBtnStatus.DISABLED : localState.isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE,
+      label: tradeBtnStatus.label,
+    }),
+    isLoading: localState.isSwapLoading,
+    submitCallback: _onClickTradeBtn,
+  })
+
   const vaultLayer2Callback = () => {
     if (store.getState().account.readyState !== AccountStatus.ACTIVATED) {
       clearData()
@@ -1288,7 +1318,7 @@ export const useVaultSwap = () => {
   }
 
   React.useEffect(() => {
-    if (isShowVaultSwap.isShow && refreshRef.current) {
+    if (isOnPortalTradeRoute && refreshRef.current) {
       restartTimer()
     } else {
       timerRef.current && clearInterval(timerRef.current)
@@ -1308,7 +1338,7 @@ export const useVaultSwap = () => {
         borrowHash.current = null
       }
     }
-  }, [isShowVaultSwap?.isShow, refreshRef.current])
+  }, [isOnPortalTradeRoute, refreshRef.current])
   React.useEffect(() => {
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
       const localState = getLocalState()
@@ -1407,7 +1437,6 @@ export const useVaultSwap = () => {
       })
     },
     onClose: () => {
-      setShowVaultSwap({ isShow: false })
     },
     setting: {
       hideLeverage: true,
@@ -1416,7 +1445,7 @@ export const useVaultSwap = () => {
       onSwitchChange: () => {
         setSwapSecondConfirmation(!swapSecondConfirmation)
       },
-      secondConfirmationChecked: swapSecondConfirmation,
+      secondConfirmationChecked: swapSecondConfirmation ?? false,
       settingPopoverOpen: localState.showSetting,
       onCloseSettingPopover: () => {
         setLocalState({
@@ -1520,7 +1549,7 @@ export const useVaultSwap = () => {
       : '0.00',
     amountInput: localState.amount,
     inputAlert: {
-      show: tradeBtnStatus.label !== undefined || localState.swapStatus.status !== 'init',
+      show: btnStatus !== TradeBtnStatus.AVAILABLE || localState.swapStatus.status !== 'init',
       type:
         tradeBtnStatus.label !== undefined
           ? 'error'
@@ -1663,12 +1692,13 @@ export const useVaultSwap = () => {
       () => undefined,
     ),
     tradeBtn: {
-      disabled: tradeBtnStatus.disabled,
+      disabled: btnStatus === TradeBtnStatus.DISABLED,
       onClick: () => {
         onClickTradeBtn()
       },
-      label: tradeBtnStatus.label ? tWrap(t, tradeBtnStatus.label) : undefined,
+      label: btnLabel ? tWrap(t, btnLabel) : undefined,
       loading: localState.isSwapLoading,
+      bgColor: isAccountActive ? (isLongOrShort === 'long' ? 'var(--color-success)' : 'var(--color-error)') : 'var(--color-primary)',
     },
     hourlyInterestRate:
       sellTokenAsset?.borrowed && new Decimal(sellTokenAsset.borrowed).gt(0) && sellToken
@@ -1824,6 +1854,7 @@ export const useVaultSwap = () => {
       },
     },
   }
+  console.log('asjhdjash',tradeBtnStatus, vaultSwapModalProps)
 
   const smallOrderAlertProps = {
     open: showSmallTradePrompt.show,

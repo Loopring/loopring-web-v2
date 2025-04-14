@@ -8,9 +8,10 @@ import {
   useSettings,
 } from '@loopring-web/component-lib'
 import { VaultDashBoardPanel } from '../components/DashBoardPanel'
-import { VaultHomePanel } from '../HomePanel'
+import { VaultHomePanel } from './HomePanel'
 import { ModalVaultWrap } from '../components/ModalWrap'
 import { useTranslation } from 'react-i18next'
+import { VaultTradePanel } from '../components/TradePanel'
 
 
 export interface VaultPageUIProps {
@@ -78,7 +79,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     component={'span'}
                     variant={'h5'}
                     whiteSpace={'pre'}
-                    marginRight={1}
                     className={'invest-Overview-Title'}
                     color={
                       tabIndex === VaultKey.VAULT_DASHBOARD
@@ -99,7 +99,6 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     component={'span'}
                     variant={'h5'}
                     whiteSpace={'pre'}
-                    marginRight={1}
                     className={'invest-Balance-Title'}
                     color={
                       tabIndex === VaultKey.VAULT_HOME
@@ -108,6 +107,27 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
                     }
                   >
                     {t('labelVaultMarketTitle')}
+                  </Typography>
+                </Typography>
+              }
+            />
+            <Tab
+              value={VaultKey.VAULT_TRADE}
+              label={
+                <Typography display={'inline-flex'} alignItems={'center'}>
+                  <Typography
+                    component={'span'}
+                    variant={'h5'}
+                    whiteSpace={'pre'}
+                    marginRight={1}
+                    className={'invest-Trade-Title'}
+                    color={
+                      tabIndex === VaultKey.VAULT_TRADE
+                        ? 'var(--color-text-primary)'
+                        : 'var(--color-text-secondary)'
+                    }
+                  >
+                    Trade
                   </Typography>
                 </Typography>
               }
@@ -146,6 +166,9 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
           )}
           {tabIndex === VaultKey.VAULT_HOME && (
             <VaultHomePanel vaultAccountInfo={vaultAccountInfo} />
+          )}
+          {tabIndex === VaultKey.VAULT_TRADE && (
+            <VaultTradePanel vaultAccountInfo={vaultAccountInfo} />
           )}
         </>
       ) : (

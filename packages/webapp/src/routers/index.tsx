@@ -58,7 +58,7 @@ import { RedPacketPage } from '../pages/RedPacketPage'
 import { useTranslation } from 'react-i18next'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 import { StopLimitPage } from '../pages/ProTradePage/stopLimtPage'
-import { VaultPage } from '../pages/VaultPage'
+import { VaultPage } from '@loopring-web/component-lib'
 const ContentWrap = ({
   children,
   state,
