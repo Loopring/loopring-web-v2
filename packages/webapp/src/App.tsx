@@ -309,9 +309,13 @@ const App = () => {
       
       const signer = await provider.getSigner();
       
+      // 计算并打印 KEY_MESSAGE 的哈希值
+      const messageHash = utils.hashMessage(KEY_MESSAGE);
       const signature = await signer?.signMessage(KEY_MESSAGE);
       const ddd = parseErc6492Signature(signature as any)
       const aaa = generatePrivateKey({sig: signature, counterFactualInfo: undefined, error: null})
+      console.log('messageHash', messageHash, 'sig', signature);
+      // const verify = utils.verifyMessage(messageHash, signature)
       
       debugger
 
