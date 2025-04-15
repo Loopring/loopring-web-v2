@@ -51,8 +51,14 @@ export const useVaultPage = () => {
 
   const handleTabChange = (_e: any, value: VaultKey) => {
     history.push(`${RouterPath.vault}/${value}`)
-    setTabIndex(value)
   }
+  React.useEffect(() => {
+    setTabIndex(
+      Object.values(VaultKey).find(
+        (item) => item.toLowerCase() === match?.params?.item?.toLowerCase(),
+      )
+    )
+  }, [match?.params?.item])
 
   const handleConfirmVaultRiskClose = (_e: any, isAgree: boolean) => {
     if (!isAgree) {
