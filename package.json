@@ -55,7 +55,7 @@
     "material-ui-popup-state": "^1.9.3",
     "moment": "^2.29.1",
     "polished": "^4.1.1",
-    "qr-code-styling": "1.6.0-rc.1",
+    "qr-code-styling": "^1.6.0-rc.1",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-currency-input-field": "^3.3.1",
