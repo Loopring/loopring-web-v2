@@ -163,6 +163,8 @@ export interface VaultSwapViewProps {
   onClickMax: () => void
   amounInUSDT: string
   moreToBeBorrowed: string
+  showMyPositions: boolean
+  showLeverageSelect: boolean
 }
 
 export const VaultSwapView = (props: VaultSwapViewProps) => {
@@ -213,7 +215,9 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
     tokenSelection,
     tradeBtn,
     mainViewRef,
-    onClickCloseAll
+    onClickCloseAll,
+    showMyPositions,
+    showLeverageSelect
   } = props
   const { t } = useTranslation()
   const theme = useTheme()
@@ -317,7 +321,6 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
                     onSlippageChange(slippage, customSlippage)
                   }}
                 />
-
                 {!hideLeverage && (
                   <Grid
                     container
@@ -469,7 +472,7 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
           </Select>
           {/* </Tooltip> */}
 
-          <Select
+          {showLeverageSelect && <Select
             value={leverageSelection.value}
             sx={{ ml: 2 }}
             size='small'
@@ -481,7 +484,7 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
                 {item.label}
               </MenuItem>
             ))}
-          </Select>
+          </Select>}
         </Box>
         <Box mt={2} width={'100%'} px={3}>
           <Typography mb={0.5} fontSize={'14px'} color={'var(--color-text-third)'}>
@@ -822,7 +825,7 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
         </Box>
         <Box bgcolor={'var(--color-box-secondary)'} width={'100%'} height={'4px'}></Box>
 
-        <Box width={'100%'} my={3} pt={2}>
+        {showMyPositions && <Box width={'100%'} my={3} pt={2}>
           <Typography px={3} variant='h5' mb={2}>
             My Positions
           </Typography>
@@ -979,7 +982,7 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
               )
             })}
           </Box>
-        </Box>
+        </Box>}
       </Box>
 
       {/* <Box width={'100%'} mt={2} px={3}>
