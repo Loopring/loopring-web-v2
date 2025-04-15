@@ -3,6 +3,7 @@ __tests__
 test
 tests
 powered-test
+!viem/**/test
 
 # asset directories
 docs
