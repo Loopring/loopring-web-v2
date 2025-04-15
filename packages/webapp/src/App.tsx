@@ -15,6 +15,9 @@ import { generatePrivateKey, getUpdateAccountEcdsaTypedData } from '@loopring-we
 import {LoopringAPI } from '@loopring-web/core'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { parseErc6492Signature, EIP1193Provider } from 'viem'
+import { isWalletACoinbaseSmartWallet } from '@coinbase/onchainkit/wallet';
+import { type PublicClient, createPublicClient, http } from 'viem';
+import { mainnet ,sepolia } from 'viem/chains';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -364,6 +367,25 @@ const App = () => {
       console.log('asdhajsdhja',aaa, hash);
     })()
   }, [walletProvider, system.exchangeInfo?.exchangeAddress])
+
+  React.useEffect(() => {
+
+    const client = createPublicClient({
+      chain: sepolia,
+      transport: http(),
+    })
+    
+    isWalletACoinbaseSmartWallet({
+      client,
+      userOp: {sender: '0x87b39640Fd704E87daA5bA65D0ae4e2B70f7767d'}
+    }).then(res => {
+      debugger
+      console.log('res', res)
+    }).catch(err => {
+      debugger
+      console.log('err', err)
+    })
+  }, [])
   
 
 

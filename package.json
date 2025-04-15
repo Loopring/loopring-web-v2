@@ -9,6 +9,7 @@
     "node": "18.x"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.38.7",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@loopring-web/loopring-sdk": "3.9.18",
@@ -89,7 +90,7 @@
     "timers-browserify": "^2.0.12",
     "util": "^0.12.5",
     "vconsole": "^3.15.1",
-    "viem": "2.25.1",
+    "viem": "^2.27.0",
     "voca": "^1.4.1",
     "wagmi": "^2.14.16",
     "web-vitals": "^3.4.0"
