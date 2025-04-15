@@ -69,6 +69,7 @@ import {
   useToast,
   toPercent,
   bipsToPercent,
+  tryFn,
 } from '@loopring-web/core'
 import { useTheme } from '@emotion/react'
 import { useVaultMarket } from './useVaultMarket'
@@ -1179,17 +1180,18 @@ export const useVaultDashboard = ({
       setHideL2Assets(!hideAssets)
     },
     vaultAccountActive: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
-    totalEquity:
-      vaultAccountInfo?.totalEquityOfUsdt && vaultAccountInfo?.totalCollateralOfUsdt
-        ? fiatNumberDisplay(
-            getValueInCurrency(
-              new Decimal(vaultAccountInfo?.totalEquityOfUsdt)
-                .add(vaultAccountInfo?.totalCollateralOfUsdt)
-                .toString(),
-            ),
-            currency,
-          )
-        : EmptyValueTag,
+    totalEquity: tryFn(
+      () =>
+        fiatNumberDisplay(
+          getValueInCurrency(
+            new Decimal(vaultAccountInfo!.totalEquityOfUsdt)
+              .add(vaultAccountInfo!.totalCollateralOfUsdt)
+              .toString(),
+          ),
+          currency,
+        ),
+      () => EmptyValueTag,
+    ),
     showSettleBtn: vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING,
     btnsDisabled: account.readyState !== AccountStatus.ACTIVATED,
     onClickBuy: (detail) => {
