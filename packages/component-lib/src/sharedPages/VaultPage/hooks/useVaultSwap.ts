@@ -1111,7 +1111,7 @@ export const useVaultSwap = () => {
             status: t(status),
             ...info,
           },
-        })
+        })      
         sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE).then(() => {
           l2CommonService.sendUserUpdate()
           if (
@@ -1123,6 +1123,10 @@ export const useVaultSwap = () => {
             setShowAccount({ isShow: false })
           }
         })
+        setLocalState((state) => ({
+          ...state,
+          amount: '',
+        }))
       }
     } catch (error: any) {
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
@@ -1140,9 +1144,14 @@ export const useVaultSwap = () => {
       })
     } finally {
       
-      
-      clearData()
-      
+      setLocalState((state) => {
+        return {
+          ...state,
+          swapStatus: { status: 'init' },
+          isSwapLoading: false,
+        }
+      })
+
       await sdk.sleep(1000)
       updateVaultLayer2({})
       await sdk.sleep(1000)
