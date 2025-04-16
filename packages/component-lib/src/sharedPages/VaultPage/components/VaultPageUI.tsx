@@ -12,6 +12,8 @@ import { VaultHomePanel } from './HomePanel'
 import { ModalVaultWrap } from '../components/ModalWrap'
 import { useTranslation } from 'react-i18next'
 import { VaultTradePanel } from '../components/TradePanel'
+import { useModals } from '../hooks/useModals'
+import { CloseConfirmModal } from './modals'
 
 
 export interface VaultPageUIProps {
@@ -47,7 +49,7 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
 }) => {
   const { t } = useTranslation()
   const { isMobile } = useSettings()
-
+  const { closeConfirmModalProps } = useModals()
   return (
     <Box flex={1} display={'flex'} flexDirection={'column'}>
       <Container
@@ -200,6 +202,7 @@ export const VaultPageUI: React.FC<VaultPageUIProps> = ({
         open={isShowConfirmedVault.isShow}
         handleClose={handleConfirmVaultRiskClose}
       />
+      <CloseConfirmModal {...closeConfirmModalProps} />
     </Box>
   )
 }

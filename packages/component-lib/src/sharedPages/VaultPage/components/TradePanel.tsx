@@ -3,9 +3,13 @@ import { useVaultSwap } from '../hooks/useVaultSwap'
 import { VaultSwapView } from './VaultSwapView'
 import { CloseIcon } from '@loopring-web/common-resources'
 import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation'
+// import { SmallOrderAlert, Toast } from '../components/'
+import { CloseAllConfirmModal } from './modals'
+import { SmallOrderAlert, Toast } from '../../../components'
+
 
 export const VaultTradePanel = () => {
-  const { vaultSwapModalProps } = useVaultSwap()
+  const { vaultSwapModalProps, smallOrderAlertProps, toastProps, closeAllConfirmModalProps } = useVaultSwap()
   const { confirmation, setShowVaultTradeHint } = useConfirmation()
 
   return (
@@ -43,6 +47,9 @@ export const VaultTradePanel = () => {
       </Box>
       <VaultSwapView {...vaultSwapModalProps} />
       <Box width={'20%'} />
+      <SmallOrderAlert {...smallOrderAlertProps} />
+      <Toast {...toastProps} />
+      <CloseAllConfirmModal {...closeAllConfirmModalProps}/>
     </Box>
   )
 }
