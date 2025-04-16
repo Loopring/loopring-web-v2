@@ -5,21 +5,20 @@ import { hr } from './overrides/overrides-mui'
 import { css } from '@emotion/react'
 //@ts-ignore
 import cssStyle from 'github-markdown-css/github-markdown.css'
-
+import loopringJSON from '../../../assets/coin/loopring.json'
 export * from './overrides/muTheme'
 export * from './css/global'
 // export * from "./css/color-lib"
 export * from './interface'
 export * from './globalSetup'
 export { hexToRGB } from './css/color-lib'
-//transform-origin: top left;
 export { hr }
 //https://static.loopring.io/assets/images/coin/loopring.png
 export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
   &.MuiAvatar-root {
     height: 72px;
     width: 72px;
-    background-image: url('./static/coin/loopring.png');
+    background-image: url('./static/coin/${loopringJSON.file}');
     ${({
       imgx,
       imgy,
