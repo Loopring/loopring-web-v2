@@ -1139,13 +1139,9 @@ export const useVaultSwap = () => {
         step: VaultSwapStep.Swap,
       })
     } finally {
-      setLocalState((state) => {
-        return {
-          ...state,
-          swapStatus: { status: 'init' },
-          isSwapLoading: false,
-        }
-      })
+      
+      
+      clearData()
       
       await sdk.sleep(1000)
       updateVaultLayer2({})
