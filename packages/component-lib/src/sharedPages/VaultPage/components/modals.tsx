@@ -1045,7 +1045,7 @@ export interface CloseConfirmModalProps {
 export const CloseConfirmModal = (props: CloseConfirmModalProps) => {
   const { open, onClose, onConfirm } = props
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} disableAutoFocus disableEnforceFocus disableScrollLock>
       <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
         <Box
           bgcolor={'var(--color-global-bg)'}
