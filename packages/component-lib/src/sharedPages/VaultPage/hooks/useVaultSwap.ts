@@ -7,6 +7,7 @@ import {
   CustomErrorWithCode,
   EmptyValueTag,
   getValuePrecisionThousand,
+  L1L2_NAME_DEFINED,
   MapChainId,
   MarketType,
   myLog,
@@ -45,7 +46,6 @@ import {
   store,
   tryFn,
   useAccount,
-  useL2CommonSocket,
   useSocket,
   useSystem,
   useToast,
@@ -57,7 +57,6 @@ import {
   vaultSwapDependAsync,
   toPercent,
   strNumDecimalPlacesLessThan,
-  NETWORKEXTEND,
   useSubmitBtn,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
@@ -66,13 +65,22 @@ import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/us
 import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
-import { useHistory, useLocation, useRouteMatch } from 'react-router'
+import { closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
+import { useHistory, useLocation } from 'react-router'
+import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-const tWrap = (t: any, label: string) => {
+const tWrap = (t: any, label: string, chainId: number) => {
   const [theLable, ...rest] = label.split('|')
   const obj = _.fromPairs(rest.map((value, index) => [index === 0 ? 'arg' : 'arg' + index, value]))
-  return t(theLable, obj)
+  const network = MapChainId[chainId]
+  return t(theLable, {
+    ...obj,
+    l1ChainName: network ? L1L2_NAME_DEFINED[network].l1ChainName : undefined,
+    loopringL2: network ? L1L2_NAME_DEFINED[network].loopringL2 : undefined,
+    l2Symbol: network ? L1L2_NAME_DEFINED[network].l2Symbol : undefined,
+    l1Symbol: network ? L1L2_NAME_DEFINED[network].l1Symbol : undefined,
+    ethereumL1: network ? L1L2_NAME_DEFINED[network].ethereumL1 : undefined,
+  })
 }
 
 const calcDexWrap = <R>(input: {
@@ -1301,7 +1309,7 @@ export const useVaultSwap = () => {
       swapSubmit()
     }
   }
-
+  const { chainId } = useWeb3ModalAccount()
   const { btnStatus, onBtnClick: onClickTradeBtn, btnLabel, isAccountActive } = useSubmitBtn({
     availableTradeCheck: (a: any) => ({
       tradeBtnStatus: tradeBtnStatus.disabled ? TradeBtnStatus.DISABLED : localState.isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE,
@@ -1549,7 +1557,7 @@ export const useVaultSwap = () => {
           : undefined,
       message: tryFn(
         () => {
-          if (tradeBtnStatus.label) return tWrap(t, tradeBtnStatus.label)
+          if (tradeBtnStatus.label) return tWrap(t, tradeBtnStatus.label, chainId ?? 1)
           if (localState.swapStatus.status === 'borrowing') {
             return (
               localState.swapStatus.borrowAmount &&
@@ -1686,7 +1694,7 @@ export const useVaultSwap = () => {
         onClickTradeBtn()
       },
       label: btnLabel
-        ? tWrap(t, btnLabel)
+        ? tWrap(t, btnLabel, chainId ?? 1)
         : vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.FREE
         ? 'Supply Collateral'
         : isLongOrShort === 'long'
