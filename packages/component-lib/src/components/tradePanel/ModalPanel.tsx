@@ -669,7 +669,6 @@ export const ModalPanel = <
         open={isShowBridge.isShow}
         contentClassName={'trade-wrap'}
         onClose={() => {
-          console.log('bfSJk8Lp', 'closing bridge modal')
           setShowBridge({ 
             isShow: false
           })
