@@ -141,9 +141,9 @@ export default {
   labelRecord: 'Records',
   labelHome: 'Loopring Layer 2',
   labelVaultHome: 'Market',
-  labelVaultHomeDes: 'Access the available portfolio',
-  labelVaultDashboard: 'Home',
-  labelVaultDashboardDes: 'Manage and trade your assets',
+  labelVaultHomeDes: 'Browse tradable tokens',
+  labelVaultDashboard: 'Dashboard',
+  labelVaultDashboardDes: 'Manage assets and positions',
   labelUnlockFirst: 'Unlock First',
   labelVault2: 'Assets',
   labelTaikoFarming: 'Taiko Farming',
@@ -159,5 +159,6 @@ export default {
   labelVaultDes: 'Trade popular tokens beyond the Ethereum chain, with leverage!',
   labelBtradeTradeDes: 'Swap tokens securely and trustlessly, tapping into CEX liquidity.',
   labelTaikoFarmingDes: 'Farm Trailblazers points at 60X while unlocking the value of your locked TAIKO to keep trading or earning.',
-
+  labelVaultTradeTabTitle: 'Trade',
+  labelVaultTradeTabDes: 'Long or Short with leverage',
 }

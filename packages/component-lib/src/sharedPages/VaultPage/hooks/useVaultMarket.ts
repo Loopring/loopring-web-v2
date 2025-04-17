@@ -10,9 +10,8 @@ import {
   VAULT_MARKET_REFRESH,
   VaultKey,
 } from '@loopring-web/common-resources'
-import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker } from '@loopring-web/core'
+import { LoopringAPI, useTokenMap, useVaultMap, useVaultTicker, useMarket } from '@loopring-web/core'
 import { useHistory } from 'react-router-dom'
-import { useMarket } from '../../QuotePage/useMaket'
 import * as sdk from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
 

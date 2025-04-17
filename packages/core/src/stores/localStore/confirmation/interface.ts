@@ -23,4 +23,5 @@ export interface Confirmation {
   showTaikoLaunchBanner: boolean
   showTaikoLockDescription: boolean
   showTaikoLaunchBanner2: boolean
+  showVaultTradeHint: boolean
 }

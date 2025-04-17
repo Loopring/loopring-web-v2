@@ -145,6 +145,11 @@ export const MuiModal = ({ colorBase }: any) => {
         },
       },
     },
+    defaultProps: {
+      disableAutoFocus: true,
+      disableEnforceFocus: true,
+      disableScrollLock: true,
+    },
   }
 }
 
@@ -921,6 +926,11 @@ export const MuiDialog = ({ colorBase }: any) => {
           padding: `0 ${2 * unit}px ${2 * unit}px ${2 * unit}px`,
         },
       },
+    },
+    defaultProps: {
+      disableAutoFocus: true,
+      disableEnforceFocus: true,
+      disableScrollLock: true,
     },
   }
 }

@@ -7,14 +7,18 @@ import {
   CustomErrorWithCode,
   EmptyValueTag,
   getValuePrecisionThousand,
+  L1L2_NAME_DEFINED,
   MapChainId,
   MarketType,
   myLog,
+  RouterPath,
   SDK_ERROR_MAP_TO_UI,
   SUBMIT_PANEL_AUTO_CLOSE,
   SUBMIT_PANEL_CHECK,
   TOAST_TIME,
+  TradeBtnStatus,
   UIERROR_CODE,
+  VaultKey,
   VaultSwapStep,
 } from '@loopring-web/common-resources'
 import {
@@ -42,7 +46,6 @@ import {
   store,
   tryFn,
   useAccount,
-  useL2CommonSocket,
   useSocket,
   useSystem,
   useToast,
@@ -54,7 +57,7 @@ import {
   vaultSwapDependAsync,
   toPercent,
   strNumDecimalPlacesLessThan,
-  NETWORKEXTEND,
+  useSubmitBtn,
 } from '@loopring-web/core'
 import { merge } from 'rxjs'
 import Decimal from 'decimal.js'
@@ -62,12 +65,22 @@ import { calcMarinLevel, marginLevelType } from '@loopring-web/core/src/hooks/us
 import { CloseAllConfirmModalProps } from '../components/modals'
 import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
-import { closePositionAndRepayIfNeeded, closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
+import { closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
+import { useHistory, useLocation } from 'react-router'
+import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-const tWrap = (t: any, label: string) => {
+const tWrap = (t: any, label: string, chainId: number) => {
   const [theLable, ...rest] = label.split('|')
   const obj = _.fromPairs(rest.map((value, index) => [index === 0 ? 'arg' : 'arg' + index, value]))
-  return t(theLable, obj)
+  const network = MapChainId[chainId]
+  return t(theLable, {
+    ...obj,
+    l1ChainName: network ? L1L2_NAME_DEFINED[network].l1ChainName : undefined,
+    loopringL2: network ? L1L2_NAME_DEFINED[network].loopringL2 : undefined,
+    l2Symbol: network ? L1L2_NAME_DEFINED[network].l2Symbol : undefined,
+    l1Symbol: network ? L1L2_NAME_DEFINED[network].l1Symbol : undefined,
+    ethereumL1: network ? L1L2_NAME_DEFINED[network].ethereumL1 : undefined,
+  })
 }
 
 const calcDexWrap = <R>(input: {
@@ -132,8 +145,7 @@ export const useVaultSwap = () => {
     setShowTradeIsFrozen,
     modals: { isShowVaultSwap },
     setShowAccount,
-    setShowVaultSwap,
-    setShowVaultExit,
+    setShowVaultJoin,
     setShowGlobalToast,
     setShowVaultCloseConfirm,
   } = useOpenModals()
@@ -315,18 +327,23 @@ export const useVaultSwap = () => {
       showSmallTradePrompt,
     }))
   }
+  
+  const { pathname, search } = useLocation()
+  const searchParams = new URLSearchParams(search)
+
+  const isOnPortalTradeRoute = pathname === RouterPath.vault + '/' + VaultKey.VAULT_TRADE
 
   const getSelectedTokenSymbol = () => {
     const localState = getLocalState()
     return localState.selectedToken
       ? localState.selectedToken
-      : isShowVaultSwap.symbol
-      ? isShowVaultSwap.symbol
+      : searchParams.get('symbol')
+      ? searchParams.get('symbol')
       : 'ETH'
   }
   const isLongOrShort = localState.isLongOrShort 
     ? localState.isLongOrShort
-    : isShowVaultSwap.isSell
+    : searchParams.get('isSell') === 'true'
       ? 'short'
       : 'long'
   const selectedTokenSymbol = getSelectedTokenSymbol()
@@ -597,6 +614,12 @@ export const useVaultSwap = () => {
     () => undefined,
   )
   const tradeBtnStatus = (() => {
+    if (vaultAccountInfo?.accountStatus !== sdk.VaultAccountStatus.IN_STAKING) {
+      return {
+        label: undefined,
+        disabled: false,
+      }
+    }
     if ((!tokenMap || !vaultTokenPrices) && sellToken) {
       return {
         label: undefined,
@@ -609,6 +632,7 @@ export const useVaultSwap = () => {
         disabled: true,
       }
     }
+
     const { account } = store.getState()
     const sellTokenSymbol = sellToken.symbol
 
@@ -622,7 +646,6 @@ export const useVaultSwap = () => {
     )
 
     const notEnough = userMaxTradeValue ? sdk.toBig(userMaxTradeValue).lt(tradeValue) : true
-
     if (localState.isSwapLoading || localState.swapStatus.status !== 'init') {
       return {
         label: undefined,
@@ -727,6 +750,7 @@ export const useVaultSwap = () => {
       }
     }
   })()
+  
   const myPositions = (() => {
     return filterPositions(vaultLayer2!, tokenMap, vaultTokenPrices)
       .map((symbol) => {
@@ -925,7 +949,6 @@ export const useVaultSwap = () => {
             status: 'init',
           },
         }))
-        setShowVaultSwap({ isShow: false })
         l2CommonService.sendUserUpdate()
         await sdk.sleep(SUBMIT_PANEL_CHECK)
         if (refreshRef.current) {
@@ -1088,7 +1111,7 @@ export const useVaultSwap = () => {
             status: t(status),
             ...info,
           },
-        })
+        })      
         sdk.sleep(SUBMIT_PANEL_AUTO_CLOSE).then(() => {
           l2CommonService.sendUserUpdate()
           if (
@@ -1100,6 +1123,10 @@ export const useVaultSwap = () => {
             setShowAccount({ isShow: false })
           }
         })
+        setLocalState((state) => ({
+          ...state,
+          amount: '',
+        }))
       }
     } catch (error: any) {
       if ([102024, 102025, 114001, 114002].includes(error?.code || 0)) {
@@ -1116,6 +1143,7 @@ export const useVaultSwap = () => {
         step: VaultSwapStep.Swap,
       })
     } finally {
+      
       setLocalState((state) => {
         return {
           ...state,
@@ -1123,7 +1151,7 @@ export const useVaultSwap = () => {
           isSwapLoading: false,
         }
       })
-      
+
       await sdk.sleep(1000)
       updateVaultLayer2({})
       await sdk.sleep(1000)
@@ -1231,8 +1259,8 @@ export const useVaultSwap = () => {
       })
     }
   }
-
-  const onClickTradeBtn = async () => {
+  const history = useHistory()
+  const _onClickTradeBtn = async () => {
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true })
       setIsSwapLoading(false)
@@ -1244,6 +1272,12 @@ export const useVaultSwap = () => {
         type: 'Vault',
       })
       setIsSwapLoading(false)
+      return
+    }
+
+    if (vaultAccountInfo?.accountStatus !== sdk.VaultAccountStatus.IN_STAKING) {
+      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+      setShowVaultJoin({ isShow: true})
       return
     }
 
@@ -1280,15 +1314,19 @@ export const useVaultSwap = () => {
       swapSubmit()
     }
   }
+  const { chainId } = useWeb3ModalAccount()
+  const { btnStatus, onBtnClick: onClickTradeBtn, btnLabel, isAccountActive } = useSubmitBtn({
+    availableTradeCheck: (a: any) => ({
+      tradeBtnStatus: tradeBtnStatus.disabled ? TradeBtnStatus.DISABLED : localState.isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE,
+      label: tradeBtnStatus.label,
+    }),
+    isLoading: localState.isSwapLoading,
+    submitCallback: _onClickTradeBtn,
+  })
 
-  const vaultLayer2Callback = () => {
-    if (store.getState().account.readyState !== AccountStatus.ACTIVATED) {
-      clearData()
-    }
-  }
 
   React.useEffect(() => {
-    if (isShowVaultSwap.isShow && refreshRef.current) {
+    if (isOnPortalTradeRoute && refreshRef.current) {
       restartTimer()
     } else {
       timerRef.current && clearInterval(timerRef.current)
@@ -1308,7 +1346,7 @@ export const useVaultSwap = () => {
         borrowHash.current = null
       }
     }
-  }, [isShowVaultSwap?.isShow, refreshRef.current])
+  }, [isOnPortalTradeRoute, refreshRef.current])
   React.useEffect(() => {
     const subscription = merge(subjectBtradeOrderbook).subscribe(({ btradeOrderbookMap }) => {
       const localState = getLocalState()
@@ -1337,12 +1375,6 @@ export const useVaultSwap = () => {
       subscription.unsubscribe()
     }
   }, [market])
-
-  
-
-  
-
-  useL2CommonSocket({ vaultLayer2Callback })
 
   
   const [showCloseAllConfirm, setShowCloseAllConfirm] = React.useState({
@@ -1391,10 +1423,11 @@ export const useVaultSwap = () => {
         })
     }
   }
+  
   const vaultSwapModalProps = {
     onClickCloseAll: () => {
       setShowCloseAllConfirm({
-        show: true
+        show: true,
       })
     },
     mainViewRef,
@@ -1406,9 +1439,7 @@ export const useVaultSwap = () => {
         hideOther: !localState.hideOther,
       })
     },
-    onClose: () => {
-      setShowVaultSwap({ isShow: false })
-    },
+    onClose: () => {},
     setting: {
       hideLeverage: true,
       onClickSettingLeverage: () => {},
@@ -1416,7 +1447,7 @@ export const useVaultSwap = () => {
       onSwitchChange: () => {
         setSwapSecondConfirmation(!swapSecondConfirmation)
       },
-      secondConfirmationChecked: swapSecondConfirmation,
+      secondConfirmationChecked: swapSecondConfirmation ?? false,
       settingPopoverOpen: localState.showSetting,
       onCloseSettingPopover: () => {
         setLocalState({
@@ -1520,7 +1551,7 @@ export const useVaultSwap = () => {
       : '0.00',
     amountInput: localState.amount,
     inputAlert: {
-      show: tradeBtnStatus.label !== undefined || localState.swapStatus.status !== 'init',
+      show: btnStatus !== TradeBtnStatus.AVAILABLE || localState.swapStatus.status !== 'init',
       type:
         tradeBtnStatus.label !== undefined
           ? 'error'
@@ -1531,7 +1562,7 @@ export const useVaultSwap = () => {
           : undefined,
       message: tryFn(
         () => {
-          if (tradeBtnStatus.label) return tWrap(t, tradeBtnStatus.label)
+          if (tradeBtnStatus.label) return tWrap(t, tradeBtnStatus.label, chainId ?? 1)
           if (localState.swapStatus.status === 'borrowing') {
             return (
               localState.swapStatus.borrowAmount &&
@@ -1663,12 +1694,24 @@ export const useVaultSwap = () => {
       () => undefined,
     ),
     tradeBtn: {
-      disabled: tradeBtnStatus.disabled,
+      disabled: btnStatus === TradeBtnStatus.DISABLED,
       onClick: () => {
         onClickTradeBtn()
       },
-      label: tradeBtnStatus.label ? tWrap(t, tradeBtnStatus.label) : undefined,
+      label: btnLabel
+        ? tWrap(t, btnLabel, chainId ?? 1)
+        : vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.FREE
+        ? 'Supply Collateral'
+        : isLongOrShort === 'long'
+        ? 'Buy / Long'
+        : 'Sell / Short',
       loading: localState.isSwapLoading,
+      bgColor:
+        !isAccountActive || vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.FREE
+          ? 'var(--color-primary)'
+          : isLongOrShort === 'long'
+          ? 'var(--color-success)'
+          : 'var(--color-error)',
     },
     hourlyInterestRate:
       sellTokenAsset?.borrowed && new Decimal(sellTokenAsset.borrowed).gt(0) && sellToken
@@ -1692,8 +1735,8 @@ export const useVaultSwap = () => {
     ),
     tradingFeeDescription: tryFn(
       () => {
-        const feeBips = maxFeeBips ?? marketInfo?.feeBips ?? MAPFEEBIPS;
-        return `The trading fee is ${toPercent((feeBips/100).toString(), 2)}.`;
+        const feeBips = maxFeeBips ?? marketInfo?.feeBips ?? MAPFEEBIPS
+        return `The trading fee is ${toPercent((feeBips / 100).toString(), 2)}.`
       },
       () => '',
     ),
@@ -1710,6 +1753,7 @@ export const useVaultSwap = () => {
       restartTimer()
     },
     myPositions,
+    showMyPositions: account.readyState === 'ACTIVATED',
     leverageSelection: {
       value: vaultAccountInfo?.leverage,
       onChange: async (value: string) => {
@@ -1774,55 +1818,52 @@ export const useVaultSwap = () => {
           tokenSelectionInput: '',
         })
       },
-      tokens:
-        tokenMap
-          ? _.keys(tokenMap)
-              .map((symbol) => {
-                const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
-                const tokenInfo = tokenMap[symbol]
-                return tokenInfo
-                  ? {
-                      symbol: symbol.slice(2),
-                      amount: numberFormatThousandthPlace(
-                        utils.formatUnits(asset?.total ?? '0', tokenInfo.decimals),
-                        { fixed: tokenInfo.precision, removeTrailingZero: true },
-                      ),
-                      coinJSON: coinJson[symbol.slice(2)],
-                      onClick: () => {
-                        setLocalState({
-                          ...localState,
-                          showTokenSelection: false,
-                          selectedToken: symbol === 'LVUSDT' ? 'ETH' : symbol.slice(2),
-                          tokenSelectionInput: '',
-                          amount: '',
-                          slideValue: 0,
-                          depth: undefined,
-                        })
-                        restartTimer()
-                        refreshData()
-                      },
-                    }
-                  : undefined
-              })
-              .filter(
-                (item) =>
-                  item !== undefined &&
-                  !['USDT', 'USDC', 'LRTAIKO'].includes(item?.symbol) &&
-                  (!localState.tokenSelectionInput ||
-                    item.symbol
-                      .toLowerCase()
-                      .includes(localState.tokenSelectionInput.toLowerCase())),
-              )
-          : [],
+      tokens: tokenMap
+        ? _.keys(tokenMap)
+            .map((symbol) => {
+              const asset = vaultLayer2 ? vaultLayer2[symbol] : undefined
+              const tokenInfo = tokenMap[symbol]
+              return tokenInfo
+                ? {
+                    symbol: symbol.slice(2),
+                    amount: numberFormatThousandthPlace(
+                      utils.formatUnits(asset?.total ?? '0', tokenInfo.decimals),
+                      { fixed: tokenInfo.precision, removeTrailingZero: true },
+                    ),
+                    coinJSON: coinJson[symbol.slice(2)],
+                    onClick: () => {
+                      setLocalState({
+                        ...localState,
+                        showTokenSelection: false,
+                        selectedToken: symbol === 'LVUSDT' ? 'ETH' : symbol.slice(2),
+                        tokenSelectionInput: '',
+                        amount: '',
+                        slideValue: 0,
+                        depth: undefined,
+                      })
+                      restartTimer()
+                      refreshData()
+                    },
+                  }
+                : undefined
+            })
+            .filter(
+              (item) =>
+                item !== undefined &&
+                !['USDT', 'USDC', 'LRTAIKO'].includes(item?.symbol) &&
+                (!localState.tokenSelectionInput ||
+                  item.symbol.toLowerCase().includes(localState.tokenSelectionInput.toLowerCase())),
+            )
+        : [],
       onInputSearch: (v: string) => {
         setLocalState({
           ...localState,
           tokenSelectionInput: v,
           amount: '',
-
         })
       },
     },
+    showLeverageSelect: account.readyState === AccountStatus.ACTIVATED,
   }
 
   const smallOrderAlertProps = {

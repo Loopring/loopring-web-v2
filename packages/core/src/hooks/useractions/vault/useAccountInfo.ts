@@ -11,14 +11,17 @@ import React from 'react'
 import {
   L1L2_NAME_DEFINED,
   MapChainId,
+  RouterPath,
   SagaStatus,
   TradeBtnStatus,
+  VaultKey,
   VaultLoanType,
 } from '@loopring-web/common-resources'
 import { useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useConfirmation } from '../../../stores/localStore/confirmation'
+import { useHistory } from 'react-router'
 
 export type VaultAccountInfoStatus = VaultLayer2States & {
   joinBtnStatus: TradeBtnStatus
@@ -37,6 +40,7 @@ export type VaultAccountInfoStatus = VaultLayer2States & {
   onRepayPop: (props: any) => void
   repayBtnLabel: string
   vaultAccountInfoStatus: SagaStatus
+  onGoToSwap: ({ symbol, isSell }: { symbol?: string; isSell?: boolean }) => void
   // isShowFeathure:  vaultAccountInfo?.accountStatus
 }
 export const useVaultAccountInfo = () => {
@@ -267,6 +271,15 @@ export const useVaultAccountInfo = () => {
       }
     },
   })
+  const history = useHistory()
+
+  const onGoToSwap = ({ symbol, isSell }: { symbol?: string; isSell?: boolean }) => {
+    const searchParams = new URLSearchParams()
+    symbol !== undefined && searchParams.append('symbol', symbol)
+    isSell !== undefined && searchParams.append('isSell', isSell ? 'true' : 'false')
+    
+    history.push(RouterPath.vault + '/' + VaultKey.VAULT_TRADE + `?${searchParams.toString()}`)
+  }
 
   const label = React.useCallback((btnLabel) => {
     const key = btnLabel.split('|')
@@ -306,6 +319,7 @@ export const useVaultAccountInfo = () => {
     vaultAccountInfoStatus,
     tokenFactors,
     maxLeverage,
-    collateralTokens
+    collateralTokens,
+    onGoToSwap,
   } as VaultAccountInfoStatus
 }

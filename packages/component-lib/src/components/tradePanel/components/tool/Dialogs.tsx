@@ -139,7 +139,7 @@ export const RiskComponent = ({
   const size = 60
   // myLog('title', title)
   return (
-    <RiskStyle open={open} onClose={(_) => handleClose()}>
+    <RiskStyle open={open} onClose={(_) => handleClose()} >
       <DialogTitle>
         <>
           {!hasNoIcon && (

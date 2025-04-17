@@ -2556,5 +2556,7 @@ export default {
   labelUnlockErrorLine1Part3:
     'to resolve the issue',
   labelVaultCloseShort: 'Close Short',
+  labelVaultTradeTabTitle: 'Trade',
+  labelVaultTradeTabDes: 'An isolated margin account',
 }
 
