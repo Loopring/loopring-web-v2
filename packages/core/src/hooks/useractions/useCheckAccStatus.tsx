@@ -1,12 +1,14 @@
 import {
   AccountStatus,
+  coinbaseSmartWalletChains,
   FeeInfo,
+  MapChainId,
   SagaStatus,
   SPECIAL_ACTIVATION_NETWORKS,
   UIERROR_CODE,
   WalletMap,
 } from '@loopring-web/common-resources'
-import { makeWalletLayer2, store, useAccount, useSystem, useWalletLayer2 } from '../../index'
+import { isCoinbaseSmartWallet, LoopringAPI, makeWalletLayer2, store, useAccount, useSystem, useWalletLayer2 } from '../../index'
 import {
   AccountStep,
   CheckActiveStatusProps,
@@ -70,8 +72,19 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowAccount({ isShow: false })
     setShowActiveAccount({ isShow: true })
   }
-  const onIKnowClick = () => {
-    if (account.isContract || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
+  const onIKnowClick = async () => {
+    const [walletType, coinbaseSW] = await Promise.all([
+      LoopringAPI?.walletAPI?.getWalletType({
+        wallet: account.accAddress,
+        network: MapChainId[defaultNetwork] as sdk.NetworkWallet
+      }),
+      isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
+    ])
+    
+    const isUnsupportedSmartWallet =
+      walletType?.walletType?.isContract &&
+      (!coinbaseSW || !coinbaseSmartWalletChains.includes(defaultNetwork))
+    if (isUnsupportedSmartWallet || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
       setKnow(true)
     } else {
       goUpdateAccount()

@@ -1,7 +1,7 @@
 import RouterView from './routers'
 import { GlobalStyles } from '@mui/material'
 import { css, Theme, useTheme } from '@emotion/react'
-import { globalCss } from '@loopring-web/common-resources'
+import { AccountStatus, globalCss } from '@loopring-web/common-resources'
 import { setLanguage } from '@loopring-web/component-lib'
 import { useInit } from './hook'
 import React from 'react'
@@ -9,15 +9,17 @@ import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
 import { Contract, ethers, providers, utils } from "ethers";
-import { store, useAccount, useSystem } from '@loopring-web/core'
+import { coinbaseSmartWalletPersist, store, useAccount, useSystem } from '@loopring-web/core'
 import { useAppKitProvider,  } from '@reown/appkit/react'
-import { generatePrivateKey, getUpdateAccountEcdsaTypedData } from '@loopring-web/loopring-sdk'
+import { ChainId, generatePrivateKey, getUpdateAccountEcdsaTypedData } from '@loopring-web/loopring-sdk'
 import {LoopringAPI } from '@loopring-web/core'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { parseErc6492Signature, EIP1193Provider } from 'viem'
-import { isWalletACoinbaseSmartWallet } from '@coinbase/onchainkit/wallet';
 import { type PublicClient, createPublicClient, http } from 'viem';
 import { mainnet ,sepolia } from 'viem/chains';
+import { a } from 'react-spring'
+
+// import coinbaseSmartWalletPersistSlice, { persistStoreCoinbaseSmartWalletData } from '@loopring-web/core/src/stores/coinbaseSmartWalletPersist/reducer'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -224,7 +226,7 @@ const getParams = () => {
   return {
     owner: account.accAddress,
     accountId: account._accountIdNotActive!,
-    validUntil: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+    validUntil: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 16,
     nonce: 0,
     exchange: system.exchangeInfo!.exchangeAddress,
     chainId
@@ -299,74 +301,261 @@ const App = () => {
   }, [])
   const { walletProvider } = useAppKitProvider("eip155");
   const system = useSystem()
+  const storageKey = 'dashgdhgwhegh'
+  const { account, updateAccount } = useAccount()
+  const { persistStoreCoinbaseSmartWalletData } = coinbaseSmartWalletPersist.useCoinbaseSmartWalletPersist()
   React.useEffect(() => {
     if (!walletProvider || !system.exchangeInfo?.exchangeAddress) return
     ;(async () => {
-      const provider = new providers.Web3Provider(walletProvider!);
+
+
+      
+      const data = JSON.parse(localStorage.getItem(storageKey)!)
       const params = getParams()
-      const KEY_MESSAGE =
-      'Sign this message to access Loopring Exchange: ' +
-      `${params.exchange}` +
-      ' with key nonce: ' +
-      `0`
+      const type = 'nothing' as 'approveHash' | 'updateAccount' | 'signSig' | 'updateStore' | 'nothing' | 'calcHash' | 'setRedux'
       
-      const signer = await provider.getSigner();
-      
-      // 计算并打印 KEY_MESSAGE 的哈希值
-      const messageHash = utils.hashMessage(KEY_MESSAGE);
-      const signature = await signer?.signMessage(KEY_MESSAGE);
-      const ddd = parseErc6492Signature(signature as any)
-      const aaa = generatePrivateKey({sig: signature, counterFactualInfo: undefined, error: null})
-      console.log('messageHash', messageHash, 'sig', signature);
-      // const verify = utils.verifyMessage(messageHash, signature)
-      
-      debugger
+      if (type === 'approveHash') {
+        const provider = new providers.Web3Provider(walletProvider!);
+        const signer = await provider.getSigner();
+        const con = new Contract(system.exchangeInfo!.exchangeAddress, exchange, signer)
+        const tx = await con.approveTransaction(params.owner, data.request.hashApproved)
+      } else if (type === 'updateAccount') {
+        debugger
+        LoopringAPI.userAPI?.checkUpdateAccount({
+          ...data,
+          walletType: 'aa' as any,
+          web3: connectProvides.usedWeb3, 
+        } as any)
+        
 
-      const yo = getUpdateAccountEcdsaTypedData({
-        owner: params.owner,
-        accountId: params.accountId,
-        publicKey: {
-          x: aaa.formatedPx, y: aaa.formatedPy
-        },
-        exchange: params.exchange,
-        validUntil: params.validUntil,
-        nonce: params.nonce,
-        maxFee: {
-          tokenId: 0,
-          volume: utils.parseEther('0.0001').toString()
-        },
-      }, params.chainId)
-      delete yo.types['EIP712Domain']
-      const hash = utils._TypedDataEncoder.hash(yo.domain, yo.types, yo.message)
-      
-      const con = new Contract(system.exchangeInfo!.exchangeAddress, exchange, signer)
-      LoopringAPI.userAPI?.checkUpdateAccount({
-        request: {
-          owner: params.owner,
-          accountId: params.accountId,
-          publicKey: {
-            x: aaa.formatedPx, y: aaa.formatedPy
-          },
-          exchange: params.exchange,
-          validUntil: params.validUntil,
-          nonce: params.nonce,
-          maxFee: {
-            tokenId: 0,
-            volume: utils.parseEther('0.0001').toString()
-          },
-          hashApproved: hash
-        },
-        privateKey: aaa.sk,
-        chainId: params.chainId,
-        walletType: 'aa' as any,
-        web3: connectProvides.usedWeb3, 
-        isHWAddr: true, 
-      } as any)
-      // const tx = await con.approveTransaction(params.owner, hash)
+        
+      } else  if (type === 'signSig'){
+        const KEY_MESSAGE =
+          'Sign this message to access Loopring Exchange: ' +
+          `${params.exchange}` +
+          ' with key nonce: ' +
+          `0`
 
-      console.log('asdhajsdhja',aaa, hash);
+        const provider = new providers.Web3Provider(walletProvider!)
+        const signer = await provider.getSigner()
+
+        // 计算并打印 KEY_MESSAGE 的哈希值
+        const messageHash = utils.hashMessage(KEY_MESSAGE)
+        const signature = await signer?.signMessage(KEY_MESSAGE)
+        const ddd = parseErc6492Signature(signature as any)
+        const aaa = generatePrivateKey({
+          sig: signature,
+          counterFactualInfo: undefined,
+          error: null,
+        })
+        console.log('messageHash', messageHash, 'sig', signature)
+        // const verify = utils.verifyMessage(messageHash, signature)
+
+        debugger
+
+        const yo = getUpdateAccountEcdsaTypedData(
+          {
+            owner: params.owner,
+            accountId: params.accountId,
+            publicKey: {
+              x: aaa.formatedPx,
+              y: aaa.formatedPy,
+            },
+            exchange: params.exchange,
+            validUntil: params.validUntil,
+            nonce: params.nonce,
+            maxFee: {
+              tokenId: 0,
+              volume: utils.parseEther('0.0001').toString(),
+            },
+          },
+          params.chainId,
+        )
+        delete yo.types['EIP712Domain']
+        const hash = utils._TypedDataEncoder.hash(yo.domain, yo.types, yo.message)
+        const eip712Sig = await signer?._signTypedData(yo.domain, yo.types, yo.message)
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({
+            request: {
+              owner: params.owner,
+              accountId: params.accountId,
+              publicKey: {
+                x: aaa.formatedPx,
+                y: aaa.formatedPy,
+              },
+              exchange: params.exchange,
+              validUntil: params.validUntil,
+              nonce: params.nonce,
+              maxFee: {
+                tokenId: 0,
+                volume: utils.parseEther('0.0001').toString(),
+              },
+              hashApproved: hash,
+              ecdsaSignature: eip712Sig,
+            },
+            privateKey: aaa.sk,
+            chainId: params.chainId,
+            // walletType: 'aa' as any,
+            // web3: connectProvides.usedWeb3,
+            isHWAddr: true,
+          }),
+        )
+      } else if (type === 'updateStore') {
+        const data = JSON.parse(localStorage.getItem(storageKey)!) as any
+        const apiKey = await LoopringAPI.userAPI?.getUserApiKey({
+          accountId: data.request.accountId,
+        }, data.privateKey)
+        debugger
+        updateAccount({
+          accAddress: data.request.owner,
+            readyState: AccountStatus.ACTIVATED,
+            accountId: data.request.accountId,
+            apiKey: apiKey!.apiKey,
+            frozen: false,
+            eddsaKey: {
+              keyPair: {
+                publicKeyX: data.request.publicKey.x,
+                publicKeyY: data.request.publicKey.y,
+              },
+              sk: data.privateKey
+            },
+            publicKey: data.request.publicKey,
+            nonce: 0,
+            keyNonce: 0,
+        })
+        
+      } else if (type === 'calcHash') {
+        const typedData = getUpdateAccountEcdsaTypedData(
+          {
+            accountId: 10503,
+            exchange: '0xD55d5CBC973373E7A5333Fd4F8901fcFE79a41F1',
+            // hashApproved: '0x22e5b73a2ece38bd2d6e92e613e5fcb8dcc3d2bfb2e57d109b88ffa3d008a07b',
+            maxFee: { tokenId: 0, volume: '19940000000000' },
+            nonce: 1,
+            owner: '0x87b39640fd704e87daa5ba65d0ae4e2b70f7767d',
+            publicKey: {
+              x: '0x05c2016630264ff92577413bb659754280f4b9fad16cdb8782aab9d94397e649',
+              y: '0x1dafc09b7a4f40d8edc71fe56515f49eb197d25d4c33181b61912c30912cc6d5',
+            },
+            validUntil: 1747757200,
+          },
+          ChainId.SEPOLIA,
+        )
+        delete typedData.types['EIP712Domain']
+        const hash = utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message)
+        debugger
+      } else if (type === 'setRedux') {
+        persistStoreCoinbaseSmartWalletData({
+          wallet: '0x87b39640Fd704E87daA5bA65D0ae4e2B70f7767d',
+          eddsaKey: {
+            sk: '0x05c2016630264ff92577413bb659754280f4b9fad16cdb8782aab9d94397e649',
+            formatedPx: '0x1dafc09b7a4f40d8edc71fe56515f49eb197d25d4c33181b61912c30912cc6d5',
+            formatedPy: '0x05c2016630264ff92577413bb659754280f4b9fad16cdb8782aab9d94397e649',
+            keyPair: {
+              publicKeyX: '0x05c2016630264ff92577413bb659754280f4b9fad16cdb8782aab9d94397e649',
+              publicKeyY: '0x1dafc09b7a4f40d8edc71fe56515f49eb197d25d4c33181b61912c30912cc6d5',
+              secretKey: '0x05c2016630264ff92577413bb659754280f4b9fad16cdb8782aab9d94397e649',
+            },
+          },
+          nonce: 3
+        })
+        // debugger
+        // store.dispatch(
+        //   a
+        // )
+      }
+      
     })()
   }, [walletProvider, system.exchangeInfo?.exchangeAddress])
+  // React.useEffect(() => {
+  //   if (!walletProvider || !system.exchangeInfo?.exchangeAddress) return
+  //   ;(async () => {
+  //     const provider = new providers.Web3Provider(walletProvider!);
+  //     const params = getParams()
+  //     const KEY_MESSAGE =
+  //     'Sign this message to access Loopring Exchange: ' +
+  //     `${params.exchange}` +
+  //     ' with key nonce: ' +
+  //     `0`
+      
+  //     const signer = await provider.getSigner();
+      
+  //     // 计算并打印 KEY_MESSAGE 的哈希值
+  //     const messageHash = utils.hashMessage(KEY_MESSAGE);
+  //     const signature = await signer?.signMessage(KEY_MESSAGE);
+  //     const ddd = parseErc6492Signature(signature as any)
+  //     const aaa = generatePrivateKey({sig: signature, counterFactualInfo: undefined, error: null})
+  //     console.log('messageHash', messageHash, 'sig', signature);
+  //     // const verify = utils.verifyMessage(messageHash, signature)
+      
+  //     debugger
+
+  //     const yo = getUpdateAccountEcdsaTypedData({
+  //       owner: params.owner,
+  //       accountId: params.accountId,
+  //       publicKey: {
+  //         x: aaa.formatedPx, y: aaa.formatedPy
+  //       },
+  //       exchange: params.exchange,
+  //       validUntil: params.validUntil,
+  //       nonce: params.nonce,
+  //       maxFee: {
+  //         tokenId: 0,
+  //         volume: utils.parseEther('0.0001').toString()
+  //       },
+  //     }, params.chainId)
+  //     delete yo.types['EIP712Domain']
+  //     const hash = utils._TypedDataEncoder.hash(yo.domain, yo.types, yo.message)
+      
+  //     localStorage.setItem('dashgdhgwhegh', JSON.stringify({
+  //       request: {
+  //         owner: params.owner,
+  //         accountId: params.accountId,
+  //         publicKey: {
+  //           x: aaa.formatedPx, y: aaa.formatedPy
+  //         },
+  //         exchange: params.exchange,
+  //         validUntil: params.validUntil,
+  //         nonce: params.nonce,
+  //         maxFee: {
+  //           tokenId: 0,
+  //           volume: utils.parseEther('0.0001').toString()
+  //         },
+  //         hashApproved: hash
+  //       },
+  //       privateKey: aaa.sk,
+  //       chainId: params.chainId,
+  //       // walletType: 'aa' as any,
+  //       // web3: connectProvides.usedWeb3, 
+  //       isHWAddr: true, 
+  //     }))
+  //     // const con = new Contract(system.exchangeInfo!.exchangeAddress, exchange, signer)
+  //     // LoopringAPI.userAPI?.checkUpdateAccount({
+  //     //   request: {
+  //     //     owner: params.owner,
+  //     //     accountId: params.accountId,
+  //     //     publicKey: {
+  //     //       x: aaa.formatedPx, y: aaa.formatedPy
+  //     //     },
+  //     //     exchange: params.exchange,
+  //     //     validUntil: params.validUntil,
+  //     //     nonce: params.nonce,
+  //     //     maxFee: {
+  //     //       tokenId: 0,
+  //     //       volume: utils.parseEther('0.0001').toString()
+  //     //     },
+  //     //     hashApproved: hash
+  //     //   },
+  //     //   privateKey: aaa.sk,
+  //     //   chainId: params.chainId,
+  //     //   walletType: 'aa' as any,
+  //     //   web3: connectProvides.usedWeb3, 
+  //     //   isHWAddr: true, 
+  //     // } as any)
+  //     // const tx = await con.approveTransaction(params.owner, hash)
+  //   })()
+  // }, [walletProvider, system.exchangeInfo?.exchangeAddress])
 
   React.useEffect(() => {
 
@@ -375,16 +564,16 @@ const App = () => {
       transport: http(),
     })
     
-    isWalletACoinbaseSmartWallet({
-      client,
-      userOp: {sender: '0x87b39640Fd704E87daA5bA65D0ae4e2B70f7767d'}
-    }).then(res => {
-      debugger
-      console.log('res', res)
-    }).catch(err => {
-      debugger
-      console.log('err', err)
-    })
+    // isWalletACoinbaseSmartWallet({
+    //   client,
+    //   userOp: {sender: '0x87b39640Fd704E87daA5bA65D0ae4e2B70f7767d'}
+    // }).then(res => {
+    //   debugger
+    //   console.log('res', res)
+    // }).catch(err => {
+    //   debugger
+    //   console.log('err', err)
+    // })
   }, [])
   
 

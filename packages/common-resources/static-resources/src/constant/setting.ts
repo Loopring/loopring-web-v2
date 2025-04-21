@@ -1,6 +1,7 @@
 import { IsMobile } from '../utils'
 import { NetworkItemInfo } from '../loopring-interface'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { mainnet, sepolia, base, baseSepolia, taiko, taikoHekla, Chain } from 'viem/chains'
 
 export enum UpColor {
   green = 'green',
@@ -250,3 +251,14 @@ export const SEND_TO_TAIKO_NETWORK_MAP = new Map([
   [sdk.ChainId.SEPOLIA, sdk.ChainId.TAIKOHEKLA],
   [sdk.ChainId.MAINNET, sdk.ChainId.TAIKO],
 ])
+
+export const CHAIN_ID_TO_VIEW_CHAIN = new Map<sdk.ChainId, Chain>([
+  [sdk.ChainId.SEPOLIA, sepolia],
+  [sdk.ChainId.MAINNET, mainnet],
+  [sdk.ChainId.TAIKOHEKLA, taikoHekla],
+  [sdk.ChainId.TAIKO, taiko],
+  [sdk.ChainId.BASE, base],
+  [sdk.ChainId.BASESEPOLIA, baseSepolia],
+])
+
+export const coinbaseSmartWalletChains = [sdk.ChainId.BASE, sdk.ChainId.BASESEPOLIA, sdk.ChainId.SEPOLIA] // todo rm sepolia

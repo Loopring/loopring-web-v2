@@ -137,11 +137,13 @@ export const accountServices = {
     // nonce,
     isInCounterFactualStatus,
     isContract,
+    accountId
   }: {
     apiKey?: string
     eddsaKey?: any
     isInCounterFactualStatus?: boolean
     isContract?: boolean
+    accountId?: number
   }) => {
     const updateInfo =
       apiKey && eddsaKey
@@ -160,6 +162,7 @@ export const accountServices = {
             _accountIdNotActive: -1,
             isInCounterFactualStatus,
             isContract,
+            accountId
           }
         : { readyState: AccountStatus.ACTIVATED }
 
@@ -233,8 +236,11 @@ export const accountServices = {
             ...account,
           })
         } else if (accInfo.accountId) {
-          if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
+          
+          // todo remove || true
+          if (!accInfo.publicKey.x || !accInfo.publicKey.y || true) {
             myLog('-------sendCheckAccount need update account!')
+            
             accountServices.sendNeedUpdateAccount({
               ...accInfo,
             })
