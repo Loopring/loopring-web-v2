@@ -2,14 +2,14 @@ import RouterView from './routers'
 import { GlobalStyles } from '@mui/material'
 import { css, Theme, useTheme } from '@emotion/react'
 import { AccountStatus, globalCss } from '@loopring-web/common-resources'
-import { setLanguage } from '@loopring-web/component-lib'
+import { AccountStep, setLanguage, useOpenModals } from '@loopring-web/component-lib'
 import { useInit } from './hook'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
 import { Contract, ethers, providers, utils } from "ethers";
-import { coinbaseSmartWalletPersist, store, useAccount, useSystem } from '@loopring-web/core'
+import { coinbaseSmartWalletPersist, store, useAccount, useAccountModal, useSystem } from '@loopring-web/core'
 import { useAppKitProvider,  } from '@reown/appkit/react'
 import { ChainId, generatePrivateKey, getUpdateAccountEcdsaTypedData } from '@loopring-web/loopring-sdk'
 import {LoopringAPI } from '@loopring-web/core'
@@ -304,16 +304,23 @@ const App = () => {
   const storageKey = 'dashgdhgwhegh'
   const { account, updateAccount } = useAccount()
   const { persistStoreCoinbaseSmartWalletData } = coinbaseSmartWalletPersist.useCoinbaseSmartWalletPersist()
+  const { setShowAccount, setShowResetAccount }=useOpenModals()
   React.useEffect(() => {
+    
+    setTimeout(() => {
+      // setShowResetAccount({isShow: true})
+      // setShowAccount({
+      //   step: AccountStep.Coinbase_Smart_Wallet_Password_Intro,
+      //   isShow: true
+      // })  
+    }, 15 * 1000);
     if (!walletProvider || !system.exchangeInfo?.exchangeAddress) return
     ;(async () => {
 
-
-      
       const data = JSON.parse(localStorage.getItem(storageKey)!)
       const params = getParams()
-      const type = 'nothing' as 'approveHash' | 'updateAccount' | 'signSig' | 'updateStore' | 'nothing' | 'calcHash' | 'setRedux'
       
+      const type = 'setAccount' as 'approveHash' | 'updateAccount' | 'signSig' | 'updateStore' | 'nothing' | 'calcHash' | 'setRedux' | 'setAccount'
       if (type === 'approveHash') {
         const provider = new providers.Web3Provider(walletProvider!);
         const signer = await provider.getSigner();
@@ -464,6 +471,9 @@ const App = () => {
         // store.dispatch(
         //   a
         // )
+      } else if (type === 'setAccount') {
+        
+        
       }
       
     })()

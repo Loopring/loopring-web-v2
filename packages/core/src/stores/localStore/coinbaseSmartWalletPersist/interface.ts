@@ -1,3 +1,5 @@
+import { ChainId } from "@loopring-web/loopring-sdk";
+
 export interface CoinbaseSmartWalletPersist {
   data:   CoinbaseSmartWalletPersistData | undefined
 }
@@ -15,4 +17,5 @@ export interface CoinbaseSmartWalletPersistData {
     };
   };
   nonce: number
+  chainId: ChainId
 }

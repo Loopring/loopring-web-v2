@@ -6,7 +6,7 @@ import { CoinbaseSmartWalletPersist, CoinbaseSmartWalletPersistData } from './in
 
 export function useCoinbaseSmartWalletPersist() {
   const state: CoinbaseSmartWalletPersist = useSelector(
-    (state: RootState) => state.coinbaseSmartWalletPersist,
+    (state: RootState) => state.localStore.coinbaseSmartWalletPersist,
   )
   // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
   const dispatch = useDispatch()

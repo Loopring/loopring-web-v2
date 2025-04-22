@@ -6,7 +6,7 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import { Account, AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
-import { accountReducer, LoopringAPI, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
+import { accountReducer, isCoinbaseSmartWallet, LoopringAPI, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
 import _ from 'lodash'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { ChainId } from '@loopring-web/loopring-sdk'
@@ -110,7 +110,14 @@ export const btnClickMap: {
   [fnType.DEPOSITING]: [goActiveAccount],
   [fnType.NOT_ACTIVE]: [goActiveAccount],
   [fnType.LOCKED]: [
-    function (info) {
+    async function (info) {
+      const { account: { accAddress }, settings: { defaultNetwork } } = store.getState()
+      const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
+      if (coinbaseSmartWallet) {
+        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }))
+        return
+      }
+
       if (!info?.exchangeInfoLoaded) {
         return
       }

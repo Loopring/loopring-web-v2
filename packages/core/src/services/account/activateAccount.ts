@@ -287,6 +287,7 @@ export async function updateAccountRecursively({
   })
   if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
     // todo handle nonce not found
+    debugger
     const isNonceNotFoundError = true
     if (isNonceNotFoundError) {
       await sdk.sleep(5 * 1000)

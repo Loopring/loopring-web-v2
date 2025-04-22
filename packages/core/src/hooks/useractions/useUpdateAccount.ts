@@ -3,13 +3,14 @@ import React from 'react'
 import { FeeInfo, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
-import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet } from '../../index'
+import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5, decryptAESMd5 } from '../../index'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useLocation } from 'react-router-dom';
 import { useAppKitProvider } from '@reown/appkit/react'
 import { coinbaseSmartWalletPersist } from '../../stores'
+import { AES, MD5 } from 'crypto-js'
 
 
 export function useUpdateAccount() {
@@ -20,13 +21,9 @@ export function useUpdateAccount() {
   const { referralCode, setReferralCode, defaultNetwork } = useSettings()
   const { walletProvider } = useAppKitProvider('eip155')
   const { persistStoreCoinbaseSmartWalletData } = coinbaseSmartWalletPersist.useCoinbaseSmartWalletPersist()
-  // const searchParams = new URLSearchParams(search);
-// useOnchainKit().
-// useonc
-// useonc
 
 
-  const goUpdateAccountNormal = React.useCallback(
+  const goUpdateAccount = React.useCallback(
     async ({
       isFirstTime = false,
       isReset = false,
@@ -36,6 +33,19 @@ export function useUpdateAccount() {
       isReset?: boolean
       feeInfo?: FeeInfo
     }) => {
+      const result = await isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
+      if (result) {
+        setShowAccount({
+          step: AccountStep.Coinbase_Smart_Wallet_Password_Intro,
+          isShow: true,
+          info: {
+            feeInfo,
+            isReset
+          }
+        })
+        return
+      }
+
       setShowAccount({
         isShow: true,
         step: isReset
@@ -146,12 +156,14 @@ export function useUpdateAccount() {
     [account.accAddress, search, checkHWAddr, setShowAccount, updateHW, referralCode],
   )
 
-  const goUpdateAccountCoinbaseSmartWallet = React.useCallback(
+  const goUpdateAccountCoinbaseWallet = React.useCallback(
     async ({
       isFirstTime = false,
       isReset = false,
       feeInfo,
+      password
     }: {
+      password: string
       isFirstTime?: boolean
       isReset?: boolean
       feeInfo?: FeeInfo
@@ -173,9 +185,13 @@ export function useUpdateAccount() {
         })
         
         persistStoreCoinbaseSmartWalletData({
-          eddsaKey,
+          eddsaKey: {
+            ...eddsaKey,
+            sk: encryptAESMd5(password, eddsaKey.sk)
+          },
           wallet: request.owner,
           nonce: request.nonce + 1,
+          chainId: defaultNetwork
         })
 
         if (!LoopringAPI.userAPI || !LoopringAPI.walletAPI) {
@@ -268,25 +284,30 @@ export function useUpdateAccount() {
     [account.accAddress, search, checkHWAddr, setShowAccount, updateHW, referralCode],
   )
 
-  const goUpdateAccount = React.useCallback(
-    async (args: {
-      isFirstTime?: boolean
-      isReset?: boolean
-      feeInfo?: FeeInfo
-      // isSmartWallet?: boolean
-    }) => {
-      const result = await isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
+  // const goUpdateAccount = React.useCallback(
+  //   async (args: {
+  //     isFirstTime?: boolean
+  //     isReset?: boolean
+  //     feeInfo?: FeeInfo
+  //     // isSmartWallet?: boolean
+  //   }) => {
+  //     const result = await isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
       
-      if (result) {
-        goUpdateAccountCoinbaseSmartWallet(args)
-      } else {
-        goUpdateAccountNormal(args)
-      }
-    },
-    [goUpdateAccountCoinbaseSmartWallet, goUpdateAccountNormal],
-  )
+  //     if (result) {
+  //       setShowAccount({
+  //         step: AccountStep.Coinbase_Smart_Wallet_Password_Intro,
+  //         isShow: true
+  //       })
+  //       // goUpdateAccountCoinbaseSmartWallet(args)
+  //     } else {
+  //       goUpdateAccountNormal(args)
+  //     }
+  //   },
+  //   [goUpdateAccountCoinbaseSmartWallet, goUpdateAccountNormal],
+  // )
 
   return {
     goUpdateAccount,
+    goUpdateAccountCoinbaseWallet
   }
 }

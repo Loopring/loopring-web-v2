@@ -63,8 +63,8 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     setThemeMode(mode)
   }, [mode])
   React.useEffect(() => {
-    if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
-      // 'DISCONNECT_SUCCESS' not work. Use `event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected` instead.
+    console.log('asdkajwked', event)
+    if (event.data.event === 'DISCONNECT_SUCCESS') {
       if (type === 'BRIDGE') {
         resetAccount()
         walletServices.sendDisconnect('', 'customer click disconnect')
@@ -74,10 +74,11 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
         resetAccount()
       }
     } 
-    myLog('event', event)
   }, [event, walletProvider])
   React.useEffect(() => {
     ;(async () => {
+      console.log('ahj2j3h', walletProvider, address, accAddress, chainId, defaultNetwork)
+      
       if (address && walletProvider) {
         if ((address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
           store.dispatch(

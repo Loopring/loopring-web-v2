@@ -237,8 +237,7 @@ export const accountServices = {
           })
         } else if (accInfo.accountId) {
           
-          // todo remove || true
-          if (!accInfo.publicKey.x || !accInfo.publicKey.y || true) {
+          if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
             myLog('-------sendCheckAccount need update account!')
             
             accountServices.sendNeedUpdateAccount({
