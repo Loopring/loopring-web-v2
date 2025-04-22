@@ -288,7 +288,7 @@ export async function updateAccountRecursively({
   if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
     // todo handle nonce not found
     debugger
-    const isNonceNotFoundError = true
+    const isNonceNotFoundError = (response as sdk.RESULT_INFO).message === 'No confirmed approve hash '
     if (isNonceNotFoundError) {
       await sdk.sleep(5 * 1000)
       return updateAccountRecursively({ request, eddsaKey })

@@ -12,12 +12,12 @@ import Web3 from 'web3'
 import { useTheme } from '@emotion/react'
 import { ChainId, toHex } from '@loopring-web/loopring-sdk'
 import { createAppKit, useAppKitEvents, useAppKitTheme, useAppKitAccount, useAppKitProvider, useAppKitNetwork } from "@reown/appkit/react";
-import { mainnet, sepolia, base, baseSepolia, taiko, taikoHekla } from "@reown/appkit/networks";
+import { mainnet, sepolia, base, baseSepolia, taiko, taikoHekla, Chain } from "@reown/appkit/networks";
 
 import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 
-const networks = [mainnet, sepolia, base, baseSepolia, taiko, taikoHekla]
+const networks: Chain[] = [mainnet, sepolia, base, baseSepolia, taiko, taikoHekla]
 
 const metadata = {
   name: process.env.REACT_APP_NAME!,
@@ -36,8 +36,16 @@ export const web3Modal = createAppKit({
   chainImages: {
     167000: `${SoursURL}earn/taiko.svg`,
   },
+  enableInjected: true,
+  featuredWalletIds:['c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96','fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration
+    email: false,
+    socials: false,
+    swaps: false,
+    onramp: false,
+    history: true,
+    send: false,
     
   },
 });
