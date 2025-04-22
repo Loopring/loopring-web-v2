@@ -67,7 +67,8 @@ import { utils, BigNumber } from 'ethers'
 import _ from 'lodash'
 import { closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
 import { useHistory, useLocation } from 'react-router'
-import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { useAppKitNetwork } from '@reown/appkit/react'
+
 
 const tWrap = (t: any, label: string, chainId: number) => {
   const [theLable, ...rest] = label.split('|')
@@ -1314,7 +1315,7 @@ export const useVaultSwap = () => {
       swapSubmit()
     }
   }
-  const { chainId } = useWeb3ModalAccount()
+  const { chainId } = useAppKitNetwork()
   const { btnStatus, onBtnClick: onClickTradeBtn, btnLabel, isAccountActive } = useSubmitBtn({
     availableTradeCheck: (a: any) => ({
       tradeBtnStatus: tradeBtnStatus.disabled ? TradeBtnStatus.DISABLED : localState.isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE,
