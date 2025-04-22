@@ -21,6 +21,7 @@ import {
   unlockAccount,
   useUpdateAccount,
   LoopringAPI,
+  isCoinbaseSmartWallet,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
@@ -83,7 +84,22 @@ export const useHeader = () => {
           [ButtonComponentsMap.WalletConnect]: {
             ...toolBarData[ButtonComponentsMap.WalletConnect],
             handleClick: onWalletBtnConnect,
-            handleClickUnlock: () => {
+            handleClickUnlock: async () => {
+              const {
+                account: { accAddress },
+                settings: { defaultNetwork },
+              } = store.getState()
+              const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
+              if (coinbaseSmartWallet) {
+                store.dispatch(
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
+                  }),
+                )
+                return
+              }
+
               unlockAccount()
               setShowAccount({
                 isShow: true,
