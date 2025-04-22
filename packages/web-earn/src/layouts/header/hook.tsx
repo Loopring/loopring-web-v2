@@ -21,15 +21,15 @@ import {
   unlockAccount,
   useUpdateAccount,
   LoopringAPI,
+  isCoinbaseSmartWallet,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
-import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, EarnProfile, headerMenuDataEarnMap } from '../../constant/router'
-import { useWeb3Modal } from '@web3modal/scaffold-react'
-import { toBig } from '@loopring-web/loopring-sdk'
+import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, headerMenuDataEarnMap } from '../../constant/router'
+import { useAppKit } from '@reown/appkit/react'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
@@ -38,7 +38,7 @@ export const useHeader = () => {
   const { setShowAccount } = useOpenModals()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const profile = ProfileIndex[network]
-  const modal = useWeb3Modal()
+  const modal = useAppKit()
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
@@ -84,7 +84,22 @@ export const useHeader = () => {
           [ButtonComponentsMap.WalletConnect]: {
             ...toolBarData[ButtonComponentsMap.WalletConnect],
             handleClick: onWalletBtnConnect,
-            handleClickUnlock: () => {
+            handleClickUnlock: async () => {
+              const {
+                account: { accAddress },
+                settings: { defaultNetwork },
+              } = store.getState()
+              const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
+              if (coinbaseSmartWallet) {
+                store.dispatch(
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
+                  }),
+                )
+                return
+              }
+
               unlockAccount()
               setShowAccount({
                 isShow: true,

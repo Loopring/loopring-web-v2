@@ -15,7 +15,7 @@ import { getTimestampDaysLater, isValidateNumberStr, numberFormat } from '../../
 import { makeWalletLayer2, parseRabbitConfig } from '../../hooks/help'
 import Decimal from 'decimal.js'
 import { DAYS } from '../../defs'
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 import { useDebouncedCallback } from '../../hooks/common'
 import _ from 'lodash'
 import { parseRabbitConfig2 } from '../../hooks/help/parseRabbitConfig'
@@ -312,7 +312,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     isOverBalance ||
     isFeeNotEnough ||
     isInvalidAddress
-  const {walletProvider} = useWeb3ModalProvider()
+  const {walletProvider} = useAppKitProvider('eip155')
   
 
   const sendBtn = {

@@ -4,6 +4,10 @@ test
 tests
 powered-test
 
+# test exceptions
+!**/viem/**/test
+!**/viem/**/test/**
+
 # asset directories
 docs
 doc

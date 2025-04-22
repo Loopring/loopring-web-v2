@@ -9,6 +9,7 @@ import { NFTHashInfoSlice } from './nftRefresh'
 import { redPacketHistorySlice } from './redPacket'
 import { offRampHistorySlice } from './offRamp'
 import { favoriteVaultMarketSlice } from './favoriteVaultMarket'
+import { coinbaseSmartWalletPersistSlice } from './coinbaseSmartWalletPersist'
 
 export const localStoreReducer = combineReducers({
   favoriteMarket: favoriteMarketSlice.reducer,
@@ -21,6 +22,7 @@ export const localStoreReducer = combineReducers({
   redPacketHistory: redPacketHistorySlice.reducer,
   offRampHistory: offRampHistorySlice.reducer,
   favoriteVaultMarket: favoriteVaultMarketSlice.reducer,
+  coinbaseSmartWalletPersist: coinbaseSmartWalletPersistSlice.reducer,
 })
 
 export * as confirmation from './confirmation'
@@ -33,3 +35,4 @@ export * as tradeProSettings from './tradeProSettings'
 export * as walletInfo from './walletInfo'
 export * as redPacketHistory from './redPacket'
 export * as offRampHistory from './offRamp'
+export * as coinbaseSmartWalletPersist from './coinbaseSmartWalletPersist'

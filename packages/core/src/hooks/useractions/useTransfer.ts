@@ -341,6 +341,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const processRequest = React.useCallback(
     async (request: sdk.OriginTransferRequestV3, isNotHardwareWallet: boolean) => {
+      const aaa=connectProvides.usedWeb3
       const { apiKey, connectName, eddsaKey } = account
 
       try {
@@ -463,6 +464,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     async (_transferValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
       const transferValue = store.getState()._router_modalData.transferValue
+      
       if (
         readyState === AccountStatus.ACTIVATED &&
         tokenMap &&

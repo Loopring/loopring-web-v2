@@ -1,11 +1,9 @@
-import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalEvents, useWeb3ModalTheme } from '@web3modal/ethers5/react'
 import React from 'react'
 import { SUPPORTING_NETWORKS, SagaStatus, SoursURL, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
 import { accountServices, checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { clearSystem, updateSystem } from '@loopring-web/core/src/stores/system/reducer'
 import { updateAccountStatus, cleanAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
 import { useDispatch } from 'react-redux'
@@ -13,51 +11,13 @@ import { providers } from 'ethers'
 import Web3 from 'web3'
 import { useTheme } from '@emotion/react'
 import { ChainId, toHex } from '@loopring-web/loopring-sdk'
+import { createAppKit, useAppKitEvents, useAppKitTheme, useAppKitAccount, useAppKitProvider, useAppKitNetwork } from "@reown/appkit/react";
+import { mainnet, sepolia, base, baseSepolia, taiko, taikoHekla, Chain } from "@reown/appkit/networks";
 
+import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-  },
-  {
-    chainId: 167000,
-    name: 'Taiko',
-    currency: 'ETH',
-    explorerUrl: 'https://taikoscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_167000!,
-  },
-  {
-    chainId: 11155111,
-    name: 'Sepolia',
-    currency: 'ETH',
-    explorerUrl: 'https://sepolia.etherscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_11155111!,
-  },
-  {
-    chainId: 167009,
-    name: 'Taiko Hekla',
-    currency: 'ETH',
-    explorerUrl: 'https://hekla.taikoscan.io',
-    rpcUrl: process.env.REACT_APP_RPC_URL_167009!,
-  },
-  {
-    chainId: 8453,
-    name: 'Base',
-    currency: 'ETH',
-    explorerUrl: 'https://basescan.org',
-    rpcUrl: process.env.REACT_APP_RPC_URL_8453!,
-  },
-  {
-    chainId: 84532,
-    name: 'Base Sepolia',
-    currency: 'ETH',
-    explorerUrl: 'https://sepolia.basescan.org',
-    rpcUrl: process.env.REACT_APP_RPC_URL_84532!,
-  },
-]
+
+const networks: Chain[] = [mainnet, sepolia, base, baseSepolia, taiko, taikoHekla]
 
 const metadata = {
   name: process.env.REACT_APP_NAME!,
@@ -66,35 +26,53 @@ const metadata = {
   icons: ['https://static.loopring.io/assets/svg/logo.svg'],
 }
 const chainIds = SUPPORTING_NETWORKS.map(Number)
-export const web3Modal = createWeb3Modal({
-  ethersConfig: defaultConfig({ metadata }),
-  chains: chains.filter(chain => chainIds.includes(chain.chainId)),
+
+export const web3Modal = createAppKit({
+  adapters: [new Ethers5Adapter()],
+  metadata: metadata,
+  networks: networks,
+  // .filter(network => chainIds.includes(network.id)),
   projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration,
-  featuredWalletIds: [],
   chainImages: {
     167000: `${SoursURL}earn/taiko.svg`,
-  }
-})
+  },
+  enableInjected: true,
+  featuredWalletIds:['c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96','fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
+  features: {
+    analytics: true, // Optional - defaults to your Cloud configuration
+    email: false,
+    socials: false,
+    swaps: false,
+    onramp: false,
+    history: true,
+    send: false,
+    
+  },
+});
+
 
 export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN') => {
-  const { walletProvider } = useWeb3ModalProvider()
+  
   const { status } = useSystem()
   const { currency } = useSettings()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { address } = useAppKitAccount()
+  const { chainId: _chainId } = useAppKitNetwork()
+  const chainId = typeof _chainId === 'number' ? _chainId : Number(_chainId)
+  const { walletProvider } = useAppKitProvider('eip155')
   const { resetAccount, account: {accAddress} } = useAccount()
-  const event = useWeb3ModalEvents()
+
+  const event = useAppKitEvents()
   const dispatch = useDispatch()
   const { mode } = useTheme()
-  const { setThemeMode } = useWeb3ModalTheme()
+  const { setThemeMode } = useAppKitTheme()
   const { updateWalletLayer1 } = useWalletLayer1()
   const { defaultNetwork } = useSettings()
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
   React.useEffect(() => {
-    if (event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected) {
-      // 'DISCONNECT_SUCCESS' not work. Use `event.data.event === 'MODAL_CLOSE' && !event.data.properties.connected` instead.
+    console.log('asdkajwked', event)
+    if (event.data.event === 'DISCONNECT_SUCCESS') {
       if (type === 'BRIDGE') {
         resetAccount()
         walletServices.sendDisconnect('', 'customer click disconnect')
@@ -104,10 +82,11 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
         resetAccount()
       }
     } 
-    myLog('event', event)
   }, [event, walletProvider])
   React.useEffect(() => {
     ;(async () => {
+      console.log('ahj2j3h', walletProvider, address, accAddress, chainId, defaultNetwork)
+      
       if (address && walletProvider) {
         if ((address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
           store.dispatch(

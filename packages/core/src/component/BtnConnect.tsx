@@ -17,8 +17,8 @@ import {
   MapChainId,
   SagaStatus,
 } from '@loopring-web/common-resources'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
 import { toBig } from '@loopring-web/loopring-sdk'
+import { useAppKit } from '@reown/appkit/react'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
@@ -143,7 +143,7 @@ export const BtnConnectL1 = withTranslation(['common', 'layout'], {
   
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const modal = useWeb3Modal()
+  const modal = useAppKit()
 
   return (
     <>

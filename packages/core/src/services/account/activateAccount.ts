@@ -9,6 +9,7 @@ import {
 import { ChainIdExtends, FeeInfo, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import * as sdk from '@loopring-web/loopring-sdk'
+import { providers, utils, Contract } from 'ethers'
 
 export async function activateAccount({
   isHWAddr,
@@ -137,5 +138,164 @@ export async function activateAccount({
     }
   } else {
     throw { code: UIERROR_CODE.ERROR_ON_FEE_UI }
+  }
+}
+
+const getSmartWalletUpdateAccount = async (
+  provider: providers.Web3Provider,
+  KEY_MESSAGE: string,
+  accInfo: sdk.AccountInfo,
+  exchangeAddr: string,
+  chainId: number,
+  feeInfo: FeeInfo
+) => {
+  const signer = await provider.getSigner()
+
+  // 计算并打印 KEY_MESSAGE 的哈希值
+  const messageHash = utils.hashMessage(KEY_MESSAGE)
+  const signature = await signer?.signMessage(KEY_MESSAGE)
+  const eddsaKeyInfo = sdk.generatePrivateKey({
+    sig: signature,
+    counterFactualInfo: undefined,
+    error: null,
+  })
+  console.log('messageHash', messageHash, 'sig', signature)
+  // const verify = utils.verifyMessage(messageHash, signature)
+
+  
+
+  const data = {
+    owner: accInfo.owner,
+    accountId: accInfo.accountId,
+    publicKey: {
+      x: eddsaKeyInfo.formatedPx,
+      y: eddsaKeyInfo.formatedPy,
+    },
+    exchange: exchangeAddr,
+    validUntil: getTimestampDaysLater(DAYS),
+    nonce: accInfo.nonce,
+    maxFee: {
+      tokenId: feeInfo.__raw__.tokenId,
+      volume: feeInfo.__raw__.feeRaw,
+    },
+  }
+
+  const typedData = sdk.getUpdateAccountEcdsaTypedData(
+    data,
+    chainId,
+  )
+  console.log('adhasjdhjs', data, chainId)
+  delete typedData.types['EIP712Domain']
+  const hash = utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message)
+  console.log('hash', hash)
+  const eip712Sig = await signer?._signTypedData(typedData.domain, typedData.types, typedData.message)
+  return {
+    hash,
+    eip712Sig,
+    eddsaKeyInfo,
+    updateAccountRequest: data as sdk.UpdateAccountRequestV3
+  }
+}
+
+const approveHash = async (
+  provider: providers.Web3Provider,
+  hash: string,
+  exchangeAddress: string,
+  owner: string,
+) => {
+  const signer = await provider.getSigner()
+  const contract = new Contract(exchangeAddress, sdk.Contracts.exchange36Abi.exchange, signer)
+  return contract.approveTransaction(owner, hash)
+}
+
+export async function activateAccountSmartWallet({
+  referral,
+  feeInfo = {} as FeeInfo,
+}: {
+  feeInfo?: FeeInfo
+  isReset?: boolean
+  referral?: string | null
+}) {
+  const system = store.getState().system
+  const { accAddress } = store.getState().account
+
+  if (
+    !system.exchangeInfo?.exchangeAddress ||
+    system.chainId === ChainIdExtends.NONETWORK ||
+    !LoopringAPI?.exchangeAPI ||
+    !accAddress
+  ) {
+    throw { code: UIERROR_CODE.DATA_NOT_READY }
+  }
+  const accInfo = await LoopringAPI.exchangeAPI
+    .getAccount({
+      owner: accAddress,
+    })
+    .then((res) => {
+      if ((res as sdk.RESULT_INFO).code || (res as sdk.RESULT_INFO).message) {
+        throw res
+      } else {
+        return res.accInfo
+      }
+    })
+
+  const keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
+    '${exchangeAddress}',
+    system.exchangeInfo.exchangeAddress,
+  ).replace('${nonce}', accInfo.nonce.toString())
+
+  if (!feeInfo?.belong || !feeInfo.feeRaw || !connectProvides.usedWeb3) {
+    throw { code: UIERROR_CODE.ERROR_ON_FEE_UI }
+  }
+  const _chainId = await connectProvides.usedWeb3.eth.getChainId()
+  await callSwitchChain(_chainId)
+  const provider = new providers.Web3Provider(connectProvides.usedWeb3.currentProvider as any)
+  const { hash, eip712Sig, eddsaKeyInfo, updateAccountRequest } = await getSmartWalletUpdateAccount(
+    provider,
+    keySeed,
+    accInfo,
+    system.exchangeInfo.exchangeAddress,
+    _chainId,
+    feeInfo
+  )
+  await approveHash(provider, hash, system.exchangeInfo.exchangeAddress, accInfo.owner)
+
+  return {
+    request: { ...updateAccountRequest, hashApproved: hash, ecdsaSignature: eip712Sig },
+    eddsaKey: eddsaKeyInfo
+  }
+}
+
+export async function updateAccountRecursively({
+  request,
+  eddsaKey,
+}: {
+  request?: sdk.UpdateAccountRequestV3
+  eddsaKey?: EddsaKey
+}) {
+  const system = store.getState().system
+  if (!request || !connectProvides.usedWeb3) {
+    throw { code: UIERROR_CODE.ERROR_ON_FEE_UI }
+  }
+  
+  const response = await LoopringAPI?.userAPI?.checkUpdateAccount({
+    request,
+    web3: connectProvides.usedWeb3,
+    chainId: system.chainId as any,
+    isHWAddr: false,
+    privateKey: eddsaKey?.eddsaKey.sk,
+  })
+  if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
+    // todo handle nonce not found
+    debugger
+    const isNonceNotFoundError = (response as sdk.RESULT_INFO).message === 'No confirmed approve hash '
+    if (isNonceNotFoundError) {
+      await sdk.sleep(5 * 1000)
+      return updateAccountRecursively({ request, eddsaKey })
+    } else {
+      throw response
+    }
+  } else {
+    return response
   }
 }
