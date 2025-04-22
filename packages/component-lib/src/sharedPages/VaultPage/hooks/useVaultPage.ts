@@ -14,6 +14,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useOpenModals } from '@loopring-web/component-lib'
 import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation'
+import { VaultAccountStatus } from '@loopring-web/loopring-sdk'
 
 export const useVaultPage = () => {
   const VaultPath = `${RouterPath.vault}/:item`
@@ -21,11 +22,11 @@ export const useVaultPage = () => {
   const history = useHistory()
   const vaultAccountInfo = useVaultAccountInfo()
   const { status: vaultStatus, getVaultMap, marketArray } = useVaultMap()
-  const [tabIndex, setTabIndex] = React.useState<VaultKey>(() => {
+  const [tabIndex, setTabIndex] = React.useState<VaultKey | undefined>(() => {
     return (
       Object.values(VaultKey).find(
-        (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
-      ) ?? VaultKey.VAULT_HOME
+        (item) => item.toLowerCase() === match?.params?.item?.toLowerCase(),
+      ) ?? undefined
     )
   })
 
@@ -48,16 +49,16 @@ export const useVaultPage = () => {
     }
   }, [vaultStatus])
 
-  React.useEffect(() => {
-    const item = Object.values(VaultKey).find(
-      (item) => item.toLowerCase() == match?.params?.item?.toLowerCase(),
-    )
-    setTabIndex(item ? item : VaultKey.VAULT_DASHBOARD)
-  }, [match?.params?.item])
-
   const handleTabChange = (_e: any, value: VaultKey) => {
     history.push(`${RouterPath.vault}/${value}`)
   }
+  React.useEffect(() => {
+    setTabIndex(
+      Object.values(VaultKey).find(
+        (item) => item.toLowerCase() === match?.params?.item?.toLowerCase(),
+      )
+    )
+  }, [match?.params?.item])
 
   const handleConfirmVaultRiskClose = (_e: any, isAgree: boolean) => {
     if (!isAgree) {
@@ -88,7 +89,11 @@ export const useVaultPage = () => {
   }
 
   return {
-    tabIndex,
+    tabIndex: tabIndex
+      ? tabIndex
+      : vaultAccountInfo?.vaultAccountInfo?.accountStatus === VaultAccountStatus.IN_STAKING
+      ? VaultKey.VAULT_DASHBOARD
+      : VaultKey.VAULT_TRADE,
     error,
     showLeverage,
     isShowConfirmedVault,

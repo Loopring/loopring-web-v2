@@ -34,6 +34,7 @@ import {
   NoticeSnack,
   useSettings,
   useToggle,
+  VaultPage,
 } from '@loopring-web/component-lib'
 import { InvestMarkdownPage, MarkdownPage, NotifyMarkdownPage } from '../pages/MarkdownPage'
 import { TradeRacePage } from '../pages/TradeRacePage'
@@ -46,8 +47,6 @@ import { useTranslation } from 'react-i18next'
 import { EarnPage } from '../pages/EarnPage'
 import { RouterAllowIndex, RouterMainKey, RouterPath } from '../constant/router'
 import { Layer2Page } from '../pages/Layer2Page'
-import Intro from '../pages/IntroPage'
-import { VaultPage } from '../pages/VaultPage'
 import { BtradeSwapPage } from '../pages/BtradeSwapPage'
 import { TaikoLockBannerPage, TaikoLockPage } from 'pages/TaikoLockPage'
 

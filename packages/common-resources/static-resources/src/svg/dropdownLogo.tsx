@@ -189,3 +189,16 @@ export const VaultDashboardIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
+
+
+export const VaultTradeIcon2 = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} viewBox='0 0 24 24'>
+      <path d="M16.166 2.83398L19.4993 6.16732L16.166 9.50065" stroke="black" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4.5 11.166V9.49935C4.5 8.61529 4.85119 7.76745 5.47631 7.14233C6.10143 6.5172 6.94928 6.16602 7.83333 6.16602H19.5" stroke="black" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7.83333 21.1667L4.5 17.8333L7.83333 14.5" stroke="black" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M19.5 12.834V14.5007C19.5 15.3847 19.1488 16.2326 18.5237 16.8577C17.8986 17.4828 17.0507 17.834 16.1667 17.834H4.5" stroke="black" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+    </SvgIcon>
+  )
+}
+

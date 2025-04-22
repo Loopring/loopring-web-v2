@@ -89,7 +89,7 @@ const BgButton = styled(Button)<{ customBg: string }>`
   
 `
 
-
+const zeroTag = '0.0'
 const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   t,
   forexMap,
@@ -131,6 +131,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   vaultAccountActive,
   totalEquity,
   showSettleBtn,
+  btnsDisabled,
   onClickBuy,
   onClickSell,
   didAccountSignIn
@@ -193,7 +194,12 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
           alignItems={isMobile ? 'end' : 'center'}
           alignSelf={'flex-end'}
         >
-          <Button onClick={onClickCollateralManagement} sx={{ width: 'auto' }} variant='contained'>
+          <Button
+            disabled={btnsDisabled}
+            onClick={onClickCollateralManagement}
+            sx={{ width: 'auto' }}
+            variant='contained'
+          >
             Collateral Management
           </Button>
           {showSettleBtn && (
@@ -207,6 +213,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                 color: theme.mode === 'light' ? 'var(--color-black)' : 'var(--color-white)',
               }}
               variant='contained'
+              disabled={btnsDisabled}
             >
               Settle
             </BgButton>
@@ -243,7 +250,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
           )}
         </Box>
         <Typography mt={1} variant='h2'>
-          {vaultAccountActive ? (hideAssets ? HiddenTag : totalEquity) : EmptyValueTag}
+          {vaultAccountActive ? (hideAssets ? HiddenTag : totalEquity) : zeroTag}
         </Typography>
 
         <Box mt={isMobile ? 2 : 4} display={'flex'} flexWrap={'wrap'} flexDirection={'row'}>
@@ -273,7 +280,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       false,
                       { isFait: true, floor: true },
                     )
-                : EmptyValueTag}
+                : zeroTag}
               {vaultAccountActive && (
                 <Typography
                   sx={{ cursor: 'pointer' }}
@@ -353,7 +360,17 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
 
             {(() => {
               if (!vaultAccountActive) {
-                return <Typography>{EmptyValueTag}</Typography>
+                return (
+                  <Typography
+                    component={'span'}
+                    display={'inline-flex'}
+                    alignItems={'center'}
+                    marginTop={1}
+                    sx={{ fontSize: '20px', marginRight: 1 / 2 }}
+                  >
+                    {zeroTag}
+                  </Typography>
+                )
               }
               const item = vaultAccountInfo?.marginLevel ?? '0'
               return (
@@ -380,9 +397,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       display={'inline-flex'}
                       alignItems={'center'}
                       marginTop={1}
-                      variant={'body1'}
-                      fontSize={'16px'}
-                      color={'textSecondary'}
+                      sx={{ fontSize: '20px', marginRight: 1 / 2 }}
                     >
                       <MarginLevelIcon
                         className='custom-size'
@@ -429,7 +444,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       false,
                       { isFait: true, floor: true },
                     )
-                : EmptyValueTag}
+                : zeroTag}
               {vaultAccountActive && (
                 <Typography
                   sx={{ cursor: 'pointer' }}
@@ -526,7 +541,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                         </Typography>
                       </Box>
                     ) : (
-                      EmptyValueTag
+                      zeroTag
                     )}
                   </>
                 )
@@ -581,7 +596,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       getValueInCurrency((vaultAccountInfo as any)?.maxCredit),
                       currency,
                     )
-                  : EmptyValueTag}
+                  : zeroTag}
               </Typography>
             </Box>
           )}
@@ -613,7 +628,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
               fontSize={'20px'}
               alignItems={'center'}
             >
-              {vaultAccountActive ? liquidationThreshold : EmptyValueTag}
+              {vaultAccountActive ? liquidationThreshold : zeroTag}
             </Typography>
           </Box>
           <Box sx={boxSx} position={'relative'}>
@@ -643,7 +658,7 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
               fontSize={'20px'}
               alignItems={'center'}
             >
-              {vaultAccountActive ? liquidationPenalty : EmptyValueTag}
+              {vaultAccountActive ? liquidationPenalty : zeroTag}
             </Typography>
           </Box>
         </Box>
@@ -864,36 +879,36 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
     </>
   )
   const inactiveView = (
-    <Box display={'flex'} mt={3} justifyContent={'space-between'} alignItems={'center'}>
+    <Box display={'flex'} mt={3} mb={5} flexDirection={isMobile ? 'column' : 'row'} justifyContent={isMobile ? 'center' : 'space-between'} alignItems={isMobile ? 'flex-start' : 'center'}>
       <Box
         display={'flex'}
         flexDirection={'column'}
         justifyContent={'center'}
         alignItems={'flex-start'}
         padding={2}
-        minHeight={'400px'}
+        minHeight={isMobile ? 'auto' : '400px'}
         width={'100%'}
-        marginTop={10}
+        mt={isMobile ? 2 : 10}
       >
         <Typography
-          variant={'h4'}
-          mb={2}
+          variant={isMobile ? 'h5' : 'h4'}
+          mb={isMobile ? 5 : 2}
           maxWidth={'90%'}
         >
           Loopring Portal functions as an isolated margin account allowing users to borrow and lend tokens using collateral.
         </Typography>
         <Typography
-          variant={'h4'}
+          variant={isMobile ? 'h5' : 'h4'}
           mb={5}
           maxWidth={'90%'}
         >
           It enables leveraged trading and provides access to assets beyond Ethereum.
         </Typography>
-        <WalletConnectL2Btn width='250px' size={'large'} />
+        <WalletConnectL2Btn width={isMobile ? '200px' : '250px'} size={isMobile ? 'medium' : 'large'} />
       </Box>
       <Box
         component={'img'}
-        width={'40%'}
+        width={isMobile ? '80%' : '40%'}
         mt={8}
         src={
           SoursURL +
@@ -912,7 +927,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
           flex: 1,
         }}
       >
-        {didAccountSignIn ? activeView : inactiveView}
+        {activeView}
+        {/* {didAccountSignIn ? activeView : inactiveView} */}
       </Container>
     </Box>
   )
