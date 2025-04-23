@@ -6,25 +6,28 @@ import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confir
 // import { SmallOrderAlert, Toast } from '../components/'
 import { CloseAllConfirmModal } from './modals'
 import { SmallOrderAlert, Toast } from '../../../components'
+import { useSettings } from '../../../stores'
 
 
 export const VaultTradePanel = () => {
   const { vaultSwapModalProps, smallOrderAlertProps, toastProps, closeAllConfirmModalProps } = useVaultSwap()
   const { confirmation, setShowVaultTradeHint } = useConfirmation()
-
+  const isMobile = useSettings().isMobile
   return (
-    <Box display={'flex'} justifyContent={'center'} position='relative' my={5} alignItems={'start'}>
+    <Box display={'flex'} justifyContent={'center'} flexDirection={isMobile ? 'column' : 'row'} position='relative' my={5} alignItems={'start'}>
       <Box
         sx={{
           position: 'relative',
           height: 'auto',
           borderRadius: '8px',
-          width: '20%',
           py: 2,
           px: 3,
           border: '1px solid var(--color-border)',
-          mr: 3,
           opacity: confirmation.showVaultTradeHint ? 1 : 0,
+          width: isMobile ? '92%' : '20%',
+          ml: isMobile ? '4%' : 0,
+          mr: isMobile ? '4%' : 3,
+          mb: isMobile ? 4 : 0,
         }}
       >
         <Typography>Portal Trade</Typography>
