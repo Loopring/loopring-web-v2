@@ -5,6 +5,7 @@ import {
   useSettings,
   ButtonProps,
   useOpenModals,
+  AccountStep,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import _ from 'lodash'
@@ -60,7 +61,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
   }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app, exchangeInfo])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
-  const { setShowDeposit } = useOpenModals()
+  const { setShowDeposit, setShowAccount } = useOpenModals()
   const { goUpdateAccount } = useUpdateAccount()
   return (
     <Button
@@ -79,6 +80,10 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
           isEarn: app === 'earn',
           readyState: account.readyState,
           specialActivation: async () => {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UpdateAccount_Approve_WaitForAuth
+            })
             const {account} = store.getState()
             const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
               accountId: account._accountIdNotActive,
