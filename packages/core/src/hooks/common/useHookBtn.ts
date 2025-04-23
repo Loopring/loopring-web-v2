@@ -85,13 +85,12 @@ export const useSubmitBtn = ({
         isEarn: app === 'earn',
         readyState: account.readyState,
         specialActivation: async () => {
-          alert('1')
+          
           const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
             accountId: account._accountIdNotActive,
           })
           const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
             accountId: account._accountIdNotActive!,
-            tokens: '',
           })
           const found = Object.keys(feeInfo.fees).find((key) => {
             const fee = feeInfo.fees[key].fee

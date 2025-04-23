@@ -90,7 +90,6 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
             })
             const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
               accountId: account._accountIdNotActive!,
-              tokens: '',
             })
             const found = Object.keys(feeInfo.fees).find((key) => {
               const fee = feeInfo.fees[key].fee
