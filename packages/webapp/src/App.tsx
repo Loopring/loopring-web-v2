@@ -11,7 +11,7 @@ import { HashRouter as Router, useLocation } from 'react-router-dom'
 import { Contract, ethers, providers, utils } from "ethers";
 import { coinbaseSmartWalletPersist, store, useAccount, useAccountModal, useSystem } from '@loopring-web/core'
 import { useAppKitProvider,  } from '@reown/appkit/react'
-import { ChainId, generatePrivateKey, getUpdateAccountEcdsaTypedData } from '@loopring-web/loopring-sdk'
+import { ChainId, DUAL_RETRY_STATUS, generatePrivateKey, getUpdateAccountEcdsaTypedData, LABEL_INVESTMENT_STATUS, SETTLEMENT_STATUS } from '@loopring-web/loopring-sdk'
 import {LoopringAPI } from '@loopring-web/core'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { parseErc6492Signature, EIP1193Provider } from 'viem'
@@ -313,7 +313,38 @@ const App = () => {
       //   step: AccountStep.Coinbase_Smart_Wallet_Password_Intro,
       //   isShow: true
       // })  
-    }, 15 * 1000);
+      // const response = LoopringAPI.defiAPI?.getDualTransactions(
+      //           {
+      //             accountId: account.accountId,
+      //             settlementStatuses: SETTLEMENT_STATUS.UNSETTLED,
+      //             investmentStatuses: [
+      //               LABEL_INVESTMENT_STATUS.CANCELLED,
+      //               LABEL_INVESTMENT_STATUS.SUCCESS,
+      //               LABEL_INVESTMENT_STATUS.PROCESSED,
+      //               LABEL_INVESTMENT_STATUS.PROCESSING,
+      //             ].join(','),
+      //             retryStatuses: [DUAL_RETRY_STATUS.RETRYING],
+      //           } as any,
+      //            "",
+      //         ).then(x => {
+      //           debugger
+      //         })
+      //         .catch(x => {
+      //           debugger
+      //         })
+      // const response2 = LoopringAPI.vaultAPI?.getVaultInfoAndBalance(
+      //           {
+      //             accountId: account.accountId,
+      //             },
+      //            "",
+      //         ).then(x => {
+      //           debugger
+      //         })
+      //         .catch(x => {
+      //           debugger
+      //         })
+              // setHasDualInvest(response.totalNum && response.totalNum > 0)
+    }, 5 * 1000);
     if (!walletProvider || !system.exchangeInfo?.exchangeAddress) return
     ;(async () => {
 

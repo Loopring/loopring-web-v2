@@ -6,6 +6,8 @@ import { useCoinbaseSmartWalletPersist } from '../../stores/localStore/coinbaseS
 import { LoopringAPI } from '../../api_wrapper'
 import { accountServices } from '../../services'
 import { useAccount } from '../../stores'
+import { DUAL_RETRY_STATUS, LABEL_INVESTMENT_STATUS, SETTLEMENT_STATUS, VaultAccountStatus } from '@loopring-web/loopring-sdk'
+import { AccountStatus } from '@loopring-web/common-resources'
 
 export const useCoinbaseWalletPassword = () => {
   const { t } = useTranslation('common')
@@ -77,22 +79,42 @@ export const useCoinbaseWalletPassword = () => {
           })
       },
       onClickForgetPassword: async () => {
-        // const hasPortalOrDual = false // todo
-        setShowAccount({
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
-          isShow: true,
-        })
-        // if (hasPortalOrDual) {
-        //   setShowAccount({
-        //     step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
-        //     isShow: true,
-        //   })
-        // } else {
-        //   setShowAccount({
-        //     step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
-        //     isShow: true,
-        //   })
-        // }
+        const [hasDualInvest, hasVault] = await Promise.all([
+          LoopringAPI.defiAPI?.getDualTransactions(
+            {
+              accountId: account.accountId,
+              settlementStatuses: SETTLEMENT_STATUS.UNSETTLED,
+              investmentStatuses: [
+                LABEL_INVESTMENT_STATUS.CANCELLED,
+                LABEL_INVESTMENT_STATUS.SUCCESS,
+                LABEL_INVESTMENT_STATUS.PROCESSED,
+                LABEL_INVESTMENT_STATUS.PROCESSING,
+              ].join(','),
+              retryStatuses: [DUAL_RETRY_STATUS.RETRYING],
+            } as any,
+             "",
+          ).then(res => res.totalNum && res.totalNum > 0),
+          LoopringAPI.vaultAPI?.getVaultInfoAndBalance(
+            {
+              accountId: account.accountId,
+              },
+             "",
+          ).then(res => {
+            return res.accountStatus === VaultAccountStatus.IN_STAKING
+          })
+        ])
+        const hasPortalOrDual = hasDualInvest || hasVault
+        if (hasPortalOrDual) {
+          setShowAccount({
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
+            isShow: true,
+          })
+        } else {
+          setShowAccount({
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
+            isShow: true,
+          })
+        }
       },
     },
     forgetPasswordConfirmProps: {
