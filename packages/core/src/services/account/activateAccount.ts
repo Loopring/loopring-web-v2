@@ -149,6 +149,9 @@ const getSmartWalletUpdateAccount = async (
   chainId: number,
   feeInfo: FeeInfo
 ) => {
+  const { tokenMap } = store.getState().tokenMap
+  const feeToken = tokenMap[feeInfo.belong]
+
   const signer = await provider.getSigner()
 
   // 计算并打印 KEY_MESSAGE 的哈希值
@@ -175,8 +178,8 @@ const getSmartWalletUpdateAccount = async (
     validUntil: getTimestampDaysLater(DAYS),
     nonce: accInfo.nonce,
     maxFee: {
-      tokenId: feeInfo.__raw__.tokenId,
-      volume: feeInfo.__raw__.feeRaw,
+      tokenId: feeToken.tokenId,
+      volume: feeInfo.feeRaw!.toString(),
     },
   }
 
@@ -286,8 +289,6 @@ export async function updateAccountRecursively({
     privateKey: eddsaKey?.eddsaKey.sk,
   })
   if ((response as sdk.RESULT_INFO).code || (response as sdk.RESULT_INFO).message) {
-    // todo handle nonce not found
-    debugger
     const isNonceNotFoundError = (response as sdk.RESULT_INFO).message === 'No confirmed approve hash '
     if (isNonceNotFoundError) {
       await sdk.sleep(5 * 1000)
