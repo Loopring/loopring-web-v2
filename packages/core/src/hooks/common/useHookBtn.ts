@@ -85,6 +85,7 @@ export const useSubmitBtn = ({
         isEarn: app === 'earn',
         readyState: account.readyState,
         specialActivation: async () => {
+          alert('1')
           const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
             accountId: account._accountIdNotActive,
           })
