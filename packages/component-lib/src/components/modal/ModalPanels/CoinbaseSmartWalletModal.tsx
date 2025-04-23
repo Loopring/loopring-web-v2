@@ -68,8 +68,10 @@ const isValidPassword = (password: string): boolean => {
   const hasLetters = /[a-zA-Z]/.test(password);
   
   const hasNumbers = /[0-9]/.test(password);
+
+  const onlyLetterOrNumber = /^[a-zA-Z0-9]+$/.test(password);
   
-  return hasValidLength && hasLetters && hasNumbers;
+  return hasValidLength && hasLetters && hasNumbers && onlyLetterOrNumber;
 }
 
 const Coinbase_Smart_Wallet_Password_Set = withTranslation('common')(
