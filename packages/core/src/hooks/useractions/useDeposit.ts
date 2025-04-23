@@ -10,6 +10,7 @@ import {
 import {
   AccountStatus,
   AddressError,
+  coinbaseSmartWalletChains,
   CoinMap,
   IBData,
   L1_UPDATE,
@@ -83,9 +84,15 @@ export const useDeposit = <
     // address: toAddress,
     realAddr: realToAddress,
     setAddress: setToAddress,
-    addrStatus: toAddressStatus,
+    addrStatus: _toAddressStatus,
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck()
+
+  const toAddressStatus =
+    coinbaseSmartWalletChains.includes(defaultNetwork) &&
+    _toAddressStatus === AddressError.IsNotLoopringContract
+      ? AddressError.NoError
+      : _toAddressStatus
 
   const [loopringSmartWalletCheck, setLoopringSmartWalletCheck] = React.useState(
     {
