@@ -1707,5 +1707,6 @@ export const SPECIAL_ACTIVATION_NETWORKS = [
   ChainId.TAIKO,
   ChainId.TAIKOHEKLA, 
   ChainId.BASE,
+  ChainId.SEPOLIA,
   ChainId.BASESEPOLIA,
 ]
