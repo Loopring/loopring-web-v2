@@ -217,12 +217,13 @@ const Coinbase_Smart_Wallet_Password_Set = withTranslation('common')(
 )
 
 const Coinbase_Smart_Wallet_Password_Input = withTranslation('common')(
-  ({ t, onClickConfirm, onClickForgetPassword, inputDisabled, showPasswordMismatchError }: {
+  ({ t, onClickConfirm, onClickForgetPassword, inputDisabled, showPasswordMismatchError, onInputPassword }: {
     t: any
     onClickConfirm: (pwd: string) => void
     onClickForgetPassword: () => void
     inputDisabled?: boolean
     showPasswordMismatchError: boolean
+    onInputPassword: () => void
   }) => {
     const [password, setPassword] = React.useState('')
     const [showPassword, setShowPassword] = React.useState(false)
@@ -253,6 +254,7 @@ const Coinbase_Smart_Wallet_Password_Input = withTranslation('common')(
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value)
+                    onInputPassword()
                   }}
                   endAdornment={
                     showPassword ? (
