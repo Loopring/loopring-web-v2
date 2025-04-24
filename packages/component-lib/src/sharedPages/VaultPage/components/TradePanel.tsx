@@ -18,7 +18,7 @@ export const VaultTradePanel = () => {
       <Box
         sx={{
           position: 'relative',
-          height: 'auto',
+          height: confirmation.showVaultTradeHint ? 'auto' : 0,
           borderRadius: '8px',
           py: 2,
           px: 3,
