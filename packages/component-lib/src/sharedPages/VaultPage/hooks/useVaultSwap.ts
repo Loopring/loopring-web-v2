@@ -68,7 +68,7 @@ import _ from 'lodash'
 import { closePositionsAndRepayIfNeeded, filterPositions, repayIfNeeded } from '../utils'
 import { useHistory, useLocation } from 'react-router'
 import { useAppKitNetwork } from '@reown/appkit/react'
-
+import { useConfirmation } from '@loopring-web/core/src/stores/localStore/confirmation'
 
 const tWrap = (t: any, label: string, chainId: number) => {
   const [theLable, ...rest] = label.split('|')
@@ -149,6 +149,7 @@ export const useVaultSwap = () => {
     setShowVaultJoin,
     setShowGlobalToast,
     setShowVaultCloseConfirm,
+    setShowConfirmedVault
   } = useOpenModals()
   const {
     toggle: { VaultInvest },
@@ -1261,6 +1262,9 @@ export const useVaultSwap = () => {
     }
   }
   const history = useHistory()
+  const {
+    confirmation: { confirmedOpenVaultPosition },
+  } = useConfirmation()
   const _onClickTradeBtn = async () => {
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true })
@@ -1275,10 +1279,15 @@ export const useVaultSwap = () => {
       setIsSwapLoading(false)
       return
     }
-
+   
     if (vaultAccountInfo?.accountStatus !== sdk.VaultAccountStatus.IN_STAKING) {
-      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
-      setShowVaultJoin({ isShow: true})
+      if (!confirmedOpenVaultPosition) {
+        setShowConfirmedVault({ isShow: true })  
+      } else {
+        history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
+        setShowConfirmedVault({ isShow: false })  
+        setShowVaultJoin({ isShow: true})
+      }
       return
     }
 
