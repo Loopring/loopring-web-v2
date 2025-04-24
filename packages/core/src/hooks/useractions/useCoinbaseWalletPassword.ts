@@ -8,6 +8,7 @@ import { accountServices } from '../../services'
 import { useAccount } from '../../stores'
 import { DUAL_RETRY_STATUS, LABEL_INVESTMENT_STATUS, SETTLEMENT_STATUS, VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { AccountStatus } from '@loopring-web/common-resources'
+import { useEffect, useState } from 'react'
 
 export const useCoinbaseWalletPassword = () => {
   const { t } = useTranslation('common')
@@ -16,7 +17,10 @@ export const useCoinbaseWalletPassword = () => {
   const { data } = useCoinbaseSmartWalletPersist()
   const { defaultNetwork } = useSettings()
   const { account } = useAccount()
-
+  const [showPasswordMismatchError, setShowPasswordMismatchError] = useState(false)
+  useEffect(() => {
+    setShowPasswordMismatchError(false)
+  }, [isShowAccount.step, isShowAccount.isShow])
   return {
     introProps: {
       t,
@@ -54,7 +58,7 @@ export const useCoinbaseWalletPassword = () => {
         const accountInfoRealTime = await LoopringAPI.exchangeAPI?.getAccount({
           owner: data.wallet,
         })
-
+        setShowPasswordMismatchError(false)
         LoopringAPI.userAPI
           ?.getUserApiKey(
             {
@@ -75,6 +79,7 @@ export const useCoinbaseWalletPassword = () => {
             })
           })
           .catch((e) => {
+            setShowPasswordMismatchError(true)
             accountServices.sendCheckAccount(data.wallet)
           })
       },
@@ -116,6 +121,7 @@ export const useCoinbaseWalletPassword = () => {
           })
         }
       },
+      showPasswordMismatchError
     },
     forgetPasswordConfirmProps: {
       t,
