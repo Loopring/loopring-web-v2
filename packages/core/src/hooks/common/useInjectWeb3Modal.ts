@@ -2,7 +2,7 @@ import React from 'react'
 import { SUPPORTING_NETWORKS, SagaStatus, SoursURL, myLog } from '@loopring-web/common-resources'
 import { setDefaultNetwork, useSettings } from '@loopring-web/component-lib'
 
-import { accountServices, checkAccount, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
+import { accountServices, checkAccount, isSameEVMAddress, store, useAccount, useSelectNetwork, useSystem, useWalletLayer1 } from '@loopring-web/core'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 import { clearSystem, updateSystem } from '@loopring-web/core/src/stores/system/reducer'
 import { updateAccountStatus, cleanAccountStatus } from '@loopring-web/core/src/stores/account/reducer'
@@ -71,44 +71,51 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   React.useEffect(() => {
     setThemeMode(mode)
   }, [mode])
-  React.useEffect(() => {
-    console.log('asdkajwked', event)
-    if (event.data.event === 'DISCONNECT_SUCCESS') {
+
+  const combinedEvent = !isSameEVMAddress(address || '', accAddress) 
+  ? 'ADDRESS_CHANGED'
+  : event.data.event 
+
+  const checkEvent = React.useCallback(() => {
+    if (['DISCONNECT_SUCCESS', 'DISCONNECT_ERROR'].includes(combinedEvent)) {
       if (type === 'BRIDGE') {
         resetAccount()
         walletServices.sendDisconnect('', 'customer click disconnect')
         updateSystem({ chainId })
+        store.dispatch(setDefaultNetwork(undefined))
       } else {
         walletServices.sendDisconnect('', 'customer click disconnect')
         resetAccount()
+        store.dispatch(setDefaultNetwork(undefined))
       }
-    } 
-  }, [event, walletProvider])
-  React.useEffect(() => {
-    ;(async () => {
-      console.log('ahj2j3h', walletProvider, address, accAddress, chainId, defaultNetwork)
-      
-      if (address && walletProvider) {
-        if ((address.toLowerCase() !== accAddress.toLowerCase()) || (chainId !== defaultNetwork)) {
-          store.dispatch(
-            clearSystem(undefined)
-          );
-          store.dispatch(
-            updateSystem({
-              chainId,
-            }),
-          )
-          store.dispatch(setDefaultNetwork(chainId))
-        }
-        if ((accAddress && address.toLowerCase() !== accAddress.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) { 
+    }  
+    if (["SWITCH_NETWORK", "INITIALIZE", 'CONNECT_SUCCESS', 'CONNECT_ERROR'].includes(combinedEvent)) {
+      store.dispatch(
+        clearSystem(undefined)
+      );
+      store.dispatch(
+        updateSystem({
+          chainId,
+        }),
+      )
+      store.dispatch(setDefaultNetwork(chainId))
+    }  
+    if (['ADDRESS_CHANGED'].includes(combinedEvent)) {
+      if (address) {
+        if ((address.toLowerCase() !== accAddress?.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) { 
           accountServices.sendAccountLock()
           checkAccount(address, chainId)
         } else if (chainId && chainIds.includes(chainId)) {
           checkAccount(address, chainId)
         }
-      } else {
-        store.dispatch(setDefaultNetwork(undefined))
       }
+    }
+  }, [combinedEvent, walletProvider, chainId, address, accAddress, defaultNetwork])
+  React.useEffect(() => {
+    checkEvent()
+  }, [combinedEvent])
+  React.useEffect(() => {
+    ;(async () => {
       if (type === 'BRIDGE' && address && status === SagaStatus.DONE) {
         updateWalletLayer1()
       }
@@ -127,7 +134,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
   }, [address])
   React.useEffect(() => {
     if (walletProvider) {
-      if (walletProvider.isMetaMask) {
+      if ((walletProvider as any).isMetaMask) {
         dispatch(
           updateAccountStatus({
             connectName: ConnectProviders.MetaMask,
