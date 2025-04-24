@@ -54,34 +54,34 @@ export const useCoinbaseWalletPassword = () => {
       ),
       onClickConfirm: async (password: string) => {
         if (!data || !data?.eddsaKey.sk) return
-        const sk = decryptAESMd5(password, data?.eddsaKey.sk)
-        const accountInfoRealTime = await LoopringAPI.exchangeAPI?.getAccount({
-          owner: data.wallet,
-        })
-        setShowPasswordMismatchError(false)
-        LoopringAPI.userAPI
-          ?.getUserApiKey(
-            {
-              accountId: accountInfoRealTime!.accInfo.accountId,
-            },
-            sk,
-          )
-          .then((res) => {
-            accountServices.sendAccountSigned({
-              apiKey: res.apiKey,
-              eddsaKey: { ...data.eddsaKey, sk },
-              isInCounterFactualStatus: false,
-              isContract: true,
-              accountId: accountInfoRealTime!.accInfo.accountId,
-            })
-            setShowAccount({
-              isShow: false,
-            })
+        try {
+          const sk = decryptAESMd5(password, data?.eddsaKey.sk)
+          const accountInfoRealTime = await LoopringAPI.exchangeAPI?.getAccount({
+            owner: data.wallet,
           })
-          .catch((e) => {
-            setShowPasswordMismatchError(true)
-            accountServices.sendCheckAccount(data.wallet)
+          setShowPasswordMismatchError(false)
+          const res = await LoopringAPI.userAPI!
+            .getUserApiKey(
+              {
+                accountId: accountInfoRealTime!.accInfo.accountId,
+              },
+              sk,
+            )
+
+          accountServices.sendAccountSigned({
+            apiKey: res.apiKey,
+            eddsaKey: { ...data.eddsaKey, sk },
+            isInCounterFactualStatus: false,
+            isContract: true,
+            accountId: accountInfoRealTime!.accInfo.accountId,
           })
+          setShowAccount({
+            isShow: false,
+          })
+        } catch (e) {
+          setShowPasswordMismatchError(true)
+          accountServices.sendCheckAccount(data.wallet)
+        }
       },
       onClickForgetPassword: async () => {
         const [hasDualInvest, hasVault] = await Promise.all([
@@ -120,6 +120,9 @@ export const useCoinbaseWalletPassword = () => {
             isShow: true,
           })
         }
+      },
+      onInputPassword: () => {
+        setShowPasswordMismatchError(false)
       },
       showPasswordMismatchError
     },

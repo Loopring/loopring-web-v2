@@ -72,9 +72,11 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
     setThemeMode(mode)
   }, [mode])
 
-  const combinedEvent = !isSameEVMAddress(address || '', accAddress) 
-  ? 'ADDRESS_CHANGED'
-  : event.data.event 
+  const combinedEvent = ['DISCONNECT_SUCCESS', 'DISCONNECT_ERROR'].includes(event.data.event)
+    ? event.data.event
+    : !isSameEVMAddress(address || '', accAddress)
+    ? 'ADDRESS_CHANGED'
+    : event.data.event 
 
   const checkEvent = React.useCallback(() => {
     if (['DISCONNECT_SUCCESS', 'DISCONNECT_ERROR'].includes(combinedEvent)) {
