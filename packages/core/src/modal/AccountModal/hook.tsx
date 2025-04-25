@@ -3697,7 +3697,8 @@ export function useAccountModalForUI({
             {...coinbaseWalletPassword.forgetPasswordConfirmProps}
           />
         ),
-        height: '450px',
+        height: '520px',
+
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password]: {
         view: (
@@ -3705,7 +3706,7 @@ export function useAccountModalForUI({
             {...coinbaseWalletPassword.forgetPasswordProps}
           />
         ),
-        height: '400px',
+        height: '450px',
         
       },
     })
