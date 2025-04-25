@@ -647,7 +647,7 @@ const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
                   rightElement: (
                     <Box ml={2}>
                       <Typography variant='h4' mb={1}>
-                        Create Account
+                        Submit EDDSA Key & Wait for Block Confirmation
                       </Typography>
                       <Typography variant='body1' color='var(--color-text-secondary)'>
                       It requires a certain number of block confirmations. The dApp will automatically monitor the progress and proceed to Step 3 once confirmations are complete.
