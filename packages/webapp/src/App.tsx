@@ -310,7 +310,7 @@ const App = () => {
     setTimeout(() => {
       // setShowResetAccount({isShow: true})
       // setShowAccount({
-      //   step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
+      //   step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
       //   isShow: true
       // })  
       // const response = LoopringAPI.defiAPI?.getDualTransactions(
