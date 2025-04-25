@@ -154,18 +154,12 @@ const getSmartWalletUpdateAccount = async (
 
   const signer = await provider.getSigner()
 
-  // 计算并打印 KEY_MESSAGE 的哈希值
-  const messageHash = utils.hashMessage(KEY_MESSAGE)
   const signature = await signer?.signMessage(KEY_MESSAGE)
   const eddsaKeyInfo = sdk.generatePrivateKey({
     sig: signature,
     counterFactualInfo: undefined,
     error: null,
   })
-  console.log('messageHash', messageHash, 'sig', signature)
-  // const verify = utils.verifyMessage(messageHash, signature)
-
-  
 
   const data = {
     owner: accInfo.owner,
@@ -187,10 +181,8 @@ const getSmartWalletUpdateAccount = async (
     data,
     chainId,
   )
-  console.log('adhasjdhjs', data, chainId)
   delete typedData.types['EIP712Domain']
   const hash = utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message)
-  console.log('hash', hash)
   const eip712Sig = await signer?._signTypedData(typedData.domain, typedData.types, typedData.message)
   return {
     hash,
@@ -268,10 +260,6 @@ export async function activateAccountSmartWallet({
     approveFn: () => approveHash(provider, hash, system.exchangeInfo!.exchangeAddress, accInfo.owner)
   }
 
-  // return {
-  //   request: { ...updateAccountRequest, hashApproved: hash, ecdsaSignature: eip712Sig },
-  //   eddsaKey: eddsaKeyInfo
-  // }
 }
 
 export async function updateAccountRecursively({

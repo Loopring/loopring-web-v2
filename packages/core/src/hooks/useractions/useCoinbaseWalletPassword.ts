@@ -1,15 +1,13 @@
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import { useUpdateAccount } from './useUpdateAccount'
-import { decryptAESMd5, encryptAESMd5, isSameEVMAddress } from '../../utils'
+import { decryptAESMd5, isSameEVMAddress } from '../../utils'
 import { useCoinbaseSmartWalletPersist } from '../../stores/localStore/coinbaseSmartWalletPersist'
 import { LoopringAPI } from '../../api_wrapper'
 import { accountServices } from '../../services'
 import { useAccount } from '../../stores'
 import { DUAL_RETRY_STATUS, LABEL_INVESTMENT_STATUS, SETTLEMENT_STATUS, VaultAccountStatus } from '@loopring-web/loopring-sdk'
-import { AccountStatus } from '@loopring-web/common-resources'
 import { useEffect, useState } from 'react'
-import { step } from 'viem/chains'
 
 export const useCoinbaseWalletPassword = () => {
   const { t } = useTranslation('common')

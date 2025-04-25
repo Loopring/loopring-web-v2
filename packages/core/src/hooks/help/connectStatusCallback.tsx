@@ -6,7 +6,7 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import { Account, AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
-import { accountReducer, isCoinbaseSmartWallet, LoopringAPI, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
+import { accountReducer, isCoinbaseSmartWallet, store, unlockAccount, web3Modal } from '../../index'
 import _ from 'lodash'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { ChainId } from '@loopring-web/loopring-sdk'
