@@ -856,7 +856,6 @@ export function useAccountModalForUI({
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
   })
-  console.log('asdhjhjwe', checkActiveStatusProps)
   const isEarn = app === 'earn'
   const isTaiko = [sdk.ChainId.TAIKO, sdk.ChainId.TAIKOHEKLA].includes(defaultNetwork)
 

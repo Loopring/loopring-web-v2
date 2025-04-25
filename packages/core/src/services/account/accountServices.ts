@@ -236,10 +236,8 @@ export const accountServices = {
             ...account,
           })
         } else if (accInfo.accountId) {
-          
           if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
             myLog('-------sendCheckAccount need update account!')
-            
             accountServices.sendNeedUpdateAccount({
               ...accInfo,
             })

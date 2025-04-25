@@ -1315,7 +1315,8 @@ export const useVaultSwap = () => {
       swapSubmit()
     }
   }
-  const { chainId } = useAppKitNetwork()
+  const { chainId: _chainId } = useAppKitNetwork()
+  const chainId = Number(_chainId)
   const { btnStatus, onBtnClick: onClickTradeBtn, btnLabel, isAccountActive } = useSubmitBtn({
     availableTradeCheck: (a: any) => ({
       tradeBtnStatus: tradeBtnStatus.disabled ? TradeBtnStatus.DISABLED : localState.isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE,

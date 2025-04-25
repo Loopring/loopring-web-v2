@@ -29,7 +29,7 @@ import {
 import { useAccountInit } from './hookAccountInit'
 import { useSettings } from '@loopring-web/component-lib'
 import { useTheme } from '@emotion/react'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitNetwork } from '@reown/appkit/react'
 
 /**
  * @description
@@ -80,7 +80,9 @@ export function useInit() {
   const { status: socketStatus, statusUnset: socketUnset } = useSocket()
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store()
   const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify()
-  const { chainId } =  useAppKitAccount()
+  const { chainId: _chainId } =  useAppKitNetwork()
+  const chainId = Number(_chainId)
+  
 
   React.useEffect(() => {
     ConnectProvides.walletConnectClientMeta = {

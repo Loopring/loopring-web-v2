@@ -8,8 +8,7 @@ export const checkAccount = async (
   newAccAddress: string,
   chainId: ChainId | undefined,
 ) => {
-  console.log('dasjhdjashdjw', newAccAddress, chainId)
-  const {account} = store.getState()
+  const { account } = store.getState()
   const accountInfoRealTime = await LoopringAPI.exchangeAPI?.getAccount({owner: newAccAddress})
   if (
     account.accAddress === '' ||

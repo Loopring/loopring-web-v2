@@ -31,25 +31,26 @@ export const web3Modal = createAppKit({
   adapters: [new Ethers5Adapter()],
   metadata: metadata,
   networks: networks,
-  // .filter(network => chainIds.includes(network.id)),
   projectId,
   chainImages: {
     167000: `${SoursURL}earn/taiko.svg`,
     8453: `${SoursURL}images/base.webp`,
   },
   enableInjected: true,
-  featuredWalletIds:['c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96','fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
+  featuredWalletIds: [
+    'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  ],
   features: {
-    analytics: true, // Optional - defaults to your Cloud configuration
+    analytics: true,
     email: false,
     socials: false,
     swaps: false,
     onramp: false,
     history: true,
     send: false,
-    
   },
-});
+})
 
 
 export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN') => {
