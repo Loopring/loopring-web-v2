@@ -14,7 +14,6 @@ const coinbaseSmartWalletPersistSlice: Slice<CoinbaseSmartWalletPersist> = creat
   initialState: initialState,
   reducers: {
     persistStoreCoinbaseSmartWalletData(state, action: PayloadAction<CoinbaseSmartWalletPersistData>) {
-      debugger
       state.data = action.payload
     },
   },
