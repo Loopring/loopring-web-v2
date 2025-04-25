@@ -18,4 +18,8 @@ export interface CoinbaseSmartWalletPersistData {
   };
   nonce: number
   chainId: ChainId
+  updateAccountData: {
+    updateAccountNotFinished: boolean
+    json: string
+  }
 }

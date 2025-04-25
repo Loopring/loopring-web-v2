@@ -261,12 +261,17 @@ export async function activateAccountSmartWallet({
     _chainId,
     feeInfo
   )
-  await approveHash(provider, hash, system.exchangeInfo.exchangeAddress, accInfo.owner)
 
   return {
     request: { ...updateAccountRequest, hashApproved: hash, ecdsaSignature: eip712Sig },
-    eddsaKey: eddsaKeyInfo
+    eddsaKey: eddsaKeyInfo,
+    approveFn: () => approveHash(provider, hash, system.exchangeInfo!.exchangeAddress, accInfo.owner)
   }
+
+  // return {
+  //   request: { ...updateAccountRequest, hashApproved: hash, ecdsaSignature: eip712Sig },
+  //   eddsaKey: eddsaKeyInfo
+  // }
 }
 
 export async function updateAccountRecursively({

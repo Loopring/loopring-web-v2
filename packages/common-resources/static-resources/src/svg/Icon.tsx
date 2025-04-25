@@ -540,6 +540,35 @@ export const LoadingIcon = (props: SvgIconProps) => {
     </SvgIcon>
   )
 }
+export const LoadingIcon2 = (props: SvgIconProps) => {
+//   <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+// <path d="M12.0132 2.02637V6.02637" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M12.0132 18.0264V22.0264" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M4.94312 4.9563L7.77312 7.7863" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M16.2534 16.2664L19.0834 19.0964" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M2.01318 12.0264H6.01318" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M18.0132 12.0264H22.0132" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M4.94312 19.0964L7.77312 16.2664" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// <path d="M16.2534 7.7863L19.0834 4.9563" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+// </svg>
+
+  return (
+    <SvgIcon
+      {...props}
+      viewBox='0 0 25 25'
+      fill='none'
+    >
+      <path d="M12.0132 2.02637V6.02637" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.0132 18.0264V22.0264" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.94312 4.9563L7.77312 7.7863" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.2534 16.2664L19.0834 19.0964" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.01318 12.0264H6.01318" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.0132 12.0264H22.0132" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.94312 19.0964L7.77312 16.2664" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.2534 7.7863L19.0834 4.9563" stroke="#446EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </SvgIcon>
+  )
+}
 
 export const ActiveIcon = (props: SvgIconProps) => {
   return (
