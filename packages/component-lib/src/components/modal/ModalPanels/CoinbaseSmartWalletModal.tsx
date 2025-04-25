@@ -8,17 +8,173 @@ import {
   InputAdornment,
   Modal,
   OutlinedInput,
-  Typography
+  Typography,
 } from '@mui/material'
+import styled from '@emotion/styled'
 import { ModalCloseButton } from '../../basic-lib'
 import { withTranslation } from 'react-i18next'
 import { AccountStep } from './Interface'
 import { useOpenModals } from '../../../stores'
 import React from 'react'
-import { CloseIcon, SoursURL } from '@loopring-web/common-resources'
+import { CheckIcon, CloseIcon, hexToRGB, LoadingIcon, LoadingIcon2, SoursURL } from '@loopring-web/common-resources'
+import { keyframes } from '@emotion/react'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import { range } from 'lodash'
+
+// 创建旋转动画
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+// 旋转的LoadingIcon2组件
+const RotatingLoadingIcon = styled(LoadingIcon2)`
+  animation: ${spin} 1.5s linear infinite;
+  transform-origin: center;
+`
+
+// 步骤指示器组件定义
+enum StepStatus {
+  INIT = 'init',
+  PROCESSING = 'processing',
+  COMPLETED = 'completed',
+}
+
+interface Step {
+  rightElement: React.ReactNode
+}
+
+interface VerticalStepperProps {
+  steps: Step[]
+  currentStep: number
+}
+
+const StepperContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+`
+
+const StepCircle = styled(Box)<{ status: StepStatus }>`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ status, theme }) => 
+    status === StepStatus.COMPLETED 
+      ? hexToRGB(theme.colorBase.success, 0.1) 
+      : hexToRGB(theme.colorBase.boxSecondary, 1)};
+  color: var(--color-text-button);
+  svg {
+    height: 24px;
+    width: 24px;
+  }
+`
+
+const ConnectingLine = styled(Box)<{ isActive: boolean }>`
+  width: 2px;
+  position: absolute;
+  background: ${({ isActive }) => 
+    isActive ? 
+    `repeating-linear-gradient(
+      to bottom,
+      var(--color-success),
+      var(--color-success) 4px,
+      transparent 4px,
+      transparent 8px
+    )` : 
+    `repeating-linear-gradient(
+      to bottom,
+      var(--field-opacity),
+      var(--field-opacity) 4px,
+      transparent 4px,
+      transparent 8px
+    )`
+  };
+`
+
+const VerticalStepper: React.FC<VerticalStepperProps> = ({ 
+  steps,
+  currentStep, 
+}) => {
+  const circleRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+
+  circleRefs.current = circleRefs.current.slice(0, steps.length);
+  const positions = (() => {
+    const positions = circleRefs.current.map((ref) => {
+      if (!ref) return null;
+      const containerRect = ref.parentElement!.getBoundingClientRect()
+      const rect = ref.getBoundingClientRect();
+      return {
+        x: rect.left - containerRect.left,
+        y: rect.top - containerRect.top,
+      };
+    });
+    return positions;
+  })();
+
+
+  return (
+    <StepperContainer position={'relative'}>
+      {steps.map((step, index) => {
+        const status = currentStep > index ? StepStatus.COMPLETED : currentStep === index ? StepStatus.PROCESSING : StepStatus.INIT
+        return (
+          <Box ref={(el: HTMLDivElement | null) => {
+            circleRefs.current[index] = el
+          }} key={index} width={'100%'}>
+            <Box display={'flex'} alignItems={'start'}>
+            <StepCircle
+              status={status}
+            >
+              {status === StepStatus.COMPLETED ? (
+                <CheckIcon
+                  className='custom-size'
+                  sx={{ fontSize: '24px', color: 'var(--color-success)' }}
+                />
+              ) : status === StepStatus.PROCESSING ? (
+                <RotatingLoadingIcon className='custom-size' sx={{ fontSize: '24px' }} />
+              ) : (
+                <></>
+              )}
+            </StepCircle>
+            <Box mt={1} width={'calc(100% - 80px)'}>
+              {step.rightElement}
+            </Box>
+          </Box>
+        </Box>
+      )})}
+      {range(0, steps.length - 1).map((index) => (
+        <React.Fragment key={index}>
+          {index < steps.length - 1 && positions && positions[index] && positions[index + 1] && (
+            <ConnectingLine
+              isActive={currentStep > index}
+              sx={{
+                left: `${23 + (positions[index]?.x || 0)}px`,
+                top: `${(positions[index]?.y || 0) + 52}px`,
+                height: `${
+                  (positions[index + 1]?.y || 0) - (positions[index]?.y || 0) - 56
+                }px`,
+                zIndex: 0,
+              }}
+            />
+          )}
+        </React.Fragment>
+      ))}
+    </StepperContainer>
+  )
+}
+
+
 
 
 
@@ -468,10 +624,63 @@ const Coinbase_Smart_Wallet_Password_Forget_Password_Confirm = withTranslation('
   },
 )
 
+const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
+  ({ step, showResumeUpdateAccount }: { step: 'keyGenerating' | 'blockConfirming' | 'updatingAccount' | 'completed'; showResumeUpdateAccount: boolean }) => {
+    return (
+      <Box px={3} display={'flex'} flexDirection={'column'} height={'100%'} pb={3}>
+        <Typography variant='h4' textAlign='center' mb={4} mt={2}>
+          Loopring DeFi Account Creation
+        </Typography>
+        
+        <Box display='flex' alignItems='flex-start' mb={4} gap={3}>
+          <Box mt={2}>
+            <VerticalStepper
+              steps={[
+                {
+                  rightElement: (
+                    <Typography variant='h4' ml={2}>
+                      Sign In & Generate EDDSA Key
+                    </Typography>
+                  ),
+                },
+                {
+                  rightElement: (
+                    <Box ml={2}>
+                      <Typography variant='h4' mb={1}>
+                        Create Account
+                      </Typography>
+                      <Typography variant='body1' color='var(--color-text-secondary)'>
+                      It requires a certain number of block confirmations. The dApp will automatically monitor the progress and proceed to Step 3 once confirmations are complete.
+                      </Typography>
+                    </Box>
+                  ),
+                },
+                {
+                  rightElement: (
+                    <Typography variant='h4' ml={2}>
+                       Update Account
+                    </Typography>
+                  ),
+                },
+              ]}
+              currentStep={step === 'keyGenerating' ? 0 : step === 'blockConfirming' ? 1 : step === 'updatingAccount' ? 2 : 3}
+            />
+          </Box>
+        </Box>
+
+        {showResumeUpdateAccount && <Typography textAlign={'center'} color='var(--color-text-secondary)' mt={'auto'} mb={2}>
+          It appears you’ve already generated your EDDSA key, but did not complete the final “Update Account” step in your previous session.
+        </Typography>}
+      </Box>
+    )
+  },
+)
+
 export {
   Coinbase_Smart_Wallet_Password_Intro,
   Coinbase_Smart_Wallet_Password_Set,
   Coinbase_Smart_Wallet_Password_Input,
   Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
   Coinbase_Smart_Wallet_Password_Forget_Password,
+  Coinbase_Smart_Wallet_Password_Set_Processing
 }

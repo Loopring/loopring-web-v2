@@ -9,11 +9,12 @@ import { useAccount } from '../../stores'
 import { DUAL_RETRY_STATUS, LABEL_INVESTMENT_STATUS, SETTLEMENT_STATUS, VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { AccountStatus } from '@loopring-web/common-resources'
 import { useEffect, useState } from 'react'
+import { step } from 'viem/chains'
 
 export const useCoinbaseWalletPassword = () => {
   const { t } = useTranslation('common')
   const { modals: {isShowAccount, isShowActiveAccount}, setShowAccount, setShowResetAccount, setShowActiveAccount } = useOpenModals()
-  const { goUpdateAccountCoinbaseWallet } = useUpdateAccount()
+  const { goUpdateAccountCoinbaseWallet, goUpdateAccountCoinbaseWalletUpdateAccountOnly } = useUpdateAccount()
   const { data } = useCoinbaseSmartWalletPersist()
   const { defaultNetwork } = useSettings()
   const { account } = useAccount()
@@ -25,11 +26,18 @@ export const useCoinbaseWalletPassword = () => {
     introProps: {
       t,
       onClickConfirm: () => {
-        setShowAccount({
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
-          isShow: true,
-          info: isShowAccount?.info
-        })
+        if (data && data?.updateAccountData?.updateAccountNotFinished) {
+          goUpdateAccountCoinbaseWalletUpdateAccountOnly({
+            isReset: isShowAccount?.info?.isReset,
+            updateAccountJSON: data.updateAccountData.json
+          })
+        } else {
+          setShowAccount({
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
+            isShow: true,
+            info: isShowAccount?.info
+          })
+        }
       },
     },
     setProps: {
@@ -43,6 +51,10 @@ export const useCoinbaseWalletPassword = () => {
           isShow: true,
         })
       },
+    },
+    setProcessingProps: {
+      step: isShowAccount?.info?.step,
+      showResumeUpdateAccount: isShowAccount?.info?.showResumeUpdateAccount
     },
     inputProps: {
       t,
