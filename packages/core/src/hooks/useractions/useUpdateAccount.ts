@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { FeeInfo, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
-import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import { AccountStep, setShowAccount as _setShowAccount, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
 import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5 } from '../../index'
 
@@ -9,6 +9,130 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
 import { useLocation } from 'react-router-dom';
 import { coinbaseSmartWalletPersist, store } from '../../stores'
+import { persistStoreCoinbaseSmartWalletData } from 'stores/localStore/coinbaseSmartWalletPersist'
+
+export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
+  isFirstTime = false,
+  isReset = false,
+  feeInfo,
+  updateAccountJSON,
+}: {
+  isFirstTime?: boolean
+  isReset?: boolean
+  feeInfo?: FeeInfo
+  updateAccountJSON: string
+}) => {
+  const {
+    settings: { defaultNetwork },
+  } = store.getState()
+  const setShowAccount = (args: any) => store.dispatch(_setShowAccount(args))
+  const { eddsaKey, request } = JSON.parse(updateAccountJSON)
+  try {
+    setShowAccount({
+        isShow: true,
+        step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
+        info: {
+          step: 'updatingAccount',
+        showResumeUpdateAccount: true,
+      },
+    })
+
+    await updateAccountRecursively({
+      request,
+      eddsaKey: { eddsaKey },
+    })
+    store.dispatch(
+      coinbaseSmartWalletPersist.persistStoreCoinbaseSmartWalletData({
+        ...store.getState().localStore.coinbaseSmartWalletPersist.data!,
+        updateAccountData: {
+          updateAccountNotFinished: false,
+          json: '',
+        },
+      }),
+    )
+
+    const [{ apiKey }, { walletType }] = await Promise.all([
+      LoopringAPI?.userAPI?.getUserApiKey(
+        {
+          accountId: request.accountId,
+        },
+        eddsaKey.sk,
+      ),
+      LoopringAPI?.walletAPI?.getWalletType({
+        wallet: request.owner,
+        network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
+      }),
+    ])
+      .then((response) => {
+        if ((response[0] as sdk.RESULT_INFO)?.code) {
+          throw response[0]
+        }
+        return response as any
+      })
+      .catch((error) => {
+        throw error
+      })
+
+    accountServices.sendAccountSigned({
+      apiKey,
+      eddsaKey,
+      isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
+      isContract: walletType?.isContract,
+    })
+    
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
+      info: {
+        step: 'completed',
+        showResumeUpdateAccount: true,
+      },
+    })
+    
+    await sdk.sleep(2 * 1000)
+    
+    setShowAccount({ isShow: false })
+  } catch (e) {
+    const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
+      code: UIERROR_CODE.DATA_NOT_READY,
+    }
+    const code = sdk.checkErrorInfo(error, true)
+    myLog('unlock', error, e, code)
+    switch (code) {
+      case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+        myLog('activateAccount UpdateAccount: NOT_SUPPORT_ERROR')
+        setShowAccount({
+          isShow: true,
+          step: isReset
+            ? AccountStep.ResetAccount_First_Method_Denied
+            : AccountStep.UpdateAccount_First_Method_Denied,
+        })
+        break
+      case sdk.ConnectorError.USER_DENIED:
+      case sdk.ConnectorError.USER_DENIED_2:
+        myLog('activateAccount: USER_DENIED')
+        setShowAccount({
+          isShow: true,
+          step: isReset
+            ? AccountStep.ResetAccount_User_Denied
+            : AccountStep.UpdateAccount_User_Denied,
+        })
+        break
+      default:
+        setShowAccount({
+          isShow: true,
+          step: isReset ? AccountStep.ResetAccount_Failed : AccountStep.UpdateAccount_Failed,
+          error: {
+            ...((e as any) ?? {}),
+            ...error,
+            code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
+          },
+        })
+        break
+    }
+    throw error
+  }
+}
 
 
 export function useUpdateAccount() {
@@ -326,112 +450,11 @@ export function useUpdateAccount() {
     }: {
       isReset?: boolean
       updateAccountJSON: string
-    }) => {
-      
-      const { eddsaKey, request } = JSON.parse(updateAccountJSON)
-      try {
-        
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-          info: {
-            step: 'updatingAccount',
-            showResumeUpdateAccount: true
-          }
-        })
-        
-
-        await updateAccountRecursively({
-          request, 
-          eddsaKey: { eddsaKey }
-        })
-
-        persistStoreCoinbaseSmartWalletData({
-          ...store.getState().localStore.coinbaseSmartWalletPersist.data!,
-          updateAccountData: {
-            updateAccountNotFinished: false,
-            json: ''
-          }
-        })
-
-        const [{ apiKey }, { walletType }] = await Promise.all([
-          LoopringAPI?.userAPI?.getUserApiKey(
-              {
-                accountId: request.accountId,
-              },
-              eddsaKey.sk,
-            ),
-            LoopringAPI?.walletAPI?.getWalletType({
-              wallet: request.owner,
-              network: MapChainId[defaultNetwork] as sdk.NetworkWallet
-            }),
-          ])
-            .then((response) => {
-              if ((response[0] as sdk.RESULT_INFO)?.code) {
-                throw response[0]
-              }
-              return response as any
-            })
-            .catch((error) => {
-              throw error
-            })
-          
-          accountServices.sendAccountSigned({
-            apiKey,
-            eddsaKey,
-            isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
-            isContract: walletType?.isContract,
-          })
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-            info: {
-              step: 'completed',
-              showResumeUpdateAccount: true
-            }
-          })
-          await sdk.sleep(2 * 1000)
-          setShowAccount({ isShow: false })
-      } catch (e) {
-        const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
-          code: UIERROR_CODE.DATA_NOT_READY,
-        }
-        const code = sdk.checkErrorInfo(error, true)
-        myLog('unlock', error, e, code)
-        switch (code) {
-          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-            myLog('activateAccount UpdateAccount: NOT_SUPPORT_ERROR')
-            setShowAccount({
-              isShow: true,
-              step: isReset
-                ? AccountStep.ResetAccount_First_Method_Denied
-                : AccountStep.UpdateAccount_First_Method_Denied,
-            })
-            break
-          case sdk.ConnectorError.USER_DENIED:
-          case sdk.ConnectorError.USER_DENIED_2:
-            myLog('activateAccount: USER_DENIED')
-            setShowAccount({
-              isShow: true,
-              step: isReset
-                ? AccountStep.ResetAccount_User_Denied
-                : AccountStep.UpdateAccount_User_Denied,
-            })
-            break
-          default:
-            setShowAccount({
-              isShow: true,
-              step: isReset ? AccountStep.ResetAccount_Failed : AccountStep.UpdateAccount_Failed,
-              error: {
-                ...((e as any) ?? {}),
-                ...error,
-                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-              },
-            })
-            break
-        }
-        throw error
-      }
+    }) => {      
+      goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
+        isReset,
+        updateAccountJSON
+      })
       setReferralCode('')
     },
     [account.accAddress, search, checkHWAddr, setShowAccount, updateHW, referralCode],

@@ -24,18 +24,11 @@ export const useCoinbaseWalletPassword = () => {
     introProps: {
       t,
       onClickConfirm: () => {
-        if (data && data?.updateAccountData?.updateAccountNotFinished) {
-          goUpdateAccountCoinbaseWalletUpdateAccountOnly({
-            isReset: isShowAccount?.info?.isReset,
-            updateAccountJSON: data.updateAccountData.json
-          })
-        } else {
-          setShowAccount({
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
-            isShow: true,
-            info: isShowAccount?.info
-          })
-        }
+        setShowAccount({
+          step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
+          isShow: true,
+          info: isShowAccount?.info
+        })
       },
     },
     setProps: {
