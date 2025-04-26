@@ -30,6 +30,7 @@ import { myLog } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, headerMenuDataEarnMap } from '../../constant/router'
 import { useAppKit } from '@reown/appkit/react'
+import { useCoinbaseSmartWalletPersist } from '@loopring-web/core/src/stores/localStore/coinbaseSmartWalletPersist'
 
 export const useHeader = () => {
   const accountTotal = useAccount()
@@ -75,7 +76,8 @@ export const useHeader = () => {
   }, [account, setShouldShow, _btnClickMap])
 
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
-  const { goUpdateAccount } = useUpdateAccount() 
+  const { goUpdateAccountCoinbaseWalletUpdateAccountOnly } = useUpdateAccount() 
+  const { data } = useCoinbaseSmartWalletPersist()
   const headerToolBarData = React.useMemo(() => {
     const toolBarData = isMobile ? earnHeaderToolBarDataMobile : earnHeaderToolBarData
     return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
@@ -88,7 +90,15 @@ export const useHeader = () => {
               const {
                 account: { accAddress },
                 settings: { defaultNetwork },
+                localStore: {coinbaseSmartWalletPersist}
               } = store.getState()
+              if (coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished) {
+                goUpdateAccountCoinbaseWalletUpdateAccountOnly({
+                  isReset: false,
+                  updateAccountJSON: coinbaseSmartWalletPersist?.data?.updateAccountData?.json
+                })
+                return 
+              }
               const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
               if (coinbaseSmartWallet) {
                 store.dispatch(

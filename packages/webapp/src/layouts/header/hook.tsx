@@ -24,6 +24,7 @@ import {
   useNotificationFunc,
   unlockAccount,
   isCoinbaseSmartWallet,
+  useUpdateAccount,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
@@ -40,6 +41,7 @@ export const useHeader = () => {
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const profile = ProfileIndex[network]
   const modal = useAppKit()
+  const { goUpdateAccountCoinbaseWalletUpdateAccountOnly } = useUpdateAccount()
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
@@ -88,7 +90,15 @@ export const useHeader = () => {
               const {
                 account: { accAddress },
                 settings: { defaultNetwork },
+                localStore: {coinbaseSmartWalletPersist}
               } = store.getState()
+              if (coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished) {
+                goUpdateAccountCoinbaseWalletUpdateAccountOnly({
+                  isReset: false,
+                  updateAccountJSON: coinbaseSmartWalletPersist.data.updateAccountData.json
+                })
+                return 
+              }
               const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
               if (coinbaseSmartWallet) {
                 store.dispatch(

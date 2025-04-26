@@ -17,7 +17,7 @@ import { AccountStep } from './Interface'
 import { useOpenModals } from '../../../stores'
 import React from 'react'
 import { CheckIcon, CloseIcon, hexToRGB, LoadingIcon, LoadingIcon2, SoursURL } from '@loopring-web/common-resources'
-import { keyframes } from '@emotion/react'
+import { keyframes, useTheme } from '@emotion/react'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -493,37 +493,39 @@ const Coinbase_Smart_Wallet_Password_Forget_Password = withTranslation('common')
     t: any
     onClickConfirm: () => void
   }) => {
+    const theme = useTheme()
     return (
       <Box px={3} display={'flex'} flexDirection={'column'} height={'100%'} pb={3}>
         <Box display={'flex'} justifyContent={'center'} my={2}>
-          <Box component={'img'} width={86}  src={SoursURL + 'images/coinbase_reset_password.png'} />
+          <Box
+            component={'img'}
+            width={86}
+            src={
+              SoursURL +
+              (theme.mode === 'light'
+                ? 'images/coinbase_reset_password_light.png'
+                : 'images/coinbase_reset_password.png')
+            }
+          />
         </Box>
-        <Typography variant='h4' textAlign='center' mt={2} mb={1}>
+        <Typography variant='h4' textAlign='center' mt={2} mb={3}>
           Reset Loopring DeFi Account & Password
-        </Typography>
-        <Typography textAlign='center' color='var(--color-text-secondary)' mb={3}>
-          Resetting your password requires resetting your Loopring DeFi Account.
         </Typography>
 
         <Box>
-          
-          
           <Typography color='var(--color-text-third)' fontSize={13} mb={3}>
-            Please note: this operation will not affect your assets - only your EDDSA key will be replaced with a new one.
+            Please note: this operation will not affect your assets - only your EDDSA key will be
+            replaced with a new one.
           </Typography>
-          
+
           <Typography color='var(--color-text-third)' fontSize={13} mb={3}>
-            This process requires confirmation via your wallet. Please approve the signature request in your wallet to proceed.
+            This process requires confirmation via your wallet. Please approve the signature request
+            in your wallet to proceed.
           </Typography>
         </Box>
 
         <Box mt={'auto'} width={'100%'}>
-          <Button
-            variant='contained'
-            fullWidth
-            size='medium'
-            onClick={onClickConfirm}
-          >
+          <Button variant='contained' fullWidth size='medium' onClick={onClickConfirm}>
             Confirm
           </Button>
         </Box>
@@ -540,7 +542,7 @@ const Coinbase_Smart_Wallet_Password_Forget_Password_Confirm = withTranslation('
     onClickBack: () => void
   }) => {
     const [isAcknowledged, setIsAcknowledged] = React.useState(false)
-
+    const theme = useTheme()
     return (
       <Box px={3} display={'flex'} flexDirection={'column'} height={'100%'} pb={3}>
         <ArrowBackIosNewIcon
@@ -556,23 +558,36 @@ const Coinbase_Smart_Wallet_Password_Forget_Password_Confirm = withTranslation('
           onClick={onClickBack}
         />
         <Box display={'flex'} justifyContent={'center'} my={2}>
-          <Box component={'img'}width={86}  src={SoursURL + 'images/coinbase_forget_password.png'} />
+          <Box
+            component={'img'}
+            width={86}
+            src={
+              SoursURL +
+              (theme.mode === 'light'
+                ? 'images/coinbase_forget_password_light.png'
+                : 'images/coinbase_forget_password.png')
+            }
+          />
         </Box>
-        
+
         <Typography variant='h4' textAlign='center' mt={2} mb={1}>
           Forget Password
         </Typography>
         <Typography color='var(--color-text-secondary)' textAlign='center' mb={4}>
-        You will need to reset your Loopring DeFi account.
+          You will need to reset your Loopring DeFi account.
         </Typography>
 
         <Box>
           <Typography color='var(--color-text-third)' fontSize={13} mb={2}>
-            
-            Please note:<br />
-            · Any active positions (such as trades in the Loopring Portal) will be automatically closed upon reset.<br />
-            · If you have pending Dual Investment positions, you must wait for them to settle before you can reset your account.<br /><br />
-
+            Please note:
+            <br />
+            · Any active positions (such as trades in the Loopring Portal) will be automatically
+            closed upon reset.
+            <br />
+            · If you have pending Dual Investment positions, you must wait for them to settle before
+            you can reset your account.
+            <br />
+            <br />
             For assistance during the reset process, please contact: support@loopring.io
           </Typography>
 
