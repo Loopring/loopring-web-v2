@@ -44,6 +44,7 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
     store.dispatch(
       coinbaseSmartWalletPersist.persistStoreCoinbaseSmartWalletData({
         ...store.getState().localStore.coinbaseSmartWalletPersist.data!,
+        nonce: request.nonce + 1,
         updateAccountData: {
           updateAccountNotFinished: false,
           json: '',
@@ -323,7 +324,7 @@ export function useUpdateAccount() {
             sk: encryptAESMd5(password, eddsaKey.sk)
           },
           wallet: request.owner,
-          nonce: request.nonce + 1,
+          nonce: request.nonce,
           chainId: defaultNetwork,
           updateAccountData: {
             updateAccountNotFinished: true,
@@ -354,6 +355,7 @@ export function useUpdateAccount() {
 
         persistStoreCoinbaseSmartWalletData({
           ...store.getState().localStore.coinbaseSmartWalletPersist.data!,
+          nonce: request.nonce + 1,
           updateAccountData: {
             updateAccountNotFinished: false,
             json: ''
