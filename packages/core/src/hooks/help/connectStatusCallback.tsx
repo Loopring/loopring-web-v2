@@ -110,36 +110,9 @@ export const btnClickMap: {
   [fnType.DEPOSITING]: [goActiveAccount],
   [fnType.NOT_ACTIVE]: [goActiveAccount],
   [fnType.LOCKED]: [
-    async function (info) {
-      const {
-        account: { accAddress },
-        settings: { defaultNetwork },
-        localStore: { coinbaseSmartWalletPersist },
-      } = store.getState()
-      if (coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished) {
-        goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
-          isReset: false,
-          updateAccountJSON: coinbaseSmartWalletPersist?.data?.updateAccountData?.json,
-        })
-        return
-      }
-      const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
-      if (coinbaseSmartWallet) {
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }))
-        return
-      }
-
-      if (!info?.exchangeInfoLoaded) {
-        return
-      }
+    async function () {
       unlockAccount()
       store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-        }),
-      )
     },
   ],
 }

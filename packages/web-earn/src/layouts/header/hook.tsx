@@ -86,35 +86,9 @@ export const useHeader = () => {
           [ButtonComponentsMap.WalletConnect]: {
             ...toolBarData[ButtonComponentsMap.WalletConnect],
             handleClick: onWalletBtnConnect,
-            handleClickUnlock: async () => {
-              const {
-                account: { accAddress },
-                settings: { defaultNetwork },
-                localStore: {coinbaseSmartWalletPersist}
-              } = store.getState()
-              if (coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished) {
-                goUpdateAccountCoinbaseWalletUpdateAccountOnly({
-                  isReset: false,
-                  updateAccountJSON: coinbaseSmartWalletPersist?.data?.updateAccountData?.json
-                })
-                return 
-              }
-              const coinbaseSmartWallet = await isCoinbaseSmartWallet(accAddress, defaultNetwork)
-              if (coinbaseSmartWallet) {
-                store.dispatch(
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
-                  }),
-                )
-                return
-              }
+            handleClickUnlock: async () => {              
 
               unlockAccount()
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-              })
             },
             NetWorkItems,
             accountState: { account },
