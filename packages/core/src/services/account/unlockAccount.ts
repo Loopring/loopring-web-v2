@@ -1,5 +1,5 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { callSwitchChain, DAYS, getTimestampDaysLater, LoopringAPI, store, WalletLayer2Map, web3Modal } from '../../index'
+import { callSwitchChain, DAYS, getTimestampDaysLater, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, isSameEVMAddress, LoopringAPI, store, WalletLayer2Map, web3Modal } from '../../index'
 import { accountServices } from './accountServices'
 import { Account, AccountStatus, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -7,7 +7,7 @@ import Web3 from 'web3'
 import { nextAccountSyncStatus } from '../../stores/account/reducer'
 import Decimal from 'decimal.js'
 import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
-import { AccountStep, setShowAccount } from '@loopring-web/component-lib'
+import { AccountStep, setShowAccount, setShowActiveAccount } from '@loopring-web/component-lib'
 
 export const hasLrTAIKODust = () => {
   const walletLayer2 = store.getState().walletLayer2.walletLayer2
@@ -93,7 +93,57 @@ export const resetlrTAIKOIfNeeded = async (
     .then(() => resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, retryTimes - 1))
 }
 
+export const checkBeforeUnlock = async () => {
+  const {
+    account: { accAddress, nonce },
+    settings: { defaultNetwork },
+    localStore: { coinbaseSmartWalletPersist },
+    system: { exchangeInfo },
+  } = store.getState()
+  if (coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished) {
+    goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
+      isReset: false,
+      updateAccountJSON: coinbaseSmartWalletPersist?.data?.updateAccountData?.json,
+    })
+    return false
+  } else if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
+    const hasCorrespondingKey =
+      !!coinbaseSmartWalletPersist?.data?.eddsaKey?.sk &&
+      coinbaseSmartWalletPersist?.data?.chainId === defaultNetwork &&
+      isSameEVMAddress(coinbaseSmartWalletPersist?.data?.wallet, accAddress) &&
+      coinbaseSmartWalletPersist?.data?.nonce === nonce
+    if (hasCorrespondingKey) {
+      store.dispatch(
+        setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input })
+      )
+      return false
+    } else {
+      store.dispatch(
+        setShowActiveAccount({ isShow: true })
+      )
+      return false
+    }
+  }
+
+
+  if (!exchangeInfo) {
+    return false
+  }
+  return true
+}
+
 export async function unlockAccount() {
+
+  const shouldContinue = await checkBeforeUnlock()
+  if (!shouldContinue) {
+    return
+  }
+  store.dispatch(
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.UpdateAccount_Approve_WaitForAuth,
+    }),
+  )
   myLog('unlockAccount starts')
   const accounStore = store.getState().account
   const { exchangeInfo } = store.getState().system

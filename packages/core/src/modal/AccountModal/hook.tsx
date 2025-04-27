@@ -2875,10 +2875,6 @@ export function useAccountModalForUI({
               btnTxt: 'labelRetry',
               callback: () => {
                 unlockAccount()
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-                })
               },
             }}
             {...{

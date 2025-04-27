@@ -1253,10 +1253,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
       activatedCallBack()
     } else if (account.readyState === AccountStatus.LOCKED) {
       unlockAccount()
-      setShowAccount({
-        isShow: true,
-        step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-      })
     } else if (account.readyState === AccountStatus.NOT_ACTIVE) {
       setMintRedeemModalState({
         ...mintRedeemModalState,
@@ -1913,10 +1909,6 @@ export const useTaikoLock = <T extends IBData<I>, I>({
         },
         onClickSignIn: () => {
           unlockAccount()
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-          })
           setShowLogInToCleanLrTaiko(false)
         },
       }
