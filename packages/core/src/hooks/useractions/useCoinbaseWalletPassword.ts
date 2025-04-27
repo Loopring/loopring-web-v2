@@ -133,8 +133,7 @@ export const useCoinbaseWalletPassword = () => {
       t,
       onClickConfirm: () => {
         setShowAccount({
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
-          isShow: true,
+          isShow: false,
         })
       },
       onClickBack: () => {
