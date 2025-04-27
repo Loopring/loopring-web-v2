@@ -2,7 +2,7 @@ import RouterView from './routers'
 import { GlobalStyles } from '@mui/material'
 import { css, Theme, useTheme } from '@emotion/react'
 import { globalCss } from '@loopring-web/common-resources'
-import { setLanguage } from '@loopring-web/component-lib'
+import { AccountStep, setLanguage, useOpenModals } from '@loopring-web/component-lib'
 import { useInit } from './hook'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -39,14 +39,15 @@ const App = () => {
       )
     }
   }, [])
-  React.useEffect(() => {
-    // setTimeout(() => {
-      // setShowAccount({
-      //   step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-      //   isShow: true
-      // })  
-    // }, 5 * 1000);
-  }, [])
+  // const { setShowAccount } = useOpenModals()
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     setShowAccount({
+  //       step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
+  //       isShow: true
+  //     })  
+  //   }, 5 * 1000);
+  // }, [])
 
   const { state } = useInit()
 
