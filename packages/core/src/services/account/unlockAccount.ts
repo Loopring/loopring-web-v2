@@ -93,47 +93,45 @@ export const resetlrTAIKOIfNeeded = async (
     .then(() => resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, retryTimes - 1))
 }
 
-export const checkBeforeUnlock = async () => {
+const checkBeforeUnlock = async () => {
   const {
     account: { accAddress, nonce },
     settings: { defaultNetwork },
     localStore: { coinbaseSmartWalletPersist },
     system: { exchangeInfo },
   } = store.getState()
-  if (coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished) {
-    goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
-      isReset: false,
-      updateAccountJSON: coinbaseSmartWalletPersist?.data?.updateAccountData?.json,
-    })
-    return false
-  } else if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
-    const hasCorrespondingKey =
-      !!coinbaseSmartWalletPersist?.data?.eddsaKey?.sk &&
-      coinbaseSmartWalletPersist?.data?.chainId === defaultNetwork &&
-      isSameEVMAddress(coinbaseSmartWalletPersist?.data?.wallet, accAddress) &&
-      coinbaseSmartWalletPersist?.data?.nonce === nonce
-    if (hasCorrespondingKey) {
-      store.dispatch(
-        setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input })
-      )
-      return false
-    } else {
-      store.dispatch(
-        setShowActiveAccount({ isShow: true })
-      )
-      return false
-    }
-  }
-
-
   if (!exchangeInfo) {
     return false
   }
+
+  if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
+    const hasCorrespondingPersistData =
+      coinbaseSmartWalletPersist?.data?.chainId === defaultNetwork &&
+      isSameEVMAddress(coinbaseSmartWalletPersist?.data?.wallet, accAddress) &&
+      coinbaseSmartWalletPersist?.data?.nonce === nonce
+    if (
+      hasCorrespondingPersistData &&
+      !!coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished &&
+      coinbaseSmartWalletPersist?.data?.updateAccountData?.json
+    ) {
+      goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
+        isReset: false,
+        updateAccountJSON: coinbaseSmartWalletPersist.data?.updateAccountData?.json!,
+      })
+    } else if (hasCorrespondingPersistData && !!coinbaseSmartWalletPersist?.data?.eddsaKey?.sk) {
+      store.dispatch(
+        setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }),
+      )
+    } else {
+      store.dispatch(setShowActiveAccount({ isShow: true }))
+    }
+    return false
+  }
+
   return true
 }
 
 export async function unlockAccount() {
-
   const shouldContinue = await checkBeforeUnlock()
   if (!shouldContinue) {
     return
