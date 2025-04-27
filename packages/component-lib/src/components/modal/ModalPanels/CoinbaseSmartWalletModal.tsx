@@ -500,6 +500,7 @@ const Coinbase_Smart_Wallet_Password_Forget_Password = withTranslation('common')
           <Box
             component={'img'}
             width={86}
+            height={79}
             src={
               SoursURL +
               (theme.mode === 'light'
