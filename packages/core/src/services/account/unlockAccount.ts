@@ -95,7 +95,7 @@ export const resetlrTAIKOIfNeeded = async (
 
 const checkBeforeUnlock = async () => {
   const {
-    account: { accAddress, nonce },
+    account: { accAddress, nonce, accountId },
     settings: { defaultNetwork },
     localStore: { coinbaseSmartWalletPersist },
     system: { exchangeInfo },
@@ -123,7 +123,51 @@ const checkBeforeUnlock = async () => {
         setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }),
       )
     } else {
-      store.dispatch(setShowActiveAccount({ isShow: true }))
+
+      const [hasDualInvest, hasVault] = await Promise.all([
+        LoopringAPI.defiAPI
+          ?.getDualTransactions(
+            {
+              accountId: accountId,
+              settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
+              investmentStatuses: [
+                sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
+                sdk.LABEL_INVESTMENT_STATUS.SUCCESS,
+                sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
+                sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
+              ].join(','),
+              retryStatuses: [sdk.DUAL_RETRY_STATUS.RETRYING],
+            } as any,
+            '',
+          )
+          .then((res) => res.totalNum && res.totalNum > 0),
+        LoopringAPI.vaultAPI
+          ?.getVaultInfoAndBalance(
+            {
+              accountId: accountId,
+            },
+            '',
+          )
+          .then((res) => {
+            return res.accountStatus === sdk.VaultAccountStatus.IN_STAKING
+          }),
+      ])
+      const hasPortalOrDual = hasDualInvest || hasVault
+      if (hasPortalOrDual) {
+        store.dispatch(
+          setShowAccount({
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
+            isShow: true,
+          }),
+        )
+      } else {
+        store.dispatch(
+          setShowAccount({
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
+            isShow: true,
+          }),
+        )
+      }
     }
     return false
   }

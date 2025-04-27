@@ -34,7 +34,11 @@ export const useCoinbaseWalletPassword = () => {
     setProps: {
       t,
       onClickConfirm: (password: string) => {
-        goUpdateAccountCoinbaseWallet({ password, feeInfo: isShowAccount?.info?.feeInfo,isReset: isShowAccount?.info?.isReset })
+        goUpdateAccountCoinbaseWallet({
+          password,
+          feeInfo: isShowAccount?.info?.feeInfo,
+          isReset: isShowAccount?.info?.isReset,
+        })
       },
       onClickBack: () => {
         setShowAccount({
