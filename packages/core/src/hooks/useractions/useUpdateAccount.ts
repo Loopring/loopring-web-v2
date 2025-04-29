@@ -353,8 +353,9 @@ export function useUpdateAccount() {
           eddsaKey: { eddsaKey }
         })
 
+
         persistStoreCoinbaseSmartWalletData({
-          ...store.getState().localStore.coinbaseSmartWalletPersist.data!,
+          ...store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!,
           nonce: request.nonce + 1,
           updateAccountData: {
             updateAccountNotFinished: false,
