@@ -372,6 +372,39 @@ const Coinbase_Smart_Wallet_Password_Set = withTranslation('common')(
   },
 )
 
+const Coinbase_Smart_Wallet_Password_Set_Confirm = withTranslation('common')(({onClickProceed}: {onClickProceed: () => void}) => {
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      px={4}
+      py={4}
+      height="100%"
+    >
+      <Box width={90} height={70} component={'img'} src={SoursURL + 'images/coinbase_prompt.png'} mb={7}/>
+        
+      <Typography mb={3}>
+      The following steps require multiple interactions with your Coinbase Smart Wallet.
+      </Typography>
+      <Typography  >
+        If the wallet extension does not automatically prompt you for action, please open it manually to proceed.
+      </Typography>
+      <Button
+        variant="contained"
+        fullWidth
+        sx={{
+          mt: 'auto'
+        }}
+        onClick={onClickProceed}
+      >
+        Proceed
+      </Button>
+    </Box>
+  )
+})
+
 const Coinbase_Smart_Wallet_Password_Input = withTranslation('common')(
   ({ t, onClickConfirm, onClickForgetPassword, inputDisabled, showPasswordMismatchError, onInputPassword }: {
     t: any
@@ -695,6 +728,7 @@ const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
 export {
   Coinbase_Smart_Wallet_Password_Intro,
   Coinbase_Smart_Wallet_Password_Set,
+  Coinbase_Smart_Wallet_Password_Set_Confirm,
   Coinbase_Smart_Wallet_Password_Input,
   Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
   Coinbase_Smart_Wallet_Password_Forget_Password,

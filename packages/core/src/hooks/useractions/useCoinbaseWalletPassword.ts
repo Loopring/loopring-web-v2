@@ -37,16 +37,29 @@ export const useCoinbaseWalletPassword = () => {
     setProps: {
       t,
       onClickConfirm: (password: string) => {
-        goUpdateAccountCoinbaseWallet({
-          password,
-          feeInfo: isShowAccount?.info?.feeInfo,
-          isReset: isShowAccount?.info?.isReset,
+        setShowAccount({
+          step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Confirm,
+          isShow: true,
+          info: {
+            ...isShowAccount?.info,
+            password
+          }
         })
       },
       onClickBack: () => {
         setShowAccount({
           step: AccountStep.Coinbase_Smart_Wallet_Password_Intro,
           isShow: true,
+        })
+      },
+    },
+    setConfirmProps: {
+      t,
+      onClickProceed: () => {
+        goUpdateAccountCoinbaseWallet({
+          password: isShowAccount?.info?.password,
+          feeInfo: isShowAccount?.info?.feeInfo,
+          isReset: isShowAccount?.info?.isReset,
         })
       },
     },
@@ -135,6 +148,7 @@ export const useCoinbaseWalletPassword = () => {
       },
       showPasswordMismatchError
     },
+    
     forgetPasswordConfirmProps: {
       t,
       onClickConfirm: () => {
