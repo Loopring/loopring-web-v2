@@ -236,6 +236,7 @@ export enum AccountStep {
 
   Coinbase_Smart_Wallet_Password_Intro,
   Coinbase_Smart_Wallet_Password_Set,
+  Coinbase_Smart_Wallet_Password_Set_Confirm,
   Coinbase_Smart_Wallet_Password_Set_Processing,
   Coinbase_Smart_Wallet_Password_Input,
   Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,

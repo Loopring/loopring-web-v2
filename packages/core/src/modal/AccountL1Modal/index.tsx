@@ -103,6 +103,7 @@ export const ModalAccountL1Info = withTranslation('common')(
           step={isShowAccount.step}
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={true}
+          noClose={currentModal?.noClose}
         />
       </>
     )
