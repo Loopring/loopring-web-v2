@@ -16,6 +16,9 @@ export const useCoinbaseWalletPassword = () => {
   const { data } = useCoinbaseSmartWalletPersist()
   const { defaultNetwork } = useSettings()
   const { account } = useAccount()
+  const foundPersistData = data?.find(
+    (item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, account?.accAddress),
+  )
   const [showPasswordMismatchError, setShowPasswordMismatchError] = useState(false)
   useEffect(() => {
     setShowPasswordMismatchError(false)
@@ -54,17 +57,16 @@ export const useCoinbaseWalletPassword = () => {
     inputProps: {
       t,
       inputDisabled: !(
-        !!data?.eddsaKey.sk &&
-        data.chainId === defaultNetwork &&
-        isSameEVMAddress(data.wallet, account?.accAddress) &&
-        data.nonce === account?.nonce
+        foundPersistData &&
+        foundPersistData.eddsaKey.sk &&
+        foundPersistData.nonce === account?.nonce
       ),
       onClickConfirm: async (password: string) => {
-        if (!data || !data?.eddsaKey.sk) return
+        if (!foundPersistData || !foundPersistData?.eddsaKey.sk) return
         try {
-          const sk = decryptAESMd5(password, data?.eddsaKey.sk)
+          const sk = decryptAESMd5(password, foundPersistData.eddsaKey.sk)
           const accountInfoRealTime = await LoopringAPI.exchangeAPI?.getAccount({
-            owner: data.wallet,
+            owner: foundPersistData.wallet,
           })
           setShowPasswordMismatchError(false)
           const res = await LoopringAPI.userAPI!
@@ -77,7 +79,7 @@ export const useCoinbaseWalletPassword = () => {
 
           accountServices.sendAccountSigned({
             apiKey: res.apiKey,
-            eddsaKey: { ...data.eddsaKey, sk },
+            eddsaKey: { ...foundPersistData!.eddsaKey, sk },
             isInCounterFactualStatus: false,
             isContract: true,
             accountId: accountInfoRealTime!.accInfo.accountId,
@@ -87,7 +89,7 @@ export const useCoinbaseWalletPassword = () => {
           })
         } catch (e) {
           setShowPasswordMismatchError(true)
-          accountServices.sendCheckAccount(data.wallet)
+          accountServices.sendCheckAccount(foundPersistData!.wallet)
         }
       },
       onClickForgetPassword: async () => {

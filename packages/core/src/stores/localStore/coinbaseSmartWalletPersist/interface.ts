@@ -1,9 +1,9 @@
 import { ChainId } from "@loopring-web/loopring-sdk";
 
 export interface CoinbaseSmartWalletPersist {
-  data:   CoinbaseSmartWalletPersistData | undefined
+  data: CoinbaseSmartWalletPersistData[]
 }
-    
+
 export interface CoinbaseSmartWalletPersistData {
   wallet: string;
   eddsaKey: {

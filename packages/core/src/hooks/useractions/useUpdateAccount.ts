@@ -3,7 +3,7 @@ import React from 'react'
 import { FeeInfo, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { AccountStep, setShowAccount as _setShowAccount, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
-import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5 } from '../../index'
+import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5, isSameEVMAddress } from '../../index'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
@@ -43,7 +43,7 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
     })
     store.dispatch(
       coinbaseSmartWalletPersist.persistStoreCoinbaseSmartWalletData({
-        ...store.getState().localStore.coinbaseSmartWalletPersist.data!,
+        ...store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!,
         nonce: request.nonce + 1,
         updateAccountData: {
           updateAccountNotFinished: false,

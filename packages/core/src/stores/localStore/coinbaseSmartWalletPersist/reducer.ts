@@ -3,7 +3,7 @@ import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
 import { CoinbaseSmartWalletPersist, CoinbaseSmartWalletPersistData } from './interface'
 
 const initialState: CoinbaseSmartWalletPersist = {
-  data: undefined
+  data: []
 } 
 
 const coinbaseSmartWalletPersistSlice: Slice<CoinbaseSmartWalletPersist> = createSlice<
@@ -14,7 +14,8 @@ const coinbaseSmartWalletPersistSlice: Slice<CoinbaseSmartWalletPersist> = creat
   initialState: initialState,
   reducers: {
     persistStoreCoinbaseSmartWalletData(state, action: PayloadAction<CoinbaseSmartWalletPersistData>) {
-      state.data = action.payload
+      const filtered = state.data.filter((item) => !(item.chainId === action.payload.chainId && item.wallet === action.payload.wallet))
+      state.data = [...filtered, action.payload]
     },
   },
 })
