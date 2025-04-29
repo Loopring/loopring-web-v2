@@ -105,20 +105,22 @@ const checkBeforeUnlock = async () => {
   }
 
   if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
-    const hasCorrespondingPersistData =
-      coinbaseSmartWalletPersist?.data?.chainId === defaultNetwork &&
-      isSameEVMAddress(coinbaseSmartWalletPersist?.data?.wallet, accAddress) &&
-      coinbaseSmartWalletPersist?.data?.nonce === nonce
+    const foundPersistData = coinbaseSmartWalletPersist?.data.find(
+      (item) =>
+        item.chainId === defaultNetwork &&
+        isSameEVMAddress(item.wallet, accAddress) &&
+        item.nonce === nonce,
+    )
     if (
-      hasCorrespondingPersistData &&
-      !!coinbaseSmartWalletPersist?.data?.updateAccountData?.updateAccountNotFinished &&
-      coinbaseSmartWalletPersist?.data?.updateAccountData?.json
+      foundPersistData &&
+      !!foundPersistData.updateAccountData?.updateAccountNotFinished &&
+      foundPersistData.updateAccountData?.json
     ) {
       goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
         isReset: false,
-        updateAccountJSON: coinbaseSmartWalletPersist.data?.updateAccountData?.json!,
+        updateAccountJSON: foundPersistData.updateAccountData?.json!,
       })
-    } else if (hasCorrespondingPersistData && !!coinbaseSmartWalletPersist?.data?.eddsaKey?.sk) {
+    } else if (foundPersistData && !!foundPersistData.eddsaKey?.sk) {
       store.dispatch(
         setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }),
       )
