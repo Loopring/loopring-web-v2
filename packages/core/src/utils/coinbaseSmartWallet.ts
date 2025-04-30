@@ -5,8 +5,8 @@ import { CHAIN_ID_TO_VIEW_CHAIN } from "@loopring-web/common-resources";
 import { http } from 'viem';
 import { isWalletACoinbaseSmartWallet } from '@coinbase/onchainkit/wallet';
 
-export const isCoinbaseSmartWallet = async (accAddress: string, chainId: ChainId) => {   
-   
+export const isCoinbaseSmartWallet = async (accAddress: string | undefined, chainId: ChainId) => {   
+  if (!accAddress) return false;
   const res = await isWalletACoinbaseSmartWallet({ client:createPublicClient({
     chain: CHAIN_ID_TO_VIEW_CHAIN.get(chainId),
     transport: http(),
