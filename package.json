@@ -12,7 +12,7 @@
     "@coinbase/onchainkit": "^0.38.7",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "3.9.19-dev2",
+    "@loopring-web/loopring-sdk": "3.9.19-dev3",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "1.4.16",
     "@mui/icons-material": "^5.16.6",
