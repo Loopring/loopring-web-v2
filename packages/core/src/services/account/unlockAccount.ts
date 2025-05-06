@@ -1,5 +1,5 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { callSwitchChain, DAYS, getTimestampDaysLater, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, isSameEVMAddress, LoopringAPI, store, WalletLayer2Map, web3Modal } from '../../index'
+import { callSwitchChain, DAYS, getTimestampDaysLater, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, isSameEVMAddress, LoopringAPI, store, WalletLayer2Map, appKit } from '../../index'
 import { accountServices } from './accountServices'
 import { Account, AccountStatus, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -8,6 +8,8 @@ import { nextAccountSyncStatus } from '../../stores/account/reducer'
 import Decimal from 'decimal.js'
 import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
 import { AccountStep, setShowAccount, setShowActiveAccount } from '@loopring-web/component-lib'
+import { providers, BigNumber } from 'ethers'
+import { persistStoreCoinbaseSmartWalletData } from '../../stores/localStore/coinbaseSmartWalletPersist'
 
 export const hasLrTAIKODust = () => {
   const walletLayer2 = store.getState().walletLayer2.walletLayer2
@@ -93,6 +95,61 @@ export const resetlrTAIKOIfNeeded = async (
     .then(() => resetlrTAIKOIfNeeded(account, defaultNetwork, exchangeInfo, retryTimes - 1))
 }
 
+
+const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaultNetwork: sdk.ChainId) => {
+  store.dispatch(
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.UpdateAccount_Approve_WaitForAuth,
+    }),
+  )
+
+  const validUntilInMs = Math.floor((Date.now() + 1000 * 60 * 10) * 1000)
+  const walletProvider = appKit.getProvider('eip155')
+  const messageToSign = `
+      |No EDDSA key file detected in your environment.
+      |Please sign the message to retrieve the encrypted EDDSA file from the Loopring server, allowing you to avoid resetting your account.
+      |Note: This request will expire after ${validUntilInMs}.`
+    .trim()
+    .replace(/^\s*\|/gm, '')
+  const provider = new providers.Web3Provider(walletProvider as any)
+
+  const ecdsaSig = await provider.getSigner().signMessage(messageToSign)
+  const res = await LoopringAPI?.userAPI?.getEncryptedEcdsaKey({
+    owner: accAddress,
+    validUntilInMs,
+    ecdsaSig: ecdsaSig,
+  })
+  if (!res?.data) {
+    throw new Error('getEncryptedEcdsaKey failed')
+  }
+  const accInfo = await LoopringAPI.exchangeAPI?.getAccount({
+    owner: accAddress,
+  })
+  
+  store.dispatch(
+    persistStoreCoinbaseSmartWalletData({
+      eddsaKey: {
+        sk: res?.data.encryptedEddsaPrivateKey,
+        formatedPx: accInfo?.accInfo.publicKey.x,
+        formatedPy: accInfo?.accInfo.publicKey.y,
+        keyPair: {
+          publicKeyX: BigNumber.from(accInfo?.accInfo.publicKey.x).toString(),
+          publicKeyY: BigNumber.from(accInfo?.accInfo.publicKey.y).toString(),
+          secretKey: '',
+        },
+      },
+      wallet: accAddress,
+      nonce: res?.data.nonce,
+      chainId: defaultNetwork,
+      updateAccountData: {
+        updateAccountNotFinished: false,
+        json: ''
+      }
+    })
+  )
+}
+
 const checkBeforeUnlock = async () => {
   const {
     account: { accAddress, nonce, accountId },
@@ -121,57 +178,70 @@ const checkBeforeUnlock = async () => {
         updateAccountJSON: foundPersistData.updateAccountData?.json!,
       })
     } else if (foundPersistData && !!foundPersistData.eddsaKey?.sk) {
+
       store.dispatch(
         setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }),
       )
     } else {
-
-      const [hasDualInvest, hasVault] = await Promise.all([
-        LoopringAPI.defiAPI
-          ?.getDualTransactions(
-            {
-              accountId: accountId,
-              settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
-              investmentStatuses: [
-                sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
-                sdk.LABEL_INVESTMENT_STATUS.SUCCESS,
-                sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
-                sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
-              ].join(','),
-              retryStatuses: [sdk.DUAL_RETRY_STATUS.RETRYING],
-            } as any,
-            '',
+      await getAndSaveEncryptedSKFromServer(accAddress, defaultNetwork, nonce!)
+        .then(() => {
+          store.dispatch(
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
+            }),
           )
-          .then((res) => res.totalNum && res.totalNum > 0),
-        LoopringAPI.vaultAPI
-          ?.getVaultInfoAndBalance(
-            {
-              accountId: accountId,
-            },
-            '',
-          )
-          .then((res) => {
-            return res.accountStatus === sdk.VaultAccountStatus.IN_STAKING
-          }),
-      ])
-      const hasPortalOrDual = hasDualInvest || hasVault
-      if (hasPortalOrDual) {
-        store.dispatch(
-          setShowAccount({
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
-            isShow: true,
-          }),
-        )
-      } else {
-        store.dispatch(
-          setShowAccount({
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
-            isShow: true,
-          }),
-        )
-      }
+        })
+        .catch(async (e) => {
+          const [hasDualInvest, hasVault] = await Promise.all([
+            LoopringAPI.defiAPI
+              ?.getDualTransactions(
+                {
+                  accountId: accountId,
+                  settlementStatuses: sdk.SETTLEMENT_STATUS.UNSETTLED,
+                  investmentStatuses: [
+                    sdk.LABEL_INVESTMENT_STATUS.CANCELLED,
+                    sdk.LABEL_INVESTMENT_STATUS.SUCCESS,
+                    sdk.LABEL_INVESTMENT_STATUS.PROCESSED,
+                    sdk.LABEL_INVESTMENT_STATUS.PROCESSING,
+                  ].join(','),
+                  retryStatuses: [sdk.DUAL_RETRY_STATUS.RETRYING],
+                } as any,
+                '',
+              )
+              .then((res) => res.totalNum && res.totalNum > 0),
+            LoopringAPI.vaultAPI
+              ?.getVaultInfoAndBalance(
+                {
+                  accountId: accountId,
+                },
+                '',
+              )
+              .then((res) => {
+                return res.accountStatus === sdk.VaultAccountStatus.IN_STAKING
+              }),
+          ])
+          const hasPortalOrDual = hasDualInvest || hasVault
+          if (hasPortalOrDual) {
+            store.dispatch(
+              setShowAccount({
+                step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
+                isShow: true,
+              }),
+            )
+          } else {
+            store.dispatch(
+              setShowAccount({
+                step: AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password,
+                isShow: true,
+              }),
+            )
+          }
+          return false
+        })
     }
     return false
+    
   }
 
   return true

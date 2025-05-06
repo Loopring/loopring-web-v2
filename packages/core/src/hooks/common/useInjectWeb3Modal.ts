@@ -27,7 +27,7 @@ const metadata = {
 }
 const chainIds = SUPPORTING_NETWORKS.map(Number)
 
-export const web3Modal = createAppKit({
+export const appKit = createAppKit({
   adapters: [new Ethers5Adapter()],
   metadata: metadata,
   networks: networks,
