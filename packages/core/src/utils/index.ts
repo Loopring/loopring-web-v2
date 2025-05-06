@@ -37,4 +37,5 @@ export { encryptAESMd5, decryptAESMd5 } from './AESMd5'
 export { isSameEVMAddress } from './address'
 
 export { withRetry } from './retry'
+export { offchainFeeInfoToFeeInfo } from './feeInfo'
 
