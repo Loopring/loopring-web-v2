@@ -41,9 +41,11 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
       request,
       eddsaKey: { eddsaKey },
     })
+
+    const foundData = store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!
     store.dispatch(
       coinbaseSmartWalletPersist.persistStoreCoinbaseSmartWalletData({
-        ...store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!,
+        ...foundData,
         nonce: request.nonce + 1,
         updateAccountData: {
           updateAccountNotFinished: false,
@@ -70,9 +72,18 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
         }
         return response as any
       })
-      .catch((error) => {
-        throw error
-      })
+
+    const encryptedSk = foundData.eddsaKey.sk
+  
+    LoopringAPI?.userAPI?.submitEncryptedEcdsaKey(
+      {
+        accountId: request.accountId,
+        eddsaEncryptedPrivateKey: encryptedSk,
+        nonce: request.nonce,
+      },
+      eddsaKey.sk,
+      apiKey,
+    )
 
     accountServices.sendAccountSigned({
       apiKey,
@@ -317,11 +328,11 @@ export function useUpdateAccount() {
           }
         })
         await approveFn()
-        
+        const encryptedSk = encryptAESMd5(password, eddsaKey.sk)
         persistStoreCoinbaseSmartWalletData({
           eddsaKey: {
             ...eddsaKey,
-            sk: encryptAESMd5(password, eddsaKey.sk)
+            sk: encryptedSk
           },
           wallet: request.owner,
           nonce: request.nonce,
@@ -353,7 +364,6 @@ export function useUpdateAccount() {
           eddsaKey: { eddsaKey }
         })
 
-
         persistStoreCoinbaseSmartWalletData({
           ...store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!,
           nonce: request.nonce + 1,
@@ -364,43 +374,49 @@ export function useUpdateAccount() {
         })
 
         const [{ apiKey }, { walletType }] = await Promise.all([
-          LoopringAPI.userAPI.getUserApiKey(
-              {
-                accountId: request.accountId,
-              },
-              eddsaKey.sk,
-            ),
-            LoopringAPI.walletAPI.getWalletType({
-              wallet: request.owner,
-              network: MapChainId[defaultNetwork] as sdk.NetworkWallet
-            }),
-          ])
-            .then((response) => {
-              if ((response[0] as sdk.RESULT_INFO)?.code) {
-                throw response[0]
-              }
-              return response as any
-            })
-            .catch((error) => {
-              throw error
-            })
+          LoopringAPI!.userAPI!.getUserApiKey(
+            {
+              accountId: request.accountId,
+            },
+            eddsaKey.sk,
+          ),
+          LoopringAPI!.walletAPI!.getWalletType({
+            wallet: request.owner,
+            network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
+          }),
+        ]).then((response) => {
+          if ((response[0] as sdk.RESULT_INFO)?.code) {
+            throw response[0]
+          }
+          return response as any
+        })
+
+        LoopringAPI?.userAPI?.submitEncryptedEcdsaKey(
+          {
+            accountId: request.accountId,
+            eddsaEncryptedPrivateKey: encryptedSk,
+            nonce: request.nonce + 1,
+          },
+          eddsaKey.sk,
+          apiKey,
+        )
           
-          accountServices.sendAccountSigned({
-            apiKey,
-            eddsaKey,
-            isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
-            isContract: walletType?.isContract,
-          })
-          setShowAccount({
-            isShow: true,
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-            info: {
-              step: 'completed',
-              showResumeUpdateAccount: false
-            }
-          })
-          await sdk.sleep(2 * 1000)
-          setShowAccount({ isShow: false })
+        accountServices.sendAccountSigned({
+          apiKey,
+          eddsaKey,
+          isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
+          isContract: walletType?.isContract,
+        })
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
+          info: {
+            step: 'completed',
+            showResumeUpdateAccount: false,
+          },
+        })
+        await sdk.sleep(2 * 1000)
+        setShowAccount({ isShow: false })
       } catch (e) {
         const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
           code: UIERROR_CODE.DATA_NOT_READY,

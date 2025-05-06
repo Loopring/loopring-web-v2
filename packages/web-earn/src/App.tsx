@@ -8,7 +8,9 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
-import { store } from '@loopring-web/core'
+import { LoopringAPI, store } from '@loopring-web/core'
+import { useAppKitProvider } from '@reown/appkit/react'
+import { providers, utils } from 'ethers'
 
 const ScrollToTop = () => {
   const { pathname } = useLocation()
@@ -32,6 +34,8 @@ const App = () => {
     }
   }, [storeLan, language])
 
+  const {walletProvider} = useAppKitProvider('eip155')
+
   React.useEffect(() => {
     if (window.location.protocol !== 'https:') {
       console.log('Current PROTOCOL::', window.location.protocol)
@@ -39,7 +43,57 @@ const App = () => {
         `https:${window.location.href.substring(window.location.protocol.length)}`,
       )
     }
-  }, [])
+
+    setTimeout(() => {
+      if (!walletProvider) return
+      const account = store.getState().account
+      return
+
+      // LoopringAPI?.userAPI?.submitEncryptedEcdsaKey({
+      //   accountId: account.accountId,
+      //   eddsaEncryptedPrivateKey: 'aaaaa',
+      //   nonce: 1
+      // }, account.eddsaKey.sk, account.apiKey)
+      // .then(x => {
+      //   debugger
+      // })
+      // .catch(x => {
+      //   debugger
+      // })
+
+      const validUntilInMs = Math.floor((Date.now() + 1000 * 60 * 10) * 1000)
+
+      const messageToSign = `
+      |No EDDSA key file detected in your environment.
+      |Please sign the message to retrieve the encrypted EDDSA file from the Loopring server, allowing you to avoid resetting your account.
+      |Note: This request will expire after ${validUntilInMs}.`.trim().replace(/^\s*\|/mg, '');
+      const hash = utils.hashMessage(messageToSign)
+      console.log('asdjaks hash', messageToSign, hash)
+      
+      const provider = new providers.Web3Provider(walletProvider as any)
+      
+       provider.getSigner().signMessage(messageToSign).then(x => {
+        
+        return LoopringAPI?.userAPI?.getEncryptedEcdsaKey({
+          owner: account.accAddress,
+          validUntilInMs,
+          ecdsaSig: x,
+        })
+       })
+      .then(x => {
+        
+        const a = x?.data?.encryptedEddsaPrivateKey
+        debugger
+      })
+      .catch(x => {
+        debugger
+      })
+      
+    }, 5 * 1000);
+
+
+    
+  }, [walletProvider])
 
   const { state } = useInit()
 

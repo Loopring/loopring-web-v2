@@ -89,7 +89,7 @@ export const useCoinbaseWalletPassword = () => {
               },
               sk,
             )
-
+            
           accountServices.sendAccountSigned({
             apiKey: res.apiKey,
             eddsaKey: { ...foundPersistData!.eddsaKey, sk },

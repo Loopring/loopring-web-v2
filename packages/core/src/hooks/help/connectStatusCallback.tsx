@@ -6,7 +6,7 @@ import {
   WalletConnectStep,
 } from '@loopring-web/component-lib'
 import { Account, AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
-import { accountReducer, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, store, unlockAccount, web3Modal } from '../../index'
+import { accountReducer, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, store, unlockAccount, appKit } from '../../index'
 import _ from 'lodash'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { ChainId } from '@loopring-web/loopring-sdk'
@@ -103,7 +103,7 @@ export const btnClickMap: {
   [fnType.UN_CONNECT]: [
     function () {
       myLog('UN_CONNECT!')
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [goActiveAccount],
@@ -120,28 +120,28 @@ export const btnClickMap: {
 export const btnConnectL1kMap = Object.assign(_.cloneDeep(btnClickMap), {
   [fnType.ACTIVATED]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.DEPOSITING]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.NOT_ACTIVE]: [
     function () {
-      web3Modal.open()
+      appKit.open()
       
     },
   ],
   [fnType.LOCKED]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
 })
