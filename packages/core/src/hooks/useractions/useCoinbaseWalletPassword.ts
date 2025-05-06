@@ -1,13 +1,16 @@
 import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import { useTranslation } from 'react-i18next'
 import { useUpdateAccount } from './useUpdateAccount'
-import { decryptAESMd5, isSameEVMAddress } from '../../utils'
+import { decryptAESMd5, isSameEVMAddress, offchainFeeInfoToFeeInfo } from '../../utils'
 import { useCoinbaseSmartWalletPersist } from '../../stores/localStore/coinbaseSmartWalletPersist'
 import { LoopringAPI } from '../../api_wrapper'
 import { accountServices } from '../../services'
-import { useAccount } from '../../stores'
-import { DUAL_RETRY_STATUS, LABEL_INVESTMENT_STATUS, SETTLEMENT_STATUS, VaultAccountStatus } from '@loopring-web/loopring-sdk'
+import { useAccount, useTokenMap, useWalletLayer2 } from '../../stores'
+import { DUAL_RETRY_STATUS, LABEL_INVESTMENT_STATUS, OffchainFeeReqType, SETTLEMENT_STATUS, VaultAccountStatus } from '@loopring-web/loopring-sdk'
 import { useEffect, useState } from 'react'
+import { keys } from 'lodash'
+import { BigNumber} from 'ethers'
+
 
 export const useCoinbaseWalletPassword = () => {
   const { t } = useTranslation('common')
@@ -16,6 +19,8 @@ export const useCoinbaseWalletPassword = () => {
   const { data } = useCoinbaseSmartWalletPersist()
   const { defaultNetwork } = useSettings()
   const { account } = useAccount()
+  const {tokenMap} = useTokenMap()
+  const {walletLayer2} = useWalletLayer2()
   const foundPersistData = data?.find(
     (item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, account?.accAddress),
   )
@@ -165,14 +170,35 @@ export const useCoinbaseWalletPassword = () => {
     },
     forgetPasswordProps: {
       t,
-      onClickConfirm: () => {
+      onClickConfirm: async () => {
         setShowAccount({
           isShow: false,
         })
-        setShowActiveAccount({
-          isShow: true,
-          info: { isReset: true },
+        
+
+        const feeInfoRes = await LoopringAPI.userAPI?.getOffchainFeeAmt({
+          accountId: account.accountId,
+          requestType: OffchainFeeReqType.UPDATE_ACCOUNT,
+        }, '')
+        
+        const foundFeeKey = keys(feeInfoRes?.fees).find((key) => {
+          const bal = BigNumber.from(walletLayer2?.[key].total || 0).sub(walletLayer2?.[key].locked || 0)
+          return feeInfoRes?.fees?.[key]?.fee && bal.gte(feeInfoRes?.fees?.[key]?.fee) 
         })
+        
+        if (foundFeeKey && walletLayer2) {
+          const foundFeeInfo = feeInfoRes?.fees[foundFeeKey]
+          const mapped = offchainFeeInfoToFeeInfo(foundFeeInfo!, tokenMap, walletLayer2)
+          setShowAccount({
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
+            isShow: true,
+            info: {
+              feeInfo: mapped,
+            }
+          })
+
+        }
+        
       },
     },
   }
