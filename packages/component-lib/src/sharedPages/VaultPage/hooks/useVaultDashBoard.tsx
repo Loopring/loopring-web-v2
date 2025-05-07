@@ -1196,11 +1196,19 @@ export const useVaultDashboard = ({
     btnsDisabled: account.readyState !== AccountStatus.ACTIVATED,
     onClickBuy: (detail) => {
       const symbol = detail?.tokenInfo.symbol?.slice(2)
-      onGoToSwap({ symbol, isSell: false })
+      if (symbol === 'USDT') {
+        onGoToSwap({ isSell: true })
+      } else {
+        onGoToSwap({ symbol})
+      }
     },
     onClickSell: (detail) => {
       const symbol = detail?.tokenInfo.symbol?.slice(2)
-      onGoToSwap({ symbol, isSell: true })
+      if (symbol === 'USDT') {
+        onGoToSwap({ isSell: false })
+      } else {
+        onGoToSwap({ symbol})
+      }
     },
     didAccountSignIn: account.readyState === AccountStatus.ACTIVATED
   }
