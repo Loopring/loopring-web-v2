@@ -15,7 +15,7 @@ import { BigNumber} from 'ethers'
 export const useCoinbaseWalletPassword = () => {
   const { t } = useTranslation('common')
   const { modals: {isShowAccount, isShowActiveAccount}, setShowAccount, setShowResetAccount, setShowActiveAccount } = useOpenModals()
-  const { goUpdateAccountCoinbaseWallet, goUpdateAccountCoinbaseWalletUpdateAccountOnly } = useUpdateAccount()
+  const { goUpdateAccountCoinbaseWallet } = useUpdateAccount()
   const { data } = useCoinbaseSmartWalletPersist()
   const { defaultNetwork } = useSettings()
   const { account } = useAccount()
@@ -71,6 +71,14 @@ export const useCoinbaseWalletPassword = () => {
     setProcessingProps: {
       step: isShowAccount?.info?.step,
       showResumeUpdateAccount: isShowAccount?.info?.showResumeUpdateAccount
+    },
+    setErrorProps: {
+      t,
+      onClickConfirm: () => {
+        setShowAccount({
+          isShow: false
+        })
+      },
     },
     inputProps: {
       t,

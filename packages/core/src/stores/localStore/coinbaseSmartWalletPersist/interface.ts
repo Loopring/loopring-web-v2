@@ -22,4 +22,8 @@ export interface CoinbaseSmartWalletPersistData {
     updateAccountNotFinished: boolean
     json: string
   }
+  eddsaKeyBackup: {
+    backupNotFinished: boolean
+    json: string
+  }
 }

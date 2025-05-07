@@ -1,14 +1,11 @@
 import {
   AccountStep,
   setShowAccount,
-  setShowConnect,
   setShowWrongNetworkGuide,
-  WalletConnectStep,
 } from '@loopring-web/component-lib'
-import { Account, AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
-import { accountReducer, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, store, unlockAccount, appKit } from '../../index'
+import { AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
+import { accountReducer, store, unlockAccount, appKit } from '../../index'
 import _ from 'lodash'
-import { connectProvides } from '@loopring-web/web3-provider'
 import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const accountStaticCallBack = (
