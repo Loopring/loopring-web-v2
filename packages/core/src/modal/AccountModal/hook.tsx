@@ -252,7 +252,7 @@ import { useHistory } from 'react-router-dom'
 import { ImportRedPacket } from './components/QRCodeScanner'
 import { useClaimConfirm } from '../../hooks/useractions/useClaimConfirm'
 import { useContactAdd } from '../../hooks/useractions/useContactAdd'
-import { Coinbase_Smart_Wallet_Password_Set_Confirm, Coinbase_Smart_Wallet_Password_Set_Processing } from '@loopring-web/component-lib/src/components/modal/ModalPanels/CoinbaseSmartWalletModal'
+import { Coinbase_Smart_Wallet_Password_Set_Confirm, Coinbase_Smart_Wallet_Password_Set_Error, Coinbase_Smart_Wallet_Password_Set_Processing } from '@loopring-web/component-lib/src/components/modal/ModalPanels/CoinbaseSmartWalletModal'
 
 export function useAccountModalForUI({
   t,
@@ -3695,6 +3695,14 @@ export function useAccountModalForUI({
           />
         ),
         height: '450px',
+        
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Set_Error]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Set_Error
+            {...coinbaseWalletPassword.setErrorProps}
+          />
+        ),
         
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Input]: {

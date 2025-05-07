@@ -1,5 +1,5 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
-import { callSwitchChain, DAYS, getTimestampDaysLater, goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn, isCoinbaseSmartWallet, isSameEVMAddress, LoopringAPI, store, WalletLayer2Map, appKit } from '../../index'
+import { callSwitchChain, DAYS, getTimestampDaysLater, goUpdateAccountCoinbaseWalletUpdateAccountFn, isCoinbaseSmartWallet, isSameEVMAddress, LoopringAPI, store, WalletLayer2Map, appKit, goUpdateAccountCoinbaseWalletBackupKeyOnlyFn, withRetry } from '../../index'
 import { accountServices } from './accountServices'
 import { Account, AccountStatus, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
@@ -10,6 +10,7 @@ import { updateWalletLayer2 } from '../../stores/walletLayer2/reducer'
 import { AccountStep, setShowAccount, setShowActiveAccount } from '@loopring-web/component-lib'
 import { providers, BigNumber } from 'ethers'
 import { persistStoreCoinbaseSmartWalletData } from '../../stores/localStore/coinbaseSmartWalletPersist'
+import { CoinbaseSmartWalletPersistData } from '../../stores/localStore/coinbaseSmartWalletPersist/interface'
 
 export const hasLrTAIKODust = () => {
   const walletLayer2 = store.getState().walletLayer2.walletLayer2
@@ -115,38 +116,48 @@ const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaultNetwor
   const provider = new providers.Web3Provider(walletProvider as any)
 
   const ecdsaSig = await provider.getSigner().signMessage(messageToSign)
-  const res = await LoopringAPI?.userAPI?.getEncryptedEcdsaKey({
-    owner: accAddress,
-    validUntilInMs,
-    ecdsaSig: ecdsaSig,
-  })
+  const res = await withRetry(
+    () =>
+      LoopringAPI!.userAPI!.getEncryptedEcdsaKey({
+        owner: accAddress,
+        validUntilInMs,
+        ecdsaSig: ecdsaSig,
+      }),
+    3,
+    1000,
+  )()
   if (!res?.data) {
     throw new Error('getEncryptedEcdsaKey failed')
   }
   const accInfo = await LoopringAPI.exchangeAPI?.getAccount({
     owner: accAddress,
   })
-  
-  store.dispatch(
-    persistStoreCoinbaseSmartWalletData({
-      eddsaKey: {
-        sk: res?.data.encryptedEddsaPrivateKey,
-        formatedPx: accInfo?.accInfo.publicKey.x,
-        formatedPy: accInfo?.accInfo.publicKey.y,
-        keyPair: {
-          publicKeyX: BigNumber.from(accInfo?.accInfo.publicKey.x).toString(),
-          publicKeyY: BigNumber.from(accInfo?.accInfo.publicKey.y).toString(),
-          secretKey: '',
-        },
+
+  const data: CoinbaseSmartWalletPersistData = {
+    eddsaKey: {
+      sk: res?.data.encryptedEddsaPrivateKey,
+      formatedPx: accInfo?.accInfo.publicKey.x!,
+      formatedPy: accInfo?.accInfo.publicKey.y!,
+      keyPair: {
+        publicKeyX: BigNumber.from(accInfo?.accInfo.publicKey.x).toString(),
+        publicKeyY: BigNumber.from(accInfo?.accInfo.publicKey.y).toString(),
+        secretKey: '',
       },
-      wallet: accAddress,
-      nonce: res?.data.nonce,
-      chainId: defaultNetwork,
-      updateAccountData: {
-        updateAccountNotFinished: false,
-        json: ''
-      }
-    })
+    },
+    wallet: accAddress,
+    nonce: res?.data.nonce,
+    chainId: defaultNetwork,
+    updateAccountData: {
+      updateAccountNotFinished: false,
+      json: ''
+    },
+    eddsaKeyBackup: {
+      backupNotFinished: false,
+      json: ''
+    }
+  }
+  store.dispatch(
+    persistStoreCoinbaseSmartWalletData(data)
   )
 }
 
@@ -170,20 +181,28 @@ const checkBeforeUnlock = async () => {
     )
     if (
       foundPersistData &&
+      !!foundPersistData.eddsaKeyBackup?.backupNotFinished &&
+      foundPersistData.eddsaKeyBackup?.json
+    ) {
+      goUpdateAccountCoinbaseWalletBackupKeyOnlyFn({
+        isReset: false,
+        backupKeyJSON: foundPersistData.eddsaKeyBackup?.json!,
+      })
+    } else if (
+      foundPersistData &&
       !!foundPersistData.updateAccountData?.updateAccountNotFinished &&
       foundPersistData.updateAccountData?.json
     ) {
-      goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
+      goUpdateAccountCoinbaseWalletUpdateAccountFn({
         isReset: false,
         updateAccountJSON: foundPersistData.updateAccountData?.json!,
       })
     } else if (foundPersistData && !!foundPersistData.eddsaKey?.sk) {
-
       store.dispatch(
         setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }),
       )
     } else {
-      await getAndSaveEncryptedSKFromServer(accAddress, defaultNetwork, nonce!)
+      await getAndSaveEncryptedSKFromServer(accAddress, defaultNetwork)
         .then(() => {
           store.dispatch(
             setShowAccount({

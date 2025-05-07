@@ -41,7 +41,6 @@ export const useHeader = () => {
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const profile = ProfileIndex[network]
   const modal = useAppKit()
-  const { goUpdateAccountCoinbaseWalletUpdateAccountOnly } = useUpdateAccount()
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [

@@ -16,7 +16,7 @@ import { withTranslation } from 'react-i18next'
 import { AccountStep } from './Interface'
 import { useOpenModals } from '../../../stores'
 import React from 'react'
-import { CheckIcon, CloseIcon, hexToRGB, LoadingIcon, LoadingIcon2, SoursURL } from '@loopring-web/common-resources'
+import { CheckIcon, CloseIcon, ErrorIcon, FailedIcon, hexToRGB, LoadingIcon, LoadingIcon2, SoursURL } from '@loopring-web/common-resources'
 import { keyframes, useTheme } from '@emotion/react'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import Visibility from '@mui/icons-material/Visibility'
@@ -725,6 +725,24 @@ const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
   },
 )
 
+const Coinbase_Smart_Wallet_Password_Set_Error = withTranslation('common')(
+  ({ onClickConfirm }: { onClickConfirm: () => void }) => {
+    return (
+      <Box px={3} display={'flex'} flexDirection={'column'} height={'100%'} pb={3}>
+        <Box display='flex' justifyContent={'center'} my={4} >
+          <FailedIcon sx={{ color: 'var(--color-error)', fontSize: '72px' }} className='custom-size'/>
+        </Box>
+
+        <Typography mt={4}>
+          We're currently unable to create your Loopring DeFi account, which may be due to network conditions. Please try again later. If the issue persists, feel free to contact us at support@loopring.io for assistance.
+        </Typography>
+
+        <Button sx={{mt: 'auto', mb: 2}} variant='contained' fullWidth onClick={onClickConfirm}>I Know</Button>
+      </Box>
+    )
+  },
+)
+
 export {
   Coinbase_Smart_Wallet_Password_Intro,
   Coinbase_Smart_Wallet_Password_Set,
@@ -732,5 +750,6 @@ export {
   Coinbase_Smart_Wallet_Password_Input,
   Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
   Coinbase_Smart_Wallet_Password_Forget_Password,
-  Coinbase_Smart_Wallet_Password_Set_Processing
+  Coinbase_Smart_Wallet_Password_Set_Processing,
+  Coinbase_Smart_Wallet_Password_Set_Error
 }

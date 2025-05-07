@@ -3,7 +3,7 @@ import React from 'react'
 import { FeeInfo, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { AccountStep, setShowAccount as _setShowAccount, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
-import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5, isSameEVMAddress } from '../../index'
+import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5, isSameEVMAddress, withRetry } from '../../index'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
@@ -11,7 +11,133 @@ import { useLocation } from 'react-router-dom';
 import { coinbaseSmartWalletPersist, store } from '../../stores'
 import { persistStoreCoinbaseSmartWalletData } from 'stores/localStore/coinbaseSmartWalletPersist'
 
-export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
+
+const handleError = (e: any, isReset: boolean) => {
+  const setShowAccount = (args: any) => store.dispatch(_setShowAccount(args))
+  if (e.message === 'submitEncryptedEcdsaKey failed') {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Error,
+    })
+    return
+  }
+  const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
+    code: UIERROR_CODE.DATA_NOT_READY,
+  }
+  const code = sdk.checkErrorInfo(error, true)
+  myLog('unlock', error, e, code)
+  switch (code) {
+    case sdk.ConnectorError.NOT_SUPPORT_ERROR:
+      myLog('activateAccount UpdateAccount: NOT_SUPPORT_ERROR')
+      setShowAccount({
+        isShow: true,
+        step: isReset
+          ? AccountStep.ResetAccount_First_Method_Denied
+          : AccountStep.UpdateAccount_First_Method_Denied,
+      })
+      break
+    case sdk.ConnectorError.USER_DENIED:
+    case sdk.ConnectorError.USER_DENIED_2:
+      myLog('activateAccount: USER_DENIED')
+      setShowAccount({
+        isShow: true,
+        step: isReset
+          ? AccountStep.ResetAccount_User_Denied
+          : AccountStep.UpdateAccount_User_Denied,
+      })
+      break
+    default:
+      setShowAccount({
+        isShow: true,
+        step: isReset ? AccountStep.ResetAccount_Failed : AccountStep.UpdateAccount_Failed,
+        error: {
+          ...((e as any) ?? {}),
+          ...error,
+          code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
+        },
+      })
+      break
+  }
+  throw error
+}
+
+export const goUpdateAccountCoinbaseWalletBackupKeyOnlyFn = async ({
+  isReset = false,
+  backupKeyJSON,
+}: {
+  isFirstTime?: boolean
+  isReset?: boolean
+  feeInfo?: FeeInfo
+  backupKeyJSON: string
+}) => {
+  const {
+    settings: { defaultNetwork },
+  } = store.getState()
+  const setShowAccount = (args: any) => store.dispatch(_setShowAccount(args))
+  const { eddsaKey, apiKey, request } = JSON.parse(backupKeyJSON)
+  try {
+    setShowAccount({
+        isShow: true,
+        step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
+        info: {
+          step: 'updatingAccount',
+        showResumeUpdateAccount: true,
+      },
+    })
+
+    const { walletType } = await LoopringAPI?.walletAPI
+      ?.getWalletType({
+        wallet: request.owner,
+        network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
+      })
+      .then((response) => {
+        if ((response[0] as sdk.RESULT_INFO)?.code) {
+          throw response[0]
+        }
+        return response as any
+      })
+  
+    await withRetry(
+      () => LoopringAPI!.userAPI!.submitEncryptedEcdsaKey(
+        request,
+        eddsaKey.sk,
+        apiKey,
+      ).then(res => {
+        if (res.code) {
+          throw res
+        }
+        return res
+      }),
+      3,
+      1000,
+    )().catch(e => {
+      throw new Error('submitEncryptedEcdsaKey failed')
+    })
+
+    accountServices.sendAccountSigned({
+      apiKey,
+      eddsaKey,
+      isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
+      isContract: walletType?.isContract,
+    })
+    
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
+      info: {
+        step: 'completed',
+        showResumeUpdateAccount: true,
+      },
+    })
+    
+    await sdk.sleep(2 * 1000)
+    
+    setShowAccount({ isShow: false })
+  } catch (e) {
+    handleError(e, isReset)
+  }
+}
+export const goUpdateAccountCoinbaseWalletUpdateAccountFn = async ({
   isFirstTime = false,
   isReset = false,
   feeInfo,
@@ -43,6 +169,15 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
     })
 
     const foundData = store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!
+    const submitEncryptedEcdsaKeyReq = {
+      accountId: request.accountId,
+      eddsaEncryptedPrivateKey: foundData.eddsaKey.sk,
+      nonce: request.nonce + 1,
+    }
+    const backupKeyJSON = JSON.stringify({
+      request: submitEncryptedEcdsaKeyReq,
+      eddsaKey: eddsaKey
+    })
     store.dispatch(
       coinbaseSmartWalletPersist.persistStoreCoinbaseSmartWalletData({
         ...foundData,
@@ -51,98 +186,19 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn = async ({
           updateAccountNotFinished: false,
           json: '',
         },
-      }),
-    )
-
-    const [{ apiKey }, { walletType }] = await Promise.all([
-      LoopringAPI?.userAPI?.getUserApiKey(
-        {
-          accountId: request.accountId,
-        },
-        eddsaKey.sk,
-      ),
-      LoopringAPI?.walletAPI?.getWalletType({
-        wallet: request.owner,
-        network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
-      }),
-    ])
-      .then((response) => {
-        if ((response[0] as sdk.RESULT_INFO)?.code) {
-          throw response[0]
+        eddsaKeyBackup: {
+          backupNotFinished: false,
+          json: backupKeyJSON
         }
-        return response as any
-      })
-
-    const encryptedSk = foundData.eddsaKey.sk
-  
-    LoopringAPI?.userAPI?.submitEncryptedEcdsaKey(
-      {
-        accountId: request.accountId,
-        eddsaEncryptedPrivateKey: encryptedSk,
-        nonce: request.nonce,
-      },
-      eddsaKey.sk,
-      apiKey,
+      }),
     )
 
-    accountServices.sendAccountSigned({
-      apiKey,
-      eddsaKey,
-      isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
-      isContract: walletType?.isContract,
+    await goUpdateAccountCoinbaseWalletBackupKeyOnlyFn({
+      isReset,
+      backupKeyJSON,
     })
-    
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-      info: {
-        step: 'completed',
-        showResumeUpdateAccount: true,
-      },
-    })
-    
-    await sdk.sleep(2 * 1000)
-    
-    setShowAccount({ isShow: false })
   } catch (e) {
-    const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
-      code: UIERROR_CODE.DATA_NOT_READY,
-    }
-    const code = sdk.checkErrorInfo(error, true)
-    myLog('unlock', error, e, code)
-    switch (code) {
-      case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-        myLog('activateAccount UpdateAccount: NOT_SUPPORT_ERROR')
-        setShowAccount({
-          isShow: true,
-          step: isReset
-            ? AccountStep.ResetAccount_First_Method_Denied
-            : AccountStep.UpdateAccount_First_Method_Denied,
-        })
-        break
-      case sdk.ConnectorError.USER_DENIED:
-      case sdk.ConnectorError.USER_DENIED_2:
-        myLog('activateAccount: USER_DENIED')
-        setShowAccount({
-          isShow: true,
-          step: isReset
-            ? AccountStep.ResetAccount_User_Denied
-            : AccountStep.UpdateAccount_User_Denied,
-        })
-        break
-      default:
-        setShowAccount({
-          isShow: true,
-          step: isReset ? AccountStep.ResetAccount_Failed : AccountStep.UpdateAccount_Failed,
-          error: {
-            ...((e as any) ?? {}),
-            ...error,
-            code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-          },
-        })
-        break
-    }
-    throw error
+    handleError(e, isReset)
   }
 }
 
@@ -245,44 +301,7 @@ export function useUpdateAccount() {
           throw { code: UIERROR_CODE.DATA_NOT_READY }
         }
       } catch (e) {
-        const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
-          code: UIERROR_CODE.DATA_NOT_READY,
-        }
-        const code = sdk.checkErrorInfo(error, true)
-        myLog('unlock', error, e, code)
-        switch (code) {
-          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-            myLog('activateAccount UpdateAccount: NOT_SUPPORT_ERROR')
-            setShowAccount({
-              isShow: true,
-              step: isReset
-                ? AccountStep.ResetAccount_First_Method_Denied
-                : AccountStep.UpdateAccount_First_Method_Denied,
-            })
-            break
-          case sdk.ConnectorError.USER_DENIED:
-          case sdk.ConnectorError.USER_DENIED_2:
-            myLog('activateAccount: USER_DENIED')
-            setShowAccount({
-              isShow: true,
-              step: isReset
-                ? AccountStep.ResetAccount_User_Denied
-                : AccountStep.UpdateAccount_User_Denied,
-            })
-            break
-          default:
-            setShowAccount({
-              isShow: true,
-              step: isReset ? AccountStep.ResetAccount_Failed : AccountStep.UpdateAccount_Failed,
-              error: {
-                ...((e as any) ?? {}),
-                ...error,
-                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-              },
-            })
-            break
-        }
-        throw error
+        handleError(e, isReset)
       }
       setReferralCode('')
     },
@@ -294,15 +313,13 @@ export function useUpdateAccount() {
       isFirstTime = false,
       isReset = false,
       feeInfo,
-      password
+      password,
     }: {
       password: string
       isFirstTime?: boolean
       isReset?: boolean
       feeInfo?: FeeInfo
-    }) => {
-      
-      
+    }) => {      
       try {
         
         setShowAccount({
@@ -329,6 +346,10 @@ export function useUpdateAccount() {
         })
         await approveFn()
         const encryptedSk = encryptAESMd5(password, eddsaKey.sk)
+        const updateAccountJSON = JSON.stringify({
+          request, 
+          eddsaKey
+        })
         persistStoreCoinbaseSmartWalletData({
           eddsaKey: {
             ...eddsaKey,
@@ -339,141 +360,23 @@ export function useUpdateAccount() {
           chainId: defaultNetwork,
           updateAccountData: {
             updateAccountNotFinished: true,
-            json: JSON.stringify({
-              request, 
-              eddsaKey
-            })
-          }
-        })
-
-        if (!LoopringAPI.userAPI || !LoopringAPI.walletAPI) {
-          throw { code: UIERROR_CODE.DATA_NOT_READY }
-        }
-        
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-          info: {
-            step: 'updatingAccount',
-            showResumeUpdateAccount: false
-          }
-        })
-
-        await updateAccountRecursively({
-          request, 
-          eddsaKey: { eddsaKey }
-        })
-
-        persistStoreCoinbaseSmartWalletData({
-          ...store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, request.owner))!,
-          nonce: request.nonce + 1,
-          updateAccountData: {
-            updateAccountNotFinished: false,
+            json: updateAccountJSON
+          },
+          eddsaKeyBackup: {
+            backupNotFinished: true,
             json: ''
           }
         })
 
-        const [{ apiKey }, { walletType }] = await Promise.all([
-          LoopringAPI!.userAPI!.getUserApiKey(
-            {
-              accountId: request.accountId,
-            },
-            eddsaKey.sk,
-          ),
-          LoopringAPI!.walletAPI!.getWalletType({
-            wallet: request.owner,
-            network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
-          }),
-        ]).then((response) => {
-          if ((response[0] as sdk.RESULT_INFO)?.code) {
-            throw response[0]
-          }
-          return response as any
+        await goUpdateAccountCoinbaseWalletUpdateAccountFn({
+          isFirstTime,
+          isReset,
+          feeInfo,
+          updateAccountJSON,
         })
-
-        LoopringAPI?.userAPI?.submitEncryptedEcdsaKey(
-          {
-            accountId: request.accountId,
-            eddsaEncryptedPrivateKey: encryptedSk,
-            nonce: request.nonce + 1,
-          },
-          eddsaKey.sk,
-          apiKey,
-        )
-          
-        accountServices.sendAccountSigned({
-          apiKey,
-          eddsaKey,
-          isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
-          isContract: walletType?.isContract,
-        })
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-          info: {
-            step: 'completed',
-            showResumeUpdateAccount: false,
-          },
-        })
-        await sdk.sleep(2 * 1000)
-        setShowAccount({ isShow: false })
       } catch (e) {
-        const error = LoopringAPI?.exchangeAPI?.genErr(e as any) ?? {
-          code: UIERROR_CODE.DATA_NOT_READY,
-        }
-        const code = sdk.checkErrorInfo(error, true)
-        myLog('unlock', error, e, code)
-        switch (code) {
-          case sdk.ConnectorError.NOT_SUPPORT_ERROR:
-            myLog('activateAccount UpdateAccount: NOT_SUPPORT_ERROR')
-            setShowAccount({
-              isShow: true,
-              step: isReset
-                ? AccountStep.ResetAccount_First_Method_Denied
-                : AccountStep.UpdateAccount_First_Method_Denied,
-            })
-            break
-          case sdk.ConnectorError.USER_DENIED:
-          case sdk.ConnectorError.USER_DENIED_2:
-            myLog('activateAccount: USER_DENIED')
-            setShowAccount({
-              isShow: true,
-              step: isReset
-                ? AccountStep.ResetAccount_User_Denied
-                : AccountStep.UpdateAccount_User_Denied,
-            })
-            break
-          default:
-            setShowAccount({
-              isShow: true,
-              step: isReset ? AccountStep.ResetAccount_Failed : AccountStep.UpdateAccount_Failed,
-              error: {
-                ...((e as any) ?? {}),
-                ...error,
-                code: (e as any)?.code ?? UIERROR_CODE.UNKNOWN,
-              },
-            })
-            break
-        }
-        throw error
+        handleError(e, isReset)
       }
-      setReferralCode('')
-    },
-    [account.accAddress, search, checkHWAddr, setShowAccount, updateHW, referralCode],
-  )
-  
-  const goUpdateAccountCoinbaseWalletUpdateAccountOnly = React.useCallback(
-    async ({
-      isReset = false,
-      updateAccountJSON
-    }: {
-      isReset?: boolean
-      updateAccountJSON: string
-    }) => {      
-      goUpdateAccountCoinbaseWalletUpdateAccountOnlyFn({
-        isReset,
-        updateAccountJSON
-      })
       setReferralCode('')
     },
     [account.accAddress, search, checkHWAddr, setShowAccount, updateHW, referralCode],
@@ -482,6 +385,5 @@ export function useUpdateAccount() {
   return {
     goUpdateAccount,
     goUpdateAccountCoinbaseWallet,
-    goUpdateAccountCoinbaseWalletUpdateAccountOnly
   }
 }
