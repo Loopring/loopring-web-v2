@@ -10,6 +10,7 @@ import { ChainIdExtends, FeeInfo, myLog, UIERROR_CODE } from '@loopring-web/comm
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import * as sdk from '@loopring-web/loopring-sdk'
 import { providers, utils, Contract } from 'ethers'
+import { updateAccountStatus } from '../../stores/account/reducer'
 
 export async function activateAccount({
   isHWAddr,
@@ -290,6 +291,9 @@ export async function updateAccountRecursively({
       throw response
     }
   } else {
+    store.dispatch(
+      updateAccountStatus({})
+    )
     return response
   }
 }

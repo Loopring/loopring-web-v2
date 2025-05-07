@@ -62,9 +62,7 @@ const getAccount = async (): Promise<{
 export function* accountUpdateSaga({ payload }: PayloadAction<Partial<Account>>) {
   try {
     let data = { account: {}, walletType: {}, __timer__: -1 }
-    if (payload.apiKey || payload.frozen === LoopFrozenFlag) {
-      data = yield call(getAccount)
-    }
+    data = yield call(getAccount)
     yield put(
       nextAccountStatus({
         ...payload,

@@ -72,47 +72,62 @@ export const goUpdateAccountCoinbaseWalletBackupKeyOnlyFn = async ({
 }) => {
   const {
     settings: { defaultNetwork },
+    account: { accAddress },
   } = store.getState()
   const setShowAccount = (args: any) => store.dispatch(_setShowAccount(args))
-  const { eddsaKey, apiKey, request } = JSON.parse(backupKeyJSON)
+  const { eddsaKey, request } = JSON.parse(backupKeyJSON)
   try {
     setShowAccount({
-        isShow: true,
-        step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
-        info: {
-          step: 'updatingAccount',
+      isShow: true,
+      step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
+      info: {
+        step: 'updatingAccount',
         showResumeUpdateAccount: true,
       },
     })
 
-    const { walletType } = await LoopringAPI?.walletAPI
-      ?.getWalletType({
-        wallet: request.owner,
-        network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
-      })
-      .then((response) => {
-        if ((response[0] as sdk.RESULT_INFO)?.code) {
-          throw response[0]
-        }
-        return response as any
-      })
-  
-    await withRetry(
-      () => LoopringAPI!.userAPI!.submitEncryptedEcdsaKey(
-        request,
+    const [{ apiKey }, { walletType }] = await Promise.all([
+      LoopringAPI?.userAPI?.getUserApiKey(
+        {
+          accountId: request.accountId,
+        },
         eddsaKey.sk,
-        apiKey,
-      ).then(res => {
-        if (res.code) {
-          throw res
-        }
-        return res
+      ),
+      LoopringAPI?.walletAPI?.getWalletType({
+        wallet: accAddress,
+        network: MapChainId[defaultNetwork] as sdk.NetworkWallet,
       }),
+    ]).then((response) => {
+      if ((response[0] as sdk.RESULT_INFO)?.code) {
+        throw response[0]
+      }
+      return response as any
+    })
+
+    await withRetry(
+      () =>
+        LoopringAPI!.userAPI!.submitEncryptedEcdsaKey(request, eddsaKey.sk, apiKey).then((res) => {
+          if (res.code) {
+            throw res
+          }
+          return res
+        }),
       3,
       1000,
-    )().catch(e => {
+    )()
+    .catch((e) => {
       throw new Error('submitEncryptedEcdsaKey failed')
     })
+    const foundData = store.getState().localStore.coinbaseSmartWalletPersist.data!.find((item) => item.chainId === defaultNetwork && isSameEVMAddress(item.wallet, accAddress))!
+    store.dispatch(
+      coinbaseSmartWalletPersist.persistStoreCoinbaseSmartWalletData({
+        ...foundData,
+        eddsaKeyBackup: {
+          backupNotFinished: false,
+          json: ''
+        }
+      })
+    )
 
     accountServices.sendAccountSigned({
       apiKey,
@@ -120,7 +135,7 @@ export const goUpdateAccountCoinbaseWalletBackupKeyOnlyFn = async ({
       isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
       isContract: walletType?.isContract,
     })
-    
+
     setShowAccount({
       isShow: true,
       step: AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing,
@@ -129,14 +144,15 @@ export const goUpdateAccountCoinbaseWalletBackupKeyOnlyFn = async ({
         showResumeUpdateAccount: true,
       },
     })
-    
+
     await sdk.sleep(2 * 1000)
-    
+
     setShowAccount({ isShow: false })
   } catch (e) {
     handleError(e, isReset)
   }
 }
+
 export const goUpdateAccountCoinbaseWalletUpdateAccountFn = async ({
   isFirstTime = false,
   isReset = false,
@@ -187,7 +203,7 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountFn = async ({
           json: '',
         },
         eddsaKeyBackup: {
-          backupNotFinished: false,
+          backupNotFinished: true,
           json: backupKeyJSON
         }
       }),
