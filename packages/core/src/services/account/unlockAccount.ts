@@ -104,7 +104,7 @@ const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaultNetwor
     }),
   )
 
-  const validUntilInMs = Math.floor((Date.now() + 1000 * 60 * 10) * 1000)
+  const validUntilInMs = Date.now() + 1000 * 60 * 30
   const walletProvider = appKit.getProvider('eip155')
   const messageToSign = `
       |No EDDSA key file detected in your environment.
