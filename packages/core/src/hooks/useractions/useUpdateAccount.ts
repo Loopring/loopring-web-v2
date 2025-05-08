@@ -3,7 +3,7 @@ import React from 'react'
 import { FeeInfo, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import { AccountStep, setShowAccount as _setShowAccount, useOpenModals, useSettings } from '@loopring-web/component-lib'
 
-import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5, isSameEVMAddress, withRetry } from '../../index'
+import { activateAccount, useAccount, LoopringAPI, accountServices, activateAccountSmartWallet, updateAccountRecursively, isCoinbaseSmartWallet, encryptAESMd5, isSameEVMAddress, withRetry, getAndSaveEncryptedSKFromServer } from '../../index'
 
 import * as sdk from '@loopring-web/loopring-sdk'
 import { useWalletInfo } from '../../stores/localStore/walletInfo'
@@ -219,6 +219,60 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountFn = async ({
 }
 
 
+const checkBeforeGoUpdateAccount = async () => {
+  const {
+    account: { accAddress, nonce, accountId },
+    settings: { defaultNetwork },
+    localStore: { coinbaseSmartWalletPersist },
+    system: { exchangeInfo },
+  } = store.getState()
+  if (!exchangeInfo) {
+    return false
+  }
+  console.log('checkBeforeGoUpdateAccount', 'start')
+  if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
+    console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet')
+    const foundPersistData = coinbaseSmartWalletPersist?.data.find(
+      (item) =>
+        item.chainId === defaultNetwork &&
+        isSameEVMAddress(item.wallet, accAddress) &&
+        item.nonce === nonce,
+    )
+    if (
+      foundPersistData &&
+      !!foundPersistData.eddsaKeyBackup?.backupNotFinished &&
+      foundPersistData.eddsaKeyBackup?.json
+    ) {
+      console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet', 'backupNotFinished')
+      goUpdateAccountCoinbaseWalletBackupKeyOnlyFn({
+        isReset: false,
+        backupKeyJSON: foundPersistData.eddsaKeyBackup?.json!,
+      })
+    } else if (
+      foundPersistData &&
+      !!foundPersistData.updateAccountData?.updateAccountNotFinished &&
+      foundPersistData.updateAccountData?.json
+    ) {
+      console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet', 'updateAccountNotFinished')
+      goUpdateAccountCoinbaseWalletUpdateAccountFn({
+        isReset: false,
+        updateAccountJSON: foundPersistData.updateAccountData?.json!,
+      })
+    } else {
+      console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet', 'else')
+      store.dispatch(
+        _setShowAccount({
+          isShow: true,
+          step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
+        }),
+      )
+    }
+    return false
+  }
+  console.log('checkBeforeGoUpdateAccount', 'not coinbaseSmartWallet')
+  return true
+}
+
 export function useUpdateAccount() {
   const { updateHW, checkHWAddr } = useWalletInfo()
   const { setShowAccount } = useOpenModals()
@@ -238,16 +292,8 @@ export function useUpdateAccount() {
       isReset?: boolean
       feeInfo?: FeeInfo
     }) => {
-      const result = await isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
-      if (result) {
-        setShowAccount({
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Intro,
-          isShow: true,
-          info: {
-            feeInfo,
-            isReset
-          }
-        })
+      const shouldContinue = await checkBeforeGoUpdateAccount()
+      if (!shouldContinue) {
         return
       }
 
