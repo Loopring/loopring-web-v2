@@ -615,7 +615,7 @@ export const useTransferToTaikoAccount = (): TransferToTaikoAccountProps => {
     },
     title: isToEthereum
       ? 'Send to Ethereum'
-      : 'Send to TAIKO',
+      : 'Send to Taiko',
     hideContactBtn: app === 'earn'
   } as TransferToTaikoAccountProps
   return output
