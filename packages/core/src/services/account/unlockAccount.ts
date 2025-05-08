@@ -122,6 +122,12 @@ export const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaul
         owner: accAddress,
         validUntilInMs,
         ecdsaSig: ecdsaSig,
+      }).then((res) => {
+        if (!res?.data) {
+          throw res
+        } else {
+          return res
+        }
       }),
     3,
     1000,
