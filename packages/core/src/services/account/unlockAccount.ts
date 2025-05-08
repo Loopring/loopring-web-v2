@@ -132,9 +132,9 @@ export const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaul
     3,
     1000,
   )()
-  if (!res?.data) {
+  .catch((e) => {
     throw new Error('getEncryptedEcdsaKey failed')
-  }
+  })
   const accInfo = await LoopringAPI.exchangeAPI?.getAccount({
     owner: accAddress,
   })
