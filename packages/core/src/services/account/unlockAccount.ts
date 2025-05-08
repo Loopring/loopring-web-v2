@@ -218,6 +218,15 @@ const checkBeforeUnlock = async () => {
           )
         })
         .catch(async (e) => {
+          if (e.message === 'getEncryptedEcdsaKey failed') {
+            store.dispatch(
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Coinbase_Smart_Wallet_Password_Get_Error,
+              }),
+            )
+            return
+          }
           const [hasDualInvest, hasVault] = await Promise.all([
             LoopringAPI.defiAPI
               ?.getDualTransactions(
