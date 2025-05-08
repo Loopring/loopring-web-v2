@@ -219,7 +219,7 @@ export const goUpdateAccountCoinbaseWalletUpdateAccountFn = async ({
 }
 
 
-const checkBeforeGoUpdateAccount = async () => {
+const checkBeforeGoUpdateAccount = async (isReset: boolean, feeInfo?: FeeInfo) => {
   const {
     account: { accAddress, nonce, accountId },
     settings: { defaultNetwork },
@@ -229,9 +229,7 @@ const checkBeforeGoUpdateAccount = async () => {
   if (!exchangeInfo) {
     return false
   }
-  console.log('checkBeforeGoUpdateAccount', 'start')
   if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
-    console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet')
     const foundPersistData = coinbaseSmartWalletPersist?.data.find(
       (item) =>
         item.chainId === defaultNetwork &&
@@ -243,7 +241,6 @@ const checkBeforeGoUpdateAccount = async () => {
       !!foundPersistData.eddsaKeyBackup?.backupNotFinished &&
       foundPersistData.eddsaKeyBackup?.json
     ) {
-      console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet', 'backupNotFinished')
       goUpdateAccountCoinbaseWalletBackupKeyOnlyFn({
         isReset: false,
         backupKeyJSON: foundPersistData.eddsaKeyBackup?.json!,
@@ -253,23 +250,33 @@ const checkBeforeGoUpdateAccount = async () => {
       !!foundPersistData.updateAccountData?.updateAccountNotFinished &&
       foundPersistData.updateAccountData?.json
     ) {
-      console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet', 'updateAccountNotFinished')
       goUpdateAccountCoinbaseWalletUpdateAccountFn({
         isReset: false,
         updateAccountJSON: foundPersistData.updateAccountData?.json!,
       })
     } else {
-      console.log('checkBeforeGoUpdateAccount', 'isCoinbaseSmartWallet', 'else')
-      store.dispatch(
-        _setShowAccount({
-          isShow: true,
-          step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
-        }),
-      )
+      if (isReset) {
+        store.dispatch(
+          _setShowAccount({
+            isShow: true,
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
+            info: {
+              feeInfo,
+            }
+          }),
+        )
+      } else {
+        store.dispatch(
+          _setShowAccount({
+            isShow: true,
+            step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
+          }),
+        )
+      }
+      
     }
     return false
   }
-  console.log('checkBeforeGoUpdateAccount', 'not coinbaseSmartWallet')
   return true
 }
 
@@ -292,7 +299,7 @@ export function useUpdateAccount() {
       isReset?: boolean
       feeInfo?: FeeInfo
     }) => {
-      const shouldContinue = await checkBeforeGoUpdateAccount()
+      const shouldContinue = await checkBeforeGoUpdateAccount(isReset, feeInfo)
       if (!shouldContinue) {
         return
       }
