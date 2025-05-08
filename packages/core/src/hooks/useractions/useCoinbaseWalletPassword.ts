@@ -80,6 +80,14 @@ export const useCoinbaseWalletPassword = () => {
         })
       },
     },
+    getErrorProps: {
+      t,
+      onClickConfirm: () => {
+        setShowAccount({
+          isShow: false
+        })
+      },
+    },
     inputProps: {
       t,
       inputDisabled: !(
