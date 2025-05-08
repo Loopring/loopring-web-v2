@@ -107,7 +107,6 @@ export const useCoinbaseWalletPassword = () => {
             apiKey: res.apiKey,
             eddsaKey: { ...foundPersistData!.eddsaKey, sk },
             isInCounterFactualStatus: false,
-            isContract: true,
             accountId: accountInfoRealTime!.accInfo.accountId,
           })
           setShowAccount({
