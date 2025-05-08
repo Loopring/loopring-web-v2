@@ -97,7 +97,7 @@ export const resetlrTAIKOIfNeeded = async (
 }
 
 
-const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaultNetwork: sdk.ChainId) => {
+export const getAndSaveEncryptedSKFromServer = async (accAddress: string, defaultNetwork: sdk.ChainId) => {
   store.dispatch(
     setShowAccount({
       isShow: true,
@@ -173,20 +173,17 @@ const checkBeforeUnlock = async () => {
   }
 
   if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
-    console.log('sdjshdjs', 'isCoinbaseSmartWallet')
     const foundPersistData = coinbaseSmartWalletPersist?.data.find(
       (item) =>
         item.chainId === defaultNetwork &&
         isSameEVMAddress(item.wallet, accAddress) &&
         item.nonce === nonce,
     )
-    console.log('sdjshdjs', 'foundPersistData', foundPersistData)
     if (
       foundPersistData &&
       !!foundPersistData.eddsaKeyBackup?.backupNotFinished &&
       foundPersistData.eddsaKeyBackup?.json
     ) {
-      console.log('sdjshdjs', 'foundPersistData', 'eddsaKeyBackup')
       goUpdateAccountCoinbaseWalletBackupKeyOnlyFn({
         isReset: false,
         backupKeyJSON: foundPersistData.eddsaKeyBackup?.json!,
@@ -196,18 +193,15 @@ const checkBeforeUnlock = async () => {
       !!foundPersistData.updateAccountData?.updateAccountNotFinished &&
       foundPersistData.updateAccountData?.json
     ) {
-      console.log('sdjshdjs', 'foundPersistData', 'updateAccountData')
       goUpdateAccountCoinbaseWalletUpdateAccountFn({
         isReset: false,
         updateAccountJSON: foundPersistData.updateAccountData?.json!,
       })
     } else if (foundPersistData && !!foundPersistData.eddsaKey?.sk) {
-      console.log('sdjshdjs', 'foundPersistData', 'local')
       store.dispatch(
         setShowAccount({ isShow: true, step: AccountStep.Coinbase_Smart_Wallet_Password_Input }),
       )
     } else {
-      console.log('sdjshdjs', 'foundPersistData', 'server')
       await getAndSaveEncryptedSKFromServer(accAddress, defaultNetwork)
         .then(() => {
           store.dispatch(
@@ -218,7 +212,6 @@ const checkBeforeUnlock = async () => {
           )
         })
         .catch(async (e) => {
-          console.log('sdjshdjs', 'foundPersistData', 'server failed')
           const [hasDualInvest, hasVault] = await Promise.all([
             LoopringAPI.defiAPI
               ?.getDualTransactions(
