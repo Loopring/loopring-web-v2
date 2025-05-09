@@ -227,7 +227,7 @@ const checkBeforeUnlock = async () => {
             )
             return
           }
-          if (e.code === 'ACTION_REJECTED') {
+          if (e.code === 'ACTION_REJECTED' || e.code === 4001) {
             store.dispatch(
               setShowAccount({
                 isShow: true,
