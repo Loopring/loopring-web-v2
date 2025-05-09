@@ -14,7 +14,7 @@ import styled from '@emotion/styled'
 import { ModalCloseButton } from '../../basic-lib'
 import { withTranslation } from 'react-i18next'
 import { AccountStep } from './Interface'
-import { useOpenModals } from '../../../stores'
+import { useOpenModals, useSettings } from '../../../stores'
 import React from 'react'
 import { CheckIcon, CloseIcon, ErrorIcon, FailedIcon, hexToRGB, LoadingIcon, LoadingIcon2, SoursURL } from '@loopring-web/common-resources'
 import { keyframes, useTheme } from '@emotion/react'
@@ -675,9 +675,11 @@ const Coinbase_Smart_Wallet_Password_Forget_Password_Confirm = withTranslation('
 
 const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
   ({ step, showResumeUpdateAccount }: { step: 'keyGenerating' | 'blockConfirming' | 'updatingAccount' | 'completed'; showResumeUpdateAccount: boolean }) => {
+    const { isMobile } = useSettings()
+    
     return (
       <Box px={3} display={'flex'} flexDirection={'column'} height={'100%'} pb={3}>
-        <Typography variant='h4' textAlign='center' mb={4} mt={2}>
+        <Typography variant={'h4'} textAlign='center' mb={4} mt={2}>
           Loopring DeFi Account Creation
         </Typography>
         
@@ -687,7 +689,7 @@ const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
               steps={[
                 {
                   rightElement: (
-                    <Typography variant='h4' ml={2}>
+                    <Typography variant={isMobile ? 'h5' : 'h4'} mt={isMobile ? 1 : 0} ml={2}>
                       Sign In & Generate EDDSA Key
                     </Typography>
                   ),
@@ -695,10 +697,10 @@ const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
                 {
                   rightElement: (
                     <Box ml={2}>
-                      <Typography variant='h4' mb={1}>
+                      <Typography variant={isMobile ? 'h5' : 'h4'} mt={isMobile ? 1 : 0} mb={1}>
                         Submit EDDSA Key & Wait for Block Confirmation
                       </Typography>
-                      <Typography variant='body1' color='var(--color-text-secondary)'>
+                      <Typography variant={isMobile ? 'body2' : 'body1'} color='var(--color-text-secondary)'>
                       It requires a certain number of block confirmations. The dApp will automatically monitor the progress and proceed to Step 3 once confirmations are complete.
                       </Typography>
                     </Box>
@@ -706,7 +708,7 @@ const Coinbase_Smart_Wallet_Password_Set_Processing = withTranslation('common')(
                 },
                 {
                   rightElement: (
-                    <Typography variant='h4' ml={2}>
+                    <Typography variant={isMobile ? 'h5' : 'h4'} mt={isMobile ? 1 : 0} ml={2}>
                        Update Account
                     </Typography>
                   ),

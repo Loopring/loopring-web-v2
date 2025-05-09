@@ -227,6 +227,15 @@ const checkBeforeUnlock = async () => {
             )
             return
           }
+          if (e.code === 'ACTION_REJECTED') {
+            store.dispatch(
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.UnlockAccount_User_Denied,
+              }),
+            )
+            return
+          }
           const [hasDualInvest, hasVault] = await Promise.all([
             LoopringAPI.defiAPI
               ?.getDualTransactions(
