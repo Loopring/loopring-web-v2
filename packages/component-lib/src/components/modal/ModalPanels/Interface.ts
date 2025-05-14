@@ -166,6 +166,7 @@ export enum AccountStep {
   UpdateAccount_User_Denied,
   UpdateAccount_Success,
   UpdateAccount_Failed,
+  UpdateAccount_SmartWallet_NotSupported_Alert,
 
   // UnlockAccount,
   UnlockAccount_WaitForAuth,

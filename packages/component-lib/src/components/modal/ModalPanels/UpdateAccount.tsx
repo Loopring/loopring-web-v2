@@ -1,5 +1,5 @@
 import { TFunction } from 'react-i18next'
-import { IconType, PanelProps, UpdateAccountBase } from './BasicPanel'
+import { BasicPanel, IconType, PanelProps, UpdateAccountBase } from './BasicPanel'
 import { Box, Typography } from '@mui/material'
 import { AnimationArrow, Button, useSettings } from '../../../index'
 import { AccountBasePanel, AccountBaseProps } from './index'
@@ -179,4 +179,17 @@ export const UpdateAccount_Failed = (props: PanelProps) => {
     }),
   }
   return <UpdateAccountBase {...propsPatch} {...props} />
+}
+
+export const UpdateAccount_SmartWallet_NotSupported_Alert = (props: PanelProps) => {
+  const propsPatch = {
+    iconType: IconType.FailedIcon,
+    describe1: <Typography >Currently, only EOA wallets are supported.
+      <br/>
+      Loopring Smart Wallet support is coming soon.
+      <br/>
+      Stay tuned for updates!
+    </Typography>,
+  }
+  return <BasicPanel {...propsPatch} {...props} title={undefined}/>
 }
