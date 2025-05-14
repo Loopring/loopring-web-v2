@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-import { AccountStatus, fnType, TradeBtnStatus } from '@loopring-web/common-resources'
+import { AccountStatus, coinbaseSmartWalletChains, fnType, MapChainId, TradeBtnStatus } from '@loopring-web/common-resources'
 import * as _ from 'lodash'
 import { accountStaticCallBack, btnClickMap, btnLabel } from '../help'
 import { useAccount, useSystem, useWalletLayer2 } from '../../stores'
-import { useOpenModals, useSettings } from '@loopring-web/component-lib'
-import { ChainId, toBig } from '@loopring-web/loopring-sdk'
+import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component-lib'
+import { ChainId, NetworkWallet, toBig } from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../api_wrapper'
 import { useUpdateAccount } from '../../hooks/useractions'
+import { isCoinbaseSmartWallet } from 'utils'
 
 export const useSubmitBtn = ({
   availableTradeCheck,
@@ -27,7 +28,7 @@ export const useSubmitBtn = ({
   let { app, exchangeInfo } = useSystem()
   let { defaultNetwork } = useSettings()
   const { goUpdateAccount } = useUpdateAccount()
-  const { setShowDeposit } = useOpenModals()
+  const { setShowDeposit, setShowAccount } = useOpenModals()
 
   const btnStatus = React.useMemo((): TradeBtnStatus | undefined => {
     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -85,6 +86,24 @@ export const useSubmitBtn = ({
         isEarn: app === 'earn',
         readyState: account.readyState,
         specialActivation: async () => {
+          const [walletType, coinbaseSW] = await Promise.all([
+            LoopringAPI?.walletAPI?.getWalletType({
+              wallet: account.accAddress,
+              network: MapChainId[defaultNetwork] as NetworkWallet,
+            }),
+            isCoinbaseSmartWallet(account.accAddress, defaultNetwork as ChainId),
+          ])
+
+          const isActivationSupported =
+            !walletType?.walletType?.isContract ||
+            (coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork))
+          if (!isActivationSupported) {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UpdateAccount_SmartWallet_NotSupported_Alert,
+            })
+            return
+          }
           const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
             accountId: account._accountIdNotActive,
           })
@@ -109,7 +128,26 @@ export const useSubmitBtn = ({
           })
         },
         specialActivationDeposit: async () => {
+          const [walletType, coinbaseSW] = await Promise.all([
+            LoopringAPI?.walletAPI?.getWalletType({
+              wallet: account.accAddress,
+              network: MapChainId[defaultNetwork] as NetworkWallet,
+            }),
+            isCoinbaseSmartWallet(account.accAddress, defaultNetwork as ChainId),
+          ])
+
+          const isActivationSupported =
+            !walletType?.walletType?.isContract ||
+            (coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork))
+          if (!isActivationSupported) {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UpdateAccount_SmartWallet_NotSupported_Alert,
+            })
+            return
+          } 
           setShowDeposit({isShow: true})
+
         },
         exchangeInfoLoaded: exchangeInfo ? true : false,
       }])

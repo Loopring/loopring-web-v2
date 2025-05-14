@@ -178,6 +178,7 @@ import {
   Coinbase_Smart_Wallet_Password_Input,
   Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
   Coinbase_Smart_Wallet_Password_Forget_Password,
+  UpdateAccount_SmartWallet_NotSupported_Alert,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -3031,6 +3032,19 @@ export function useAccountModalForUI({
               account,
               error: isShowAccount.error,
               t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_SmartWallet_NotSupported_Alert]: {
+        view: (
+          <UpdateAccount_SmartWallet_NotSupported_Alert
+            btnInfo={{
+              btnTxt: 'labelClose',
+              callback: (e: any) => {
+                setShowAccount({ isShow: false })
+                setShowActiveAccount({ isShow: false })
+              }
             }}
           />
         ),
