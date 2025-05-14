@@ -73,18 +73,9 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowActiveAccount({ isShow: true })
   }
   const onIKnowClick = async () => {
-    const [walletType, coinbaseSW] = await Promise.all([
-      LoopringAPI?.walletAPI?.getWalletType({
-        wallet: account.accAddress,
-        network: MapChainId[defaultNetwork] as sdk.NetworkWallet
-      }),
-      isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
-    ])
-    
-    const isUnsupportedSmartWallet =
-      walletType?.walletType?.isContract &&
-      (!coinbaseSW || !coinbaseSmartWalletChains.includes(defaultNetwork))
-    if (isUnsupportedSmartWallet || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
+    const coinbaseSW = await isCoinbaseSmartWallet(account.accAddress, defaultNetwork as sdk.ChainId)
+    const isWalletActivationSupported = coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork)
+    if (!isWalletActivationSupported || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
       setKnow(true)
     } else {
       goUpdateAccount()
