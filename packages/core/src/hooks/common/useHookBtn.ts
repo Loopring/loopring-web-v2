@@ -7,7 +7,7 @@ import { AccountStep, useOpenModals, useSettings } from '@loopring-web/component
 import { ChainId, NetworkWallet, toBig } from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from '../../api_wrapper'
 import { useUpdateAccount } from '../../hooks/useractions'
-import { isCoinbaseSmartWallet } from 'utils'
+import { isCoinbaseSmartWallet } from '../../utils'
 
 export const useSubmitBtn = ({
   availableTradeCheck,
@@ -147,7 +147,6 @@ export const useSubmitBtn = ({
             return
           } 
           setShowDeposit({isShow: true})
-
         },
         exchangeInfoLoaded: exchangeInfo ? true : false,
       }])
