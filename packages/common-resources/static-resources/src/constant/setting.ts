@@ -261,4 +261,4 @@ export const CHAIN_ID_TO_VIEW_CHAIN = new Map<sdk.ChainId, Chain>([
   [sdk.ChainId.BASESEPOLIA, baseSepolia],
 ])
 
-export const coinbaseSmartWalletChains = [sdk.ChainId.BASE, sdk.ChainId.BASESEPOLIA, sdk.ChainId.SEPOLIA] // todo rm sepolia
+export const coinbaseSmartWalletChains = [sdk.ChainId.BASE, sdk.ChainId.BASESEPOLIA] 
