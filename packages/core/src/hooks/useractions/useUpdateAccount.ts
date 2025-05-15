@@ -255,25 +255,15 @@ const checkBeforeGoUpdateAccount = async (isReset: boolean, feeInfo?: FeeInfo) =
         updateAccountJSON: foundPersistData.updateAccountData?.json!,
       })
     } else {
-      if (isReset) {
-        store.dispatch(
-          _setShowAccount({
-            isShow: true,
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
-            info: {
-              feeInfo,
-            }
-          }),
-        )
-      } else {
-        store.dispatch(
-          _setShowAccount({
-            isShow: true,
-            step: AccountStep.Coinbase_Smart_Wallet_Password_Input,
-          }),
-        )
-      }
-      
+      store.dispatch(
+        _setShowAccount({
+          isShow: true,
+          step: AccountStep.Coinbase_Smart_Wallet_Password_Set,
+          info: {
+            feeInfo,
+          }
+        }),
+      )
     }
     return false
   }
