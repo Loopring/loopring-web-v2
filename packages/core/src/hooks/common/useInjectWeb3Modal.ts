@@ -30,7 +30,7 @@ const chainIds = SUPPORTING_NETWORKS.map(Number)
 export const appKit = createAppKit({
   adapters: [new Ethers5Adapter()],
   metadata: metadata,
-  networks: networks,
+  networks: networks.filter((item) => chainIds.includes(item.id)),
   projectId,
   chainImages: {
     167000: `${SoursURL}earn/taiko.svg`,
