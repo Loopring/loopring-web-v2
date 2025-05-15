@@ -173,6 +173,12 @@ import {
   Transfer_To_Taiko_Success,
   Transfer_To_Taiko_Failed,
   UnlockAccount_Reset_Key_Confirm,
+  Coinbase_Smart_Wallet_Password_Intro,
+  Coinbase_Smart_Wallet_Password_Set,
+  Coinbase_Smart_Wallet_Password_Input,
+  Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
+  Coinbase_Smart_Wallet_Password_Forget_Password,
+  UpdateAccount_SmartWallet_NotSupported_Alert,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -216,6 +222,7 @@ import {
   useAccount,
   useActiveAccount,
   useCheckActiveStatus,
+  useCoinbaseWalletPassword,
   useCollectionAdvanceMeta,
   useConfig,
   useContacts,
@@ -246,6 +253,7 @@ import { useHistory } from 'react-router-dom'
 import { ImportRedPacket } from './components/QRCodeScanner'
 import { useClaimConfirm } from '../../hooks/useractions/useClaimConfirm'
 import { useContactAdd } from '../../hooks/useractions/useContactAdd'
+import { Coinbase_Smart_Wallet_Password_Get_Error, Coinbase_Smart_Wallet_Password_Set_Confirm, Coinbase_Smart_Wallet_Password_Set_Error, Coinbase_Smart_Wallet_Password_Set_Processing } from '@loopring-web/component-lib/src/components/modal/ModalPanels/CoinbaseSmartWalletModal'
 
 export function useAccountModalForUI({
   t,
@@ -338,6 +346,7 @@ export function useAccountModalForUI({
   })
   const { retryBtn: forceWithdrawRetry } = useForceWithdraw()
   const { claimProps, retryBtn: claimRetryBtn } = useClaimConfirm()
+  const coinbaseWalletPassword = useCoinbaseWalletPassword()
   const { resetProps } = useReset()
   const { activeAccountProps, activeAccountCheckFeeIsEnough } = useActiveAccount()
   const [tryCheckL2BalanceTimes, setTryCheckL2BalanceTimes] = React.useState(5)
@@ -2867,10 +2876,6 @@ export function useAccountModalForUI({
               btnTxt: 'labelRetry',
               callback: () => {
                 unlockAccount()
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-                })
               },
             }}
             {...{
@@ -3027,6 +3032,19 @@ export function useAccountModalForUI({
               account,
               error: isShowAccount.error,
               t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.UpdateAccount_SmartWallet_NotSupported_Alert]: {
+        view: (
+          <UpdateAccount_SmartWallet_NotSupported_Alert
+            btnInfo={{
+              btnTxt: 'labelClose',
+              callback: (e: any) => {
+                setShowAccount({ isShow: false })
+                setShowActiveAccount({ isShow: false })
+              }
             }}
           />
         ),
@@ -3661,6 +3679,78 @@ export function useAccountModalForUI({
           />
         ),
       },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Intro]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Intro
+            {...coinbaseWalletPassword.introProps}
+          />
+        ),
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Set]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Set
+            {...coinbaseWalletPassword.setProps}
+          />
+        ),
+        height: '440px',
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Set_Confirm]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Set_Confirm
+            {...coinbaseWalletPassword.setConfirmProps}
+          />
+        ),
+        noClose: true,
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Set_Processing]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Set_Processing
+            {...coinbaseWalletPassword.setProcessingProps}
+          />
+        ),
+        height: '450px',
+        
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Set_Error]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Set_Error
+            {...coinbaseWalletPassword.setErrorProps}
+          />
+        ),
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Get_Error]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Get_Error
+            {...coinbaseWalletPassword.getErrorProps}
+          />
+        ),
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Input]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Input
+            {...coinbaseWalletPassword.inputProps}
+          />
+        ),
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Forget_Password_Confirm
+            {...coinbaseWalletPassword.forgetPasswordConfirmProps}
+          />
+        ),
+        height: '520px',
+
+      },
+      [AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password]: {
+        view: (
+          <Coinbase_Smart_Wallet_Password_Forget_Password
+            {...coinbaseWalletPassword.forgetPasswordProps}
+          />
+        ),
+        height: '450px',
+        
+      },
+      
     })
   }, [
     activeAccountProps,

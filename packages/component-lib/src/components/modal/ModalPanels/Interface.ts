@@ -166,6 +166,7 @@ export enum AccountStep {
   UpdateAccount_User_Denied,
   UpdateAccount_Success,
   UpdateAccount_Failed,
+  UpdateAccount_SmartWallet_NotSupported_Alert,
 
   // UnlockAccount,
   UnlockAccount_WaitForAuth,
@@ -233,6 +234,16 @@ export enum AccountStep {
   Transfer_To_Taiko_In_Progress,
   Transfer_To_Taiko_Success,
   Transfer_To_Taiko_Failed,
+
+  Coinbase_Smart_Wallet_Password_Intro,
+  Coinbase_Smart_Wallet_Password_Set,
+  Coinbase_Smart_Wallet_Password_Set_Confirm,
+  Coinbase_Smart_Wallet_Password_Set_Processing,
+  Coinbase_Smart_Wallet_Password_Set_Error,
+  Coinbase_Smart_Wallet_Password_Get_Error,
+  Coinbase_Smart_Wallet_Password_Input,
+  Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
+  Coinbase_Smart_Wallet_Password_Forget_Password,
 
 }
 

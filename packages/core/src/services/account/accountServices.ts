@@ -137,11 +137,13 @@ export const accountServices = {
     // nonce,
     isInCounterFactualStatus,
     isContract,
+    accountId
   }: {
     apiKey?: string
     eddsaKey?: any
     isInCounterFactualStatus?: boolean
     isContract?: boolean
+    accountId?: number
   }) => {
     const updateInfo =
       apiKey && eddsaKey
@@ -160,6 +162,7 @@ export const accountServices = {
             _accountIdNotActive: -1,
             isInCounterFactualStatus,
             isContract,
+            accountId
           }
         : { readyState: AccountStatus.ACTIVATED }
 

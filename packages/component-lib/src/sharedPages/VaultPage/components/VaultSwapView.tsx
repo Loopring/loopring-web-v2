@@ -1,5 +1,5 @@
 import { Box, Typography, Modal, IconButton, Slider, Checkbox, Tooltip, Switch, Grid, Input, Select, MenuItem, Button as MuiButton } from '@mui/material'
-import { CoinIcons, CountDownIcon, IconButtonStyled, InputSearch, SpaceBetweenBox } from '@loopring-web/component-lib'
+import { CoinIcons, CountDownIcon, IconButtonStyled, InputSearch, SpaceBetweenBox, useSettings } from '@loopring-web/component-lib'
 import { CheckBoxIcon, CheckedIcon, CloseIcon, CompleteIcon, EmptyValueTag, hexToRGB, Info2Icon, LoadingIcon, ReverseIcon, SwapSettingIcon, TokenType, WaitingIcon } from '@loopring-web/common-resources'
 import { numberFormat } from '@loopring-web/core'
 import _ from 'lodash';
@@ -223,15 +223,11 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
   const theme = useTheme()
   const settingPopoverId = 'setting'
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const isMobile = useSettings().isMobile
 
   const mainView = (
     <Box
       bgcolor={'var(--color-box)'}
-      width={'var(--modal-width)'}
-      // minHeight={'700px'}
-      // height={'700px'}
-      // maxHeight={'90%'}
-      // overflow={'auto'}
       border={'1px solid var(--color-border)'}
       borderRadius={'12px'}
       display={'flex'}
@@ -239,6 +235,10 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
       flexDirection={'column'}
       position={'relative'}
       ref={mainViewRef}
+      sx={{
+        width: isMobile ? '92%' : 'var(--modal-width)',
+        mx: isMobile ? '4%' : 0,
+      }}
     >
       <Box
         px={3}

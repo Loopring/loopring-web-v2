@@ -10,7 +10,6 @@
     "@loopring-web/core": "1.0.0",
     "@manaflair/redux-batch": "^1.0.0",
     "clipboard": "^2.0.8",
-    "ethers": "^5.5.4",
     "export-from-json": "^1.4.0",
     "lodash": "^4.17.20",
     "ms.macro": "^2.0.0",

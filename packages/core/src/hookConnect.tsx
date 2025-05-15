@@ -42,7 +42,7 @@ import { useTranslation } from 'react-i18next'
 import { Avatar, Box, Button, Modal, SelectChangeEvent, Typography } from '@mui/material'
 import { updateAccountStatus } from './stores/account/reducer'
 import styled from '@emotion/styled'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { useAppKit } from '@reown/appkit/react'
 
 export const OutlineSelectStyle = styled(OutlineSelect)`
   &.walletModal {
@@ -293,7 +293,7 @@ export const useSelectNetwork = ({ className }: { className?: string }) => {
     },
     [connectName, connectProvides.usedProvide, defaultNetwork],
   )
-  const { open } = useWeb3Modal()
+  const { open } = useAppKit()
   const NetWorkItems: JSX.Element = React.useMemo(() => {
     myLog('defaultNetwork NetWorkItems', defaultNetwork)
     

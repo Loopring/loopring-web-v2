@@ -114,6 +114,7 @@ export const useVaultAccountInfo = () => {
           if (!confirmedOpenVaultPosition) {
             setShowConfirmedVault({ isShow: true })  
           } else {
+            history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
             setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
             setShowConfirmedVault({ isShow: false })  
           }

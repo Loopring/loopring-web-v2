@@ -1,15 +1,17 @@
 import { withTranslation } from 'react-i18next'
-import { accountStaticCallBack, btnClickMap, btnLabel, LoopringAPI, store, useAccount, useSystem, useUpdateAccount } from '../index'
+import { accountStaticCallBack, btnClickMap, btnLabel, isCoinbaseSmartWallet, LoopringAPI, store, useAccount, useSystem, useUpdateAccount } from '../index'
 import {
   Button,
   useSettings,
   ButtonProps,
   useOpenModals,
+  AccountStep,
 } from '@loopring-web/component-lib'
 import React from 'react'
 import _ from 'lodash'
 
 import {
+  coinbaseSmartWalletChains,
   fnType,
   i18n,
   L1L2_NAME_DEFINED,
@@ -17,8 +19,8 @@ import {
   MapChainId,
   SagaStatus,
 } from '@loopring-web/common-resources'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
-import { toBig } from '@loopring-web/loopring-sdk'
+import { ChainId, NetworkWallet, toBig } from '@loopring-web/loopring-sdk'
+import { useAppKit } from '@reown/appkit/react'
 
 export const WalletConnectL2Btn = withTranslation(['common'], {
   withRef: true,
@@ -60,7 +62,7 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
   }, [accountStatus, account.readyState, i18n.language, defaultNetwork, app, exchangeInfo])
 
   const _btnClickMap = Object.assign(_.cloneDeep({ ...btnClickMap, ...btnClickMapProps }), {})
-  const { setShowDeposit } = useOpenModals()
+  const { setShowDeposit, setShowAccount } = useOpenModals()
   const { goUpdateAccount } = useUpdateAccount()
   return (
     <Button
@@ -79,14 +81,38 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
           isEarn: app === 'earn',
           readyState: account.readyState,
           specialActivation: async () => {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.UpdateAccount_Approve_WaitForAuth
+            })
             const {account} = store.getState()
+            const [walletType, coinbaseSW] = await Promise.all([
+              LoopringAPI?.walletAPI?.getWalletType({
+                wallet: account.accAddress,
+                network: MapChainId[defaultNetwork] as NetworkWallet,
+              }),
+              isCoinbaseSmartWallet(account.accAddress, defaultNetwork as ChainId),
+            ])
+
+            const isActivationSupported =
+              !walletType?.walletType?.isContract ||
+              (coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork))
+            if (!isActivationSupported) {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.UpdateAccount_SmartWallet_NotSupported_Alert
+              })
+              return 
+            }
+            
             const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
               accountId: account._accountIdNotActive,
             })
+            
             const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
               accountId: account._accountIdNotActive!,
-              tokens: '',
             })
+
             const found = Object.keys(feeInfo.fees).find((key) => {
               const fee = feeInfo.fees[key].fee
               const foundBalance = userBalances[feeInfo.fees[key].tokenId]
@@ -105,6 +131,25 @@ export const WalletConnectL2Btn = withTranslation(['common'], {
             })
           },
           specialActivationDeposit: async () => {
+            const {account} = store.getState()
+            const [walletType, coinbaseSW] = await Promise.all([
+              LoopringAPI?.walletAPI?.getWalletType({
+                wallet: account.accAddress,
+                network: MapChainId[defaultNetwork] as NetworkWallet,
+              }),
+              isCoinbaseSmartWallet(account.accAddress, defaultNetwork as ChainId),
+            ])
+
+            const isActivationSupported =
+              !walletType?.walletType?.isContract ||
+              (coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork))
+            if (!isActivationSupported) {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.UpdateAccount_SmartWallet_NotSupported_Alert
+              })
+              return 
+            }
             setShowDeposit({isShow: true})
           },
           exchangeInfoLoaded: exchangeInfo ? true : false
@@ -143,7 +188,7 @@ export const BtnConnectL1 = withTranslation(['common', 'layout'], {
   
   const { defaultNetwork } = useSettings()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-  const modal = useWeb3Modal()
+  const modal = useAppKit()
 
   return (
     <>

@@ -10,8 +10,7 @@
     "@loopring-web/common-resources": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
     "react-scripts": "5.0.1",
-    "cross-env": "^7.0.3",
-    "ethers": "^5.5.4"
+    "cross-env": "^7.0.3"
   },
   "scripts": {
     "rollup:build": "rollup --config --no-stdin",

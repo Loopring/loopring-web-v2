@@ -9,7 +9,7 @@ import { useTheme } from '@emotion/react'
 
 import { useTranslation } from 'react-i18next'
 import { MarkdownStyle } from '@loopring-web/common-resources'
-import { useWeb3Modal, useWeb3ModalState } from '@web3modal/ethers5/react'
+import { useAppKit, useAppKitState } from '@reown/appkit/react'
 
 const url_path = 'https://static.loopring.io/documents'
 
@@ -70,8 +70,8 @@ export const MarkdownPage = () => {
     }
   }, [path])
   const theme = useTheme()
-  const { close } = useWeb3Modal()
-  const { open } = useWeb3ModalState()
+  const { close } = useAppKit()
+  const { open } = useAppKitState()
   React.useEffect(() => {
     open && close()
   }, [open])

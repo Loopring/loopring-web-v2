@@ -75,6 +75,7 @@ import { contactsSlice } from './contacts/reducer'
 import { targetRedpacketSlice } from './targetRedpackt/reducer'
 import { configSlice } from './config/reducer'
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2'
+import { CoinbaseSmartWalletPersist } from './localStore/coinbaseSmartWalletPersist/interface'
 
 
 const sagaMiddleware = createSagaMiddleware()
@@ -139,6 +140,7 @@ const persistedLocalStoreReducer = persistReducer<
     redPacketHistory: RedPacketHashInfos
     offRampHistory: OffRampHashInfos
     favoriteVaultMarket: FavoriteMarketStates
+    coinbaseSmartWalletPersist: CoinbaseSmartWalletPersist
   }>
 >(persistLocalStoreConfig , localStoreReducer)
 
@@ -285,3 +287,4 @@ export * from './contacts'
 export * from './targetRedpackt'
 export type { Config, FastWithdrawConfig } from './config'
 export { configReducer, useConfig } from './config'
+// export { useCoinbaseSmartWalletPersist, persistStoreCoinbaseSmartWalletData } from './localStore/coinbaseSmartWalletPersist'

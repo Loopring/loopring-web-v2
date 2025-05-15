@@ -62,9 +62,10 @@ export const useVaultPage = () => {
 
   const handleConfirmVaultRiskClose = (_e: any, isAgree: boolean) => {
     if (!isAgree) {
-      history.push(`${RouterPath.vault}/${VaultKey.VAULT_HOME}`)
+      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
       setShowConfirmedVault({ isShow: false })
     } else {
+      history.push(`${RouterPath.vault}/${VaultKey.VAULT_DASHBOARD}`)
       setConfirmedOpenVaultPosition()
       setShowVaultJoin({ isShow: true, info: { isActiveAccount: true } })
       setShowConfirmedVault({ isShow: false })

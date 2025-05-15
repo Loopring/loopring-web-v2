@@ -8,6 +8,7 @@ import {
   Profile,
   ProfileIndex,
   SagaStatus,
+  SPECIAL_ACTIVATION_NETWORKS,
 } from '@loopring-web/common-resources'
 
 import {
@@ -21,14 +22,16 @@ import {
   unlockAccount,
   useUpdateAccount,
   LoopringAPI,
+  isCoinbaseSmartWallet,
 } from '@loopring-web/core'
 
 import { AccountStep, useOpenModals, useSettings, useToggle } from '@loopring-web/component-lib'
 import { myLog } from '@loopring-web/common-resources'
 
 import _ from 'lodash'
-import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, EarnProfile, headerMenuDataEarnMap } from '../../constant/router'
-import { useWeb3Modal } from '@web3modal/scaffold-react'
+import { earnHeaderToolBarData, earnHeaderToolBarDataMobile, headerMenuDataEarnMap } from '../../constant/router'
+import { useAppKit } from '@reown/appkit/react'
+import { useCoinbaseSmartWalletPersist } from '@loopring-web/core/src/stores/localStore/coinbaseSmartWalletPersist'
 import { toBig } from '@loopring-web/loopring-sdk'
 
 export const useHeader = () => {
@@ -38,7 +41,7 @@ export const useHeader = () => {
   const { setShowAccount } = useOpenModals()
   const network = MapChainId[defaultNetwork] ?? MapChainId[1]
   const profile = ProfileIndex[network]
-  const modal = useWeb3Modal()
+  const modal = useAppKit()
 
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
@@ -76,6 +79,7 @@ export const useHeader = () => {
 
   const { NetWorkItems } = useSelectNetwork({ className: 'header' })
   const { goUpdateAccount } = useUpdateAccount() 
+  
   const headerToolBarData = React.useMemo(() => {
     const toolBarData = isMobile ? earnHeaderToolBarDataMobile : earnHeaderToolBarData
     return [SagaStatus.UNSET, SagaStatus.DONE].includes(accountStatus)
@@ -84,17 +88,45 @@ export const useHeader = () => {
           [ButtonComponentsMap.WalletConnect]: {
             ...toolBarData[ButtonComponentsMap.WalletConnect],
             handleClick: onWalletBtnConnect,
-            handleClickUnlock: () => {
+            handleClickUnlock: async () => {              
+
               unlockAccount()
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-              })
             },
             NetWorkItems,
             accountState: { account },
             handleClickSignIn: async () => {
-              setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
+              if (SPECIAL_ACTIVATION_NETWORKS.includes(defaultNetwork)) {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.UpdateAccount_Approve_WaitForAuth,
+                })
+                const { account } = store.getState()
+                const feeInfo = await LoopringAPI?.globalAPI?.getActiveFeeInfo({
+                  accountId: account._accountIdNotActive,
+                })
+                const { userBalances } = await LoopringAPI?.globalAPI?.getUserBalanceForFee({
+                  accountId: account._accountIdNotActive!,
+                })
+                const found = Object.keys(feeInfo.fees).find((key) => {
+                  const fee = feeInfo.fees[key].fee
+                  const foundBalance = userBalances[feeInfo.fees[key].tokenId]
+                  return (foundBalance && toBig(foundBalance.total).gte(fee)) || toBig(fee).eq('0')
+                })
+                await goUpdateAccount({
+                  isFirstTime: true,
+                  isReset: false,
+                  // @ts-ignore
+                  feeInfo: {
+                    token: feeInfo.fees[found!].fee,
+                    belong: found!,
+                    fee: feeInfo.fees[found!].fee,
+                    feeRaw: feeInfo.fees[found!].fee,
+                  },
+                })
+
+              } else {
+                setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
+              }
             },
           },
           [ButtonComponentsMap.ProfileMenu]: {

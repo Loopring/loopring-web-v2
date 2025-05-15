@@ -1,14 +1,11 @@
 import {
   AccountStep,
   setShowAccount,
-  setShowConnect,
   setShowWrongNetworkGuide,
-  WalletConnectStep,
 } from '@loopring-web/component-lib'
-import { Account, AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
-import { accountReducer, LoopringAPI, metaMaskCallback, store, unlockAccount, useInjectWeb3Modal, web3Modal } from '../../index'
+import { AccountStatus, fnType, myLog, SPECIAL_ACTIVATION_NETWORKS } from '@loopring-web/common-resources'
+import { accountReducer, store, unlockAccount, appKit } from '../../index'
 import _ from 'lodash'
-import { connectProvides } from '@loopring-web/web3-provider'
 import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const accountStaticCallBack = (
@@ -103,25 +100,16 @@ export const btnClickMap: {
   [fnType.UN_CONNECT]: [
     function () {
       myLog('UN_CONNECT!')
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [goActiveAccount],
   [fnType.DEPOSITING]: [goActiveAccount],
   [fnType.NOT_ACTIVE]: [goActiveAccount],
   [fnType.LOCKED]: [
-    function (info) {
-      if (!info?.exchangeInfoLoaded) {
-        return
-      }
+    async function () {
       unlockAccount()
       store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }))
-      store.dispatch(
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.UpdateAccount_Approve_WaitForAuth,
-        }),
-      )
     },
   ],
 }
@@ -129,28 +117,28 @@ export const btnClickMap: {
 export const btnConnectL1kMap = Object.assign(_.cloneDeep(btnClickMap), {
   [fnType.ACTIVATED]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.NO_ACCOUNT]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.DEPOSITING]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
   [fnType.NOT_ACTIVE]: [
     function () {
-      web3Modal.open()
+      appKit.open()
       
     },
   ],
   [fnType.LOCKED]: [
     function () {
-      web3Modal.open()
+      appKit.open()
     },
   ],
 })

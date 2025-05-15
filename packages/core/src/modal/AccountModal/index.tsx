@@ -227,6 +227,7 @@ export const ModalAccountInfo = withTranslation('common')(
           step={isShowAccount.step}
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
+          noClose={currentModal?.noClose}
         />
         <Modal
           open={isShowETHStakingApr.isShow}
