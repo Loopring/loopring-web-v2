@@ -10,7 +10,7 @@ import {
   UIERROR_CODE,
   VaultRepayData,
 } from '@loopring-web/common-resources'
-import { AccountStep, SwitchData, useOpenModals } from '@loopring-web/component-lib'
+import { AccountStep, SwitchData, useOpenModals, useSettings } from '@loopring-web/component-lib'
 import {
   NETWORKEXTEND,
   store,
@@ -51,6 +51,7 @@ export const useVaultRepay = <
   const { account } = useAccount()
   const { idIndex: erc20IdIndex } = useTokenMap()
   const { tokenMap: vaultTokenMap, idIndex: vaultIdIndex, coinMap: vaultCoinMap, tokenPrices } = useVaultMap()
+  const { coinJson } = useSettings()
   const { t } = useTranslation()
   const { vaultRepayData, updateVaultRepay, resetVaultRepay } = useTradeVault()
   const { exchangeInfo, chainId } = useSystem()
@@ -523,6 +524,14 @@ export const useVaultRepay = <
             },
           }
       : undefined,
-    initialSymbol
+    initialSymbol,
+    isolatedData: {
+      isIsolated: true,
+      token: 'ETH',
+      coinJsons: [
+        coinJson['ETH'],
+        coinJson['USDT'],
+      ],
+    }
   }
 }

@@ -128,7 +128,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
         </Box>
       </Toolbar>
       <Divider style={{ marginTop: '-1px' }} />
-      <Box flex={1} className={'trade-panel'} marginTop={1}>
+      <Box flex={1} className={'trade-panel'} marginTop={1} height={'100%'}>
         {vaultLoanType === VaultLoanType.Borrow && (
           <Box
             display={'flex'}
@@ -153,7 +153,7 @@ export const VaultLoanPanel = <T extends IBData<I>, V extends VaultBorrowData<I>
             height={'100%'}
           >
             <VaultRepayPanel
-              {...{ ...(vaultRepayProps as any), t, _height: 400 }}
+              {...{ ...(vaultRepayProps as any), t, _height: 450 }}
               forexMap={forexMap}
             />
           </Box>

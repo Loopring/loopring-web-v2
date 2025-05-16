@@ -58,6 +58,8 @@ export interface VaultDashBoardPanelUIProps {
   onClickBuy: (market: any) => void;
   onClickSell: (market: any) => void;
   didAccountSignIn: boolean
+  isolatedOrCross: 'isolated' | 'cross'
+  onChangeIsolatedOrCross: (isolatedOrCross: 'isolated' | 'cross') => void
 }
 
 export interface CollateralDetailsModalProps {

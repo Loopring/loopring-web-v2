@@ -1210,7 +1210,11 @@ export const useVaultDashboard = ({
         onGoToSwap({ symbol})
       }
     },
-    didAccountSignIn: account.readyState === AccountStatus.ACTIVATED
+    didAccountSignIn: account.readyState === AccountStatus.ACTIVATED,
+    isolatedOrCross: 'isolated',
+    onChangeIsolatedOrCross: (isolatedOrCross: 'isolated' | 'cross') => {
+      
+    },
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
