@@ -74,6 +74,7 @@ import { RowEarnConfig } from '../../../constant/setting'
 import Decimal from 'decimal.js'
 import { TaikoFarmingPortfolioTable } from '@loopring-web/component-lib/src/components/tableList/taikoFarmingTable'
 import { utils } from 'ethers'
+import { VaultIsolatedAssetsTable } from '@loopring-web/component-lib/src/components/tableList/assetsTable/VaultAssetsTable'
 // import { useGetVaultAssets } from 'pages/VaultPage/hooks/useVaultDashBoard'
 
 const MyLiquidity = withTranslation('common')(

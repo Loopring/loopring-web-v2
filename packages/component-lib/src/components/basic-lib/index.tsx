@@ -11,3 +11,5 @@ export * from './media'
 export { SpaceBetweenBox } from './display'
 export { Loading } from './loading'
 export { CustomCheckBox } from './checkbox'
+export {BtnToggle} from './toggle'
+

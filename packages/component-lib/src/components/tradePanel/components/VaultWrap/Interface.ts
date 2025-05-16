@@ -105,4 +105,11 @@ export type VaultRepayWrapProps<T, I, VR> = BasicACoinTradeViewProps<T, I> & {
     }
   } | undefined
   initialSymbol: string | undefined
+  isolatedData: {
+    isIsolated: true,
+    token: string,
+    coinJsons: any
+  } | {
+    isIsolated: false,  
+  }
 }

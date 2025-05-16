@@ -232,10 +232,12 @@ export const CoinIconsNew = ({
           display={'flex'}
           position={'relative'}
           zIndex={24}
-          left={-20}
+          left={-8}
           top={Math.pow(size, 1.7) / 50 + 3}
           alignItems={'center'}
           justifyContent={'center'}
+          width={size / 2}
+          height={size / 2}
         >
           <AvatarCoin
             imgx={coinBInfo.x}
@@ -243,24 +245,19 @@ export const CoinIconsNew = ({
             imgheight={coinBInfo.h}
             imgwidth={coinBInfo.w}
             size={size / 2}
+            
             variant='circular'
             alt={coinBInfo?.simpleName as string}
             style={{
               transformOrigin: 'bottom',
             }}
-            // src={sellData?.icon}
+            
             src={
               'data:image/svg+xml;utf8,' +
               '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
             }
           />
-          {/* <VaultTag
-              style={{
-                height: size / 2,
-                width: size / 2,
-                transformOrigin: 'bottom',
-              }}
-            /> */}
+          
         </Box>
       )}
       {secondLogoType !== 'subscript' && coinBInfo && (

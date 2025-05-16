@@ -19,6 +19,8 @@ import { useSettings } from '../../../../stores'
 import { BasicACoinTrade } from '../BasicACoinTrade'
 import {
   CoinIcon,
+  CoinIcons,
+  CoinIconsNew,
 } from '@loopring-web/component-lib'
 import { numberFormat } from '@loopring-web/core'
 import { marginLevelTypeToColor } from './utils'
@@ -42,6 +44,7 @@ export const VaultRepayWrap = <
   tokenInfo,
   handleError,
   marginLevelChange,
+  isolatedData,
   ...rest
 }: VaultRepayWrapProps<T, I, VR>) => {
   const { defaultNetwork } = useSettings()
@@ -121,23 +124,44 @@ export const VaultRepayWrap = <
         alignItems={'stretch'}
         // borderBottom={'1px solid var(--color-border)'}
       >
+        {isolatedData?.isIsolated && (
+          <Box >
+            <Typography variant='body1'>Isolated Account</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                mt: 0.5,
+                mb: 2,
+                pl: 2,
+                py: 1,
+                borderRadius: '8px',
+                bgcolor: 'var(--field-opacity)',
+              }}
+            >
+              <CoinIconsNew tokenIcon={isolatedData.coinJsons} secondLogoType={'subscript'} />
+              <Typography fontSize={'16px'}>
+                {isolatedData.token}/USDT
+              </Typography>
+            </Box>
+          </Box>
+        )}
         <BasicACoinTrade
           isMaxBtn={true}
           inputBtnRef={coinRef}
-          {...{
-            ...rest,
-            t,
-            i18n,
-            tReady: true,
-            disabled,
-            onChangeEvent: onChangeEvent as any,
-            walletMap,
-            tradeData: tradeData as any,
-            coinMap: vaultRepayData?.coinInfoMap as any,
-            inputButtonDefaultProps,
-            ...tokenProps,
-            tokenNotEnough: 'labelVaultRepayNotEnough'
-          }}
+          t={t}
+          i18n={i18n}
+          {...rest}
+          tReady
+          disabled={disabled}
+          onChangeEvent={onChangeEvent as any}
+          walletMap={walletMap}
+          tradeData={tradeData as any}
+          coinMap={vaultRepayData?.coinInfoMap as any}
+          inputButtonDefaultProps={inputButtonDefaultProps}
+          tokenNotEnough='labelVaultRepayNotEnough'
+          {...tokenProps}
         />
       </Box>
       <Divider sx={{ width: '100%', marginY: 2 }} />
@@ -231,15 +255,22 @@ export const VaultRepayWrap = <
             {t('labelVaultMarginLevel')}
           </Typography>
           <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
-          <Typography display={'flex'} alignItems={'center'} marginLeft={0.5} component={'p'} variant='body2' color={'textPrimary'}>
+            <Typography
+              display={'flex'}
+              alignItems={'center'}
+              marginLeft={0.5}
+              component={'p'}
+              variant='body2'
+              color={'textPrimary'}
+            >
               {marginLevelChange ? (
                 <>
                   <Typography color={marginLevelTypeToColor(marginLevelChange.from.type)}>
-                    {numberFormat(marginLevelChange.from.marginLevel, {fixed: 2})}
+                    {numberFormat(marginLevelChange.from.marginLevel, { fixed: 2 })}
                   </Typography>
-                  <EastIcon sx={{marginX: 0.5}}/>
+                  <EastIcon sx={{ marginX: 0.5 }} />
                   <Typography color={marginLevelTypeToColor(marginLevelChange.to.type)}>
-                    {numberFormat(marginLevelChange.to.marginLevel, {fixed: 2})}
+                    {numberFormat(marginLevelChange.to.marginLevel, { fixed: 2 })}
                   </Typography>
                 </>
               ) : (
@@ -250,7 +281,7 @@ export const VaultRepayWrap = <
         </Grid>
       </Grid>
 
-      <Grid marginTop={2} container spacing={2}>
+      <Grid marginTop={'auto'} container spacing={2}>
         <Grid item xs={6}>
           <ButtonStyle
             variant={'outlined'}

@@ -46,6 +46,7 @@ import {
   VaultPositionsTable,
   Toast,
   useSettings,
+  BtnToggle,
 } from '@loopring-web/component-lib'
 import { Trans } from 'react-i18next'
 import {
@@ -75,6 +76,7 @@ import { marginLevelType } from '@loopring-web/core/src/hooks/useractions/vault/
 import { useVaultDashboard } from '../hooks/useVaultDashBoard'
 import { VaultDashBoardPanelUIProps } from '../interface'
 import { useVaultSwap } from '../hooks/useVaultSwap'
+import { VaultIsolatedAssetsTable } from '../../../components/tableList/assetsTable/VaultAssetsTable'
 
 const BgButton = styled(Button)<{ customBg: string }>`
   background-color: ${({ customBg }) => customBg};
@@ -134,8 +136,8 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
   btnsDisabled,
   onClickBuy,
   onClickSell,
-  didAccountSignIn
-  
+  isolatedOrCross,
+  onChangeIsolatedOrCross,
 }) => {
   const { isMobile } = useSettings()
   const boxSx = {
@@ -174,20 +176,29 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
         borderRadius={1.5}
         position={'relative'}
       >
-        <Box
-          bgcolor={'var(--color-box-third)'}
-          position={'absolute'}
-          height={'40px'}
-          px={2.5}
-          left={0}
-          top={0}
-          display={'flex'}
-          justifyContent={'center'}
-          alignItems={'center'}
-          borderRadius={'4px 0 4px 0'}
-        >
-          <Typography>Cross Account</Typography>
-        </Box>
+        
+        <BtnToggle
+          sx={{
+            width: '400px',
+            position: 'absolute',
+            top: 12,
+            left: 12,
+          }}
+          options={[
+            {
+              value: 'cross',
+              label: 'Cross',
+            },
+            {
+              value: 'isolated',
+              label: 'Isolated',
+            },
+          ]}
+          value={isolatedOrCross}
+          onChange={(value) => {
+            onChangeIsolatedOrCross(value as 'isolated' | 'cross')
+          }}
+        />
         <Box
           display={'flex'}
           flexDirection={isMobile ? 'column' : 'row'}
@@ -694,8 +705,36 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
         </Box>
 
         {assetsTab === 'assetsView' ? (
-          <VaultAssetsTable
+          <VaultIsolatedAssetsTable
             {...assetPanelProps}
+            rawData={[
+              {
+                tokenA: {
+                  name: 'LRC',
+                  amount: '1',
+                  debt: '0',
+                },
+                tokenB: {
+                  name: 'USDT',
+                  amount: '1',
+                  debt: '0',
+                },
+                repayDisabled: false,
+              },
+              {
+                tokenA: {
+                  name: 'ETH',
+                  amount: '1',
+                  debt: '0',
+                },
+                tokenB: {
+                  name: 'USDT',
+                  amount: '1',
+                  debt: '0',
+                },
+                repayDisabled: false,
+              },
+            ]}
             onRowClick={(index, row) => {
               // @ts-ignore
               marketProps.onRowClick(index, {
