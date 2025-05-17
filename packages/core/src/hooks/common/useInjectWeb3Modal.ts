@@ -19,7 +19,6 @@ const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 
 const networks: Chain[] = [mainnet, sepolia, base, baseSepolia, taiko, taikoHekla]
 
-
 const metadata = {
   name: process.env.REACT_APP_NAME!,
   description: process.env.REACT_APP_NAME!,

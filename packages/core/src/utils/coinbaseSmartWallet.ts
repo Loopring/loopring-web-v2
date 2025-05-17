@@ -6,7 +6,6 @@ import { http } from 'viem';
 import { isWalletACoinbaseSmartWallet } from '@coinbase/onchainkit/wallet';
 
 export const isCoinbaseSmartWallet = async (accAddress: string | undefined, chainId: ChainId) => {   
-  return false//todo rm
   if (!accAddress) return false;
   const res = await isWalletACoinbaseSmartWallet({ client:createPublicClient({
     chain: CHAIN_ID_TO_VIEW_CHAIN.get(chainId),
