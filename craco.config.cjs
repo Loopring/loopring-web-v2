@@ -31,15 +31,11 @@ module.exports = function ({env}) {
                     }
                 ],
             ],
-            loaderOptions: { skipEnvCheck: true },
             loaderOptions: (babelLoaderOptions, {env, paths}) => {
                 const dev = env === 'development'
                 const prod = env === 'production'
                 // console.log(babelLoaderOptions)
-                return {
-                    ...babelLoaderOptions,
-                    skipEnvCheck: true,
-                };
+                return babelLoaderOptions;
             },
         },
         webpack: {
