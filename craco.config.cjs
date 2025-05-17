@@ -36,7 +36,10 @@ module.exports = function ({env}) {
                 const dev = env === 'development'
                 const prod = env === 'production'
                 // console.log(babelLoaderOptions)
-                return babelLoaderOptions;
+                return {
+                    ...babelLoaderOptions,
+                    skipEnvCheck: true,
+                };
             },
         },
         webpack: {
