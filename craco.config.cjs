@@ -31,7 +31,7 @@ module.exports = function ({env}) {
                     }
                 ],
             ],
-            loaderOptions: { /* ... */},
+            loaderOptions: { skipEnvCheck: true },
             loaderOptions: (babelLoaderOptions, {env, paths}) => {
                 const dev = env === 'development'
                 const prod = env === 'production'
