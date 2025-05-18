@@ -1,6 +1,6 @@
 let _myLog
 // @ts-ignore
-if (true || process.env.NODE_ENV !== 'production' || window?.___OhTrustDebugger___) {
+if (process.env.NODE_ENV !== 'production' || window?.___OhTrustDebugger___) {
   _myLog = console.log
 } else {
   // @ts-ignore
