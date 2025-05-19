@@ -17,7 +17,14 @@ import { mainnet, sepolia, base, baseSepolia, taiko, taikoHekla, Chain } from "@
 import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
 const projectId = process.env.REACT_APP_WALLET_CONNECT_V2_ID!
 
-const networks: Chain[] = [mainnet, sepolia, base, baseSepolia, taiko, taikoHekla]
+const networks: Chain[] = [
+  mainnet,
+  sepolia,
+  base,
+  baseSepolia,
+  { ...taiko, name: 'Taiko' },
+  taikoHekla,
+]
 
 const metadata = {
   name: process.env.REACT_APP_NAME!,
