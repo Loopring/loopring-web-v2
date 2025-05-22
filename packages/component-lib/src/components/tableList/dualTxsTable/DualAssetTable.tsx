@@ -296,7 +296,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
             const dualType = row.__raw__.order?.dualType
             const isRecursive = row.__raw__.order?.dualReinvestInfo?.isRecursive
             const newStrike = row.__raw__.order?.dualReinvestInfo?.newStrike
-            const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice
+            const { currentPrice, precisionForPrice, base, currency } = row.__raw__?.currentPrice
             const currentView = currentPrice
               ? getValuePrecisionThousand(
                   currentPrice,
@@ -335,7 +335,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                   ns: 'common',
                   base,
                   currentPrice: currentView,
-                  quote,
+                  quote: currency,
                   method:
                     dualType == DUAL_TYPE.DUAL_BASE
                       ? t('labelDualIsLow', { ns: 'common' })
@@ -413,7 +413,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
             const dualType = row.__raw__.order?.dualType
             const newStrike = row.__raw__.order?.dualReinvestInfo?.newStrike
             const isRecursive = row.__raw__.order?.dualReinvestInfo?.isRecursive
-            const { currentPrice, precisionForPrice, base, quote } = row.__raw__?.currentPrice ?? {}
+            const { currentPrice, precisionForPrice, base, currency } = row.__raw__?.currentPrice ?? {}
             const currentView = currentPrice
               ? getValuePrecisionThousand(
                   currentPrice,
@@ -444,7 +444,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
                       ns: 'common',
                       base,
                       currentPrice: currentView,
-                      quote,
+                      quote: currency,
                       method:
                         dualType == DUAL_TYPE.DUAL_BASE
                           ? t('labelDualIsLow', { ns: 'common' })
