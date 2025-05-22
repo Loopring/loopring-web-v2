@@ -1,7 +1,7 @@
 import { ConnectProviders, connectProvides } from '@loopring-web/web3-provider'
 import { callSwitchChain, DAYS, getTimestampDaysLater, goUpdateAccountCoinbaseWalletUpdateAccountFn, isCoinbaseSmartWallet, isSameEVMAddress, LoopringAPI, store, WalletLayer2Map, appKit, goUpdateAccountCoinbaseWalletBackupKeyOnlyFn, withRetry } from '../../index'
 import { accountServices } from './accountServices'
-import { Account, AccountStatus, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
+import { Account, AccountStatus, coinbaseSmartWalletChains, MapChainId, myLog, UIERROR_CODE } from '@loopring-web/common-resources'
 import * as sdk from '@loopring-web/loopring-sdk'
 import Web3 from 'web3'
 import { nextAccountSyncStatus } from '../../stores/account/reducer'
@@ -178,7 +178,7 @@ const checkBeforeUnlock = async () => {
     return false
   }
 
-  if (await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
+  if (coinbaseSmartWalletChains.includes(defaultNetwork) && await isCoinbaseSmartWallet(accAddress, defaultNetwork)) {
     const foundPersistData = coinbaseSmartWalletPersist?.data.find(
       (item) =>
         item.chainId === defaultNetwork &&

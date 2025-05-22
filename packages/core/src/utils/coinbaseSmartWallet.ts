@@ -7,9 +7,10 @@ import { isWalletACoinbaseSmartWallet } from '@coinbase/onchainkit/wallet';
 
 export const isCoinbaseSmartWallet = async (accAddress: string | undefined, chainId: ChainId) => {   
   if (!accAddress) return false;
+  const rpcURL = process.env[`REACT_APP_RPC_URL_${chainId}`]
   const res = await isWalletACoinbaseSmartWallet({ client:createPublicClient({
     chain: CHAIN_ID_TO_VIEW_CHAIN.get(chainId),
-    transport: http(),
+    transport: http(rpcURL),
   }), userOp: { sender: accAddress } as UserOperation<'v0.6'> })
   return res.isCoinbaseSmartWallet
 }
