@@ -87,7 +87,7 @@ myLog('---store DEFAULT_TIMEOUT:', DEFAULT_TIMEOUT)
 //
 const persistAccConfig = {
   key: 'account',
-  storage: storageSession,
+  storage: storage,
   timeout: DEFAULT_TIMEOUT,
 }
 
