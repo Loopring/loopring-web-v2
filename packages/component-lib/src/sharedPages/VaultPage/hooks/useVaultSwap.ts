@@ -688,7 +688,7 @@ export const useVaultSwap = () => {
                 { floor: false, isAbbreviate: true },
               ) +
               ' ' +
-              sellTokenSymbol
+              sellTokenSymbol.slice(2)
             }|${
               getValuePrecisionThousand(
                 utils.formatUnits(
@@ -704,7 +704,7 @@ export const useVaultSwap = () => {
                 { floor: false, isAbbreviate: true },
               ) +
               ' ' +
-              sellTokenSymbol
+              sellTokenSymbol.slice(2)
             }`,
             disabled: true,
           }
