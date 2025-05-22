@@ -17,7 +17,7 @@ export enum CONSTANTS {
   WalletConnect = 'walletconnect',
 }
 
-const SESSION_TIMEOUT_SECONDS = 60 * 15
+const SESSION_TIMEOUT = 7 * 24 * 60 * 60 * 1000
 
 export class UserStorage {
   public static getLocalDepositHash(account: Account): { [key: string]: any } | undefined {
@@ -91,7 +91,7 @@ export class UserStorage {
     if (dateTimeStr !== null && !reset) {
       let tmpDt = new Date(parseInt(dateTimeStr))
 
-      if (now - tmpDt.getTime() > SESSION_TIMEOUT_SECONDS * 1000) {
+      if (now - tmpDt.getTime() > SESSION_TIMEOUT) {
         myLog(`TIMEOUT! now:${now} dateTimeStr:${dateTimeStr} delta:${now - tmpDt.getTime()}`)
         sessionStorage.clear()
         localStorage.setItem(CONSTANTS.ActiveTime, now.toString())
