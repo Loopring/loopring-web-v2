@@ -364,21 +364,13 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               indexP.quote === _item.tokenInfoOrigin.quote
             )
           })
+          const market = dualMarketMap[_item.tokenInfoOrigin.market] as sdk.DefiMarketInfo
           const currentPrice = {
-            base:
-              _item.dualType === DUAL_TYPE.DUAL_BASE
-                ? idIndex[_item.tokenInfoOrigin.tokenIn]
-                : idIndex[_item.tokenInfoOrigin.tokenOut],
-            quote:
-              _item.dualType === DUAL_TYPE.DUAL_BASE
-                ? idIndex[_item.tokenInfoOrigin.tokenOut]
-                : idIndex[_item.tokenInfoOrigin.tokenIn],
+            base: idIndex[market.baseTokenId],
+            quote: idIndex[market.quoteTokenId],
             currentPrice: findIndex?.index,
             precisionForPrice: dualMarketMap[_item.tokenInfoOrigin.market]?.precisionForPrice,
-            quoteUnit:
-              _item.dualType === DUAL_TYPE.DUAL_BASE
-                ? idIndex[_item.tokenInfoOrigin.tokenOut]
-                : idIndex[_item.tokenInfoOrigin.tokenIn],
+            quoteUnit: idIndex[market.quoteTokenId],
           }
           const format = makeDualOrderedItem(
             _item,
@@ -550,13 +542,14 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 tokenMap[sellTokenSymbol].precision,
                 true,
               )
+              const market = dualMarketMap[item.tokenInfoOrigin.market] as sdk.DefiMarketInfo
 
               const currentPrice = {
-                base: item.dualType === DUAL_TYPE.DUAL_BASE ? idIndex[item.tokenInfoOrigin.tokenIn] : idIndex[item.tokenInfoOrigin.tokenOut],
-                quote: item.dualType === DUAL_TYPE.DUAL_BASE ? idIndex[item.tokenInfoOrigin.tokenOut] : idIndex[item.tokenInfoOrigin.tokenIn],
+                base: idIndex[market.baseTokenId],
+                quote: idIndex[market.quoteTokenId],
                 currentPrice: findIndex?.index,
                 precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice,
-                quoteUnit: item.dualType === DUAL_TYPE.DUAL_BASE ? idIndex[item.tokenInfoOrigin.tokenOut] : idIndex[item.tokenInfoOrigin.tokenIn],
+                quoteUnit: idIndex[market.quoteTokenId],
               }
 
               prev.push({
