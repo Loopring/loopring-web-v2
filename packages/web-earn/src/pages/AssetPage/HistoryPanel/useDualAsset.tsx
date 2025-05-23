@@ -512,13 +512,13 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 tokenMap[sellTokenSymbol].precision,
                 true,
               )
-
+              const market = dualMarketMap[item.tokenInfoOrigin.market] as sdk.DefiMarketInfo
               const currentPrice = {
-                base: item.tokenInfoOrigin.base,
-                quote: item.tokenInfoOrigin.quote,
+                base: idIndex[market.baseTokenId],
+                quote: idIndex[market.quoteTokenId],
                 currentPrice: findIndex?.index,
-                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice,
-                quoteUnit: item.tokenInfoOrigin.quote,
+                precisionForPrice: market.precisionForPrice,
+                quoteUnit: idIndex[market.quoteTokenId],
               }
               prev.push({
                 ...format,

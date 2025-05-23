@@ -33,7 +33,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 14% 16% 20% 10% 14% 10% 8% 8% !important`
+        ? `--template-columns: 16% 15% 20% 105px 14% 80px 110px 90px!important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
@@ -245,7 +245,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
         },
         {
           key: 'Settlement_Date',
-          sortable: true,
+          sortable: false,
           width: 'auto',
           name: t('labelDualAssetSettlement_Date'),
           cellClass: 'textAlignCenter',
@@ -256,7 +256,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
         },
         {
           key: 'APR',
-          sortable: true,
+          sortable: false,
           width: 'auto',
           cellClass: 'textAlignCenter',
           headerCellClass: 'textAlignCenter',
@@ -267,7 +267,7 @@ export const DualAssetTable = withTranslation(['tables', 'common'])(
         },
         {
           key: 'Auto',
-          sortable: true,
+          sortable: false,
           name: t('labelDualAutoReinvest'),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             return row?.__raw__.order?.dualReinvestInfo?.isRecursive ? (

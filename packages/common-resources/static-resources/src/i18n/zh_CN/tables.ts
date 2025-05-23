@@ -239,7 +239,7 @@ export default {
   labelDualAssetSettlement_Date: 'Settlement Date',
   labelDualAssetAPR: 'APR',
   labelDualAssetAction: 'Actions',
-  labelDualAssetDetail: 'Detail',
+  labelDualAssetDetail: 'Details',
   labelDualAssetRefresh: 'Refresh',
   labelDualTxsSide: 'Type',
   labelDualTxsProduct: 'Product',

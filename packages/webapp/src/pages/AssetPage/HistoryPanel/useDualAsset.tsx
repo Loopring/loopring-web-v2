@@ -364,14 +364,13 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
               indexP.quote === _item.tokenInfoOrigin.quote
             )
           })
+          const market = dualMarketMap[_item.tokenInfoOrigin.market] as sdk.DefiMarketInfo
           const currentPrice = {
-            base: _item.tokenInfoOrigin.base,
-            quote: _item.tokenInfoOrigin.quote,
+            base: idIndex[market.baseTokenId],
+            quote: idIndex[market.quoteTokenId],
             currentPrice: findIndex?.index,
-            precisionForPrice:
-              dualMarketMap[_item.tokenInfoOrigin.market]?.precisionForPrice ??
-              tokenMap[_item.tokenInfoOrigin.quote]?.precision,
-            quoteUnit: _item.tokenInfoOrigin.quote,
+            precisionForPrice: dualMarketMap[_item.tokenInfoOrigin.market]?.precisionForPrice,
+            quoteUnit: idIndex[market.quoteTokenId],
           }
           const format = makeDualOrderedItem(
             _item,
@@ -543,16 +542,16 @@ export const useDualAsset = <R extends RawDataDualAssetItem>(
                 tokenMap[sellTokenSymbol].precision,
                 true,
               )
+              const market = dualMarketMap[item.tokenInfoOrigin.market] as sdk.DefiMarketInfo
 
               const currentPrice = {
-                base: item.tokenInfoOrigin.base,
-                quote: item.tokenInfoOrigin.quote,
+                base: idIndex[market.baseTokenId],
+                quote: idIndex[market.quoteTokenId],
                 currentPrice: findIndex?.index,
-                precisionForPrice:
-                  dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice ??
-                  tokenMap[item.tokenInfoOrigin.quote]?.precision,
-                quoteUnit: item.tokenInfoOrigin.quote,
+                precisionForPrice: dualMarketMap[item.tokenInfoOrigin.market]?.precisionForPrice,
+                quoteUnit: idIndex[market.quoteTokenId],
               }
+
               prev.push({
                 ...format,
                 amount,
