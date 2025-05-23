@@ -33,7 +33,7 @@ const TableWrapperStyled = styled(Box)<BoxProps & { isMobile: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 14% 15% 20% 105px 14% 80px 110px 90px!important`
+        ? `--template-columns: 16% 15% 20% 105px 14% 80px 110px 90px!important`
         : `--template-columns: 16% 30% 44% 10% !important;`}
   }
 
