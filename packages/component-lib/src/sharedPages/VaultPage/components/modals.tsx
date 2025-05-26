@@ -265,13 +265,24 @@ export const LeverageModal = (props: LeverageModalProps) => {
   const { t } = useTranslation()
   return (
     <Modal open={open} onClose={onClose}>
-      <Box height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} position={'relative'}>
-        {isLoading && <Loading size={40} sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}/>}
+      <Box
+        height={'100%'}
+        display={'flex'}
+        justifyContent={'center'}
+        alignItems={'center'}
+        position={'relative'}
+      >
+        {isLoading && (
+          <Loading
+            size={40}
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        )}
         <Box
           bgcolor={'var(--color-box)'}
           width={'var(--modal-width)'}
@@ -340,21 +351,25 @@ export const LeverageModal = (props: LeverageModalProps) => {
               </IconButton>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Slider
-                aria-label='Always visible'
-                value={currentLeverage ? ((currentLeverage - 1) / maxLeverage) * 100 : 0}
-                onChange={(_, _value) => {
-                  const value = _value as number
-                  const leverage = value / 100 * maxLeverage + 1
-                  
-                  onClickLeverage(Math.round(leverage))
-                }}
-                max={90}
-                marks={_.range(0, maxLeverage).map((number) => ({
-                  value: (number / maxLeverage) * 100,
-                  label: `${number + 1}x`,
-                }))}
-              />
+              {(() => {
+                const unitValue = 10
+                const valueForLeverage = (leverage: number) => (leverage - 1) * unitValue
+                const leverageForValue = (value: number) => Math.round(value / unitValue) + 1
+                return (
+                  <Slider
+                    aria-label='Always visible'
+                    value={currentLeverage ? valueForLeverage(currentLeverage) : 0}
+                    onChange={(_, _value) => {
+                      onClickLeverage(leverageForValue(_value as number))
+                    }}
+                    max={valueForLeverage(maxLeverage)}
+                    marks={_.range(1, maxLeverage + 1).map((number) => ({
+                      value: valueForLeverage(number),
+                      label: `${number}x`,
+                    }))}
+                  />
+                )
+              })()}
             </Box>
             <Box
               marginTop={2}
@@ -365,19 +380,27 @@ export const LeverageModal = (props: LeverageModalProps) => {
             >
               <SpaceBetweenBox
                 leftNode={
-                  <Typography color={'var(--color-text-secondary)'}>{t('labelVaultAvailableBorrow')}</Typography>
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {t('labelVaultAvailableBorrow')}
+                  </Typography>
                 }
                 rightNode={<Typography>{borrowAvailable}</Typography>}
                 marginBottom={2}
               />
               <SpaceBetweenBox
-                leftNode={<Typography color={'var(--color-text-secondary)'}>{t('labelVaultBorrowed')}</Typography>}
+                leftNode={
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {t('labelVaultBorrowed')}
+                  </Typography>
+                }
                 rightNode={<Typography>{borrowed}</Typography>}
                 marginBottom={2}
               />
               <SpaceBetweenBox
                 leftNode={
-                  <Typography color={'var(--color-text-secondary)'}>{t('labelVaultMaximumCredit')}</Typography>
+                  <Typography color={'var(--color-text-secondary)'}>
+                    {t('labelVaultMaximumCredit')}
+                  </Typography>
                 }
                 rightNode={<Typography>{maximumCredit}</Typography>}
               />
