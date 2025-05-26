@@ -106,7 +106,7 @@ const MyLiquidity = withTranslation('common')(
     const { account } = useAccount()
     const { currency, hideSmallBalances, defaultNetwork, coinJson } = useSettings()
     const network = MapChainId[defaultNetwork] ?? MapChainId[1]
-    const { setShowAutoDefault } = confirmation.useConfirmation()
+    const { setShowAutoDefault, confirmation: { showAutoDefault } } = confirmation.useConfirmation()
     const [showCancelOneAlert, setShowCancelOndAlert] = React.useState<{
       open: boolean
       row?: any
@@ -387,6 +387,7 @@ const MyLiquidity = withTranslation('common')(
                         >
                           <DualDetail
                             setShowAutoDefault={setShowAutoDefault}
+                            showAutoDefault={showAutoDefault}
                             isOrder={true}
                             btnConfirm={
                               dualDetail.__raw__?.order?.dualReinvestInfo?.isRecursive && (

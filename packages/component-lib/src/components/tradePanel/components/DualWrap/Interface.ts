@@ -53,6 +53,7 @@ export type DualWrapProps<T, I, DUAL> = {
   toggle: { enable: boolean; reason?: string | undefined }
   viewType?: DualViewType
   setShowAutoDefault: (show: boolean) => void
+  showAutoDefault: boolean
 }
 
 export type DualDetailProps<
@@ -73,4 +74,5 @@ export type DualDetailProps<
     info: { on: boolean; renewTargetPrice?: string; renewDuration?: number },
     item: R,
   ) => void
+  showAutoDefault: boolean
 }
