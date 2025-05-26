@@ -39,7 +39,7 @@ import _ from 'lodash'
 import * as sdk from '@loopring-web/loopring-sdk'
 
 import { LoopringAPI, store, useAccount, useSystem, useTokenMap } from '../../index'
-import { useTradeDual } from '../../stores'
+import { confirmation, useTradeDual } from '../../stores'
 
 export const useDualTrade = <
   T extends DualTrade<I>,
@@ -49,6 +49,7 @@ export const useDualTrade = <
 >() => {
   const refreshRef = React.useRef()
   const { dualAuto } = useSettings()
+  const { confirmation: { showAutoDefault }, setShowAutoDefault } = confirmation.useConfirmation()
 
   const { exchangeInfo, allowTrade } = useSystem()
   const { tokenMap, marketArray } = useTokenMap()
@@ -526,7 +527,7 @@ export const useDualTrade = <
     submitCallback: onSubmitBtnClick,
   })
 
-  const dualTradeProps: Omit<DualWrapProps<T, I, ACD>, 'setShowAutoDefault'> = {
+  const dualTradeProps: DualWrapProps<T, I, ACD> = {
     refreshRef,
     disabled: false,
     btnInfo: {
@@ -545,6 +546,8 @@ export const useDualTrade = <
     tokenSell: tokenMap[coinSellSymbol ?? ''],
     btnStatus,
     accStatus: account.readyState as AccountStatus,
+    showAutoDefault,
+    setShowAutoDefault,
   } // as ForceWithdrawProps<any, any>;
   return {
     dualTradeProps,
