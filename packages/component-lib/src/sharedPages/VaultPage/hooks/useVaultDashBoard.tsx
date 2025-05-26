@@ -613,7 +613,7 @@ export const useVaultDashboard = ({
     leverageLoading: false,
     checkedAutoRepay: false,
     penaltyFeeBips: undefined as undefined | number,
-
+    liquidationMarginLevel: undefined as undefined | string,
   })
   const assetPanelProps = useGetVaultAssets({
     onClickTrade(symbol) {
@@ -1154,10 +1154,12 @@ export const useVaultDashboard = ({
     onClickSettle: () => {
       onRedeemPop({})
     },
-    liquidationThreshold: '1.1',
+    liquidationThreshold: localState.liquidationMarginLevel
+      ? localState.liquidationMarginLevel
+      : EmptyValueTag,
     liquidationPenalty: localState.penaltyFeeBips
-      ? toPercent(localState.penaltyFeeBips * 100, 2) 
-      : '--',
+      ? toPercent(localState.penaltyFeeBips * 100, 2)
+      : EmptyValueTag,
     onClickPortalTrade: () => {
       if (vaultAccountInfo?.accountStatus === sdk.VaultAccountStatus.IN_STAKING) {
         onGoToSwap({})
@@ -1199,7 +1201,7 @@ export const useVaultDashboard = ({
       if (symbol === 'USDT') {
         onGoToSwap({ isSell: true })
       } else {
-        onGoToSwap({ symbol})
+        onGoToSwap({ symbol })
       }
     },
     onClickSell: (detail) => {
@@ -1207,10 +1209,10 @@ export const useVaultDashboard = ({
       if (symbol === 'USDT') {
         onGoToSwap({ isSell: false })
       } else {
-        onGoToSwap({ symbol})
+        onGoToSwap({ symbol })
       }
     },
-    didAccountSignIn: account.readyState === AccountStatus.ACTIVATED
+    didAccountSignIn: account.readyState === AccountStatus.ACTIVATED,
   }
   const noVaultAccountDialogBtn = (() => {
     switch (account.readyState) {
@@ -1355,7 +1357,8 @@ export const useVaultDashboard = ({
       if (res && res.data.penaltyFeeBips !== undefined) {
         setLocalState((state) => ({
           ...state,
-          penaltyFeeBips: res.data.penaltyFeeBips
+          penaltyFeeBips: res.data.penaltyFeeBips,
+          liquidationMarginLevel: res.data.liquidationMarginLevel,
         }))
       }
     })
