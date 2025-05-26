@@ -128,6 +128,7 @@ export interface VaultSwapViewProps {
       {
         label: string
         value: string
+        disabled?: boolean
       },
     ]
     value: string
@@ -477,10 +478,11 @@ export const VaultSwapView = (props: VaultSwapViewProps) => {
             sx={{ ml: 2 }}
             size='small'
             onChange={(e, v) => leverageSelection.onChange(e.target.value)}
+            label={leverageSelection.value + 'x'}
             displayEmpty
           >
             {leverageSelection.items.map((item) => (
-              <MenuItem key={item.value} value={item.value}>
+              <MenuItem disabled={item.disabled} key={item.value} value={item.value}>
                 {item.label}
               </MenuItem>
             ))}

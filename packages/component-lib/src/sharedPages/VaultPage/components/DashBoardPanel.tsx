@@ -333,7 +333,9 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       {t('labelVaultMarginLevelTooltips7')}
                     </Typography>
                     <Typography color={'var(--color-error)'} marginBottom={1} variant={'body2'}>
-                      {t('labelVaultMarginLevelTooltips8')}
+                      {t('labelVaultMarginLevelTooltips8', {
+                        liqMarginLevel: liquidationThreshold,
+                      })}
                     </Typography>
                     <Typography marginBottom={1} variant={'body2'}>
                       {t('labelVaultMarginLevelTooltips9')}
@@ -343,10 +345,14 @@ const VaultDashBoardPanelUI: React.FC<VaultDashBoardPanelUIProps> = ({
                       marginBottom={1}
                       variant={'body2'}
                     >
-                      {t('labelVaultMarginLevelTooltips10')}
+                      {t('labelVaultMarginLevelTooltips10', {
+                        liqMarginLevel: liquidationThreshold,
+                      })}
                     </Typography>
                     <Typography marginBottom={1} variant={'body2'}>
-                      {t('labelVaultMarginLevelTooltips11')}
+                      {t('labelVaultMarginLevelTooltips11', {
+                        liqMarginLevel: liquidationThreshold,
+                      })}
                     </Typography>
                   </Box>
                 }
