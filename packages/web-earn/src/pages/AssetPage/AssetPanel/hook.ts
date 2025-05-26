@@ -256,9 +256,11 @@ export const useGetAssets = (): AssetPanelProps & {
   }, [])
   useWalletLayer2Socket({ walletLayer2Callback })
   const getTokenRelatedMarketArray = React.useCallback((token: string) => {
-    const { marketArray } = store.getState().tokenMap
+    const { marketArray, marketMap } = store.getState().tokenMap
     if (!marketArray) return []
     return marketArray.filter((market) => {
+      const marketInfo = marketMap?.[market]
+      if (!marketInfo?.enabled) return false
       const [coinA, coinB] = market.split('-')
       return token === coinA || token === coinB
     })
