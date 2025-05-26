@@ -1767,6 +1767,7 @@ export const useVaultSwap = () => {
     showMyPositions: account.readyState === 'ACTIVATED',
     leverageSelection: {
       value: vaultAccountInfo?.leverage,
+
       onChange: async (value: string) => {
         await LoopringAPI.vaultAPI
           ?.submitLeverage(
@@ -1787,7 +1788,15 @@ export const useVaultSwap = () => {
         ? _.range(1, Number(maxLeverage) + 1).map((leverage: number) => ({
             label: `${leverage}x`,
             value: leverage.toString(),
+            disabled: false,
           }))
+          .concat(Number(vaultAccountInfo?.leverage) > Number(maxLeverage) ? [
+             {
+              label: vaultAccountInfo?.leverage + 'x',
+              value: vaultAccountInfo?.leverage ?? '',
+              disabled: true,
+            },
+          ] : [])
         : [],
     },
     positionTypeSelection: {
