@@ -89,7 +89,7 @@ const ActionPopContent = React.memo(
         market &&
         getMarketArrayListCallback(market).filter((pair) => {
           const [first, last] = pair.split('-')
-          if (first === 'USDT' || last === 'USDT') {
+          if (['USDT', 'USDC'].includes(first) || ['USDT', 'USDC'].includes(last)) {
             return true
           }
           return first === market
