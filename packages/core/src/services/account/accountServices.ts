@@ -6,7 +6,7 @@ import * as sdk from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
 import { resetLayer12Data, resetLayer2Data } from './resetAccount'
 import { AccountCommands } from './command'
-import { updateAccountStatus } from '../../stores/account/reducer'
+import { nextAccountStatus, updateAccountStatus } from '../../stores/account/reducer'
 import {
   setShowDeposit,
   setShowNFTDeploy,
@@ -97,7 +97,7 @@ export const accountServices = {
           nonce: undefined,
           hasUnknownCollection: undefined,
         }
-    store.dispatch(updateAccountStatus(updateInfo))
+    store.dispatch(nextAccountStatus(updateInfo))
     store.dispatch(setShowTransfer({ isShow: false }))
     store.dispatch(setShowNFTTransfer({ isShow: false }))
     store.dispatch(setShowWithdraw({ isShow: false }))

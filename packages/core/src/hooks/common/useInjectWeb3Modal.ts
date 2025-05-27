@@ -110,7 +110,7 @@ export const useInjectWeb3Modal = (type: 'MAIN' | 'EARN' | 'BRIDGE' | 'GUARDIAN'
       )
       store.dispatch(setDefaultNetwork(chainId))
     }  
-    if (['ADDRESS_CHANGED'].includes(combinedEvent)) {
+    if (['ADDRESS_CHANGED', 'SWITCH_NETWORK'].includes(combinedEvent)) {
       if (address) {
         if ((address.toLowerCase() !== accAddress?.toLowerCase()) || (defaultNetwork && chainId !== defaultNetwork)) { 
           accountServices.sendAccountLock()
