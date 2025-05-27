@@ -36,6 +36,8 @@ import styled from '@emotion/styled'
 import { SwitchPanelStyled } from '../../../styled'
 import { LABEL_INVESTMENT_STATUS_MAP } from '../../../tableList'
 import { CancelDualAlert } from '../tool'
+import { ModifySetting } from './ModifySetting'
+import { confirmation } from '@loopring-web/core'
 
 const BoxChartStyle = styled(Box)`
   background-clip: content-box;
@@ -435,6 +437,7 @@ export const DualDetail = ({
   inputPart,
   showClock = false,
   setShowAutoDefault,
+  showAutoDefault,
   ...rest
 }: DualDetailProps) => {
   const {
@@ -500,6 +503,19 @@ export const DualDetail = ({
   })
   return (
     <>
+      <Modal
+        open={showAutoDefault}
+        onClose={() => setShowAutoDefault(false)}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <SwitchPanelStyled width={'var(--modal-width)'}>
+          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
+            <ModalCloseButton onClose={() => setShowAutoDefault(false)} t={t} />
+            <ModifySetting onClose={() => setShowAutoDefault(false)} />
+          </Box>
+        </SwitchPanelStyled>
+      </Modal>
       <Modal
         open={showEdit}
         onClose={() => setShowEdit(false)}

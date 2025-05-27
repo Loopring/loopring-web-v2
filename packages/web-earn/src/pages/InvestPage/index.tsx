@@ -222,19 +222,6 @@ export const InvestPage = withTranslation('common', { withRef: true })(() => {
             <LeverageETHPanel />
           ))}
       </Box>
-      <Modal
-        open={showAutoDefault}
-        onClose={() => setShowAutoDefault(false)}
-        aria-labelledby='modal-modal-title'
-        aria-describedby='modal-modal-description'
-      >
-        <SwitchPanelStyled width={'var(--modal-width)'}>
-          <Box display={'flex'} width={'100%'} flexDirection={'column'}>
-            <ModalCloseButton onClose={() => setShowAutoDefault(false)} t={t} />
-            <ModifySetting onClose={() => setShowAutoDefault(false)} />
-          </Box>
-        </SwitchPanelStyled>
-      </Modal>
       <ConfirmInvestLRCStakeRisk
         open={confirmedLRCStakeInvest}
         confirmationNeeded={confirmationNeeded}

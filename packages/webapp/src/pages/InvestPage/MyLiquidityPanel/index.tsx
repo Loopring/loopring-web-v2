@@ -93,7 +93,7 @@ const MyLiquidity: any = withTranslation('common')(
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
     const { totalClaims, getUserRewards, errorMessage: rewardsAPIError } = useUserRewards()
-    const { setShowAutoDefault } = confirmation.useConfirmation()
+    const { setShowAutoDefault, confirmation: { showAutoDefault } } = confirmation.useConfirmation()
     const ammPoolRef = React.useRef(null)
     const stakingRef = React.useRef(null)
     const leverageETHRef = React.useRef(null)
@@ -872,6 +872,7 @@ const MyLiquidity: any = withTranslation('common')(
                           >
                             <DualDetail
                               setShowAutoDefault={setShowAutoDefault}
+                              showAutoDefault={showAutoDefault}
                               isOrder={true}
                               order={dualDetail?.__raw__?.order}
                               btnConfirm={

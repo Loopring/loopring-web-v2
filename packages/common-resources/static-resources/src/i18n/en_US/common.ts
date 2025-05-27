@@ -2390,13 +2390,13 @@ export default {
   labelVaultMarginLevelTooltips7:
     'At Middle Risk, it is recommended that you always pay attention to changes in market conditions and add collateral or repay borrowed tokens to reduce the risk of liquidation.',
   labelVaultMarginLevelTooltips8:
-    'High Risk: 1.1 ≤ Margin Level < 1.15',
+    'High Risk: {{liqMarginLevel}} ≤ Margin Level < 1.15',
   labelVaultMarginLevelTooltips9:
     'At High Risk, it is strongly recommended that you add collateral or repay borrowed tokens immediately to reduce the risk of liquidation.',
   labelVaultMarginLevelTooltips10:
-    'Liquidation: Margin Level < 1.1',
+    'Liquidation: Margin Level < {{liqMarginLevel}}',
   labelVaultMarginLevelTooltips11:
-    'When Margin Level is lower than 1.1, the position will be liquidated.',
+    'When Margin Level is lower than {{liqMarginLevel}}, the position will be liquidated.',
   labelVaultCollateralManagement: 'Collateral Management',
   labelGuardianCodeNetworkError: 'Network not match',
   labelGuardianCodeAccountError: 'guardian not match current account',

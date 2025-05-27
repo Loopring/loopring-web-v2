@@ -99,6 +99,7 @@ export const ModalDualPanel = withTranslation('common')(
         confirmedDualInvestV2,
         confirmDualDipInvest,
         confirmDualGainInvest,
+        showAutoDefault
       },
       confirmDualAutoInvest: confirmDualAutoInvestFun,
       confirmDualInvest: confirmDualInvestFun,
@@ -198,7 +199,7 @@ export const ModalDualPanel = withTranslation('common')(
             >
               <DualWrap
                 isBeginnerMode={isBeginnerMode}
-                {...{ ...rest, ...dualTradeProps, setShowAutoDefault }}
+                {...{ ...rest, ...dualTradeProps }}
               />
             </Box>
             <Toast
