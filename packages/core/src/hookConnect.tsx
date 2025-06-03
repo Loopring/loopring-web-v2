@@ -226,11 +226,12 @@ export const callSwitchChain = async (_chainId: string | number) => {
     } catch (error) {
       throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
     }
-    if (Number(defaultNetwork) !== Number(await connectProvides?.usedWeb3?.eth?.getChainId())) {
+    if (defaultNetwork && Number(defaultNetwork) !== Number(await connectProvides?.usedWeb3?.eth?.getChainId())) {
       throw { code: UIERROR_CODE.ERROR_SWITCH_ETHEREUM }
     }
   }
 }
+
 export const useSelectNetwork = ({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const { defaultNetwork: _defaultNetwork, isMobile } = useSettings()
