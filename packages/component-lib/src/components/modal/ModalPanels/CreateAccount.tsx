@@ -136,15 +136,14 @@ export const CreateAccount_EOA_Only_Alert = (props: {
 
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
         <Checkbox
-                    
-                    checkedIcon={<CheckedIcon />}
-                    icon={<CheckBoxIcon />}
-                    color='default'
-                    sx={{ height: 16, width: 16, mr: 1}}
-                    onChange={(_, checked) => {
-                      setAcknowledged(checked)
-                    }}
-                  />
+          checkedIcon={<CheckedIcon />}
+          icon={<CheckBoxIcon />}
+          color='default'
+          sx={{ height: 16, width: 16, mr: 1 }}
+          onChange={(_, checked) => {
+            setAcknowledged(checked)
+          }}
+        />
         <Typography sx={{ color: 'var(--color-text-primary)' }}>
           I acknowledge the risk and would like to proceed
         </Typography>
