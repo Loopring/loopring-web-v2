@@ -29,7 +29,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
-import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
+import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer, hideDefiEntry } from './setting'
 import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
@@ -390,7 +390,7 @@ export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
-  {
+  ...(!hideDefiEntry ? [{
     label: {
       id: 'loopringLite',
       i18nKey: 'labelNavEarn',
@@ -401,7 +401,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       dark: SoursURL + 'images/landing_page_nav_earn_dark.png',
       light: SoursURL + 'images/landing_page_nav_earn_light.png',
     }
-  },
+  }] : []),
   {
     label: {
       id: 'loopringPro',
@@ -414,7 +414,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       light: SoursURL + 'images/landing_page_nav_pro_light.png',
     }
   },
-  {
+  ...(!hideDefiEntry ? [{
     label: {
       id: 'wallet',
       i18nKey: 'labelNavWallet',
@@ -425,7 +425,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       dark: SoursURL + 'images/landing_page_nav_wallet_dark.png',
       light: SoursURL + 'images/landing_page_nav_wallet_light.png',
     }
-  },
+  }] : []),
   {
     label: {
       id: 'doc',

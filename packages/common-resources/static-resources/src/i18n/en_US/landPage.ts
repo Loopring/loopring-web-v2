@@ -123,7 +123,7 @@ export default {
   labelTradeWithCEXLiquidityDes: 'Effortlessly trade tokens with near-zero slippage, leveraging a unified liquidity pool that combines both CEX and DEX liquidity to generate the best execution price.',
   labelUnlockThePowerOfLeveragedTrading: 'Unlock the Power of Leveraged Trading',
   labelUnlockThePowerOfLeveragedTradingDes: 'Seamlessly borrow tokens against your collateral, paving the way for leveraged trading opportunities. By bridging decentralized and centralized exchanges, Loopring Portal broadens your trading horizon, granting access to tokens beyond the Ethereum network.',
-  labelEthereumOnly: 'Ethereum-only',
+  labelEthereumOnly: 'Ethereum-Only',
   labelLoopringLayer2: 'Loopring Layer 2',
   labelLoopringLayer2Des: 'Unleash the Power of DeFi and Advanced \n Trading on Top of an App-Specific ZK-Rollup',
   labelTrade: 'Trade',
