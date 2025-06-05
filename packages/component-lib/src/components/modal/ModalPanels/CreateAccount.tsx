@@ -1,6 +1,11 @@
 import { CreateAccountBase, IconType, PanelProps } from './BasicPanel'
-import { L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
+import { AlertIcon2, L1L2_NAME_DEFINED, MapChainId } from '@loopring-web/common-resources'
 import { useSettings } from '../../../stores'
+import { Button, Checkbox, Modal, Box, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Trans } from 'react-i18next'
+import { useTheme } from '@emotion/react'
+import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
 
 // symbol
 export const CreateAccount_Approve_WaitForAuth = (props: PanelProps) => {
@@ -88,4 +93,66 @@ export const CreateAccount_Submit = (props: PanelProps) => {
     }),
   }
   return <CreateAccountBase {...propsPatch} {...props} />
+}
+
+export const CreateAccount_EOA_Only_Alert = (props: {
+  onClose: () => void
+  onConfirm: () => void
+}) => {
+  const [acknowledged, setAcknowledged] = useState(false)
+  const theme = useTheme()
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: 2,
+        width: '90%',
+        maxWidth: '480px',
+      }}
+    >
+      <Box sx={{ textAlign: 'center', mb: 5, mt: 3 }}>
+        <AlertIcon2
+          className='custom-size'
+          sx={{ fontSize: '88px' }}
+          color={theme.colorBase.textPrimary}
+        />
+      </Box>
+
+      <Box sx={{ color: 'var(--color-text-primary)', mb: 3 }}>
+        <Typography>
+          Please ensure that you are activating your Loopring account using an EOA (Externally Owned
+          Account) wallet.
+        </Typography>
+        <Typography sx={{ color: 'var(--color-text-secondary)', mt: 4 }}>
+          Currently, only EOA wallets are supported on the Loopring network. Smart contract wallets
+          are not supported. <br />
+          Depositing assets to a smart wallet on the Loopring network may result in permanent loss
+          of those assets. Please exercise caution.
+        </Typography>
+      </Box>
+
+      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+        <Checkbox
+                    
+                    checkedIcon={<CheckedIcon />}
+                    icon={<CheckBoxIcon />}
+                    color='default'
+                    sx={{ height: 16, width: 16, mr: 1}}
+                    onChange={(_, checked) => {
+                      setAcknowledged(checked)
+                    }}
+                  />
+        <Typography sx={{ color: 'var(--color-text-primary)' }}>
+          I acknowledge the risk and would like to proceed
+        </Typography>
+      </Box>
+
+      <Button fullWidth variant='contained' onClick={props.onConfirm} disabled={!acknowledged}>
+        Confirm
+      </Button>
+    </Box>
+  )
 }
