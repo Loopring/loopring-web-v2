@@ -179,6 +179,7 @@ import {
   Coinbase_Smart_Wallet_Password_Forget_Password_Confirm,
   Coinbase_Smart_Wallet_Password_Forget_Password,
   UpdateAccount_SmartWallet_NotSupported_Alert,
+  CreateAccount_EOA_Only_Alert,
 } from '@loopring-web/component-lib'
 import { ConnectProviders, connectProvides, walletServices } from '@loopring-web/web3-provider'
 
@@ -947,9 +948,9 @@ export function useAccountModalForUI({
             isToL1={isShowAccount?.info?.isToL1}
             symbol={isShowAccount?.info?.symbol}
             allowTrade={allowTrade}
-            sameLayerAssetList={sendAssetList.filter(item => item.type === 'sameLayer')}
-            crossLayerAssetList={sendAssetList.filter(item => item.type === 'crossLayer')}
-            crossChainAssetList={sendAssetList.filter(item => item.type === 'crossChain')}
+            sameLayerAssetList={sendAssetList.filter((item) => item.type === 'sameLayer')}
+            crossLayerAssetList={sendAssetList.filter((item) => item.type === 'crossLayer')}
+            crossChainAssetList={sendAssetList.filter((item) => item.type === 'crossChain')}
             toL1Title={isTaiko ? 'To Taiko' : 'To Ethereum'}
           />
         ),
@@ -2784,6 +2785,20 @@ export function useAccountModalForUI({
           />
         ),
       },
+      [AccountStep.CreateAccount_EOA_Only_Alert]: {
+        view: (
+          <CreateAccount_EOA_Only_Alert
+            onClose={() => setShowAccount({ isShow: false })}
+            onConfirm={() => {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.CheckingActive,
+              })
+            }}
+          />
+        ),
+        height: '450px',
+      },
       [AccountStep.CreateAccount_Approve_Denied]: {
         view: (
           <CreateAccount_Approve_Denied
@@ -2935,7 +2950,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        height: 510
+        height: 510,
       },
 
       [AccountStep.ResetAccount_Approve_WaitForAuth]: {
@@ -3025,7 +3040,7 @@ export function useAccountModalForUI({
                 setShouldShow(false)
                 setShowAccount({ isShow: false })
                 setShowActiveAccount({ isShow: false })
-              }
+              },
             }}
             {...{
               ...rest,
@@ -3044,7 +3059,7 @@ export function useAccountModalForUI({
               callback: (e: any) => {
                 setShowAccount({ isShow: false })
                 setShowActiveAccount({ isShow: false })
-              }
+              },
             }}
           />
         ),
@@ -3105,7 +3120,7 @@ export function useAccountModalForUI({
           />
         ),
         onBack: () => {
-          setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
+          setShowAccount({ isShow: true, step: AccountStep.CreateAccount_EOA_Only_Alert })
           // backToUpdateAccountBtnInfo.callback();
         },
       },
@@ -3595,7 +3610,6 @@ export function useAccountModalForUI({
         ),
       },
 
-
       [AccountStep.Transfer_To_Taiko_User_Denied]: {
         view: (
           <Transfer_To_Taiko_User_Denied
@@ -3609,7 +3623,7 @@ export function useAccountModalForUI({
               ...rest,
               account,
               t,
-              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko'
+              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko',
             }}
           />
         ),
@@ -3621,7 +3635,7 @@ export function useAccountModalForUI({
               ...rest,
               account,
               t,
-              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko'
+              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko',
             }}
           />
         ),
@@ -3635,7 +3649,7 @@ export function useAccountModalForUI({
                 setShowAccount({ isShow: false })
                 setShowTransferToTaikoAccount({
                   isShow: true,
-                  from: 'send'
+                  from: 'send',
                 })
               },
             }}
@@ -3649,7 +3663,7 @@ export function useAccountModalForUI({
                   }
                 : undefined,
               t,
-              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko'
+              title: isShowAccount.info?.isToEthereum ? 'Send to Ethereum' : 'Send to Taiko',
             }}
           />
         ),
@@ -3674,31 +3688,21 @@ export function useAccountModalForUI({
               account,
               error: isShowAccount.error,
               t,
-              title: isShowAccount.info?.isEthereum ? 'Send to Ethereum' : 'Send to Taiko'
+              title: isShowAccount.info?.isEthereum ? 'Send to Ethereum' : 'Send to Taiko',
             }}
           />
         ),
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Intro]: {
-        view: (
-          <Coinbase_Smart_Wallet_Password_Intro
-            {...coinbaseWalletPassword.introProps}
-          />
-        ),
+        view: <Coinbase_Smart_Wallet_Password_Intro {...coinbaseWalletPassword.introProps} />,
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Set]: {
-        view: (
-          <Coinbase_Smart_Wallet_Password_Set
-            {...coinbaseWalletPassword.setProps}
-          />
-        ),
+        view: <Coinbase_Smart_Wallet_Password_Set {...coinbaseWalletPassword.setProps} />,
         height: '440px',
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Set_Confirm]: {
         view: (
-          <Coinbase_Smart_Wallet_Password_Set_Confirm
-            {...coinbaseWalletPassword.setConfirmProps}
-          />
+          <Coinbase_Smart_Wallet_Password_Set_Confirm {...coinbaseWalletPassword.setConfirmProps} />
         ),
         noClose: true,
       },
@@ -3709,28 +3713,19 @@ export function useAccountModalForUI({
           />
         ),
         height: '450px',
-        
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Set_Error]: {
         view: (
-          <Coinbase_Smart_Wallet_Password_Set_Error
-            {...coinbaseWalletPassword.setErrorProps}
-          />
+          <Coinbase_Smart_Wallet_Password_Set_Error {...coinbaseWalletPassword.setErrorProps} />
         ),
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Get_Error]: {
         view: (
-          <Coinbase_Smart_Wallet_Password_Get_Error
-            {...coinbaseWalletPassword.getErrorProps}
-          />
+          <Coinbase_Smart_Wallet_Password_Get_Error {...coinbaseWalletPassword.getErrorProps} />
         ),
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Input]: {
-        view: (
-          <Coinbase_Smart_Wallet_Password_Input
-            {...coinbaseWalletPassword.inputProps}
-          />
-        ),
+        view: <Coinbase_Smart_Wallet_Password_Input {...coinbaseWalletPassword.inputProps} />,
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password_Confirm]: {
         view: (
@@ -3739,7 +3734,6 @@ export function useAccountModalForUI({
           />
         ),
         height: '520px',
-
       },
       [AccountStep.Coinbase_Smart_Wallet_Password_Forget_Password]: {
         view: (
@@ -3748,9 +3742,7 @@ export function useAccountModalForUI({
           />
         ),
         height: '450px',
-        
       },
-      
     })
   }, [
     activeAccountProps,

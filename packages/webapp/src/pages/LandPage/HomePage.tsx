@@ -7,7 +7,7 @@ import { useSettings, Button, MaxWidthContainer } from '@loopring-web/component-
 import { ContainerStyle, CardBox } from './style'
 import { useTheme } from '@emotion/react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import { SoursURL, ToRightTopArrow } from '@loopring-web/common-resources'
+import { hideDefiEntry, SoursURL, ToRightTopArrow } from '@loopring-web/common-resources'
 
 const BgStyle = styled(Box)`
   position: absolute;
@@ -203,7 +203,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           marginTop: 'calc(var(--header-height) * -1)',
         }}
       >
-        <MaxWidthContainer
+        {!hideDefiEntry && <MaxWidthContainer
           containerProps={{
             sx: {
               backgroundImage: `url('${
@@ -329,10 +329,11 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               }
             />
           </RoundBoxStyled>
-        </MaxWidthContainer>
+        </MaxWidthContainer>}
         <MaxWidthContainer
           containerProps={{ bgcolor: theme.mode === 'light' ? '#EDF2FA' : undefined }}
           py={15}
+          pt={hideDefiEntry ? 20 : 0}
         >
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <RoundIndicator
@@ -457,7 +458,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
           </Box>
         </MaxWidthContainer>
 
-        <MaxWidthContainer
+        {!hideDefiEntry && <MaxWidthContainer
           display={'flex'}
           flexDirection={'column'}
           justifyContent={'center'}
@@ -486,7 +487,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 : 'images/landPage/homepage_p8_light.png')
             }
           />
-        </MaxWidthContainer>
+        </MaxWidthContainer>}
         <MaxWidthContainer
           containerProps={{
             bgcolor: theme.mode === 'light' ? '#F8F8F8' : undefined,

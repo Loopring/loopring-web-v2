@@ -72,7 +72,7 @@ export const goActiveAccount = async (options?: {
     }
   } else {
     store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }))
-    store.dispatch(setShowAccount({ isShow: true, step: AccountStep.CheckingActive }))
+    store.dispatch(setShowAccount({ isShow: true, step: AccountStep.CreateAccount_EOA_Only_Alert }))
   }
 }
 export const geDepositingActive = () => {

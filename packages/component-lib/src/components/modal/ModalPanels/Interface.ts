@@ -152,6 +152,7 @@ export enum AccountStep {
   NFTWithdraw_Success,
   NFTWithdraw_Failed,
 
+  CreateAccount_EOA_Only_Alert,
   CreateAccount_Approve_WaitForAuth,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
