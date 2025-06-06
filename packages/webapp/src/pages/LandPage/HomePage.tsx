@@ -333,6 +333,7 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
         <MaxWidthContainer
           containerProps={{ bgcolor: theme.mode === 'light' ? '#EDF2FA' : undefined }}
           py={15}
+          pt={hideDefiEntry ? 20 : 0}
         >
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <RoundIndicator
