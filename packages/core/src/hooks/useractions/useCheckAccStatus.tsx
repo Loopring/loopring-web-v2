@@ -85,7 +85,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     const isActivationSupported =
       !walletType?.walletType?.isContract ||
       (coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork))
-    if (!isActivationSupported || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
+    if (!isActivationSupported || isFeeNotEnough.isFeeNotEnough) {
       setKnow(true)
     } else {
       goUpdateAccount()
