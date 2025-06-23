@@ -46,7 +46,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   chargeFeeTokenList: C[]
   checkFeeIsEnough: (props?: { isRequiredAPI: true; intervalTime?: number }) => void
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
-  const { account } = useAccount()
+  const { account, updateAccount } = useAccount()
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2()
   // const { chainInfos } = onchainHashInfo.useOnChainInfo();
   // const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -73,6 +73,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowActiveAccount({ isShow: true })
   }
   const onIKnowClick = async () => {
+    const { account } = store.getState()
     const [walletType, coinbaseSW] = await Promise.all([
       LoopringAPI?.walletAPI?.getWalletType({
         wallet: account.accAddress,
@@ -122,16 +123,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
       walletLayer2Callback()
       checkFeeIsEnough()
     }
-    checkFeeIsEnoughInterval.current = setInterval(() => {
-      updateWalletLayer2()
-      walletLayer2Callback()
-      checkFeeIsEnough()
-    }, 10 * 1000)
-    return () => {
-      if (checkFeeIsEnoughInterval.current !== -1) {
-        clearInterval(checkFeeIsEnoughInterval.current)
-      }
-    }
+    
   }, [walletLayer2Status])
 
 
@@ -155,6 +147,17 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     if (isShowAccount.isShow && isShowAccount.step === AccountStep.CheckingActive) {
       init()
       setKnow(false)
+      checkFeeIsEnoughInterval.current = setInterval(() => {
+        updateWalletLayer2()
+        walletLayer2Callback()
+        checkFeeIsEnough()
+        updateAccount({})
+      }, 10 * 1000) 
+    }
+    return () => {
+      if (checkFeeIsEnoughInterval.current !== -1) {
+        clearInterval(checkFeeIsEnoughInterval.current)
+      }
     }
   }, [isShowAccount.step, isShowAccount.isShow])
 
