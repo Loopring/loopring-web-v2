@@ -115,12 +115,25 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setKnowDisable(false)
   }, [chargeFeeTokenList])
 
+  const checkFeeIsEnoughInterval = React.useRef<NodeJS.Timeout | -1>(-1)
+
   React.useEffect(() => {
     if (walletLayer2Callback && walletLayer2Status === SagaStatus.UNSET) {
       walletLayer2Callback()
       checkFeeIsEnough()
     }
+    checkFeeIsEnoughInterval.current = setInterval(() => {
+      updateWalletLayer2()
+      walletLayer2Callback()
+      checkFeeIsEnough()
+    }, 10 * 1000)
+    return () => {
+      if (checkFeeIsEnoughInterval.current !== -1) {
+        clearInterval(checkFeeIsEnoughInterval.current)
+      }
+    }
   }, [walletLayer2Status])
+
 
   const init = React.useCallback(async () => {
     setKnowDisable(true)
