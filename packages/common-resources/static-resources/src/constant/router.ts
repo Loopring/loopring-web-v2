@@ -329,25 +329,25 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     },
     router: { path: RouterPath.stoplimit + '/${pair}' },
   },
-  {
-    label: {
-      id: 'btrade',
-      i18nKey: 'labelBtradeTrade',
-      description: 'labelBtradeTradeDescription',
-      icon: BlockTradeIcon,
-    },
-    router: { path: RouterPath.btrade + '/${pair}' },
-  },
+  // {
+  //   label: {
+  //     id: 'btrade',
+  //     i18nKey: 'labelBtradeTrade',
+  //     description: 'labelBtradeTradeDescription',
+  //     icon: BlockTradeIcon,
+  //   },
+  //   router: { path: RouterPath.btrade + '/${pair}' },
+  // },
 
-  {
-    label: {
-      id: 'fiat',
-      i18nKey: 'labelFiat',
-      description: 'labelFiatDescription',
-      icon: FiatIcon,
-    },
-    router: { path: RouterPath.fiat },
-  },
+  // {
+  //   label: {
+  //     id: 'fiat',
+  //     i18nKey: 'labelFiat',
+  //     description: 'labelFiatDescription',
+  //     icon: FiatIcon,
+  //   },
+  //   router: { path: RouterPath.fiat },
+  // },
 ]
 
 export enum VaultKey {
@@ -783,25 +783,25 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     status: HeaderMenuTabStatus.default,
     child: layer2ItemData,
   },
-  {
-    label: {
-      id: 'Invest',
-      i18nKey: 'labelInvest',
-    },
-    router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
-    status: HeaderMenuTabStatus.default,
-    child: subMenuInvest,
-  },
-  {
-    label: {
-      id: 'vault',
-      i18nKey: 'labelVault',
-      description: 'labelVaultDescription',
-    },
-    router: { path: `${RouterPath.vault}` },
-    status: HeaderMenuTabStatus.default,
-    child: vaultItemData,
-  },
+  // {
+  //   label: {
+  //     id: 'Invest',
+  //     i18nKey: 'labelInvest',
+  //   },
+  //   router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+  //   status: HeaderMenuTabStatus.default,
+  //   child: subMenuInvest,
+  // },
+  // {
+  //   label: {
+  //     id: 'vault',
+  //     i18nKey: 'labelVault',
+  //     description: 'labelVaultDescription',
+  //   },
+  //   router: { path: `${RouterPath.vault}` },
+  //   status: HeaderMenuTabStatus.default,
+  //   child: vaultItemData,
+  // },
   {
     label: {
       id: 'NFT',
@@ -992,15 +992,15 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
           },
           router: { path: RouterPath.stoplimit + '/${pair}' },
         },
-        {
-          label: {
-            id: 'btrade',
-            i18nKey: 'labelBtradeTrade',
-            description: 'labelBtradeTradeDescription',
-            icon: BlockTradeIcon,
-          },
-          router: { path: RouterPath.btrade + '/${pair}' },
-        },
+        // {
+        //   label: {
+        //     id: 'btrade',
+        //     i18nKey: 'labelBtradeTrade',
+        //     description: 'labelBtradeTradeDescription',
+        //     icon: BlockTradeIcon,
+        //   },
+        //   router: { path: RouterPath.btrade + '/${pair}' },
+        // },
       ]
     },
     {
@@ -1113,15 +1113,15 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
           },
           router: { path: RouterPath.stoplimit + '/${pair}' },
         },
-        {
-          label: {
-            id: 'btrade',
-            i18nKey: 'labelBtradeTrade',
-            description: 'labelBtradeTradeDescription',
-            icon: BlockTradeIcon,
-          },
-          router: { path: RouterPath.btrade + '/${pair}' },
-        },
+        // {
+        //   label: {
+        //     id: 'btrade',
+        //     i18nKey: 'labelBtradeTrade',
+        //     description: 'labelBtradeTradeDescription',
+        //     icon: BlockTradeIcon,
+        //   },
+        //   router: { path: RouterPath.btrade + '/${pair}' },
+        // },
       ]
     },
     {
