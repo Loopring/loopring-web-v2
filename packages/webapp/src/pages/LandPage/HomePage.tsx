@@ -225,6 +225,8 @@ export const HomePage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               iconURL={SoursURL + 'images/landPage/homepage_network.svg'}
               text={t('labelSupportedNetworkDes')}
             />
+
+            111
             <TitleGroup
               title={t('labelNavEarn')}
               description={t('labelTitleLiteDes')}
