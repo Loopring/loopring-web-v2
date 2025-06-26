@@ -403,7 +403,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 flexDirection={'column'}
                 justifyContent={'space-between'}
               >
-                <RoundBoxStyled
+                {/* <RoundBoxStyled
                   bgcolor={theme.mode === 'light' ? 'white' : undefined}
                   px={4}
                   // py={8}
@@ -429,11 +429,11 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                         : 'images/landPage/homepage_p5_light.png')
                     }
                   />
-                </RoundBoxStyled>
-                {/* <RoundBoxStyled
+                </RoundBoxStyled> */}
+                <RoundBoxStyled
                 bgcolor={theme.mode === 'light' ? 'white' : undefined}
                 px={4}
-                height={isMobile ? '150px' : '32%'}
+                height={isMobile ? '150px' : '49%'}
                 mt={isMobile ? 3 : 0}
                 display={'flex'}
                 alignItems={'center'}
@@ -450,7 +450,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                       : 'images/landPage/homepage_p6_light.png')
                   }
                 />
-              </RoundBoxStyled> */}
+              </RoundBoxStyled>
                 <RoundBoxStyled
                   bgcolor={theme.mode === 'light' ? 'white' : undefined}
                   px={4}
