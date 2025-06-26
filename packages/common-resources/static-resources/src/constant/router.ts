@@ -471,26 +471,26 @@ export const subMenuLayer2 = {
 }
 
 export const subMenuInvest = [
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
-    label: {
-      id: 'overview',
-      i18nKey: 'labelInvestOverview',
-      description: 'labelInvestOverviewDes',
-      icon: OverviewIcon,
-    },
-  },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
-    label: {
-      id: 'dual',
-      i18nKey: 'labelInvestDual',
-      description: 'labelInvestDualDes',
-      icon: DualInvestIcon,
-    },
-  },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+  //   label: {
+  //     id: 'overview',
+  //     i18nKey: 'labelInvestOverview',
+  //     description: 'labelInvestOverviewDes',
+  //     icon: OverviewIcon,
+  //   },
+  // },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
+  //   label: {
+  //     id: 'dual',
+  //     i18nKey: 'labelInvestDual',
+  //     description: 'labelInvestDualDes',
+  //     icon: DualInvestIcon,
+  //   },
+  // },
   {
     icon: L2MyLiquidityIcon,
     router: { path: `${RouterPath.invest}/${InvestAssetRouter.STAKE}` },
@@ -501,16 +501,16 @@ export const subMenuInvest = [
       icon: ETHStakingIcon,
     },
   },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}` },
-    label: {
-      id: 'leverageeth',
-      i18nKey: 'labelInvestLeverageETH',
-      description: 'labelInvestLeverageETHDes',
-      icon: LeverageETHIcon,
-    },
-  },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}` },
+  //   label: {
+  //     id: 'leverageeth',
+  //     i18nKey: 'labelInvestLeverageETH',
+  //     description: 'labelInvestLeverageETHDes',
+  //     icon: LeverageETHIcon,
+  //   },
+  // },
   {
     icon: L2MyLiquidityIcon,
     router: { path: `${RouterPath.invest}/${InvestAssetRouter.AMM}` },
@@ -783,15 +783,15 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     status: HeaderMenuTabStatus.default,
     child: layer2ItemData,
   },
-  // {
-  //   label: {
-  //     id: 'Invest',
-  //     i18nKey: 'labelInvest',
-  //   },
-  //   router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
-  //   status: HeaderMenuTabStatus.default,
-  //   child: subMenuInvest,
-  // },
+  {
+    label: {
+      id: 'Invest',
+      i18nKey: 'labelInvest',
+    },
+    router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+    status: HeaderMenuTabStatus.default,
+    child: subMenuInvest,
+  },
   // {
   //   label: {
   //     id: 'vault',
