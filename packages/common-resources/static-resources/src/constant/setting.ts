@@ -262,3 +262,5 @@ export const CHAIN_ID_TO_VIEW_CHAIN = new Map<sdk.ChainId, Chain>([
 ])
 
 export const coinbaseSmartWalletChains = [sdk.ChainId.BASE, sdk.ChainId.BASESEPOLIA] 
+
+export const hideDefiEntry = process.env.REACT_APP_HIDE_DEFI_ENTRY === 'true'
