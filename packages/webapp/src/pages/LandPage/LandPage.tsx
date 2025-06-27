@@ -179,7 +179,7 @@ const TitleGroup: React.FC<TitleGroupProps> = ({
 }
 
 const RoundBoxStyled = styled(Box)<{ bgcolor?: string }>(({ theme, bgcolor }) => ({
-  backgroundColor: bgcolor ?? (theme.mode === 'dark' ? '#1C1C1E' : '#F8F8F8'),
+  backgroundColor: bgcolor ?? (theme.mode === 'dark' ? '#31353d' : '#F8F8F8'),
   borderRadius: '25px',
 }))
 

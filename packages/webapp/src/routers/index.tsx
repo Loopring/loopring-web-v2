@@ -211,11 +211,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <LoadingPage />
         </Route>
         <Route exact path='/'>
-          <Redirect to="/pro" />
-        </Route>
-        <Route exact path='/pro'>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <LandPage />
+        </Route>
+        <Route exact path='/pro'>
+          <Redirect to="/" />
         </Route>
         <Route path='/document'>
           {searchParams && searchParams.has('noheader') ? (
