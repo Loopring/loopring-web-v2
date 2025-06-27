@@ -352,10 +352,10 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 src={SoursURL + 'images/landPage/homepage_icon3.svg'}
               />
               <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
-                {t('labelBringingCEXToDeFi')}
+                Low Transaction Fees
               </Typography>
               <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
-                {t('labelBringingCEXToDeFiDes')}
+                Loopring processes trades and transfers off-chain (on Ethereum's layer 2), slashing gas fees and costs to a fraction of on-chain transactions.
               </Typography>
             </RoundBoxStyled>
           </Box>
