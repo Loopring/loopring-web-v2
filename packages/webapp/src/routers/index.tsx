@@ -340,6 +340,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </ContentWrap>
         </Route>
         <Redirect exact path='/invest/leverageETH' to='/invest/leverageETH/redeem' />
+        <Redirect exact path='/invest/defi/WSTETH' to='/invest/defi/WSTETH/redeem' />
+        <Redirect exact path='/invest/defi/RETH' to='/invest/defi/RETH/redeem' />
         
         <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
           <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
