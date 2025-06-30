@@ -339,6 +339,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NFTPage />
           </ContentWrap>
         </Route>
+        <Redirect exact path='/invest/leverageETH' to='/invest/leverageETH/redeem' />
+        
         <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
           <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
             <InvestPage />

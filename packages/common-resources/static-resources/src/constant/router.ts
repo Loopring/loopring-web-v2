@@ -501,16 +501,16 @@ export const subMenuInvest = [
       icon: ETHStakingIcon,
     },
   },
-  // {
-  //   icon: L2MyLiquidityIcon,
-  //   router: { path: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}` },
-  //   label: {
-  //     id: 'leverageeth',
-  //     i18nKey: 'labelInvestLeverageETH',
-  //     description: 'labelInvestLeverageETHDes',
-  //     icon: LeverageETHIcon,
-  //   },
-  // },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: `${RouterPath.invest}/${InvestAssetRouter.LEVERAGEETH}` },
+    label: {
+      id: 'leverageeth',
+      i18nKey: 'labelInvestLeverageETH',
+      description: 'labelInvestLeverageETHDes',
+      icon: LeverageETHIcon,
+    },
+  },
   {
     icon: L2MyLiquidityIcon,
     router: { path: `${RouterPath.invest}/${InvestAssetRouter.AMM}` },
