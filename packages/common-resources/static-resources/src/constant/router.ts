@@ -206,10 +206,10 @@ export let headerToolBarData: {
     [key: string]: any
   }
 } = {
-  // [ButtonComponentsMap.Download]: {
-  //   buttonComponent: ButtonComponentsMap.Download,
-  //   url: WalletSite,
-  // },
+  [ButtonComponentsMap.Download]: {
+    buttonComponent: ButtonComponentsMap.Download,
+    url: WalletSite,
+  },
   [ButtonComponentsMap.Notification]: {
     buttonComponent: ButtonComponentsMap.Notification,
     label: 'labelNotification',
