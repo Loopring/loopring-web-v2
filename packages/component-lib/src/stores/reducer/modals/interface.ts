@@ -113,4 +113,5 @@ export interface ModalState {
   isShowConfirmedVault: ModalStatePlayLoad
   isShowTransferToTaikoAccount: ModalStatePlayLoad & { from?: string }
   isShowBridge: ModalStatePlayLoad & Partial<Transaction>
+  isShowClosureAnnouncement: ModalStatePlayLoad
 }
