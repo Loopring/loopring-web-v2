@@ -9,6 +9,11 @@ import {
   SwitchPanelStyled,
   useOpenModals,
 } from '@loopring-web/component-lib'
+import { ClosureAnnouncementModal } from '@loopring-web/component-lib/src/components/modal/ClosureAnnouncementModal'
+import { 
+  isClosureAnnouncementDismissed, 
+  setClosureAnnouncementDismissed 
+} from '@loopring-web/component-lib/src/utils/closureAnnouncementUtils'
 import { ModalWalletConnectPanel } from './WalletModal'
 import { ModalAccountInfo } from './AccountModal'
 import { withTranslation, WithTranslation } from 'react-i18next'
@@ -37,10 +42,11 @@ export const ModalGroup = withTranslation('common')(
   }) => {
     const { etherscanBaseUrl } = useSystem()
     const {
-      modals: { isShowFeeSetting, isShowIFrame },
+      modals: { isShowFeeSetting, isShowIFrame, isShowClosureAnnouncement },
       setShowFeeSetting,
       setShowIFrame,
       setShowOtherExchange,
+      setShowClosureAnnouncement,
     } = useOpenModals()
     useAccountModal()
 
@@ -71,8 +77,21 @@ export const ModalGroup = withTranslation('common')(
       }
     }, [account.readyState])
 
+    React.useEffect(() => {
+      if (!isClosureAnnouncementDismissed()) {
+        setShowClosureAnnouncement({ isShow: true })
+      }
+    }, [setShowClosureAnnouncement])
+
     return (
       <>
+        <ClosureAnnouncementModal
+          open={isShowClosureAnnouncement.isShow}
+          handleClose={() => {
+            setClosureAnnouncementDismissed()
+            setShowClosureAnnouncement({ isShow: false })
+          }}
+        />
         <AlertNotSupport
           open={isShowSupport.isShow}
           handleClose={() => {
