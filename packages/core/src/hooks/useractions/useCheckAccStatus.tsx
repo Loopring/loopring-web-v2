@@ -46,7 +46,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   chargeFeeTokenList: C[]
   checkFeeIsEnough: (props?: { isRequiredAPI: true; intervalTime?: number }) => void
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
-  const { account } = useAccount()
+  const { account, updateAccount } = useAccount()
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2()
   // const { chainInfos } = onchainHashInfo.useOnChainInfo();
   // const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -73,6 +73,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setShowActiveAccount({ isShow: true })
   }
   const onIKnowClick = async () => {
+    const { account } = store.getState()
     const [walletType, coinbaseSW] = await Promise.all([
       LoopringAPI?.walletAPI?.getWalletType({
         wallet: account.accAddress,
@@ -84,7 +85,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     const isActivationSupported =
       !walletType?.walletType?.isContract ||
       (coinbaseSW && coinbaseSmartWalletChains.includes(defaultNetwork))
-    if (!isActivationSupported || account._accountIdNotActive === -1 || isFeeNotEnough.isFeeNotEnough) {
+    if (!isActivationSupported || isFeeNotEnough.isFeeNotEnough) {
       setKnow(true)
     } else {
       goUpdateAccount()
@@ -115,12 +116,16 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     setKnowDisable(false)
   }, [chargeFeeTokenList])
 
+  const checkFeeIsEnoughInterval = React.useRef<NodeJS.Timeout | -1>(-1)
+
   React.useEffect(() => {
     if (walletLayer2Callback && walletLayer2Status === SagaStatus.UNSET) {
       walletLayer2Callback()
       checkFeeIsEnough()
     }
+    
   }, [walletLayer2Status])
+
 
   const init = React.useCallback(async () => {
     setKnowDisable(true)
@@ -142,6 +147,17 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
     if (isShowAccount.isShow && isShowAccount.step === AccountStep.CheckingActive) {
       init()
       setKnow(false)
+      checkFeeIsEnoughInterval.current = setInterval(() => {
+        updateWalletLayer2()
+        walletLayer2Callback()
+        checkFeeIsEnough()
+        updateAccount({})
+      }, 10 * 1000) 
+    }
+    return () => {
+      if (checkFeeIsEnoughInterval.current !== -1) {
+        clearInterval(checkFeeIsEnoughInterval.current)
+      }
     }
   }, [isShowAccount.step, isShowAccount.isShow])
 

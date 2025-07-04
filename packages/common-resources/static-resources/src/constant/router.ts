@@ -29,7 +29,7 @@ import {
 } from '../svg'
 import { HeaderMenuItemInterface, HeaderMenuTabStatus, InvestAdvice } from '../loopring-interface'
 import { AddAssetList, InvestAssetRouter, InvestMapType, SendAssetList } from './trade'
-import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer } from './setting'
+import { Earnlite, ExchangePro, WalletSite, LOOPRING_DOC, Explorer, hideDefiEntry } from './setting'
 import { ChainId } from '@loopring-web/loopring-sdk'
 
 export const FEED_BACK_LINK = 'https://desk.zoho.com/portal/loopring/en/home'
@@ -329,25 +329,25 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     },
     router: { path: RouterPath.stoplimit + '/${pair}' },
   },
-  {
-    label: {
-      id: 'btrade',
-      i18nKey: 'labelBtradeTrade',
-      description: 'labelBtradeTradeDescription',
-      icon: BlockTradeIcon,
-    },
-    router: { path: RouterPath.btrade + '/${pair}' },
-  },
+  // {
+  //   label: {
+  //     id: 'btrade',
+  //     i18nKey: 'labelBtradeTrade',
+  //     description: 'labelBtradeTradeDescription',
+  //     icon: BlockTradeIcon,
+  //   },
+  //   router: { path: RouterPath.btrade + '/${pair}' },
+  // },
 
-  {
-    label: {
-      id: 'fiat',
-      i18nKey: 'labelFiat',
-      description: 'labelFiatDescription',
-      icon: FiatIcon,
-    },
-    router: { path: RouterPath.fiat },
-  },
+  // {
+  //   label: {
+  //     id: 'fiat',
+  //     i18nKey: 'labelFiat',
+  //     description: 'labelFiatDescription',
+  //     icon: FiatIcon,
+  //   },
+  //   router: { path: RouterPath.fiat },
+  // },
 ]
 
 export enum VaultKey {
@@ -390,7 +390,7 @@ export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
 export const ammDisableList = ['Liquidity']
 
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
-  {
+  ...(!hideDefiEntry ? [{
     label: {
       id: 'loopringLite',
       i18nKey: 'labelNavEarn',
@@ -401,7 +401,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       dark: SoursURL + 'images/landing_page_nav_earn_dark.png',
       light: SoursURL + 'images/landing_page_nav_earn_light.png',
     }
-  },
+  }] : []),
   {
     label: {
       id: 'loopringPro',
@@ -414,7 +414,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       light: SoursURL + 'images/landing_page_nav_pro_light.png',
     }
   },
-  {
+  ...(!hideDefiEntry ? [{
     label: {
       id: 'wallet',
       i18nKey: 'labelNavWallet',
@@ -425,7 +425,7 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
       dark: SoursURL + 'images/landing_page_nav_wallet_dark.png',
       light: SoursURL + 'images/landing_page_nav_wallet_light.png',
     }
-  },
+  }] : []),
   {
     label: {
       id: 'doc',
@@ -471,26 +471,26 @@ export const subMenuLayer2 = {
 }
 
 export const subMenuInvest = [
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
-    label: {
-      id: 'overview',
-      i18nKey: 'labelInvestOverview',
-      description: 'labelInvestOverviewDes',
-      icon: OverviewIcon,
-    },
-  },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
-    label: {
-      id: 'dual',
-      i18nKey: 'labelInvestDual',
-      description: 'labelInvestDualDes',
-      icon: DualInvestIcon,
-    },
-  },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: `${RouterPath.invest}/${InvestRouter[InvestType.Overview]}` },
+  //   label: {
+  //     id: 'overview',
+  //     i18nKey: 'labelInvestOverview',
+  //     description: 'labelInvestOverviewDes',
+  //     icon: OverviewIcon,
+  //   },
+  // },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: `${RouterPath.invest}/${InvestAssetRouter.DUAL}` },
+  //   label: {
+  //     id: 'dual',
+  //     i18nKey: 'labelInvestDual',
+  //     description: 'labelInvestDualDes',
+  //     icon: DualInvestIcon,
+  //   },
+  // },
   {
     icon: L2MyLiquidityIcon,
     router: { path: `${RouterPath.invest}/${InvestAssetRouter.STAKE}` },
@@ -792,16 +792,16 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     status: HeaderMenuTabStatus.default,
     child: subMenuInvest,
   },
-  {
-    label: {
-      id: 'vault',
-      i18nKey: 'labelVault',
-      description: 'labelVaultDescription',
-    },
-    router: { path: `${RouterPath.vault}` },
-    status: HeaderMenuTabStatus.default,
-    child: vaultItemData,
-  },
+  // {
+  //   label: {
+  //     id: 'vault',
+  //     i18nKey: 'labelVault',
+  //     description: 'labelVaultDescription',
+  //   },
+  //   router: { path: `${RouterPath.vault}` },
+  //   status: HeaderMenuTabStatus.default,
+  //   child: vaultItemData,
+  // },
   {
     label: {
       id: 'NFT',
@@ -992,15 +992,15 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
           },
           router: { path: RouterPath.stoplimit + '/${pair}' },
         },
-        {
-          label: {
-            id: 'btrade',
-            i18nKey: 'labelBtradeTrade',
-            description: 'labelBtradeTradeDescription',
-            icon: BlockTradeIcon,
-          },
-          router: { path: RouterPath.btrade + '/${pair}' },
-        },
+        // {
+        //   label: {
+        //     id: 'btrade',
+        //     i18nKey: 'labelBtradeTrade',
+        //     description: 'labelBtradeTradeDescription',
+        //     icon: BlockTradeIcon,
+        //   },
+        //   router: { path: RouterPath.btrade + '/${pair}' },
+        // },
       ]
     },
     {
@@ -1113,15 +1113,15 @@ export const headerMenuDataMap: { [key: string]: HeaderMenuItemInterface[] } = {
           },
           router: { path: RouterPath.stoplimit + '/${pair}' },
         },
-        {
-          label: {
-            id: 'btrade',
-            i18nKey: 'labelBtradeTrade',
-            description: 'labelBtradeTradeDescription',
-            icon: BlockTradeIcon,
-          },
-          router: { path: RouterPath.btrade + '/${pair}' },
-        },
+        // {
+        //   label: {
+        //     id: 'btrade',
+        //     i18nKey: 'labelBtradeTrade',
+        //     description: 'labelBtradeTradeDescription',
+        //     icon: BlockTradeIcon,
+        //   },
+        //   router: { path: RouterPath.btrade + '/${pair}' },
+        // },
       ]
     },
     {

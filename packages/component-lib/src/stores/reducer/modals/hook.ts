@@ -44,6 +44,7 @@ import {
   setShowTransferToTaikoAccount,
   setShowVaultCloseConfirm,
   setShowBridge,
+  setShowClosureAnnouncement,
 } from './reducer'
 
 import React from 'react'
@@ -370,6 +371,10 @@ export const useOpenModals = () => {
     ),
     setShowBridge: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowBridge(state)),
+      [dispatch],
+    ),
+    setShowClosureAnnouncement: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowClosureAnnouncement(state)),
       [dispatch],
     ),
   }

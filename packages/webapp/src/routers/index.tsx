@@ -1,4 +1,4 @@
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
+import { Route, Switch, useHistory, useLocation, Redirect } from 'react-router-dom'
 import React from 'react'
 import { Box, Container, Link, Snackbar, Typography } from '@mui/material'
 import Header from 'layouts/header'
@@ -211,17 +211,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <LoadingPage />
         </Route>
         <Route exact path='/'>
-          {searchParams && searchParams.has('noheader') ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} isLandPage  />
-            // <Header isHideOnScroll={true} isLandPage />
-          )}
-          <HomePage />
-        </Route>
-        <Route exact path='/pro'>
           {searchParams && searchParams.has('noheader') ? <></> : <Header isHideOnScroll={true} />}
           <LandPage />
+        </Route>
+        <Route exact path='/pro'>
+          <Redirect to="/" />
         </Route>
         <Route path='/document'>
           {searchParams && searchParams.has('noheader') ? (
@@ -345,6 +339,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NFTPage />
           </ContentWrap>
         </Route>
+        <Redirect exact path='/invest/leverageETH' to='/invest/leverageETH/redeem' />
+        <Redirect exact path='/invest/defi/WSTETH' to='/invest/defi/WSTETH/redeem' />
+        <Redirect exact path='/invest/defi/RETH' to='/invest/defi/RETH/redeem' />
+        
         <Route exact path={[RouterPath.invest, RouterPath.invest + '/*']}>
           <ContentWrap noContainer state={state} value={RouterMainKey.invest}>
             <InvestPage />

@@ -91,7 +91,7 @@ export const useHeader = () => {
             NetWorkItems,
             accountState: { account },
             handleClickSignIn: async () => {
-              setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
+              setShowAccount({ isShow: true, step: AccountStep.CreateAccount_EOA_Only_Alert })
             },
           },
           [ButtonComponentsMap.ProfileMenu]: {

@@ -113,7 +113,7 @@ const LandDefiInvest = ({
         if (!confirmedWSETHDefiInvest) {
           setConfirmedDefiInvest({ isShow: true, type: 'WSETH' })
         } else {
-          history.push(defiWSTETHAdvice.router)
+          history.push(defiWSTETHAdvice.router + '/redeem')
         }
       },
       apy: defiMarketMap[defiWSTETHAdvice?.market ?? '']?.apy,
@@ -125,7 +125,7 @@ const LandDefiInvest = ({
         if (!confirmedRETHDefiInvest) {
           setConfirmedDefiInvest({ isShow: true, type: 'RETH' })
         } else {
-          history.push(defiRETHAdvice.router)
+          history.push(defiRETHAdvice.router + '/redeem')
         }
       },
       apy: defiMarketMap[defiRETHAdvice?.market ?? '']?.apy,
@@ -238,7 +238,7 @@ const LandDefiInvest = ({
                           />
                         ) : (
                           <Button variant={'contained'} fullWidth={true} size={'medium'}>
-                            {t('labelInvestBtn')}
+                            Redeem
                           </Button>
                         )}
                       </Box>

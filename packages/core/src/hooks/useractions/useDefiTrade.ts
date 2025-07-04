@@ -436,7 +436,7 @@ export const useDefiTrade = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>
         } else {
           let status: any = defiMapInfo.markets[market]?.status ?? 0
           status = ('00000000' + status.toString(2)).split('')
-          if (!(isJoin ? status[status.length - 2] === '1' : status[status.length - 4] === '1')) {
+          if ((status[status.length - 2] !== '1' && status[status.length - 4] !== '1')) {
             setServerUpdate(true)
           } else {
             updateDefiSyncMap({

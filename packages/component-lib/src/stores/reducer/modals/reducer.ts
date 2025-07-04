@@ -69,6 +69,7 @@ const initialState: ModalState = {
   isShowConfirmedVault: { isShow: false },
   isShowTransferToTaikoAccount: { isShow: false, from: undefined },
   isShowBridge: { isShow: false, symbol: undefined, info: undefined },
+  isShowClosureAnnouncement: { isShow: false },
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -476,6 +477,9 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowBridge(state, action: PayloadAction<ModalStatePlayLoad & Partial<Transaction & { contactName?: string }>>) {
       state.isShowBridge = action.payload
     },
+    setShowClosureAnnouncement(state, action: PayloadAction<ModalStatePlayLoad>) {
+      state.isShowClosureAnnouncement = action.payload
+    },
   },
 })
 export const {
@@ -521,5 +525,6 @@ export const {
   setShowNoVaultAccount,
   setShowConfirmedVault,
   setShowBridge,
-  setShowTransferToTaikoAccount
+  setShowTransferToTaikoAccount,
+  setShowClosureAnnouncement
 } = modalsSlice.actions

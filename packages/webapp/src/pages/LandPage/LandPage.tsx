@@ -1,4 +1,14 @@
-import { Avatar, Box, Button, Container, Tabs, Tab, Typography, Grid } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Tabs,
+  Tab,
+  Typography,
+  Grid,
+  BoxProps,
+} from '@mui/material'
 import React from 'react'
 import styled from '@emotion/styled'
 import {
@@ -16,11 +26,12 @@ import {
   stakeAdvice,
   TokenType,
   NFTSubRouter,
+  ToRightTopArrow,
 } from '@loopring-web/common-resources'
 import { Trans, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useNotify, WalletConnectL2Btn } from '@loopring-web/core'
-import { CoinIcons, useSettings } from '@loopring-web/component-lib'
+import { CoinIcons, MaxWidthContainer, useSettings } from '@loopring-web/component-lib'
 import { ContainerStyle, CardBox } from './style'
 import { useTheme } from '@emotion/react'
 import { SoursURL } from '@loopring-web/loopring-sdk'
@@ -55,6 +66,140 @@ const BgStyle = styled(Box)`
     background-size: 528px 528px;
   }
 `
+
+type TitleGroupProps = {
+  title: string
+  description: string
+  link?: string
+  onClickLink?: () => void
+  buttonText: string
+  descriptionTextColor?: string
+  desFontSize?: string
+} & BoxProps
+
+const RoundIndicator = ({
+  iconURL,
+  text,
+  ...rest
+}: { iconURL: string; text: string } & BoxProps) => {
+  const theme = useTheme()
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: '20px',
+        height: '40px',
+        border: theme.mode === 'dark' ? '1px solid #FFFFFF57' : '1px solid #E1E6F0',
+        marginBottom: 2,
+        paddingX: 2,
+        paddingY: 1,
+        backgroundColor: theme.mode === 'dark' ? '#FFFFFF14' : '#F5F7FC',
+      }}
+      {...rest}
+    >
+      <Box
+        component={'img'}
+        src={iconURL}
+        alt='Network Icon'
+        sx={{ marginRight: 1, width: '24px', height: '24px' }}
+      />
+      <Typography color='var(--color-text-primary)'>{text}</Typography>
+    </Box>
+  )
+}
+
+const TitleGroup: React.FC<TitleGroupProps> = ({
+  title,
+  description,
+  link,
+  onClickLink,
+  buttonText,
+  descriptionTextColor,
+  desFontSize,
+  ...rest
+}) => {
+  const theme = useTheme()
+  const { isMobile } = useSettings()
+  return (
+    <Box
+      textAlign='center'
+      display={'flex'}
+      flexDirection={'column'}
+      alignItems={'center'}
+      width={isMobile ? '80%' : undefined}
+      mt={isMobile ? 2 : 0}
+      {...rest}
+    >
+      <Typography
+        variant='h1'
+        component='h1'
+        gutterBottom
+        fontWeight={700}
+        mb={4}
+        color={'var(--color-text-primary)'}
+        fontSize={isMobile ? '40px' : '80px'}
+        lineHeight={isMobile ? '48px' : '80px'}
+      >
+        {title}
+      </Typography>
+      <Typography
+        variant='h3'
+        fontWeight={isMobile ? 300 : 400}
+        component='p'
+        color={
+          descriptionTextColor ?? (theme.mode === 'light' ? '#292C33' : 'var(--color-text-third)')
+        }
+        fontSize={isMobile ? '20px' : desFontSize ?? '28px'}
+        mb={8}
+        lineHeight={isMobile ? '24px' : '40px'}
+      >
+        {isMobile
+          ? description.replace('\n', ' ')
+          : description.split('\n').map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}
+      </Typography>
+      <Button
+        sx={{ borderRadius: '8px' }}
+        variant='contained'
+        size={isMobile ? 'small' : 'large'}
+        endIcon={<ToRightTopArrow />}
+        href={link ? link : undefined}
+        color={'primary'}
+        onClick={onClickLink ? onClickLink : undefined}
+      >
+        {buttonText}
+      </Button>
+    </Box>
+  )
+}
+
+const RoundBoxStyled = styled(Box)<{ bgcolor?: string }>(({ theme, bgcolor }) => ({
+  backgroundColor: bgcolor ?? (theme.mode === 'dark' ? '#31353d' : '#F8F8F8'),
+  borderRadius: '25px',
+}))
+
+const TitleDes = ({
+  title,
+  description,
+  desColor,
+  ...rest
+}: { title: string; description: string; desColor?: string } & BoxProps) => {
+  return (
+    <Box {...rest}>
+      <Typography mb={2} fontSize={'24px'} color={'var(--color-text-primary)'}>
+        {title}
+      </Typography>
+      <Typography fontSize={'16px'} color={desColor ?? 'var(--color-text-third)'}>
+        {description}
+      </Typography>
+    </Box>
+  )
+}
 const ButtonStyled = styled(Button)`
   .MuiBox-root {
     justify-content: flex-start;
@@ -117,24 +262,11 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
             justifyContent={'center'}
             alignItems={'center'}
             flexDirection={'column'}
-            height={528}
+            height={428}
           >
             <Typography
-              textAlign={'center'}
-              component={'h2'}
-              variant={'h1'}
-              display={'inline-flex'}
-              alignItems={'center'}
-              marginBottom={3}
-            >
-              <Box width={48} marginRight={1} display={'flex'}>
-                <Box component={'img'} src={SoursURL + 'images/landPage/eth_logo.png'} width={48} height={48} />
-              </Box>
-              Ethereum
-            </Typography>
-            <Typography
               component={'p'}
-              variant={'h2'}
+              variant={'h1'}
               textAlign={'center'}
               whiteSpace={'pre-line'}
               marginBottom={4}
@@ -160,7 +292,195 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
               }}
             />
           </Box>
-          <Box component='section'>
+          <Box
+            display={'flex'}
+            flexDirection={isMobile ? 'column' : 'row'}
+            justifyContent={'space-between'}
+            mb={5}
+          >
+            <RoundBoxStyled
+              bgcolor={theme.mode === 'light' ? 'white' : undefined}
+              px={3}
+              py={4}
+              borderRadius={'12px'}
+              width={isMobile ? '100%' : '32%'}
+              mb={isMobile ? 3 : 0}
+            >
+              <Box
+                width={'36px'}
+                component={'img'}
+                src={SoursURL + 'images/landPage/homepage_icon1.svg'}
+              />
+              <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
+                {t('labelProvenAppSpecificZKRollup')}
+              </Typography>
+              <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
+                {t('labelProvenAppSpecificZKRollupDes')}
+              </Typography>
+            </RoundBoxStyled>
+            <RoundBoxStyled
+              bgcolor={theme.mode === 'light' ? 'white' : undefined}
+              px={3}
+              py={4}
+              borderRadius={'12px'}
+              width={isMobile ? '100%' : '32%'}
+              mb={isMobile ? 3 : 0}
+            >
+              <Box
+                width={'36px'}
+                component={'img'}
+                src={SoursURL + 'images/landPage/homepage_icon2.svg'}
+              />
+              <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
+                {t('labelAuditedAndSecure')}
+              </Typography>
+              <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
+                {t('labelAuditedAndSecureDes')}
+              </Typography>
+            </RoundBoxStyled>
+            <RoundBoxStyled
+              bgcolor={theme.mode === 'light' ? 'white' : undefined}
+              px={3}
+              py={4}
+              borderRadius={'12px'}
+              width={isMobile ? '100%' : '32%'}
+              mb={isMobile ? 3 : 0}
+            >
+              <Box
+                width={'36px'}
+                component={'img'}
+                src={SoursURL + 'images/landPage/homepage_icon3.svg'}
+              />
+              <Typography mt={2} color={'var(--color-text-primary)'} variant='h5' fontSize={'20px'}>
+                Low Transaction Fees
+              </Typography>
+              <Typography mt={1} color={'var(--color-text-secondary)'} fontSize={'14px'}>
+                Loopring processes trades and transfers off-chain (on Ethereum's layer 2), slashing gas fees and costs to a fraction of on-chain transactions.
+              </Typography>
+            </RoundBoxStyled>
+          </Box>
+
+          <MaxWidthContainer
+            containerProps={{ bgcolor: theme.mode === 'light' ? '#EDF2FA' : undefined }}
+            mb={20}
+          >
+            <Box
+              height={isMobile ? 'auto' : '600px'}
+              display={'flex'}
+              flexDirection={isMobile ? 'column' : 'row'}
+              justifyContent={'space-between'}
+            >
+              <RoundBoxStyled
+                bgcolor={theme.mode === 'light' ? 'white' : undefined}
+                px={4}
+                py={8}
+                pb={0}
+                width={isMobile ? '100%' : '49%'}
+                display={'flex'}
+                flexDirection={'column'}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+              >
+                <TitleDes
+                  title={t('labelTrade')}
+                  desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined}
+                  description={t('labelTradeDes')}
+                />
+                <Box
+                  width={'85%'}
+                  component={'img'}
+                  src={
+                    SoursURL +
+                    (theme.mode === 'dark'
+                      ? 'images/landPage/homepage_p4_dark.png'
+                      : 'images/landPage/homepage_p4_light.png')
+                  }
+                />
+              </RoundBoxStyled>
+              <Box
+                width={isMobile ? '100%' : '49%'}
+                display={'flex'}
+                flexDirection={'column'}
+                justifyContent={'space-between'}
+              >
+                {/* <RoundBoxStyled
+                  bgcolor={theme.mode === 'light' ? 'white' : undefined}
+                  px={4}
+                  // py={8}
+                  height={isMobile ? '150px' : '49%'}
+                  mt={isMobile ? 3 : 0}
+                  display={'flex'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                >
+                  <TitleDes
+                    desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined}
+                    title={t('labelEarn')}
+                    description={t('labelEarnDes')}
+                    mr={4}
+                  />
+                  <Box
+                    component={'img'}
+                    height={'70%'}
+                    src={
+                      SoursURL +
+                      (theme.mode === 'dark'
+                        ? 'images/landPage/homepage_p5_dark.png'
+                        : 'images/landPage/homepage_p5_light.png')
+                    }
+                  />
+                </RoundBoxStyled> */}
+                <RoundBoxStyled
+                bgcolor={theme.mode === 'light' ? 'white' : undefined}
+                px={4}
+                height={isMobile ? '150px' : '49%'}
+                mt={isMobile ? 3 : 0}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'space-between'}
+              >
+                <TitleDes desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined} title={t('labelNFT')} description={t('labelNFTDes')} mr={4} />
+                <Box
+                  component={'img'}
+                  height={'90%'}
+                  src={
+                    SoursURL +
+                    (theme.mode === 'dark'
+                      ? 'images/landPage/homepage_p6_dark.png'
+                      : 'images/landPage/homepage_p6_light.png')
+                  }
+                />
+              </RoundBoxStyled>
+                <RoundBoxStyled
+                  bgcolor={theme.mode === 'light' ? 'white' : undefined}
+                  px={4}
+                  height={isMobile ? '150px' : '49%'}
+                  mt={isMobile ? 3 : 0}
+                  display={'flex'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                >
+                  <TitleDes
+                    title={t('labelRedPackets2')}
+                    description={t('labelRedPacketsDes2')}
+                    desColor={theme.mode === 'light' ? 'var(--color-text-secondary)' : undefined}
+                    mr={4}
+                  />
+                  <Box
+                    component={'img'}
+                    height={'90%'}
+                    src={
+                      SoursURL +
+                      (theme.mode === 'dark'
+                        ? 'images/landPage/homepage_p7_dark.png'
+                        : 'images/landPage/homepage_p7_light.png')
+                    }
+                  />
+                </RoundBoxStyled>
+              </Box>
+            </Box>
+          </MaxWidthContainer>
+          {/* <Box component='section'>
             <Box
               style={{
                 display: 'flex',
@@ -284,256 +604,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({ t }: any) => 
                 </Box>
               </CardBox>
             </Box>
-          </Box>
-        </Container>
-      </ContainerStyle>
-      <ContainerStyle sx={{ zIndex: 10, marginBottom: 4 }}>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-          <Typography
-            component={'h4'}
-            variant={'h3'}
-            display={'inline-flex'}
-            alignItems={'center'}
-            marginBottom={1}
-            textAlign={'center'}
-          >
-            {t('labelEndProductTitle')}
-          </Typography>
-          <Typography
-            component={'p'}
-            variant={'h5'}
-            textAlign={'center'}
-            whiteSpace={'pre-line'}
-            marginBottom={1}
-            color={'textSecondary'}
-          >
-            {t('labelEndProductTitleDes')}
-          </Typography>
-        </Box>
-        <Container
-          maxWidth='lg'
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-            width: '100%',
-          }}
-        >
-          {isMobile ? (
-            investAdviceList.map((item, index) => {
-              return (
-                <CardBox
-                  key={item.type}
-                  padding={5}
-                  onClick={() => history.push(item.router)}
-                  className={'hasHover'}
-                  marginY={2}
-                >
-                  <Box
-                    display={'flex'}
-                    // justifyContent={'space-between'}
-                    flexDirection={'row'}
-                    alignItems={'center'}
-                  >
-                    
-                    <Box>
-                    <Typography marginTop={2} component='h4' variant={'h4'} textAlign={'left'}>
-                      {t(item.titleI18n, { ns: 'layout' })}
-                    </Typography>
-
-                    <Typography
-                      variant={'body1'}
-                      marginTop={3}
-                      textAlign={'left'}
-                      color={'textSecondary'}
-                    >
-                      {t(item.desI18n, { ns: ['landPage'] })}
-                    </Typography>
-                    <Button
-                      sx={{ marginTop: 5 }}
-                      title={item.router}
-                      rel='noopener'
-                      href={`#${item.router}`}
-                      endIcon={<GoIcon color='inherit' />}
-                      size='small'
-                    >
-                      <Trans i18nKey={'labelGo'} ns={['landPage']}>
-                        Go
-                      </Trans>
-                    </Button>
-
-                    </Box>
-                    <Avatar
-                      variant='circular'
-                      style={{
-                        height: 'var(--svg-size-huge)',
-                        width: 'var(--svg-size-huge)',
-                      }}
-                      sx={{
-                        mx: 4,
-                      }}
-                      src={item.banner}
-                    />
-                    
-                  </Box>
-                </CardBox>
-              )
-            })
-          ) : (
-            <Tabs variant={'scrollable'} className={'product'}>
-              {investAdviceList.map((item, index) => {
-                return (
-                  <Tab
-                    label={
-                      <CardBox
-                        padding={3}
-                        onClick={() => history.push(item.router)}
-                        className={'hasHover'}
-                      >
-                        <Box
-                          display={'flex'}
-                          justifyContent={'space-between'}
-                          flexDirection={'column'}
-                          alignItems={'left'}
-                        >
-                          <Avatar
-                            variant='circular'
-                            style={{
-                              height: 'var(--svg-size-huge)',
-                              width: 'var(--svg-size-huge)',
-                            }}
-                            src={item.banner}
-                          />
-                          <Typography
-                            marginTop={2}
-                            component='h4'
-                            variant={'h4'}
-                            color={'textPrimary'}
-                            textAlign={'left'}
-                          >
-                            {t(item.titleI18n, { ns: 'layout' })}
-                          </Typography>
-
-                          <Typography
-                            variant={'body1'}
-                            marginTop={3}
-                            textAlign={'left'}
-                            color={'textSecondary'}
-                          >
-                            {t(item.desI18n, { ns: ['landPage'] })}
-                          </Typography>
-                          <Button
-                            sx={{ marginTop: 5 }}
-                            title={item.router}
-                            rel='noopener'
-                            href={`#${item.router}`}
-                            endIcon={<GoIcon color='inherit' />}
-                          >
-                            <Trans i18nKey={'labelGo'} ns={['landPage']}>
-                              Go
-                            </Trans>
-                          </Button>
-                        </Box>
-                      </CardBox>
-                    }
-                    key={item.type}
-                    value={item.type}
-                    href={`/#${item.router}`}
-                  />
-                )
-              })}
-            </Tabs>
-          )}
-        </Container>
-      </ContainerStyle>
-      <ContainerStyle sx={{ zIndex: 10, marginBottom: 8 }}>
-        <Container
-          maxWidth='lg'
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-          }}
-        >
-          <Grid container spacing={3} alignItems={'stretch'}>
-            <Grid item xs={12} md={6}>
-              <CardBox
-                height={'100%'}
-                padding={6}
-                display={'flex'}
-                flexDirection={isMobile ? 'row-reverse' : 'column'}
-                justifyContent={'space-between'}
-                alignItems={'center'}
-                className={'hasHover'}
-                onClick={() => history.push(`${RouterPath.nft}/${NFTSubRouter.myCollection}`)}
-              >
-                <Box width={isMobile ? '30%' : '248'} src={`./NFT.webp`} component={'img'}/>
-
-                <Box>
-                  <Typography
-                    component='h4'
-                    variant={isMobile ? 'h5' :'h4'}
-                    textAlign={isMobile ? 'left' : 'center'}
-                    aria-label='Manage and Display Your NFT Collections'
-                    marginBottom={1}
-                  >
-                    {t('labelNFTCollections')}
-                  </Typography>
-                  <Typography
-                    component='p'
-                    variant={'body1'}
-                    textAlign={isMobile ? 'left' : 'center'}
-                    color={'textSecondary'}
-                    aria-label='In close collaboration with your business, we’ll develop a strategic plan to integrate NFTs into your ecosystem.'
-                  >
-                    <Trans i18nKey={'labelNFTCollectionsDes'} ns={['landPage']}>
-                      In close collaboration with your business, we’ll develop a strategic plan to
-                      integrate NFTs into your ecosystem.
-                    </Trans>
-                  </Typography>
-                </Box>
-              </CardBox>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CardBox
-                padding={6}
-                height={'100%'}
-                display={'flex'}
-                flexDirection={isMobile ? 'row-reverse' : 'column'}
-                justifyContent={'space-between'}
-                alignItems={'center'}
-                className={'hasHover'}
-                onClick={() => history.push(`${RouterPath.redPacket}`)}
-              >
-                <Box width={isMobile ? '30%' : '248'} src={`./Redpack.webp`} component={'img'}/>
-                <Box>
-                  <Typography
-                    component='h4'
-                    variant={isMobile ? 'h5' :'h4'}
-                    aria-label='Red Packets'
-                    textAlign={isMobile ? 'left' : 'center'}
-                    marginBottom={1}
-                  >
-                    <Trans i18nKey={'labelRedPackets'} ns={['landPage']}>
-                      Red Packets
-                    </Trans>
-                  </Typography>
-                  <Typography
-                    component='p'
-                    variant={'body1'}
-                    textAlign={isMobile ? 'left' : 'center'}
-                    color={'textSecondary'}
-                    aria-label='Explore the various use cases of our revolutionary Red Packets! Send token or NFT gifts directly or gamify the experience with blind boxes.'
-                  >
-                    <Trans i18nKey={'labelRedPacketsDes'} ns={['landPage']}>
-                      Explore the various use cases of our revolutionary Red Packets! Send token or
-                      NFT gifts directly or gamify the experience with blind boxes.
-                    </Trans>
-                  </Typography>
-                </Box>
-              </CardBox>
-            </Grid>
-          </Grid>
+          </Box> */}
         </Container>
       </ContainerStyle>
 
